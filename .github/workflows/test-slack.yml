@@ -1,0 +1,16 @@
+name: Test Slack
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack Message
+        run: |
+          curl -X POST \
+          -H 'Content-type: application/json' \
+          --data '{"text":"2026.06.10 夜 Daily Report\nU2U(1) / グラフィック(2) / サウンド(1) / プラグイン(2)\n\n【U2U】\n★★★ テスト通知"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
