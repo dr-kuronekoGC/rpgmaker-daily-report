@@ -6,42 +6,95 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 
 SEEN_FILE = "seen.json"
 
+QUESTION_WORDS = [
+    "help",
+    "need help",
+    "looking for",
+    "question",
+    "how to",
+    "how do",
+    "can i",
+    "which",
+    "what",
+]
+
 IGNORE_WORDS = [
     "screenshot saturday",
     "megathread",
+    "weekly thread",
 ]
 
-CATEGORIES = {
-    "RPGツクール製ゲーム": [
+
+def classify(title):
+    title_lower = title.lower()
+
+    # 完全除外
+    for word in IGNORE_WORDS:
+        if word in title_lower:
+            return None
+
+    # 質問系除外
+    for word in QUESTION_WORDS:
+        if word in title_lower:
+            return None
+
+    # RPGツクール製ゲーム
+    game_keywords = [
         "released",
         "release",
-        "trailer",
         "steam page",
+        "trailer",
         "demo",
         "now out",
-    ],
-    "プラグイン": [
-        "plugin",
-    ],
-    "グラフィック": [
+        "available now",
+        "launch",
+        "launched",
+    ]
+
+    for keyword in game_keywords:
+        if keyword in title_lower:
+            return "RPGツクール製ゲーム"
+
+    # プラグイン
+    if "plugin" in title_lower:
+        return "プラグイン"
+
+    # グラフィック
+    graphic_keywords = [
         "tileset",
         "sprite",
         "asset pack",
         "character generator",
-    ],
-    "サウンド": [
+    ]
+
+    for keyword in graphic_keywords:
+        if keyword in title_lower:
+            return "グラフィック"
+
+    # サウンド
+    sound_keywords = [
         "bgm",
         "music pack",
         "sound pack",
         "audio asset",
-    ],
-    "Tips": [
+    ]
+
+    for keyword in sound_keywords:
+        if keyword in title_lower:
+            return "サウンド"
+
+    # Tips
+    tips_keywords = [
         "tutorial",
         "guide",
         "tips",
-    ],
-}
+    ]
 
+    for keyword in tips_keywords:
+        if keyword in title_lower:
+            return "Tips"
+
+    return None
 
 def load_seen():
     path = Path(SEEN_FILE)
@@ -56,34 +109,6 @@ def load_seen():
 def save_seen(data):
     with open(SEEN_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-
-
-def classify(title):
-    title_lower = title.lower()
-
-    # 除外ワード
-    for word in IGNORE_WORDS:
-        if word in title_lower:
-            return None
-
-    # 質問系除外
-    if (
-        title_lower.startswith("what ")
-        or title_lower.startswith("which ")
-        or title_lower.startswith("how ")
-        or title_lower.startswith("can i ")
-        or title_lower.startswith("need ")
-        or title_lower.startswith("looking for ")
-    ):
-        return None
-
-    # カテゴリ判定
-    for category, keywords in CATEGORIES.items():
-        for keyword in keywords:
-            if keyword in title_lower:
-                return category
-
-    return None
 
 
 seen = load_seen()
