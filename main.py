@@ -1,6 +1,10 @@
 import feedparser
 import json
+import requests
+import os
+
 from pathlib import Path
+from datetime import datetime
 
 RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 
@@ -28,17 +32,14 @@ IGNORE_WORDS = [
 def classify(title):
     title_lower = title.lower()
 
-    # 完全除外
     for word in IGNORE_WORDS:
         if word in title_lower:
             return None
 
-    # 質問系除外
     for word in QUESTION_WORDS:
         if word in title_lower:
             return None
 
-    # RPGツクール製ゲーム
     game_keywords = [
         "released",
         "release",
@@ -55,11 +56,9 @@ def classify(title):
         if keyword in title_lower:
             return "RPGツクール製ゲーム"
 
-    # プラグイン
     if "plugin" in title_lower:
         return "プラグイン"
 
-    # グラフィック
     graphic_keywords = [
         "tileset",
         "sprite",
@@ -71,7 +70,6 @@ def classify(title):
         if keyword in title_lower:
             return "グラフィック"
 
-    # サウンド
     sound_keywords = [
         "bgm",
         "music pack",
@@ -83,7 +81,6 @@ def classify(title):
         if keyword in title_lower:
             return "サウンド"
 
-    # Tips
     tips_keywords = [
         "tutorial",
         "guide",
@@ -95,6 +92,7 @@ def classify(title):
             return "Tips"
 
     return None
+
 
 def load_seen():
     path = Path(SEEN_FILE)
@@ -111,37 +109,153 @@ def save_seen(data):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 
-seen = load_seen()
+def get_period():
+    hour = datetime.now().hour
 
-feed = feedparser.parse(RSS_URL)
+    if hour < 12:
+        return "朝"
 
-print("取得件数:", len(feed.entries))
-print()
+    return "夜"
 
-new_seen = seen.copy()
 
-adopted = 0
+def build_report(items):
 
-for entry in feed.entries:
+    now = datetime.now()
 
-    url = entry.link
+    date_str = now.strftime("%Y.%m.%d")
 
-    if url in seen:
-        continue
+    period = get_period()
 
-    new_seen.append(url)
+    if len(items) == 0:
+        return f"{date_str} {period} → 新着なし"
 
-    category = classify(entry.title)
+    categories = {
+        "RPGツクール製ゲーム": [],
+        "プラグイン": [],
+        "グラフィック": [],
+        "サウンド": [],
+        "Tips": [],
+    }
 
-    if category:
-        adopted += 1
+    for item in items:
+        categories[item["category"]].append(item)
 
-        print(f"[採用][{category}]")
-        print(entry.title)
-        print(url)
-        print()
+    report = []
 
-save_seen(new_seen)
+    report.append(f"{date_str} {period} Daily Report")
 
-print("採用件数:", adopted)
-print("seen登録数:", len(new_seen))
+    report.append(
+        f"★★★ U2U(0) / UNITE(0) / 本体ニュース(0)"
+    )
+
+    report.append(
+        f"★★☆ グラフィック({len(categories['グラフィック'])}) / "
+        f"サウンド({len(categories['サウンド'])}) / "
+        f"プラグイン({len(categories['プラグイン'])}) / "
+        f"Tips({len(categories['Tips'])})"
+    )
+
+    report.append(
+        f"★☆☆ RPGツクール製ゲーム({len(categories['RPGツクール製ゲーム'])})"
+    )
+
+    report.append("")
+
+    order = [
+        "グラフィック",
+        "サウンド",
+        "プラグイン",
+        "Tips",
+        "RPGツクール製ゲーム",
+    ]
+
+    for category in order:
+
+        if len(categories[category]) == 0:
+            continue
+
+        report.append(f"【{category}】")
+
+        for item in categories[category]:
+
+            report.append(
+                f"<{item['url']}|{item['title']}>"
+            )
+
+        report.append("")
+
+    return "\n".join(report)
+
+
+def send_to_slack(message):
+
+    webhook_url = os.getenv("SLACK_WEBHOOK_URL")
+
+    if not webhook_url:
+        print("SLACK_WEBHOOK_URL がありません")
+        return
+
+    payload = {
+        "text": message
+    }
+
+    response = requests.post(
+        webhook_url,
+        json=payload,
+        timeout=30
+    )
+
+    print("Slack status:", response.status_code)
+
+
+def main():
+
+    seen = load_seen()
+
+    feed = feedparser.parse(RSS_URL)
+
+    print("取得件数:", len(feed.entries))
+
+    new_seen = seen.copy()
+
+    adopted_items = []
+
+    for entry in feed.entries:
+
+        url = entry.link
+
+        if url in seen:
+            continue
+
+        new_seen.append(url)
+
+        category = classify(entry.title)
+
+        if category:
+
+            adopted_items.append(
+                {
+                    "title": entry.title,
+                    "url": url,
+                    "category": category,
+                }
+            )
+
+            print(f"[採用][{category}] {entry.title}")
+
+    save_seen(new_seen)
+
+    print("採用件数:", len(adopted_items))
+    print("seen登録数:", len(new_seen))
+
+    report = build_report(adopted_items)
+
+    print()
+    print("----- REPORT -----")
+    print(report)
+
+    send_to_slack(report)
+
+
+if __name__ == "__main__":
+    main()
