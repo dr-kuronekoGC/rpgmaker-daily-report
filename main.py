@@ -144,16 +144,15 @@ def build_report(items):
 
     report.append(f"{date_str} {period} Daily Report")
 
-        star3 = []
-
-    # 将来用
-    # U2U
-    # UNITE
-    # 本体ニュース
+    # ★★★
+    star3 = []
 
     if star3:
-        report.append(" / ".join(star3))
+        report.append(
+            "★★★ " + " / ".join(star3)
+        )
 
+    # ★★☆
     star2 = []
 
     if len(categories["グラフィック"]) > 0:
@@ -181,6 +180,7 @@ def build_report(items):
             "★★☆ " + " / ".join(star2)
         )
 
+    # ★☆☆
     star1 = []
 
     if len(categories["RPGツクール製ゲーム"]) > 0:
@@ -192,8 +192,6 @@ def build_report(items):
         report.append(
             "★☆☆ " + " / ".join(star1)
         )
-
-    report.append("")
 
     report.append("")
 
