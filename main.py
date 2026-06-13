@@ -30,68 +30,104 @@ IGNORE_WORDS = [
 
 
 def classify(title):
-    title_lower = title.lower()
+title_lower = title.lower()
 
-    for word in IGNORE_WORDS:
-        if word in title_lower:
-            return None
+```
+# 完全除外
+for word in IGNORE_WORDS:
+    if word in title_lower:
+        return None
 
-    for word in QUESTION_WORDS:
-        if word in title_lower:
-            return None
+# 質問・相談系除外
+question_words = QUESTION_WORDS + [
+    "thoughts?",
+    "any suggestions",
+    "recommendation",
+    "recommendations",
+]
 
-    game_keywords = [
-        "released",
-        "release",
-        "steam page",
-        "trailer",
-        "demo",
-        "now out",
-        "available now",
-        "launch",
-        "launched",
-    ]
+for word in question_words:
+    if word in title_lower:
+        return None
 
-    for keyword in game_keywords:
-        if keyword in title_lower:
-            return "RPGツクール製ゲーム"
+# RPGツクール製ゲーム
+game_keywords = [
+    "released",
+    "release",
+    "steam page",
+    "trailer",
+    "demo",
+    "now out",
+    "available now",
+    "launch",
+    "launched",
+    "steam store page",
+]
 
-    if "plugin" in title_lower:
+for keyword in game_keywords:
+    if keyword in title_lower:
+        return "RPGツクール製ゲーム"
+
+# プラグイン
+plugin_keywords = [
+    "plugin",
+    "script",
+    "system plugin",
+    "plugin finder",
+]
+
+for keyword in plugin_keywords:
+    if keyword in title_lower:
         return "プラグイン"
 
-    graphic_keywords = [
-        "tileset",
-        "sprite",
-        "asset pack",
-        "character generator",
-    ]
+# グラフィック
+graphic_keywords = [
+    "tileset",
+    "sprite",
+    "asset pack",
+    "character generator",
+    "animation asset",
+    "portrait",
+    "battler",
+    "faceset",
+    "character sheet",
+]
 
-    for keyword in graphic_keywords:
-        if keyword in title_lower:
-            return "グラフィック"
+for keyword in graphic_keywords:
+    if keyword in title_lower:
+        return "グラフィック"
 
-    sound_keywords = [
-        "bgm",
-        "music pack",
-        "sound pack",
-        "audio asset",
-    ]
+# サウンド
+sound_keywords = [
+    "bgm",
+    "music pack",
+    "sound pack",
+    "audio asset",
+    "music",
+    "sound effect",
+    "sfx",
+    "ambient",
+]
 
-    for keyword in sound_keywords:
-        if keyword in title_lower:
-            return "サウンド"
+for keyword in sound_keywords:
+    if keyword in title_lower:
+        return "サウンド"
 
-    tips_keywords = [
-        "tutorial",
-        "guide",
-        "tips",
-    ]
+# Tips
+tips_keywords = [
+    "tutorial",
+    "guide",
+    "tips",
+    "workflow",
+    "how i made",
+    "devlog",
+]
 
-    for keyword in tips_keywords:
-        if keyword in title_lower:
-            return "Tips"
+for keyword in tips_keywords:
+    if keyword in title_lower:
+        return "Tips"
 
-    return None
+return None
 
 
 def load_seen():
