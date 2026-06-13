@@ -30,7 +30,6 @@ IGNORE_WORDS = [
 
 def classify(title):
 
-```
 title_lower = title.lower()
 
 # 完全除外
@@ -128,18 +127,15 @@ for keyword in tips_keywords:
         return "Tips"
 
 return None
-```
 
 def load_seen():
 path = Path(SEEN_FILE)
 
-```
 if not path.exists():
     return []
 
 with open(path, "r", encoding="utf-8") as f:
     return json.load(f)
-```
 
 def save_seen(data):
 with open(SEEN_FILE, "w", encoding="utf-8") as f:
@@ -148,16 +144,13 @@ json.dump(data, f, indent=2, ensure_ascii=False)
 def get_period():
 hour = datetime.now().hour
 
-```
 if hour < 12:
     return "朝"
 
 return "夜"
-```
 
 def build_report(items):
 
-```
 now = datetime.now()
 
 date_str = now.strftime("%Y.%m.%d")
@@ -257,11 +250,9 @@ for category in order:
     report.append("")
 
 return "\n".join(report)
-```
 
 def send_to_slack(message):
 
-```
 webhook_url = os.getenv("SLACK_WEBHOOK_URL")
 
 if not webhook_url:
@@ -279,11 +270,9 @@ response = requests.post(
 )
 
 print("Slack status:", response.status_code)
-```
 
 def main():
 
-```
 seen = load_seen()
 
 feed = feedparser.parse(RSS_URL)
@@ -329,7 +318,6 @@ print("----- REPORT -----")
 print(report)
 
 send_to_slack(report)
-```
 
 if **name** == "**main**":
 main()
