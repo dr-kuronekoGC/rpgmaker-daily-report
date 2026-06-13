@@ -144,20 +144,56 @@ def build_report(items):
 
     report.append(f"{date_str} {period} Daily Report")
 
-    report.append(
-        f"★★★ U2U(0) / UNITE(0) / 本体ニュース(0)"
-    )
+        star3 = []
 
-    report.append(
-        f"★★☆ グラフィック({len(categories['グラフィック'])}) / "
-        f"サウンド({len(categories['サウンド'])}) / "
-        f"プラグイン({len(categories['プラグイン'])}) / "
-        f"Tips({len(categories['Tips'])})"
-    )
+    # 将来用
+    # U2U
+    # UNITE
+    # 本体ニュース
 
-    report.append(
-        f"★☆☆ RPGツクール製ゲーム({len(categories['RPGツクール製ゲーム'])})"
-    )
+    if star3:
+        report.append(" / ".join(star3))
+
+    star2 = []
+
+    if len(categories["グラフィック"]) > 0:
+        star2.append(
+            f"グラフィック({len(categories['グラフィック'])})"
+        )
+
+    if len(categories["サウンド"]) > 0:
+        star2.append(
+            f"サウンド({len(categories['サウンド'])})"
+        )
+
+    if len(categories["プラグイン"]) > 0:
+        star2.append(
+            f"プラグイン({len(categories['プラグイン'])})"
+        )
+
+    if len(categories["Tips"]) > 0:
+        star2.append(
+            f"Tips({len(categories['Tips'])})"
+        )
+
+    if star2:
+        report.append(
+            "★★☆ " + " / ".join(star2)
+        )
+
+    star1 = []
+
+    if len(categories["RPGツクール製ゲーム"]) > 0:
+        star1.append(
+            f"RPGツクール製ゲーム({len(categories['RPGツクール製ゲーム'])})"
+        )
+
+    if star1:
+        report.append(
+            "★☆☆ " + " / ".join(star1)
+        )
+
+    report.append("")
 
     report.append("")
 
