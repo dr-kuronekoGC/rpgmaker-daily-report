@@ -11,28 +11,28 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 SEEN_FILE = "seen.json"
 
 QUESTION_WORDS = [
-    "help",
-    "need help",
-    "looking for",
-    "question",
-    "how to",
-    "how do",
-    "can i",
-    "which",
-    "what",
+"help",
+"need help",
+"looking for",
+"question",
+"how to",
+"how do",
+"can i",
+"which",
+"what",
 ]
 
 IGNORE_WORDS = [
-    "screenshot saturday",
-    "megathread",
-    "weekly thread",
+"screenshot saturday",
+"megathread",
+"weekly thread",
 ]
 
-
 def classify(title):
-title_lower = title.lower()
 
 ```
+title_lower = title.lower()
+
 # 完全除外
 for word in IGNORE_WORDS:
     if word in title_lower:
@@ -128,204 +128,208 @@ for keyword in tips_keywords:
         return "Tips"
 
 return None
-
+```
 
 def load_seen():
-    path = Path(SEEN_FILE)
+path = Path(SEEN_FILE)
 
-    if not path.exists():
-        return []
+```
+if not path.exists():
+    return []
 
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
+with open(path, "r", encoding="utf-8") as f:
+    return json.load(f)
+```
 
 def save_seen(data):
-    with open(SEEN_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
+with open(SEEN_FILE, "w", encoding="utf-8") as f:
+json.dump(data, f, indent=2, ensure_ascii=False)
 
 def get_period():
-    hour = datetime.now().hour
+hour = datetime.now().hour
 
-    if hour < 12:
-        return "朝"
+```
+if hour < 12:
+    return "朝"
 
-    return "夜"
-
+return "夜"
+```
 
 def build_report(items):
 
-    now = datetime.now()
+```
+now = datetime.now()
 
-    date_str = now.strftime("%Y.%m.%d")
+date_str = now.strftime("%Y.%m.%d")
 
-    period = get_period()
+period = get_period()
 
-    if len(items) == 0:
-        return f"{date_str} {period} → 新着なし"
+if len(items) == 0:
+    return f"{date_str} {period} → 新着なし"
 
-    categories = {
-        "RPGツクール製ゲーム": [],
-        "プラグイン": [],
-        "グラフィック": [],
-        "サウンド": [],
-        "Tips": [],
-    }
+categories = {
+    "RPGツクール製ゲーム": [],
+    "プラグイン": [],
+    "グラフィック": [],
+    "サウンド": [],
+    "Tips": [],
+}
 
-    for item in items:
-        categories[item["category"]].append(item)
+for item in items:
+    categories[item["category"]].append(item)
 
-    report = []
+report = []
 
-    report.append(f"{date_str} {period} Daily Report")
+report.append(f"{date_str} {period} Daily Report")
 
-    # ★★★
-    star3 = []
+# ★★★
+star3 = []
 
-    if star3:
+if star3:
+    report.append(
+        "★★★ " + " / ".join(star3)
+    )
+
+# ★★☆
+star2 = []
+
+if len(categories["グラフィック"]) > 0:
+    star2.append(
+        f"グラフィック({len(categories['グラフィック'])})"
+    )
+
+if len(categories["サウンド"]) > 0:
+    star2.append(
+        f"サウンド({len(categories['サウンド'])})"
+    )
+
+if len(categories["プラグイン"]) > 0:
+    star2.append(
+        f"プラグイン({len(categories['プラグイン'])})"
+    )
+
+if len(categories["Tips"]) > 0:
+    star2.append(
+        f"Tips({len(categories['Tips'])})"
+    )
+
+if star2:
+    report.append(
+        "★★☆ " + " / ".join(star2)
+    )
+
+# ★☆☆
+star1 = []
+
+if len(categories["RPGツクール製ゲーム"]) > 0:
+    star1.append(
+        f"RPGツクール製ゲーム({len(categories['RPGツクール製ゲーム'])})"
+    )
+
+if star1:
+    report.append(
+        "★☆☆ " + " / ".join(star1)
+    )
+
+report.append("")
+
+order = [
+    "グラフィック",
+    "サウンド",
+    "プラグイン",
+    "Tips",
+    "RPGツクール製ゲーム",
+]
+
+for category in order:
+
+    if len(categories[category]) == 0:
+        continue
+
+    report.append(f"【{category}】")
+
+    for item in categories[category]:
+
         report.append(
-            "★★★ " + " / ".join(star3)
-        )
-
-    # ★★☆
-    star2 = []
-
-    if len(categories["グラフィック"]) > 0:
-        star2.append(
-            f"グラフィック({len(categories['グラフィック'])})"
-        )
-
-    if len(categories["サウンド"]) > 0:
-        star2.append(
-            f"サウンド({len(categories['サウンド'])})"
-        )
-
-    if len(categories["プラグイン"]) > 0:
-        star2.append(
-            f"プラグイン({len(categories['プラグイン'])})"
-        )
-
-    if len(categories["Tips"]) > 0:
-        star2.append(
-            f"Tips({len(categories['Tips'])})"
-        )
-
-    if star2:
-        report.append(
-            "★★☆ " + " / ".join(star2)
-        )
-
-    # ★☆☆
-    star1 = []
-
-    if len(categories["RPGツクール製ゲーム"]) > 0:
-        star1.append(
-            f"RPGツクール製ゲーム({len(categories['RPGツクール製ゲーム'])})"
-        )
-
-    if star1:
-        report.append(
-            "★☆☆ " + " / ".join(star1)
+            f"<{item['url']}|{item['title']}>"
         )
 
     report.append("")
 
-    order = [
-        "グラフィック",
-        "サウンド",
-        "プラグイン",
-        "Tips",
-        "RPGツクール製ゲーム",
-    ]
-
-    for category in order:
-
-        if len(categories[category]) == 0:
-            continue
-
-        report.append(f"【{category}】")
-
-        for item in categories[category]:
-
-            report.append(
-                f"<{item['url']}|{item['title']}>"
-            )
-
-        report.append("")
-
-    return "\n".join(report)
-
+return "\n".join(report)
+```
 
 def send_to_slack(message):
 
-    webhook_url = os.getenv("SLACK_WEBHOOK_URL")
+```
+webhook_url = os.getenv("SLACK_WEBHOOK_URL")
 
-    if not webhook_url:
-        print("SLACK_WEBHOOK_URL がありません")
-        return
+if not webhook_url:
+    print("SLACK_WEBHOOK_URL がありません")
+    return
 
-    payload = {
-        "text": message
-    }
+payload = {
+    "text": message
+}
 
-    response = requests.post(
-        webhook_url,
-        json=payload,
-        timeout=30
-    )
+response = requests.post(
+    webhook_url,
+    json=payload,
+    timeout=30
+)
 
-    print("Slack status:", response.status_code)
-
+print("Slack status:", response.status_code)
+```
 
 def main():
 
-    seen = load_seen()
+```
+seen = load_seen()
 
-    feed = feedparser.parse(RSS_URL)
+feed = feedparser.parse(RSS_URL)
 
-    print("取得件数:", len(feed.entries))
+print("取得件数:", len(feed.entries))
 
-    new_seen = seen.copy()
+new_seen = seen.copy()
 
-    adopted_items = []
+adopted_items = []
 
-    for entry in feed.entries:
+for entry in feed.entries:
 
-        url = entry.link
+    url = entry.link
 
-        if url in seen:
-            continue
+    if url in seen:
+        continue
 
-        new_seen.append(url)
+    new_seen.append(url)
 
-        category = classify(entry.title)
+    category = classify(entry.title)
 
-        if category:
+    if category:
 
-            adopted_items.append(
-                {
-                    "title": entry.title,
-                    "url": url,
-                    "category": category,
-                }
-            )
+        adopted_items.append(
+            {
+                "title": entry.title,
+                "url": url,
+                "category": category,
+            }
+        )
 
-            print(f"[採用][{category}] {entry.title}")
+        print(f"[採用][{category}] {entry.title}")
 
-    save_seen(new_seen)
+save_seen(new_seen)
 
-    print("採用件数:", len(adopted_items))
-    print("seen登録数:", len(new_seen))
+print("採用件数:", len(adopted_items))
+print("seen登録数:", len(new_seen))
 
-    report = build_report(adopted_items)
+report = build_report(adopted_items)
 
-    print()
-    print("----- REPORT -----")
-    print(report)
+print()
+print("----- REPORT -----")
+print(report)
 
-    send_to_slack(report)
+send_to_slack(report)
+```
 
-
-if __name__ == "__main__":
-    main()
+if **name** == "**main**":
+main()
