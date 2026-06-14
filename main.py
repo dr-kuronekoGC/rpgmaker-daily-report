@@ -145,9 +145,48 @@ def get_period():
     return "夜"
 
 
+def get_reddit_items(seen):
+
+    feed = feedparser.parse(RSS_URL)
+
+    print("取得件数:", len(feed.entries))
+
+    new_seen = seen.copy()
+
+    adopted_items = []
+
+    for entry in feed.entries:
+
+        url = entry.link
+
+        if url in seen:
+            continue
+
+        new_seen.append(url)
+
+        category = classify(entry.title)
+
+        if category:
+
+            adopted_items.append(
+                {
+                    "title": entry.title,
+                    "url": url,
+                    "category": category,
+                }
+            )
+
+            print(f"[採用][{category}] {entry.title}")
+
+    return adopted_items, new_seen
+
+
 def build_report(items):
+
     now = datetime.now()
+
     date_str = now.strftime("%Y.%m.%d")
+
     period = get_period()
 
     if len(items) == 0:
@@ -164,37 +203,55 @@ def build_report(items):
     for item in items:
         categories[item["category"]].append(item)
 
-    report = [f"{date_str} {period} Daily Report"]
+    report = [
+        f"{date_str} {period} Daily Report"
+    ]
 
     star3 = []
 
     if star3:
-        report.append("★★★ " + " / ".join(star3))
+        report.append(
+            "　★★★ " + "、".join(star3)
+        )
 
     star2 = []
 
     if categories["グラフィック"]:
-        star2.append(f"グラフィック({len(categories['グラフィック'])})")
+        star2.append(
+            f"グラフィック({len(categories['グラフィック'])})"
+        )
 
     if categories["サウンド"]:
-        star2.append(f"サウンド({len(categories['サウンド'])})")
+        star2.append(
+            f"サウンド({len(categories['サウンド'])})"
+        )
 
     if categories["プラグイン"]:
-        star2.append(f"プラグイン({len(categories['プラグイン'])})")
+        star2.append(
+            f"プラグイン({len(categories['プラグイン'])})"
+        )
 
     if categories["Tips"]:
-        star2.append(f"Tips({len(categories['Tips'])})")
+        star2.append(
+            f"Tips({len(categories['Tips'])})"
+        )
 
     if star2:
-        report.append("★★☆ " + " / ".join(star2))
+        report.append(
+            "　★★☆ " + "、".join(star2)
+        )
 
     star1 = []
 
     if categories["RPGツクール製ゲーム"]:
-        star1.append(f"RPGツクール製ゲーム({len(categories['RPGツクール製ゲーム'])})")
+        star1.append(
+            f"RPGツクール製ゲーム({len(categories['RPGツクール製ゲーム'])})"
+        )
 
     if star1:
-        report.append("★☆☆ " + " / ".join(star1))
+        report.append(
+            "　★☆☆ " + "、".join(star1)
+        )
 
     report.append("")
 
@@ -207,13 +264,17 @@ def build_report(items):
     ]
 
     for category in order:
+
         if not categories[category]:
             continue
 
         report.append(f"【{category}】")
 
         for item in categories[category]:
-            report.append(f"<{item['url']}|{item['title']}>")
+
+            report.append(
+                f"<{item['url']}|{item['title']}>"
+            )
 
         report.append("")
 
@@ -221,13 +282,16 @@ def build_report(items):
 
 
 def send_to_slack(message):
+
     webhook_url = os.getenv("SLACK_WEBHOOK_URL")
 
     if not webhook_url:
         print("SLACK_WEBHOOK_URL がありません")
         return
 
-    payload = {"text": message}
+    payload = {
+        "text": message
+    }
 
     response = requests.post(
         webhook_url,
@@ -239,32 +303,10 @@ def send_to_slack(message):
 
 
 def main():
+
     seen = load_seen()
-    feed = feedparser.parse(RSS_URL)
 
-    print("取得件数:", len(feed.entries))
-
-    new_seen = seen.copy()
-    adopted_items = []
-
-    for entry in feed.entries:
-        url = entry.link
-
-        if url in seen:
-            continue
-
-        new_seen.append(url)
-
-        category = classify(entry.title)
-
-        if category:
-            adopted_items.append({
-                "title": entry.title,
-                "url": url,
-                "category": category,
-            })
-
-            print(f"[採用][{category}] {entry.title}")
+    adopted_items, new_seen = get_reddit_items(seen)
 
     save_seen(new_seen)
 
