@@ -3,6 +3,8 @@ import json
 import requests
 import os
 
+from bs4 import BeautifulSoup
+
 from pathlib import Path
 from datetime import datetime
 
@@ -302,6 +304,38 @@ def send_to_slack(message):
     print("Slack status:", response.status_code)
 
 def get_official_news_items():
+
+    url = "https://rpgmakerofficial.com/news/"
+
+    try:
+
+        response = requests.get(
+            url,
+            timeout=30,
+            headers={
+                "User-Agent": "Mozilla/5.0"
+            }
+        )
+
+        print("Official News status:", response.status_code)
+
+        soup = BeautifulSoup(
+            response.text,
+            "html.parser"
+        )
+
+        print(
+            "Official News page size:",
+            len(response.text)
+        )
+
+    except Exception as e:
+
+        print(
+            "Official News error:",
+            str(e)
+        )
+
     return []
 
 def main():
