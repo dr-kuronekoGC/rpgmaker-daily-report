@@ -324,21 +324,29 @@ def get_official_news_items():
             "html.parser"
         )
 
-        titles = []
+        print("----- H1 -----")
 
-        for h2 in soup.find_all("h2"):
+        for tag in soup.find_all("h1")[:10]:
 
-            text = h2.get_text(strip=True)
+            print(tag.get_text(strip=True))
 
-            if text:
+        print("----- H2 -----")
 
-                titles.append(text)
+        for tag in soup.find_all("h2")[:10]:
 
-        print("Official News titles found:", len(titles))
+            print(tag.get_text(strip=True))
 
-        for title in titles[:10]:
+        print("----- H3 -----")
 
-            print("[NEWS]", title)
+        for tag in soup.find_all("h3")[:10]:
+
+            print(tag.get_text(strip=True))
+
+        print("----- TITLE -----")
+
+        if soup.title:
+
+            print(soup.title.get_text(strip=True))
 
     except Exception as e:
 
