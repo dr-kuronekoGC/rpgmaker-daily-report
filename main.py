@@ -10,6 +10,7 @@ from datetime import datetime
 
 RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 SEEN_FILE = "seen.json"
+SEEN_OFFICIAL_FILE = "seen_official.json"
 OFFICIAL_NEWS_URL = ""
 
 QUESTION_WORDS = [
