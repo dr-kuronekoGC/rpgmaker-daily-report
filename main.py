@@ -8,6 +8,7 @@ from datetime import datetime
 
 RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 SEEN_FILE = "seen.json"
+OFFICIAL_NEWS_URL = ""
 
 QUESTION_WORDS = [
     "help",
@@ -26,7 +27,6 @@ IGNORE_WORDS = [
     "megathread",
     "weekly thread",
 ]
-
 
 def classify(title):
     title_lower = title.lower()
@@ -301,12 +301,21 @@ def send_to_slack(message):
 
     print("Slack status:", response.status_code)
 
+def get_official_news_items():
+    return []
 
 def main():
 
     seen = load_seen()
 
-    adopted_items, new_seen = get_reddit_items(seen)
+    reddit_items, new_seen = get_reddit_items(seen)
+
+    official_items = get_official_news_items()
+
+    adopted_items = (
+        reddit_items
+        + official_items
+    )
 
     save_seen(new_seen)
 
