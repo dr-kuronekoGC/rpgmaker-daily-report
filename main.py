@@ -317,36 +317,30 @@ def get_official_news_items():
             }
         )
 
-        print("Official News status:", response.status_code)
-
         soup = BeautifulSoup(
             response.text,
             "html.parser"
         )
 
-        print("----- H1 -----")
+        items = []
 
-        for tag in soup.find_all("h1")[:10]:
+        for tag in soup.find_all("h3"):
 
-            print(tag.get_text(strip=True))
+            title = tag.get_text(strip=True)
 
-        print("----- H2 -----")
+            if not title:
+                continue
 
-        for tag in soup.find_all("h2")[:10]:
+            items.append(title)
 
-            print(tag.get_text(strip=True))
+        print(
+            "Official News articles:",
+            len(items)
+        )
 
-        print("----- H3 -----")
+        for title in items[:10]:
 
-        for tag in soup.find_all("h3")[:10]:
-
-            print(tag.get_text(strip=True))
-
-        print("----- TITLE -----")
-
-        if soup.title:
-
-            print(soup.title.get_text(strip=True))
+            print("[Official]", title)
 
     except Exception as e:
 
