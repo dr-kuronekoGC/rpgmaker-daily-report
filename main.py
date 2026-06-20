@@ -324,10 +324,21 @@ def get_official_news_items():
             "html.parser"
         )
 
-        print(
-            "Official News page size:",
-            len(response.text)
-        )
+        titles = []
+
+        for h2 in soup.find_all("h2"):
+
+            text = h2.get_text(strip=True)
+
+            if text:
+
+                titles.append(text)
+
+        print("Official News titles found:", len(titles))
+
+        for title in titles[:10]:
+
+            print("[NEWS]", title)
 
     except Exception as e:
 
