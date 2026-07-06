@@ -265,6 +265,7 @@ def build_report(items):
     report.append("")
 
     order = [
+        "本体ニュース",
         "グラフィック",
         "サウンド",
         "プラグイン",
@@ -310,9 +311,11 @@ def send_to_slack(message):
 
     print("Slack status:", response.status_code)
 
-def get_official_news_items():
+def get_official_news_items(seen):
 
     url = "https://rpgmakerofficial.com/news/"
+    new_seen = seen.copy()
+    adopted_items = []
 
     try:
 
@@ -329,16 +332,24 @@ def get_official_news_items():
             "html.parser"
         )
 
-        items = []
-
         for tag in soup.find_all("h3"):
-
             title = tag.get_text(strip=True)
 
             if not title:
                 continue
 
-            items.append(title)
+            if title in seen:
+                continue
+
+            new_seen.append(title)
+
+            adopted_items.append(
+                {
+                    "title": title,
+                    "url": url,
+                    "category": "本体ニュース",
+                }
+            )
 
         print(
             "Official News articles:",
@@ -356,7 +367,12 @@ def get_official_news_items():
             str(e)
         )
 
-    return []
+    print(
+        "Official News new:",
+        len(adopted_items)
+    )
+
+    return adopted_items, new_seen
 
 def main():
 
@@ -364,7 +380,15 @@ def main():
 
     reddit_items, new_seen = get_reddit_items(seen)
 
-    official_items = get_official_news_items()
+    official_seen = load_seen_file(
+        SEEN_OFFICIAL_FILE
+    )
+
+    official_items, new_official_seen = (
+        get_official_news_items(
+            official_seen
+        )
+    )
 
     adopted_items = (
         reddit_items
@@ -372,6 +396,11 @@ def main():
     )
 
     save_seen(new_seen)
+
+    save_seen_file(
+        SEEN_OFFICIAL_FILE,
+        new_official_seen
+    )
 
     print("採用件数:", len(adopted_items))
     print("seen登録数:", len(new_seen))
