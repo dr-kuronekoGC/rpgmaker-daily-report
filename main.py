@@ -6,7 +6,7 @@ import os
 from bs4 import BeautifulSoup
 
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 
 RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 SEEN_FILE = "seen.json"
@@ -124,6 +124,13 @@ def classify(title):
     return None
 
 
+def load_seen_file(filename):
+    path = Path(filename)
+    if not path.exists():
+        return []
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
 def load_seen():
     path = Path(SEEN_FILE)
 
@@ -133,6 +140,15 @@ def load_seen():
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
+def save_seen_file(filename, data):
+
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(
+            data,
+            f,
+            indent=2,
+            ensure_ascii=False
+        )
 
 def save_seen(data):
     with open(SEEN_FILE, "w", encoding="utf-8") as f:
@@ -140,13 +156,12 @@ def save_seen(data):
 
 
 def get_period():
-    hour = datetime.now().hour
 
+    now = datetime.utcnow() + timedelta(hours=9)
+    hour = now.hour
     if hour < 12:
         return "朝"
-
     return "夜"
-
 
 def get_reddit_items(seen):
 
@@ -186,10 +201,8 @@ def get_reddit_items(seen):
 
 def build_report(items):
 
-    now = datetime.now()
-
+    now = datetime.utcnow() + timedelta(hours=9)
     date_str = now.strftime("%Y.%m.%d")
-
     period = get_period()
 
     if len(items) == 0:
