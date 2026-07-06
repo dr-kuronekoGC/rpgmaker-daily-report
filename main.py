@@ -196,6 +196,7 @@ def build_report(items):
         return f"{date_str} {period} → 新着なし"
 
     categories = {
+        "本体ニュース": [],
         "RPGツクール製ゲーム": [],
         "プラグイン": [],
         "グラフィック": [],
@@ -211,6 +212,11 @@ def build_report(items):
     ]
 
     star3 = []
+
+    if categories["本体ニュース"]:
+        star3.append(
+            f"本体ニュース({len(categories['本体ニュース'])})"
+        )
 
     if star3:
         report.append(
