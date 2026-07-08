@@ -291,6 +291,8 @@ def build_report(items):
 
     order = [
         "本体ニュース",
+        "UNITE",
+        "Forum重要事項",
         "グラフィック",
         "サウンド",
         "プラグイン",
