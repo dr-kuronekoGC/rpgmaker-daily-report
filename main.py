@@ -370,11 +370,18 @@ def get_official_news_items(seen):
 
             new_seen.append(title)
 
+            category = "本体ニュース"
+
+            title_lower = title.lower()
+
+            if "unite" in title_lower:
+                category = "UNITE"
+
             adopted_items.append(
                 {
                     "title": title,
                     "url": url,
-                    "category": "本体ニュース",
+                    "category": category,
                 }
             )
 
