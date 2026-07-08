@@ -377,6 +377,10 @@ def get_official_news_items(seen):
         return adopted_items, new_seen
 
         for tag in soup.find_all("h3"):
+            print("------")
+            print(tag)
+            print("------")
+            
             title = tag.get_text(strip=True)
 
             if not title:
