@@ -3,6 +3,9 @@ import json
 import requests
 import os
 
+from common import load_seen, load_seen_file
+from common import save_seen, save_seen_file
+
 from bs4 import BeautifulSoup
 
 from pathlib import Path
