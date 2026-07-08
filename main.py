@@ -6,6 +6,8 @@ import os
 from common import load_seen, load_seen_file
 from common import save_seen, save_seen_file
 
+import reddit_source
+
 from bs4 import BeautifulSoup
 
 from pathlib import Path
@@ -405,7 +407,7 @@ def main():
 
     seen = load_seen()
 
-    reddit_items, new_seen = get_reddit_items(seen)
+    reddit_items, new_seen = reddit_source.get_reddit_items(seen)
 
     official_seen = load_seen_file(
         SEEN_OFFICIAL_FILE
