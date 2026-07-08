@@ -374,7 +374,6 @@ def get_official_news_items(seen):
             response.text,
             "html.parser"
         )
-        return adopted_items, new_seen
 
         for tag in soup.find_all("h3"):
             print("------")
@@ -403,12 +402,11 @@ def get_official_news_items(seen):
 
         print(
             "Official News articles:",
-            len(items)
+            len(adopted_items)
         )
 
-        for title in items[:10]:
-
-            print("[Official]", title)
+        for item in adopted_items[:10]:
+            print("[Official]", item["title"])
 
     except Exception as e:
 
