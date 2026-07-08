@@ -123,6 +123,22 @@ def classify(title):
 
     return None
 
+def classify_official(title):
+
+    title_lower = title.lower()
+
+    if "unite" in title_lower:
+        return "UNITE"
+
+    if (
+        "forum" in title_lower
+        or "yanfly" in title_lower
+        or "migration" in title_lower
+        or "archive" in title_lower
+    ):
+        return "Forum重要事項"
+
+    return "本体ニュース"
 
 def load_seen_file(filename):
     path = Path(filename)
@@ -370,12 +386,7 @@ def get_official_news_items(seen):
 
             new_seen.append(title)
 
-            category = "本体ニュース"
-
-            title_lower = title.lower()
-
-            if "unite" in title_lower:
-                category = "UNITE"
+            category = classify_official(title)
 
             adopted_items.append(
                 {
