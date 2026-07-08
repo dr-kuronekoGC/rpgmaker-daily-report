@@ -150,30 +150,6 @@ def load_seen_file(filename):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def load_seen():
-    path = Path(SEEN_FILE)
-
-    if not path.exists():
-        return []
-
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-def save_seen_file(filename, data):
-
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(
-            data,
-            f,
-            indent=2,
-            ensure_ascii=False
-        )
-
-def save_seen(data):
-    with open(SEEN_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-
 def get_period():
 
     now = datetime.utcnow() + timedelta(hours=9)
