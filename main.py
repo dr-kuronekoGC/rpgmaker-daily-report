@@ -210,6 +210,8 @@ def build_report(items):
 
     categories = {
         "本体ニュース": [],
+        "UNITE": [],
+        "Forum重要事項": [],
         "RPGツクール製ゲーム": [],
         "プラグイン": [],
         "グラフィック": [],
