@@ -3,7 +3,8 @@ import json
 
 from pathlib import Path
 from datetime import datetime, timedelta
-
+from common import get_period
+from common import now_jst
 
 # ----------------------------
 # 日本時間
