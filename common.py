@@ -27,18 +27,6 @@ def get_period():
 # ----------------------------
 # seen ファイル
 # ----------------------------
-
-def load_seen_file(filename):
-
-    path = Path(filename)
-
-    if not path.exists():
-        return []
-
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
 def save_seen_file(filename, data):
 
     with open(filename, "w", encoding="utf-8") as f:
