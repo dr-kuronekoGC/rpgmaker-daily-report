@@ -233,6 +233,16 @@ def build_report(items):
             f"本体ニュース({len(categories['本体ニュース'])})"
         )
 
+    if categories["UNITE"]:
+        star3.append(
+            f"UNITE({len(categories['UNITE'])})"
+        )
+
+    if categories["Forum重要事項"]:
+        star3.append(
+            f"Forum重要事項({len(categories['Forum重要事項'])})"
+        )
+
     if star3:
         report.append(
             "　★★★ " + "、".join(star3)
