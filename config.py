@@ -25,3 +25,9 @@ SEEN_OFFICIAL_FILE = "seen_official.json"
 USER_AGENT = "Mozilla/5.0"
 
 REQUEST_TIMEOUT = 30
+
+# ----------------------------
+# Slack
+# ----------------------------
+
+SLACK_WEBHOOK_ENV = "SLACK_WEBHOOK_URL"
