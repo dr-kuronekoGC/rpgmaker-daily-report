@@ -142,7 +142,9 @@ def build_report(items):
 
 def send_to_slack(message):
 
-    webhook_url = os.getenv("SLACK_WEBHOOK_URL")
+    webhook_url = os.getenv(
+        SLACK_WEBHOOK_ENV
+    )
 
     if not webhook_url:
 
@@ -155,7 +157,7 @@ def send_to_slack(message):
         json={
             "text": message
         },
-        timeout=30,
+        timeout=REQUEST_TIMEOUT,
     )
 
     print(
