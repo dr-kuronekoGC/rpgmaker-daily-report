@@ -2,7 +2,10 @@ import os
 import requests
 
 from common import now_jst, get_period
-
+from config import (
+    REQUEST_TIMEOUT,
+    SLACK_WEBHOOK_ENV,
+)
 
 def build_report(items):
 
