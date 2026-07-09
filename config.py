@@ -1,5 +1,5 @@
 # ----------------------------
-# RSS
+# Reddit
 # ----------------------------
 
 RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
@@ -11,11 +11,18 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 
 # ----------------------------
+# (Future)
+# ----------------------------
+
+FORUM_URL = ""
+RPGMAKERWEB_URL = ""
+GUILD_URL = ""
+
+# ----------------------------
 # seen
 # ----------------------------
 
 SEEN_FILE = "seen.json"
-
 SEEN_OFFICIAL_FILE = "seen_official.json"
 
 # ----------------------------
@@ -23,7 +30,6 @@ SEEN_OFFICIAL_FILE = "seen_official.json"
 # ----------------------------
 
 USER_AGENT = "Mozilla/5.0"
-
 REQUEST_TIMEOUT = 30
 
 # ----------------------------
