@@ -2,7 +2,7 @@ import json
 
 from pathlib import Path
 from datetime import datetime, UTC, timedelta
-
+from config import SEEN_FILE
 
 # ----------------------------
 # 日本時間
