@@ -62,13 +62,12 @@ def save_seen_file(filename, data):
 def load_seen():
 
     return load_seen_file(
-        "seen.json"
+        SEEN_FILE
     )
-
 
 def save_seen(data):
 
     save_seen_file(
-        "seen.json",
+        SEEN_FILE,
         data
     )
