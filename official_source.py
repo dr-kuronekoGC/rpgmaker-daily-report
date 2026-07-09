@@ -1,9 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 
-
-OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
-
+from config import (
+    OFFICIAL_NEWS_URL,
+    USER_AGENT,
+    REQUEST_TIMEOUT,
+)
 
 def classify_official(title):
 
@@ -32,9 +34,9 @@ def get_official_news_items(seen):
 
         response = requests.get(
             OFFICIAL_NEWS_URL,
-            timeout=30,
+            timeout=REQUEST_TIMEOUT,
             headers={
-                "User-Agent": "Mozilla/5.0"
+                "User-Agent": USER_AGENT
             }
         )
 
