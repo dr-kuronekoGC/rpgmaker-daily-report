@@ -1,6 +1,6 @@
 import feedparser
 
-RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
+from config import RSS_URL
 
 QUESTION_WORDS = [
     "help",
