@@ -1,73 +1,99 @@
 import json
-
 from pathlib import Path
-from datetime import datetime, UTC, timedelta
+from datetime import UTC, datetime, timedelta
+
 from config import SEEN_FILE
 
-# ----------------------------
-# 日本時間
-# ----------------------------
 
-def now_jst():
+# ==========================================
+# Date / Time
+# ==========================================
+
+def now_jst() -> datetime:
+    """
+    日本時間(datetime)を返す
+    """
     return datetime.now(UTC) + timedelta(hours=9)
 
 
-def get_period():
+def get_period() -> str:
+    """
+    現在時刻から時間帯を返す
+    """
 
     hour = now_jst().hour
 
     if 5 <= hour < 10:
         return "朝"
 
-    elif 10 <= hour < 15:
+    if 10 <= hour < 15:
         return "昼"
 
-    elif 15 <= hour < 18:
+    if 15 <= hour < 18:
         return "夕"
 
-    else:
-        return "夜"
+    return "夜"
 
 
-# ----------------------------
-# seen ファイル
-# ----------------------------
+# ==========================================
+# seen file
+# ==========================================
 
-def load_seen_file(filename):
+def load_seen_file(filename: str) -> list:
+    """
+    seenファイルを読み込む
+    """
 
     path = Path(filename)
 
     if not path.exists():
         return []
 
-    with open(path, "r", encoding="utf-8") as f:
+    with path.open(
+        "r",
+        encoding="utf-8",
+    ) as f:
         return json.load(f)
 
 
-def save_seen_file(filename, data):
+def save_seen_file(
+    filename: str,
+    data: list,
+) -> None:
+    """
+    seenファイルを保存する
+    """
 
-    with open(filename, "w", encoding="utf-8") as f:
+    path = Path(filename)
+
+    with path.open(
+        "w",
+        encoding="utf-8",
+    ) as f:
         json.dump(
             data,
             f,
             indent=2,
-            ensure_ascii=False
+            ensure_ascii=False,
         )
 
 
-# ----------------------------
-# 互換関数
-# ----------------------------
+# ==========================================
+# Default seen
+# ==========================================
 
-def load_seen():
+def load_seen() -> list:
+    """
+    Reddit用 seen を読み込む
+    """
+    return load_seen_file(SEEN_FILE)
 
-    return load_seen_file(
-        SEEN_FILE
-    )
 
-def save_seen(data):
-
+def save_seen(data: list) -> None:
+    """
+    Reddit用 seen を保存する
+    """
     save_seen_file(
         SEEN_FILE,
-        data
+        data,
     )
