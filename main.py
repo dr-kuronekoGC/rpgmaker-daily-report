@@ -1,67 +1,75 @@
 from common import (
-    load_seen,
     load_seen_file,
-    save_seen,
     save_seen_file,
 )
-
-from config import SEEN_OFFICIAL_FILE
 
 from report import (
     build_report,
     send_to_slack,
 )
 
-import reddit_source
-import official_source
+from config import (
+    SEEN_FILE,
+    SEEN_OFFICIAL_FILE,
+)
 
+import sources.reddit as reddit
+import sources.official as official
+
+
+# ==========================================
+# Sources
+# ==========================================
+
+SOURCES = [
+
+    {
+        "module": reddit,
+        "seen": SEEN_FILE,
+    },
+
+    {
+        "module": official,
+        "seen": SEEN_OFFICIAL_FILE,
+    },
+
+]
+
+
+# ==========================================
+# Main
+# ==========================================
 
 def main():
 
-    # Reddit
-    reddit_seen = load_seen()
+    all_items = []
 
-    reddit_items, reddit_seen = (
-        reddit_source.get_reddit_items(
-            reddit_seen
+    for source in SOURCES:
+
+        seen = load_seen_file(
+            source["seen"]
         )
-    )
 
-    # Official
-    official_seen = load_seen_file(
-        SEEN_OFFICIAL_FILE
-    )
-
-    official_items, official_seen = (
-        official_source.get_official_news_items(
-            official_seen
+        items, seen = (
+            source["module"].get_items(seen)
         )
-    )
 
-    # 収集結果をまとめる
-    items = (
-        reddit_items
-        + official_items
-    )
+        all_items.extend(items)
 
-    # seen保存
-    save_seen(reddit_seen)
+        save_seen_file(
+            source["seen"],
+            seen,
+        )
 
-    save_seen_file(
-        SEEN_OFFICIAL_FILE,
-        official_seen,
-    )
-
-    # レポート作成
-    report = build_report(items)
+    report = build_report(all_items)
 
     print()
     print("----- REPORT -----")
     print(report)
 
-    # Slack送信
     send_to_slack(report)
 
 
 if __name__ == "__main__":
+
     main()
