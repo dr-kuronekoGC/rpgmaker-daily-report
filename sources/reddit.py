@@ -2,6 +2,7 @@ import feedparser
 
 from config import RSS_URL
 
+
 QUESTION_WORDS = [
     "help",
     "need help",
@@ -12,6 +13,10 @@ QUESTION_WORDS = [
     "can i",
     "which",
     "what",
+    "thoughts?",
+    "any suggestions",
+    "recommendation",
+    "recommendations",
 ]
 
 IGNORE_WORDS = [
@@ -21,26 +26,8 @@ IGNORE_WORDS = [
 ]
 
 
-def classify(title):
-
-    title_lower = title.lower()
-
-    for word in IGNORE_WORDS:
-        if word in title_lower:
-            return None
-
-    question_words = QUESTION_WORDS + [
-        "thoughts?",
-        "any suggestions",
-        "recommendation",
-        "recommendations",
-    ]
-
-    for word in question_words:
-        if word in title_lower:
-            return None
-
-    game_keywords = [
+CATEGORY_KEYWORDS = {
+    "RPGツクール製ゲーム": [
         "released",
         "release",
         "steam page",
@@ -51,24 +38,16 @@ def classify(title):
         "launch",
         "launched",
         "steam store page",
-    ]
+    ],
 
-    for keyword in game_keywords:
-        if keyword in title_lower:
-            return "RPGツクール製ゲーム"
-
-    plugin_keywords = [
+    "プラグイン": [
         "plugin",
         "script",
         "system plugin",
         "plugin finder",
-    ]
+    ],
 
-    for keyword in plugin_keywords:
-        if keyword in title_lower:
-            return "プラグイン"
-
-    graphic_keywords = [
+    "グラフィック": [
         "tileset",
         "sprite",
         "asset pack",
@@ -78,13 +57,9 @@ def classify(title):
         "battler",
         "faceset",
         "character sheet",
-    ]
+    ],
 
-    for keyword in graphic_keywords:
-        if keyword in title_lower:
-            return "グラフィック"
-
-    sound_keywords = [
+    "サウンド": [
         "bgm",
         "music pack",
         "sound pack",
@@ -93,27 +68,50 @@ def classify(title):
         "sound effect",
         "sfx",
         "ambient",
-    ]
+    ],
 
-    for keyword in sound_keywords:
-        if keyword in title_lower:
-            return "サウンド"
-
-    tips_keywords = [
+    "Tips": [
         "tutorial",
         "guide",
         "tips",
         "workflow",
         "how i made",
         "devlog",
-    ]
+    ],
+}
 
-    for keyword in tips_keywords:
-        if keyword in title_lower:
-            return "Tips"
+
+# ==========================================
+# Category
+# ==========================================
+
+def classify(title):
+
+    title_lower = title.lower()
+
+    for word in IGNORE_WORDS:
+
+        if word in title_lower:
+            return None
+
+    for word in QUESTION_WORDS:
+
+        if word in title_lower:
+            return None
+
+    for category, keywords in CATEGORY_KEYWORDS.items():
+
+        for keyword in keywords:
+
+            if keyword in title_lower:
+                return category
 
     return None
 
+
+# ==========================================
+# Reddit
+# ==========================================
 
 def get_reddit_items(seen):
 
@@ -136,18 +134,24 @@ def get_reddit_items(seen):
 
         category = classify(entry.title)
 
-        if category:
+        if category is None:
+            continue
 
-            adopted_items.append(
-                {
-                    "title": entry.title,
-                    "url": url,
-                    "category": category,
-                }
-            )
+        adopted_items.append(
+            {
+                "title": entry.title,
+                "url": url,
+                "category": category,
+            }
+        )
 
-            print(
-                f"[Reddit][{category}] {entry.title}"
-            )
+        print(
+            f"[Reddit][{category}] {entry.title}"
+        )
+
+    print(
+        "Reddit new:",
+        len(adopted_items),
+    )
 
     return adopted_items, new_seen
