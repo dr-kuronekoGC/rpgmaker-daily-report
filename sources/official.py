@@ -1,50 +1,28 @@
-import requests
 from bs4 import BeautifulSoup
 
-from config import (
-    OFFICIAL_NEWS_URL,
-    USER_AGENT,
-    REQUEST_TIMEOUT,
-)
-
-
-# ==========================================
-# Category
-# ==========================================
-
-CATEGORY_KEYWORDS = {
-    "UNITE": [
-        "unite",
-    ],
-
-    "Forum重要事項": [
-        "forum",
-        "yanfly",
-        "migration",
-        "archive",
-    ],
-}
+from config import OFFICIAL_NEWS_URL
+from sources.base import get_html
 
 
 def classify(title):
 
     title_lower = title.lower()
 
-    for category, keywords in CATEGORY_KEYWORDS.items():
+    if "unite" in title_lower:
+        return "UNITE"
 
-        for keyword in keywords:
-
-            if keyword in title_lower:
-                return category
+    if (
+        "forum" in title_lower
+        or "yanfly" in title_lower
+        or "migration" in title_lower
+        or "archive" in title_lower
+    ):
+        return "Forum重要事項"
 
     return "本体ニュース"
 
 
-# ==========================================
-# Official News
-# ==========================================
-
-def get_official_news_items(seen):
+def get_items(seen):
 
     adopted_items = []
 
@@ -52,19 +30,13 @@ def get_official_news_items(seen):
 
     try:
 
-        response = requests.get(
-            OFFICIAL_NEWS_URL,
-            headers={
-                "User-Agent": USER_AGENT
-            },
-            timeout=REQUEST_TIMEOUT,
+        html = get_html(
+            OFFICIAL_NEWS_URL
         )
 
-        response.raise_for_status()
-
         soup = BeautifulSoup(
-            response.text,
-            "html.parser",
+            html,
+            "html.parser"
         )
 
         for tag in soup.find_all("h3"):
@@ -93,16 +65,15 @@ def get_official_news_items(seen):
                 f"[Official][{category}] {title}"
             )
 
+        print(
+            f"[Official] New: {len(adopted_items)}"
+        )
+
     except Exception as e:
 
         print(
-            "Official News error:",
-            e,
+            "[Official] Error:",
+            e
         )
-
-    print(
-        "Official News new:",
-        len(adopted_items),
-    )
 
     return adopted_items, new_seen
