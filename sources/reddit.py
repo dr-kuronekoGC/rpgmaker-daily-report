@@ -13,10 +13,6 @@ QUESTION_WORDS = [
     "can i",
     "which",
     "what",
-    "thoughts?",
-    "any suggestions",
-    "recommendation",
-    "recommendations",
 ]
 
 IGNORE_WORDS = [
@@ -81,21 +77,26 @@ CATEGORY_KEYWORDS = {
 }
 
 
-# ==========================================
-# Category
-# ==========================================
-
 def classify(title):
 
     title_lower = title.lower()
 
     for word in IGNORE_WORDS:
-
         if word in title_lower:
             return None
 
     for word in QUESTION_WORDS:
+        if word in title_lower:
+            return None
 
+    extra_questions = [
+        "thoughts?",
+        "any suggestions",
+        "recommendation",
+        "recommendations",
+    ]
+
+    for word in extra_questions:
         if word in title_lower:
             return None
 
@@ -109,19 +110,15 @@ def classify(title):
     return None
 
 
-# ==========================================
-# Reddit
-# ==========================================
-
-def get_reddit_items(seen):
+def get_items(seen):
 
     feed = feedparser.parse(RSS_URL)
 
-    print("取得件数:", len(feed.entries))
-
-    new_seen = seen.copy()
+    print(f"[Reddit] RSS: {len(feed.entries)}件")
 
     adopted_items = []
+
+    new_seen = seen.copy()
 
     for entry in feed.entries:
 
@@ -150,8 +147,7 @@ def get_reddit_items(seen):
         )
 
     print(
-        "Reddit new:",
-        len(adopted_items),
+        f"[Reddit] New: {len(adopted_items)}"
     )
 
     return adopted_items, new_seen
