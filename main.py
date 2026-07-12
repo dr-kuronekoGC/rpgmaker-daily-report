@@ -17,42 +17,37 @@ from sources import reddit
 from sources import official
 
 
-SOURCES = [
-    {
-        "name": "Reddit",
-        "module": reddit,
-        "seen": SEEN_FILE,
-    },
-    {
-        "name": "Official",
-        "module": official,
-        "seen": SEEN_OFFICIAL_FILE,
-    },
-]
+SOURCES = (
+    (reddit, SEEN_FILE),
+    (official, SEEN_OFFICIAL_FILE),
+)
 
 
-def main():
+def collect_all_items():
 
     all_items = []
 
-    for source in SOURCES:
+    for module, seen_file in SOURCES:
 
-        seen = load_seen_file(
-            source["seen"]
-        )
+        seen = load_seen_file(seen_file)
 
-        items, new_seen = (
-            source["module"].get_items(seen)
-        )
+        items, new_seen = module.get_items(seen)
 
         save_seen_file(
-            source["seen"],
+            seen_file,
             new_seen,
         )
 
         all_items.extend(items)
 
-    report = build_report(all_items)
+    return all_items
+
+
+def main():
+
+    items = collect_all_items()
+
+    report = build_report(items)
 
     print()
     print("----- REPORT -----")
