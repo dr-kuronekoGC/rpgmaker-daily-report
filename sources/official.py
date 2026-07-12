@@ -2,30 +2,12 @@ from bs4 import BeautifulSoup
 
 from config import OFFICIAL_NEWS_URL
 from sources.base import get_html
-
-
-def classify(title):
-
-    title_lower = title.lower()
-
-    if "unite" in title_lower:
-        return "UNITE"
-
-    if (
-        "forum" in title_lower
-        or "yanfly" in title_lower
-        or "migration" in title_lower
-        or "archive" in title_lower
-    ):
-        return "Forum重要事項"
-
-    return "本体ニュース"
+from categories import classify_official
 
 
 def get_items(seen):
 
     adopted_items = []
-
     new_seen = seen.copy()
 
     try:
@@ -51,7 +33,7 @@ def get_items(seen):
 
             new_seen.append(title)
 
-            category = classify(title)
+            category = classify_official(title)
 
             adopted_items.append(
                 {
