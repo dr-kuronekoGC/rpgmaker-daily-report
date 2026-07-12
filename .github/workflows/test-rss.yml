@@ -33,13 +33,14 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python main.py
 
-      - name: Commit seen.json
+      - name: Commit seen files
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add seen.json
+          git add seen_official.json
 
-          git diff --cached --quiet || git commit -m "Update seen.json"
+          git diff --cached --quiet || git commit -m "Update seen files"
 
           git push
