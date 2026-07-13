@@ -1,9 +1,12 @@
-from config import OFFICIAL_NEWS_URL
+from config import (
+    OFFICIAL_NEWS_URL,
+    OFFICIAL_SEEN_FILE,
+)
+
+SEEN_FILE = OFFICIAL_SEEN_FILE
 
 from categories import classify_official
-
 from sources.html_source import collect_h3_items
-
 
 def get_items(seen):
 
