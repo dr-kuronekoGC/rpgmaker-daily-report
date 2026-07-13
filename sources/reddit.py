@@ -1,6 +1,11 @@
 import feedparser
 
-from config import RSS_URL
+from config import (
+    RSS_URL,
+    REDDIT_SEEN_FILE,
+)
+
+SEEN_FILE = REDDIT_SEEN_FILE
 from categories import classify_reddit
 
 
