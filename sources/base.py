@@ -19,3 +19,9 @@ def get_html(url):
     response.raise_for_status()
 
     return response.text
+
+
+def get_feed(url):
+    import feedparser
+
+    return feedparser.parse(url)
