@@ -11,32 +11,22 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 
 # ----------------------------
-# RPG Maker Forum
+# Future Sources
 # ----------------------------
 
 FORUM_URL = ""
-
-# ----------------------------
-# RPGMakerWeb
-# ----------------------------
-
 RPGMAKERWEB_URL = ""
-
-# ----------------------------
-# RPG Maker Guild
-# ----------------------------
-
 GUILD_URL = ""
 
 # ----------------------------
 # seen files
 # ----------------------------
 
-SEEN_FILE = "seen.json"
-SEEN_OFFICIAL_FILE = "seen_official.json"
-SEEN_FORUM_FILE = "seen_forum.json"
-SEEN_RPGMAKERWEB_FILE = "seen_rpgmakerweb.json"
-SEEN_GUILD_FILE = "seen_guild.json"
+REDDIT_SEEN_FILE = "seen.json"
+OFFICIAL_SEEN_FILE = "seen_official.json"
+FORUM_SEEN_FILE = "seen_forum.json"
+RPGMAKERWEB_SEEN_FILE = "seen_rpgmakerweb.json"
+GUILD_SEEN_FILE = "seen_guild.json"
 
 # ----------------------------
 # HTTP
