@@ -3,51 +3,34 @@ from common import (
     save_seen_file,
 )
 
-from config import (
-    SEEN_FILE,
-    SEEN_OFFICIAL_FILE,
-)
-
 from report import (
     build_report,
     send_to_slack,
 )
 
-from sources import reddit
-from sources import official
+from sources import SOURCES
 
 
-SOURCES = (
-    (reddit, SEEN_FILE),
-    (official, SEEN_OFFICIAL_FILE),
-)
-
-
-def collect_all_items():
+def main():
 
     all_items = []
 
-    for module, seen_file in SOURCES:
+    for source in SOURCES:
 
-        seen = load_seen_file(seen_file)
+        seen = load_seen_file(
+            source.SEEN_FILE
+        )
 
-        items, new_seen = module.get_items(seen)
+        items, new_seen = source.get_items(seen)
 
         save_seen_file(
-            seen_file,
+            source.SEEN_FILE,
             new_seen,
         )
 
         all_items.extend(items)
 
-    return all_items
-
-
-def main():
-
-    items = collect_all_items()
-
-    report = build_report(items)
+    report = build_report(all_items)
 
     print()
     print("----- REPORT -----")
