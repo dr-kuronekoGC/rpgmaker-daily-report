@@ -3,16 +3,25 @@ from config import (
     OFFICIAL_SEEN_FILE,
 )
 
+from categories import classify_official
+
+from sources.html import collect_html
+
 SEEN_FILE = OFFICIAL_SEEN_FILE
 
-from categories import classify_official
-from sources.html_source import collect_h3_items
 
 def get_items(seen):
 
-    return collect_h3_items(
+    return collect_html(
+
         url=OFFICIAL_NEWS_URL,
+
         seen=seen,
-        classifier=classify_official,
+
+        classify=classify_official,
+
+        selector="h3",
+
         source_name="Official",
+
     )
