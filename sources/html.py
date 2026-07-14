@@ -30,20 +30,42 @@ def collect_html(
         if not title:
             continue
 
-        if title in seen:
-            continue
-
-        new_seen.append(title)
-
         category = classify(title)
 
         if category is None:
             continue
 
+        # --------------------
+        # URL取得
+        # --------------------
+
+        href = None
+
+        link = tag.find("a")
+
+        if link:
+
+            href = link.get("href")
+
+        if not href:
+
+            href = url
+
+        elif href.startswith("/"):
+
+            href = url.rstrip("/") + href
+
+        # --------------------
+
+        if href in seen:
+            continue
+
+        new_seen.append(href)
+
         adopted_items.append(
             {
                 "title": title,
-                "url": url,
+                "url": href,
                 "category": category,
             }
         )
