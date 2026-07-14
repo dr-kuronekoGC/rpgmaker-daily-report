@@ -1,18 +1,16 @@
-import feedparser
-
 from config import (
     RSS_URL,
     REDDIT_SEEN_FILE,
 )
 
-SEEN_FILE = REDDIT_SEEN_FILE
 from categories import classify_reddit
+from sources.base import get_feed
 
+SEEN_FILE = REDDIT_SEEN_FILE
 
 def get_items(seen):
 
-    feed = feedparser.parse(RSS_URL)
-
+    feed = get_feed(RSS_URL)
     print(f"[Reddit] RSS: {len(feed.entries)}件")
 
     new_seen = seen.copy()
