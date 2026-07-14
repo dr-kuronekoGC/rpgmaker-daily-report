@@ -14,7 +14,7 @@ OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 # Future Sources
 # ----------------------------
 
-FORUM_URL = ""
+FORUM_URL = "https://forums.rpgmakerweb.com/index.php?whats-new/posts/"
 RPGMAKERWEB_URL = ""
 GUILD_URL = ""
 
