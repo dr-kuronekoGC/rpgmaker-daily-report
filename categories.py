@@ -112,11 +112,47 @@ def classify_reddit(title):
 
 def classify_official(title):
 
-    title = title.lower()
+    title_lower = title.lower()
 
-    for category, keywords in OFFICIAL_KEYWORDS.items():
-
-        if any(keyword in title for keyword in keywords):
-            return category
+    if "unite" in title_lower:
+        return "UNITE"
 
     return "本体ニュース"
+
+def classify_forum(title):
+
+    title_lower = title.lower()
+
+    important_keywords = (
+        "forum",
+        "closure",
+        "migration",
+        "archive",
+        "faq",
+        "important",
+        "announcement",
+    )
+
+    if any(
+        keyword in title_lower
+        for keyword in important_keywords
+    ):
+        return "Forum重要事項"
+
+    ignore_keywords = (
+        "favorite",
+        "count",
+        "music",
+        "food",
+        "what are you",
+        "random thoughts",
+        "off topic",
+    )
+
+    if any(
+        keyword in title_lower
+        for keyword in ignore_keywords
+    ):
+        return None
+
+    return "Forum"
