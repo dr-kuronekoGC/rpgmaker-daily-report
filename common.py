@@ -2,9 +2,6 @@ import json
 from pathlib import Path
 from datetime import UTC, datetime, timedelta
 
-from config import SEEN_FILE
-
-
 # ==========================================
 # Date / Time
 # ==========================================
@@ -76,24 +73,3 @@ def save_seen_file(
             indent=2,
             ensure_ascii=False,
         )
-
-
-# ==========================================
-# Default seen
-# ==========================================
-
-def load_seen() -> list:
-    """
-    Reddit用 seen を読み込む
-    """
-    return load_seen_file(SEEN_FILE)
-
-
-def save_seen(data: list) -> None:
-    """
-    Reddit用 seen を保存する
-    """
-    save_seen_file(
-        SEEN_FILE,
-        data,
-    )
