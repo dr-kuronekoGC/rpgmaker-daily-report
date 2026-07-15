@@ -18,13 +18,15 @@ def main():
     for source in SOURCES:
 
         seen = load_seen_file(
-            source.SEEN_FILE
+            source["seen"]
         )
 
-        items, new_seen = source.get_items(seen)
+        items, new_seen = (
+            source["module"].get_items(seen)
+        )
 
         save_seen_file(
-            source.SEEN_FILE,
+            source["seen"],
             new_seen,
         )
 
