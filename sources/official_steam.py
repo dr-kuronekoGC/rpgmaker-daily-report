@@ -30,9 +30,18 @@ def get_items(seen):
             "html.parser",
         )
 
-        for link in soup.select("a"):
+        for link in soup.select("a.apphub_Card"):
 
-            title = link.get_text(strip=True)
+            title_tag = link.select_one(
+                ".apphub_CardContentTitle"
+            )
+
+            if title_tag is None:
+                continue
+
+            title = title_tag.get_text(
+                strip=True
+            )
 
             if len(title) < 10:
                 continue
