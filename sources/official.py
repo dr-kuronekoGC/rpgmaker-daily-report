@@ -3,25 +3,70 @@ from config import (
     OFFICIAL_SEEN_FILE,
 )
 
-from categories import classify_official
+from bs4 import BeautifulSoup
 
-from sources.html import collect_html
+from categories import classify_official
+from sources.html import get_html
+
 
 SEEN_FILE = OFFICIAL_SEEN_FILE
 
 
 def get_items(seen):
 
-    return collect_html(
+    adopted_items = []
 
-        url=OFFICIAL_NEWS_URL,
+    new_seen = seen.copy()
 
-        seen=seen,
+    try:
 
-        classify=classify_official,
+        html = get_html(
+            OFFICIAL_NEWS_URL
+        )
 
-        selector="h3",
+        soup = BeautifulSoup(
+            html,
+            "html.parser",
+        )
 
-        source_name="Official",
+        for tag in soup.find_all("h3"):
 
-    )
+            title = tag.get_text(strip=True)
+
+            if not title:
+                continue
+
+            if title in seen:
+                continue
+
+            new_seen.append(title)
+
+            category = classify_official(title)
+
+            if category is None:
+                continue
+
+            adopted_items.append(
+                {
+                    "title": title,
+                    "url": OFFICIAL_NEWS_URL,
+                    "category": category,
+                }
+            )
+
+            print(
+                f"[Official][{category}] {title}"
+            )
+
+        print(
+            f"[Official] New: {len(adopted_items)}"
+        )
+
+    except Exception as e:
+
+        print(
+            "[Official] Error:",
+            e,
+        )
+
+    return adopted_items, new_seen
