@@ -18,6 +18,7 @@ CATEGORY_GROUPS = {
         "Forum重要事項",
     ],
     "★★☆": [
+        "Forum",          # ←追加
         "プラグイン",
         "Tips",
         "グラフィック",
