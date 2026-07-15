@@ -11,6 +11,19 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 
 # ----------------------------
+# Steam
+# ----------------------------
+
+OFFICIAL_STEAM_URL = (
+    "https://store.steampowered.com/news/"
+    "?appgroupname=RPG+Maker+VX"
+    "&appids=220700,235900,362870,383730,363890,521880"
+    "&feed=steam_community_announcements"
+)
+
+OFFICIAL_STEAM_SEEN_FILE = "seen_official_steam.json"
+
+# ----------------------------
 # Future Sources
 # ----------------------------
 
