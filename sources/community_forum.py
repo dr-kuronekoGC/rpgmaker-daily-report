@@ -1,9 +1,9 @@
+from bs4 import BeautifulSoup
+
 from config import (
     FORUM_URL,
     FORUM_SEEN_FILE,
 )
-
-from bs4 import BeautifulSoup
 
 from categories import classify_forum
 from sources.html import get_html
@@ -20,21 +20,29 @@ def get_items(seen):
 
     try:
 
-        html = get_html(
-            FORUM_URL
-        )
+        html = get_html(FORUM_URL)
 
         soup = BeautifulSoup(
             html,
             "html.parser",
         )
 
-        for tag in soup.select("h3, h4"):
+        seen_titles = set()
 
-            title = tag.get_text(strip=True)
+        for link in soup.select("a"):
+
+            title = link.get_text(strip=True)
 
             if not title:
                 continue
+
+            if len(title) < 8:
+                continue
+
+            if title in seen_titles:
+                continue
+
+            seen_titles.add(title)
 
             if title in seen:
                 continue
@@ -44,13 +52,25 @@ def get_items(seen):
             if category is None:
                 continue
 
+            url = link.get("href")
+
+            if not url:
+                continue
+
+            if url.startswith("/"):
+                url = (
+                    "https://forums.rpgmakerweb.com"
+                    + url
+                )
+
             new_seen.append(title)
 
             adopted_items.append(
                 {
                     "title": title,
-                    "url": FORUM_URL,
+                    "url": url,
                     "category": category,
+                    "source": "Forum",
                 }
             )
 
