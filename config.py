@@ -11,7 +11,7 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 
 # ----------------------------
-# Steam
+# Official Steam
 # ----------------------------
 
 OFFICIAL_STEAM_URL = (
@@ -21,7 +21,9 @@ OFFICIAL_STEAM_URL = (
     "&feed=steam_community_announcements"
 )
 
-OFFICIAL_STEAM_SEEN_FILE = "seen_official_steam.json"
+OFFICIAL_STEAM_SEEN_FILE = (
+    "seen_official_steam.json"
+)
 
 # ----------------------------
 # Future Sources
