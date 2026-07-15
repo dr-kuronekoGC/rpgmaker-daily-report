@@ -1,3 +1,7 @@
+# ==========================================
+# Reddit
+# ==========================================
+
 QUESTION_WORDS = (
     "help",
     "need help",
@@ -20,8 +24,7 @@ IGNORE_WORDS = (
     "weekly thread",
 )
 
-
-CATEGORY_KEYWORDS = {
+REDDIT_CATEGORY_KEYWORDS = {
 
     "RPGツクール製ゲーム": (
         "released",
@@ -77,20 +80,33 @@ CATEGORY_KEYWORDS = {
 }
 
 
-OFFICIAL_KEYWORDS = {
+# ==========================================
+# Forum
+# ==========================================
 
-    "UNITE": (
-        "unite",
-    ),
+FORUM_IMPORTANT_KEYWORDS = (
+    "forum",
+    "closure",
+    "migration",
+    "archive",
+    "faq",
+    "important",
+    "announcement",
+)
 
-    "Forum重要事項": (
-        "forum",
-        "yanfly",
-        "migration",
-        "archive",
-    ),
-}
+FORUM_IGNORE_KEYWORDS = (
+    "favorite",
+    "count",
+    "music",
+    "food",
+    "what are you",
+    "random thoughts",
+    "off topic",
+)
 
+# ==========================================
+# Reddit
+# ==========================================
 
 def classify_reddit(title):
 
@@ -102,7 +118,7 @@ def classify_reddit(title):
     if any(word in title for word in QUESTION_WORDS):
         return None
 
-    for category, keywords in CATEGORY_KEYWORDS.items():
+    for category, keywords in REDDIT_CATEGORY_KEYWORDS.items():
 
         if any(keyword in title for keyword in keywords):
             return category
@@ -110,48 +126,37 @@ def classify_reddit(title):
     return None
 
 
+# ==========================================
+# Official
+# ==========================================
+
 def classify_official(title):
 
-    title_lower = title.lower()
+    title = title.lower()
 
-    if "unite" in title_lower:
+    if "unite" in title:
         return "UNITE"
 
     return "本体ニュース"
 
+
+# ==========================================
+# Forum
+# ==========================================
+
 def classify_forum(title):
 
-    title_lower = title.lower()
-
-    important_keywords = (
-        "forum",
-        "closure",
-        "migration",
-        "archive",
-        "faq",
-        "important",
-        "announcement",
-    )
+    title = title.lower()
 
     if any(
-        keyword in title_lower
-        for keyword in important_keywords
+        keyword in title
+        for keyword in FORUM_IMPORTANT_KEYWORDS
     ):
         return "Forum重要事項"
 
-    ignore_keywords = (
-        "favorite",
-        "count",
-        "music",
-        "food",
-        "what are you",
-        "random thoughts",
-        "off topic",
-    )
-
     if any(
-        keyword in title_lower
-        for keyword in ignore_keywords
+        keyword in title
+        for keyword in FORUM_IGNORE_KEYWORDS
     ):
         return None
 
