@@ -1,10 +1,10 @@
-from . import reddit
-from . import official
-from . import forum
+from . import community_reddit
+from . import community_forum
+from . import official_site
 
 
 SOURCES = (
-    reddit,
-    official,
-    forum,
+    community_reddit,
+    official_site,
+    community_forum,
 )
