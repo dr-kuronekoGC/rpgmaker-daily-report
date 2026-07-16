@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 from bs4 import BeautifulSoup
 
 from sources.base import get_html
@@ -23,17 +25,9 @@ def collect_html(
 
     new_seen = seen.copy()
 
+    seen_urls = set()
+
     for tag in soup.select(selector):
-
-        title = tag.get_text(strip=True)
-
-        if not title:
-            continue
-
-        category = classify(title)
-
-        if category is None:
-            continue
 
         # --------------------
         # URL取得
@@ -41,23 +35,49 @@ def collect_html(
 
         href = None
 
-        link = tag.find("a")
+        if tag.name == "a":
 
-        if link:
+            href = tag.get("href")
 
-            href = link.get("href")
+        else:
+
+            link = tag.find("a")
+
+            if link:
+                href = link.get("href")
 
         if not href:
+            continue
 
-            href = url
-
-        elif href.startswith("/"):
-
-            href = url.rstrip("/") + href
+        href = urljoin(url, href)
 
         # --------------------
+        # 重複除去
+        # --------------------
+
+        if href in seen_urls:
+            continue
+
+        seen_urls.add(href)
 
         if href in seen:
+            continue
+
+        # --------------------
+        # タイトル取得
+        # --------------------
+
+        title = tag.get_text(
+            " ",
+            strip=True,
+        )
+
+        if not title:
+            continue
+
+        category = classify(title)
+
+        if category is None:
             continue
 
         new_seen.append(href)
