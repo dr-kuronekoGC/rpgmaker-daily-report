@@ -220,4 +220,49 @@ def classify_forum(title):
     if any(word in title for word in ignore_keywords):
         return None
 
-    return "Forum"
+    plugin_keywords = (
+        "plugin",
+        "engine",
+        "script",
+        "tool",
+        "visustella",
+        "mana",
+    )
+
+    resource_keywords = (
+        "art",
+        "resource",
+        "tileset",
+        "sprite",
+        "character",
+        "asset",
+    )
+
+    game_keywords = (
+        "odyssey",
+        "pilgrim",
+        "game",
+        "project",
+    )
+
+    question_keywords = (
+        "help",
+        "looking for",
+        "replace",
+        "how",
+        "question",
+    )
+
+    if any(word in title for word in plugin_keywords):
+        return "Forumプラグイン"
+
+    if any(word in title for word in resource_keywords):
+        return "Forum素材"
+
+    if any(word in title for word in game_keywords):
+        return "Forum作品"
+
+    if any(word in title for word in question_keywords):
+        return "Forum質問"
+
+    return "Forum作品"
