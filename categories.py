@@ -148,16 +148,45 @@ def classify_forum(title):
 
     title = title.lower()
 
-    if any(
-        keyword in title
-        for keyword in FORUM_IMPORTANT_KEYWORDS
-    ):
+    # ------------------------
+    # Forum重要事項
+    # ------------------------
+
+    important_keywords = (
+        "forum",
+        "closure",
+        "migration",
+        "archive",
+        "faq",
+        "announcement",
+        "shutdown",
+    )
+
+    if any(word in title for word in important_keywords):
         return "Forum重要事項"
 
-    if any(
-        keyword in title
-        for keyword in FORUM_IGNORE_KEYWORDS
-    ):
+    # ------------------------
+    # 雑談除外
+    # ------------------------
+
+    ignore_keywords = (
+        "farewell",
+        "favorite",
+        "what's your",
+        "what is your",
+        "real quick",
+        "food",
+        "color",
+        "count",
+        "forum game",
+        "random",
+        "off topic",
+        "the end",
+        "best friend",
+        "memories",
+    )
+
+    if any(word in title for word in ignore_keywords):
         return None
 
     return "Forum"
