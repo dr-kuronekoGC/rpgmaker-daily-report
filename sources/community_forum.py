@@ -1,14 +1,14 @@
+from urllib.parse import urljoin
+
+from bs4 import BeautifulSoup
+
 from config import (
     FORUM_URL,
     FORUM_SEEN_FILE,
 )
 
 from categories import classify_forum
-
 from sources.base import get_html
-
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 
 
 SEEN_FILE = FORUM_SEEN_FILE
@@ -36,16 +36,27 @@ def get_items(seen):
         if not href:
             continue
 
-        href = urljoin(FORUM_URL, href)
+        href = urljoin(
+            FORUM_URL,
+            href,
+        )
 
         # --------------------------
-        # Forum記事のみ
+        # Forum記事のみ取得
         # --------------------------
 
         if "/threads/" not in href:
             continue
 
-        # 最新投稿リンクは除外
+        # ページ送り除外
+        if "/page-" in href:
+            continue
+
+        # 投稿番号リンク除外
+        if "/post-" in href:
+            continue
+
+        # latestリンク除外
         if href.endswith("/latest"):
             continue
 
