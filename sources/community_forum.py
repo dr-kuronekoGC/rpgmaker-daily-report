@@ -44,7 +44,7 @@ def get_items(seen):
 
             seen_titles.add(title)
 
-            if title in seen:
+            if url in seen:
                 continue
 
             category = classify_forum(title)
@@ -63,7 +63,10 @@ def get_items(seen):
                     + url
                 )
 
-            new_seen.append(title)
+            if "/threads/" not in url:
+                continue
+
+            new_seen.append(url)
 
             adopted_items.append(
                 {
