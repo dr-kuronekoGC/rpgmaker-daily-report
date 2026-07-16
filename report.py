@@ -1,11 +1,12 @@
 import os
 import requests
 
-from common import now_jst, get_period
 from config import (
     REQUEST_TIMEOUT,
     SLACK_WEBHOOK_ENV,
 )
+
+from categories import DISPLAY_CATEGORY
 
 # ==========================================
 # Category Display
@@ -18,21 +19,25 @@ CATEGORY_GROUPS = {
         "Forum重要事項",
     ],
     "★★☆": [
-        "Forum",          # ←追加
         "プラグイン",
+        "素材",
+        "ゲーム",
         "Tips",
-        "グラフィック",
-        "サウンド",
     ],
     "★☆☆": [
-        "RPGツクール製ゲーム",
+        "質問",
     ],
 }
 
 DISPLAY_ORDER = [
-    category
-    for categories in CATEGORY_GROUPS.values()
-    for category in categories
+    "本体ニュース",
+    "UNITE",
+    "Forum重要事項",
+    "プラグイン",
+    "素材",
+    "ゲーム",
+    "Tips",
+    "質問",
 ]
 
 
@@ -55,8 +60,16 @@ def build_report(items):
 
     for item in items:
 
-        categories.setdefault(
+        display_category = DISPLAY_CATEGORY.get(
             item["category"],
+            item["category"],
+        )
+
+        item = item.copy()
+        item["display_category"] = display_category
+
+        categories.setdefault(
+            display_category,
             []
         ).append(item)
 
