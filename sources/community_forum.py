@@ -1,12 +1,14 @@
-from bs4 import BeautifulSoup
-
 from config import (
     FORUM_URL,
     FORUM_SEEN_FILE,
 )
 
 from categories import classify_forum
-from sources.html import get_html
+
+from sources.base import get_html
+
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 
 SEEN_FILE = FORUM_SEEN_FILE
@@ -14,82 +16,79 @@ SEEN_FILE = FORUM_SEEN_FILE
 
 def get_items(seen):
 
+    html = get_html(FORUM_URL)
+
+    soup = BeautifulSoup(
+        html,
+        "html.parser",
+    )
+
     adopted_items = []
 
     new_seen = seen.copy()
 
-    try:
+    seen_urls = set()
 
-        html = get_html(FORUM_URL)
+    for link in soup.select("a[href]"):
 
-        soup = BeautifulSoup(
-            html,
-            "html.parser",
+        href = link.get("href")
+
+        if not href:
+            continue
+
+        href = urljoin(FORUM_URL, href)
+
+        # --------------------------
+        # Forum記事のみ
+        # --------------------------
+
+        if "/threads/" not in href:
+            continue
+
+        # 最新投稿リンクは除外
+        if href.endswith("/latest"):
+            continue
+
+        # --------------------------
+
+        if href in seen_urls:
+            continue
+
+        seen_urls.add(href)
+
+        if href in seen:
+            continue
+
+        title = link.get_text(
+            " ",
+            strip=True,
         )
 
-        seen_titles = set()
+        if not title:
+            continue
 
-        for link in soup.select("a"):
+        category = classify_forum(title)
 
-            title = link.get_text(strip=True)
+        if category is None:
+            continue
 
-            if not title:
-                continue
+        new_seen.append(href)
 
-            if len(title) < 8:
-                continue
-
-            if title in seen_titles:
-                continue
-
-            seen_titles.add(title)
-
-            if url in seen:
-                continue
-
-            category = classify_forum(title)
-
-            if category is None:
-                continue
-
-            url = link.get("href")
-
-            if not url:
-                continue
-
-            if url.startswith("/"):
-                url = (
-                    "https://forums.rpgmakerweb.com"
-                    + url
-                )
-
-            if "/threads/" not in url:
-                continue
-
-            new_seen.append(url)
-
-            adopted_items.append(
-                {
-                    "title": title,
-                    "url": url,
-                    "category": category,
-                    "source": "Forum",
-                }
-            )
-
-            print(
-                f"[Forum][{category}] {title}"
-            )
+        adopted_items.append(
+            {
+                "title": title,
+                "url": href,
+                "category": category,
+                "source": "Forum",
+            }
+        )
 
         print(
-            f"[Forum] New: {len(adopted_items)}"
+            f"[Forum][{category}] {title}"
         )
 
-    except Exception as e:
-
-        print(
-            "[Forum] Error:",
-            e,
-        )
+    print(
+        f"[Forum] New: {len(adopted_items)}"
+    )
 
     return adopted_items, new_seen
