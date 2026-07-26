@@ -68,12 +68,16 @@ QUESTION_WORDS = (
     "how to",
     "how do",
     "can i",
+    "can someone",
+    "where can",
     "which",
     "what",
     "thoughts?",
     "any suggestions",
     "recommendation",
     "recommendations",
+    "is there",
+    "anyone know",
 )
 
 IGNORE_WORDS = (
@@ -133,6 +137,10 @@ REDDIT_CATEGORY_KEYWORDS = {
         "how i made",
         "devlog",
     ),
+
+    "Reddit質問":(
+    ),
+    
 }
 
 
