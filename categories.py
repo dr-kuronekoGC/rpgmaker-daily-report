@@ -4,81 +4,38 @@
 
 DISPLAY_CATEGORY = {
 
-    # ----------------
-    # 公式
-    # ----------------
-
+    # ---------- 公式 ----------
     "本体ニュース": "本体ニュース",
     "UNITE": "UNITE",
     "Forum重要事項": "Forum重要事項",
 
-    # ----------------
-    # Plugin
-    # ----------------
-
+    # ---------- Plugin ----------
     "Forumプラグイン": "プラグイン",
     "Redditプラグイン": "プラグイン",
+    "Steamプラグイン": "プラグイン",
 
-    # ----------------
-    # Material
-    # ----------------
-
+    # ---------- Material ----------
     "Forum素材": "素材",
     "Reddit素材": "素材",
+    "Steam素材": "素材",
 
-    # ----------------
-    # Game
-    # ----------------
-
+    # ---------- Game ----------
     "Forum作品": "ゲーム",
     "Redditゲーム": "ゲーム",
-
-    # ----------------
-    # Steam
-    # ----------------
-    
-    "Steamプラグイン": "プラグイン",
-    "Steam素材": "素材",
     "Steamゲーム": "ゲーム",
-    "SteamUNITE": "UNITE",
 
-    # ----------------
-    # Tips
-    # ----------------
-
+    # ---------- Tips ----------
     "RedditTips": "Tips",
 
-    # ----------------
-    # Question
-    # ----------------
-
+    # ---------- Question ----------
     "Forum質問": "質問",
-
+    "Reddit質問": "質問",
 }
+
 
 # ==========================================
 # Reddit
 # ==========================================
-
-QUESTION_WORDS = (
-    "help",
-    "need help",
-    "looking for",
-    "question",
-    "how to",
-    "how do",
-    "can i",
-    "can someone",
-    "where can",
-    "which",
-    "what",
-    "thoughts?",
-    "any suggestions",
-    "recommendation",
-    "recommendations",
-    "is there",
-    "anyone know",
-)
 
 IGNORE_WORDS = (
     "screenshot saturday",
@@ -88,22 +45,31 @@ IGNORE_WORDS = (
 
 REDDIT_CATEGORY_KEYWORDS = {
 
-    "Redditゲーム": (
-        "released",
-        "release",
-        "steam page",
-        "trailer",
-        "demo",
-        "now out",
-        "available now",
-        "launch",
-        "launched",
-        "steam store page",
+    "Reddit質問": (
+        "help",
+        "need help",
+        "looking for",
+        "question",
+        "how to",
+        "how do",
+        "how can",
+        "can i",
+        "can someone",
+        "where can",
+        "which",
+        "what",
+        "thoughts",
+        "recommendation",
+        "recommendations",
+        "is there",
+        "anyone know",
     ),
 
     "Redditプラグイン": (
         "plugin",
+        "plugins",
         "script",
+        "engine",
         "system plugin",
         "plugin finder",
     ),
@@ -111,22 +77,18 @@ REDDIT_CATEGORY_KEYWORDS = {
     "Reddit素材": (
         "tileset",
         "sprite",
-        "asset pack",
-        "character generator",
-        "animation asset",
+        "asset",
         "portrait",
-        "battler",
         "faceset",
-        "character sheet",
-    
-        "bgm",
+        "battler",
+        "character generator",
+        "pixel art",
+        "icon",
+        "icons",
         "music pack",
-        "sound pack",
-        "audio asset",
-        "music",
-        "sound effect",
+        "bgm",
+        "sound",
         "sfx",
-        "ambient",
     ),
 
     "RedditTips": (
@@ -134,13 +96,25 @@ REDDIT_CATEGORY_KEYWORDS = {
         "guide",
         "tips",
         "workflow",
-        "how i made",
         "devlog",
+        "making of",
+        "process",
+        "showcase",
     ),
 
-    "Reddit質問":(
+    "Redditゲーム": (
+        "release",
+        "released",
+        "announcement",
+        "launch",
+        "launched",
+        "coming soon",
+        "wishlist",
+        "demo",
+        "trailer",
+        "steam",
+        "available now",
     ),
-    
 }
 
 
@@ -154,19 +128,27 @@ FORUM_IMPORTANT_KEYWORDS = (
     "migration",
     "archive",
     "faq",
-    "important",
     "announcement",
+    "shutdown",
 )
 
 FORUM_IGNORE_KEYWORDS = (
+    "farewell",
     "favorite",
-    "count",
-    "music",
+    "what's your",
+    "what is your",
+    "real quick",
     "food",
-    "what are you",
-    "random thoughts",
+    "color",
+    "count",
+    "forum game",
+    "random",
     "off topic",
+    "the end",
+    "best friend",
+    "memories",
 )
+
 
 # ==========================================
 # Reddit
@@ -177,9 +159,6 @@ def classify_reddit(title):
     title = title.lower()
 
     if any(word in title for word in IGNORE_WORDS):
-        return None
-
-    if any(word in title for word in QUESTION_WORDS):
         return None
 
     for category, keywords in REDDIT_CATEGORY_KEYWORDS.items():
@@ -212,46 +191,27 @@ def classify_forum(title):
 
     title = title.lower()
 
-    # ------------------------
-    # Forum重要事項
-    # ------------------------
-
-    important_keywords = (
-        "forum",
-        "closure",
-        "migration",
-        "archive",
-        "faq",
-        "announcement",
-        "shutdown",
-    )
-
-    if any(word in title for word in important_keywords):
+    if any(word in title for word in FORUM_IMPORTANT_KEYWORDS):
         return "Forum重要事項"
 
-    # ------------------------
-    # 雑談除外
-    # ------------------------
-
-    ignore_keywords = (
-        "farewell",
-        "favorite",
-        "what's your",
-        "what is your",
-        "real quick",
-        "food",
-        "color",
-        "count",
-        "forum game",
-        "random",
-        "off topic",
-        "the end",
-        "best friend",
-        "memories",
-    )
-
-    if any(word in title for word in ignore_keywords):
+    if any(word in title for word in FORUM_IGNORE_KEYWORDS):
         return None
+
+    question_keywords = (
+        "help",
+        "looking for",
+        "need",
+        "question",
+        "replace",
+        "how",
+        "how do",
+        "how can",
+        "can i",
+        "can someone",
+        "where can",
+        "is there",
+        "anyone know",
+    )
 
     plugin_keywords = (
         "plugin",
@@ -286,25 +246,9 @@ def classify_forum(title):
         "trailer",
     )
 
-    question_keywords = (
-        "help",
-        "looking for",
-        "need",
-        "question",
-        "replace",
-        "how",
-        "how do",
-        "how can",
-        "can i",
-        "can someone",
-        "where can",
-        "is there",
-        "anyone know",
-    )
-
     if any(word in title for word in question_keywords):
         return "Forum質問"
-        
+
     if any(word in title for word in plugin_keywords):
         return "Forumプラグイン"
 
@@ -316,6 +260,7 @@ def classify_forum(title):
 
     return "Forum作品"
 
+
 # ==========================================
 # Steam
 # ==========================================
@@ -325,7 +270,7 @@ def classify_steam(title):
     title = title.lower()
 
     if "unite" in title:
-        return "SteamUNITE"
+        return "UNITE"
 
     plugin_keywords = (
         "plugin",
