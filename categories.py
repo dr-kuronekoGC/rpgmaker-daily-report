@@ -187,9 +187,10 @@ def classify_official(title):
 # Forum
 # ==========================================
 
-def classify_forum(title):
+def classify_forum(title, forum_name=""):
 
     title = title.lower()
+    forum_name = forum_name.lower()
 
     # ------------------------
     # Forum重要事項
@@ -198,15 +199,30 @@ def classify_forum(title):
     if any(word in title for word in FORUM_IMPORTANT_KEYWORDS):
         return "Forum重要事項"
 
-    # ------------------------
-    # 雑談除外
-    # ------------------------
-
     if any(word in title for word in FORUM_IGNORE_KEYWORDS):
         return None
 
     # ------------------------
-    # 質問
+    # フォーラム名優先
+    # ------------------------
+
+    if "resources" in forum_name:
+        return "Forum素材"
+
+    if "support" in forum_name:
+        return "Forum質問"
+
+    if "games in development" in forum_name:
+        return "Forum作品"
+
+    if "completed games" in forum_name:
+        return "Forum作品"
+
+    if "useful development tools" in forum_name:
+        return "Forumプラグイン"
+
+    # ------------------------
+    # タイトル判定
     # ------------------------
 
     question_keywords = (
@@ -229,10 +245,6 @@ def classify_forum(title):
         "problem",
     )
 
-    # ------------------------
-    # プラグイン
-    # ------------------------
-
     plugin_keywords = (
         "plugin",
         "plugins",
@@ -245,10 +257,6 @@ def classify_forum(title):
         "aftermath",
         "battle",
     )
-
-    # ------------------------
-    # 素材
-    # ------------------------
 
     resource_keywords = (
         "art",
@@ -265,10 +273,6 @@ def classify_forum(title):
         "sound",
         "icon",
     )
-
-    # ------------------------
-    # ゲーム
-    # ------------------------
 
     game_keywords = (
         "demo",
@@ -288,8 +292,6 @@ def classify_forum(title):
         "pilgrim",
     )
 
-    # ------------------------
-
     if any(word in title for word in question_keywords):
         return "Forum質問"
 
@@ -303,7 +305,6 @@ def classify_forum(title):
         return "Forum作品"
 
     return None
-
 
 # ==========================================
 # Steam
