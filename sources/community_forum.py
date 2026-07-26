@@ -41,10 +41,6 @@ def get_items(seen):
             href,
         )
 
-        # --------------------------
-        # Forum記事のみ取得
-        # --------------------------
-
         if "/threads/" not in href:
             continue
 
@@ -56,8 +52,6 @@ def get_items(seen):
 
         if href.endswith("/latest"):
             continue
-
-        # --------------------------
 
         if href in seen_urls:
             continue
@@ -75,26 +69,50 @@ def get_items(seen):
         if not title:
             continue
 
-        # --------------------------
-        # 所属フォーラム取得
-        # --------------------------
+        #
+        # ここから追加
+        #
 
         forum_name = ""
 
-        forum_link = link.find_parent().find_next("a")
+        try:
 
-        if forum_link:
+            thread_html = get_html(href)
 
-            forum_href = forum_link.get("href", "")
+            thread = BeautifulSoup(
+                thread_html,
+                "html.parser",
+            )
 
-            if "/forums/" in forum_href:
+            breadcrumb = thread.select(
+                "ul.p-breadcrumbs li"
+            )
 
-                forum_name = forum_link.get_text(
+            for item in breadcrumb:
+
+                text = item.get_text(
                     " ",
                     strip=True,
                 )
 
-        # --------------------------
+                if (
+                    "Resources" in text
+                    or "Support" in text
+                    or "Games" in text
+                    or "Development" in text
+                    or "Tools" in text
+                ):
+
+                    forum_name = text
+                    break
+
+        except Exception:
+
+            pass
+
+        #
+        # ここまで追加
+        #
 
         category = classify_forum(
             title,
