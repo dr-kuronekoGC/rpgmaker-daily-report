@@ -4,29 +4,47 @@
 
 DISPLAY_CATEGORY = {
 
-    # ---------- 公式 ----------
+    # ----------------
+    # 公式
+    # ----------------
+
     "本体ニュース": "本体ニュース",
     "UNITE": "UNITE",
     "Forum重要事項": "Forum重要事項",
 
-    # ---------- プラグイン ----------
+    # ----------------
+    # Plugin
+    # ----------------
+
     "Forumプラグイン": "プラグイン",
     "Redditプラグイン": "プラグイン",
 
-    # ---------- 素材 ----------
+    # ----------------
+    # Material
+    # ----------------
+
     "Forum素材": "素材",
-    "グラフィック": "素材",
-    "サウンド": "素材",
+    "Reddit素材": "素材",
 
-    # ---------- ゲーム ----------
+    # ----------------
+    # Game
+    # ----------------
+
     "Forum作品": "ゲーム",
-    "RPGツクール製ゲーム": "ゲーム",
+    "Redditゲーム": "ゲーム",
 
-    # ---------- Tips ----------
-    "Tips": "Tips",
+    # ----------------
+    # Tips
+    # ----------------
 
-    # ---------- 質問 ----------
+    "RedditTips": "Tips",
+
+    # ----------------
+    # Question
+    # ----------------
+
     "Forum質問": "質問",
+
 }
 
 # ==========================================
@@ -57,7 +75,7 @@ IGNORE_WORDS = (
 
 REDDIT_CATEGORY_KEYWORDS = {
 
-    "RPGツクール製ゲーム": (
+    "Redditゲーム": (
         "released",
         "release",
         "steam page",
@@ -70,14 +88,14 @@ REDDIT_CATEGORY_KEYWORDS = {
         "steam store page",
     ),
 
-    "プラグイン": (
+    "Redditプラグイン": (
         "plugin",
         "script",
         "system plugin",
         "plugin finder",
     ),
 
-    "グラフィック": (
+    "Reddit素材": (
         "tileset",
         "sprite",
         "asset pack",
@@ -87,9 +105,7 @@ REDDIT_CATEGORY_KEYWORDS = {
         "battler",
         "faceset",
         "character sheet",
-    ),
-
-    "サウンド": (
+    
         "bgm",
         "music pack",
         "sound pack",
@@ -100,7 +116,7 @@ REDDIT_CATEGORY_KEYWORDS = {
         "ambient",
     ),
 
-    "Tips": (
+    "RedditTips": (
         "tutorial",
         "guide",
         "tips",
