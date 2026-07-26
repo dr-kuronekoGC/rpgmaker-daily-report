@@ -46,6 +46,28 @@ def get_items(seen):
             if len(title) < 10:
                 continue
 
+            # -----------------------------
+            # Steam共通メニューを除外
+            # -----------------------------
+
+            IGNORE_TITLES = (
+                "Announcements",
+                "Client Updates",
+                "Press Releases",
+                "Product Releases",
+                "Product Updates",
+                "Steam Blog",
+                "Left 4 Dead Official Blog",
+                "Portal 2 Official Blog",
+                "Rock, Paper, Shotgun",
+                "Steam Community Announcements",
+                "TF2 Official Blog",
+                "Full Stories",
+            )
+
+            if title in IGNORE_TITLES:
+                continue
+            
             if title in seen:
                 continue
 
