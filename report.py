@@ -67,7 +67,7 @@ def build_report(items):
     period = get_period()
 
     if not items:
-        return f"{date_str} {period} → 新着なし"
+        return f"{date_str} {period}\n新着ニュースはありません。"
 
     categories = {}
 
@@ -79,6 +79,7 @@ def build_report(items):
         )
 
         item = item.copy()
+
         item["display_category"] = display_category
 
         categories.setdefault(
@@ -86,56 +87,76 @@ def build_report(items):
             []
         ).append(item)
 
-    report = [
-        f"{date_str} {period} Daily Report"
-    ]
+    report = []
 
-    # --------------------------
+    report.append(
+        f"📬 RPG Maker Daily Report"
+    )
+
+    report.append(
+        f"{date_str} {period}"
+    )
+
+    report.append("")
+
+    # ----------------------
     # Summary
-    # --------------------------
+    # ----------------------
 
-    for stars, group in CATEGORY_GROUPS.items():
+    for header, group in CATEGORY_GROUPS.items():
 
-        summary = []
+        total = sum(
+            len(categories[c])
+            for c in group
+            if c in categories
+        )
 
-        for category in group:
+        if total == 0:
+            continue
 
-            if category in categories:
+        report.append(
+            f"{header}（{total}件）"
+        )
 
-                summary.append(
-                    f"{category}({len(categories[category])})"
-                )
-
-        if summary:
-
-            report.append(
-                f"　{stars} " + "、".join(summary)
-            )
-
+    report.append("")
     report.append("────────────────────")
     report.append("")
 
-    # --------------------------
+    # ----------------------
     # Detail
-    # --------------------------
+    # ----------------------
 
     for category in DISPLAY_ORDER:
 
         if category not in categories:
             continue
 
-        report.append(f"【{category}】")
+        report.append(
+            f"【{category}】"
+        )
 
         for item in categories[category]:
 
-            report.append(
-                f"<{item['url']}|{item['title']}>"
+            source = item.get(
+                "source",
+                "",
             )
+
+            if source:
+
+                report.append(
+                    f"・[{source}] <{item['url']}|{item['title']}>"
+                )
+
+            else:
+
+                report.append(
+                    f"・<{item['url']}|{item['title']}>"
+                )
 
         report.append("")
 
     return "\n".join(report)
-
 
 # ==========================================
 # Slack
