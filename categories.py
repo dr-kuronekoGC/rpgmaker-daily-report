@@ -34,6 +34,15 @@ DISPLAY_CATEGORY = {
     "Redditゲーム": "ゲーム",
 
     # ----------------
+    # Steam
+    # ----------------
+    
+    "Steamプラグイン": "プラグイン",
+    "Steam素材": "素材",
+    "Steamゲーム": "ゲーム",
+    "SteamUNITE": "UNITE",
+
+    # ----------------
     # Tips
     # ----------------
 
@@ -282,3 +291,47 @@ def classify_forum(title):
         return "Forum質問"
 
     return "Forum作品"
+
+# ==========================================
+# Steam
+# ==========================================
+
+def classify_steam(title):
+
+    title = title.lower()
+
+    if "unite" in title:
+        return "SteamUNITE"
+
+    plugin_keywords = (
+        "plugin",
+        "engine",
+        "tool",
+    )
+
+    material_keywords = (
+        "asset",
+        "tileset",
+        "music",
+        "bgm",
+        "sprite",
+        "character",
+        "dlc",
+        "pack",
+    )
+
+    game_keywords = (
+        "game",
+        "project",
+    )
+
+    if any(word in title for word in plugin_keywords):
+        return "Steamプラグイン"
+
+    if any(word in title for word in material_keywords):
+        return "Steam素材"
+
+    if any(word in title for word in game_keywords):
+        return "Steamゲーム"
+
+    return "本体ニュース"
