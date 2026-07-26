@@ -18,11 +18,13 @@ DISPLAY_CATEGORY = {
     "Forum素材": "素材",
     "Reddit素材": "素材",
     "Steam素材": "素材",
+    "itch素材": "素材",
 
     # ---------- Game ----------
     "Forum作品": "ゲーム",
     "Redditゲーム": "ゲーム",
     "Steamゲーム": "ゲーム",
+    "itchゲーム": "ゲーム",
 
     # ---------- Tips ----------
     "RedditTips": "Tips",
@@ -380,3 +382,28 @@ def classify_steam(title):
         return "Steamゲーム"
 
     return "本体ニュース"
+
+# ==========================================
+# itch.io
+# ==========================================
+
+def classify_itchio(title):
+
+    title = title.lower()
+
+    material_keywords = (
+        "tileset",
+        "sprite",
+        "asset",
+        "music",
+        "bgm",
+        "portrait",
+        "icons",
+        "character",
+        "pack",
+    )
+
+    if any(word in title for word in material_keywords):
+        return "itch素材"
+
+    return "itchゲーム"
