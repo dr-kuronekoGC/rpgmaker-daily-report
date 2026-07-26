@@ -252,6 +252,8 @@ def classify_forum(title):
         "tool",
         "visustella",
         "mana",
+        "aftermath",
+        "battle",
     )
 
     resource_keywords = (
@@ -268,15 +270,29 @@ def classify_forum(title):
         "pilgrim",
         "game",
         "project",
+        "statue",
     )
 
     question_keywords = (
         "help",
         "looking for",
         "replace",
-        "how",
         "question",
-    )
+        "how",
+        "how do",
+        "why",
+        "can i",
+        "does anyone",
+        "anyone know",
+        "is it possible",
+        "need",
+        "issue",
+        "problem",
+        "error",
+        "bug",
+        "support",
+        "level up",
+)
 
     if any(word in title for word in plugin_keywords):
         return "Forumプラグイン"
