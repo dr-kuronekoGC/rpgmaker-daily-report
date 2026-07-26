@@ -266,34 +266,37 @@ def classify_forum(title):
     )
 
     game_keywords = (
-        "odyssey",
-        "pilgrim",
-        "game",
+        "demo",
+        "release",
+        "released",
         "project",
-        "statue",
+        "chapter",
+        "episode",
+        "version",
+        "beta",
+        "alpha",
+        "trailer",
     )
 
     question_keywords = (
         "help",
         "looking for",
-        "replace",
+        "need",
         "question",
+        "replace",
         "how",
         "how do",
-        "why",
+        "how can",
         "can i",
-        "does anyone",
+        "can someone",
+        "where can",
+        "is there",
         "anyone know",
-        "is it possible",
-        "need",
-        "issue",
-        "problem",
-        "error",
-        "bug",
-        "support",
-        "level up",
-)
+    )
 
+    if any(word in title for word in question_keywords):
+        return "Forum質問"
+        
     if any(word in title for word in plugin_keywords):
         return "Forumプラグイン"
 
@@ -302,9 +305,6 @@ def classify_forum(title):
 
     if any(word in title for word in game_keywords):
         return "Forum作品"
-
-    if any(word in title for word in question_keywords):
-        return "Forum質問"
 
     return "Forum作品"
 
