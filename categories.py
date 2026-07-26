@@ -315,28 +315,59 @@ def classify_steam(title):
     title = title.lower()
 
     if "unite" in title:
-        return "UNITE"
+        return "SteamUNITE"
+
+    # ------------------------
+    # Plugin
+    # ------------------------
 
     plugin_keywords = (
         "plugin",
+        "plugins",
+        "script",
+        "system",
         "engine",
         "tool",
+        "builder",
+        "generator",
     )
+
+    # ------------------------
+    # Material
+    # ------------------------
 
     material_keywords = (
         "asset",
+        "assets",
         "tileset",
+        "tilesets",
         "music",
         "bgm",
-        "sprite",
+        "sound",
+        "audio",
+        "portrait",
         "character",
-        "dlc",
+        "faceset",
+        "sprite",
+        "pixel",
+        "battleback",
+        "enemy",
+        "monster",
         "pack",
+        "dlc",
     )
+
+    # ------------------------
+    # Game
+    # ------------------------
 
     game_keywords = (
         "game",
         "project",
+        "release",
+        "released",
+        "launch",
+        "demo",
     )
 
     if any(word in title for word in plugin_keywords):
