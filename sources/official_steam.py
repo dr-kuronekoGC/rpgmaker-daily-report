@@ -5,7 +5,7 @@ from config import (
     OFFICIAL_STEAM_SEEN_FILE,
 )
 
-from categories import classify_official
+from categories import classify_steam
 
 from sources.base import get_html
 
@@ -57,7 +57,7 @@ def get_items(seen):
             if "/news/" not in url:
                 continue
 
-            category = classify_official(title)
+            category = classify_steam(title)
 
             adopted_items.append(
                 {
