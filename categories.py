@@ -191,11 +191,23 @@ def classify_forum(title):
 
     title = title.lower()
 
+    # ------------------------
+    # Forum重要事項
+    # ------------------------
+
     if any(word in title for word in FORUM_IMPORTANT_KEYWORDS):
         return "Forum重要事項"
 
+    # ------------------------
+    # 雑談除外
+    # ------------------------
+
     if any(word in title for word in FORUM_IGNORE_KEYWORDS):
         return None
+
+    # ------------------------
+    # 質問
+    # ------------------------
 
     question_keywords = (
         "help",
@@ -211,40 +223,72 @@ def classify_forum(title):
         "where can",
         "is there",
         "anyone know",
+        "why",
+        "error",
+        "issue",
+        "problem",
     )
+
+    # ------------------------
+    # プラグイン
+    # ------------------------
 
     plugin_keywords = (
         "plugin",
+        "plugins",
         "engine",
         "script",
         "tool",
+        "system",
         "visustella",
         "mana",
         "aftermath",
         "battle",
     )
 
+    # ------------------------
+    # 素材
+    # ------------------------
+
     resource_keywords = (
         "art",
         "resource",
         "tileset",
         "sprite",
+        "portrait",
+        "faceset",
         "character",
         "asset",
+        "battler",
+        "music",
+        "bgm",
+        "sound",
+        "icon",
     )
+
+    # ------------------------
+    # ゲーム
+    # ------------------------
 
     game_keywords = (
         "demo",
         "release",
         "released",
-        "project",
+        "launch",
         "chapter",
         "episode",
         "version",
         "beta",
         "alpha",
         "trailer",
+        "steam",
+        "wishlist",
+        "project",
+        "odyssey",
+        "pilgrim",
     )
+
+    # ------------------------
 
     if any(word in title for word in question_keywords):
         return "Forum質問"
@@ -258,7 +302,7 @@ def classify_forum(title):
     if any(word in title for word in game_keywords):
         return "Forum作品"
 
-    return "Forum作品"
+    return None
 
 
 # ==========================================
