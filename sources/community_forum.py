@@ -48,15 +48,12 @@ def get_items(seen):
         if "/threads/" not in href:
             continue
 
-        # ページ送り除外
         if "/page-" in href:
             continue
 
-        # 投稿番号リンク除外
         if "/post-" in href:
             continue
 
-        # latestリンク除外
         if href.endswith("/latest"):
             continue
 
@@ -78,7 +75,31 @@ def get_items(seen):
         if not title:
             continue
 
-        category = classify_forum(title)
+        # --------------------------
+        # 所属フォーラム取得
+        # --------------------------
+
+        forum_name = ""
+
+        forum_link = link.find_parent().find_next("a")
+
+        if forum_link:
+
+            forum_href = forum_link.get("href", "")
+
+            if "/forums/" in forum_href:
+
+                forum_name = forum_link.get_text(
+                    " ",
+                    strip=True,
+                )
+
+        # --------------------------
+
+        category = classify_forum(
+            title,
+            forum_name,
+        )
 
         if category is None:
             continue
