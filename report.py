@@ -131,28 +131,38 @@ def build_report(items):
         if category not in categories:
             continue
 
-        report.append(
-            f"【{category}】"
-        )
+        report.append(f"【{category}】")
+
+        grouped = {}
 
         for item in categories[category]:
 
-            source = item.get(
-                "source",
-                "",
+            key = item["title"].lower().strip()
+
+            grouped.setdefault(
+                key,
+                {
+                    "title": item["title"],
+                    "url": item["url"],
+                    "sources": [],
+                },
             )
 
-            if source:
+            grouped[key]["sources"].append(
+                item.get("source", "")
+            )
 
-                report.append(
-                    f"・[{source}] <{item['url']}|{item['title']}>"
+        for game in grouped.values():
+
+            source_text = " / ".join(
+                sorted(
+                    set(game["sources"])
                 )
+            )
 
-            else:
-
-                report.append(
-                    f"・<{item['url']}|{item['title']}>"
-                )
+            report.append(
+                f"・[{source_text}] <{game['url']}|{game['title']}>"
+            )
 
         report.append("")
 
