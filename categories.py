@@ -13,12 +13,14 @@ DISPLAY_CATEGORY = {
     "Forumプラグイン": "プラグイン",
     "Redditプラグイン": "プラグイン",
     "Steamプラグイン": "プラグイン",
+    "OpenGameArtプラグイン": "プラグイン",
 
     # ---------- Material ----------
     "Forum素材": "素材",
     "Reddit素材": "素材",
     "Steam素材": "素材",
     "itch素材": "素材",
+    "OpenGameArt素材": "素材",
 
     # ---------- Game ----------
     "Forum作品": "ゲーム",
@@ -407,3 +409,42 @@ def classify_itchio(title):
         return "itch素材"
 
     return "itchゲーム"
+
+# ==========================================
+# OpenGameArt
+# ==========================================
+
+def classify_opengameart(title):
+
+    title = title.lower()
+
+    plugin_keywords = (
+        "plugin",
+        "tool",
+    )
+
+    material_keywords = (
+        "tileset",
+        "tile",
+        "sprite",
+        "pixel",
+        "character",
+        "portrait",
+        "icon",
+        "music",
+        "bgm",
+        "sound",
+        "sfx",
+        "effect",
+        "asset",
+        "ui",
+        "gui",
+    )
+
+    if any(word in title for word in plugin_keywords):
+        return "OpenGameArtプラグイン"
+
+    if any(word in title for word in material_keywords):
+        return "OpenGameArt素材"
+
+    return "OpenGameArt素材"
