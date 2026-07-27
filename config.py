@@ -4,14 +4,6 @@
 
 RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 
-# --------------------------------
-# OpenGameArt
-# --------------------------------
-
-OPENGAMEART_URL = "https://opengameart.org/art-search-advanced"
-
-OPENGAMEART_SEEN_FILE = "seen_opengameart.json"
-
 # ----------------------------
 # Official
 # ----------------------------
@@ -78,3 +70,16 @@ ITCHIO_ASSET_RSS = (
 
 ITCHIO_SEEN_FILE = "seen_itchio.json"
 
+# --------------------------------
+# OpenGameArt
+# --------------------------------
+
+OPENGAMEART_URL = "https://opengameart.org/art-search-advanced"
+OPENGAMEART_SEEN_FILE = "seen_opengameart.json"
+
+# ==========================================
+# Kenney
+# ==========================================
+
+KENNEY_RSS = "https://kenney.nl/assets/feed"
+KENNEY_SEEN_FILE = "seen_kenney.json"
