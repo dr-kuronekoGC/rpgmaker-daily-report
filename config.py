@@ -64,9 +64,16 @@ REQUEST_TIMEOUT = 30
 
 SLACK_WEBHOOK_ENV = "SLACK_WEBHOOK_URL"
 
-# ----------------------------
+# ==========================================
 # itch.io
-# ----------------------------
+# ==========================================
 
-ITCHIO_URL = "https://itch.io/games/tag-rpg-maker.xml"
+ITCHIO_GAME_RSS = (
+    "https://itch.io/feed"
+)
+
+ITCHIO_ASSET_RSS = (
+    "https://itch.io/game-assets/feed"
+)
+
 ITCHIO_SEEN_FILE = "seen_itchio.json"
