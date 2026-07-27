@@ -456,7 +456,7 @@ def classify_itch(title):
         return "itchプラグイン"
 
     if any(k in title for k in music_keywords):
-    return "itch素材"
+        return "itch素材"
 
     if any(k in title for k in graphic_keywords):
         return "itch素材"
