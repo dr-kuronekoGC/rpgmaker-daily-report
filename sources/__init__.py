@@ -3,15 +3,26 @@ from . import community_forum
 
 from . import official_site
 from . import official_steam
-from . import official_itchio
 from . import official_opengameart
+from . import official_kenney
+
+from sources.official_itchio import get_items as itchio
 
 SOURCES = (
+
+    community_reddit,
+
     official_site,
     official_steam,
-    official_itchio,
     official_opengameart,
+    official_kenney,
 
     community_forum,
-    community_reddit,
+
+    {
+        "name": "itch.io",
+        "get_items": itchio,
+        "seen_file": "seen_itchio.json",
+    },
+
 )
