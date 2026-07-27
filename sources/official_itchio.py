@@ -4,12 +4,9 @@ from config import (
 )
 
 from sources.rss import collect_rss
-
 from categories import classify_itch
 
-
 SEEN_FILE = ITCHIO_SEEN_FILE
-
 
 def get_items(seen):
 
