@@ -13,6 +13,7 @@ DISPLAY_CATEGORY = {
     "Redditプラグイン": "プラグイン",
     "Steamプラグイン": "プラグイン",
     "OpenGameArtプラグイン": "プラグイン",
+    "Kenneyプラグイン": "プラグイン",
 
     # ---------- Material ----------
     "Forum素材": "素材",
@@ -20,6 +21,7 @@ DISPLAY_CATEGORY = {
     "Steam素材": "素材",
     "itch素材": "素材",
     "OpenGameArt素材": "素材",
+    "Kenney素材": "素材",
 
     # ---------- Game ----------
     "Forum作品": "ゲーム",
@@ -511,3 +513,41 @@ def classify_opengameart(title):
     return None
 
     return "OpenGameArt素材"
+
+# ==========================================
+# Kenney
+# ==========================================
+
+def classify_kenney(title):
+
+    title = title.lower()
+
+    plugin_keywords = (
+        "tool",
+        "editor",
+    )
+
+    material_keywords = (
+        "asset",
+        "pack",
+        "tileset",
+        "sprite",
+        "pixel",
+        "ui",
+        "icon",
+        "music",
+        "audio",
+        "sound",
+        "character",
+        "platformer",
+        "rpg",
+    )
+
+    if any(word in title for word in plugin_keywords):
+        return "Kenneyプラグイン"
+
+    if any(word in title for word in material_keywords):
+        return "Kenney素材"
+
+    return None
+
