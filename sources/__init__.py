@@ -6,7 +6,7 @@ from . import official_steam
 from . import official_opengameart
 from . import official_kenney
 
-from sources.official_itchio import get_items as itchio
+from sources.asset_itchio import get_items as itchio
 
 SOURCES = (
 
