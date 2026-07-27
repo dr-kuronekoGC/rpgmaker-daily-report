@@ -400,6 +400,29 @@ def classify_itch(title):
         "engine",
     )
 
+    music_keywords = (
+        "music",
+        "bgm",
+        "ost",
+        "sound",
+        "sfx",
+        "audio",
+    )
+
+    graphic_keywords = (
+        "tileset",
+        "sprite",
+        "portrait",
+        "character",
+        "pixel",
+        "icon",
+        "gui",
+        "ui",
+        "animation",
+        "parallax",
+        "battleback",
+    )
+
     material_keywords = (
         "tileset",
         "sprite",
@@ -431,6 +454,12 @@ def classify_itch(title):
 
     if any(k in title for k in plugin_keywords):
         return "itchプラグイン"
+
+    if any(k in title for k in music_keywords):
+    return "itch素材"
+
+    if any(k in title for k in graphic_keywords):
+        return "itch素材"
 
     if any(k in title for k in material_keywords):
         return "itch素材"
