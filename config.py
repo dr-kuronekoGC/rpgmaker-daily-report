@@ -73,7 +73,8 @@ ITCHIO_GAME_RSS = (
 )
 
 ITCHIO_ASSET_RSS = (
-    "https://itch.io/game-assets/feed"
+    "https://itch.io/game-assets/tag-rpg-maker/feed"
 )
 
 ITCHIO_SEEN_FILE = "seen_itchio.json"
+
