@@ -389,26 +389,57 @@ def classify_steam(title):
 # itch.io
 # ==========================================
 
-def classify_itchio(title):
+def classify_itch(title):
 
     title = title.lower()
+
+    plugin_keywords = (
+        "plugin",
+        "tool",
+        "system",
+        "engine",
+    )
 
     material_keywords = (
         "tileset",
         "sprite",
+        "pixel",
+        "icons",
+        "icon",
+        "portrait",
+        "character",
+        "generator",
         "asset",
+        "pack",
         "music",
         "bgm",
-        "portrait",
-        "icons",
-        "character",
-        "pack",
+        "sfx",
+        "sound",
+        "ui",
+        "gui",
+        "animation",
+        "effects",
+        "battleback",
+        "parallax",
     )
 
-    if any(word in title for word in material_keywords):
+    game_keywords = (
+        "game",
+        "rpg",
+        "demo",
+    )
+
+    if any(k in title for k in plugin_keywords):
+        return "itchプラグイン"
+
+    if any(k in title for k in material_keywords):
         return "itch素材"
 
-    return "itchゲーム"
+    if any(k in title for k in game_keywords):
+        return "itchゲーム"
+
+    # デフォルトは素材寄り
+    return "itch素材"
 
 # ==========================================
 # OpenGameArt
