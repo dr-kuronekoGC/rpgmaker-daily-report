@@ -8,7 +8,7 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 # OpenGameArt
 # --------------------------------
 
-OPENGAMEART_RSS = "https://opengameart.org/rss.xml"
+OPENGAMEART_URL = "https://opengameart.org/art-search-advanced"
 
 OPENGAMEART_SEEN_FILE = "seen_opengameart.json"
 
