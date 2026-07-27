@@ -4,6 +4,14 @@
 
 RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 
+# --------------------------------
+# OpenGameArt
+# --------------------------------
+
+OPENGAMEART_RSS = "https://opengameart.org/rss.xml"
+
+OPENGAMEART_SEEN_FILE = "seen_opengameart.json"
+
 # ----------------------------
 # Official
 # ----------------------------
