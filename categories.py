@@ -478,33 +478,37 @@ def classify_opengameart(title):
 
     title = title.lower()
 
-    plugin_keywords = (
-        "plugin",
-        "tool",
-    )
-
     material_keywords = (
         "tileset",
         "tile",
         "sprite",
-        "pixel",
         "character",
         "portrait",
+        "face",
+        "battler",
         "icon",
+        "icons",
+        "ui",
+        "gui",
+        "background",
+        "parallax",
+        "animation",
+        "effect",
+        "pixel",
+        "asset",
+        "pack",
         "music",
         "bgm",
         "sound",
         "sfx",
-        "effect",
-        "asset",
-        "ui",
-        "gui",
+        "audio",
+        "ambient",
+        "rpg",
     )
-
-    if any(word in title for word in plugin_keywords):
-        return "OpenGameArtプラグイン"
 
     if any(word in title for word in material_keywords):
         return "OpenGameArt素材"
+
+    return None
 
     return "OpenGameArt素材"
