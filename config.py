@@ -83,3 +83,10 @@ OPENGAMEART_SEEN_FILE = "seen_opengameart.json"
 
 KENNEY_RSS = "https://kenney.nl/assets/feed"
 KENNEY_SEEN_FILE = "seen_kenney.json"
+
+# ==========================================
+# CraftPix
+# ==========================================
+
+CRAFTPIX_RSS = "https://craftpix.net/feed/"
+CRAFTPIX_SEEN_FILE = "seen_craftpix.json"
