@@ -2,26 +2,6 @@
 # Reddit
 # ==========================================
 
-QUESTION_WORDS = (
-    "help",
-    "need help",
-    "looking for",
-    "question",
-    "how to",
-    "how do",
-    "can i",
-    "can someone",
-    "where can",
-    "which",
-    "what",
-    "thoughts?",
-    "any suggestions",
-    "recommendation",
-    "recommendations",
-    "is there",
-    "anyone know",
-)
-
 IGNORE_WORDS = (
     "screenshot saturday",
     "megathread",
@@ -30,53 +10,105 @@ IGNORE_WORDS = (
 
 REDDIT_CATEGORY_KEYWORDS = {
 
-    "Redditゲーム": (
-        "released",
-        "release",
-        "steam page",
-        "trailer",
-        "demo",
-        "now out",
-        "available now",
-        "launch",
-        "launched",
-        "steam store page",
+    # ------------------------
+    # Question
+    # ------------------------
+
+    "Reddit質問": (
+
+        "help",
+        "need help",
+        "looking for",
+        "question",
+        "how to",
+        "how do",
+        "how can",
+        "can i",
+        "can someone",
+        "where can",
+        "which",
+        "what",
+        "thoughts",
+        "recommendation",
+        "recommendations",
+        "is there",
+        "anyone know",
+
     ),
+
+    # ------------------------
+    # Plugin
+    # ------------------------
 
     "Redditプラグイン": (
+
         "plugin",
+        "plugins",
         "script",
+        "engine",
         "system plugin",
-        "plugin finder",
+        "tool",
+
     ),
+
+    # ------------------------
+    # Material
+    # ------------------------
 
     "Reddit素材": (
+
         "tileset",
         "sprite",
-        "asset pack",
-        "character generator",
-        "animation asset",
+        "asset",
         "portrait",
-        "battler",
         "faceset",
-        "character sheet",
-        "bgm",
-        "music pack",
-        "sound pack",
-        "audio asset",
+        "battler",
+        "pixel",
+        "icon",
+        "icons",
         "music",
-        "sound effect",
+        "bgm",
+        "sound",
+        "audio",
         "sfx",
-        "ambient",
+        "character generator",
+
     ),
 
+    # ------------------------
+    # Tips
+    # ------------------------
+
     "RedditTips": (
+
         "tutorial",
         "guide",
         "tips",
         "workflow",
-        "how i made",
         "devlog",
+        "making of",
+        "process",
+
+    ),
+
+    # ------------------------
+    # Game
+    # ------------------------
+
+    "Redditゲーム": (
+
+        "release",
+        "released",
+        "announcement",
+        "launch",
+        "launched",
+        "coming soon",
+        "wishlist",
+        "demo",
+        "trailer",
+        "steam",
+        "available now",
+
     ),
 
 }
@@ -86,15 +118,18 @@ def classify_reddit(title):
 
     title = title.lower()
 
-    if any(word in title for word in IGNORE_WORDS):
+    if any(
+        word in title
+        for word in IGNORE_WORDS
+    ):
         return None
-
-    if any(word in title for word in QUESTION_WORDS):
-        return "Reddit質問"
 
     for category, keywords in REDDIT_CATEGORY_KEYWORDS.items():
 
-        if any(keyword in title for keyword in keywords):
+        if any(
+            keyword in title
+            for keyword in keywords
+        ):
             return category
 
     return None
