@@ -19,6 +19,7 @@ SOURCES = (
     official_opengameart,
     official_kenney,
     official_craftpix,
+    official_gamedevmarket,
 
     community_forum,
 
