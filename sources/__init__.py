@@ -17,6 +17,7 @@ SOURCES = (
     official_steam,
     official_opengameart,
     official_kenney,
+    official_craftpix,
 
     community_forum,
 
