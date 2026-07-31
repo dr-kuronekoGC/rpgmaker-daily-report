@@ -90,3 +90,10 @@ KENNEY_SEEN_FILE = "seen_kenney.json"
 
 CRAFTPIX_RSS = "https://craftpix.net/feed/"
 CRAFTPIX_SEEN_FILE = "seen_craftpix.json"
+
+# ----------------------------
+# GameDevMarket
+# ----------------------------
+
+GAMEDEVMARKET_URL = "https://www.gamedevmarket.net/category/2d-game-assets/"
+GAMEDEVMARKET_SEEN_FILE = "seen_gamedevmarket.json"
