@@ -1,3 +1,7 @@
+from .display import (
+    DISPLAY_CATEGORY,
+)
+
 from .official import (
     classify_official,
 )
@@ -18,11 +22,10 @@ from .itch import (
     classify_itch,
 )
 
-from .asset import (
+from .assets import (
     classify_opengameart,
     classify_kenney,
-)
-
-from .display import (
-    DISPLAY_CATEGORY,
+    classify_craftpix,
+    classify_deviantart,
+    classify_gamedevmarket,
 )
