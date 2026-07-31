@@ -14,6 +14,61 @@ from sources.base import get_html
 SEEN_FILE = FORUM_SEEN_FILE
 
 
+# ==========================================
+# Forum名取得
+# ==========================================
+
+def get_forum_name(url):
+
+    try:
+
+        html = get_html(url)
+
+        soup = BeautifulSoup(
+            html,
+            "html.parser",
+        )
+
+        breadcrumb = soup.select(
+            "ul.p-breadcrumbs li"
+        )
+
+        for item in breadcrumb:
+
+            text = item.get_text(
+                " ",
+                strip=True,
+            )
+
+            if any(
+
+                keyword in text
+
+                for keyword in (
+
+                    "Resources",
+                    "Support",
+                    "Games",
+                    "Development",
+                    "Tools",
+
+                )
+
+            ):
+
+                return text
+
+    except Exception:
+
+        pass
+
+    return ""
+
+
+# ==========================================
+# Main
+# ==========================================
+
 def get_items(seen):
 
     html = get_html(FORUM_URL)
@@ -69,50 +124,9 @@ def get_items(seen):
         if not title:
             continue
 
-        #
-        # ここから追加
-        #
-
-        forum_name = ""
-
-        try:
-
-            thread_html = get_html(href)
-
-            thread = BeautifulSoup(
-                thread_html,
-                "html.parser",
-            )
-
-            breadcrumb = thread.select(
-                "ul.p-breadcrumbs li"
-            )
-
-            for item in breadcrumb:
-
-                text = item.get_text(
-                    " ",
-                    strip=True,
-                )
-
-                if (
-                    "Resources" in text
-                    or "Support" in text
-                    or "Games" in text
-                    or "Development" in text
-                    or "Tools" in text
-                ):
-
-                    forum_name = text
-                    break
-
-        except Exception:
-
-            pass
-
-        #
-        # ここまで追加
-        #
+        forum_name = get_forum_name(
+            href
+        )
 
         category = classify_forum(
             title,
