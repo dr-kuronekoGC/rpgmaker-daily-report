@@ -8,8 +8,6 @@ from . import official_kenney
 from . import official_craftpix
 from . import official_gamedevmarket
 
-from sources.asset_itchio import get_items as itchio
-
 SOURCES = (
 
     community_reddit,
@@ -22,11 +20,5 @@ SOURCES = (
     official_gamedevmarket,
 
     community_forum,
-
-    {
-        "name": "itch.io",
-        "get_items": itchio,
-        "seen_file": "seen_itchio.json",
-    },
 
 )
