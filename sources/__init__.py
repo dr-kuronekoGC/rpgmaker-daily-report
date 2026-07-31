@@ -8,6 +8,8 @@ from . import official_kenney
 from . import official_craftpix
 from . import official_gamedevmarket
 
+from . import asset_itchio
+
 SOURCES = (
 
     community_reddit,
@@ -18,6 +20,8 @@ SOURCES = (
     official_kenney,
     official_craftpix,
     official_gamedevmarket,
+
+    asset_itchio,
 
     community_forum,
 
