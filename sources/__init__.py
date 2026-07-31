@@ -5,6 +5,7 @@ from . import official_site
 from . import official_steam
 from . import official_opengameart
 from . import official_kenney
+from . import official_craftpix
 
 from sources.asset_itchio import get_items as itchio
 
