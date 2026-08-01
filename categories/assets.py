@@ -214,6 +214,6 @@ def classify_visustella(title):
     )
 
     if any(word in title for word in plugin_keywords):
-        return "VisuStellaプラグイン"
+        return "Steamプラグイン"
 
-    return "VisuStellaプラグイン"
+    return "Steamプラグイン"
