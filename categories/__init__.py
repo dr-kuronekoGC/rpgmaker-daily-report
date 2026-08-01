@@ -23,13 +23,5 @@ from .itch import (
 )
 
 from .assets import (
-    classify_opengameart,
-    classify_kenney,
-    classify_craftpix,
-    classify_deviantart,
-    classify_gamedevmarket,
-)
-
-from .asset import (
-    classify_visustella,
+    classify_asset,
 )
