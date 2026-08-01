@@ -84,32 +84,43 @@ def classify_asset(title):
 
     title = title.lower()
 
+    category = None
+
+    # 将来用
+    # tileset
+    # portrait
+    # icon
+    # bgm
+    # se
+    # ui
+    tags = []
+
     # -------------------------
     # Plugin
     # -------------------------
 
     if any(k in title for k in PLUGIN_KEYWORDS):
-        return "プラグイン"
+        category = "プラグイン"
 
     # -------------------------
     # Sound
     # -------------------------
 
-    if any(k in title for k in SOUND_KEYWORDS):
-        return "サウンド素材"
+    elif any(k in title for k in SOUND_KEYWORDS):
+        category = "サウンド素材"
 
     # -------------------------
     # Graphic
     # -------------------------
 
-    if any(k in title for k in GRAPHIC_KEYWORDS):
-        return "グラフィック素材"
+    elif any(k in title for k in GRAPHIC_KEYWORDS):
+        category = "グラフィック素材"
 
     # -------------------------
     # Game
     # -------------------------
 
-    if any(k in title for k in GAME_KEYWORDS):
-        return "ゲーム公開"
+    elif any(k in title for k in GAME_KEYWORDS):
+        category = "ゲーム公開"
 
-    return None
+    return category
