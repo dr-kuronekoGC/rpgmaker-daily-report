@@ -97,3 +97,10 @@ CRAFTPIX_SEEN_FILE = "seen_craftpix.json"
 
 GAMEDEVMARKET_URL = "https://www.gamedevmarket.net/category/2d-game-assets/"
 GAMEDEVMARKET_SEEN_FILE = "seen_gamedevmarket.json"
+
+# ==========================================
+# VisuStella
+# ==========================================
+
+VISUSTELLA_RSS = "https://visustellamz.com/blogs/news.atom"
+VISUSTELLA_SEEN_FILE = "seen_visustella.json"
