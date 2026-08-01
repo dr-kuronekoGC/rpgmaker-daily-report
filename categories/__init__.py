@@ -29,3 +29,7 @@ from .assets import (
     classify_deviantart,
     classify_gamedevmarket,
 )
+
+from .asset import (
+    classify_visustella,
+)
