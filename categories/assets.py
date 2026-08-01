@@ -190,3 +190,30 @@ def classify_deviantart(title):
         return "DeviantArt素材"
 
     return None
+
+# ==========================================
+# VisuStella
+# ==========================================
+
+def classify_visustella(title):
+
+    title = title.lower()
+
+    plugin_keywords = (
+        "plugin",
+        "tier",
+        "core",
+        "battle",
+        "message",
+        "quest",
+        "menu",
+        "skill",
+        "system",
+        "update",
+        "patch",
+    )
+
+    if any(word in title for word in plugin_keywords):
+        return "VisuStellaプラグイン"
+
+    return "VisuStellaプラグイン"
