@@ -5,7 +5,7 @@ from config import (
 
 from sources.rss import collect_rss
 
-from categories import classify_kenney
+from categories.asset import classify_asset
 
 
 SEEN_FILE = KENNEY_SEEN_FILE
@@ -16,6 +16,6 @@ def get_items(seen):
     return collect_rss(
         url=KENNEY_RSS,
         seen=seen,
-        classify=classify_kenney,
+        classify=classify_asset,
         source_name="Kenney",
     )
