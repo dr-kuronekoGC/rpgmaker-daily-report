@@ -102,5 +102,5 @@ GAMEDEVMARKET_SEEN_FILE = "seen_gamedevmarket.json"
 # VisuStella
 # ----------------------------
 
-VISUSTELLA_RSS = "https://visustellamz.itch.io/plugins.xml"
+VISUSTELLA_URL = "https://visustellamz.itch.io/"
 VISUSTELLA_SEEN_FILE = "seen_visustella.json"
