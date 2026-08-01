@@ -1,17 +1,12 @@
 from bs4 import BeautifulSoup
-
 from config import (
     VISUSTELLA_URL,
     VISUSTELLA_SEEN_FILE,
 )
-
 from categories.asset import classify_asset
-
 from sources.base import get_html
 
-
 SEEN_FILE = VISUSTELLA_SEEN_FILE
-
 
 def get_items(seen):
 
