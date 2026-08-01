@@ -2,77 +2,148 @@
 # Asset 共通分類
 # ==========================================
 
-GRAPHIC_KEYWORDS = (
+GRAPHIC_KEYWORDS = {
 
-    # タイル
-    "tileset",
-    "tile",
+    "tileset": (
+        "tileset",
+        "tiles",
+        "tile",
+    ),
 
-    # キャラ
-    "sprite",
-    "character",
-    "faceset",
-    "face",
-    "portrait",
-    "battler",
-    "enemy",
+    "sprite": (
+        "sprite",
+        "character",
+        "npc",
+        "enemy",
+        "monster",
+        "battler",
+    ),
 
-    # UI
-    "icon",
-    "icons",
-    "ui",
-    "gui",
+    "portrait": (
+        "portrait",
+        "face",
+        "faceset",
+    ),
 
-    # 背景
-    "parallax",
-    "background",
-    "battleback",
+    "icon": (
+        "icon",
+        "icons",
+    ),
 
-    # エフェクト
-    "animation",
-    "effect",
-    "effects",
+    "ui": (
+        "ui",
+        "gui",
+        "hud",
+        "menu",
+    ),
 
-    # その他
-    "pixel",
-    "asset",
-    "assets",
-    "graphic",
-)
+    "background": (
+        "background",
+        "parallax",
+        "battleback",
+        "environment",
+        "map",
+    ),
 
-SOUND_KEYWORDS = (
+    "animation": (
+        "animation",
+        "effect",
+        "effects",
+    ),
 
-    "music",
-    "bgm",
-    "ost",
-    "sound",
-    "audio",
-    "sfx",
-    "ambient",
-    "voice",
-)
+    "graphic": (
+        "pixel",
+        "graphic",
+        "asset",
+        "assets",
+        "prop",
+        "props",
+        "weapon",
+        "armor",
+        "building",
+    ),
+
+}
+
+
+SOUND_KEYWORDS = {
+
+    "bgm": (
+        "bgm",
+        "music",
+        "music pack",
+        "soundtrack",
+        "ost",
+    ),
+
+    "sfx": (
+        "sfx",
+        "sound",
+        "sound effect",
+        "audio",
+        "ambient",
+        "voice",
+        "wav",
+        "ogg",
+        "mp3",
+        "loop",
+    ),
+
+}
+
 
 PLUGIN_KEYWORDS = (
 
     "plugin",
     "plugins",
+    "script",
     "tool",
     "editor",
     "engine",
     "generator",
-    "script",
+
+    # RPG Maker系で頻出
+    "battle",
+    "quest",
+    "inventory",
+    "message",
+    "hud",
+    "craft",
+    "skill tree",
+    "save",
 )
+
 
 GAME_KEYWORDS = (
 
-    "game",
-    "demo",
-    "project",
     "release",
     "released",
     "launch",
+    "launched",
+    "available now",
+    "demo",
     "chapter",
     "episode",
+
+)
+
+
+PLUGIN_URL_WORDS = (
+    "plugin",
+    "plugins",
+)
+
+GRAPHIC_URL_WORDS = (
+    "asset",
+    "assets",
+    "sprite",
+    "tileset",
+)
+
+SOUND_URL_WORDS = (
+    "music",
+    "audio",
+    "sound",
 )
 
 
@@ -80,47 +151,71 @@ GAME_KEYWORDS = (
 # 共通分類
 # ==========================================
 
-def classify_asset(title):
+def classify_asset(title, href=""):
 
     title = title.lower()
+    href = href.lower()
 
-    category = None
-
-    # 将来用
-    # tileset
-    # portrait
-    # icon
-    # bgm
-    # se
-    # ui
     tags = []
 
-    # -------------------------
+    # ---------------------------------
+    # URL優先判定
+    # ---------------------------------
+
+    if any(word in href for word in PLUGIN_URL_WORDS):
+
+        return "プラグイン", tags
+
+    if any(word in href for word in SOUND_URL_WORDS):
+
+        return "サウンド素材", tags
+
+    if any(word in href for word in GRAPHIC_URL_WORDS):
+
+        return "グラフィック素材", tags
+
+    # ---------------------------------
     # Plugin
-    # -------------------------
+    # ---------------------------------
 
-    if any(k in title for k in PLUGIN_KEYWORDS):
-        category = "プラグイン"
+    if any(word in title for word in PLUGIN_KEYWORDS):
 
-    # -------------------------
+        return "プラグイン", tags
+
+    # ---------------------------------
     # Sound
-    # -------------------------
+    # ---------------------------------
 
-    elif any(k in title for k in SOUND_KEYWORDS):
-        category = "サウンド素材"
+    for tag, words in SOUND_KEYWORDS.items():
 
-    # -------------------------
+        if any(word in title for word in words):
+
+            tags.append(tag)
+
+    if tags:
+
+        return "サウンド素材", tags
+
+    # ---------------------------------
     # Graphic
-    # -------------------------
+    # ---------------------------------
 
-    elif any(k in title for k in GRAPHIC_KEYWORDS):
-        category = "グラフィック素材"
+    for tag, words in GRAPHIC_KEYWORDS.items():
 
-    # -------------------------
+        if any(word in title for word in words):
+
+            tags.append(tag)
+
+    if tags:
+
+        return "グラフィック素材", tags
+
+    # ---------------------------------
     # Game
-    # -------------------------
+    # ---------------------------------
 
-    elif any(k in title for k in GAME_KEYWORDS):
-        category = "ゲーム公開"
+    if any(word in title for word in GAME_KEYWORDS):
 
-    return category
+        return "ゲーム公開", tags
+
+    return None, []
