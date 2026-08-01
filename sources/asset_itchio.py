@@ -4,15 +4,18 @@ from config import (
 )
 
 from sources.rss import collect_rss
-from categories import classify_itch
+
+from categories.asset import classify_asset
+
 
 SEEN_FILE = ITCHIO_SEEN_FILE
+
 
 def get_items(seen):
 
     return collect_rss(
         url=ITCHIO_ASSET_RSS,
         seen=seen,
-        classify=classify_itch,
+        classify=classify_asset,
         source_name="itch.io",
     )
