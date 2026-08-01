@@ -1,9 +1,6 @@
 from urllib.parse import urljoin
-
 from bs4 import BeautifulSoup
-
 from sources.base import get_html
-
 
 def collect_html(
 
@@ -86,7 +83,16 @@ def collect_html(
         if not title:
             continue
 
-        category = classify(title)
+      try:
+
+          category = classify(
+              title,
+              href,
+          )
+
+      except TypeError:
+
+          category = classify(title)
 
         if category is None:
             continue
