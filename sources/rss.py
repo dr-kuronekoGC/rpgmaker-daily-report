@@ -8,6 +8,24 @@ def collect_rss(
     classify,
     source_name,
 ):
+    """
+    RSS共通取得処理
+
+    Parameters
+    ----------
+    url:
+        RSS URL
+    seen:
+        過去取得済みURL一覧
+    classify:
+        タイトルからカテゴリ判定する関数
+    source_name:
+        表示用名称
+
+    Returns
+    -------
+    items, new_seen
+    """
 
     feed = get_feed(url)
 
@@ -19,28 +37,36 @@ def collect_rss(
 
     for entry in feed.entries:
 
-        item_url = entry.link
+        item_url = entry.get("link")
+
+        if not item_url:
+            continue
 
         if item_url in seen:
             continue
 
         new_seen.append(item_url)
 
-        category = classify(entry.title)
+        title = entry.get(
+            "title",
+            "タイトルなし"
+        )
+
+        category = classify(title)
 
         if category is None:
             continue
 
         adopted_items.append(
             {
-                "title": entry.title,
+                "title": title,
                 "url": item_url,
                 "category": category,
             }
         )
 
         print(
-            f"[{source_name}][{category}] {entry.title}"
+            f"[{source_name}][{category}] {title}"
         )
 
     print(
