@@ -12,6 +12,7 @@ def collect_html(
     classify,
     selector,
     source_name,
+    href_filter=None,
 ):
 
     html = get_html(url)
@@ -29,10 +30,6 @@ def collect_html(
 
     for tag in soup.select(selector):
 
-        # --------------------
-        # URL取得
-        # --------------------
-
         href = None
 
         if tag.name == "a":
@@ -49,11 +46,15 @@ def collect_html(
         if not href:
             continue
 
-        href = urljoin(url, href)
+        href = urljoin(
+            url,
+            href,
+        )
 
-        # --------------------
-        # 重複除去
-        # --------------------
+        if href_filter:
+
+            if not href_filter(href):
+                continue
 
         if href in seen_urls:
             continue
@@ -63,10 +64,6 @@ def collect_html(
         if href in seen:
             continue
 
-        # --------------------
-        # タイトル取得
-        # --------------------
-
         title = tag.get_text(
             " ",
             strip=True,
@@ -75,28 +72,61 @@ def collect_html(
         if not title:
             continue
 
-        category = classify(title)
+
+        try:
+
+            result = classify(
+                title,
+                href,
+            )
+
+        except TypeError:
+
+            result = classify(
+                title,
+            )
+
+
+        if isinstance(result, tuple):
+
+            category = result[0]
+            tags = result[1]
+
+        else:
+
+            category = result
+            tags = []
+
 
         if category is None:
             continue
 
+
+        item = {
+            "title": title,
+            "url": href,
+            "category": category,
+            "source": source_name,
+        }
+
+
+        if tags:
+            item["tags"] = tags
+
+
+        adopted_items.append(item)
+
         new_seen.append(href)
 
-        adopted_items.append(
-            {
-                "title": title,
-                "url": href,
-                "category": category,
-                "source": source_name,
-            }
-        )
 
         print(
             f"[{source_name}][{category}] {title}"
         )
 
+
     print(
         f"[{source_name}] New: {len(adopted_items)}"
     )
+
 
     return adopted_items, new_seen
