@@ -18,10 +18,21 @@ def is_plugin_page(href):
 
 def get_items(seen):
 
-    return collect_html(
-        url=VISUSTELLA_URL,
-        seen=seen,
-        classify=classify_asset,
-        source_name="VisuStella",
-        href_filter=is_plugin_page,
-    )
+    try:
+
+        return collect_html(
+            url=VISUSTELLA_URL,
+            seen=seen,
+            classify=classify_asset,
+            selector="a[href]",
+            source_name="VisuStella",
+            href_filter=is_plugin_page,
+        )
+
+    except Exception as e:
+
+        print(
+            f"[VisuStella] Error: {e}"
+        )
+
+        return [], seen
