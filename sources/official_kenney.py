@@ -5,7 +5,7 @@ from config import (
 
 from sources.rss import collect_rss
 
-from categories.asset import classify_asset
+from categories.assets import classify_asset
 
 
 SEEN_FILE = KENNEY_SEEN_FILE
