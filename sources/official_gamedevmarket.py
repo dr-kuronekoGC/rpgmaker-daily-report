@@ -3,7 +3,7 @@ from config import (
     GAMEDEVMARKET_SEEN_FILE,
 )
 
-from categories.asset import classify_asset
+from categories.assets import classify_asset
 from sources.html import collect_html
 
 
