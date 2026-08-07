@@ -3,9 +3,9 @@ from config import (
     VISUSTELLA_SEEN_FILE,
 )
 
-from categories.asset import classify_asset
+from categories.assets import classify_asset
 
-from sources.html_source import collect_html
+from sources.html import collect_html
 
 
 SEEN_FILE = VISUSTELLA_SEEN_FILE
