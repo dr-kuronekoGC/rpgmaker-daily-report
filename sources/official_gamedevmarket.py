@@ -4,6 +4,7 @@ from config import (
 )
 
 from categories.assets import classify_asset
+
 from sources.html import collect_html
 
 
@@ -12,10 +13,20 @@ SEEN_FILE = GAMEDEVMARKET_SEEN_FILE
 
 def get_items(seen):
 
-    return collect_html(
-        url=GAMEDEVMARKET_URL,
-        seen=seen,
-        classify=classify_asset,
-        selector="a[href]",
-        source_name="GameDevMarket",
-    )
+    try:
+
+        return collect_html(
+            url=GAMEDEVMARKET_URL,
+            seen=seen,
+            classify=classify_asset,
+            selector="a[href]",
+            source_name="GameDevMarket",
+        )
+
+    except Exception as e:
+
+        print(
+            f"[GameDevMarket] Error: {e}"
+        )
+
+        return [], seen
