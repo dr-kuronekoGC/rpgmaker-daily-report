@@ -73,10 +73,17 @@ def build_report(items):
 
     for item in items:
 
-        display_category = DISPLAY_CATEGORY.get(
-            item["category"],
+        category_info = DISPLAY_CATEGORY.get(
             item["category"],
         )
+
+        if category_info:
+
+            display_category = category_info["group"]
+
+        else:
+
+            display_category = item["category"]
 
         item = item.copy()
 
