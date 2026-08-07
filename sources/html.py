@@ -87,6 +87,7 @@ def collect_html(
                 "title": title,
                 "url": href,
                 "category": category,
+                "source": source_name,
             }
         )
 
