@@ -13,45 +13,49 @@ from config import (
 
 from categories import DISPLAY_CATEGORY
 
+
 # ==========================================
-# Category Display
+# Report Group
 # ==========================================
 
 CATEGORY_GROUPS = {
-    "★★★★★ 今日の注目": [
-        "本体ニュース",
-        "UNITE",
-        "Forum重要事項",
-    ],
+    "★★★★★ 今日の注目": {
+        "groups": [
+            "公式",
+        ],
+        "priority": 5,
+    },
 
-    "★★★★☆ 新作ゲーム": [
-        "ゲーム",
-    ],
+    "★★★★☆ 新作ゲーム": {
+        "groups": [
+            "ゲーム",
+        ],
+        "priority": 4,
+    },
 
-    "★★★☆☆ プラグイン・素材": [
-        "プラグイン",
-        "素材",
-    ],
+    "★★★☆☆ プラグイン・素材": {
+        "groups": [
+            "プラグイン",
+            "グラフィック素材",
+            "サウンド素材",
+        ],
+        "priority": 3,
+    },
 
-    "★★☆☆☆ 開発情報・Tips": [
-        "Tips",
-    ],
+    "★★☆☆☆ 開発情報・Tips": {
+        "groups": [
+            "Tips",
+        ],
+        "priority": 2,
+    },
 
-    "★☆☆☆☆ 質問・相談": [
-        "質問",
-    ],
+    "★☆☆☆☆ 質問・相談": {
+        "groups": [
+            "質問",
+        ],
+        "priority": 1,
+    },
 }
-
-DISPLAY_ORDER = [
-    "本体ニュース",
-    "UNITE",
-    "Forum重要事項",
-    "プラグイン",
-    "素材",
-    "ゲーム",
-    "Tips",
-    "質問",
-]
 
 
 # ==========================================
@@ -67,9 +71,17 @@ def build_report(items):
     period = get_period()
 
     if not items:
-        return f"{date_str} {period}\n新着ニュースはありません。"
+
+        return (
+            f"{date_str} {period}\n"
+            "新着ニュースはありません。"
+        )
 
     categories = {}
+
+    # --------------------------------------
+    # 表示グループへ変換
+    # --------------------------------------
 
     for item in items:
 
@@ -79,25 +91,29 @@ def build_report(items):
 
         if category_info:
 
-            display_category = category_info["group"]
+            display_group = category_info["group"]
 
         else:
 
-            display_category = item["category"]
+            display_group = item["category"]
 
         item = item.copy()
 
-        item["display_category"] = display_category
+        item["display_group"] = display_group
 
         categories.setdefault(
-            display_category,
-            []
+            display_group,
+            [],
         ).append(item)
+
+    # --------------------------------------
+    # Report Header
+    # --------------------------------------
 
     report = []
 
     report.append(
-        f"📬 RPG Maker Daily Report"
+        "📬 RPG Maker Daily Report"
     )
 
     report.append(
@@ -106,16 +122,16 @@ def build_report(items):
 
     report.append("")
 
-    # ----------------------
+    # --------------------------------------
     # Summary
-    # ----------------------
+    # --------------------------------------
 
-    for header, group in CATEGORY_GROUPS.items():
+    for header, config in CATEGORY_GROUPS.items():
 
         total = sum(
-            len(categories[c])
-            for c in group
-            if c in categories
+            len(categories[group])
+            for group in config["groups"]
+            if group in categories
         )
 
         if total == 0:
@@ -126,54 +142,94 @@ def build_report(items):
         )
 
     report.append("")
-    report.append("────────────────────")
+
+    report.append(
+        "────────────────────"
+    )
+
     report.append("")
 
-    # ----------------------
+    # --------------------------------------
     # Detail
-    # ----------------------
+    # --------------------------------------
 
-    for category in DISPLAY_ORDER:
+    for header, config in CATEGORY_GROUPS.items():
 
-        if category not in categories:
+        groups = config["groups"]
+
+        group_exists = any(
+            group in categories
+            for group in groups
+        )
+
+        if not group_exists:
             continue
 
-        report.append(f"【{category}】")
+        # ------------------------------
+        # 各表示グループ
+        # ------------------------------
 
-        grouped = {}
+        for display_group in groups:
 
-        for item in categories[category]:
-
-            key = item["title"].lower().strip()
-
-            grouped.setdefault(
-                key,
-                {
-                    "title": item["title"],
-                    "url": item["url"],
-                    "sources": [],
-                },
-            )
-
-            grouped[key]["sources"].append(
-                item.get("source", "")
-            )
-
-        for game in grouped.values():
-
-            source_text = " / ".join(
-                sorted(
-                    set(game["sources"])
-                )
-            )
+            if display_group not in categories:
+                continue
 
             report.append(
-                f"・[{source_text}] <{game['url']}|{game['title']}>"
+                f"【{display_group}】"
             )
 
-        report.append("")
+            grouped = {}
+
+            for item in categories[
+                display_group
+            ]:
+
+                key = (
+                    item["title"]
+                    .lower()
+                    .strip()
+                )
+
+                grouped.setdefault(
+                    key,
+                    {
+                        "title": item["title"],
+                        "url": item["url"],
+                        "sources": [],
+                    },
+                )
+
+                source = item.get(
+                    "source",
+                    "",
+                )
+
+                if source:
+
+                    grouped[key][
+                        "sources"
+                    ].append(source)
+
+            for game in grouped.values():
+
+                source_text = " / ".join(
+                    sorted(
+                        set(
+                            game["sources"]
+                        )
+                    )
+                )
+
+                report.append(
+                    f"・[{source_text}] "
+                    f"<{game['url']}|"
+                    f"{game['title']}>"
+                )
+
+            report.append("")
 
     return "\n".join(report)
+
 
 # ==========================================
 # Slack
