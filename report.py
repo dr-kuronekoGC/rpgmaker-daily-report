@@ -18,44 +18,46 @@ from categories import DISPLAY_CATEGORY
 # Report Group
 # ==========================================
 
-CATEGORY_GROUPS = {
-    "★★★★★ 今日の注目": {
-        "groups": [
-            "公式",
-        ],
-        "priority": 5,
+REPORT_GROUPS = [
+    {
+        "title": "★★★★★ 今日の注目",
+        "groups": ["公式"],
     },
-
-    "★★★★☆ 新作ゲーム": {
-        "groups": [
-            "ゲーム",
-        ],
-        "priority": 4,
+    {
+        "title": "★★★★☆ 新作ゲーム",
+        "groups": ["ゲーム"],
     },
-
-    "★★★☆☆ プラグイン・素材": {
+    {
+        "title": "★★★☆☆ プラグイン・素材",
         "groups": [
             "プラグイン",
             "グラフィック素材",
             "サウンド素材",
         ],
-        "priority": 3,
     },
+    {
+        "title": "★★☆☆☆ 開発情報・Tips",
+        "groups": ["Tips"],
+    },
+    {
+        "title": "★☆☆☆☆ 質問・相談",
+        "groups": ["質問"],
+    },
+]
 
-    "★★☆☆☆ 開発情報・Tips": {
-        "groups": [
-            "Tips",
-        ],
-        "priority": 2,
-    },
 
-    "★☆☆☆☆ 質問・相談": {
-        "groups": [
-            "質問",
-        ],
-        "priority": 1,
-    },
-}
+# ==========================================
+# Category
+# ==========================================
+
+def get_display_group(category):
+
+    info = DISPLAY_CATEGORY.get(category)
+
+    if info:
+        return info["group"]
+
+    return category
 
 
 # ==========================================
@@ -66,7 +68,9 @@ def build_report(items):
 
     now = now_jst()
 
-    date_str = now.strftime("%Y.%m.%d")
+    date_str = now.strftime(
+        "%Y.%m.%d"
+    )
 
     period = get_period()
 
@@ -85,17 +89,9 @@ def build_report(items):
 
     for item in items:
 
-        category_info = DISPLAY_CATEGORY.get(
-            item["category"],
+        display_group = get_display_group(
+            item["category"]
         )
-
-        if category_info:
-
-            display_group = category_info["group"]
-
-        else:
-
-            display_group = item["category"]
 
         item = item.copy()
 
@@ -107,7 +103,7 @@ def build_report(items):
         ).append(item)
 
     # --------------------------------------
-    # Report Header
+    # Header
     # --------------------------------------
 
     report = []
@@ -126,7 +122,7 @@ def build_report(items):
     # Summary
     # --------------------------------------
 
-    for header, config in CATEGORY_GROUPS.items():
+    for config in REPORT_GROUPS:
 
         total = sum(
             len(categories[group])
@@ -138,7 +134,7 @@ def build_report(items):
             continue
 
         report.append(
-            f"{header}（{total}件）"
+            f"{config['title']}（{total}件）"
         )
 
     report.append("")
@@ -153,23 +149,9 @@ def build_report(items):
     # Detail
     # --------------------------------------
 
-    for header, config in CATEGORY_GROUPS.items():
+    for config in REPORT_GROUPS:
 
-        groups = config["groups"]
-
-        group_exists = any(
-            group in categories
-            for group in groups
-        )
-
-        if not group_exists:
-            continue
-
-        # ------------------------------
-        # 各表示グループ
-        # ------------------------------
-
-        for display_group in groups:
+        for display_group in config["groups"]:
 
             if display_group not in categories:
                 continue
