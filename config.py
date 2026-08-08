@@ -95,7 +95,9 @@ CRAFTPIX_SEEN_FILE = "seen_craftpix.json"
 # GameDevMarket
 # ----------------------------
 
-GAMEDEVMARKET_URL = "https://www.gamedevmarket.net/category/2d-game-assets/"
+GAMEDEVMARKET_URL = (
+    "https://www.gamedevmarket.net/category/2d"
+)
 GAMEDEVMARKET_SEEN_FILE = "seen_gamedevmarket.json"
 
 # ----------------------------
