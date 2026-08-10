@@ -2,6 +2,15 @@
 # Forum Classification
 # ==========================================
 
+from .keywords import (
+    PLUGIN_KEYWORDS,
+    GRAPHIC_KEYWORDS,
+    SOUND_KEYWORDS,
+    GAME_KEYWORDS,
+    QUESTION_KEYWORDS,
+)
+
+
 FORUM_IMPORTANT_KEYWORDS = (
     "forum",
     "closure",
@@ -29,60 +38,25 @@ FORUM_IGNORE_KEYWORDS = (
     "memories",
 )
 
-QUESTION_KEYWORDS = (
-    "help",
-    "looking for",
-    "need",
-    "question",
-    "replace",
-    "how",
-    "why",
-    "error",
-    "issue",
-    "problem",
-)
-
-PLUGIN_KEYWORDS = (
-    "plugin",
-    "plugins",
-    "script",
-    "tool",
+FORUM_PLUGIN_EXTRA_KEYWORDS = (
     "engine",
     "system",
     "visustella",
 )
 
-MATERIAL_KEYWORDS = (
-    "tileset",
-    "sprite",
-    "portrait",
-    "faceset",
-    "character",
-    "asset",
-    "pixel",
-    "icon",
-    "music",
-    "bgm",
-    "sound",
-    "resource",
+FORUM_MATERIAL_EXTRA_KEYWORDS = (
     "art",
 )
 
-GAME_KEYWORDS = (
-    "release",
-    "released",
-    "demo",
-    "chapter",
-    "episode",
-    "beta",
-    "alpha",
-    "trailer",
-    "steam",
+FORUM_GAME_EXTRA_KEYWORDS = (
     "project",
 )
 
 
-def _contains(title, keywords):
+def _contains(
+    title,
+    keywords,
+):
     return any(
         word in title
         for word in keywords
@@ -136,7 +110,7 @@ def classify_forum(
         return "Forum作品"
 
     # ----------------------------
-    # タイトル
+    # 質問
     # ----------------------------
 
     if _contains(
@@ -145,21 +119,46 @@ def classify_forum(
     ):
         return "Forum質問"
 
+    # ----------------------------
+    # プラグイン
+    # ----------------------------
+
     if _contains(
         title,
-        PLUGIN_KEYWORDS,
+        PLUGIN_KEYWORDS
+        + FORUM_PLUGIN_EXTRA_KEYWORDS,
     ):
         return "Forumプラグイン"
 
-    if _contains(
-        title,
-        MATERIAL_KEYWORDS,
-    ):
-        return "Forum素材"
+    # ----------------------------
+    # サウンド素材
+    # ----------------------------
 
     if _contains(
         title,
-        GAME_KEYWORDS,
+        SOUND_KEYWORDS,
+    ):
+        return "Forumサウンド素材"
+
+    # ----------------------------
+    # グラフィック素材
+    # ----------------------------
+
+    if _contains(
+        title,
+        GRAPHIC_KEYWORDS
+        + FORUM_MATERIAL_EXTRA_KEYWORDS,
+    ):
+        return "Forumグラフィック素材"
+
+    # ----------------------------
+    # ゲーム
+    # ----------------------------
+
+    if _contains(
+        title,
+        GAME_KEYWORDS
+        + FORUM_GAME_EXTRA_KEYWORDS,
     ):
         return "Forum作品"
 
