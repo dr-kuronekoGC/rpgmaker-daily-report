@@ -2,64 +2,20 @@
 # Reddit Classification
 # ==========================================
 
+from .keywords import (
+    SOUND_KEYWORDS,
+    GRAPHIC_KEYWORDS,
+    PLUGIN_KEYWORDS,
+    GAME_KEYWORDS,
+    QUESTION_KEYWORDS,
+)
+
+
 IMPORTANT_KEYWORDS = (
     "official",
     "announcement",
     "update",
     "release",
-)
-
-PLUGIN_KEYWORDS = (
-    "plugin",
-    "plugins",
-    "script",
-    "visustella",
-    "hakuen",
-    "casper",
-    "galv",
-)
-
-ASSET_KEYWORDS = (
-    "asset",
-    "assets",
-    "resource",
-    "resources",
-    "tileset",
-    "sprite",
-    "portrait",
-    "faceset",
-    "character",
-    "pixel",
-    "icon",
-    "music",
-    "bgm",
-    "sound",
-    "sfx",
-)
-
-GAME_KEYWORDS = (
-    "release",
-    "released",
-    "game",
-    "demo",
-    "chapter",
-    "episode",
-    "beta",
-    "alpha",
-    "trailer",
-    "steam",
-)
-
-QUESTION_KEYWORDS = (
-    "help",
-    "question",
-    "how",
-    "why",
-    "looking for",
-    "need",
-    "error",
-    "issue",
-    "problem",
 )
 
 TIPS_KEYWORDS = (
@@ -87,10 +43,6 @@ def classify_reddit(
 ):
     """
     Reddit投稿を分類する。
-
-    Returns
-    -------
-    str | None
     """
 
     title = title.lower().strip()
@@ -121,15 +73,14 @@ def classify_reddit(
 
     if _contains(
         title,
-        ASSET_KEYWORDS,
+        SOUND_KEYWORDS,
     ):
+        return "Redditサウンド素材"
 
-        if _contains(
-            title,
-            SOUND_KEYWORDS,
-        ):
-            return "Redditサウンド素材"
-
+    if _contains(
+        title,
+        GRAPHIC_KEYWORDS,
+    ):
         return "Redditグラフィック素材"
 
     # ----------------------------
@@ -163,12 +114,3 @@ def classify_reddit(
         return "Reddit質問"
 
     return None
-
-
-SOUND_KEYWORDS = (
-    "music",
-    "bgm",
-    "sound",
-    "sfx",
-    "audio",
-)
