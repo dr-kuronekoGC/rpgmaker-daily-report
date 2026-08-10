@@ -49,12 +49,16 @@ GAME_KEYWORDS = (
 )
 
 QUESTION_KEYWORDS = (
-    "help",
     "question",
-    "how",
-    "why",
+    "questions",
+    "help",
+    "how do i",
+    "how can i",
+    "how to",
+    "why does",
+    "why is",
     "looking for",
-    "need",
+    "need help",
     "error",
     "issue",
     "problem",
