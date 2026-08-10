@@ -1,80 +1,86 @@
 # ==========================================
-# Steam
+# Steam Classification
 # ==========================================
 
-def classify_steam(title):
+PLUGIN_KEYWORDS = (
+    "plugin",
+    "plugins",
+    "script",
+    "extension",
+    "visustella",
+    "hakuen",
+    "casper",
+    "galv",
+)
 
-    title = title.lower()
+GAME_KEYWORDS = (
+    "game",
+    "release",
+    "released",
+    "demo",
+    "chapter",
+    "episode",
+    "beta",
+    "alpha",
+    "trailer",
+)
 
-    if "unite" in title:
-        return "UNITE"
+QUESTION_KEYWORDS = (
+    "help",
+    "question",
+    "how",
+    "why",
+    "error",
+    "issue",
+    "problem",
+)
 
-    # ------------------------
-    # Plugin
-    # ------------------------
 
-    plugin_keywords = (
-
-        "plugin",
-        "plugins",
-        "script",
-        "system",
-        "engine",
-        "tool",
-        "builder",
-        "generator",
-
+def _contains(title, keywords):
+    return any(
+        keyword in title
+        for keyword in keywords
     )
 
-    # ------------------------
-    # Material
-    # ------------------------
 
-    material_keywords = (
+def classify_steam(
+    title,
+    url="",
+):
+    """
+    Steam情報を分類する。
+    """
 
-        "asset",
-        "assets",
-        "tileset",
-        "tilesets",
-        "music",
-        "bgm",
-        "sound",
-        "audio",
-        "portrait",
-        "character",
-        "faceset",
-        "sprite",
-        "pixel",
-        "battleback",
-        "enemy",
-        "monster",
-        "pack",
-        "dlc",
+    title = title.lower().strip()
 
-    )
+    # ----------------------------
+    # プラグイン
+    # ----------------------------
 
-    # ------------------------
-    # Game
-    # ------------------------
-
-    game_keywords = (
-
-        "game",
-        "project",
-        "release",
-        "released",
-        "launch",
-        "demo",
-
-    )
-
-    if any(word in title for word in plugin_keywords):
+    if _contains(
+        title,
+        PLUGIN_KEYWORDS,
+    ):
         return "Steamプラグイン"
 
-    if any(word in title for word in material_keywords):
-        return "Steam素材"
+    # ----------------------------
+    # 質問
+    # ----------------------------
 
-    if any(word in title for word in game_keywords):
+    if _contains(
+        title,
+        QUESTION_KEYWORDS,
+    ):
+        return "Steam質問"
+
+    # ----------------------------
+    # ゲーム
+    # ----------------------------
+
+    if _contains(
+        title,
+        GAME_KEYWORDS,
+    ):
         return "Steamゲーム"
 
-    return "本体ニュース"
+    return None
