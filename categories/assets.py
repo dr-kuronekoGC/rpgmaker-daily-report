@@ -2,27 +2,9 @@
 # Asset Classification
 # ==========================================
 
-GRAPHIC_KEYWORDS = (
-    "tileset",
-    "sprite",
-    "portrait",
-    "faceset",
-    "character",
-    "asset",
-    "pixel",
-    "icon",
-    "background",
-    "ui",
-    "graphic",
-    "art",
-)
-
-SOUND_KEYWORDS = (
-    "music",
-    "bgm",
-    "sound",
-    "sfx",
-    "audio",
+from .keywords import (
+    GRAPHIC_KEYWORDS,
+    SOUND_KEYWORDS,
 )
 
 
@@ -39,7 +21,7 @@ def classify_asset(
         (カテゴリ, タグ)
     """
 
-    title = title.lower()
+    title = title.lower().strip()
 
     tags = []
 
@@ -52,7 +34,10 @@ def classify_asset(
         for keyword in SOUND_KEYWORDS
     ):
 
-        if "bgm" in title or "music" in title:
+        if (
+            "bgm" in title
+            or "music" in title
+        ):
             tags.append("bgm")
 
         if (
