@@ -1,135 +1,174 @@
 # ==========================================
-# Reddit
+# Reddit Classification
 # ==========================================
 
-IGNORE_WORDS = (
-    "screenshot saturday",
-    "megathread",
-    "weekly thread",
+IMPORTANT_KEYWORDS = (
+    "official",
+    "announcement",
+    "update",
+    "release",
 )
 
-REDDIT_CATEGORY_KEYWORDS = {
+PLUGIN_KEYWORDS = (
+    "plugin",
+    "plugins",
+    "script",
+    "visustella",
+    "hakuen",
+    "casper",
+    "galv",
+)
 
-    # ------------------------
-    # Question
-    # ------------------------
+ASSET_KEYWORDS = (
+    "asset",
+    "assets",
+    "resource",
+    "resources",
+    "tileset",
+    "sprite",
+    "portrait",
+    "faceset",
+    "character",
+    "pixel",
+    "icon",
+    "music",
+    "bgm",
+    "sound",
+    "sfx",
+)
 
-    "Reddit質問": (
+GAME_KEYWORDS = (
+    "release",
+    "released",
+    "game",
+    "demo",
+    "chapter",
+    "episode",
+    "beta",
+    "alpha",
+    "trailer",
+    "steam",
+)
 
-        "help",
-        "need help",
-        "looking for",
-        "question",
-        "how to",
-        "how do",
-        "how can",
-        "can i",
-        "can someone",
-        "where can",
-        "which",
-        "what",
-        "thoughts",
-        "recommendation",
-        "recommendations",
-        "is there",
-        "anyone know",
+QUESTION_KEYWORDS = (
+    "help",
+    "question",
+    "how",
+    "why",
+    "looking for",
+    "need",
+    "error",
+    "issue",
+    "problem",
+)
 
-    ),
-
-    # ------------------------
-    # Plugin
-    # ------------------------
-
-    "Redditプラグイン": (
-
-        "plugin",
-        "plugins",
-        "script",
-        "engine",
-        "system plugin",
-        "tool",
-
-    ),
-
-    # ------------------------
-    # Material
-    # ------------------------
-
-    "Reddit素材": (
-
-        "tileset",
-        "sprite",
-        "asset",
-        "portrait",
-        "faceset",
-        "battler",
-        "pixel",
-        "icon",
-        "icons",
-        "music",
-        "bgm",
-        "sound",
-        "audio",
-        "sfx",
-        "character generator",
-
-    ),
-
-    # ------------------------
-    # Tips
-    # ------------------------
-
-    "RedditTips": (
-
-        "tutorial",
-        "guide",
-        "tips",
-        "workflow",
-        "devlog",
-        "making of",
-        "process",
-
-    ),
-
-    # ------------------------
-    # Game
-    # ------------------------
-
-    "Redditゲーム": (
-
-        "release",
-        "released",
-        "announcement",
-        "launch",
-        "launched",
-        "coming soon",
-        "wishlist",
-        "demo",
-        "trailer",
-        "steam",
-        "available now",
-
-    ),
-
-}
+TIPS_KEYWORDS = (
+    "tip",
+    "tips",
+    "tutorial",
+    "guide",
+    "how to",
+)
 
 
-def classify_reddit(title):
+def _contains(
+    title,
+    keywords,
+):
+    return any(
+        keyword in title
+        for keyword in keywords
+    )
 
-    title = title.lower()
 
-    if any(
-        word in title
-        for word in IGNORE_WORDS
+def classify_reddit(
+    title,
+    url="",
+):
+    """
+    Reddit投稿を分類する。
+
+    Returns
+    -------
+    str | None
+    """
+
+    title = title.lower().strip()
+
+    # ----------------------------
+    # 重要事項
+    # ----------------------------
+
+    if _contains(
+        title,
+        IMPORTANT_KEYWORDS,
     ):
-        return None
+        return "Reddit重要事項"
 
-    for category, keywords in REDDIT_CATEGORY_KEYWORDS.items():
+    # ----------------------------
+    # プラグイン
+    # ----------------------------
 
-        if any(
-            keyword in title
-            for keyword in keywords
+    if _contains(
+        title,
+        PLUGIN_KEYWORDS,
+    ):
+        return "Redditプラグイン"
+
+    # ----------------------------
+    # 素材
+    # ----------------------------
+
+    if _contains(
+        title,
+        ASSET_KEYWORDS,
+    ):
+
+        if _contains(
+            title,
+            SOUND_KEYWORDS,
         ):
-            return category
+            return "Redditサウンド素材"
+
+        return "Redditグラフィック素材"
+
+    # ----------------------------
+    # ゲーム
+    # ----------------------------
+
+    if _contains(
+        title,
+        GAME_KEYWORDS,
+    ):
+        return "Redditゲーム"
+
+    # ----------------------------
+    # Tips
+    # ----------------------------
+
+    if _contains(
+        title,
+        TIPS_KEYWORDS,
+    ):
+        return "RedditTips"
+
+    # ----------------------------
+    # 質問
+    # ----------------------------
+
+    if _contains(
+        title,
+        QUESTION_KEYWORDS,
+    ):
+        return "Reddit質問"
 
     return None
+
+
+SOUND_KEYWORDS = (
+    "music",
+    "bgm",
+    "sound",
+    "sfx",
+    "audio",
+)
