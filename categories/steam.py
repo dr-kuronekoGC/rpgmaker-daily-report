@@ -2,41 +2,17 @@
 # Steam Classification
 # ==========================================
 
-PLUGIN_KEYWORDS = (
-    "plugin",
-    "plugins",
-    "script",
-    "extension",
-    "visustella",
-    "hakuen",
-    "casper",
-    "galv",
-)
-
-GAME_KEYWORDS = (
-    "game",
-    "release",
-    "released",
-    "demo",
-    "chapter",
-    "episode",
-    "beta",
-    "alpha",
-    "trailer",
-)
-
-QUESTION_KEYWORDS = (
-    "help",
-    "question",
-    "how",
-    "why",
-    "error",
-    "issue",
-    "problem",
+from .keywords import (
+    PLUGIN_KEYWORDS,
+    GAME_KEYWORDS,
+    QUESTION_KEYWORDS,
 )
 
 
-def _contains(title, keywords):
+def _contains(
+    title,
+    keywords,
+):
     return any(
         keyword in title
         for keyword in keywords
