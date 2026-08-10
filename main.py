@@ -10,7 +10,8 @@ from report import (
 
 from sources import (
     community_reddit,
-    official,
+    community_forum,
+    official_site,
     official_steam,
     official_opengameart,
     official_kenney,
@@ -18,13 +19,12 @@ from sources import (
     official_gamedevmarket,
     official_visustella,
     asset_itchio,
-    forum,
 )
 
 
 SOURCES = [
     community_reddit,
-    official,
+    official_site,
     official_steam,
     official_opengameart,
     official_kenney,
@@ -32,7 +32,7 @@ SOURCES = [
     official_gamedevmarket,
     official_visustella,
     asset_itchio,
-    forum,
+    community_forum,
 ]
 
 
