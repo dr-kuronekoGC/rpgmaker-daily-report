@@ -8,7 +8,32 @@ from report import (
     send_to_slack,
 )
 
-from sources import SOURCES
+from sources import (
+    community_reddit,
+    official,
+    official_steam,
+    official_opengameart,
+    official_kenney,
+    official_craftpix,
+    official_gamedevmarket,
+    official_visustella,
+    asset_itchio,
+    forum,
+)
+
+
+SOURCES = [
+    community_reddit,
+    official,
+    official_steam,
+    official_opengameart,
+    official_kenney,
+    official_craftpix,
+    official_gamedevmarket,
+    official_visustella,
+    asset_itchio,
+    forum,
+]
 
 
 def main():
@@ -17,26 +42,40 @@ def main():
 
     for source in SOURCES:
 
-        seen = load_seen_file(
-            source.SEEN_FILE
-        )
+        try:
 
-        items, new_seen = source.get_items(seen)
+            seen = load_seen_file(
+                source.SEEN_FILE
+            )
 
-        save_seen_file(
-            source.SEEN_FILE,
-            new_seen,
-        )
+            items, new_seen = source.get_items(
+                seen
+            )
 
-        all_items.extend(items)
+            save_seen_file(
+                source.SEEN_FILE,
+                new_seen,
+            )
 
-    report = build_report(all_items)
+            all_items.extend(items)
+
+        except Exception as e:
+
+            print(
+                f"[{source.__name__}] Error: {e}"
+            )
+
+    report = build_report(
+        all_items
+    )
 
     print()
     print("----- REPORT -----")
     print(report)
 
-    send_to_slack(report)
+    send_to_slack(
+        report
+    )
 
 
 if __name__ == "__main__":
