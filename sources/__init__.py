@@ -1,23 +1,27 @@
+# ==========================================
+# Sources
+# ==========================================
+
 from . import community_reddit
-from . import community_forum
-
-from . import official_site
+from . import official
 from . import official_steam
-
 from . import official_opengameart
 from . import official_kenney
 from . import official_craftpix
 from . import official_gamedevmarket
 from . import official_visustella
-
 from . import asset_itchio
+from . import community_forum
 
 
-SOURCES = (
+# ==========================================
+# Source List
+# ==========================================
+
+SOURCES = [
 
     community_reddit,
-
-    official_site,
+    official,
     official_steam,
 
     official_opengameart,
@@ -30,4 +34,4 @@ SOURCES = (
 
     community_forum,
 
-)
+]
