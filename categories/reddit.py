@@ -89,16 +89,6 @@ def classify_reddit(
         return "Redditグラフィック素材"
 
     # ----------------------------
-    # ゲーム
-    # ----------------------------
-
-    if _contains(
-        title,
-        GAME_KEYWORDS,
-    ):
-        return "Redditゲーム"
-
-    # ----------------------------
     # Tips
     # ----------------------------
 
@@ -117,5 +107,33 @@ def classify_reddit(
         QUESTION_KEYWORDS,
     ):
         return "Reddit質問"
+
+    # ----------------------------
+    # ゲーム
+    # ----------------------------
+
+    GAME_PRIORITY_KEYWORDS = (
+        "released",
+        "release",
+        "demo",
+        "trailer",
+        "beta",
+        "alpha",
+        "chapter",
+        "episode",
+    )
+
+    if _contains(
+        title,
+        GAME_PRIORITY_KEYWORDS,
+    ):
+        return "Redditゲーム"
+
+    if (
+        "my game" in title
+        or "my new game" in title
+        or "new game" in title
+    ):
+        return "Redditゲーム"
 
     return None
