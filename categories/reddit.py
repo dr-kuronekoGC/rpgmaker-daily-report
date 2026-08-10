@@ -14,8 +14,9 @@ from .keywords import (
 IMPORTANT_KEYWORDS = (
     "official",
     "announcement",
-    "update",
-    "release",
+    "major update",
+    "new version",
+    "version update",
 )
 
 TIPS_KEYWORDS = (
@@ -68,7 +69,7 @@ def classify_reddit(
         return "Redditプラグイン"
 
     # ----------------------------
-    # 素材
+    # サウンド素材
     # ----------------------------
 
     if _contains(
@@ -76,6 +77,10 @@ def classify_reddit(
         SOUND_KEYWORDS,
     ):
         return "Redditサウンド素材"
+
+    # ----------------------------
+    # グラフィック素材
+    # ----------------------------
 
     if _contains(
         title,
