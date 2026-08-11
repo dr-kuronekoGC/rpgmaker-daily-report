@@ -88,7 +88,7 @@ KENNEY_SEEN_FILE = "seen_kenney.json"
 # CraftPix
 # ==========================================
 
-CRAFTPIX_RSS = "https://craftpix.net/feed/"
+CRAFTPIX_RSS = "https://craftpix.net/freebies/"
 CRAFTPIX_SEEN_FILE = "seen_craftpix.json"
 
 # ----------------------------
