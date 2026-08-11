@@ -32,6 +32,10 @@ def collect_html(
 
         href = None
 
+        # ----------------------------
+        # URL取得
+        # ----------------------------
+
         if tag.name == "a":
 
             href = tag.get("href")
@@ -51,10 +55,18 @@ def collect_html(
             href,
         )
 
+        # ----------------------------
+        # URLフィルター
+        # ----------------------------
+
         if href_filter:
 
             if not href_filter(href):
                 continue
+
+        # ----------------------------
+        # 重複URL除外
+        # ----------------------------
 
         if href in seen_urls:
             continue
@@ -64,6 +76,10 @@ def collect_html(
         if href in seen:
             continue
 
+        # ----------------------------
+        # タイトル取得
+        # ----------------------------
+
         title = tag.get_text(
             " ",
             strip=True,
@@ -72,6 +88,17 @@ def collect_html(
         if not title:
             continue
 
+        # ----------------------------
+        # ナビゲーション等の
+        # 異常に長いテキストを除外
+        # ----------------------------
+
+        if len(title) > 300:
+            continue
+
+        # ----------------------------
+        # 分類
+        # ----------------------------
 
         try:
 
@@ -86,6 +113,9 @@ def collect_html(
                 title,
             )
 
+        # ----------------------------
+        # 分類結果
+        # ----------------------------
 
         if isinstance(result, tuple):
 
@@ -97,10 +127,12 @@ def collect_html(
             category = result
             tags = []
 
-
         if category is None:
             continue
 
+        # ----------------------------
+        # 採用
+        # ----------------------------
 
         item = {
             "title": title,
@@ -109,24 +141,19 @@ def collect_html(
             "source": source_name,
         }
 
-
         if tags:
             item["tags"] = tags
-
 
         adopted_items.append(item)
 
         new_seen.append(href)
 
-
         print(
             f"[{source_name}][{category}] {title}"
         )
 
-
     print(
         f"[{source_name}] New: {len(adopted_items)}"
     )
-
 
     return adopted_items, new_seen
