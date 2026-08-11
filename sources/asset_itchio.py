@@ -15,6 +15,13 @@ from categories.assets import classify_asset
 SEEN_FILE = ITCHIO_SEEN_FILE
 
 
+ITCHIO_IGNORE_TITLES = (
+    "assets",
+    "albums & soundtracks",
+    "upload your game assets",
+)
+
+
 def is_itchio_item(url):
 
     excluded = (
@@ -38,6 +45,20 @@ def is_itchio_item(url):
     )
 
 
+def classify_itchio_asset(
+    title,
+    url="",
+):
+
+    if title.lower().strip() in ITCHIO_IGNORE_TITLES:
+        return None
+
+    return classify_asset(
+        title,
+        url,
+    )
+
+
 def get_items(seen):
 
     try:
@@ -45,7 +66,7 @@ def get_items(seen):
         return collect_html(
             url=ITCHIO_ASSET_RSS,
             seen=seen,
-            classify=classify_asset,
+            classify=classify_itchio_asset,
             selector="a",
             source_name="itch.io",
             href_filter=is_itchio_item,
