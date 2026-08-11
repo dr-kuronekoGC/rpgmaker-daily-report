@@ -1,5 +1,5 @@
 # ==========================================
-# itch.io Games - Debug
+# itch.io Games - Debug 2
 # ==========================================
 
 from config import (
@@ -21,36 +21,42 @@ def get_items(seen):
         ITCHIO_GAME_RSS
     )
 
-    print(
-        f"[itch.io] HTML length: {len(html)}"
-    )
-
     soup = BeautifulSoup(
         html,
         "html.parser",
     )
 
-    links = soup.select(
-        "a[href]"
-    )
-
     print(
-        f"[itch.io] Links: {len(links)}"
+        f"[itch.io] HTML length: {len(html)}"
     )
 
-    for link in links[:20]:
+    # ゲームカード候補を確認
+    selectors = (
+        ".game_cell",
+        ".game_link",
+        ".game_title",
+        ".game_grid_widget",
+        ".game_thumb",
+    )
 
-        href = link.get("href")
+    for selector in selectors:
 
-        title = link.get_text(
-            " ",
-            strip=True,
+        elements = soup.select(
+            selector
         )
 
         print(
-            f"[itch.io][DEBUG] "
-            f"{title[:80]} -> {href}"
+            f"[itch.io] "
+            f"{selector}: "
+            f"{len(elements)}"
         )
+
+        for element in elements[:5]:
+
+            print(
+                f"[itch.io][DEBUG] "
+                f"{element.get_text(' ', strip=True)[:100]}"
+            )
 
     print(
         "[itch.io] New: 0"
