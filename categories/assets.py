@@ -8,6 +8,33 @@ from .keywords import (
 )
 
 
+# 明確に素材を示すキーワード
+STRONG_SOUND_KEYWORDS = (
+    "music",
+    "bgm",
+    "sound",
+    "sfx",
+    "audio",
+    "soundtrack",
+)
+
+
+STRONG_GRAPHIC_KEYWORDS = (
+    "sprite",
+    "tileset",
+    "tile",
+    "character",
+    "portrait",
+    "faceset",
+    "icon",
+    "background",
+    "texture",
+    "pixel art",
+    "pixel",
+    "ui",
+)
+
+
 def classify_asset(
     title,
     url="",
@@ -22,21 +49,23 @@ def classify_asset(
     """
 
     title = title.lower().strip()
+    url = url.lower().strip()
 
     tags = []
 
-    # ----------------------------
-    # サウンド
-    # ----------------------------
+    # ==================================
+    # サウンド素材
+    # ==================================
 
     if any(
         keyword in title
-        for keyword in SOUND_KEYWORDS
+        for keyword in STRONG_SOUND_KEYWORDS
     ):
 
         if (
             "bgm" in title
             or "music" in title
+            or "soundtrack" in title
         ):
             tags.append("bgm")
 
@@ -49,13 +78,13 @@ def classify_asset(
 
         return "サウンド素材", tags
 
-    # ----------------------------
-    # グラフィック
-    # ----------------------------
+    # ==================================
+    # グラフィック素材
+    # ==================================
 
     if any(
         keyword in title
-        for keyword in GRAPHIC_KEYWORDS
+        for keyword in STRONG_GRAPHIC_KEYWORDS
     ):
 
         if "ui" in title:
@@ -67,7 +96,10 @@ def classify_asset(
         if "background" in title:
             tags.append("background")
 
-        if "tileset" in title:
+        if (
+            "tileset" in title
+            or "tile" in title
+        ):
             tags.append("tileset")
 
         if (
@@ -77,6 +109,27 @@ def classify_asset(
         ):
             tags.append("character")
 
+        if (
+            "icon" in title
+        ):
+            tags.append("icon")
+
+        return "グラフィック素材", tags
+
+    # ==================================
+    # 従来のキーワード判定
+    # ==================================
+
+    if any(
+        keyword in title
+        for keyword in SOUND_KEYWORDS
+    ):
+        return "サウンド素材", tags
+
+    if any(
+        keyword in title
+        for keyword in GRAPHIC_KEYWORDS
+    ):
         return "グラフィック素材", tags
 
     return None, []
