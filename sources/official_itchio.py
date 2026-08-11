@@ -1,5 +1,5 @@
 # ==========================================
-# itch.io Games - Debug 2
+# itch.io Games
 # ==========================================
 
 from config import (
@@ -26,40 +26,92 @@ def get_items(seen):
         "html.parser",
     )
 
-    print(
-        f"[itch.io] HTML length: {len(html)}"
-    )
+    adopted_items = []
 
-    # ゲームカード候補を確認
-    selectors = (
-        ".game_cell",
-        ".game_link",
-        ".game_title",
-        ".game_grid_widget",
-        ".game_thumb",
-    )
+    new_seen = seen.copy()
 
-    for selector in selectors:
+    seen_urls = set()
 
-        elements = soup.select(
-            selector
+    for cell in soup.select(
+        ".game_cell"
+    ):
+
+        title_tag = cell.select_one(
+            ".game_title"
+        )
+
+        if not title_tag:
+            continue
+
+        title = title_tag.get_text(
+            " ",
+            strip=True,
+        )
+
+        if not title:
+            continue
+
+        link = title_tag.find(
+            "a"
+        )
+
+        if not link:
+            link = cell.select_one(
+                "a[href]"
+            )
+
+        if not link:
+            continue
+
+        href = link.get(
+            "href"
+        )
+
+        if not href:
+            continue
+
+        if href.startswith(
+            "/"
+        ):
+            href = (
+                "https://itch.io"
+                + href
+            )
+
+        if href in seen_urls:
+            continue
+
+        seen_urls.add(href)
+
+        if href in seen:
+            continue
+
+        item = {
+            "title": title,
+            "url": href,
+            "category": "itchゲーム",
+            "source": "itch.io",
+        }
+
+        adopted_items.append(
+            item
+        )
+
+        new_seen.append(
+            href
         )
 
         print(
-            f"[itch.io] "
-            f"{selector}: "
-            f"{len(elements)}"
+            f"[itch.io g][itchゲーム] "
+            f"{title}"
         )
 
-        for element in elements[:5]:
-
-            print(
-                f"[itch.io][DEBUG] "
-                f"{element.get_text(' ', strip=True)[:100]}"
-            )
-
     print(
-        "[itch.io] New: 0"
+        f"[itch.io g] New: "
+        f"{len(adopted_items)}"
     )
 
-    return [], seen
+    return (
+        adopted_items,
+        new_seen,
+    )
