@@ -18,6 +18,7 @@ from sources import (
     official_craftpix,
     official_gamedevmarket,
     official_visustella,
+    official_itchio,
     asset_itchio,
 )
 
@@ -31,6 +32,7 @@ SOURCES = [
     official_craftpix,
     official_gamedevmarket,
     official_visustella,
+    official_itchio,
     asset_itchio,
     community_forum,
 ]
@@ -57,7 +59,9 @@ def main():
                 new_seen,
             )
 
-            all_items.extend(items)
+            all_items.extend(
+                items
+            )
 
         except Exception as e:
 
