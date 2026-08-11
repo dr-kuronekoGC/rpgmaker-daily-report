@@ -34,16 +34,9 @@ def get_items(seen):
 
     seen_urls = set()
 
-    for item in soup.select(
-        ".game_cell"
+    for link in soup.select(
+        "a[href]"
     ):
-
-        link = item.select_one(
-            "a[href]"
-        )
-
-        if not link:
-            continue
 
         href = link.get(
             "href"
@@ -57,6 +50,27 @@ def get_items(seen):
             href,
         )
 
+        # itch.ioの個別ゲームページだけ
+        if ".itch.io/" not in href:
+            continue
+
+        # 一覧・タグ・ユーザー等を除外
+        excluded = (
+            "itch.io/games/",
+            "itch.io/game-assets/",
+            "itch.io/search",
+            "itch.io/jam/",
+            "itch.io/user/",
+            "itch.io/community/",
+            "itch.io/docs/",
+        )
+
+        if any(
+            path in href
+            for path in excluded
+        ):
+            continue
+
         if href in seen_urls:
             continue
 
@@ -65,18 +79,7 @@ def get_items(seen):
         if href in seen:
             continue
 
-        # 作者ページ・一覧ページなどを除外
-        if ".itch.io/" not in href:
-            continue
-
-        title_tag = item.select_one(
-            ".game_title"
-        )
-
-        if not title_tag:
-            continue
-
-        title = title_tag.get_text(
+        title = link.get_text(
             " ",
             strip=True,
         )
@@ -84,13 +87,23 @@ def get_items(seen):
         if not title:
             continue
 
+        # ナビゲーション文字列を除外
+        if title.lower() in (
+            "add to collection",
+            "play in browser",
+            "download",
+        ):
+            continue
+
+        item = {
+            "title": title,
+            "url": href,
+            "category": "itchゲーム",
+            "source": "itch.io",
+        }
+
         adopted_items.append(
-            {
-                "title": title,
-                "url": href,
-                "category": "itchゲーム",
-                "source": "itch.io",
-            }
+            item
         )
 
         new_seen.append(
