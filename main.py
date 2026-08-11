@@ -18,7 +18,6 @@ from sources import (
     official_craftpix,
     official_gamedevmarket,
     official_visustella,
-    official_itchio,
     asset_itchio,
 )
 
@@ -32,7 +31,6 @@ SOURCES = [
     official_craftpix,
     official_gamedevmarket,
     official_visustella,
-    official_itchio,
     asset_itchio,
     community_forum,
 ]
