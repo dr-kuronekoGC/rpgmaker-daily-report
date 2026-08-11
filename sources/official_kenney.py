@@ -13,9 +13,19 @@ SEEN_FILE = KENNEY_SEEN_FILE
 
 def get_items(seen):
 
-    return collect_rss(
-        url=KENNEY_RSS,
-        seen=seen,
-        classify=classify_asset,
-        source_name="Kenney",
-    )
+    try:
+
+        return collect_rss(
+            url=KENNEY_RSS,
+            seen=seen,
+            classify=classify_asset,
+            source_name="Kenney",
+        )
+
+    except Exception as e:
+
+        print(
+            f"[Kenney] Skip: {e}"
+        )
+
+        return [], seen
