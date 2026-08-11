@@ -17,24 +17,7 @@ SEEN_FILE = ITCHIO_SEEN_FILE
 
 def is_itchio_game(url):
 
-    excluded = (
-        "itch.io/games/",
-        "itch.io/game-assets/",
-        "itch.io/search",
-        "itch.io/jam/",
-        "itch.io/user/",
-    )
-
-    if any(
-        path in url
-        for path in excluded
-    ):
-        return False
-
-    return (
-        "itch.io/" in url
-        and url.rstrip("/") != ITCHIO_GAME_RSS.rstrip("/")
-    )
+    return True
 
 
 def get_items(seen):
