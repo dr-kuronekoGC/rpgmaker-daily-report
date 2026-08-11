@@ -17,6 +17,16 @@ SEEN_FILE = KENNEY_SEEN_FILE
 
 def is_kenney_item(url):
 
+    # タグ・カテゴリ・検索ページは除外
+    if "/assets/tag:" in url:
+        return False
+
+    if "/assets/category:" in url:
+        return False
+
+    if "/assets/search:" in url:
+        return False
+
     return (
         "/assets/" in url
         and url.rstrip("/") != KENNEY_RSS.rstrip("/")
