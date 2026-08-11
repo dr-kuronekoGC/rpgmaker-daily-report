@@ -17,15 +17,25 @@ SEEN_FILE = KENNEY_SEEN_FILE
 
 def is_kenney_item(url):
 
-    # タグ・カテゴリ・検索ページは除外
-    if "/assets/tag:" in url:
+    # ----------------------------
+    # 除外ページ
+    # ----------------------------
+
+    excluded = (
+        "/assets/tag:",
+        "/assets/category:",
+        "/assets/search:",
+    )
+
+    if any(
+        path in url
+        for path in excluded
+    ):
         return False
 
-    if "/assets/category:" in url:
-        return False
-
-    if "/assets/search:" in url:
-        return False
+    # ----------------------------
+    # 実素材ページ
+    # ----------------------------
 
     return (
         "/assets/" in url
