@@ -22,6 +22,10 @@ def is_craftpix_item(url):
         "/tag/",
         "/author/",
         "/page/",
+        "/freebies/",
+        "/blog/",
+        "/about/",
+        "/contact/",
     )
 
     if any(
