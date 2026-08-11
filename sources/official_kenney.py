@@ -1,9 +1,13 @@
+# ==========================================
+# Kenney
+# ==========================================
+
 from config import (
     KENNEY_RSS,
     KENNEY_SEEN_FILE,
 )
 
-from sources.rss import collect_rss
+from sources.html import collect_html
 
 from categories.assets import classify_asset
 
@@ -11,15 +15,25 @@ from categories.assets import classify_asset
 SEEN_FILE = KENNEY_SEEN_FILE
 
 
+def is_kenney_item(url):
+
+    return (
+        "/assets/" in url
+        and url.rstrip("/") != KENNEY_RSS.rstrip("/")
+    )
+
+
 def get_items(seen):
 
     try:
 
-        return collect_rss(
+        return collect_html(
             url=KENNEY_RSS,
             seen=seen,
             classify=classify_asset,
+            selector="a[href*='/assets/']",
             source_name="Kenney",
+            href_filter=is_kenney_item,
         )
 
     except Exception as e:
