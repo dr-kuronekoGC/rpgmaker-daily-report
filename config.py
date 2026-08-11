@@ -81,7 +81,7 @@ OPENGAMEART_SEEN_FILE = "seen_opengameart.json"
 # Kenney
 # ==========================================
 
-KENNEY_RSS = "https://kenney.nl/assets/feed"
+KENNEY_RSS = "https://kenney.nl/assets"
 KENNEY_SEEN_FILE = "seen_kenney.json"
 
 # ==========================================
