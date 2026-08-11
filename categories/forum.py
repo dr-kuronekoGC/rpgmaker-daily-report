@@ -37,6 +37,21 @@ FORUM_IGNORE_KEYWORDS = (
     "the end",
     "best friend",
     "memories",
+
+    # ----------------------------
+    # 雑談・アンケート
+    # ----------------------------
+
+    "poll",
+    "polls",
+    "just curious",
+    "out of curiosity",
+    "fun question",
+    "fun questions",
+    "discussion",
+    "general discussion",
+    "your favorite",
+    "what do you think",
 )
 
 
