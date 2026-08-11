@@ -18,12 +18,11 @@ SEEN_FILE = ITCHIO_SEEN_FILE
 def is_itchio_game(url):
 
     excluded = (
-        "/tag/",
-        "/games/",
-        "/game-assets/",
-        "/search",
-        "/jam/",
-        "/user/",
+        "itch.io/games/",
+        "itch.io/game-assets/",
+        "itch.io/search",
+        "itch.io/jam/",
+        "itch.io/user/",
     )
 
     if any(
@@ -54,7 +53,7 @@ def get_items(seen):
     except Exception as e:
 
         print(
-            f"[itch.io Games] Skip: {e}"
+            f"[itch.io] Skip: {e}"
         )
 
         return [], seen
