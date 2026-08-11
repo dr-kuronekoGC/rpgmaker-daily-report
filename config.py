@@ -61,11 +61,11 @@ SLACK_WEBHOOK_ENV = "SLACK_WEBHOOK_URL"
 # ==========================================
 
 ITCHIO_GAME_RSS = (
-    "https://itch.io/games/tag-rpg-maker"
+    "https://itch.io/games/tag-rpgmaker"
 )
 
 ITCHIO_ASSET_RSS = (
-    "https://itch.io/game-assets/tag-rpg-maker"
+    "https://itch.io/game-assets/tag-rpg-maker-mz/tag-rpgmaker"
 )
 
 ITCHIO_SEEN_FILE = "seen_itchio.json"
