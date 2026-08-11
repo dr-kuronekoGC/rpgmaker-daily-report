@@ -15,49 +15,125 @@ from categories import DISPLAY_CATEGORY
 
 
 # ==========================================
-# Report Group
+# Category Display
 # ==========================================
 
-REPORT_GROUPS = [
-    {
-        "title": "★★★★★ 今日の注目",
-        "groups": ["公式"],
-    },
-    {
-        "title": "★★★★☆ 新作ゲーム",
-        "groups": ["ゲーム"],
-    },
-    {
-        "title": "★★★☆☆ プラグイン・素材",
-        "groups": [
-            "プラグイン",
-            "グラフィック素材",
-            "サウンド素材",
-        ],
-    },
-    {
-        "title": "★★☆☆☆ 開発情報・Tips",
-        "groups": ["Tips"],
-    },
-    {
-        "title": "★☆☆☆☆ 質問・相談",
-        "groups": ["質問"],
-    },
+CATEGORY_GROUPS = {
+    "★★★★★ 今日の注目": [
+        "本体ニュース",
+        "UNITE",
+        "Forum重要事項",
+    ],
+
+    "★★★★☆ 新作ゲーム": [
+        "ゲーム",
+    ],
+
+    "★★★☆☆ プラグイン・素材": [
+        "プラグイン",
+        "素材",
+    ],
+
+    "★★☆☆☆ 開発情報・Tips": [
+        "Tips",
+    ],
+
+    "★☆☆☆☆ 質問・相談": [
+        "質問",
+    ],
+}
+
+
+DISPLAY_ORDER = [
+    "本体ニュース",
+    "UNITE",
+    "Forum重要事項",
+    "プラグイン",
+    "素材",
+    "ゲーム",
+    "Tips",
+    "質問",
 ]
 
 
 # ==========================================
-# Category
+# Category Helpers
 # ==========================================
 
-def get_display_group(category):
+def get_display_category(category):
 
-    info = DISPLAY_CATEGORY.get(category)
+    """
+    内部カテゴリをSlack表示用カテゴリへ変換する。
+    """
 
-    if info:
-        return info["group"]
+    info = DISPLAY_CATEGORY.get(
+        category
+    )
+
+    if isinstance(info, dict):
+
+        group = info.get(
+            "group"
+        )
+
+        if group == "グラフィック素材":
+            return "グラフィック素材"
+
+        if group == "サウンド素材":
+            return "サウンド素材"
+
+        if group == "プラグイン":
+            return "プラグイン"
+
+        if group == "ゲーム":
+            return "ゲーム"
+
+        if group == "Tips":
+            return "Tips"
+
+        if group == "質問":
+            return "質問"
+
+        if group == "公式":
+            return category
 
     return category
+
+
+def get_report_group(category):
+
+    """
+    サマリー表示用の大分類を返す。
+    """
+
+    display_category = get_display_category(
+        category
+    )
+
+    if display_category in (
+        "プラグイン",
+        "グラフィック素材",
+        "サウンド素材",
+    ):
+        return "プラグイン・素材"
+
+    if display_category == "ゲーム":
+        return "新作ゲーム"
+
+    if display_category == "Tips":
+        return "開発情報・Tips"
+
+    if display_category == "質問":
+        return "質問・相談"
+
+    if display_category in (
+        "本体ニュース",
+        "UNITE",
+        "Forum重要事項",
+    ):
+        return "今日の注目"
+
+    return None
 
 
 # ==========================================
@@ -84,27 +160,30 @@ def build_report(items):
     categories = {}
 
     # --------------------------------------
-    # 表示グループへ変換
+    # カテゴリ整理
     # --------------------------------------
 
     for item in items:
 
-        display_group = get_display_group(
-            item["category"]
-        )
-
         item = item.copy()
 
-        item["display_group"] = display_group
+        category = item.get(
+            "category",
+            "",
+        )
+
+        display_category = get_display_category(
+            category
+        )
+
+        item["display_category"] = (
+            display_category
+        )
 
         categories.setdefault(
-            display_group,
+            display_category,
             [],
         ).append(item)
-
-    # --------------------------------------
-    # Header
-    # --------------------------------------
 
     report = []
 
@@ -122,19 +201,42 @@ def build_report(items):
     # Summary
     # --------------------------------------
 
-    for config in REPORT_GROUPS:
+    summary_groups = {
+        "今日の注目": [],
+        "新作ゲーム": [],
+        "プラグイン・素材": [],
+        "開発情報・Tips": [],
+        "質問・相談": [],
+    }
 
-        total = sum(
-            len(categories[group])
-            for group in config["groups"]
-            if group in categories
+    for category, category_items in categories.items():
+
+        group = get_report_group(
+            category
         )
 
-        if total == 0:
+        if group:
+
+            summary_groups[group].extend(
+                category_items
+            )
+
+    summary_headers = {
+        "今日の注目": "★★★★★ 今日の注目",
+        "新作ゲーム": "★★★★☆ 新作ゲーム",
+        "プラグイン・素材": "★★★☆☆ プラグイン・素材",
+        "開発情報・Tips": "★★☆☆☆ 開発情報・Tips",
+        "質問・相談": "★☆☆☆☆ 質問・相談",
+    }
+
+    for group, group_items in summary_groups.items():
+
+        if not group_items:
             continue
 
         report.append(
-            f"{config['title']}（{total}件）"
+            f"{summary_headers[group]}"
+            f"（{len(group_items)}件）"
         )
 
     report.append("")
@@ -149,66 +251,96 @@ def build_report(items):
     # Detail
     # --------------------------------------
 
-    for config in REPORT_GROUPS:
+    detail_order = [
+        "本体ニュース",
+        "UNITE",
+        "Forum重要事項",
+        "プラグイン",
+        "グラフィック素材",
+        "サウンド素材",
+        "ゲーム",
+        "Tips",
+        "質問",
+    ]
 
-        for display_group in config["groups"]:
+    for category in detail_order:
 
-            if display_group not in categories:
-                continue
+        if category not in categories:
+            continue
 
-            report.append(
-                f"【{display_group}】"
+        report.append(
+            f"【{category}】"
+        )
+
+        grouped = {}
+
+        for item in categories[category]:
+
+            title = item.get(
+                "title",
+                "タイトルなし",
             )
 
-            grouped = {}
+            url = item.get(
+                "url",
+                "",
+            )
 
-            for item in categories[
-                display_group
-            ]:
+            source = item.get(
+                "source",
+                "",
+            )
 
-                key = (
-                    item["title"]
-                    .lower()
-                    .strip()
+            key = title.lower().strip()
+
+            grouped.setdefault(
+                key,
+                {
+                    "title": title,
+                    "url": url,
+                    "sources": [],
+                },
+            )
+
+            if source:
+                grouped[key]["sources"].append(
+                    source
                 )
 
-                grouped.setdefault(
-                    key,
-                    {
-                        "title": item["title"],
-                        "url": item["url"],
-                        "sources": [],
-                    },
-                )
+        for entry in grouped.values():
 
-                source = item.get(
-                    "source",
-                    "",
-                )
-
-                if source:
-
-                    grouped[key][
-                        "sources"
-                    ].append(source)
-
-            for game in grouped.values():
-
-                source_text = " / ".join(
-                    sorted(
-                        set(
-                            game["sources"]
-                        )
+            source_text = " / ".join(
+                sorted(
+                    set(
+                        entry["sources"]
                     )
                 )
+            )
+
+            title = entry["title"]
+            url = entry["url"]
+
+            # Slack mrkdwn形式。
+            # URLを表示文字列に混ぜない。
+            link = (
+                f"<{url}|{title}>"
+                if url
+                else title
+            )
+
+            if source_text:
 
                 report.append(
-                    f"・[{source_text}] "
-                    f"<{game['url']}|"
-                    f"{game['title']}>"
+                    f"・[{source_text}] {link}"
                 )
 
-            report.append("")
+            else:
+
+                report.append(
+                    f"・{link}"
+                )
+
+        report.append("")
 
     return "\n".join(report)
 
