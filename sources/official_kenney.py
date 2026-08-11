@@ -17,10 +17,6 @@ SEEN_FILE = KENNEY_SEEN_FILE
 
 def is_kenney_item(url):
 
-    # ----------------------------
-    # 除外ページ
-    # ----------------------------
-
     excluded = (
         "/assets/tag:",
         "/assets/category:",
@@ -32,10 +28,6 @@ def is_kenney_item(url):
         for path in excluded
     ):
         return False
-
-    # ----------------------------
-    # 実素材ページ
-    # ----------------------------
 
     return (
         "/assets/" in url
@@ -51,7 +43,7 @@ def get_items(seen):
             url=KENNEY_RSS,
             seen=seen,
             classify=classify_asset,
-            selector="a[href*='/assets/']",
+            selector="a",
             source_name="Kenney",
             href_filter=is_kenney_item,
         )
