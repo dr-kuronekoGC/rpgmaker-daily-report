@@ -17,6 +17,10 @@ SEEN_FILE = ITCHIO_SEEN_FILE
 
 def get_items(seen):
 
+    print(
+        f"[itch.io g] Seen: {len(seen)}"
+    )
+
     html = get_html(
         ITCHIO_GAME_RSS
     )
@@ -56,11 +60,6 @@ def get_items(seen):
         )
 
         if not link:
-            link = cell.select_one(
-                "a[href]"
-            )
-
-        if not link:
             continue
 
         href = link.get(
@@ -86,15 +85,13 @@ def get_items(seen):
         if href in seen:
             continue
 
-        item = {
-            "title": title,
-            "url": href,
-            "category": "itchゲーム",
-            "source": "itch.io",
-        }
-
         adopted_items.append(
-            item
+            {
+                "title": title,
+                "url": href,
+                "category": "itchゲーム",
+                "source": "itch.io",
+            }
         )
 
         new_seen.append(
@@ -109,6 +106,11 @@ def get_items(seen):
     print(
         f"[itch.io g] New: "
         f"{len(adopted_items)}"
+    )
+
+    print(
+        f"[itch.io g] Seen after: "
+        f"{len(new_seen)}"
     )
 
     return (
