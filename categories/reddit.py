@@ -6,7 +6,6 @@ from .keywords import (
     SOUND_KEYWORDS,
     GRAPHIC_KEYWORDS,
     PLUGIN_KEYWORDS,
-    GAME_KEYWORDS,
     QUESTION_KEYWORDS,
 )
 
@@ -24,33 +23,34 @@ TIPS_KEYWORDS = (
     "tips",
     "tutorial",
     "guide",
-    "how to",
+)
+
+GAME_KEYWORDS = (
+    "released",
+    "release",
+    "demo",
+    "trailer",
+    "beta",
+    "alpha",
+    "chapter",
+    "episode",
 )
 
 
-def _contains(
-    title,
-    keywords,
-):
+def _contains(title, keywords):
     return any(
         keyword in title
         for keyword in keywords
     )
 
 
-def classify_reddit(
-    title,
-    url="",
-):
-    """
-    Reddit投稿を分類する。
-    """
+def classify_reddit(title, url=""):
 
     title = title.lower().strip()
 
-    # ----------------------------
+    # --------------------------------
     # 重要事項
-    # ----------------------------
+    # --------------------------------
 
     if _contains(
         title,
@@ -58,49 +58,12 @@ def classify_reddit(
     ):
         return "Reddit重要事項"
 
-    # ----------------------------
-    # プラグイン
-    # ----------------------------
-
-    if _contains(
-        title,
-        PLUGIN_KEYWORDS,
-    ):
-        return "Redditプラグイン"
-
-    # ----------------------------
-    # サウンド素材
-    # ----------------------------
-
-    if _contains(
-        title,
-        SOUND_KEYWORDS,
-    ):
-        return "Redditサウンド素材"
-
-    # ----------------------------
-    # グラフィック素材
-    # ----------------------------
-
-    if _contains(
-        title,
-        GRAPHIC_KEYWORDS,
-    ):
-        return "Redditグラフィック素材"
-
-    # ----------------------------
-    # Tips
-    # ----------------------------
-
-    if _contains(
-        title,
-        TIPS_KEYWORDS,
-    ):
-        return "RedditTips"
-
-    # ----------------------------
+    # --------------------------------
     # 質問
-    # ----------------------------
+    # --------------------------------
+    # 「質問・相談」であることを最優先する。
+    # ただし、明確な作品公開・アップデート告知は
+    # 重要事項・ゲーム判定を優先する。
 
     if _contains(
         title,
@@ -108,24 +71,43 @@ def classify_reddit(
     ):
         return "Reddit質問"
 
-    # ----------------------------
-    # ゲーム
-    # ----------------------------
-
-    GAME_PRIORITY_KEYWORDS = (
-        "released",
-        "release",
-        "demo",
-        "trailer",
-        "beta",
-        "alpha",
-        "chapter",
-        "episode",
-    )
+    # --------------------------------
+    # プラグイン
+    # --------------------------------
 
     if _contains(
         title,
-        GAME_PRIORITY_KEYWORDS,
+        PLUGIN_KEYWORDS,
+    ):
+        return "Redditプラグイン"
+
+    # --------------------------------
+    # サウンド素材
+    # --------------------------------
+
+    if _contains(
+        title,
+        SOUND_KEYWORDS,
+    ):
+        return "Redditサウンド素材"
+
+    # --------------------------------
+    # グラフィック素材
+    # --------------------------------
+
+    if _contains(
+        title,
+        GRAPHIC_KEYWORDS,
+    ):
+        return "Redditグラフィック素材"
+
+    # --------------------------------
+    # ゲーム
+    # --------------------------------
+
+    if _contains(
+        title,
+        GAME_KEYWORDS,
     ):
         return "Redditゲーム"
 
@@ -135,5 +117,15 @@ def classify_reddit(
         or "new game" in title
     ):
         return "Redditゲーム"
+
+    # --------------------------------
+    # Tips
+    # --------------------------------
+
+    if _contains(
+        title,
+        TIPS_KEYWORDS,
+    ):
+        return "RedditTips"
 
     return None
