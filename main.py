@@ -18,6 +18,7 @@ from sources import (
     official_craftpix,
     official_gamedevmarket,
     official_visustella,
+    official_deviantart,
     asset_itchio,
 )
 
@@ -30,6 +31,7 @@ SOURCES = [
     official_kenney,
     official_craftpix,
     official_visustella,
+    official_deviantart,
     asset_itchio,
     community_forum,
 ]
