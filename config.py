@@ -106,3 +106,18 @@ GAMEDEVMARKET_SEEN_FILE = "seen_gamedevmarket.json"
 
 VISUSTELLA_URL = "https://visustellamz.itch.io/"
 VISUSTELLA_SEEN_FILE = "seen_visustella.json"
+
+# ==========================================
+# DeviantArt
+# ==========================================
+
+DEVIANTART_SEARCHES = [
+    "RPG Maker",
+    "RPG Maker MZ",
+    "RPG Maker MV",
+    "RPG Maker sprites",
+    "RPG Maker tileset",
+    "RPG Maker assets",
+]
+
+DEVIANTART_SEEN_FILE = "seen_deviantart.json"
