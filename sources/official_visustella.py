@@ -2,73 +2,34 @@
 # VisuStella
 # ==========================================
 
+from urllib.parse import urljoin
+
+from bs4 import BeautifulSoup
+
 from config import (
     VISUSTELLA_URL,
     VISUSTELLA_SEEN_FILE,
 )
 
-from categories.assets import classify_asset
-
-from sources.html import collect_html
+from sources.base import get_html
 
 
 SEEN_FILE = VISUSTELLA_SEEN_FILE
 
 
 # ==========================================
-# VisuStella Plugin判定
+# Plugin判定
 # ==========================================
 
-def is_visustella_plugin(href):
-
-    """
-    VisuStellaのRPG Maker MZプラグインページだけを対象にする。
-    """
-
-    return (
-        "visustellamz.itch.io/" in href
-        and href.rstrip("/") != VISUSTELLA_URL.rstrip("/")
-    )
-
-
-# ==========================================
-# 分類
-# ==========================================
-
-def classify_visustella(
-    title,
-    url="",
-):
+def classify_visustella(title, url=""):
 
     normalized = title.lower().strip()
 
     # --------------------------------------
-    # RPG Maker MZプラグイン
+    # RPG Maker MZ Plugin
     # --------------------------------------
 
-    if (
-        "plugin for rpg maker mz"
-        in normalized
-    ):
-        return "VisuStellaプラグイン"
-
-    # --------------------------------------
-    # Access Key / Bundle
-    # --------------------------------------
-
-    if (
-        normalized.startswith(
-            "[access key]"
-        )
-        and (
-            "plugin"
-            in normalized
-            or "series"
-            in normalized
-            or "bundle"
-            in normalized
-        )
-    ):
+    if "plugin" in normalized:
         return "VisuStellaプラグイン"
 
     return None
@@ -82,17 +43,157 @@ def get_items(seen):
 
     try:
 
-        return collect_html(
-            url=VISUSTELLA_URL,
-            seen=seen,
+        html = get_html(
+            VISUSTELLA_URL
+        )
 
-            classify=classify_visustella,
+        print(
+            f"[VisuStella] HTML length: {len(html)}"
+        )
 
-            selector="a[href]",
+        soup = BeautifulSoup(
+            html,
+            "html.parser",
+        )
 
-            source_name="VisuStella",
+        adopted_items = []
 
-            href_filter=is_visustella_plugin,
+        new_seen = seen.copy()
+
+        seen_urls = set()
+
+        # ----------------------------------
+        # itch.ioの商品カード
+        # ----------------------------------
+
+        game_cells = soup.select(
+            ".game_cell"
+        )
+
+        print(
+            f"[VisuStella] Game cells: "
+            f"{len(game_cells)}"
+        )
+
+        for cell in game_cells:
+
+            link = cell.select_one(
+                "a[href]"
+            )
+
+            if not link:
+                continue
+
+            href = link.get(
+                "href"
+            )
+
+            if not href:
+                continue
+
+            href = urljoin(
+                VISUSTELLA_URL,
+                href,
+            )
+
+            # VisuStella以外へのリンクを除外
+            if "visustellamz.itch.io/" not in href:
+                continue
+
+            # トップページ自身を除外
+            if (
+                href.rstrip("/")
+                == VISUSTELLA_URL.rstrip("/")
+            ):
+                continue
+
+            # 重複除外
+            if href in seen_urls:
+                continue
+
+            seen_urls.add(href)
+
+            # 既取得
+            if href in seen:
+                continue
+
+            # --------------------------------
+            # タイトル
+            # --------------------------------
+
+            title_tag = cell.select_one(
+                ".game_title"
+            )
+
+            if title_tag:
+
+                title = title_tag.get_text(
+                    " ",
+                    strip=True,
+                )
+
+            else:
+
+                title = link.get_text(
+                    " ",
+                    strip=True,
+                )
+
+            if not title:
+                continue
+
+            # --------------------------------
+            # デバッグ
+            # --------------------------------
+
+            print(
+                f"[VisuStella][DEBUG] "
+                f"{title} -> {href}"
+            )
+
+            # --------------------------------
+            # 分類
+            # --------------------------------
+
+            category = classify_visustella(
+                title,
+                href,
+            )
+
+            if category is None:
+                continue
+
+            # --------------------------------
+            # 採用
+            # --------------------------------
+
+            new_seen.append(
+                href
+            )
+
+            adopted_items.append(
+                {
+                    "title": title,
+                    "url": href,
+                    "category": category,
+                    "source": "VisuStella",
+                }
+            )
+
+            print(
+                f"[VisuStella]"
+                f"[{category}] "
+                f"{title}"
+            )
+
+        print(
+            f"[VisuStella] New: "
+            f"{len(adopted_items)}"
+        )
+
+        return (
+            adopted_items,
+            new_seen,
         )
 
     except Exception as e:
