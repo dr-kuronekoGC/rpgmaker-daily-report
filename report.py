@@ -153,8 +153,15 @@ def build_report(items):
     if not items:
 
         return (
+            f"📬 RPG Maker Daily Report\n"
             f"{date_str} {period}\n"
-            "新着ニュースはありません。"
+            "\n"
+            "新着ニュースはありません。\n"
+            "\n"
+            "────────────────────\n"
+            "【SOURCE CHECK】\n"
+            "・<https://www.gamedevmarket.net/|GameDevMarket>"
+            " ▶ 素材のセルフチェック"
         )
 
     categories = {}
@@ -341,6 +348,23 @@ def build_report(items):
                 )
 
         report.append("")
+
+    # --------------------------------------
+    # Source Check
+    # --------------------------------------
+
+    report.append(
+        "────────────────────"
+    )
+
+    report.append(
+        "【SOURCE CHECK】"
+    )
+
+    report.append(
+        "・<https://www.gamedevmarket.net/|GameDevMarket>"
+        " ▶ 素材のセルフチェック"
+    )
 
     return "\n".join(report)
 
