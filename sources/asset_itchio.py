@@ -37,21 +37,6 @@ def get_items(seen):
 
     response.raise_for_status()
 
-    print(
-        f"[itch.io a] Encoding: "
-        f"{response.encoding}"
-    )
-
-    print(
-        f"[itch.io a] Apparent: "
-        f"{response.apparent_encoding}"
-    )
-
-    print(
-        f"[itch.io a] Content-Type: "
-        f"{response.headers.get('content-type')}"
-    )
-
     html = response.content.decode(
         "utf-8",
         errors="replace",
