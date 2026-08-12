@@ -2,16 +2,17 @@
 # itch.io Assets
 # ==========================================
 
-from urllib.parse import urljoin
+import requests
 
 from bs4 import BeautifulSoup
 
 from config import (
     ITCHIO_ASSET_RSS,
     ITCHIO_SEEN_FILE,
+    REQUEST_TIMEOUT,
 )
 
-from sources.base import get_html
+from sources.base import HEADERS
 
 from categories.assets import classify_asset
 
@@ -28,25 +29,34 @@ ITCHIO_IGNORE_TITLES = (
 
 def get_items(seen):
 
-    html = get_html(
-        ITCHIO_ASSET_RSS
+    response = requests.get(
+        ITCHIO_ASSET_RSS,
+        headers=HEADERS,
+        timeout=REQUEST_TIMEOUT,
     )
+
+    response.raise_for_status()
+
+    print(
+        f"[itch.io a] Encoding: "
+        f"{response.encoding}"
+    )
+
+    print(
+        f"[itch.io a] Apparent: "
+        f"{response.apparent_encoding}"
+    )
+
+    print(
+        f"[itch.io a] Content-Type: "
+        f"{response.headers.get('content-type')}"
+    )
+
+    html = response.text
 
     soup = BeautifulSoup(
         html,
         "html.parser",
-    )
-
-    print(
-        f"[itch.io a] HTML length: {len(html)}"
-    )
-
-    cells = soup.select(
-        ".game_cell"
-    )
-
-    print(
-        f"[itch.io a] Game cells: {len(cells)}"
     )
 
     adopted_items = []
@@ -55,7 +65,9 @@ def get_items(seen):
 
     seen_urls = set()
 
-    for cell in cells:
+    for cell in soup.select(
+        ".game_cell"
+    ):
 
         title_tag = cell.select_one(
             ".game_title"
@@ -91,10 +103,11 @@ def get_items(seen):
         if not href:
             continue
 
-        href = urljoin(
-            ITCHIO_ASSET_RSS,
-            href,
-        )
+        if href.startswith("/"):
+            href = (
+                "https://itch.io"
+                + href
+            )
 
         if href in seen_urls:
             continue
