@@ -52,7 +52,10 @@ def get_items(seen):
         f"{response.headers.get('content-type')}"
     )
 
-    html = response.text
+    html = response.content.decode(
+        "utf-8",
+        errors="replace",
+    )
 
     soup = BeautifulSoup(
         html,
