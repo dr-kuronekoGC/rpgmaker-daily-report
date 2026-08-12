@@ -7,4 +7,5 @@ from . import official_kenney
 from . import official_craftpix
 from . import official_gamedevmarket
 from . import official_visustella
+from . import official_deviantart
 from . import asset_itchio
