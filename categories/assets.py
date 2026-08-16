@@ -8,7 +8,10 @@ from .keywords import (
 )
 
 
-# 明確に素材を示すキーワード
+# ==========================================
+# Strong keywords
+# ==========================================
+
 STRONG_SOUND_KEYWORDS = (
     "music",
     "bgm",
@@ -26,6 +29,7 @@ STRONG_GRAPHIC_KEYWORDS = (
     "character",
     "portrait",
     "faceset",
+    "face set",
     "icon",
     "background",
     "texture",
@@ -34,6 +38,118 @@ STRONG_GRAPHIC_KEYWORDS = (
     "ui",
 )
 
+
+# ==========================================
+# Asset size / pack keywords
+# ==========================================
+
+# 「大量の素材」「大規模セット」と比較的明確に
+# 判断できるキーワードだけを対象にする。
+#
+# 1枚の画像に大量の素材が載っているだけの場合は、
+# タイトルから判別できないことが多いため対象外。
+
+LARGE_PACK_KEYWORDS = (
+    "mega pack",
+    "megapack",
+    "mega-pack",
+    "ultimate pack",
+    "ultimate bundle",
+    "complete pack",
+    "complete bundle",
+    "full pack",
+    "full set",
+    "massive pack",
+    "large pack",
+    "big pack",
+    "huge pack",
+    "asset pack",
+    "asset bundle",
+    "sprite pack",
+    "sprite sheet pack",
+    "tileset pack",
+    "tileset collection",
+    "icon pack",
+    "icon set",
+    "character pack",
+    "character set",
+    "faceset pack",
+    "faceset set",
+)
+
+
+# ==========================================
+# Fan work / derivative work
+# ==========================================
+
+FANWORK_KEYWORDS = (
+    "fanart",
+    "fan art",
+    "fan-game",
+    "fan game",
+    "fangame",
+    "crossover",
+    "tribute",
+    "pokemon",
+    "mario",
+    "zelda",
+    "final fantasy",
+    "dragon quest",
+    "kingdom hearts",
+    "disney",
+    "marvel",
+    "dc comics",
+    "sonic",
+    "kirby",
+    "undertale",
+    "fate",
+    "genshin",
+)
+
+
+# ==========================================
+# Official edit / RTP edit
+# ==========================================
+
+OFFICIAL_EDIT_KEYWORDS = (
+    "rtp edit",
+    "rtp edits",
+    "official edit",
+    "official edits",
+    "rpg maker edit",
+    "rpg maker edits",
+    "mv rtp edit",
+    "mz rtp edit",
+    "vx ace rtp edit",
+    "vx rtp edit",
+)
+
+
+# ==========================================
+# Helpers
+# ==========================================
+
+def _contains_any(
+    text,
+    keywords,
+):
+    return any(
+        keyword in text
+        for keyword in keywords
+    )
+
+
+def _append_unique(
+    tags,
+    tag,
+):
+    if tag not in tags:
+        tags.append(tag)
+
+
+# ==========================================
+# Asset Classification
+# ==========================================
 
 def classify_asset(
     title,
@@ -46,20 +162,77 @@ def classify_asset(
     -------
     tuple[str | None, list[str]]
         (カテゴリ, タグ)
+
+    タグ例
+    -------
+    tileset
+    character
+    icon
+    faceset
+    sprite
+    bgm
+    sfx
+    large_pack
+    fanwork
+    official_edit
     """
 
-    title = title.lower().strip()
-    url = url.lower().strip()
+    title = (
+        title
+        or ""
+    ).lower().strip()
+
+    url = (
+        url
+        or ""
+    ).lower().strip()
 
     tags = []
+
+    # ==================================
+    # 共通属性
+    # ==================================
+
+    # 大量セット
+    #
+    # 「1枚の画像に大量の素材がある」
+    # ケースはここでは判定しない。
+    if _contains_any(
+        title,
+        LARGE_PACK_KEYWORDS,
+    ):
+        _append_unique(
+            tags,
+            "large_pack",
+        )
+
+    # 版権・二次創作らしいもの
+    if _contains_any(
+        title,
+        FANWORK_KEYWORDS,
+    ):
+        _append_unique(
+            tags,
+            "fanwork",
+        )
+
+    # 公式素材の改変・アレンジらしいもの
+    if _contains_any(
+        title,
+        OFFICIAL_EDIT_KEYWORDS,
+    ):
+        _append_unique(
+            tags,
+            "official_edit",
+        )
 
     # ==================================
     # サウンド素材
     # ==================================
 
-    if any(
-        keyword in title
-        for keyword in STRONG_SOUND_KEYWORDS
+    if _contains_any(
+        title,
+        STRONG_SOUND_KEYWORDS,
     ):
 
         if (
@@ -67,69 +240,113 @@ def classify_asset(
             or "music" in title
             or "soundtrack" in title
         ):
-            tags.append("bgm")
+            _append_unique(
+                tags,
+                "bgm",
+            )
 
         if (
             "sfx" in title
             or "sound effect" in title
             or "sound effects" in title
         ):
-            tags.append("sfx")
+            _append_unique(
+                tags,
+                "sfx",
+            )
 
-        return "サウンド素材", tags
+        return (
+            "サウンド素材",
+            tags,
+        )
 
     # ==================================
     # グラフィック素材
     # ==================================
 
-    if any(
-        keyword in title
-        for keyword in STRONG_GRAPHIC_KEYWORDS
+    if _contains_any(
+        title,
+        STRONG_GRAPHIC_KEYWORDS,
     ):
 
         if "ui" in title:
-            tags.append("ui")
+            _append_unique(
+                tags,
+                "ui",
+            )
 
         if "sprite" in title:
-            tags.append("sprite")
+            _append_unique(
+                tags,
+                "sprite",
+            )
 
         if "background" in title:
-            tags.append("background")
+            _append_unique(
+                tags,
+                "background",
+            )
 
         if (
             "tileset" in title
             or "tile" in title
         ):
-            tags.append("tileset")
+            _append_unique(
+                tags,
+                "tileset",
+            )
 
         if (
             "character" in title
             or "portrait" in title
             or "faceset" in title
+            or "face set" in title
         ):
-            tags.append("character")
+            _append_unique(
+                tags,
+                "character",
+            )
 
-        if (
-            "icon" in title
-        ):
-            tags.append("icon")
+        if "faceset" in title or "face set" in title:
+            _append_unique(
+                tags,
+                "faceset",
+            )
 
-        return "グラフィック素材", tags
+        if "icon" in title:
+            _append_unique(
+                tags,
+                "icon",
+            )
+
+        return (
+            "グラフィック素材",
+            tags,
+        )
 
     # ==================================
     # 従来のキーワード判定
     # ==================================
 
-    if any(
-        keyword in title
-        for keyword in SOUND_KEYWORDS
+    if _contains_any(
+        title,
+        SOUND_KEYWORDS,
     ):
-        return "サウンド素材", tags
+        return (
+            "サウンド素材",
+            tags,
+        )
 
-    if any(
-        keyword in title
-        for keyword in GRAPHIC_KEYWORDS
+    if _contains_any(
+        title,
+        GRAPHIC_KEYWORDS,
     ):
-        return "グラフィック素材", tags
+        return (
+            "グラフィック素材",
+            tags,
+        )
 
-    return None, []
+    return (
+        None,
+        tags,
+    )
