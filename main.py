@@ -22,6 +22,8 @@ from sources import (
     asset_itchio,
 )
 
+from asset_metadata import enrich_items
+
 
 SOURCES = [
     community_reddit,
