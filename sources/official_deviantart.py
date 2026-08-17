@@ -32,6 +32,11 @@ DEVIANTART_TAG_URL = (
     + "/browse/tags"
 )
 
+DEVIANTART_CONTENT_URL = (
+    DEVIANTART_API_BASE_URL
+    + "/deviation/content"
+)
+
 
 # ==========================================
 # OAuth2
@@ -135,18 +140,54 @@ def browse_tag(
     if not isinstance(results, list):
         return []
 
-    # ==================================
-    # DEBUG: DeviantArt API response
-    # ==================================
-
-    if results:
-        print(
-            "[DeviantArt][DEBUG] "
-            "First result:"
-        )
-        print(results[0])
-
     return results
+
+
+# ==========================================
+# Deviation Content
+# ==========================================
+
+def get_deviation_content(
+    access_token,
+    deviation_id,
+):
+
+    if not deviation_id:
+        return None
+
+    response = requests.get(
+        DEVIANTART_CONTENT_URL,
+        params={
+            "deviationid": deviation_id,
+        },
+        headers={
+            "Accept": "application/json",
+            "Authorization": (
+                f"Bearer {access_token}"
+            ),
+            "User-Agent": (
+                "RPG Maker Daily Report/1.0"
+            ),
+            "Accept-Encoding": (
+                "gzip, deflate"
+            ),
+            "dA-minor-version": "20240701",
+        },
+        timeout=30,
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    if not isinstance(
+        data,
+        dict,
+    ):
+        return None
+
+    return data
+
 
 # ==========================================
 # Main
@@ -216,6 +257,10 @@ def get_items(seen):
 
                 title = result.get(
                     "title"
+                )
+
+                deviation_id = result.get(
+                    "deviationid"
                 )
 
                 if not href or not title:
@@ -289,7 +334,7 @@ def get_items(seen):
                     continue
 
                 # --------------------------------
-                # 採用
+                # 基本アイテム
                 # --------------------------------
 
                 item = {
@@ -323,6 +368,91 @@ def get_items(seen):
                         item["author"] = (
                             username
                         )
+
+                # --------------------------------
+                # deviationid
+                # --------------------------------
+
+                if deviation_id:
+                    item["deviationid"] = (
+                        deviation_id
+                    )
+
+                # --------------------------------
+                # 詳細情報取得
+                # --------------------------------
+
+                if deviation_id:
+
+                    print(
+                        "[DeviantArt] "
+                        "Fetching content: "
+                        f"{deviation_id}"
+                    )
+
+                    try:
+
+                        content = (
+                            get_deviation_content(
+                                access_token,
+                                deviation_id,
+                            )
+                        )
+
+                        if content is not None:
+
+                            print(
+                                "[DeviantArt][DEBUG] "
+                                "Content response:"
+                            )
+
+                            print(
+                                content
+                            )
+
+                            item[
+                                "deviantart_content"
+                            ] = content
+
+                        else:
+
+                            print(
+                                "[DeviantArt][DEBUG] "
+                                "Content response "
+                                "was empty"
+                            )
+
+                    except requests.HTTPError as e:
+
+                        print(
+                            "[DeviantArt] "
+                            "Content HTTP Error: "
+                            f"{e}"
+                        )
+
+                        if getattr(
+                            e,
+                            "response",
+                            None,
+                        ) is not None:
+
+                            print(
+                                "[DeviantArt] "
+                                "Content Response: "
+                                f"{e.response.text[:500]}"
+                            )
+
+                    except Exception as e:
+
+                        print(
+                            "[DeviantArt] "
+                            "Content Error: "
+                            f"{e}"
+                        )
+
+                # --------------------------------
+                # 採用
+                # --------------------------------
 
                 adopted_items.append(
                     item
