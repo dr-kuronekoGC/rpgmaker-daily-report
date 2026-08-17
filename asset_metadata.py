@@ -36,6 +36,27 @@ PRICE_UNKNOWN = "unknown"
 
 
 # ==========================================
+# Copyright Status
+# ==========================================
+
+COPYRIGHT_ORIGINAL = "original"
+COPYRIGHT_OFFICIAL = "official"
+COPYRIGHT_FANWORK = "fanwork"
+COPYRIGHT_POSSIBLE_FANWORK = "possible_fanwork"
+COPYRIGHT_UNKNOWN = "unknown"
+
+
+# ==========================================
+# Confidence
+# ==========================================
+
+CONFIDENCE_HIGH = "high"
+CONFIDENCE_MEDIUM = "medium"
+CONFIDENCE_LOW = "low"
+CONFIDENCE_UNKNOWN = "unknown"
+
+
+# ==========================================
 # Helpers
 # ==========================================
 
@@ -91,7 +112,10 @@ def detect_asset_type(
     ):
         return ASSET_TYPE_GAME
 
-    # 念のためタイトルからも補助判定
+    # --------------------------------------
+    # タイトルによる補助判定
+    # --------------------------------------
+
     if _contains_any(
         title,
         (
@@ -120,16 +144,113 @@ def detect_asset_type(
 
 
 # ==========================================
-# Metadata
+# Copyright / Fanwork
+# ==========================================
+
+def detect_copyright_status(
+    asset_tags,
+    title,
+):
+    """
+    版権・二次創作の可能性を判定する。
+
+    注意:
+    これは法的な著作権判定ではない。
+    明らかなキーワードがある場合だけ
+    fanwork / possible_fanwork とする。
+    """
+
+    title = _normalize_text(title)
+
+    if "fanwork" in asset_tags:
+        return (
+            COPYRIGHT_FANWORK,
+            CONFIDENCE_MEDIUM,
+        )
+
+    # assets.py の fanwork キーワードで
+    # 拾えなかった場合に備えた追加候補
+    possible_keywords = (
+        "fanart",
+        "fan art",
+        "fan game",
+        "fangame",
+        "crossover",
+        "tribute",
+    )
+
+    if _contains_any(
+        title,
+        possible_keywords,
+    ):
+        return (
+            COPYRIGHT_POSSIBLE_FANWORK,
+            CONFIDENCE_MEDIUM,
+        )
+
+    return (
+        COPYRIGHT_UNKNOWN,
+        CONFIDENCE_UNKNOWN,
+    )
+
+
+# ==========================================
+# Price / License
+# ==========================================
+
+def detect_price_and_license(
+    item,
+):
+    """
+    価格・ライセンス情報を判定する。
+
+    現段階では、情報源から明示的な情報を
+    取得できていないため、基本的に unknown。
+
+    今後、DeviantArt APIなどから得られた
+    明示的な情報をここに渡して判定する。
+    """
+
+    price_status = PRICE_UNKNOWN
+    license_status = LICENSE_UNKNOWN
+
+    # --------------------------------------
+    # 明示的な値が既に入っている場合
+    # --------------------------------------
+
+    if item.get("price_status") in (
+        PRICE_FREE,
+        PRICE_PAID,
+    ):
+        price_status = item[
+            "price_status"
+        ]
+
+    if item.get("license_status") in (
+        LICENSE_FREE,
+        LICENSE_PERMISSION,
+        LICENSE_RESTRICTED,
+    ):
+        license_status = item[
+            "license_status"
+        ]
+
+    return (
+        price_status,
+        license_status,
+    )
+
+
+# ==========================================
+# Asset Metadata
 # ==========================================
 
 def build_asset_metadata(item):
     """
     収集アイテムから素材評価用メタデータを作る。
 
-    この段階では、
-    価格・ライセンスについて推測しない。
-    情報がなければ unknown とする。
+    情報が確認できない場合は unknown とする。
+    推測による「無料」「利用可能」判定は行わない。
     """
 
     item = item.copy()
@@ -150,7 +271,7 @@ def build_asset_metadata(item):
     )
 
     # --------------------------------------
-    # assets.py の分類を利用
+    # Asset classification
     # --------------------------------------
 
     detected_category, asset_tags = (
@@ -173,54 +294,132 @@ def build_asset_metadata(item):
     )
 
     # --------------------------------------
-    # Fanwork
+    # Copyright
     # --------------------------------------
 
-    is_fanwork = (
-        "fanwork" in asset_tags
+    (
+        copyright_status,
+        copyright_confidence,
+    ) = detect_copyright_status(
+        asset_tags,
+        title,
     )
 
     # --------------------------------------
-    # Official edit
+    # Price / License
     # --------------------------------------
 
-    is_official_edit = (
-        "official_edit" in asset_tags
+    (
+        price_status,
+        license_status,
+    ) = detect_price_and_license(
+        item,
     )
 
     # --------------------------------------
-    # Large pack
+    # Confidence
     # --------------------------------------
 
-    large_pack = (
-        "large_pack" in asset_tags
-    )
+    if (
+        price_status == PRICE_UNKNOWN
+        and license_status == LICENSE_UNKNOWN
+        and copyright_status
+        == COPYRIGHT_UNKNOWN
+    ):
+        confidence = CONFIDENCE_UNKNOWN
+
+    else:
+        confidence = CONFIDENCE_MEDIUM
 
     # --------------------------------------
-    # Metadata
+    # Basic asset metadata
     # --------------------------------------
 
     item["asset_type"] = asset_type
 
     item["asset_tags"] = asset_tags
 
-    item["is_free"] = None
+    # --------------------------------------
+    # Price
+    # --------------------------------------
 
-    item["is_paid"] = None
+    item["price_status"] = price_status
 
-    item["price_status"] = PRICE_UNKNOWN
-
-    item["license_status"] = LICENSE_UNKNOWN
-
-    item["is_official"] = None
-
-    item["is_fanwork"] = is_fanwork
-
-    item["is_official_edit"] = (
-        is_official_edit
+    item["is_free"] = (
+        True
+        if price_status == PRICE_FREE
+        else False
+        if price_status == PRICE_PAID
+        else None
     )
 
-    item["large_pack"] = large_pack
+    item["is_paid"] = (
+        True
+        if price_status == PRICE_PAID
+        else False
+        if price_status == PRICE_FREE
+        else None
+    )
+
+    # --------------------------------------
+    # License
+    # --------------------------------------
+
+    item["license_status"] = (
+        license_status
+    )
+
+    # --------------------------------------
+    # Copyright
+    # --------------------------------------
+
+    item["copyright_status"] = (
+        copyright_status
+    )
+
+    item["is_fanwork"] = (
+        copyright_status
+        in (
+            COPYRIGHT_FANWORK,
+            COPYRIGHT_POSSIBLE_FANWORK,
+        )
+    )
+
+    # --------------------------------------
+    # Official edit
+    # --------------------------------------
+
+    item["is_official_edit"] = (
+        "official_edit" in asset_tags
+    )
+
+    # --------------------------------------
+    # Official source
+    # --------------------------------------
+
+    # 現段階ではサイトごとの情報を
+    # まだ解析していないため unknown。
+    item["is_official"] = None
+
+    # --------------------------------------
+    # Large pack
+    # --------------------------------------
+
+    item["large_pack"] = (
+        "large_pack" in asset_tags
+    )
+
+    # --------------------------------------
+    # Confidence
+    # --------------------------------------
+
+    item["copyright_confidence"] = (
+        copyright_confidence
+    )
+
+    item["metadata_confidence"] = (
+        confidence
+    )
 
     return item
 
@@ -248,13 +447,12 @@ def enrich_items(items):
 
         except Exception as e:
 
-            # 分類に失敗しても、
-            # 元のアイテムを捨てない。
             print(
                 "[Asset Metadata] "
                 f"Error: {e}"
             )
 
+            # 分類失敗時にも元データを捨てない
             enriched.append(
                 item
             )
