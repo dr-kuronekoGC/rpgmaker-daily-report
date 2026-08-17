@@ -135,8 +135,18 @@ def browse_tag(
     if not isinstance(results, list):
         return []
 
-    return results
+    # ==================================
+    # DEBUG: DeviantArt API response
+    # ==================================
 
+    if results:
+        print(
+            "[DeviantArt][DEBUG] "
+            "First result:"
+        )
+        print(results[0])
+
+    return results
 
 # ==========================================
 # Main
