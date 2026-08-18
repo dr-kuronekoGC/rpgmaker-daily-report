@@ -137,6 +137,223 @@ def get_report_group(category):
 
 
 # ==========================================
+# DeviantArt Detail
+# ==========================================
+
+def format_deviantart_detail(
+    item,
+):
+    """
+    DeviantArtから取得した詳細情報を
+    Slack表示用テキストに変換する。
+
+    取得できない情報は表示しない。
+
+    license はAPIから返された値を
+    そのまま表示する。
+    """
+
+    lines = []
+
+    # --------------------------------------
+    # Author
+    # --------------------------------------
+
+    author = item.get(
+        "author"
+    )
+
+    if isinstance(
+        author,
+        str,
+    ) and author.strip():
+
+        lines.append(
+            f"  作者：{author.strip()}"
+        )
+
+    # --------------------------------------
+    # Tags
+    # --------------------------------------
+
+    source_tags = item.get(
+        "source_tags"
+    )
+
+    if isinstance(
+        source_tags,
+        list,
+    ):
+
+        clean_tags = []
+
+        for tag in source_tags:
+
+            if not isinstance(
+                tag,
+                str,
+            ):
+                continue
+
+            tag = tag.strip()
+
+            if not tag:
+                continue
+
+            if tag not in clean_tags:
+                clean_tags.append(
+                    tag
+                )
+
+        if clean_tags:
+
+            # Slackが長くなりすぎないように
+            # 最大20タグまで表示。
+            display_tags = clean_tags[:20]
+
+            tag_text = ", ".join(
+                display_tags
+            )
+
+            if len(clean_tags) > 20:
+                tag_text += " ..."
+
+            lines.append(
+                f"  タグ：{tag_text}"
+            )
+
+    # --------------------------------------
+    # License
+    # --------------------------------------
+
+    license_name = item.get(
+        "license"
+    )
+
+    if isinstance(
+        license_name,
+        str,
+    ) and license_name.strip():
+
+        lines.append(
+            "  ライセンス："
+            f"{license_name.strip()}"
+        )
+
+    # --------------------------------------
+    # Download
+    # --------------------------------------
+
+    is_downloadable = item.get(
+        "is_downloadable"
+    )
+
+    if isinstance(
+        is_downloadable,
+        bool,
+    ):
+
+        if is_downloadable:
+
+            lines.append(
+                "  ダウンロード：可能"
+            )
+
+        else:
+
+            lines.append(
+                "  ダウンロード：不可"
+            )
+
+    # --------------------------------------
+    # Mature
+    # --------------------------------------
+
+    is_mature = item.get(
+        "is_mature"
+    )
+
+    if is_mature is True:
+
+        lines.append(
+            "  Mature：あり"
+        )
+
+    # --------------------------------------
+    # Description
+    # --------------------------------------
+
+    description = item.get(
+        "description"
+    )
+
+    if isinstance(
+        description,
+        str,
+    ):
+
+        description = description.strip()
+
+        if description:
+
+            # 改行をSlack上で扱いやすくする。
+            description = (
+                description
+                .replace("\r\n", " ")
+                .replace("\n", " ")
+                .replace("\r", " ")
+            )
+
+            # 連続空白を整理。
+            while "  " in description:
+                description = (
+                    description.replace(
+                        "  ",
+                        " ",
+                    )
+                )
+
+            # 長すぎる説明は切る。
+            max_length = 300
+
+            if len(description) > max_length:
+
+                description = (
+                    description[
+                        :max_length
+                    ].rstrip()
+                    + "..."
+                )
+
+            lines.append(
+                f"  説明：{description}"
+            )
+
+    # --------------------------------------
+    # Content size
+    # --------------------------------------
+
+    width = item.get(
+        "content_width"
+    )
+
+    height = item.get(
+        "content_height"
+    )
+
+    if (
+        width is not None
+        and height is not None
+    ):
+
+        lines.append(
+            f"  サイズ：{width} × {height}"
+        )
+
+    return lines
+
+
+# ==========================================
 # Report
 # ==========================================
 
@@ -300,19 +517,32 @@ def build_report(items):
 
             key = title.lower().strip()
 
-            grouped.setdefault(
-                key,
-                {
+            # ----------------------------------
+            # 同一タイトルをまとめる
+            # ----------------------------------
+
+            if key not in grouped:
+
+                grouped[key] = {
                     "title": title,
                     "url": url,
                     "sources": [],
-                },
-            )
+                    "items": [],
+                }
 
             if source:
-                grouped[key]["sources"].append(
+
+                grouped[key][
+                    "sources"
+                ].append(
                     source
                 )
+
+            grouped[key][
+                "items"
+            ].append(
+                item
+            )
 
         for entry in grouped.values():
 
@@ -327,8 +557,10 @@ def build_report(items):
             title = entry["title"]
             url = entry["url"]
 
-            # Slack mrkdwn形式。
-            # URLを表示文字列に混ぜない。
+            # ----------------------------------
+            # Slack link
+            # ----------------------------------
+
             link = (
                 f"<{url}|{title}>"
                 if url
@@ -346,6 +578,34 @@ def build_report(items):
                 report.append(
                     f"・{link}"
                 )
+
+            # ----------------------------------
+            # DeviantArt詳細
+            #
+            # 同一タイトルが複数ソースから
+            # 来た場合も、DeviantArtだけを表示。
+            # ----------------------------------
+
+            for item in entry["items"]:
+
+                if item.get(
+                    "source"
+                ) != "DeviantArt":
+                    continue
+
+                detail_lines = (
+                    format_deviantart_detail(
+                        item
+                    )
+                )
+
+                for detail_line in (
+                    detail_lines
+                ):
+
+                    report.append(
+                        detail_line
+                    )
 
         report.append("")
 
