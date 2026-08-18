@@ -2,7 +2,9 @@
 # DeviantArt
 # ==========================================
 
+import html
 import os
+import re
 
 import requests
 
@@ -30,16 +32,6 @@ DEVIANTART_TOKEN_URL = (
 DEVIANTART_TAG_URL = (
     DEVIANTART_API_BASE_URL
     + "/browse/tags"
-)
-
-DEVIANTART_CONTENT_URL = (
-    DEVIANTART_API_BASE_URL
-    + "/deviation/content"
-)
-
-DEVIANTART_DEVIATION_URL = (
-    DEVIANTART_API_BASE_URL
-    + "/deviation"
 )
 
 DEVIANTART_METADATA_URL = (
@@ -105,7 +97,7 @@ def get_access_token():
 
 
 # ==========================================
-# API request
+# Tag Search
 # ==========================================
 
 def browse_tag(
@@ -147,124 +139,48 @@ def browse_tag(
         [],
     )
 
-    if not isinstance(results, list):
+    if not isinstance(
+        results,
+        list,
+    ):
         return []
 
     return results
 
 
 # ==========================================
-# Deviation Content
-# ==========================================
-
-def get_deviation_content(
-    access_token,
-    deviation_id,
-):
-
-    if not deviation_id:
-        return None
-
-    response = requests.get(
-        DEVIANTART_CONTENT_URL,
-        params={
-            "deviationid": deviation_id,
-        },
-        headers={
-            "Accept": "application/json",
-            "Authorization": (
-                f"Bearer {access_token}"
-            ),
-            "User-Agent": (
-                "RPG Maker Daily Report/1.0"
-            ),
-            "Accept-Encoding": (
-                "gzip, deflate"
-            ),
-            "dA-minor-version": "20240701",
-        },
-        timeout=30,
-    )
-
-    response.raise_for_status()
-
-    data = response.json()
-
-    if not isinstance(
-        data,
-        dict,
-    ):
-        return None
-
-    return data
-
-
-# ==========================================
-# Deviation
-# ==========================================
-
-def get_deviation(
-    access_token,
-    deviation_id,
-):
-
-    if not deviation_id:
-        return None
-
-    url = (
-        DEVIANTART_DEVIATION_URL
-        + "/"
-        + str(deviation_id)
-    )
-
-    response = requests.get(
-        url,
-        headers={
-            "Accept": "application/json",
-            "Authorization": (
-                f"Bearer {access_token}"
-            ),
-            "User-Agent": (
-                "RPG Maker Daily Report/1.0"
-            ),
-            "Accept-Encoding": (
-                "gzip, deflate"
-            ),
-            "dA-minor-version": "20240701",
-        },
-        timeout=30,
-    )
-
-    response.raise_for_status()
-
-    data = response.json()
-
-    if not isinstance(
-        data,
-        dict,
-    ):
-        return None
-
-    return data
-
-
-# ==========================================
-# Metadata
+# Metadata API
 # ==========================================
 
 def get_deviation_metadata(
     access_token,
-    deviation_id,
+    deviation_ids,
 ):
+    """
+    複数DeviationのMetadataを取得する。
 
-    if not deviation_id:
-        return None
+    DeviantArt APIの仕様上、
+    1回のリクエストは最大50件を想定。
+    """
+
+    if not deviation_ids:
+        return {}
+
+    params = []
+
+    for index, deviation_id in enumerate(
+        deviation_ids
+    ):
+        params.append(
+            (
+                f"deviationids[{index}]",
+                deviation_id,
+            )
+        )
 
     response = requests.get(
         DEVIANTART_METADATA_URL,
-        params={
-            "deviationids": deviation_id,
-        },
+        params=params,
         headers={
             "Accept": "application/json",
             "Authorization": (
@@ -289,9 +205,172 @@ def get_deviation_metadata(
         data,
         dict,
     ):
-        return None
+        return {}
 
-    return data
+    metadata_list = data.get(
+        "metadata",
+        [],
+    )
+
+    if not isinstance(
+        metadata_list,
+        list,
+    ):
+        return {}
+
+    metadata_by_id = {}
+
+    for metadata in metadata_list:
+
+        if not isinstance(
+            metadata,
+            dict,
+        ):
+            continue
+
+        deviation_id = metadata.get(
+            "deviationid"
+        )
+
+        if deviation_id:
+            metadata_by_id[
+                deviation_id
+            ] = metadata
+
+    return metadata_by_id
+
+
+# ==========================================
+# HTML description cleanup
+# ==========================================
+
+def clean_description(
+    value,
+):
+    """
+    DeviantArtのHTML説明文を
+    Slack表示用のプレーンテキストにする。
+
+    URLなどの情報を無理に解析せず、
+    まずは本文だけを安全に取り出す。
+    """
+
+    if not isinstance(
+        value,
+        str,
+    ):
+        return ""
+
+    text = value
+
+    # 改行相当
+    text = re.sub(
+        r"<br\s*/?>",
+        "\n",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    text = re.sub(
+        r"</p\s*>",
+        "\n",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    text = re.sub(
+        r"</div\s*>",
+        "\n",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    # HTMLタグ除去
+    text = re.sub(
+        r"<[^>]+>",
+        "",
+        text,
+    )
+
+    # HTML entity
+    text = html.unescape(
+        text
+    )
+
+    # 空白整理
+    text = re.sub(
+        r"[ \t]+",
+        " ",
+        text,
+    )
+
+    text = re.sub(
+        r"\n\s*\n+",
+        "\n\n",
+        text,
+    )
+
+    return text.strip()
+
+
+# ==========================================
+# Metadata tags
+# ==========================================
+
+def extract_metadata_tags(
+    metadata,
+):
+    """
+    Metadata APIのtagsから
+    タグ名だけを取り出す。
+    """
+
+    tags = []
+
+    raw_tags = metadata.get(
+        "tags",
+        [],
+    )
+
+    if not isinstance(
+        raw_tags,
+        list,
+    ):
+        return tags
+
+    for tag in raw_tags:
+
+        if not isinstance(
+            tag,
+            dict,
+        ):
+            continue
+
+        tag_name = tag.get(
+            "tag_name"
+        )
+
+        if not isinstance(
+            tag_name,
+            str,
+        ):
+            continue
+
+        tag_name = (
+            tag_name
+            .strip()
+            .lower()
+        )
+
+        if (
+            tag_name
+            and tag_name not in tags
+        ):
+            tags.append(
+                tag_name
+            )
+
+    return tags
 
 
 # ==========================================
@@ -315,15 +394,10 @@ def get_items(seen):
         access_token = get_access_token()
 
         # ----------------------------------
-        # APIテスト状態
+        # Search results
         # ----------------------------------
 
-        deviation_test_done = False
-        metadata_test_done = False
-
-        # ----------------------------------
-        # 複数タグを検索
-        # ----------------------------------
+        search_items = []
 
         for tag in DEVIANTART_SEARCHES:
 
@@ -359,10 +433,6 @@ def get_items(seen):
                 ):
                     continue
 
-                # --------------------------------
-                # APIから取得する基本情報
-                # --------------------------------
-
                 href = result.get(
                     "url"
                 )
@@ -390,294 +460,412 @@ def get_items(seen):
                 ):
                     continue
 
-                # --------------------------------
-                # Deviation APIテスト
-                #
-                # 最初の1件だけ取得する。
-                # --------------------------------
-
                 if (
-                    not deviation_test_done
-                    and deviation_id
+                    href in seen_urls
                 ):
-
-                    print(
-                        "[DeviantArt][DEBUG] "
-                        "Testing deviation API"
-                    )
-
-                    print(
-                        "[DeviantArt][DEBUG] "
-                        f"title: {title}"
-                    )
-
-                    print(
-                        "[DeviantArt][DEBUG] "
-                        f"url: {href}"
-                    )
-
-                    print(
-                        "[DeviantArt][DEBUG] "
-                        "deviationid: "
-                        f"{deviation_id}"
-                    )
-
-                    try:
-
-                        deviation = (
-                            get_deviation(
-                                access_token,
-                                deviation_id,
-                            )
-                        )
-
-                        if deviation is not None:
-
-                            print(
-                                "[DeviantArt][DEBUG] "
-                                "Deviation response:"
-                            )
-
-                            print(
-                                deviation
-                            )
-
-                        else:
-
-                            print(
-                                "[DeviantArt][DEBUG] "
-                                "Deviation response "
-                                "was empty"
-                            )
-
-                    except requests.HTTPError as e:
-
-                        print(
-                            "[DeviantArt][DEBUG] "
-                            "Deviation HTTP Error: "
-                            f"{e}"
-                        )
-
-                        if getattr(
-                            e,
-                            "response",
-                            None,
-                        ) is not None:
-
-                            print(
-                                "[DeviantArt][DEBUG] "
-                                "Deviation Response: "
-                                f"{e.response.text[:1000]}"
-                            )
-
-                    except Exception as e:
-
-                        print(
-                            "[DeviantArt][DEBUG] "
-                            "Deviation Error: "
-                            f"{e}"
-                        )
-
-                    deviation_test_done = True
-
-                # --------------------------------
-                # Metadata APIテスト
-                #
-                # 最初の1件だけ取得する。
-                # --------------------------------
-
-                if (
-                    not metadata_test_done
-                    and deviation_id
-                ):
-
-                    print(
-                        "[DeviantArt][DEBUG] "
-                        "Testing metadata API"
-                    )
-
-                    print(
-                        "[DeviantArt][DEBUG] "
-                        f"title: {title}"
-                    )
-
-                    print(
-                        "[DeviantArt][DEBUG] "
-                        "deviationid: "
-                        f"{deviation_id}"
-                    )
-
-                    try:
-
-                        metadata = (
-                            get_deviation_metadata(
-                                access_token,
-                                deviation_id,
-                            )
-                        )
-
-                        if metadata is not None:
-
-                            print(
-                                "[DeviantArt][DEBUG] "
-                                "Metadata response:"
-                            )
-
-                            print(
-                                metadata
-                            )
-
-                        else:
-
-                            print(
-                                "[DeviantArt][DEBUG] "
-                                "Metadata response "
-                                "was empty"
-                            )
-
-                    except requests.HTTPError as e:
-
-                        print(
-                            "[DeviantArt][DEBUG] "
-                            "Metadata HTTP Error: "
-                            f"{e}"
-                        )
-
-                        if getattr(
-                            e,
-                            "response",
-                            None,
-                        ) is not None:
-
-                            print(
-                                "[DeviantArt][DEBUG] "
-                                "Metadata Response: "
-                                f"{e.response.text[:1000]}"
-                            )
-
-                    except Exception as e:
-
-                        print(
-                            "[DeviantArt][DEBUG] "
-                            "Metadata Error: "
-                            f"{e}"
-                        )
-
-                    metadata_test_done = True
-
-                # --------------------------------
-                # 同一実行内の重複
-                # --------------------------------
-
-                if href in seen_urls:
                     continue
 
-                seen_urls.add(href)
+                seen_urls.add(
+                    href
+                )
 
-                # --------------------------------
-                # 過去取得
-                # --------------------------------
+                # ----------------------------------
+                # 既読
+                # ----------------------------------
 
                 if href in seen:
                     continue
 
-                # --------------------------------
-                # 素材分類
-                # --------------------------------
+                search_items.append(
+                    result
+                )
 
-                result_classification = (
-                    classify_asset(
-                        title,
-                        href,
+        # ----------------------------------
+        # Metadata取得対象
+        # ----------------------------------
+
+        unique_items = []
+
+        seen_deviation_ids = set()
+
+        for result in search_items:
+
+            deviation_id = result.get(
+                "deviationid"
+            )
+
+            if not deviation_id:
+                continue
+
+            if (
+                deviation_id
+                in seen_deviation_ids
+            ):
+                continue
+
+            seen_deviation_ids.add(
+                deviation_id
+            )
+
+            unique_items.append(
+                result
+            )
+
+        # ----------------------------------
+        # Metadata API
+        #
+        # 最大50件ずつ取得
+        # ----------------------------------
+
+        metadata_by_id = {}
+
+        for start in range(
+            0,
+            len(unique_items),
+            50,
+        ):
+
+            batch = unique_items[
+                start:start + 50
+            ]
+
+            batch_ids = [
+                item.get(
+                    "deviationid"
+                )
+                for item in batch
+                if item.get(
+                    "deviationid"
+                )
+            ]
+
+            try:
+
+                batch_metadata = (
+                    get_deviation_metadata(
+                        access_token,
+                        batch_ids,
                     )
                 )
 
-                if isinstance(
-                    result_classification,
-                    tuple,
-                ):
+                metadata_by_id.update(
+                    batch_metadata
+                )
 
-                    category = (
-                        result_classification[0]
+                print(
+                    "[DeviantArt] Metadata: "
+                    f"{len(batch_metadata)} "
+                    "items"
+                )
+
+            except requests.HTTPError as e:
+
+                print(
+                    "[DeviantArt] Metadata "
+                    "HTTP Error: "
+                    f"{e}"
+                )
+
+                if getattr(
+                    e,
+                    "response",
+                    None,
+                ) is not None:
+
+                    print(
+                        "[DeviantArt] Metadata "
+                        "Response: "
+                        f"{e.response.text[:500]}"
                     )
 
-                    tags = (
-                        result_classification[1]
-                    )
+            except Exception as e:
 
-                else:
+                print(
+                    "[DeviantArt] Metadata "
+                    "Error: "
+                    f"{e}"
+                )
 
-                    category = (
-                        result_classification
-                    )
+        # ----------------------------------
+        # 各作品を処理
+        # ----------------------------------
 
-                    tags = []
+        for result in unique_items:
 
-                # --------------------------------
-                # 素材でなければ除外
-                # --------------------------------
+            href = result.get(
+                "url"
+            )
 
-                if category is None:
-                    continue
+            title = result.get(
+                "title"
+            )
 
-                # --------------------------------
-                # 採用
-                # --------------------------------
+            deviation_id = result.get(
+                "deviationid"
+            )
 
-                item = {
-                    "title": title,
-                    "url": href,
-                    "category": category,
-                    "source": "DeviantArt",
-                }
+            if not href or not title:
+                continue
 
-                if tags:
-                    item["tags"] = tags
+            metadata = metadata_by_id.get(
+                deviation_id,
+                {},
+            )
 
-                # --------------------------------
-                # 作者情報
-                # --------------------------------
+            # ----------------------------------
+            # Metadata情報
+            # ----------------------------------
 
+            metadata_title = metadata.get(
+                "title"
+            )
+
+            if isinstance(
+                metadata_title,
+                str,
+            ) and metadata_title.strip():
+
+                title = (
+                    metadata_title.strip()
+                )
+
+            source_tags = (
+                extract_metadata_tags(
+                    metadata
+                )
+            )
+
+            description = clean_description(
+                metadata.get(
+                    "description"
+                )
+            )
+
+            license_name = metadata.get(
+                "license"
+            )
+
+            if not isinstance(
+                license_name,
+                str,
+            ):
+                license_name = None
+
+            # ----------------------------------
+            # 素材分類
+            #
+            # タイトルだけでなく
+            # DeviantArtタグも使用する。
+            # ----------------------------------
+
+            result_classification = (
+                classify_asset(
+                    title,
+                    href,
+                    source_tags=source_tags,
+                )
+            )
+
+            if isinstance(
+                result_classification,
+                tuple,
+            ):
+
+                category = (
+                    result_classification[0]
+                )
+
+                tags = (
+                    result_classification[1]
+                )
+
+            else:
+
+                category = (
+                    result_classification
+                )
+
+                tags = []
+
+            # ----------------------------------
+            # 素材でなければ除外
+            # ----------------------------------
+
+            if category is None:
+                continue
+
+            # ----------------------------------
+            # 基本item
+            # ----------------------------------
+
+            item = {
+                "title": title,
+                "url": href,
+                "category": category,
+                "source": "DeviantArt",
+            }
+
+            if tags:
+                item["tags"] = tags
+
+            # ----------------------------------
+            # 作者
+            # ----------------------------------
+
+            author = metadata.get(
+                "author"
+            )
+
+            if not isinstance(
+                author,
+                dict,
+            ):
                 author = result.get(
                     "author"
                 )
 
-                if isinstance(
-                    author,
-                    dict,
+            if isinstance(
+                author,
+                dict,
+            ):
+
+                username = author.get(
+                    "username"
+                )
+
+                if username:
+                    item["author"] = (
+                        username
+                    )
+
+            # ----------------------------------
+            # Deviation ID
+            # ----------------------------------
+
+            if deviation_id:
+                item["deviationid"] = (
+                    deviation_id
+                )
+
+            # ----------------------------------
+            # Published time
+            # ----------------------------------
+
+            published_time = result.get(
+                "published_time"
+            )
+
+            if published_time:
+                item["published_time"] = (
+                    published_time
+                )
+
+            # ----------------------------------
+            # Download information
+            # ----------------------------------
+
+            is_downloadable = result.get(
+                "is_downloadable"
+            )
+
+            if isinstance(
+                is_downloadable,
+                bool,
+            ):
+                item[
+                    "is_downloadable"
+                ] = is_downloadable
+
+            download_filesize = result.get(
+                "download_filesize"
+            )
+
+            if download_filesize is not None:
+                item[
+                    "download_filesize"
+                ] = download_filesize
+
+            # ----------------------------------
+            # Content information
+            # ----------------------------------
+
+            content = result.get(
+                "content"
+            )
+
+            if isinstance(
+                content,
+                dict,
+            ):
+
+                for key in (
+                    "width",
+                    "height",
+                    "filesize",
+                    "transparency",
                 ):
 
-                    username = author.get(
-                        "username"
+                    value = content.get(
+                        key
                     )
 
-                    if username:
-                        item["author"] = (
-                            username
-                        )
+                    if value is not None:
+                        item[
+                            f"content_{key}"
+                        ] = value
 
-                # --------------------------------
-                # deviationid
-                # --------------------------------
+            # ----------------------------------
+            # Mature
+            # ----------------------------------
 
-                if deviation_id:
-                    item["deviationid"] = (
-                        deviation_id
-                    )
+            is_mature = result.get(
+                "is_mature"
+            )
 
-                adopted_items.append(
-                    item
-                )
+            if isinstance(
+                is_mature,
+                bool,
+            ):
+                item[
+                    "is_mature"
+                ] = is_mature
 
-                new_seen.append(
-                    href
-                )
+            # ----------------------------------
+            # DeviantArt metadata
+            # ----------------------------------
 
-                print(
-                    f"[DeviantArt]"
-                    f"[{category}] "
-                    f"{title}"
-                )
+            if source_tags:
+                item[
+                    "source_tags"
+                ] = source_tags
+
+            if description:
+                item[
+                    "description"
+                ] = description
+
+            if license_name:
+                item[
+                    "license"
+                ] = license_name
+
+            # ----------------------------------
+            # Adopt
+            # ----------------------------------
+
+            adopted_items.append(
+                item
+            )
+
+            new_seen.append(
+                href
+            )
+
+            print(
+                f"[DeviantArt]"
+                f"[{category}] "
+                f"{title}"
+            )
 
         print(
             f"[DeviantArt] New: "
@@ -692,7 +880,8 @@ def get_items(seen):
     except requests.HTTPError as e:
 
         print(
-            f"[DeviantArt] HTTP Error: {e}"
+            f"[DeviantArt] HTTP Error: "
+            f"{e}"
         )
 
         if getattr(
@@ -711,7 +900,8 @@ def get_items(seen):
     except Exception as e:
 
         print(
-            f"[DeviantArt] Error: {e}"
+            f"[DeviantArt] Error: "
+            f"{e}"
         )
 
         return [], seen
