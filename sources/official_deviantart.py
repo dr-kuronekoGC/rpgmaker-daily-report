@@ -210,6 +210,12 @@ def get_items(seen):
         access_token = get_access_token()
 
         # ----------------------------------
+        # 詳細APIのテスト状態
+        # ----------------------------------
+
+        content_test_done = False
+
+        # ----------------------------------
         # 複数タグを検索
         # ----------------------------------
 
@@ -279,6 +285,97 @@ def get_items(seen):
                     continue
 
                 # --------------------------------
+                # 詳細APIテスト
+                #
+                # 今回は最初の1件だけ取得する。
+                # 素材分類より前に実行する。
+                # --------------------------------
+
+                if (
+                    not content_test_done
+                    and deviation_id
+                ):
+
+                    print(
+                        "[DeviantArt][DEBUG] "
+                        "Testing deviation content API"
+                    )
+
+                    print(
+                        "[DeviantArt][DEBUG] "
+                        f"title: {title}"
+                    )
+
+                    print(
+                        "[DeviantArt][DEBUG] "
+                        f"url: {href}"
+                    )
+
+                    print(
+                        "[DeviantArt][DEBUG] "
+                        "deviationid: "
+                        f"{deviation_id}"
+                    )
+
+                    try:
+
+                        content = (
+                            get_deviation_content(
+                                access_token,
+                                deviation_id,
+                            )
+                        )
+
+                        if content is not None:
+
+                            print(
+                                "[DeviantArt][DEBUG] "
+                                "Content response:"
+                            )
+
+                            print(
+                                content
+                            )
+
+                        else:
+
+                            print(
+                                "[DeviantArt][DEBUG] "
+                                "Content response "
+                                "was empty"
+                            )
+
+                    except requests.HTTPError as e:
+
+                        print(
+                            "[DeviantArt][DEBUG] "
+                            "Content HTTP Error: "
+                            f"{e}"
+                        )
+
+                        if getattr(
+                            e,
+                            "response",
+                            None,
+                        ) is not None:
+
+                            print(
+                                "[DeviantArt][DEBUG] "
+                                "Content Response: "
+                                f"{e.response.text[:1000]}"
+                            )
+
+                    except Exception as e:
+
+                        print(
+                            "[DeviantArt][DEBUG] "
+                            "Content Error: "
+                            f"{e}"
+                        )
+
+                    content_test_done = True
+
+                # --------------------------------
                 # 同一実行内の重複
                 # --------------------------------
 
@@ -334,7 +431,7 @@ def get_items(seen):
                     continue
 
                 # --------------------------------
-                # 基本アイテム
+                # 採用
                 # --------------------------------
 
                 item = {
@@ -377,82 +474,6 @@ def get_items(seen):
                     item["deviationid"] = (
                         deviation_id
                     )
-
-                # --------------------------------
-                # 詳細情報取得
-                # --------------------------------
-
-                if deviation_id:
-
-                    print(
-                        "[DeviantArt] "
-                        "Fetching content: "
-                        f"{deviation_id}"
-                    )
-
-                    try:
-
-                        content = (
-                            get_deviation_content(
-                                access_token,
-                                deviation_id,
-                            )
-                        )
-
-                        if content is not None:
-
-                            print(
-                                "[DeviantArt][DEBUG] "
-                                "Content response:"
-                            )
-
-                            print(
-                                content
-                            )
-
-                            item[
-                                "deviantart_content"
-                            ] = content
-
-                        else:
-
-                            print(
-                                "[DeviantArt][DEBUG] "
-                                "Content response "
-                                "was empty"
-                            )
-
-                    except requests.HTTPError as e:
-
-                        print(
-                            "[DeviantArt] "
-                            "Content HTTP Error: "
-                            f"{e}"
-                        )
-
-                        if getattr(
-                            e,
-                            "response",
-                            None,
-                        ) is not None:
-
-                            print(
-                                "[DeviantArt] "
-                                "Content Response: "
-                                f"{e.response.text[:500]}"
-                            )
-
-                    except Exception as e:
-
-                        print(
-                            "[DeviantArt] "
-                            "Content Error: "
-                            f"{e}"
-                        )
-
-                # --------------------------------
-                # 採用
-                # --------------------------------
 
                 adopted_items.append(
                     item
