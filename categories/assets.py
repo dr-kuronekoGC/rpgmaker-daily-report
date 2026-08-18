@@ -43,12 +43,6 @@ STRONG_GRAPHIC_KEYWORDS = (
 # Asset size / pack keywords
 # ==========================================
 
-# 「大量の素材」「大規模セット」と比較的明確に
-# 判断できるキーワードだけを対象にする。
-#
-# 1枚の画像に大量の素材が載っているだけの場合は、
-# タイトルから判別できないことが多いため対象外。
-
 LARGE_PACK_KEYWORDS = (
     "mega pack",
     "megapack",
@@ -154,27 +148,25 @@ def _append_unique(
 def classify_asset(
     title,
     url="",
+    source_tags=None,
 ):
     """
     素材系コンテンツを分類する。
+
+    title:
+        作品タイトル
+
+    url:
+        作品URL
+
+    source_tags:
+        情報源から取得したタグ。
+        DeviantArtではMetadata APIのタグを利用する。
 
     Returns
     -------
     tuple[str | None, list[str]]
         (カテゴリ, タグ)
-
-    タグ例
-    -------
-    tileset
-    character
-    icon
-    faceset
-    sprite
-    bgm
-    sfx
-    large_pack
-    fanwork
-    official_edit
     """
 
     title = (
@@ -190,15 +182,51 @@ def classify_asset(
     tags = []
 
     # ==================================
+    # 情報源タグ
+    # ==================================
+
+    normalized_source_tags = []
+
+    if isinstance(
+        source_tags,
+        (list, tuple, set),
+    ):
+
+        for source_tag in source_tags:
+
+            if not isinstance(
+                source_tag,
+                str,
+            ):
+                continue
+
+            normalized_tag = (
+                source_tag
+                .lower()
+                .strip()
+            )
+
+            if normalized_tag:
+                normalized_source_tags.append(
+                    normalized_tag
+                )
+
+    # タイトル＋情報源タグ
+    # を素材判定用の文字列にする。
+    searchable_text = (
+        title
+        + " "
+        + " ".join(
+            normalized_source_tags
+        )
+    )
+
+    # ==================================
     # 共通属性
     # ==================================
 
-    # 大量セット
-    #
-    # 「1枚の画像に大量の素材がある」
-    # ケースはここでは判定しない。
     if _contains_any(
-        title,
+        searchable_text,
         LARGE_PACK_KEYWORDS,
     ):
         _append_unique(
@@ -206,9 +234,8 @@ def classify_asset(
             "large_pack",
         )
 
-    # 版権・二次創作らしいもの
     if _contains_any(
-        title,
+        searchable_text,
         FANWORK_KEYWORDS,
     ):
         _append_unique(
@@ -216,9 +243,8 @@ def classify_asset(
             "fanwork",
         )
 
-    # 公式素材の改変・アレンジらしいもの
     if _contains_any(
-        title,
+        searchable_text,
         OFFICIAL_EDIT_KEYWORDS,
     ):
         _append_unique(
@@ -231,14 +257,14 @@ def classify_asset(
     # ==================================
 
     if _contains_any(
-        title,
+        searchable_text,
         STRONG_SOUND_KEYWORDS,
     ):
 
         if (
-            "bgm" in title
-            or "music" in title
-            or "soundtrack" in title
+            "bgm" in searchable_text
+            or "music" in searchable_text
+            or "soundtrack" in searchable_text
         ):
             _append_unique(
                 tags,
@@ -246,9 +272,9 @@ def classify_asset(
             )
 
         if (
-            "sfx" in title
-            or "sound effect" in title
-            or "sound effects" in title
+            "sfx" in searchable_text
+            or "sound effect" in searchable_text
+            or "sound effects" in searchable_text
         ):
             _append_unique(
                 tags,
@@ -265,31 +291,31 @@ def classify_asset(
     # ==================================
 
     if _contains_any(
-        title,
+        searchable_text,
         STRONG_GRAPHIC_KEYWORDS,
     ):
 
-        if "ui" in title:
+        if "ui" in searchable_text:
             _append_unique(
                 tags,
                 "ui",
             )
 
-        if "sprite" in title:
+        if "sprite" in searchable_text:
             _append_unique(
                 tags,
                 "sprite",
             )
 
-        if "background" in title:
+        if "background" in searchable_text:
             _append_unique(
                 tags,
                 "background",
             )
 
         if (
-            "tileset" in title
-            or "tile" in title
+            "tileset" in searchable_text
+            or "tile" in searchable_text
         ):
             _append_unique(
                 tags,
@@ -297,23 +323,26 @@ def classify_asset(
             )
 
         if (
-            "character" in title
-            or "portrait" in title
-            or "faceset" in title
-            or "face set" in title
+            "character" in searchable_text
+            or "portrait" in searchable_text
+            or "faceset" in searchable_text
+            or "face set" in searchable_text
         ):
             _append_unique(
                 tags,
                 "character",
             )
 
-        if "faceset" in title or "face set" in title:
+        if (
+            "faceset" in searchable_text
+            or "face set" in searchable_text
+        ):
             _append_unique(
                 tags,
                 "faceset",
             )
 
-        if "icon" in title:
+        if "icon" in searchable_text:
             _append_unique(
                 tags,
                 "icon",
