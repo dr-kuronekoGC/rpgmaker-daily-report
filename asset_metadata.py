@@ -204,18 +204,27 @@ def detect_price_and_license(
     """
     価格・ライセンス情報を判定する。
 
-    現段階では、情報源から明示的な情報を
-    取得できていないため、基本的に unknown。
+    重要:
+    license は「情報源が返した原文」と
+    「Bot側の利用可否判定」を分離する。
 
-    今後、DeviantArt APIなどから得られた
-    明示的な情報をここに渡して判定する。
+    例えば DeviantArt API が
+
+        "No License"
+
+    を返した場合でも、それだけを根拠に
+    restricted と断定しない。
+
+    明示的な price_status / license_status
+    が既に設定されている場合のみ、
+    その値を採用する。
     """
 
     price_status = PRICE_UNKNOWN
     license_status = LICENSE_UNKNOWN
 
     # --------------------------------------
-    # 明示的な値が既に入っている場合
+    # 明示的な価格判定
     # --------------------------------------
 
     if item.get("price_status") in (
@@ -225,6 +234,10 @@ def detect_price_and_license(
         price_status = item[
             "price_status"
         ]
+
+    # --------------------------------------
+    # 明示的なライセンス判定
+    # --------------------------------------
 
     if item.get("license_status") in (
         LICENSE_FREE,
@@ -242,6 +255,124 @@ def detect_price_and_license(
 
 
 # ==========================================
+# Source Metadata
+# ==========================================
+
+def preserve_source_metadata(
+    item,
+):
+    """
+    情報源から取得した詳細情報を整理する。
+
+    ここでは情報の意味を推測せず、
+    取得できた値をそのまま保持する。
+    """
+
+    # --------------------------------------
+    # Source tags
+    # --------------------------------------
+
+    source_tags = item.get(
+        "source_tags"
+    )
+
+    if isinstance(
+        source_tags,
+        list,
+    ):
+        item["source_tags"] = [
+            tag
+            for tag in source_tags
+            if isinstance(
+                tag,
+                str,
+            )
+        ]
+
+    # --------------------------------------
+    # Description
+    # --------------------------------------
+
+    description = item.get(
+        "description"
+    )
+
+    if not isinstance(
+        description,
+        str,
+    ):
+        item.pop(
+            "description",
+            None,
+        )
+
+    elif not description.strip():
+        item.pop(
+            "description",
+            None,
+        )
+
+    else:
+        item["description"] = (
+            description.strip()
+        )
+
+    # --------------------------------------
+    # License
+    #
+    # APIが返した原文を保持する。
+    # --------------------------------------
+
+    license_name = item.get(
+        "license"
+    )
+
+    if isinstance(
+        license_name,
+        str,
+    ):
+
+        license_name = (
+            license_name.strip()
+        )
+
+        if license_name:
+            item["license"] = (
+                license_name
+            )
+        else:
+            item.pop(
+                "license",
+                None,
+            )
+
+    # --------------------------------------
+    # Author
+    # --------------------------------------
+
+    author = item.get(
+        "author"
+    )
+
+    if isinstance(
+        author,
+        str,
+    ):
+
+        author = author.strip()
+
+        if author:
+            item["author"] = author
+        else:
+            item.pop(
+                "author",
+                None,
+            )
+
+    return item
+
+
+# ==========================================
 # Asset Metadata
 # ==========================================
 
@@ -250,10 +381,27 @@ def build_asset_metadata(item):
     収集アイテムから素材評価用メタデータを作る。
 
     情報が確認できない場合は unknown とする。
-    推測による「無料」「利用可能」判定は行わない。
+
+    推測による
+        「無料」
+        「利用可能」
+        「商用利用可能」
+    などの判定は行わない。
+
+    また、情報源から取得した
+    source_tags / description / license
+    は原則としてそのまま保持する。
     """
 
     item = item.copy()
+
+    # --------------------------------------
+    # Source metadataを保持
+    # --------------------------------------
+
+    item = preserve_source_metadata(
+        item
+    )
 
     title = item.get(
         "title",
@@ -270,14 +418,24 @@ def build_asset_metadata(item):
         "",
     )
 
+    source_tags = item.get(
+        "source_tags",
+        [],
+    )
+
     # --------------------------------------
     # Asset classification
+    #
+    # 重要:
+    # DeviantArt等から取得したタグを
+    # classify_asset()にも渡す。
     # --------------------------------------
 
     detected_category, asset_tags = (
         classify_asset(
             title,
             url,
+            source_tags=source_tags,
         )
     )
 
@@ -335,15 +493,21 @@ def build_asset_metadata(item):
     # Basic asset metadata
     # --------------------------------------
 
-    item["asset_type"] = asset_type
+    item["asset_type"] = (
+        asset_type
+    )
 
-    item["asset_tags"] = asset_tags
+    item["asset_tags"] = (
+        asset_tags
+    )
 
     # --------------------------------------
     # Price
     # --------------------------------------
 
-    item["price_status"] = price_status
+    item["price_status"] = (
+        price_status
+    )
 
     item["is_free"] = (
         True
@@ -363,6 +527,12 @@ def build_asset_metadata(item):
 
     # --------------------------------------
     # License
+    #
+    # license:
+    #     情報源から返された原文
+    #
+    # license_status:
+    #     Bot側の判定
     # --------------------------------------
 
     item["license_status"] = (
@@ -390,7 +560,8 @@ def build_asset_metadata(item):
     # --------------------------------------
 
     item["is_official_edit"] = (
-        "official_edit" in asset_tags
+        "official_edit"
+        in asset_tags
     )
 
     # --------------------------------------
@@ -406,7 +577,8 @@ def build_asset_metadata(item):
     # --------------------------------------
 
     item["large_pack"] = (
-        "large_pack" in asset_tags
+        "large_pack"
+        in asset_tags
     )
 
     # --------------------------------------
