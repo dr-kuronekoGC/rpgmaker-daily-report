@@ -37,6 +37,11 @@ DEVIANTART_CONTENT_URL = (
     + "/deviation/content"
 )
 
+DEVIANTART_DEVIATION_URL = (
+    DEVIANTART_API_BASE_URL
+    + "/deviation"
+)
+
 
 # ==========================================
 # OAuth2
@@ -190,6 +195,55 @@ def get_deviation_content(
 
 
 # ==========================================
+# Deviation
+# ==========================================
+
+def get_deviation(
+    access_token,
+    deviation_id,
+):
+
+    if not deviation_id:
+        return None
+
+    url = (
+        DEVIANTART_DEVIATION_URL
+        + "/"
+        + str(deviation_id)
+    )
+
+    response = requests.get(
+        url,
+        headers={
+            "Accept": "application/json",
+            "Authorization": (
+                f"Bearer {access_token}"
+            ),
+            "User-Agent": (
+                "RPG Maker Daily Report/1.0"
+            ),
+            "Accept-Encoding": (
+                "gzip, deflate"
+            ),
+            "dA-minor-version": "20240701",
+        },
+        timeout=30,
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    if not isinstance(
+        data,
+        dict,
+    ):
+        return None
+
+    return data
+
+
+# ==========================================
 # Main
 # ==========================================
 
@@ -213,7 +267,7 @@ def get_items(seen):
         # 詳細APIのテスト状態
         # ----------------------------------
 
-        content_test_done = False
+        deviation_test_done = False
 
         # ----------------------------------
         # 複数タグを検索
@@ -285,20 +339,20 @@ def get_items(seen):
                     continue
 
                 # --------------------------------
-                # 詳細APIテスト
+                # Deviation APIテスト
                 #
                 # 今回は最初の1件だけ取得する。
                 # 素材分類より前に実行する。
                 # --------------------------------
 
                 if (
-                    not content_test_done
+                    not deviation_test_done
                     and deviation_id
                 ):
 
                     print(
                         "[DeviantArt][DEBUG] "
-                        "Testing deviation content API"
+                        "Testing deviation API"
                     )
 
                     print(
@@ -319,29 +373,29 @@ def get_items(seen):
 
                     try:
 
-                        content = (
-                            get_deviation_content(
+                        deviation = (
+                            get_deviation(
                                 access_token,
                                 deviation_id,
                             )
                         )
 
-                        if content is not None:
+                        if deviation is not None:
 
                             print(
                                 "[DeviantArt][DEBUG] "
-                                "Content response:"
+                                "Deviation response:"
                             )
 
                             print(
-                                content
+                                deviation
                             )
 
                         else:
 
                             print(
                                 "[DeviantArt][DEBUG] "
-                                "Content response "
+                                "Deviation response "
                                 "was empty"
                             )
 
@@ -349,7 +403,7 @@ def get_items(seen):
 
                         print(
                             "[DeviantArt][DEBUG] "
-                            "Content HTTP Error: "
+                            "Deviation HTTP Error: "
                             f"{e}"
                         )
 
@@ -361,7 +415,7 @@ def get_items(seen):
 
                             print(
                                 "[DeviantArt][DEBUG] "
-                                "Content Response: "
+                                "Deviation Response: "
                                 f"{e.response.text[:1000]}"
                             )
 
@@ -369,11 +423,11 @@ def get_items(seen):
 
                         print(
                             "[DeviantArt][DEBUG] "
-                            "Content Error: "
+                            "Deviation Error: "
                             f"{e}"
                         )
 
-                    content_test_done = True
+                    deviation_test_done = True
 
                 # --------------------------------
                 # 同一実行内の重複
