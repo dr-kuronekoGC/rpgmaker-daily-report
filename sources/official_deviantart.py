@@ -263,7 +263,7 @@ def get_deviation_metadata(
     response = requests.get(
         DEVIANTART_METADATA_URL,
         params={
-            "deviationid": deviation_id,
+            "deviationids": deviation_id,
         },
         headers={
             "Accept": "application/json",
