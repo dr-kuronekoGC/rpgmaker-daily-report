@@ -42,6 +42,11 @@ DEVIANTART_DEVIATION_URL = (
     + "/deviation"
 )
 
+DEVIANTART_METADATA_URL = (
+    DEVIANTART_API_BASE_URL
+    + "/deviation/metadata"
+)
+
 
 # ==========================================
 # OAuth2
@@ -244,6 +249,52 @@ def get_deviation(
 
 
 # ==========================================
+# Metadata
+# ==========================================
+
+def get_deviation_metadata(
+    access_token,
+    deviation_id,
+):
+
+    if not deviation_id:
+        return None
+
+    response = requests.get(
+        DEVIANTART_METADATA_URL,
+        params={
+            "deviationid": deviation_id,
+        },
+        headers={
+            "Accept": "application/json",
+            "Authorization": (
+                f"Bearer {access_token}"
+            ),
+            "User-Agent": (
+                "RPG Maker Daily Report/1.0"
+            ),
+            "Accept-Encoding": (
+                "gzip, deflate"
+            ),
+            "dA-minor-version": "20240701",
+        },
+        timeout=30,
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    if not isinstance(
+        data,
+        dict,
+    ):
+        return None
+
+    return data
+
+
+# ==========================================
 # Main
 # ==========================================
 
@@ -264,10 +315,11 @@ def get_items(seen):
         access_token = get_access_token()
 
         # ----------------------------------
-        # 詳細APIのテスト状態
+        # APIテスト状態
         # ----------------------------------
 
         deviation_test_done = False
+        metadata_test_done = False
 
         # ----------------------------------
         # 複数タグを検索
@@ -341,8 +393,7 @@ def get_items(seen):
                 # --------------------------------
                 # Deviation APIテスト
                 #
-                # 今回は最初の1件だけ取得する。
-                # 素材分類より前に実行する。
+                # 最初の1件だけ取得する。
                 # --------------------------------
 
                 if (
@@ -428,6 +479,91 @@ def get_items(seen):
                         )
 
                     deviation_test_done = True
+
+                # --------------------------------
+                # Metadata APIテスト
+                #
+                # 最初の1件だけ取得する。
+                # --------------------------------
+
+                if (
+                    not metadata_test_done
+                    and deviation_id
+                ):
+
+                    print(
+                        "[DeviantArt][DEBUG] "
+                        "Testing metadata API"
+                    )
+
+                    print(
+                        "[DeviantArt][DEBUG] "
+                        f"title: {title}"
+                    )
+
+                    print(
+                        "[DeviantArt][DEBUG] "
+                        "deviationid: "
+                        f"{deviation_id}"
+                    )
+
+                    try:
+
+                        metadata = (
+                            get_deviation_metadata(
+                                access_token,
+                                deviation_id,
+                            )
+                        )
+
+                        if metadata is not None:
+
+                            print(
+                                "[DeviantArt][DEBUG] "
+                                "Metadata response:"
+                            )
+
+                            print(
+                                metadata
+                            )
+
+                        else:
+
+                            print(
+                                "[DeviantArt][DEBUG] "
+                                "Metadata response "
+                                "was empty"
+                            )
+
+                    except requests.HTTPError as e:
+
+                        print(
+                            "[DeviantArt][DEBUG] "
+                            "Metadata HTTP Error: "
+                            f"{e}"
+                        )
+
+                        if getattr(
+                            e,
+                            "response",
+                            None,
+                        ) is not None:
+
+                            print(
+                                "[DeviantArt][DEBUG] "
+                                "Metadata Response: "
+                                f"{e.response.text[:1000]}"
+                            )
+
+                    except Exception as e:
+
+                        print(
+                            "[DeviantArt][DEBUG] "
+                            "Metadata Error: "
+                            f"{e}"
+                        )
+
+                    metadata_test_done = True
 
                 # --------------------------------
                 # 同一実行内の重複
