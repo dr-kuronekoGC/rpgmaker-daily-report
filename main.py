@@ -112,7 +112,7 @@ def filter_global_seen(items, global_seen):
 
 
 def main():
-
+    pending_seen = []
     all_items = []
 
     # サイトごとの既読管理とは別に、
@@ -212,14 +212,16 @@ def main():
     # ======================================
 
     for source, new_seen in pending_seen:
-        save_seen_file(
+        s
             source.SEEN_FILE,
             new_seen,
     )
 
-    save_seen_file(
-        GLOBAL_SEEN_FILE,
-        new_global_seen,
+    pending_seen.append(
+        (
+            source,
+            new_seen,
+        )
     )
 
 if __name__ == "__main__":
