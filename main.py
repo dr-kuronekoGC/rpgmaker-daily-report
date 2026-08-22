@@ -133,12 +133,6 @@ def main():
                 seen
             )
 
-            # サイトごとの既読情報は従来通り保存する。
-            save_seen_file(
-                source.SEEN_FILE,
-                new_seen,
-            )
-
             all_items.extend(
                 items
             )
@@ -156,11 +150,6 @@ def main():
     all_items, new_global_seen = filter_global_seen(
         all_items,
         global_seen,
-    )
-
-    save_seen_file(
-        GLOBAL_SEEN_FILE,
-        new_global_seen,
     )
 
     print(
@@ -214,6 +203,24 @@ def main():
         report
     )
 
+    # ======================================
+    # Seen 保存
+    # ======================================
+    #
+    # Slackへのレポート作成・送信まで成功した後に
+    # 初めて既読として保存する。
+    # ======================================
+
+    for source, new_seen in pending_seen:
+        save_seen_file(
+            source.SEEN_FILE,
+            new_seen,
+    )
+
+    save_seen_file(
+        GLOBAL_SEEN_FILE,
+        new_global_seen,
+    )
 
 if __name__ == "__main__":
     main()
