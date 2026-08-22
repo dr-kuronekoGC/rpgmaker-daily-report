@@ -170,6 +170,11 @@ def main():
         f"New: {len(new_global_seen) - len(global_seen)}"
     )
 
+    print(
+        "[DEBUG] Items after global seen:",
+        len(all_items)
+    )
+
     # ======================================
     # Asset metadata
     # ======================================
@@ -177,6 +182,21 @@ def main():
     all_items = enrich_items(
         all_items
     )
+
+    print(
+        "[DEBUG] Items after enrich:",
+        len(all_items)
+    )
+
+    for item in all_items:
+        print(
+            "[DEBUG] Item:",
+            item.get("source"),
+            "|",
+            item.get("category"),
+            "|",
+            item.get("title"),
+        )
 
     # ======================================
     # Report
