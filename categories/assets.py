@@ -23,6 +23,8 @@ STRONG_SOUND_KEYWORDS = (
 )
 
 
+# 「これがタイトルやタグにあれば、
+# 素材そのものの可能性が高い」キーワード。
 STRONG_GRAPHIC_KEYWORDS = (
     "sprite",
     "sprites",
@@ -45,12 +47,59 @@ STRONG_GRAPHIC_KEYWORDS = (
     "pixel art",
     "pixelart",
     "pixel-art",
-    "pixel",
     "ui",
     "user interface",
-    "parallax",
+)
+
+
+# ==========================================
+# Map / Parallax
+# ==========================================
+#
+# map / mapping / parallax は、
+# 「素材」ではなく「作品・作例」の場合が多い。
+#
+# そのため、これらだけでは
+# グラフィック素材と判定しない。
+#
+# pack / asset / resource / download などと
+# 組み合わさった場合のみ素材候補とする。
+# ==========================================
+
+MAP_KEYWORDS = (
     "map",
     "maps",
+    "mapping",
+    "mapmaking",
+    "parallax",
+    "parallax mapping",
+    "parallaxmap",
+)
+
+
+MAP_CONTEXT_KEYWORDS = (
+    "map pack",
+    "map set",
+    "map collection",
+    "map bundle",
+    "map resource",
+    "map resources",
+    "map asset",
+    "map assets",
+    "parallax pack",
+    "parallax set",
+    "parallax collection",
+    "parallax bundle",
+    "parallax resource",
+    "parallax resources",
+    "parallax asset",
+    "parallax assets",
+    "downloadable map",
+    "downloadable maps",
+    "downloadable parallax",
+    "free map",
+    "free maps",
+    "free parallax",
 )
 
 
@@ -178,6 +227,33 @@ RPGMAKER_KEYWORDS = (
     "rpg maker mz",
     "rpgmakermv",
     "rpgmakermz",
+)
+
+
+# ==========================================
+# Keywords suggesting a showcase / example
+# ==========================================
+#
+# これらは単独では「素材ではない」と断定しない。
+# ただし map / parallax と組み合わさった場合、
+# 作例である可能性を高く見る。
+# ==========================================
+
+SHOWCASE_KEYWORDS = (
+    "screenshot",
+    "showcase",
+    "showcasing",
+    "practice",
+    "map practice",
+    "level design",
+    "leveldesign",
+    "game design",
+    "gamedesign",
+    "gameplay",
+    "in-game",
+    "ingame",
+    "work in progress",
+    "wip",
 )
 
 
@@ -382,6 +458,12 @@ def classify_asset(
     # ======================================
     # 強いグラフィック素材判定
     # ======================================
+    #
+    # map / mapping / parallax はここに
+    # 含めない。
+    #
+    # これらは後段で個別に判定する。
+    # ======================================
 
     if _contains_any(
         searchable_text,
@@ -474,6 +556,43 @@ def classify_asset(
                 "icon",
             )
 
+        return (
+            "グラフィック素材",
+            tags,
+        )
+
+    # ======================================
+    # Map / Parallax
+    # ======================================
+    #
+    # map / mapping / parallax 単独では
+    # 素材扱いしない。
+    #
+    # pack / resource / asset / downloadable
+    # などが組み合わさった場合だけ
+    # グラフィック素材とする。
+    # ======================================
+
+    has_map_keyword = _contains_any(
+        searchable_text,
+        MAP_KEYWORDS,
+    )
+
+    has_map_context = _contains_any(
+        searchable_text,
+        MAP_CONTEXT_KEYWORDS,
+    )
+
+    if (
+        has_map_keyword
+        and has_map_context
+    ):
+
+        _append_unique(
+            tags,
+            "map",
+        )
+
         if (
             "parallax"
             in searchable_text
@@ -483,17 +602,6 @@ def classify_asset(
                 "parallax",
             )
 
-        if (
-            "map"
-            in searchable_text
-            or "maps"
-            in searchable_text
-        ):
-            _append_unique(
-                tags,
-                "map",
-            )
-
         return (
             "グラフィック素材",
             tags,
@@ -501,6 +609,7 @@ def classify_asset(
 
     # ======================================
     # Pack / Bundle
+    # ======================================
     #
     # 「asset」単独では素材扱いしない。
     # pack / bundle と組み合わさった場合のみ
@@ -520,8 +629,11 @@ def classify_asset(
     # ======================================
     # 従来のキーワード判定
     #
-    # ただし「asset」「resource」「art」
-    # 単独による誤分類を避ける。
+    # asset / resource / art は単独で
+    # 素材扱いしない。
+    #
+    # ここではタイトル側のキーワードだけを
+    # 利用する。
     # ======================================
 
     safe_graphic_keywords = tuple(
@@ -533,6 +645,10 @@ def classify_asset(
             "resource",
             "resources",
             "art",
+            "map",
+            "maps",
+            "mapping",
+            "parallax",
         )
     )
 
@@ -551,6 +667,29 @@ def classify_asset(
     ):
         return (
             "グラフィック素材",
+            tags,
+        )
+
+    # ======================================
+    # 最後の保護判定
+    #
+    # map / mapping / parallax があり、
+    # showcase / practice / leveldesign 等も
+    # 含む場合は、素材にはしない。
+    #
+    # 明示的な素材キーワードがない以上、
+    # 無理に素材扱いしない。
+    # ======================================
+
+    if (
+        has_map_keyword
+        and _contains_any(
+            searchable_text,
+            SHOWCASE_KEYWORDS,
+        )
+    ):
+        return (
+            None,
             tags,
         )
 
