@@ -19,23 +19,68 @@ STRONG_SOUND_KEYWORDS = (
     "sfx",
     "audio",
     "soundtrack",
+    "ost",
 )
 
 
 STRONG_GRAPHIC_KEYWORDS = (
     "sprite",
+    "sprites",
     "tileset",
-    "tile",
+    "tilesets",
+    "tile set",
+    "tilemap",
     "character",
+    "characters",
     "portrait",
+    "portraits",
     "faceset",
     "face set",
     "icon",
+    "icons",
     "background",
+    "backgrounds",
     "texture",
+    "textures",
     "pixel art",
+    "pixelart",
+    "pixel-art",
     "pixel",
     "ui",
+    "user interface",
+    "parallax",
+    "map",
+    "maps",
+)
+
+
+# ==========================================
+# Pack / bundle keywords
+# ==========================================
+
+PACK_KEYWORDS = (
+    "asset pack",
+    "asset bundle",
+    "resource pack",
+    "resource bundle",
+    "graphics pack",
+    "graphic pack",
+    "sprite pack",
+    "sprite bundle",
+    "tileset pack",
+    "tileset bundle",
+    "tileset collection",
+    "tileset set",
+    "icon pack",
+    "icon set",
+    "character pack",
+    "character set",
+    "faceset pack",
+    "faceset set",
+    "background pack",
+    "background set",
+    "ui pack",
+    "ui set",
 )
 
 
@@ -120,6 +165,23 @@ OFFICIAL_EDIT_KEYWORDS = (
 
 
 # ==========================================
+# RPG Maker specific keywords
+# ==========================================
+
+RPGMAKER_KEYWORDS = (
+    "rpg maker",
+    "rpgmaker",
+    "rpg-maker",
+    "rpgmaker mv",
+    "rpgmaker mz",
+    "rpg maker mv",
+    "rpg maker mz",
+    "rpgmakermv",
+    "rpgmakermz",
+)
+
+
+# ==========================================
 # Helpers
 # ==========================================
 
@@ -139,6 +201,39 @@ def _append_unique(
 ):
     if tag not in tags:
         tags.append(tag)
+
+
+def _normalize_source_tags(
+    source_tags,
+):
+    normalized = []
+
+    if not isinstance(
+        source_tags,
+        (list, tuple, set),
+    ):
+        return normalized
+
+    for source_tag in source_tags:
+
+        if not isinstance(
+            source_tag,
+            str,
+        ):
+            continue
+
+        tag = (
+            source_tag
+            .lower()
+            .strip()
+        )
+
+        if tag:
+            normalized.append(
+                tag
+            )
+
+    return normalized
 
 
 # ==========================================
@@ -181,49 +276,44 @@ def classify_asset(
 
     tags = []
 
-    # ==================================
-    # 情報源タグ
-    # ==================================
+    normalized_source_tags = (
+        _normalize_source_tags(
+            source_tags
+        )
+    )
 
-    normalized_source_tags = []
+    # --------------------------------------
+    # 検索対象
+    #
+    # タイトル・URL・情報源タグを統合する。
+    # --------------------------------------
 
-    if isinstance(
-        source_tags,
-        (list, tuple, set),
-    ):
-
-        for source_tag in source_tags:
-
-            if not isinstance(
-                source_tag,
-                str,
-            ):
-                continue
-
-            normalized_tag = (
-                source_tag
-                .lower()
-                .strip()
-            )
-
-            if normalized_tag:
-                normalized_source_tags.append(
-                    normalized_tag
-                )
-
-    # タイトル＋情報源タグ
-    # を素材判定用の文字列にする。
     searchable_text = (
         title
+        + " "
+        + url
         + " "
         + " ".join(
             normalized_source_tags
         )
     )
 
-    # ==================================
+    # ======================================
+    # RPG Maker関連タグ
+    # ======================================
+
+    if _contains_any(
+        searchable_text,
+        RPGMAKER_KEYWORDS,
+    ):
+        _append_unique(
+            tags,
+            "rpgmaker",
+        )
+
+    # ======================================
     # 共通属性
-    # ==================================
+    # ======================================
 
     if _contains_any(
         searchable_text,
@@ -252,9 +342,9 @@ def classify_asset(
             "official_edit",
         )
 
-    # ==================================
+    # ======================================
     # サウンド素材
-    # ==================================
+    # ======================================
 
     if _contains_any(
         searchable_text,
@@ -265,6 +355,7 @@ def classify_asset(
             "bgm" in searchable_text
             or "music" in searchable_text
             or "soundtrack" in searchable_text
+            or "ost" in searchable_text
         ):
             _append_unique(
                 tags,
@@ -273,8 +364,10 @@ def classify_asset(
 
         if (
             "sfx" in searchable_text
-            or "sound effect" in searchable_text
-            or "sound effects" in searchable_text
+            or "sound effect"
+            in searchable_text
+            or "sound effects"
+            in searchable_text
         ):
             _append_unique(
                 tags,
@@ -286,36 +379,54 @@ def classify_asset(
             tags,
         )
 
-    # ==================================
-    # グラフィック素材
-    # ==================================
+    # ======================================
+    # 強いグラフィック素材判定
+    # ======================================
 
     if _contains_any(
         searchable_text,
         STRONG_GRAPHIC_KEYWORDS,
     ):
 
-        if "ui" in searchable_text:
+        if (
+            "ui" in searchable_text
+            or "user interface"
+            in searchable_text
+        ):
             _append_unique(
                 tags,
                 "ui",
             )
 
-        if "sprite" in searchable_text:
+        if (
+            "sprite" in searchable_text
+            or "sprites" in searchable_text
+        ):
             _append_unique(
                 tags,
                 "sprite",
             )
 
-        if "background" in searchable_text:
+        if (
+            "background"
+            in searchable_text
+            or "backgrounds"
+            in searchable_text
+        ):
             _append_unique(
                 tags,
                 "background",
             )
 
         if (
-            "tileset" in searchable_text
-            or "tile" in searchable_text
+            "tileset"
+            in searchable_text
+            or "tilesets"
+            in searchable_text
+            or "tile set"
+            in searchable_text
+            or "tilemap"
+            in searchable_text
         ):
             _append_unique(
                 tags,
@@ -323,10 +434,18 @@ def classify_asset(
             )
 
         if (
-            "character" in searchable_text
-            or "portrait" in searchable_text
-            or "faceset" in searchable_text
-            or "face set" in searchable_text
+            "character"
+            in searchable_text
+            or "characters"
+            in searchable_text
+            or "portrait"
+            in searchable_text
+            or "portraits"
+            in searchable_text
+            or "faceset"
+            in searchable_text
+            or "face set"
+            in searchable_text
         ):
             _append_unique(
                 tags,
@@ -334,18 +453,45 @@ def classify_asset(
             )
 
         if (
-            "faceset" in searchable_text
-            or "face set" in searchable_text
+            "faceset"
+            in searchable_text
+            or "face set"
+            in searchable_text
         ):
             _append_unique(
                 tags,
                 "faceset",
             )
 
-        if "icon" in searchable_text:
+        if (
+            "icon"
+            in searchable_text
+            or "icons"
+            in searchable_text
+        ):
             _append_unique(
                 tags,
                 "icon",
+            )
+
+        if (
+            "parallax"
+            in searchable_text
+        ):
+            _append_unique(
+                tags,
+                "parallax",
+            )
+
+        if (
+            "map"
+            in searchable_text
+            or "maps"
+            in searchable_text
+        ):
+            _append_unique(
+                tags,
+                "map",
             )
 
         return (
@@ -353,9 +499,42 @@ def classify_asset(
             tags,
         )
 
-    # ==================================
+    # ======================================
+    # Pack / Bundle
+    #
+    # 「asset」単独では素材扱いしない。
+    # pack / bundle と組み合わさった場合のみ
+    # グラフィック素材とする。
+    # ======================================
+
+    if _contains_any(
+        searchable_text,
+        PACK_KEYWORDS,
+    ):
+
+        return (
+            "グラフィック素材",
+            tags,
+        )
+
+    # ======================================
     # 従来のキーワード判定
-    # ==================================
+    #
+    # ただし「asset」「resource」「art」
+    # 単独による誤分類を避ける。
+    # ======================================
+
+    safe_graphic_keywords = tuple(
+        keyword
+        for keyword in GRAPHIC_KEYWORDS
+        if keyword not in (
+            "asset",
+            "assets",
+            "resource",
+            "resources",
+            "art",
+        )
+    )
 
     if _contains_any(
         title,
@@ -368,7 +547,7 @@ def classify_asset(
 
     if _contains_any(
         title,
-        GRAPHIC_KEYWORDS,
+        safe_graphic_keywords,
     ):
         return (
             "グラフィック素材",
