@@ -198,6 +198,14 @@ def main():
     # Report
     # ======================================
 
+    print(
+        "[DEBUG] Categories:",
+        [
+            item.get("category")
+            for item in all_items
+        ]
+    )
+    
     report = build_report(
         all_items
     )
