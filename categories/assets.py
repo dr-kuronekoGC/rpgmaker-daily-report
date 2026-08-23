@@ -272,6 +272,27 @@ def _contains_any(
     )
 
 
+def _contains_word(
+    text,
+    keywords,
+):
+    import re
+
+    for keyword in keywords:
+        pattern = (
+            r"(?<![a-z0-9])"
+            + re.escape(keyword)
+            + r"(?![a-z0-9])"
+        )
+
+        if re.search(
+            pattern,
+            text,
+        ):
+            return True
+
+    return False
+
 def _append_unique(
     tags,
     tag,
@@ -476,14 +497,14 @@ def classify_asset(
         "audio",
     )
 
-    has_sound_title = _contains_any(
+    has_sound_title = _contains_word(
         title,
         SOUND_TITLE_KEYWORDS,
     )
 
-    has_sound_tag = _contains_any(
+    has_sound_tag = _contains_word(
         " ".join(
-            normalized_source_tags
+             normalized_source_tags
         ),
         SOUND_TAG_KEYWORDS,
     )
@@ -492,12 +513,16 @@ def classify_asset(
         has_sound_title
         and has_sound_tag
     ):
-        if (
-            "bgm" in title
-            or "music" in title
-            or "soundtrack" in title
-            or "ost" in title
+        if _contains_word(
+            title,
+　　　　　　　　(
+                "bgm",
+                "music",
+                "soundtrack",
+                "ost",
+            ),
         ):
+
             _append_unique(
                 tags,
                 "bgm",
