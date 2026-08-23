@@ -465,58 +465,58 @@ def classify_asset(
         "sound effects",
     )
 
-SOUND_TAG_KEYWORDS = (
-    "bgm",
-    "music",
-    "soundtrack",
-    "ost",
-    "sfx",
-    "sound effect",
-    "sound effects",
-    "audio",
-)
-
-has_sound_title = _contains_any(
-    title,
-    SOUND_TITLE_KEYWORDS,
-)
-
-has_sound_tag = _contains_any(
-    " ".join(
-        normalized_source_tags
-    ),
-    SOUND_TAG_KEYWORDS,
-)
-
-if (
-    has_sound_title
-    and has_sound_tag
-):
-    if (
-        "bgm" in title
-        or "music" in title
-        or "soundtrack" in title
-        or "ost" in title
-    ):
-        _append_unique(
-            tags,
-            "bgm",
-        )
-
-    if (
-        "sfx" in title
-        or "sound effect" in title
-        or "sound effects" in title
-    ):
-        _append_unique(
-            tags,
-            "sfx",
-        )
-
-    return (
-        "サウンド素材",
-        tags,
+    SOUND_TAG_KEYWORDS = (
+        "bgm",
+        "music",
+        "soundtrack",
+        "ost",
+        "sfx",
+        "sound effect",
+        "sound effects",
+        "audio",
     )
+
+    has_sound_title = _contains_any(
+        title,
+        SOUND_TITLE_KEYWORDS,
+    )
+
+    has_sound_tag = _contains_any(
+        " ".join(
+            normalized_source_tags
+        ),
+        SOUND_TAG_KEYWORDS,
+    )
+
+    if (
+        has_sound_title
+        and has_sound_tag
+    ):
+        if (
+            "bgm" in title
+            or "music" in title
+            or "soundtrack" in title
+            or "ost" in title
+        ):
+            _append_unique(
+                tags,
+                "bgm",
+            )
+
+        if (
+            "sfx" in title
+            or "sound effect" in title
+            or "sound effects" in title
+        ):
+            _append_unique(
+                tags,
+                "sfx",
+            )
+
+        return (
+            "サウンド素材",
+            tags,
+        )
 
     # ======================================
     # 強いグラフィック素材判定
