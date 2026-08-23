@@ -421,17 +421,29 @@ def classify_asset(
     # ======================================
     # サウンド素材
     # ======================================
+    #
+    # サウンドはタイトル＋明確な音楽系タグだけで判定。
+    # URLに含まれる文字列などでは判定しない。
+    # ======================================
+
+    sound_search_text = (
+        title
+        + " "
+        + " ".join(
+            normalized_source_tags
+        )
+    )
 
     if _contains_any(
-        searchable_text,
+        sound_search_text,
         STRONG_SOUND_KEYWORDS,
     ):
 
         if (
-            "bgm" in searchable_text
-            or "music" in searchable_text
-            or "soundtrack" in searchable_text
-            or "ost" in searchable_text
+            "bgm" in sound_search_text
+            or "music" in sound_search_text
+            or "soundtrack" in sound_search_text
+            or "ost" in sound_search_text
         ):
             _append_unique(
                 tags,
@@ -439,11 +451,11 @@ def classify_asset(
             )
 
         if (
-            "sfx" in searchable_text
+            "sfx" in sound_search_text
             or "sound effect"
-            in searchable_text
+            in sound_search_text
             or "sound effects"
-            in searchable_text
+            in sound_search_text
         ):
             _append_unique(
                 tags,
