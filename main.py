@@ -137,12 +137,12 @@ def main():
                 items
             )
 
-        pending_seen.append(
-            (
-                source,
-                new_seen,
+            pending_seen.append(
+                (
+                    source,
+                    new_seen,
+                )
             )
-        )
 
         except Exception as e:
 
@@ -207,7 +207,7 @@ def main():
     print(report)
 
     send_to_slack(
-    report
+        report
     )
 
     # ======================================
@@ -222,7 +222,7 @@ def main():
         save_seen_file(
             source.SEEN_FILE,
             new_seen,
-    )
+        )
 
     save_seen_file(
         GLOBAL_SEEN_FILE,
