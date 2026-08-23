@@ -5,6 +5,7 @@
 from .keywords import (
     GRAPHIC_KEYWORDS,
     SOUND_KEYWORDS,
+    PLUGIN_KEYWORDS,
 )
 
 
@@ -418,6 +419,27 @@ def classify_asset(
             "official_edit",
         )
 
+    # ======================================
+    # プラグイン
+    # ======================================
+
+    plugin_search_text = (
+        title
+        + " "
+        + " ".join(
+            normalized_source_tags
+        )
+    )
+
+    if _contains_any(
+        plugin_search_text,
+        PLUGIN_KEYWORDS,
+    ):
+        return (
+            "プラグイン",
+            tags,
+        )
+    
     # ======================================
     # サウンド素材
     # ======================================
