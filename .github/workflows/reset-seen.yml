@@ -1,0 +1,40 @@
+name: Reset Seen
+
+on:
+  workflow_dispatch:
+
+jobs:
+  reset-seen:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Reset seen files
+        run: |
+          echo "[]" > seen.json
+          echo "[]" > seen_deviantart.json
+          echo "[]" > seen_global.json
+          echo "[]" > seen_official.json
+          echo "[]" > official_seen.json
+
+      - name: Commit reset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            seen.json \
+            seen_deviantart.json \
+            seen_global.json \
+            seen_official.json \
+            official_seen.json
+
+          git diff --cached --quiet || \
+            git commit -m "Reset seen history"
+
+          git push
