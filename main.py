@@ -208,9 +208,14 @@ def main():
     # ======================================
 
     for source, new_seen in pending_seen:
-        s
+        save_seen_file(
             source.SEEN_FILE,
             new_seen,
+    )
+
+    save_seen_file(
+        GLOBAL_SEEN_FILE,
+        new_global_seen,
     )
 
     pending_seen.append(
