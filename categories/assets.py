@@ -439,55 +439,84 @@ def classify_asset(
             "プラグイン",
             tags,
         )
-    
+        
     # ======================================
     # サウンド素材
     # ======================================
     #
-    # サウンドはタイトル＋明確な音楽系タグだけで判定。
-    # URLに含まれる文字列などでは判定しない。
+    # タイトルだけでサウンドとは判定しない。
+    #
+    # 「タイトルに音楽系キーワード」
+    # ＋
+    # 「タグにも音楽系キーワード」
+    #
+    # の両方を満たした場合のみサウンド素材とする。
+    #
+    # OST は単独判定せず、タグとの組み合わせで扱う。
     # ======================================
 
-    sound_search_text = (
-        title
-        + " "
-        + " ".join(
-            normalized_source_tags
-        )
+    SOUND_TITLE_KEYWORDS = (
+        "bgm",
+        "music",
+        "soundtrack",
+        "ost",
+        "sfx",
+        "sound effect",
+        "sound effects",
     )
 
-    if _contains_any(
-        sound_search_text,
-        STRONG_SOUND_KEYWORDS,
+SOUND_TAG_KEYWORDS = (
+    "bgm",
+    "music",
+    "soundtrack",
+    "ost",
+    "sfx",
+    "sound effect",
+    "sound effects",
+    "audio",
+)
+
+has_sound_title = _contains_any(
+    title,
+    SOUND_TITLE_KEYWORDS,
+)
+
+has_sound_tag = _contains_any(
+    " ".join(
+        normalized_source_tags
+    ),
+    SOUND_TAG_KEYWORDS,
+)
+
+if (
+    has_sound_title
+    and has_sound_tag
+):
+    if (
+        "bgm" in title
+        or "music" in title
+        or "soundtrack" in title
+        or "ost" in title
     ):
-
-        if (
-            "bgm" in sound_search_text
-            or "music" in sound_search_text
-            or "soundtrack" in sound_search_text
-            or "ost" in sound_search_text
-        ):
-            _append_unique(
-                tags,
-                "bgm",
-            )
-
-        if (
-            "sfx" in sound_search_text
-            or "sound effect"
-            in sound_search_text
-            or "sound effects"
-            in sound_search_text
-        ):
-            _append_unique(
-                tags,
-                "sfx",
-            )
-
-        return (
-            "サウンド素材",
+        _append_unique(
             tags,
+            "bgm",
         )
+
+    if (
+        "sfx" in title
+        or "sound effect" in title
+        or "sound effects" in title
+    ):
+        _append_unique(
+            tags,
+            "sfx",
+        )
+
+    return (
+        "サウンド素材",
+        tags,
+    )
 
     # ======================================
     # 強いグラフィック素材判定
