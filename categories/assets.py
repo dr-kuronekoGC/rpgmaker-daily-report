@@ -528,11 +528,15 @@ def classify_asset(
                 "bgm",
             )
 
-        if (
-            "sfx" in title
-            or "sound effect" in title
-            or "sound effects" in title
+        if _contains_word(
+            title,
+            (
+                "sfx",
+                "sound effect",
+                "sound effects",
+            ),
         ):
+            
             _append_unique(
                 tags,
                 "sfx",
