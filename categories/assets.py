@@ -342,6 +342,7 @@ def classify_asset(
     title,
     url="",
     source_tags=None,
+    is_downloadable=None,
 ):
     """
     素材系コンテンツを分類する。
