@@ -52,6 +52,33 @@ STRONG_GRAPHIC_KEYWORDS = (
     "user interface",
 )
 
+DEVIANTART_RESOURCE_KEYWORDS = (
+    "asset",
+    "assets",
+    "resource",
+    "resources",
+    "sprite",
+    "sprites",
+    "spritesheet",
+    "tileset",
+    "tilesets",
+    "tilesheet",
+    "icon",
+    "icons",
+    "faceset",
+    "portrait",
+    "generator",
+    "generatorpart",
+    "generatorparts",
+    "charset",
+    "character sheet",
+    "character base",
+    "map",
+    "map pack",
+    "parallax",
+    "background",
+    "overlay",
+)
 
 # ==========================================
 # Map / Parallax
@@ -386,6 +413,18 @@ def classify_asset(
 
     if (
         is_downloadable is False
+    ):
+        return (
+            None,
+            tags,
+        )
+        
+    if (
+        is_downloadable is True
+        and not _contains_any(
+            searchable_text,
+            DEVIANTART_RESOURCE_KEYWORDS,
+        )
     ):
         return (
             None,
