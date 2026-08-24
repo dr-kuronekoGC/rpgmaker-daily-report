@@ -663,6 +663,9 @@ def get_items(seen):
                     title,
                     href,
                     source_tags=source_tags,
+                    is_downloadable=result.get(
+                        "is_downloadable"
+                    ),
                 )
             )
 
