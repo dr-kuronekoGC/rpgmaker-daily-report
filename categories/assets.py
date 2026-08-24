@@ -689,7 +689,16 @@ def classify_asset(
 
     if (
         has_map_keyword
-        and has_map_context
+        and (
+            has_map_context
+            or (
+                is_downloadable is True
+                and _contains_any(
+                    searchable_text,
+                    RPGMAKER_KEYWORDS,
+                )
+            )
+        )
     ):
 
         _append_unique(
