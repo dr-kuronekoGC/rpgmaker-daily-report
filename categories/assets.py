@@ -515,7 +515,7 @@ def classify_asset(
     ):
         if _contains_word(
             title,
-　　　　　　　　(
+            (
                 "bgm",
                 "music",
                 "soundtrack",
