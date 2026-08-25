@@ -666,6 +666,7 @@ def get_items(seen):
                     is_downloadable=result.get(
                         "is_downloadable"
                     ),
+                    description=description,
                 )
             )
 
