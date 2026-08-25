@@ -429,6 +429,20 @@ def classify_asset(
         ).lower()
     )
 
+    # --------------------------------------
+    # タイトル・URL・タグだけの検索対象
+    # --------------------------------------
+
+    metadata_search_text = (
+        title
+        + " "
+        + url
+        + " "
+        + " ".join(
+            normalized_source_tags
+        )
+    )
+
     # ======================================
     # DeviantArt ダウンロード可否
     # ======================================
@@ -616,14 +630,13 @@ def classify_asset(
     # ======================================
 
     if _contains_any(
-        searchable_text,
+        metadata_search_text,
         STRONG_GRAPHIC_KEYWORDS,
     ):
 
         if (
-            "ui" in searchable_text
-            or "user interface"
-            in searchable_text
+            "ui" in metadata_search_text
+            or "user interface" in metadata_search_text
         ):
             _append_unique(
                 tags,
@@ -631,8 +644,8 @@ def classify_asset(
             )
 
         if (
-            "sprite" in searchable_text
-            or "sprites" in searchable_text
+            "sprite" in metadata_search_text
+            or "sprites" in metadata_search_text
         ):
             _append_unique(
                 tags,
@@ -640,10 +653,8 @@ def classify_asset(
             )
 
         if (
-            "background"
-            in searchable_text
-            or "backgrounds"
-            in searchable_text
+            "background" in metadata_search_text
+            or "backgrounds" in metadata_search_text
         ):
             _append_unique(
                 tags,
@@ -651,14 +662,10 @@ def classify_asset(
             )
 
         if (
-            "tileset"
-            in searchable_text
-            or "tilesets"
-            in searchable_text
-            or "tile set"
-            in searchable_text
-            or "tilemap"
-            in searchable_text
+            "tileset" in metadata_search_text,
+            or "tilesets" in metadata_search_text
+            or "tile set" in metadata_search_text
+            or "tilemap" in metadata_search_text
         ):
             _append_unique(
                 tags,
@@ -666,18 +673,12 @@ def classify_asset(
             )
 
         if (
-            "character"
-            in searchable_text
-            or "characters"
-            in searchable_text
-            or "portrait"
-            in searchable_text
-            or "portraits"
-            in searchable_text
-            or "faceset"
-            in searchable_text
-            or "face set"
-            in searchable_text
+            "character" in metadata_search_text
+            or "characters" in metadata_search_text
+            or "portrait" in metadata_search_text
+            or "portraits" in metadata_search_text
+            or "faceset" in metadata_search_text
+            or "face set" in metadata_search_text
         ):
             _append_unique(
                 tags,
@@ -685,10 +686,8 @@ def classify_asset(
             )
 
         if (
-            "faceset"
-            in searchable_text
-            or "face set"
-            in searchable_text
+            "faceset" in metadata_search_text
+            or "face set" in metadata_search_text
         ):
             _append_unique(
                 tags,
@@ -696,10 +695,8 @@ def classify_asset(
             )
 
         if (
-            "icon"
-            in searchable_text
-            or "icons"
-            in searchable_text
+            "icon" in metadata_search_text
+            or "icons" in metadata_search_text
         ):
             _append_unique(
                 tags,
