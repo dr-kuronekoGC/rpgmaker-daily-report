@@ -369,6 +369,7 @@ def classify_asset(
     url="",
     source_tags=None,
     is_downloadable=None,
+    description="",
 ):
     """
     素材系コンテンツを分類する。
@@ -421,6 +422,11 @@ def classify_asset(
         + " ".join(
             normalized_source_tags
         )
+        + " "
+        + (
+            description
+            or ""
+        ).lower()
     )
 
     # ======================================
