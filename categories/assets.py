@@ -662,7 +662,7 @@ def classify_asset(
             )
 
         if (
-            "tileset" in metadata_search_text,
+            "tileset" in metadata_search_text
             or "tilesets" in metadata_search_text
             or "tile set" in metadata_search_text
             or "tilemap" in metadata_search_text
