@@ -583,7 +583,17 @@ def classify_asset(
 
     if (
         has_sound_title
-        and has_sound_tag
+        and (
+            has_sound_tag
+            or _contains_word(
+                title,
+                (
+                    "sfx",
+                    "sound effect",
+                    "sound effects",
+                ),
+            )
+        )
     ):
         if _contains_word(
             title,
@@ -634,9 +644,12 @@ def classify_asset(
         STRONG_GRAPHIC_KEYWORDS,
     ):
 
-        if (
-            "ui" in metadata_search_text
-            or "user interface" in metadata_search_text
+        if _contains_word(
+            metadata_search_text,
+            (
+                "ui",
+                "user interface",
+            ),
         ):
             _append_unique(
                 tags,
