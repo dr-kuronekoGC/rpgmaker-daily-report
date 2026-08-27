@@ -92,16 +92,6 @@ def classify_reddit(title, url=""):
         return "Redditサウンド素材"
 
     # --------------------------------
-    # グラフィック素材
-    # --------------------------------
-
-    if _contains(
-        title,
-        GRAPHIC_KEYWORDS,
-    ):
-        return "Redditグラフィック素材"
-
-    # --------------------------------
     # ゲーム
     # --------------------------------
 
@@ -117,6 +107,16 @@ def classify_reddit(title, url=""):
         or "new game" in title
     ):
         return "Redditゲーム"
+
+    # --------------------------------
+    # グラフィック素材
+    # --------------------------------
+
+    if _contains(
+        title,
+        GRAPHIC_KEYWORDS,
+    ):
+        return "Redditグラフィック素材"
 
     # --------------------------------
     # Tips
