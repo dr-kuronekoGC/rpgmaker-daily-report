@@ -71,6 +71,16 @@ def classify_reddit(title, url=""):
     ):
         return "Reddit質問"
 
+    if (
+        "?" in title
+        or title.startswith("do these")
+        or title.startswith("does anyone")
+        or title.startswith("can anyone")
+        or title.startswith("can someone")
+        or title.startswith("anyone else")
+    ):
+        return "Reddit質問"
+        
     # --------------------------------
     # プラグイン
     # --------------------------------
