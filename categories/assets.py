@@ -458,7 +458,7 @@ def classify_asset(
     if (
         is_downloadable is True
         and not _contains_any(
-            searchable_text,
+            metadata_search_text,
             DEVIANTART_RESOURCE_KEYWORDS,
         )
     ):
