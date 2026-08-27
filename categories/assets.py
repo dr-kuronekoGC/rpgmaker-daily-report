@@ -282,7 +282,40 @@ SHOWCASE_KEYWORDS = (
     "work in progress",
     "wip",
 )
+# ==========================================
+# DeviantArt project / showcase keywords
+# ==========================================
+#
+# 「自作ゲームの制作物・作例」である可能性を
+# 示すキーワード。
+#
+# 素材全体には適用せず、
+# map / parallax の判定に限定して使用する。
+# ==========================================
 
+DEVIANTART_PROJECT_KEYWORDS = (
+    "my game",
+    "my project",
+    "my rpg",
+    "my rpg maker",
+    "my independent project",
+    "my own game",
+    "my own project",
+    "working on",
+    "working on my",
+    "made on rpg maker",
+    "made in rpg maker",
+    "created in rpg maker",
+    "for my game",
+    "for my project",
+    "game i'm working on",
+    "project i'm working on",
+    "development",
+    "devlog",
+    "first town",
+    "second town",
+    "third town",
+)
 
 # ==========================================
 # Helpers
@@ -743,6 +776,31 @@ def classify_asset(
         MAP_CONTEXT_KEYWORDS,
     )
 
+    # --------------------------------------
+    # DeviantArt: map / parallax の作品紹介除外
+    # --------------------------------------
+    #
+    # map は有用な素材なのでキーワード自体は残す。
+    # ただし「自作ゲームの町」「制作中のプロジェクト」
+    # など、明らかな作品紹介の場合は除外する。
+    # --------------------------------------
+
+    if (
+        is_downloadable is True
+        and _contains_any(
+            metadata_search_text,
+            MAP_KEYWORDS,
+        )
+        and _contains_any(
+            searchable_text,
+            DEVIANTART_PROJECT_KEYWORDS,
+        )
+    ):
+        return (
+            None,
+            tags,
+        )
+    
     if (
         has_map_keyword
         and (
