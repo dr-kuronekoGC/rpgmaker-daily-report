@@ -171,12 +171,6 @@ def get_items(seen):
                 }
             )
 
-            print(
-                f"[VisuStella]"
-                f"[{category}] "
-                f"{title}"
-            )
-
         print(
             f"[VisuStella] New: "
             f"{len(adopted_items)}"
