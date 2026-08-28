@@ -565,6 +565,98 @@ def classify_asset(
             "プラグイン",
             tags,
         )
+
+    # ======================================
+    # 強いグラフィック素材を先に判定
+    # ======================================
+    #
+    # music など曖昧なキーワードが含まれていても、
+    # tileset / sprite / character / faceset など
+    # 明らかなグラフィック素材であれば、
+    # グラフィックを優先する。
+    # ======================================
+
+    if _contains_any(
+        metadata_search_text,
+        STRONG_GRAPHIC_KEYWORDS,
+    ):
+
+        if _contains_word(
+            metadata_search_text,
+            (
+                "ui",
+                "user interface",
+            ),
+        ):
+            _append_unique(
+                tags,
+                "ui",
+            )
+
+        if (
+            "sprite" in metadata_search_text
+            or "sprites" in metadata_search_text
+        ):
+            _append_unique(
+                tags,
+                "sprite",
+            )
+
+        if (
+            "background" in metadata_search_text
+            or "backgrounds" in metadata_search_text
+        ):
+            _append_unique(
+                tags,
+                "background",
+            )
+
+        if (
+            "tileset" in metadata_search_text
+            or "tilesets" in metadata_search_text
+            or "tile set" in metadata_search_text
+            or "tilemap" in metadata_search_text
+        ):
+            _append_unique(
+                tags,
+                "tileset",
+            )
+
+        if (
+            "character" in metadata_search_text
+            or "characters" in metadata_search_text
+            or "portrait" in metadata_search_text
+            or "portraits" in metadata_search_text
+            or "faceset" in metadata_search_text
+            or "face set" in metadata_search_text
+        ):
+            _append_unique(
+                tags,
+                "character",
+            )
+
+        if (
+            "faceset" in metadata_search_text
+            or "face set" in metadata_search_text
+        ):
+            _append_unique(
+                tags,
+                "faceset",
+            )
+
+        if (
+            "icon" in metadata_search_text
+            or "icons" in metadata_search_text
+        ):
+            _append_unique(
+                tags,
+                "icon",
+            )
+
+        return (
+            "グラフィック素材",
+            tags,
+        )
         
     # ======================================
     # サウンド素材
