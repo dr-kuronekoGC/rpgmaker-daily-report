@@ -706,19 +706,42 @@ def classify_asset(
         SOUND_TAG_KEYWORDS,
     )
 
+    # タグが取得できる場合：
+    #   タイトル＋音楽系タグでサウンド判定
+    #
+    # タグがない場合：
+    #   タイトルの明確な音楽系キーワードを根拠に判定
+    #
+    # ただし Music Box など、グラフィック素材になり得る
+    # 明らかな例外は除外する。
+
+    has_graphic_music_exception = _contains_word(
+        title,
+        (
+            "music box",
+            "musical note",
+            "music note",
+            "music notes",
+        ),
+    )
+
+    has_sound_evidence = (
+        has_sound_tag
+        or _contains_word(
+            title,
+            (
+                "sfx",
+                "sound effect",
+                "sound effects",
+            ),
+        )
+        or source_tags is None
+    )
+
     if (
         has_sound_title
-        and (
-            has_sound_tag
-            or _contains_word(
-                title,
-                (
-                    "sfx",
-                    "sound effect",
-                    "sound effects",
-                ),
-            )
-        )
+        and has_sound_evidence
+        and not has_graphic_music_exception
     ):
         if _contains_word(
             title,
