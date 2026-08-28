@@ -47,10 +47,6 @@ def get_items(seen):
             VISUSTELLA_URL
         )
 
-        print(
-            f"[VisuStella] HTML length: {len(html)}"
-        )
-
         soup = BeautifulSoup(
             html,
             "html.parser",
