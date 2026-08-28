@@ -318,6 +318,42 @@ DEVIANTART_PROJECT_KEYWORDS = (
 )
 
 # ==========================================
+# DeviantArt resource / distribution keywords
+# ==========================================
+#
+# 作品紹介らしい説明があっても、
+# 実際に素材として配布・利用できることを示す
+# 記述があれば、素材として残す。
+# ==========================================
+
+DEVIANTART_DISTRIBUTION_KEYWORDS = (
+    "free to use",
+    "free for use",
+    "free resource",
+    "free resources",
+    "use in your project",
+    "use in your projects",
+    "use for your project",
+    "use for your projects",
+    "you can use",
+    "can be used",
+    "commercial use",
+    "commercial",
+    "non-commercial",
+    "non commercial",
+    "credit required",
+    "credit me",
+    "please credit",
+    "credits required",
+    "download",
+    "downloadable",
+    "resource",
+    "resources",
+    "asset pack",
+    "resource pack",
+)
+
+# ==========================================
 # Helpers
 # ==========================================
 
@@ -566,6 +602,37 @@ def classify_asset(
             tags,
         )
 
+    # ======================================
+    # DeviantArt: 明らかな作品紹介を除外
+    # ======================================
+    #
+    # ただし、配布・利用可能であることを示す
+    # 記述がある場合は除外しない。
+    #
+    # 「自作ゲーム用に作った素材を配布」
+    # まで落とさないための処理。
+    # ======================================
+
+    if (
+        is_downloadable is True
+        and _contains_any(
+            metadata_search_text,
+            DEVIANTART_RESOURCE_KEYWORDS,
+        )
+        and _contains_any(
+            searchable_text,
+            DEVIANTART_PROJECT_KEYWORDS,
+        )
+        and not _contains_any(
+            searchable_text,
+            DEVIANTART_DISTRIBUTION_KEYWORDS,
+        )
+    ):
+        return (
+            None,
+            tags,
+        )
+    
     # ======================================
     # 強いグラフィック素材を先に判定
     # ======================================
