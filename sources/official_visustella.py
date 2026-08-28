@@ -70,11 +70,6 @@ def get_items(seen):
             ".game_cell"
         )
 
-        print(
-            f"[VisuStella] Game cells: "
-            f"{len(game_cells)}"
-        )
-
         for cell in game_cells:
 
             link = cell.select_one(
