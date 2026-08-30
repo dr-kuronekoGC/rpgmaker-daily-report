@@ -336,19 +336,17 @@ DEVIANTART_DISTRIBUTION_KEYWORDS = (
     "use for your project",
     "use for your projects",
     "you can use",
-    "can be used",
+    "can be used in your project",
     "commercial use",
-    "commercial",
-    "non-commercial",
-    "non commercial",
+    "non-commercial use",
+    "non commercial use",
     "credit required",
     "credit me",
     "please credit",
     "credits required",
-    "download",
-    "downloadable",
-    "resource",
-    "resources",
+    "free download for your project",
+    "downloadable resource",
+    "downloadable resources",
     "asset pack",
     "resource pack",
 )
@@ -512,6 +510,15 @@ def classify_asset(
         )
     )
 
+    # --------------------------------------
+    # 説明文だけの検索対象
+    # --------------------------------------
+
+    description_search_text = (
+        description
+        or ""
+    ).lower()
+    
     # ======================================
     # DeviantArt ダウンロード可否
     # ======================================
@@ -620,11 +627,11 @@ def classify_asset(
             DEVIANTART_RESOURCE_KEYWORDS,
         )
         and _contains_any(
-            searchable_text,
+            description_search_text,
             DEVIANTART_PROJECT_KEYWORDS,
         )
         and not _contains_any(
-            searchable_text,
+            description_search_text,
             DEVIANTART_DISTRIBUTION_KEYWORDS,
         )
     ):
