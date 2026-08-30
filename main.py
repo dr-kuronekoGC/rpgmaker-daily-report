@@ -1,6 +1,8 @@
 from common import (
     load_seen_file,
     save_seen_file,
+    load_pending_items,
+    save_pending_items,
 )
 
 from report import (
@@ -24,6 +26,11 @@ from sources import (
 
 from asset_metadata import enrich_items
 
+from config import (
+    PENDING_ITEMS_FILE,
+    MAX_ITEMS_PER_SOURCE,
+)
+
 
 SOURCES = [
     community_reddit,
@@ -32,6 +39,7 @@ SOURCES = [
     official_opengameart,
     official_kenney,
     official_craftpix,
+    official_gamedevmarket,
     official_visustella,
     official_deviantart,
     asset_itchio,
@@ -49,13 +57,6 @@ GLOBAL_SEEN_FILE = "seen_global.json"
 def get_global_key(item):
     """
     複数サイトをまたいだ重複判定用キー。
-
-    現段階ではURLを基本キーとする。
-    URLが同じ記事・素材であれば、別サイトから取得されても
-    2回目以降はレポートに表示しない。
-
-    タイトルだけで判定すると、別物なのに同名の記事を
-    誤って除外する可能性があるため、現段階では採用しない。
     """
 
     url = item.get("url")
@@ -72,13 +73,6 @@ def get_global_key(item):
 def filter_global_seen(items, global_seen):
     """
     複数サイトをまたいだ既読情報を除外する。
-
-    戻り値:
-        filtered_items:
-            今回レポートに採用する項目
-
-        new_global_seen:
-            今回新たに既読登録するキー
     """
 
     filtered_items = []
@@ -90,13 +84,10 @@ def filter_global_seen(items, global_seen):
 
         key = get_global_key(item)
 
-        # URLが取得できない項目は、
-        # 現段階ではグローバル既読判定の対象にしない。
         if key is None:
             filtered_items.append(item)
             continue
 
-        # 過去に別サイトを含めて取得済みなら除外
         if key in seen_set:
             continue
 
@@ -111,15 +102,127 @@ def filter_global_seen(items, global_seen):
     )
 
 
+# ==========================================
+# Pending
+# ==========================================
+
+def get_pending_key(item):
+    """
+    掲載待ちItemの重複判定用キー。
+
+    URLを基本キーとする。
+    """
+
+    url = item.get("url")
+
+    if isinstance(url, str):
+        url = url.strip()
+
+        if url:
+            return url
+
+    return None
+
+
+def add_to_pending(
+    pending_items,
+    new_items,
+):
+    """
+    新規Itemを掲載待ちに追加する。
+
+    同じURLは重複して追加しない。
+    """
+
+    existing_keys = {
+        get_pending_key(item)
+        for item in pending_items
+        if get_pending_key(item) is not None
+    }
+
+    for item in new_items:
+
+        key = get_pending_key(item)
+
+        if key is not None:
+
+            if key in existing_keys:
+                continue
+
+            existing_keys.add(key)
+
+        pending_items.append(item)
+
+    return pending_items
+
+
+def select_pending_items(
+    pending_items,
+):
+    """
+    サイトごとに最大20件を選択する。
+
+    pending_itemsの先頭から順番に処理するため、
+    古い掲載待ちから先に掲載される。
+    """
+
+    selected = []
+    counts = {}
+
+    remaining = []
+
+    for item in pending_items:
+
+        source = item.get(
+            "source",
+            "Unknown",
+        )
+
+        count = counts.get(
+            source,
+            0,
+        )
+
+        if count < MAX_ITEMS_PER_SOURCE:
+
+            selected.append(item)
+
+            counts[source] = count + 1
+
+        else:
+
+            remaining.append(item)
+
+    return (
+        selected,
+        remaining,
+    )
+
+
 def main():
+
     pending_seen = []
     all_items = []
 
-    # サイトごとの既読管理とは別に、
-    # 全サイト共通の既読情報を読み込む。
+    # ======================================
+    # Global seen
+    # ======================================
+
     global_seen = load_seen_file(
         GLOBAL_SEEN_FILE
     )
+
+    # ======================================
+    # Pending
+    # ======================================
+
+    pending_items = load_pending_items(
+        PENDING_ITEMS_FILE
+    )
+
+    # ======================================
+    # Source collection
+    # ======================================
 
     for source in SOURCES:
 
@@ -184,7 +287,46 @@ def main():
         len(all_items)
     )
 
-    for item in all_items:
+    # ======================================
+    # Add new items to pending
+    # ======================================
+
+    pending_items = add_to_pending(
+        pending_items,
+        all_items,
+    )
+
+    print(
+        "[Pending] Before selection:",
+        len(pending_items)
+    )
+
+    # ======================================
+    # Select items for this report
+    # ======================================
+
+    report_items, remaining_pending = (
+        select_pending_items(
+            pending_items
+        )
+    )
+
+    print(
+        "[Pending] Selected:",
+        len(report_items)
+    )
+
+    print(
+        "[Pending] Remaining:",
+        len(remaining_pending)
+    )
+
+    # ======================================
+    # Debug
+    # ======================================
+
+    for item in report_items:
+
         print(
             "[DEBUG] Item:",
             item.get("source"),
@@ -194,20 +336,20 @@ def main():
             item.get("title"),
         )
 
-    # ======================================
-    # Report
-    # ======================================
-
     print(
         "[DEBUG] Categories:",
         [
             item.get("category")
-            for item in all_items
+            for item in report_items
         ]
     )
-    
+
+    # ======================================
+    # Report
+    # ======================================
+
     report = build_report(
-        all_items
+        report_items
     )
 
     print()
@@ -219,14 +361,11 @@ def main():
     )
 
     # ======================================
-    # Seen 保存
-    # ======================================
-    #
-    # Slackへのレポート作成・送信まで成功した後に
-    # 初めて既読として保存する。
+    # Save seen
     # ======================================
 
     for source, new_seen in pending_seen:
+
         save_seen_file(
             source.SEEN_FILE,
             new_seen,
@@ -236,6 +375,23 @@ def main():
         GLOBAL_SEEN_FILE,
         new_global_seen,
     )
+
+    # ======================================
+    # Save pending
+    # ======================================
+    #
+    # Slack送信が成功した場合のみ、
+    # 今回掲載したItemをpendingから削除する。
+    #
+    # send_to_slack() が例外を出さずに
+    # 戻ってきたことを成功とみなす。
+    # ======================================
+
+    save_pending_items(
+        PENDING_ITEMS_FILE,
+        remaining_pending,
+    )
+
 
 if __name__ == "__main__":
     main()
