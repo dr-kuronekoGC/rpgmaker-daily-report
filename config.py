@@ -121,3 +121,13 @@ DEVIANTART_SEARCHES = [
 ]
 
 DEVIANTART_SEEN_FILE = "seen_deviantart.json"
+
+# ==========================================
+# Pending items
+# ==========================================
+
+PENDING_ITEMS_FILE = "pending_items.json"
+
+# 1回のSlackレポートに掲載する
+# 1サイトあたりの最大件数
+MAX_ITEMS_PER_SOURCE = 20
