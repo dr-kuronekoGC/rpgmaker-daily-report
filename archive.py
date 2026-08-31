@@ -104,7 +104,14 @@ def save_archive(items):
 
             existing_keys.add(key)
 
-        archive.append(item)
+        archived_item = dict(item)
+
+        if "collected_at" not in archived_item:
+            archived_item["collected_at"] = (
+                now_jst().isoformat()
+            )
+
+        archive.append(archived_item)
         added += 1
 
     if added == 0:
