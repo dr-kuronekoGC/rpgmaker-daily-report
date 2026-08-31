@@ -1,0 +1,32 @@
+name: Reset Archive
+
+on:
+  workflow_dispatch:
+
+jobs:
+  reset-archive:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Reset archive files
+        run: |
+          mkdir -p data/archive
+          find data/archive -type f -name '*.json' -delete
+
+      - name: Commit reset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/archive
+
+          git diff --cached --quiet || \
+            git commit -m "Reset archive"
+
+          git push
