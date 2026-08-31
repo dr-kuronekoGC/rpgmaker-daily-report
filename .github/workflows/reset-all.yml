@@ -1,0 +1,57 @@
+name: Reset All
+
+on:
+  workflow_dispatch:
+
+jobs:
+  reset-all:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Reset seen and archive
+        run: |
+          echo "[]"
+          > seen.json
+
+          echo "[]"
+          > seen_deviantart.json
+
+          echo "[]"
+          > seen_global.json
+
+          echo "[]"
+          > seen_official.json
+
+          echo "[]"
+          > official_seen.json
+
+          echo "[]"
+          > pending_items.json
+
+          mkdir -p data/archive
+          find data/archive -type f -name '*.json' -delete
+
+      - name: Commit reset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            seen.json \
+            seen_deviantart.json \
+            seen_global.json \
+            seen_official.json \
+            official_seen.json \
+            pending_items.json \
+            data/archive
+
+          git diff --cached --quiet || \
+            git commit -m "Reset all data"
+
+          git push
