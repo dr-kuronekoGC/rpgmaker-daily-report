@@ -546,12 +546,36 @@ def build_report(items):
 
         for entry in grouped.values():
 
-            source_text = " / ".join(
-                sorted(
-                    set(
-                        entry["sources"]
-                    )
+            source_labels = []
+
+            for item in entry["items"]:
+
+                source = item.get(
+                    "source",
+                    "",
                 )
+
+                if not source:
+                    continue
+
+                language = item.get(
+                    "language"
+                )
+
+                if language:
+                    label = (
+                        f"{source}｜{language}"
+                    )
+                else:
+                    label = source
+
+                if label not in source_labels:
+                    source_labels.append(
+                        label
+                    )
+
+            source_text = " / ".join(
+                source_labels
             )
 
             title = entry["title"]
