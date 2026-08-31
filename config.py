@@ -101,6 +101,18 @@ GAMEDEVMARKET_URL = (
 GAMEDEVMARKET_SEEN_FILE = "seen_gamedevmarket.json"
 
 # ----------------------------
+# Maker Devs
+# ----------------------------
+
+MAKER_DEVS_URL = (
+    "https://makerdevs.com/mz/master-list"
+)
+
+MAKER_DEVS_SEEN_FILE = (
+    "seen_makerdevs.json"
+)
+
+# ----------------------------
 # VisuStella
 # ----------------------------
 
