@@ -276,6 +276,28 @@ def main():
     )
 
     # ======================================
+    # Language detection
+    # ======================================
+
+    for item in all_items:
+
+        language = detect_language(
+            title=item.get("title", ""),
+            description=item.get(
+                "description",
+                "",
+            ),
+            tags=item.get(
+                "tags",
+                [],
+            ),
+        )
+
+        if language is not None:
+
+            item["language"] = language
+
+    # ======================================
     # Asset metadata
     # ======================================
 
