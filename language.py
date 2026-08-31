@@ -1,5 +1,6 @@
 import re
 
+
 LANGUAGE_JAPANESE = "日本語"
 LANGUAGE_ENGLISH = "英語"
 LANGUAGE_FRENCH = "フランス語"
@@ -7,6 +8,7 @@ LANGUAGE_GERMAN = "ドイツ語"
 LANGUAGE_SPANISH = "スペイン語"
 LANGUAGE_KOREAN = "韓国語"
 LANGUAGE_CHINESE = "中国語"
+
 
 def detect_language(
     title="",
@@ -16,34 +18,39 @@ def detect_language(
     """
     Itemのテキストから言語を推定する。
 
-    外部APIは使用せず、文字種を中心に
-    軽量に判定する。
+    外部APIは使用せず、文字種と
+    基本的な言語特徴を利用して軽量に判定する。
 
     判定できない場合は None を返す。
     """
 
     tags = tags or []
 
-    text = " ".join(
-        [
-            str(title or ""),
-            str(description or ""),
-            " ".join(
-                str(tag)
-                for tag in tags
-            ),
-        ]
+    title_text = str(title or "")
+    description_text = str(description or "")
+    tag_text = " ".join(
+        str(tag)
+        for tag in tags
     )
 
-    if not text.strip():
+    text = " ".join(
+        [
+            title_text,
+            description_text,
+            tag_text,
+        ]
+    ).strip()
+
+    if not text:
         return None
 
     # ======================================
     # 日本語
     # ======================================
 
+    # ひらがな・カタカナがあれば日本語と判定
     if re.search(
-        r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]",
+        r"[\u3040-\u30ff]",
         text,
     ):
         return LANGUAGE_JAPANESE
@@ -62,20 +69,30 @@ def detect_language(
     # 中国語
     # ======================================
 
-    if re.search(
-        r"[\u4e00-\u9fff]",
+    # 中国語は漢字のみの場合があるため、
+    # 日本語のひらがな・カタカナがないことを確認してから判定。
+    #
+    # ただし、RPG Maker関連の英語タイトルに
+    # 漢字が混ざるケースもあるため、
+    # 中国語特有の文字を一定数含む場合を中心に判定する。
+
+    chinese_specific_chars = re.search(
+        r"[们国这为与从个来对发会时现过说还没样东华开关门书画乐龙马车]",
         text,
-    ):
+    )
+
+    if chinese_specific_chars:
         return LANGUAGE_CHINESE
 
     # ======================================
     # ラテン系言語
-    #
-    # ここは誤判定を避けるため、
-    # 現段階では明確な特徴がある場合のみ判定する。
     # ======================================
 
-    lower_text = text.lower()
+    lower_text = f" {text.lower()} "
+
+    # --------------------------------------
+    # フランス語
+    # --------------------------------------
 
     french_markers = [
         " le ",
@@ -88,15 +105,25 @@ def detect_language(
         " pour ",
         " dans ",
         " sur ",
+        " est ",
+        " sont ",
         " français",
         " française",
+        " télécharger",
     ]
 
-    if any(
-        marker in f" {lower_text} "
+    french_count = sum(
+        1
         for marker in french_markers
-    ):
+        if marker in lower_text
+    )
+
+    if french_count >= 2:
         return LANGUAGE_FRENCH
+
+    # --------------------------------------
+    # ドイツ語
+    # --------------------------------------
 
     german_markers = [
         " der ",
@@ -108,14 +135,24 @@ def detect_language(
         " und ",
         " mit ",
         " für ",
+        " ist ",
+        " sind ",
         " deutsch",
+        " deutsche",
     ]
 
-    if any(
-        marker in f" {lower_text} "
+    german_count = sum(
+        1
         for marker in german_markers
-    ):
+        if marker in lower_text
+    )
+
+    if german_count >= 2:
         return LANGUAGE_GERMAN
+
+    # --------------------------------------
+    # スペイン語
+    # --------------------------------------
 
     spanish_markers = [
         " el ",
@@ -127,23 +164,34 @@ def detect_language(
         " para ",
         " con ",
         " que ",
+        " por ",
+        " es ",
+        " son ",
         " español",
         " española",
+        " descargar",
     ]
 
-    if any(
-        marker in f" {lower_text} "
+    spanish_count = sum(
+        1
         for marker in spanish_markers
-    ):
+        if marker in lower_text
+    )
+
+    if spanish_count >= 2:
         return LANGUAGE_SPANISH
 
     # ======================================
     # 英語
-    #
-    # 明確な英語語彙が複数ある場合のみ判定。
     # ======================================
 
-    english_markers = [
+    # RPG Maker関連では、短いタイトルでも
+    # 以下のような特徴語だけで英語と判断できるケースが多い。
+    #
+    # ただし "map" や "music" など単独では
+    # 言語判定の根拠として弱いため使用しない。
+
+    english_strong_markers = [
         " the ",
         " and ",
         " for ",
@@ -156,20 +204,33 @@ def detect_language(
         " plugin ",
         " tileset ",
         " sprite ",
+        " spritesheet ",
         " game ",
         " asset ",
         " resource ",
-        " question ",
+        " resources ",
+        " pack ",
         " tutorial ",
+        " character ",
+        " characters ",
+        " background ",
+        " generator ",
+        " faceset ",
+        " battleback ",
     ]
 
     english_count = sum(
         1
-        for marker in english_markers
-        if marker in f" {lower_text} "
+        for marker in english_strong_markers
+        if marker in lower_text
     )
 
-    if english_count >= 2:
+    # 強い英語特徴語が1つでもあれば英語候補とする。
+    if english_count >= 1:
         return LANGUAGE_ENGLISH
+
+    # ======================================
+    # 判定なし
+    # ======================================
 
     return None
