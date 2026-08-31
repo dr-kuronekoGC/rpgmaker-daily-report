@@ -255,27 +255,6 @@ def main():
             )
 
     # ======================================
-    # Cross-source duplicate filtering
-    # ======================================
-
-    all_items, new_global_seen = filter_global_seen(
-        all_items,
-        global_seen,
-    )
-
-    print(
-        "[Global seen] "
-        f"Before: {len(global_seen)} / "
-        f"After: {len(new_global_seen)} / "
-        f"New: {len(new_global_seen) - len(global_seen)}"
-    )
-
-    print(
-        "[DEBUG] Items after global seen:",
-        len(all_items)
-    )
-
-    # ======================================
     # Language detection
     # ======================================
 
@@ -303,6 +282,27 @@ def main():
             f"{item.get('title', '')} "
             f"-> {language or '判定なし'}"
         )
+
+    # ======================================
+    # Cross-source duplicate filtering
+    # ======================================
+
+    all_items, new_global_seen = filter_global_seen(
+        all_items,
+        global_seen,
+    )
+
+    print(
+        "[Global seen] "
+        f"Before: {len(global_seen)} / "
+        f"After: {len(new_global_seen)} / "
+        f"New: {len(new_global_seen) - len(global_seen)}"
+    )
+
+    print(
+        "[DEBUG] Items after global seen:",
+        len(all_items)
+    )
 
     # ======================================
     # Asset metadata
