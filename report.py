@@ -645,7 +645,7 @@ def send_to_slack(message):
             "SLACK_WEBHOOK_URL がありません"
         )
 
-        return
+        return False
 
     response = requests.post(
         webhook_url,
@@ -659,3 +659,14 @@ def send_to_slack(message):
         "Slack status:",
         response.status_code,
     )
+
+    if 200 <= response.status_code < 300:
+
+        return True
+
+    print(
+        "Slack送信に失敗しました。"
+        f"status={response.status_code}"
+    )
+
+    return False
