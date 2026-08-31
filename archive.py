@@ -5,6 +5,7 @@ from common import now_jst
 
 
 ARCHIVE_DIR = Path("data/archive")
+ARCHIVE_INDEX_FILE = ARCHIVE_DIR / "archive_index.json"
 
 
 def get_archive_file():
@@ -22,9 +23,12 @@ def get_archive_file():
     return ARCHIVE_DIR / filename
 
 
-def load_archive(path):
+def load_json_list(path):
     """
-    Archiveを読み込む。
+    JSON配列を読み込む。
+
+    ファイルが存在しない、または壊れている場合は
+    空のリストを返す。
     """
 
     if not path.exists():
@@ -47,6 +51,24 @@ def load_archive(path):
     return data
 
 
+def save_json_list(path, data):
+    """
+    JSON配列を保存する。
+    """
+
+    with path.open(
+        "w",
+        encoding="utf-8",
+    ) as f:
+
+        json.dump(
+            data,
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
+
+
 def get_archive_key(item):
     """
     Archive内の重複判定用キー。
@@ -66,11 +88,34 @@ def get_archive_key(item):
     return None
 
 
+def load_archive_index():
+    """
+    Archive全体のURLインデックスを読み込む。
+    """
+
+    return set(
+        load_json_list(
+            ARCHIVE_INDEX_FILE
+        )
+    )
+
+
+def save_archive_index(index):
+    """
+    Archive全体のURLインデックスを保存する。
+    """
+
+    save_json_list(
+        ARCHIVE_INDEX_FILE,
+        sorted(index),
+    )
+
+
 def save_archive(items):
     """
     新規Itemを月別Archiveへ保存する。
 
-    同じURLは重複保存しない。
+    同じURLは月をまたいでも重複保存しない。
     """
 
     if not items:
@@ -83,13 +128,9 @@ def save_archive(items):
 
     path = get_archive_file()
 
-    archive = load_archive(path)
+    archive = load_json_list(path)
 
-    existing_keys = {
-        get_archive_key(item)
-        for item in archive
-        if get_archive_key(item) is not None
-    }
+    archive_index = load_archive_index()
 
     added = 0
 
@@ -99,10 +140,8 @@ def save_archive(items):
 
         if key is not None:
 
-            if key in existing_keys:
+            if key in archive_index:
                 continue
-
-            existing_keys.add(key)
 
         archived_item = dict(item)
 
@@ -111,23 +150,29 @@ def save_archive(items):
                 now_jst().isoformat()
             )
 
-        archive.append(archived_item)
+        archive.append(
+            archived_item
+        )
+
+        if key is not None:
+            archive_index.add(key)
+
         added += 1
 
     if added == 0:
+        print(
+            "[Archive] Added: 0"
+        )
         return
 
-    with path.open(
-        "w",
-        encoding="utf-8",
-    ) as f:
+    save_json_list(
+        path,
+        archive,
+    )
 
-        json.dump(
-            archive,
-            f,
-            indent=2,
-            ensure_ascii=False,
-        )
+    save_archive_index(
+        archive_index
+    )
 
     print(
         "[Archive] Added:",
@@ -137,4 +182,9 @@ def save_archive(items):
     print(
         "[Archive] Total:",
         len(archive),
+    )
+
+    print(
+        "[Archive] Index:",
+        len(archive_index),
     )
