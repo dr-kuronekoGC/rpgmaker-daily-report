@@ -9,3 +9,4 @@ from . import official_gamedevmarket
 from . import official_visustella
 from . import official_deviantart
 from . import asset_itchio
+from . import official_makerdevs
