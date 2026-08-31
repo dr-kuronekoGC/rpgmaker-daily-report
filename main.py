@@ -356,29 +356,51 @@ def main():
     print("----- REPORT -----")
     print(report)
 
-    send_to_slack(
+    slack_success = send_to_slack(
         report
     )
 
-    # ======================================
-    # Save seen
-    # ======================================
+    if slack_success:
 
-    for source, new_seen in pending_seen:
+        # ======================================
+        # Save seen
+        # ======================================
+
+        for source, new_seen in pending_seen:
+
+            save_seen_file(
+                source.SEEN_FILE,
+                new_seen,
+            )
 
         save_seen_file(
-            source.SEEN_FILE,
-            new_seen,
+            GLOBAL_SEEN_FILE,
+            new_global_seen,
         )
 
-    save_seen_file(
-        GLOBAL_SEEN_FILE,
-        new_global_seen,
-    )
+        # ======================================
+        # Save pending
+        # ======================================
+        #
+        # Slack送信成功時のみ、
+        # 今回掲載したItemをpendingから削除する。
+        #
 
-    # ======================================
-    # Save pending
-    # ======================================
+        save_pending_items(
+            PENDING_ITEMS_FILE,
+            remaining_pending,
+        )
+
+        print(
+            "[Pending] Saved after successful Slack delivery."
+        )
+
+    else:
+
+        print(
+            "[Pending] Slack送信失敗のため、"
+            "seen/pendingを更新しません。"
+        )
     #
     # Slack送信が成功した場合のみ、
     # 今回掲載したItemをpendingから削除する。
