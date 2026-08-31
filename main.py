@@ -25,6 +25,7 @@ from sources import (
 )
 
 from asset_metadata import enrich_items
+from language import detect_language
 
 from config import (
     PENDING_ITEMS_FILE,
