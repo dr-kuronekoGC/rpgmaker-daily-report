@@ -401,19 +401,6 @@ def main():
             "[Pending] Slack送信失敗のため、"
             "seen/pendingを更新しません。"
         )
-    #
-    # Slack送信が成功した場合のみ、
-    # 今回掲載したItemをpendingから削除する。
-    #
-    # send_to_slack() が例外を出さずに
-    # 戻ってきたことを成功とみなす。
-    # ======================================
-
-    save_pending_items(
-        PENDING_ITEMS_FILE,
-        remaining_pending,
-    )
-
 
 if __name__ == "__main__":
     main()
