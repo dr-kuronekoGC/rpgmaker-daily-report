@@ -276,13 +276,6 @@ def main():
 
             item["language"] = language
 
-        print(
-            "[Language] "
-            f"{item.get('source', '')} | "
-            f"{item.get('title', '')} "
-            f"-> {language or '判定なし'}"
-        )
-
     # ======================================
     # Cross-source duplicate filtering
     # ======================================
