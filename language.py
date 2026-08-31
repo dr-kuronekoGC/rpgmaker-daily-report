@@ -1,6 +1,4 @@
-```python
 import re
-
 
 LANGUAGE_JAPANESE = "日本語"
 LANGUAGE_ENGLISH = "英語"
@@ -9,7 +7,6 @@ LANGUAGE_GERMAN = "ドイツ語"
 LANGUAGE_SPANISH = "スペイン語"
 LANGUAGE_KOREAN = "韓国語"
 LANGUAGE_CHINESE = "中国語"
-
 
 def detect_language(
     title="",
@@ -176,4 +173,3 @@ def detect_language(
         return LANGUAGE_ENGLISH
 
     return None
-```
