@@ -12,6 +12,7 @@ from config import (
 )
 
 from categories import DISPLAY_CATEGORY
+from language import detect_language
 
 
 # ==========================================
@@ -382,6 +383,36 @@ def build_report(items):
         )
 
     categories = {}
+
+    # --------------------------------------
+    # Language補完
+    # --------------------------------------
+
+    for item in items:
+
+        if item.get("language"):
+            continue
+
+        language = detect_language(
+            title=item.get(
+                "title",
+                "",
+            ),
+            description=item.get(
+                "description",
+                "",
+            ),
+            tags=item.get(
+                "tags",
+                item.get(
+                    "source_tags",
+                    [],
+                ),
+            ),
+        )
+
+        if language:
+            item["language"] = language
 
     # --------------------------------------
     # カテゴリ整理
