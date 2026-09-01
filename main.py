@@ -444,6 +444,17 @@ def main():
         )
 
         # ======================================
+        # Forum Archive Progress
+        # ======================================
+
+        if hasattr(
+            community_forum,
+            "finalize",
+        ):
+
+            community_forum.finalize()
+
+        # ======================================
         # Save pending
         # ======================================
         #
