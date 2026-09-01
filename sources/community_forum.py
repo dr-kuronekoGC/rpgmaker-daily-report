@@ -93,7 +93,8 @@ def build_page_url(
 
 def extract_threads(
     html,
-    seen,
+    seen=None,
+    ignore_seen=False,
 ):
 
     soup = BeautifulSoup(
@@ -154,7 +155,18 @@ def extract_threads(
             href
         )
 
-        if href in seen:
+        # ----------------------------------
+        # 通常取得ではseenを確認
+        #
+        # Backfillではignore_seen=True
+        # としてGlobal seenを無視する
+        # ----------------------------------
+
+        if (
+            not ignore_seen
+            and seen is not None
+            and href in seen
+        ):
             continue
 
         category = classify_forum(
@@ -171,6 +183,7 @@ def extract_threads(
                 "url": href,
                 "category": category,
                 "source": "Forum",
+                "forum_backfill": ignore_seen,
             }
         )
 
@@ -224,6 +237,7 @@ def get_items(
         ) = extract_threads(
             html,
             new_seen,
+            ignore_seen=False,
         )
 
         for item in items:
@@ -263,8 +277,6 @@ def get_items(
 
     if not completed:
 
-        pages_processed = 0
-
         for page in range(
             next_page,
             next_page
@@ -300,14 +312,15 @@ def get_items(
                 items,
             ) = extract_threads(
                 html,
-                new_seen,
+                seen=None,
+                ignore_seen=True,
             )
 
             print(
                 f"[Forum Archive] "
                 f"Page {page}: "
                 f"{len(all_threads)} threads, "
-                f"{len(items)} new"
+                f"{len(items)} candidates"
             )
 
             # ==================================
@@ -330,41 +343,53 @@ def get_items(
                 break
 
             # ==================================
-            # 新規記事を追加
+            # Backfill記事を追加
+            #
+            # Global seenには追加しない。
+            #
+            # → Forum Archiveの記事は
+            #    Slack / Archive側へ渡す
             # ==================================
 
             for item in items:
-
-                url = item.get(
-                    "url"
-                )
-
-                if url:
-                    new_seen.append(
-                        url
-                    )
 
                 all_items.append(
                     item
                 )
 
-            pages_processed += 1
+            # ==================================
+            # 次回の開始ページを更新
+            # ==================================
 
             progress[
                 "next_page"
             ] = page + 1
 
-        save_archive_progress(
-            progress
-        )
+            save_archive_progress(
+                progress
+            )
 
     # ======================================
     # Debug
     # ======================================
 
+    backfill_count = sum(
+        1
+        for item in all_items
+        if item.get(
+            "forum_backfill",
+            False,
+        )
+    )
+
     print(
         f"[Forum] New: "
         f"{len(all_items)}"
+    )
+
+    print(
+        f"[Forum] Backfill candidates: "
+        f"{backfill_count}"
     )
 
     print(
