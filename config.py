@@ -34,6 +34,17 @@ RPGMAKERWEB_URL = ""
 GUILD_URL = ""
 
 # ----------------------------
+# RPG Maker Web Forum Archive
+# ----------------------------
+
+FORUM_ARCHIVE_PROGRESS_FILE = (
+    "forum_archive_progress.json"
+)
+
+# 1回のActionで遡るForumページ数
+FORUM_BACKFILL_PAGES_PER_RUN = 3
+
+# ----------------------------
 # seen files
 # ----------------------------
 
