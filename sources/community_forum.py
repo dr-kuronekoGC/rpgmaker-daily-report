@@ -488,11 +488,18 @@ def get_items(
     seen,
 ):
 
+
     global _pending_progress
 
     new_seen = seen.copy()
 
     all_items = []
+    
+    # ======================================
+    # Search diagnostic
+    # ======================================
+
+    run_search_diagnostic()
 
     progress = load_archive_progress()
 
