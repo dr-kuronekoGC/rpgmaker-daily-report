@@ -1,4 +1,6 @@
-from urllib.parse import urljoin, urlparse, parse_qs
+import json
+
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
@@ -17,7 +19,7 @@ SEEN_FILE = FORUM_SEEN_FILE
 
 
 # ==========================================
-# Forum進捗
+# Forum Archive Progress
 # ==========================================
 
 def load_archive_progress():
@@ -29,8 +31,6 @@ def load_archive_progress():
             "r",
             encoding="utf-8",
         ) as f:
-
-            import json
 
             data = json.load(f)
 
@@ -45,7 +45,7 @@ def load_archive_progress():
         pass
 
     return {
-        "next_page": 1,
+        "next_page": 2,
         "completed": False,
     }
 
@@ -53,8 +53,6 @@ def load_archive_progress():
 def save_archive_progress(
     progress,
 ):
-
-    import json
 
     with open(
         FORUM_ARCHIVE_PROGRESS_FILE,
@@ -90,59 +88,6 @@ def build_page_url(
 
 
 # ==========================================
-# Forum名取得
-# ==========================================
-
-def get_forum_name(
-    url,
-):
-
-    try:
-
-        html = get_html(url)
-
-        soup = BeautifulSoup(
-            html,
-            "html.parser",
-        )
-
-        breadcrumb = soup.select(
-            "ul.p-breadcrumbs li"
-        )
-
-        for item in breadcrumb:
-
-            text = item.get_text(
-                " ",
-                strip=True,
-            )
-
-            if any(
-
-                keyword in text
-
-                for keyword in (
-
-                    "Resources",
-                    "Support",
-                    "Games",
-                    "Development",
-                    "Tools",
-
-                )
-
-            ):
-
-                return text
-
-    except Exception:
-
-        pass
-
-    return ""
-
-
-# ==========================================
 # Thread extraction
 # ==========================================
 
@@ -156,7 +101,9 @@ def extract_threads(
         "html.parser",
     )
 
-    adopted_items = []
+    all_threads = []
+
+    new_items = []
 
     seen_urls = set()
 
@@ -195,9 +142,6 @@ def extract_threads(
 
         seen_urls.add(href)
 
-        if href in seen:
-            continue
-
         title = link.get_text(
             " ",
             strip=True,
@@ -206,19 +150,22 @@ def extract_threads(
         if not title:
             continue
 
-        forum_name = get_forum_name(
+        all_threads.append(
             href
         )
 
+        if href in seen:
+            continue
+
         category = classify_forum(
             title,
-            forum_name,
+            "",
         )
 
         if category is None:
             continue
 
-        adopted_items.append(
+        new_items.append(
             {
                 "title": title,
                 "url": href,
@@ -231,7 +178,10 @@ def extract_threads(
             f"[Forum][{category}] {title}"
         )
 
-    return adopted_items
+    return (
+        all_threads,
+        new_items,
+    )
 
 
 # ==========================================
@@ -246,15 +196,11 @@ def get_items(
 
     all_items = []
 
-    # ======================================
-    # Progress
-    # ======================================
-
     progress = load_archive_progress()
 
     next_page = progress.get(
         "next_page",
-        1,
+        2,
     )
 
     completed = progress.get(
@@ -272,7 +218,10 @@ def get_items(
             FORUM_URL
         )
 
-        items = extract_threads(
+        (
+            all_threads,
+            items,
+        ) = extract_threads(
             html,
             new_seen,
         )
@@ -284,7 +233,6 @@ def get_items(
             )
 
             if url:
-
                 new_seen.append(
                     url
                 )
@@ -292,6 +240,16 @@ def get_items(
             all_items.append(
                 item
             )
+
+        print(
+            f"[Forum] Latest threads: "
+            f"{len(all_threads)}"
+        )
+
+        print(
+            f"[Forum] Latest new: "
+            f"{len(items)}"
+        )
 
     except Exception as e:
 
@@ -312,12 +270,6 @@ def get_items(
             next_page
             + FORUM_BACKFILL_PAGES_PER_RUN,
         ):
-
-            # page 1は最新ページと重なるため
-            # Backfillではスキップする。
-
-            if page <= 1:
-                continue
 
             page_url = build_page_url(
                 page
@@ -343,40 +295,58 @@ def get_items(
 
                 break
 
-            items = extract_threads(
+            (
+                all_threads,
+                items,
+            ) = extract_threads(
                 html,
                 new_seen,
             )
 
-            # ----------------------------------
-            # ページにThreadが存在しない
-            # → 過去ページ終了
-            # ----------------------------------
+            print(
+                f"[Forum Archive] "
+                f"Page {page}: "
+                f"{len(all_threads)} threads, "
+                f"{len(items)} new"
+            )
 
-            if not items:
+            # ==================================
+            # ページ自体にThreadが存在しない
+            # → 過去取得終了
+            # ==================================
+
+            if len(all_threads) == 0:
 
                 print(
                     f"[Forum Archive] "
-                    f"No new items on page {page}"
+                    f"No threads found on page {page}. "
+                    f"Backfill completed."
                 )
 
-            else:
+                progress[
+                    "completed"
+                ] = True
 
-                for item in items:
+                break
 
-                    url = item.get(
-                        "url"
+            # ==================================
+            # 新規記事を追加
+            # ==================================
+
+            for item in items:
+
+                url = item.get(
+                    "url"
+                )
+
+                if url:
+                    new_seen.append(
+                        url
                     )
 
-                    if url:
-
-                        new_seen.append(
-                            url
-                        )
-
-                    all_items.append(
-                        item
-                    )
+                all_items.append(
+                    item
+                )
 
             pages_processed += 1
 
@@ -384,26 +354,17 @@ def get_items(
                 "next_page"
             ] = page + 1
 
-        # ==================================
-        # 完了判定
-        # ==================================
-
-        if pages_processed == 0:
-
-            progress[
-                "completed"
-            ] = True
-
         save_archive_progress(
             progress
         )
 
     # ======================================
-    # Result
+    # Debug
     # ======================================
 
     print(
-        f"[Forum] New: {len(all_items)}"
+        f"[Forum] New: "
+        f"{len(all_items)}"
     )
 
     print(
