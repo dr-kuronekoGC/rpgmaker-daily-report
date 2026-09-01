@@ -94,9 +94,30 @@ def get_next_page_url(
         "Searching pagination links..."
     )
 
-    # --------------------------------------
-    # pageNav周辺のリンクを全部確認
-    # --------------------------------------
+    # ======================================
+    # 基本情報
+    # ======================================
+
+    title_tag = soup.find("title")
+
+    if title_tag:
+
+        print(
+            "[Forum Debug] "
+            f"HTML title: "
+            f"{title_tag.get_text(' ', strip=True)!r}"
+        )
+
+    print(
+        "[Forum Debug] "
+        f"HTML length: {len(html)}"
+    )
+
+    # ======================================
+    # page / pagination 関連リンクを確認
+    # ======================================
+
+    pagination_count = 0
 
     for link in soup.select(
         "a[href]"
@@ -117,9 +138,9 @@ def get_next_page_url(
         href_lower = href.lower()
         text_lower = text.lower()
 
-        # ページネーションらしいリンクだけ表示
         if (
             "page" in href_lower
+            or "page" in text_lower
             or text_lower in (
                 "next",
                 "次へ",
@@ -141,9 +162,87 @@ def get_next_page_url(
                 f"url={full_url!r}"
             )
 
-    # --------------------------------------
-    # 既知のnextセレクタ
-    # --------------------------------------
+            pagination_count += 1
+
+    print(
+        "[Forum Debug] "
+        f"Pagination candidates: "
+        f"{pagination_count}"
+    )
+
+    # ======================================
+    # pageNav関連のHTML要素を確認
+    # ======================================
+
+    page_nav_elements = soup.select(
+        "[class*='pageNav'], "
+        "[class*='pagination'], "
+        "nav"
+    )
+
+    print(
+        "[Forum Debug] "
+        f"Page navigation elements: "
+        f"{len(page_nav_elements)}"
+    )
+
+    for element in page_nav_elements[:10]:
+
+        text = element.get_text(
+            " ",
+            strip=True,
+        )
+
+        classes = element.get(
+            "class",
+            []
+        )
+
+        if text:
+
+            print(
+                "[Forum Navigation] "
+                f"class={classes!r} "
+                f"text={text[:300]!r}"
+            )
+
+    # ======================================
+    # rel=next を確認
+    # ======================================
+
+    rel_next = soup.select(
+        "a[rel='next'], "
+        "link[rel='next']"
+    )
+
+    print(
+        "[Forum Debug] "
+        f"rel=next elements: "
+        f"{len(rel_next)}"
+    )
+
+    for element in rel_next:
+
+        href = element.get(
+            "href"
+        )
+
+        if href:
+
+            next_url = urljoin(
+                FORUM_URL,
+                href,
+            )
+
+            print(
+                "[Forum Debug] "
+                f"rel=next URL: "
+                f"{next_url}"
+            )
+
+    # ======================================
+    # 既知のセレクタを確認
+    # ======================================
 
     selectors = [
         "a.pageNav-jump--next",
@@ -172,10 +271,21 @@ def get_next_page_url(
 
                 print(
                     "[Forum Pagination] "
-                    f"Selected: {next_url}"
+                    f"Matched selector: "
+                    f"{selector}"
+                )
+
+                print(
+                    "[Forum Pagination] "
+                    f"Selected URL: "
+                    f"{next_url}"
                 )
 
                 return next_url
+
+    # ======================================
+    # 今回は推測でURLを作らない
+    # ======================================
 
     print(
         "[Forum Archive] "
@@ -183,7 +293,6 @@ def get_next_page_url(
     )
 
     return None
-
 
 # ==========================================
 # Thread extraction
