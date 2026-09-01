@@ -89,7 +89,62 @@ def get_next_page_url(
         "html.parser",
     )
 
-    # XenForoの「次へ」リンクを優先
+    print(
+        "[Forum Archive] "
+        "Searching pagination links..."
+    )
+
+    # --------------------------------------
+    # pageNav周辺のリンクを全部確認
+    # --------------------------------------
+
+    for link in soup.select(
+        "a[href]"
+    ):
+
+        href = link.get(
+            "href"
+        )
+
+        text = link.get_text(
+            " ",
+            strip=True,
+        )
+
+        if not href:
+            continue
+
+        href_lower = href.lower()
+        text_lower = text.lower()
+
+        # ページネーションらしいリンクだけ表示
+        if (
+            "page" in href_lower
+            or text_lower in (
+                "next",
+                "次へ",
+                "次",
+                ">",
+                "»",
+            )
+        ):
+
+            full_url = urljoin(
+                FORUM_URL,
+                href,
+            )
+
+            print(
+                "[Forum Pagination] "
+                f"text={text!r} "
+                f"href={href!r} "
+                f"url={full_url!r}"
+            )
+
+    # --------------------------------------
+    # 既知のnextセレクタ
+    # --------------------------------------
+
     selectors = [
         "a.pageNav-jump--next",
         "a[rel='next']",
@@ -110,39 +165,22 @@ def get_next_page_url(
 
             if href:
 
-                return urljoin(
+                next_url = urljoin(
                     FORUM_URL,
                     href,
                 )
 
-    # 念のため、ページナビゲーション内から
-    # next相当のリンクを探す
-    for link in soup.select(
-        "a[href]"
-    ):
+                print(
+                    "[Forum Pagination] "
+                    f"Selected: {next_url}"
+                )
 
-        text = link.get_text(
-            " ",
-            strip=True,
-        ).lower()
+                return next_url
 
-        href = link.get(
-            "href"
-        )
-
-        if not href:
-            continue
-
-        if text in (
-            "next",
-            "次へ",
-            "次",
-        ):
-
-            return urljoin(
-                FORUM_URL,
-                href,
-            )
+    print(
+        "[Forum Archive] "
+        "No next page selector matched."
+    )
 
     return None
 
