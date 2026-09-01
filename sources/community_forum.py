@@ -13,9 +13,17 @@ from config import (
 
 from categories import classify_forum
 from sources.base import get_html
+from archive import load_archive_index
 
 
 SEEN_FILE = FORUM_SEEN_FILE
+
+
+# ==========================================
+# Slack成功後に確定するProgress
+# ==========================================
+
+_pending_progress = None
 
 
 # ==========================================
@@ -45,7 +53,7 @@ def load_archive_progress():
         pass
 
     return {
-        "next_page": 2,
+        "next_url": None,
         "completed": False,
     }
 
@@ -69,22 +77,74 @@ def save_archive_progress(
 
 
 # ==========================================
-# Forum URL
+# Pagination
 # ==========================================
 
-def build_page_url(
-    page,
+def get_next_page_url(
+    html,
 ):
 
-    if page <= 1:
-        return FORUM_URL
-
-    separator = "&" if "?" in FORUM_URL else "?"
-
-    return (
-        f"{FORUM_URL}"
-        f"{separator}page={page}"
+    soup = BeautifulSoup(
+        html,
+        "html.parser",
     )
+
+    # XenForoの「次へ」リンクを優先
+    selectors = [
+        "a.pageNav-jump--next",
+        "a[rel='next']",
+        "a.pageNav-page--next",
+    ]
+
+    for selector in selectors:
+
+        link = soup.select_one(
+            selector
+        )
+
+        if link:
+
+            href = link.get(
+                "href"
+            )
+
+            if href:
+
+                return urljoin(
+                    FORUM_URL,
+                    href,
+                )
+
+    # 念のため、ページナビゲーション内から
+    # next相当のリンクを探す
+    for link in soup.select(
+        "a[href]"
+    ):
+
+        text = link.get_text(
+            " ",
+            strip=True,
+        ).lower()
+
+        href = link.get(
+            "href"
+        )
+
+        if not href:
+            continue
+
+        if text in (
+            "next",
+            "次へ",
+            "次",
+        ):
+
+            return urljoin(
+                FORUM_URL,
+                href,
+            )
+
+    return None
 
 
 # ==========================================
@@ -95,6 +155,7 @@ def extract_threads(
     html,
     seen=None,
     ignore_seen=False,
+    archive_index=None,
 ):
 
     soup = BeautifulSoup(
@@ -141,7 +202,9 @@ def extract_threads(
         if href in seen_urls:
             continue
 
-        seen_urls.add(href)
+        seen_urls.add(
+            href
+        )
 
         title = link.get_text(
             " ",
@@ -155,12 +218,9 @@ def extract_threads(
             href
         )
 
-        # ----------------------------------
-        # 通常取得ではseenを確認
-        #
-        # Backfillではignore_seen=True
-        # としてGlobal seenを無視する
-        # ----------------------------------
+        # ==================================
+        # 通常取得
+        # ==================================
 
         if (
             not ignore_seen
@@ -168,6 +228,21 @@ def extract_threads(
             and href in seen
         ):
             continue
+
+        # ==================================
+        # Backfill
+        #
+        # Archiveに既にあるものは除外
+        # Global seenは見ない
+        # ==================================
+
+        if ignore_seen:
+
+            if (
+                archive_index is not None
+                and href in archive_index
+            ):
+                continue
 
         category = classify_forum(
             title,
@@ -205,16 +280,13 @@ def get_items(
     seen,
 ):
 
+    global _pending_progress
+
     new_seen = seen.copy()
 
     all_items = []
 
     progress = load_archive_progress()
-
-    next_page = progress.get(
-        "next_page",
-        2,
-    )
 
     completed = progress.get(
         "completed",
@@ -236,7 +308,7 @@ def get_items(
             items,
         ) = extract_threads(
             html,
-            new_seen,
+            seen=new_seen,
             ignore_seen=False,
         )
 
@@ -247,6 +319,7 @@ def get_items(
             )
 
             if url:
+
                 new_seen.append(
                     url
                 )
@@ -277,32 +350,74 @@ def get_items(
 
     if not completed:
 
-        for page in range(
-            next_page,
-            next_page
-            + FORUM_BACKFILL_PAGES_PER_RUN,
+        archive_index = load_archive_index()
+
+        current_url = progress.get(
+            "next_url"
+        )
+
+        # 初回は最新ページの次ページを取得
+        if not current_url:
+
+            try:
+
+                latest_html = get_html(
+                    FORUM_URL
+                )
+
+                current_url = get_next_page_url(
+                    latest_html
+                )
+
+                if current_url:
+
+                    print(
+                        "[Forum Archive] "
+                        "Initial next URL:",
+                        current_url,
+                    )
+
+                else:
+
+                    print(
+                        "[Forum Archive] "
+                        "Next page not found."
+                    )
+
+            except Exception as e:
+
+                print(
+                    "[Forum Archive] "
+                    f"Initial pagination error: {e}"
+                )
+
+        pages_processed = 0
+
+        next_url = current_url
+
+        for _ in range(
+            FORUM_BACKFILL_PAGES_PER_RUN
         ):
 
-            page_url = build_page_url(
-                page
-            )
+            if not next_url:
+                break
 
             print(
-                f"[Forum Archive] "
-                f"Checking page {page}"
+                "[Forum Archive] "
+                f"Checking: {next_url}"
             )
 
             try:
 
                 html = get_html(
-                    page_url
+                    next_url
                 )
 
             except Exception as e:
 
                 print(
-                    f"[Forum Archive] "
-                    f"Page {page} Error: {e}"
+                    "[Forum Archive] "
+                    f"Page Error: {e}"
                 )
 
                 break
@@ -314,41 +429,17 @@ def get_items(
                 html,
                 seen=None,
                 ignore_seen=True,
+                archive_index=archive_index,
             )
 
             print(
-                f"[Forum Archive] "
-                f"Page {page}: "
+                "[Forum Archive] "
                 f"{len(all_threads)} threads, "
-                f"{len(items)} candidates"
+                f"{len(items)} new candidates"
             )
 
             # ==================================
-            # ページ自体にThreadが存在しない
-            # → 過去取得終了
-            # ==================================
-
-            if len(all_threads) == 0:
-
-                print(
-                    f"[Forum Archive] "
-                    f"No threads found on page {page}. "
-                    f"Backfill completed."
-                )
-
-                progress[
-                    "completed"
-                ] = True
-
-                break
-
-            # ==================================
-            # Backfill記事を追加
-            #
-            # Global seenには追加しない。
-            #
-            # → Forum Archiveの記事は
-            #    Slack / Archive側へ渡す
+            # Backfill記事
             # ==================================
 
             for item in items:
@@ -358,16 +449,45 @@ def get_items(
                 )
 
             # ==================================
-            # 次回の開始ページを更新
+            # 次ページURL
             # ==================================
 
-            progress[
-                "next_page"
-            ] = page + 1
-
-            save_archive_progress(
-                progress
+            next_page_url = get_next_page_url(
+                html
             )
+
+            pages_processed += 1
+
+            if not next_page_url:
+
+                print(
+                    "[Forum Archive] "
+                    "No next page. "
+                    "Backfill completed."
+                )
+
+                _pending_progress = {
+                    "next_url": None,
+                    "completed": True,
+                }
+
+                break
+
+            next_url = next_page_url
+
+            _pending_progress = {
+                "next_url": next_url,
+                "completed": False,
+            }
+
+        if pages_processed > 0:
+
+            if _pending_progress is None:
+
+                _pending_progress = {
+                    "next_url": next_url,
+                    "completed": False,
+                }
 
     # ======================================
     # Debug
@@ -392,19 +512,46 @@ def get_items(
         f"{backfill_count}"
     )
 
-    print(
-        "[Forum Archive] "
-        f"Next page: "
-        f"{progress.get('next_page')}"
-    )
+    if _pending_progress:
 
-    print(
-        "[Forum Archive] "
-        f"Completed: "
-        f"{progress.get('completed')}"
-    )
+        print(
+            "[Forum Archive] "
+            "Pending progress:",
+            _pending_progress,
+        )
+
+    else:
+
+        print(
+            "[Forum Archive] "
+            "No progress update."
+        )
 
     return (
         all_items,
         new_seen,
     )
+
+
+# ==========================================
+# Finalize
+# ==========================================
+
+def finalize():
+
+    global _pending_progress
+
+    if _pending_progress is None:
+
+        return
+
+    save_archive_progress(
+        _pending_progress
+    )
+
+    print(
+        "[Forum Archive] "
+        "Progress saved after successful Slack delivery."
+    )
+
+    _pending_progress = None
