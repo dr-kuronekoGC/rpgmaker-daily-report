@@ -2,6 +2,8 @@
 # Maker Devs
 # ==========================================
 
+import requests
+
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
@@ -11,10 +13,15 @@ from config import (
     MAKER_DEVS_SEEN_FILE,
 )
 
-from sources.base import get_html
-
-
 SEEN_FILE = MAKER_DEVS_SEEN_FILE
+
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 "
+        "(compatible; RPGMakerDailyReport/1.0)"
+    )
+}
 
 
 # ==========================================
@@ -24,10 +31,6 @@ SEEN_FILE = MAKER_DEVS_SEEN_FILE
 def classify_makerdevs(title, url=""):
 
     normalized = title.lower().strip()
-
-    # --------------------------------------
-    # 基本的にMaker DevsはPlugin directory
-    # --------------------------------------
 
     if normalized:
         return "RPG Makerプラグイン"
@@ -43,9 +46,15 @@ def get_items(seen):
 
     try:
 
-        html = get_html(
-            MAKER_DEVS_URL
+        response = requests.get(
+            MAKER_DEVS_URL,
+            headers=HEADERS,
+            timeout=20,
         )
+
+        response.raise_for_status()
+
+        html = response.text
 
         soup = BeautifulSoup(
             html,
@@ -53,22 +62,13 @@ def get_items(seen):
         )
 
         adopted_items = []
-
         new_seen = seen.copy()
 
         seen_urls = set()
 
-        # ----------------------------------
-        # 一覧ページ内のリンクを取得
-        # ----------------------------------
+        for link in soup.select("a[href]"):
 
-        for link in soup.select(
-            "a[href]"
-        ):
-
-            href = link.get(
-                "href"
-            )
+            href = link.get("href")
 
             if not href:
                 continue
@@ -78,16 +78,8 @@ def get_items(seen):
                 href,
             )
 
-            # --------------------------------
-            # Maker Devs内部リンクのみ
-            # --------------------------------
-
             if "makerdevs.com/" not in href:
                 continue
-
-            # --------------------------------
-            # マスター一覧自身を除外
-            # --------------------------------
 
             if (
                 href.rstrip("/")
@@ -95,25 +87,13 @@ def get_items(seen):
             ):
                 continue
 
-            # --------------------------------
-            # 重複除外
-            # --------------------------------
-
             if href in seen_urls:
                 continue
 
             seen_urls.add(href)
 
-            # --------------------------------
-            # 既取得
-            # --------------------------------
-
             if href in seen:
                 continue
-
-            # --------------------------------
-            # タイトル
-            # --------------------------------
 
             title = link.get_text(
                 " ",
@@ -122,10 +102,6 @@ def get_items(seen):
 
             if not title:
                 continue
-
-            # --------------------------------
-            # 明らかなナビゲーション除外
-            # --------------------------------
 
             excluded_titles = {
                 "home",
@@ -142,10 +118,6 @@ def get_items(seen):
             if title.lower() in excluded_titles:
                 continue
 
-            # --------------------------------
-            # 分類
-            # --------------------------------
-
             category = classify_makerdevs(
                 title,
                 href,
@@ -154,13 +126,7 @@ def get_items(seen):
             if category is None:
                 continue
 
-            # --------------------------------
-            # 採用
-            # --------------------------------
-
-            new_seen.append(
-                href
-            )
+            new_seen.append(href)
 
             adopted_items.append(
                 {
@@ -180,6 +146,22 @@ def get_items(seen):
             adopted_items,
             new_seen,
         )
+
+    except requests.exceptions.SSLError as e:
+
+        print(
+            f"[Maker Devs] SSL Error: {e}"
+        )
+
+        return [], seen
+
+    except requests.exceptions.RequestException as e:
+
+        print(
+            f"[Maker Devs] Request Error: {e}"
+        )
+
+        return [], seen
 
     except Exception as e:
 
