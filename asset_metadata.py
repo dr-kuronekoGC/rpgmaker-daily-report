@@ -17,6 +17,27 @@ ASSET_TYPE_OTHER = "other"
 
 
 # ==========================================
+# Engine
+# ==========================================
+
+ENGINE_MZ = "MZ"
+ENGINE_MV = "MV"
+ENGINE_MV_TRINITY = "MV Trinity"
+ENGINE_VX_ACE = "VX Ace"
+ENGINE_VX = "VX"
+ENGINE_XP = "XP"
+ENGINE_2003 = "2003"
+ENGINE_2000 = "2000"
+ENGINE_95 = "95"
+ENGINE_U2U = "U2U"
+ENGINE_UNITE = "UNITE"
+ENGINE_OTHER_RPG_MAKER = "その他RPG Maker"
+ENGINE_OTHER_TKool = "その他ツクール"
+ENGINE_GENERIC = "汎用"
+ENGINE_UNKNOWN = "不明"
+
+
+# ==========================================
 # License Status
 # ==========================================
 
@@ -75,6 +96,360 @@ def _contains_any(text, keywords):
 
 
 # ==========================================
+# Engine Detection
+# ==========================================
+
+def detect_engine(
+    item,
+):
+    """
+    素材・作品が対象としている
+    RPG Maker / ツクールシリーズを判定する。
+
+    判定対象:
+        title
+        description
+        source_tags
+        url
+
+    複数エンジンに対応する場合は
+    複数の値を返す。
+
+    明確な記載がない場合は
+    無理に推測せず「不明」とする。
+    """
+
+    title = _normalize_text(
+        item.get("title", "")
+    )
+
+    description = _normalize_text(
+        item.get("description", "")
+    )
+
+    url = _normalize_text(
+        item.get("url", "")
+    )
+
+    source_tags = item.get(
+        "source_tags",
+        [],
+    )
+
+    if not isinstance(
+        source_tags,
+        list,
+    ):
+        source_tags = []
+
+    tags_text = " ".join(
+        _normalize_text(tag)
+        for tag in source_tags
+        if isinstance(tag, str)
+    )
+
+    text = " ".join(
+        (
+            title,
+            description,
+            tags_text,
+            url,
+        )
+    )
+
+    engines = []
+
+    # --------------------------------------
+    # RPG Maker U2U
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "rpg maker u2u",
+            "rpgmaker u2u",
+            "rpg maker unite 2",
+            "rpgmaker unite 2",
+            "u2u",
+        ),
+    ):
+        engines.append(
+            ENGINE_U2U
+        )
+
+    # --------------------------------------
+    # RPG Maker MZ
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "rpg maker mz",
+            "rpgmaker mz",
+            "rpgツクールmz",
+            "rpgツクールmz用",
+        ),
+    ):
+        engines.append(
+            ENGINE_MZ
+        )
+
+    # --------------------------------------
+    # RPG Maker MV
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "rpg maker mv",
+            "rpgmaker mv",
+            "rpgツクールmv",
+            "rpgツクールmv用",
+        ),
+    ):
+        engines.append(
+            ENGINE_MV
+        )
+
+    # --------------------------------------
+    # MV Trinity
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "mv trinity",
+            "rpg maker mv trinity",
+            "rpgツクールmv trinity",
+        ),
+    ):
+        if ENGINE_MV not in engines:
+            engines.append(
+                ENGINE_MV
+            )
+
+        engines.append(
+            ENGINE_MV_TRINITY
+        )
+
+    # --------------------------------------
+    # RPG Maker VX Ace
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "rpg maker vx ace",
+            "rpgmaker vx ace",
+            "rpgツクールvx ace",
+            "rpgツクールvxace",
+            "vx ace",
+            "vxace",
+        ),
+    ):
+        engines.append(
+            ENGINE_VX_ACE
+        )
+
+    # --------------------------------------
+    # RPG Maker VX
+    # --------------------------------------
+
+    if (
+        ENGINE_VX_ACE not in engines
+        and _contains_any(
+            text,
+            (
+                "rpg maker vx",
+                "rpgmaker vx",
+                "rpgツクールvx",
+            ),
+        )
+    ):
+        engines.append(
+            ENGINE_VX
+        )
+
+    # --------------------------------------
+    # RPG Maker XP
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "rpg maker xp",
+            "rpgmaker xp",
+            "rpgツクールxp",
+        ),
+    ):
+        engines.append(
+            ENGINE_XP
+        )
+
+    # --------------------------------------
+    # RPG Maker 2003
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "rpg maker 2003",
+            "rpgmaker 2003",
+            "rpgツクール2003",
+        ),
+    ):
+        engines.append(
+            ENGINE_2003
+        )
+
+    # --------------------------------------
+    # RPG Maker 2000
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "rpg maker 2000",
+            "rpgmaker 2000",
+            "rpgツクール2000",
+        ),
+    ):
+        engines.append(
+            ENGINE_2000
+        )
+
+    # --------------------------------------
+    # RPG Maker 95
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "rpg maker 95",
+            "rpgmaker 95",
+            "rpgツクール95",
+            "rpgツクール95用",
+        ),
+    ):
+        engines.append(
+            ENGINE_95
+        )
+
+    # --------------------------------------
+    # RPG Maker UNITE
+    # --------------------------------------
+
+    if _contains_any(
+        text,
+        (
+            "rpg maker unite",
+            "rpgmaker unite",
+            "rpgツクールunite",
+            "rpgツクール unite",
+            "unite",
+        ),
+    ):
+        engines.append(
+            ENGINE_UNITE
+        )
+
+    # --------------------------------------
+    # その他ツクール
+    # --------------------------------------
+
+    other_tkool_keywords = (
+        "action game maker",
+        "アクションゲームツクール",
+        "pixel game maker",
+        "pixel game maker mv",
+        "アクションゲームツクールmv",
+        "音楽ツクール",
+        "music maker",
+    )
+
+    if _contains_any(
+        text,
+        other_tkool_keywords,
+    ):
+        engines.append(
+            ENGINE_OTHER_TKool
+        )
+
+    # --------------------------------------
+    # 明示的な「RPG Maker」
+    # --------------------------------------
+
+    if (
+        not engines
+        and _contains_any(
+            text,
+            (
+                "rpg maker",
+                "rpgmaker",
+                "rpgツクール",
+            ),
+        )
+    ):
+        engines.append(
+            ENGINE_OTHER_RPG_MAKER
+        )
+
+    # --------------------------------------
+    # 汎用素材
+    #
+    # 明らかにエンジンに依存しない
+    # 素材だけを汎用とする。
+    # --------------------------------------
+
+    if not engines:
+
+        generic_keywords = (
+            "concept art",
+            "illustration",
+            "illustrations",
+            "wallpaper",
+            "icon pack",
+            "generic icons",
+            "general purpose",
+            "汎用素材",
+            "イラスト",
+            "コンセプトアート",
+        )
+
+        if _contains_any(
+            text,
+            generic_keywords,
+        ):
+            engines.append(
+                ENGINE_GENERIC
+            )
+
+    # --------------------------------------
+    # 不明
+    # --------------------------------------
+
+    if not engines:
+        engines.append(
+            ENGINE_UNKNOWN
+        )
+
+    # --------------------------------------
+    # 重複除去
+    # --------------------------------------
+
+    unique_engines = []
+
+    for engine in engines:
+
+        if engine not in unique_engines:
+            unique_engines.append(
+                engine
+            )
+
+    return unique_engines
+
+
+# ==========================================
 # Asset Type
 # ==========================================
 
@@ -82,11 +457,10 @@ def detect_asset_type(
     category,
     title,
 ):
-    """
-    内部カテゴリから素材種別を判定する。
-    """
 
-    title = _normalize_text(title)
+    title = _normalize_text(
+        title
+    )
 
     if category in (
         "グラフィック素材",
@@ -111,10 +485,6 @@ def detect_asset_type(
         "game",
     ):
         return ASSET_TYPE_GAME
-
-    # --------------------------------------
-    # タイトルによる補助判定
-    # --------------------------------------
 
     if _contains_any(
         title,
@@ -151,16 +521,10 @@ def detect_copyright_status(
     asset_tags,
     title,
 ):
-    """
-    版権・二次創作の可能性を判定する。
 
-    注意:
-    これは法的な著作権判定ではない。
-    明らかなキーワードがある場合だけ
-    fanwork / possible_fanwork とする。
-    """
-
-    title = _normalize_text(title)
+    title = _normalize_text(
+        title
+    )
 
     if "fanwork" in asset_tags:
         return (
@@ -168,8 +532,6 @@ def detect_copyright_status(
             CONFIDENCE_MEDIUM,
         )
 
-    # assets.py の fanwork キーワードで
-    # 拾えなかった場合に備えた追加候補
     possible_keywords = (
         "fanart",
         "fan art",
@@ -201,31 +563,9 @@ def detect_copyright_status(
 def detect_price_and_license(
     item,
 ):
-    """
-    価格・ライセンス情報を判定する。
-
-    重要:
-    license は「情報源が返した原文」と
-    「Bot側の利用可否判定」を分離する。
-
-    例えば DeviantArt API が
-
-        "No License"
-
-    を返した場合でも、それだけを根拠に
-    restricted と断定しない。
-
-    明示的な price_status / license_status
-    が既に設定されている場合のみ、
-    その値を採用する。
-    """
 
     price_status = PRICE_UNKNOWN
     license_status = LICENSE_UNKNOWN
-
-    # --------------------------------------
-    # 明示的な価格判定
-    # --------------------------------------
 
     if item.get("price_status") in (
         PRICE_FREE,
@@ -234,10 +574,6 @@ def detect_price_and_license(
         price_status = item[
             "price_status"
         ]
-
-    # --------------------------------------
-    # 明示的なライセンス判定
-    # --------------------------------------
 
     if item.get("license_status") in (
         LICENSE_FREE,
@@ -261,16 +597,6 @@ def detect_price_and_license(
 def preserve_source_metadata(
     item,
 ):
-    """
-    情報源から取得した詳細情報を整理する。
-
-    ここでは情報の意味を推測せず、
-    取得できた値をそのまま保持する。
-    """
-
-    # --------------------------------------
-    # Source tags
-    # --------------------------------------
 
     source_tags = item.get(
         "source_tags"
@@ -288,10 +614,6 @@ def preserve_source_metadata(
                 str,
             )
         ]
-
-    # --------------------------------------
-    # Description
-    # --------------------------------------
 
     description = item.get(
         "description"
@@ -317,12 +639,6 @@ def preserve_source_metadata(
             description.strip()
         )
 
-    # --------------------------------------
-    # License
-    #
-    # APIが返した原文を保持する。
-    # --------------------------------------
-
     license_name = item.get(
         "license"
     )
@@ -345,10 +661,6 @@ def preserve_source_metadata(
                 "license",
                 None,
             )
-
-    # --------------------------------------
-    # Author
-    # --------------------------------------
 
     author = item.get(
         "author"
@@ -376,28 +688,11 @@ def preserve_source_metadata(
 # Asset Metadata
 # ==========================================
 
-def build_asset_metadata(item):
-    """
-    収集アイテムから素材評価用メタデータを作る。
-
-    情報が確認できない場合は unknown とする。
-
-    推測による
-        「無料」
-        「利用可能」
-        「商用利用可能」
-    などの判定は行わない。
-
-    また、情報源から取得した
-    source_tags / description / license
-    は原則としてそのまま保持する。
-    """
+def build_asset_metadata(
+    item,
+):
 
     item = item.copy()
-
-    # --------------------------------------
-    # Source metadataを保持
-    # --------------------------------------
 
     item = preserve_source_metadata(
         item
@@ -423,14 +718,6 @@ def build_asset_metadata(item):
         [],
     )
 
-    # --------------------------------------
-    # Asset classification
-    #
-    # 重要:
-    # DeviantArt等から取得したタグを
-    # classify_asset()にも渡す。
-    # --------------------------------------
-
     detected_category, asset_tags = (
         classify_asset(
             title,
@@ -449,6 +736,14 @@ def build_asset_metadata(item):
     asset_type = detect_asset_type(
         category_for_type,
         title,
+    )
+
+    # --------------------------------------
+    # Engine
+    # --------------------------------------
+
+    item["engine"] = detect_engine(
+        item
     )
 
     # --------------------------------------
@@ -527,12 +822,6 @@ def build_asset_metadata(item):
 
     # --------------------------------------
     # License
-    #
-    # license:
-    #     情報源から返された原文
-    #
-    # license_status:
-    #     Bot側の判定
     # --------------------------------------
 
     item["license_status"] = (
@@ -568,8 +857,6 @@ def build_asset_metadata(item):
     # Official source
     # --------------------------------------
 
-    # 現段階ではサイトごとの情報を
-    # まだ解析していないため unknown。
     item["is_official"] = None
 
     # --------------------------------------
@@ -600,10 +887,9 @@ def build_asset_metadata(item):
 # Apply
 # ==========================================
 
-def enrich_items(items):
-    """
-    複数アイテムに素材メタデータを付加する。
-    """
+def enrich_items(
+    items,
+):
 
     enriched = []
 
@@ -624,7 +910,6 @@ def enrich_items(items):
                 f"Error: {e}"
             )
 
-            # 分類失敗時にも元データを捨てない
             enriched.append(
                 item
             )
