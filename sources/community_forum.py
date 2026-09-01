@@ -77,10 +77,21 @@ def save_archive_progress(
 
 
 # ==========================================
-# Pagination
+# Forum Search Backfill
 # ==========================================
 
-def get_next_page_url(
+def build_search_url():
+
+    # Forumの検索ページ
+    # まずは空検索で検索画面を取得し、
+    # 実際の検索URL構造を確認する。
+    return urljoin(
+        FORUM_URL,
+        "search/"
+    )
+
+
+def inspect_search_page(
     html,
 ):
 
@@ -90,34 +101,110 @@ def get_next_page_url(
     )
 
     print(
-        "[Forum Archive] "
-        "Searching pagination links..."
+        "[Forum Search Debug] "
+        "Inspecting search page..."
     )
 
     # ======================================
     # 基本情報
     # ======================================
 
-    title_tag = soup.find("title")
+    title_tag = soup.find(
+        "title"
+    )
 
     if title_tag:
 
         print(
-            "[Forum Debug] "
+            "[Forum Search Debug] "
             f"HTML title: "
             f"{title_tag.get_text(' ', strip=True)!r}"
         )
 
     print(
-        "[Forum Debug] "
+        "[Forum Search Debug] "
         f"HTML length: {len(html)}"
     )
 
     # ======================================
-    # page / pagination 関連リンクを確認
+    # Search form
     # ======================================
 
-    pagination_count = 0
+    forms = soup.select(
+        "form"
+    )
+
+    print(
+        "[Forum Search Debug] "
+        f"Forms: {len(forms)}"
+    )
+
+    for form in forms[:10]:
+
+        action = form.get(
+            "action"
+        )
+
+        method = form.get(
+            "method"
+        )
+
+        classes = form.get(
+            "class",
+            []
+        )
+
+        print(
+            "[Forum Search Form] "
+            f"action={action!r} "
+            f"method={method!r} "
+            f"class={classes!r}"
+        )
+
+        # ----------------------------------
+        # input
+        # ----------------------------------
+
+        for input_tag in form.select(
+            "input"
+        ):
+
+            name = input_tag.get(
+                "name"
+            )
+
+            input_type = input_tag.get(
+                "type"
+            )
+
+            value = input_tag.get(
+                "value"
+            )
+
+            placeholder = input_tag.get(
+                "placeholder"
+            )
+
+            if (
+                name
+                or input_type
+                or value
+                or placeholder
+            ):
+
+                print(
+                    "[Forum Search Input] "
+                    f"name={name!r} "
+                    f"type={input_type!r} "
+                    f"value={value!r} "
+                    f"placeholder={placeholder!r}"
+                )
+
+    # ======================================
+    # Search related links
+    # ======================================
+
+    search_links = 0
 
     for link in soup.select(
         "a[href]"
@@ -139,15 +226,9 @@ def get_next_page_url(
         text_lower = text.lower()
 
         if (
-            "page" in href_lower
-            or "page" in text_lower
-            or text_lower in (
-                "next",
-                "次へ",
-                "次",
-                ">",
-                "»",
-            )
+            "/search" in href_lower
+            or "search" in text_lower
+            or "検索" in text
         ):
 
             full_url = urljoin(
@@ -156,143 +237,123 @@ def get_next_page_url(
             )
 
             print(
-                "[Forum Pagination] "
+                "[Forum Search Link] "
                 f"text={text!r} "
-                f"href={href!r} "
                 f"url={full_url!r}"
             )
 
-            pagination_count += 1
+            search_links += 1
 
     print(
-        "[Forum Debug] "
-        f"Pagination candidates: "
-        f"{pagination_count}"
+        "[Forum Search Debug] "
+        f"Search links: {search_links}"
     )
 
     # ======================================
-    # pageNav関連のHTML要素を確認
+    # Search-related buttons
     # ======================================
 
-    page_nav_elements = soup.select(
-        "[class*='pageNav'], "
-        "[class*='pagination'], "
-        "nav"
+    buttons = soup.select(
+        "button, "
+        "input[type='submit']"
     )
 
     print(
-        "[Forum Debug] "
-        f"Page navigation elements: "
-        f"{len(page_nav_elements)}"
+        "[Forum Search Debug] "
+        f"Search buttons: {len(buttons)}"
     )
 
-    for element in page_nav_elements[:10]:
+    for button in buttons[:20]:
 
-        text = element.get_text(
+        text = button.get_text(
             " ",
             strip=True,
         )
 
-        classes = element.get(
-            "class",
-            []
+        name = button.get(
+            "name"
         )
 
-        if text:
+        value = button.get(
+            "value"
+        )
 
-            print(
-                "[Forum Navigation] "
-                f"class={classes!r} "
-                f"text={text[:300]!r}"
-            )
+        button_type = button.get(
+            "type"
+        )
+
+        print(
+            "[Forum Search Button] "
+            f"text={text!r} "
+            f"name={name!r} "
+            f"value={value!r} "
+            f"type={button_type!r}"
+        )
 
     # ======================================
-    # rel=next を確認
+    # ページネーション
     # ======================================
 
-    rel_next = soup.select(
-        "a[rel='next'], "
-        "link[rel='next']"
+    pagination = soup.select(
+        "a[href*='page'], "
+        "a.pageNav-page, "
+        "a.pageNav-jump, "
+        "a[rel='next']"
     )
 
     print(
-        "[Forum Debug] "
-        f"rel=next elements: "
-        f"{len(rel_next)}"
+        "[Forum Search Debug] "
+        f"Pagination candidates: "
+        f"{len(pagination)}"
     )
 
-    for element in rel_next:
+    for link in pagination[:20]:
 
-        href = element.get(
+        href = link.get(
             "href"
+        )
+
+        text = link.get_text(
+            " ",
+            strip=True,
         )
 
         if href:
 
-            next_url = urljoin(
-                FORUM_URL,
-                href,
-            )
-
             print(
-                "[Forum Debug] "
-                f"rel=next URL: "
-                f"{next_url}"
+                "[Forum Search Pagination] "
+                f"text={text!r} "
+                f"href={href!r}"
             )
 
-    # ======================================
-    # 既知のセレクタを確認
-    # ======================================
 
-    selectors = [
-        "a.pageNav-jump--next",
-        "a[rel='next']",
-        "a.pageNav-page--next",
-    ]
+def run_search_diagnostic():
 
-    for selector in selectors:
-
-        link = soup.select_one(
-            selector
-        )
-
-        if link:
-
-            href = link.get(
-                "href"
-            )
-
-            if href:
-
-                next_url = urljoin(
-                    FORUM_URL,
-                    href,
-                )
-
-                print(
-                    "[Forum Pagination] "
-                    f"Matched selector: "
-                    f"{selector}"
-                )
-
-                print(
-                    "[Forum Pagination] "
-                    f"Selected URL: "
-                    f"{next_url}"
-                )
-
-                return next_url
-
-    # ======================================
-    # 今回は推測でURLを作らない
-    # ======================================
+    search_url = build_search_url()
 
     print(
-        "[Forum Archive] "
-        "No next page selector matched."
+        "[Forum Search Debug] "
+        f"Search URL: {search_url}"
     )
 
-    return None
+    try:
+
+        html = get_html(
+            search_url
+        )
+
+    except Exception as e:
+
+        print(
+            "[Forum Search Debug] "
+            f"Search Error: {e}"
+        )
+
+        return
+
+    inspect_search_page(
+        html
+    )
 
 # ==========================================
 # Thread extraction
