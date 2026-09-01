@@ -74,31 +74,62 @@ def get_global_key(item):
     return None
 
 
-def filter_global_seen(items, global_seen):
-    """
-    複数サイトをまたいだ既読情報を除外する。
-    """
+def filter_global_seen(
+    items,
+    global_seen,
+):
 
     filtered_items = []
     new_global_seen = list(global_seen)
 
-    seen_set = set(global_seen)
+    seen_set = set(
+        global_seen
+    )
 
     for item in items:
 
-        key = get_global_key(item)
+        # ==================================
+        # Forum BackfillはGlobal seen対象外
+        # ==================================
+
+        if item.get(
+            "forum_backfill",
+            False,
+        ):
+
+            filtered_items.append(
+                item
+            )
+
+            continue
+
+        key = get_global_key(
+            item
+        )
 
         if key is None:
-            filtered_items.append(item)
+
+            filtered_items.append(
+                item
+            )
+
             continue
 
         if key in seen_set:
+
             continue
 
-        filtered_items.append(item)
+        filtered_items.append(
+            item
+        )
 
-        new_global_seen.append(key)
-        seen_set.add(key)
+        new_global_seen.append(
+            key
+        )
+
+        seen_set.add(
+            key
+        )
 
     return (
         filtered_items,
