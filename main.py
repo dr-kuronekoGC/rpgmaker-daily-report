@@ -88,10 +88,6 @@ def filter_global_seen(
 
     for item in items:
 
-        # ==================================
-        # Forum BackfillはGlobal seen対象外
-        # ==================================
-
         if item.get(
             "forum_backfill",
             False,
