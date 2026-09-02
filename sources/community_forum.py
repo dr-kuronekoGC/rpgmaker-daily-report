@@ -113,64 +113,122 @@ def get_previous_month(
 # Forum Search
 # ==========================================
 
-def search_forum(
-    older_than,
-):
+def search_forum(older_than):
+    """
+    RPG Maker Web Forum の検索フォームを利用して、
+    指定日より古い投稿を検索する。
 
-    search_url = urljoin(
-        FORUM_URL,
-        "search/search",
-    )
+    XenForo の CSRF トークンとセッション Cookie が必要なため、
+    検索フォームを GET して hidden フィールドを取得した後、
+    同じ Session から POST する。
+    """
 
-    # XenForoの検索フォームに合わせる
-    data = {
-        "keywords": "",
-        "c[title_only]": "0",
-        "c[users]": "",
-        "c[newer_than]": "",
-        "c[older_than]": older_than,
-        "order": "date",
-        "search_type": "post",
+    search_page_url = urljoin(FORUM_URL, "/search/")
+    search_action_url = urljoin(FORUM_URL, "/search/search")
+
+    session = requests.Session()
+
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/151.0.0.0 Safari/537.36"
+        )
     }
 
-    print(
-        "[Forum Search] "
-        f"POST {search_url}"
-    )
+    try:
+        # ----------------------------------------
+        # 1. 検索フォームを GET
+        # ----------------------------------------
+        response = session.get(
+            search_page_url,
+            headers=headers,
+            timeout=30,
+        )
+        response.raise_for_status()
 
-    print(
-        "[Forum Search] "
-        f"older_than={older_than}"
-    )
+        soup = BeautifulSoup(response.text, "html.parser")
 
-    response = requests.post(
-        search_url,
-        data=data,
-        timeout=30,
-        headers={
-            "User-Agent": (
-                "Mozilla/5.0 "
-                "(compatible; "
-                "RPGMakerDailyReport/1.0)"
-            )
-        },
-    )
+        form = soup.find(
+            "form",
+            attrs={
+                "action": "/search/search",
+            },
+        )
 
-    response.raise_for_status()
+        if form is None:
+            # action の表記が異なる場合に備えて検索フォームを探す
+            for candidate in soup.find_all("form"):
+                action = candidate.get("action", "")
+                if "/search/search" in action:
+                    form = candidate
+                    break
 
-    print(
-        "[Forum Search] "
-        f"HTTP {response.status_code}"
-    )
+        if form is None:
+            print("[Forum Archive] Search form not found.")
+            return ""
 
-    print(
-        "[Forum Search] "
-        f"Response length: "
-        f"{len(response.text)}"
-    )
+        # ----------------------------------------
+        # 2. hidden フィールドを取得
+        # ----------------------------------------
+        data = {}
 
-    return response.text
+        for input_tag in form.find_all("input"):
+            name = input_tag.get("name")
+            if not name:
+                continue
 
+            input_type = input_tag.get("type", "text")
+
+            if input_type in ("hidden", "submit"):
+                value = input_tag.get("value", "")
+                data[name] = value
+
+        # ----------------------------------------
+        # 3. 検索条件を設定
+        # ----------------------------------------
+        data.update(
+            {
+                "keywords": "",
+                "c[title_only]": "0",
+                "c[users]": "",
+                "c[newer_than]": "",
+                "c[older_than]": older_than,
+                "order": "date",
+                "search_type": "post",
+            }
+        )
+
+        # ----------------------------------------
+        # 4. 同じ Session から POST
+        # ----------------------------------------
+        print(
+            f"[Forum Archive] Posting search request: "
+            f"older_than={older_than}"
+        )
+
+        response = session.post(
+            search_action_url,
+            data=data,
+            headers={
+                **headers,
+                "Referer": search_page_url,
+            },
+            timeout=30,
+        )
+
+        print(
+            f"[Forum Archive] Search response: "
+            f"{response.status_code} {response.url}"
+        )
+
+        response.raise_for_status()
+
+        return response.text
+
+    except requests.RequestException as e:
+        print(f"[Forum Archive] Search request failed: {e}")
+        return ""
 
 # ==========================================
 # Search result extraction
