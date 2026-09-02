@@ -2,13 +2,13 @@ import json
 from datetime import datetime, timedelta
 from urllib.parse import urljoin
 
+import requests
 from bs4 import BeautifulSoup
 
 from config import (
     FORUM_URL,
     FORUM_SEEN_FILE,
     FORUM_ARCHIVE_PROGRESS_FILE,
-    FORUM_BACKFILL_PAGES_PER_RUN,
 )
 
 from categories import classify_forum
@@ -18,13 +18,12 @@ from archive import load_archive_index
 
 SEEN_FILE = FORUM_SEEN_FILE
 
-
-# ==========================================
-# Backfill Progress
-# ==========================================
-
 _pending_progress = None
 
+
+# ==========================================
+# Archive Progress
+# ==========================================
 
 def load_archive_progress():
 
@@ -39,14 +38,12 @@ def load_archive_progress():
             data = json.load(f)
 
             if isinstance(data, dict):
-
                 return data
 
     except (
         FileNotFoundError,
         json.JSONDecodeError,
     ):
-
         pass
 
     return {
@@ -79,7 +76,6 @@ def save_archive_progress(
 
 def get_initial_older_than():
 
-    # 初回は現在時刻から1か月前を開始地点にする
     return (
         datetime.now()
         - timedelta(days=30)
@@ -103,9 +99,9 @@ def get_previous_month(
 
         current = datetime.now()
 
-    # 31日ではなく、約1か月単位で戻す
-    previous = current - timedelta(
-        days=30
+    previous = (
+        current
+        - timedelta(days=30)
     )
 
     return previous.strftime(
@@ -117,29 +113,63 @@ def get_previous_month(
 # Forum Search
 # ==========================================
 
-def build_search_url(
+def search_forum(
     older_than,
 ):
 
-    base = urljoin(
+    search_url = urljoin(
         FORUM_URL,
         "search/search",
     )
 
-    params = (
-        f"?q="
-        f"&o=date"
-        f"&c%5Btitle_only%5D=0"
-        f"&c%5Busers%5D="
-        f"&c%5Bdate%5D="
-        f"&c%5Bolder_than%5D={older_than}"
-        f"&c%5Bnewer_than%5D="
+    # XenForoの検索フォームに合わせる
+    data = {
+        "keywords": "",
+        "c[title_only]": "0",
+        "c[users]": "",
+        "c[newer_than]": "",
+        "c[older_than]": older_than,
+        "order": "date",
+        "search_type": "post",
+    }
+
+    print(
+        "[Forum Search] "
+        f"POST {search_url}"
     )
 
-    return (
-        base
-        + params
+    print(
+        "[Forum Search] "
+        f"older_than={older_than}"
     )
+
+    response = requests.post(
+        search_url,
+        data=data,
+        timeout=30,
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 "
+                "(compatible; "
+                "RPGMakerDailyReport/1.0)"
+            )
+        },
+    )
+
+    response.raise_for_status()
+
+    print(
+        "[Forum Search] "
+        f"HTTP {response.status_code}"
+    )
+
+    print(
+        "[Forum Search] "
+        f"Response length: "
+        f"{len(response.text)}"
+    )
+
+    return response.text
 
 
 # ==========================================
@@ -161,7 +191,7 @@ def extract_search_results(
     seen_urls = set()
 
     # ======================================
-    # Thread links
+    # Search result links
     # ======================================
 
     for link in soup.select(
@@ -180,11 +210,9 @@ def extract_search_results(
             href,
         )
 
-        # Thread URLのみ
         if "/threads/" not in href:
             continue
 
-        # 不要なURL
         if "/page-" in href:
             continue
 
@@ -203,10 +231,11 @@ def extract_search_results(
             href
         )
 
-        # Archive済みなら除外
-        if (
-            href in archive_index
-        ):
+        # ----------------------------------
+        # Archive済み
+        # ----------------------------------
+
+        if href in archive_index:
             continue
 
         title = link.get_text(
@@ -239,6 +268,96 @@ def extract_search_results(
 
 
 # ==========================================
+# Normal latest Forum
+# ==========================================
+
+def get_latest_items(
+    seen,
+):
+
+    items = []
+
+    html = get_html(
+        FORUM_URL
+    )
+
+    soup = BeautifulSoup(
+        html,
+        "html.parser",
+    )
+
+    local_seen = set()
+
+    for link in soup.select(
+        "a[href]"
+    ):
+
+        href = link.get(
+            "href"
+        )
+
+        if not href:
+            continue
+
+        href = urljoin(
+            FORUM_URL,
+            href,
+        )
+
+        if "/threads/" not in href:
+            continue
+
+        if "/page-" in href:
+            continue
+
+        if "/post-" in href:
+            continue
+
+        if href.endswith(
+            "/latest"
+        ):
+            continue
+
+        if href in local_seen:
+            continue
+
+        local_seen.add(
+            href
+        )
+
+        if href in seen:
+            continue
+
+        title = link.get_text(
+            " ",
+            strip=True,
+        )
+
+        if not title:
+            continue
+
+        category = classify_forum(
+            title,
+            "",
+        )
+
+        if category is None:
+            continue
+
+        items.append(
+            {
+                "title": title,
+                "url": href,
+                "category": category,
+                "source": "Forum",
+                "forum_backfill": False,
+            }
+        )
+
+    return items
+
+
+# ==========================================
 # Main collector
 # ==========================================
 
@@ -248,12 +367,48 @@ def get_items(
 
     global _pending_progress
 
-    new_seen = seen.copy()
+    _pending_progress = None
+
+    new_seen = list(
+        seen
+    )
 
     all_items = []
 
     # ======================================
-    # Progress
+    # ① Normal latest
+    # ======================================
+
+    try:
+
+        latest_items = get_latest_items(
+            seen
+        )
+
+        all_items.extend(
+            latest_items
+        )
+
+        for item in latest_items:
+
+            new_seen.append(
+                item["url"]
+            )
+
+        print(
+            "[Forum] Latest new:",
+            len(latest_items),
+        )
+
+    except Exception as e:
+
+        print(
+            "[Forum] Latest Error:",
+            e,
+        )
+
+    # ======================================
+    # ② Backfill progress
     # ======================================
 
     progress = load_archive_progress()
@@ -274,117 +429,7 @@ def get_items(
         )
 
     # ======================================
-    # Archive index
-    # ======================================
-
-    archive_index = load_archive_index()
-
-    # ======================================
-    # ① 通常のForum新着
-    # ======================================
-
-    try:
-
-        html = get_html(
-            FORUM_URL
-        )
-
-        soup = BeautifulSoup(
-            html,
-            "html.parser",
-        )
-
-        latest_count = 0
-
-        for link in soup.select(
-            "a[href]"
-        ):
-
-            href = link.get(
-                "href"
-            )
-
-            if not href:
-                continue
-
-            href = urljoin(
-                FORUM_URL,
-                href,
-            )
-
-            if "/threads/" not in href:
-                continue
-
-            if "/page-" in href:
-                continue
-
-            if "/post-" in href:
-                continue
-
-            if href.endswith(
-                "/latest"
-            ):
-                continue
-
-            title = link.get_text(
-                " ",
-                strip=True,
-            )
-
-            if not title:
-                continue
-
-            if href in new_seen:
-
-                continue
-
-            category = classify_forum(
-                title,
-                "",
-            )
-
-            if category is None:
-
-                continue
-
-            item = {
-                "title": title,
-                "url": href,
-                "category": category,
-                "source": "Forum",
-                "forum_backfill": False,
-            }
-
-            all_items.append(
-                item
-            )
-
-            new_seen.append(
-                href
-            )
-
-            latest_count += 1
-
-            print(
-                "[Forum][Latest]"
-                f" [{category}] "
-                f"{title}"
-            )
-
-        print(
-            "[Forum] Latest new:",
-            latest_count,
-        )
-
-    except Exception as e:
-
-        print(
-            "[Forum] Latest Error:",
-            e,
-        )
-
-    # ======================================
-    # ② Backfill
+    # ③ Backfill
     # ======================================
 
     if completed:
@@ -396,34 +441,27 @@ def get_items(
 
     else:
 
-        # ----------------------------------
-        # 今回は1つの日付範囲だけ調査
-        # ----------------------------------
-
         print(
             "[Forum Archive] "
             f"Searching older than: "
             f"{older_than}"
         )
 
-        search_url = build_search_url(
-            older_than
-        )
-
-        print(
-            "[Forum Archive] "
-            f"Search URL: {search_url}"
+        archive_index = (
+            load_archive_index()
         )
 
         try:
 
-            html = get_html(
-                search_url
+            html = search_forum(
+                older_than
             )
 
-            candidates = extract_search_results(
-                html,
-                archive_index,
+            candidates = (
+                extract_search_results(
+                    html,
+                    archive_index,
+                )
             )
 
             print(
@@ -435,7 +473,8 @@ def get_items(
             for item in candidates:
 
                 print(
-                    "[Forum Archive][Candidate] "
+                    "[Forum Archive]"
+                    "[Candidate] "
                     f"{item['title']}"
                 )
 
@@ -444,7 +483,7 @@ def get_items(
                 )
 
             # ----------------------------------
-            # 次回はさらに30日前へ
+            # 次回の検索位置
             # ----------------------------------
 
             next_older_than = (
@@ -454,7 +493,9 @@ def get_items(
             )
 
             _pending_progress = {
-                "older_than": next_older_than,
+                "older_than": (
+                    next_older_than
+                ),
                 "completed": False,
             }
 
@@ -490,17 +531,10 @@ def get_items(
     )
 
     print(
-        "[Forum] Backfill candidates:",
+        "[Forum] "
+        "Backfill candidates:",
         backfill_count,
     )
-
-    if _pending_progress:
-
-        print(
-            "[Forum Archive] "
-            "Pending progress:",
-            _pending_progress,
-        )
 
     return (
         all_items,
@@ -517,7 +551,6 @@ def finalize():
     global _pending_progress
 
     if _pending_progress is None:
-
         return
 
     save_archive_progress(
