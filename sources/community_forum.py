@@ -224,6 +224,15 @@ def search_forum(older_than):
 
         response.raise_for_status()
 
+        # 検索結果ページのHTML構造を確認するため、一時的に保存
+        with open("forum_search_debug.html", "w", encoding="utf-8") as f:
+            f.write(response.text)
+
+        print(
+            f"[Forum Archive] Search HTML saved: "
+            f"{len(response.text)} bytes"
+        )
+
         return response.text
 
     except requests.RequestException as e:
