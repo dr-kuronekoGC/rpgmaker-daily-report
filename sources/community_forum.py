@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timedelta
-from urllib.parse import urljoin, urlparse, parse_qs, urlencode, urlunparse
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -146,12 +146,18 @@ def get_next_page_url(
     current_url,
 ):
     """
-    検索結果ページから次ページURLを取得する。
+    検索結果ページから、実際に存在する次ページURLを取得する。
 
-    XenForoのページネーション構造が変更されても
-    できるだけ壊れにくいよう、rel=next と
-    pagination 内のリンクを順番に確認する。
+    重要:
+    ページネーション情報が見つからない場合は、
+    page=2 などを推測してURLを生成しない。
+
+    これにより、存在しないページへのアクセスや
+    同一ページの重複取得を防ぐ。
     """
+
+    if not html:
+        return None
 
     soup = BeautifulSoup(
         html,
@@ -183,96 +189,167 @@ def get_next_page_url(
             )
 
     # ----------------------------------------
-    # ② pagination の next link
+    # ② XenForoのpagination
     # ----------------------------------------
 
-    for link in soup.select(
-        "a.pageNav-jump--next, "
-        "a.pageNav-jump, "
-        "li.pageNav-page a"
+    pagination_selectors = [
+        "a.pageNav-jump--next",
+        "a.pageNav-jump",
+        "li.pageNav-page a",
+    ]
+
+    for selector in pagination_selectors:
+
+        for link in soup.select(
+            selector
+        ):
+
+            text = link.get_text(
+                " ",
+                strip=True,
+            ).lower()
+
+            aria = link.get(
+                "aria-label",
+                "",
+            ).lower()
+
+            title = link.get(
+                "title",
+                "",
+            ).lower()
+
+            classes = " ".join(
+                link.get(
+                    "class",
+                    [],
+                )
+            ).lower()
+
+            if (
+                "next" in text
+                or "next" in aria
+                or "next" in title
+                or "next" in classes
+            ):
+
+                href = link.get(
+                    "href"
+                )
+
+                if href:
+
+                    return urljoin(
+                        current_url,
+                        href,
+                    )
+
+    # ----------------------------------------
+    # ③ 次ページが存在することを確認できる
+    #    paginationリンクのみを利用
+    # ----------------------------------------
+
+    # 「次へ」という文字がなくても、
+    # pageNav-page の中に現在ページより後の
+    # ページ番号が存在する場合がある。
+    #
+    # ただし、ここでもURLを推測せず、
+    # 実際のリンクをそのまま使用する。
+
+    current_page = 1
+
+    try:
+
+        current_soup = BeautifulSoup(
+            html,
+            "html.parser",
+        )
+
+        current_page_link = (
+            current_soup.select_one(
+                "li.pageNav-page--current a, "
+                "li.pageNav-page--current"
+            )
+        )
+
+        if current_page_link:
+
+            current_page_text = (
+                current_page_link.get_text(
+                    " ",
+                    strip=True,
+                )
+            )
+
+            current_page = int(
+                current_page_text
+            )
+
+    except (
+        ValueError,
+        TypeError,
     ):
+
+        current_page = 1
+
+    page_links = soup.select(
+        "li.pageNav-page a"
+    )
+
+    candidate_links = []
+
+    for link in page_links:
+
+        href = link.get(
+            "href"
+        )
+
+        if not href:
+            continue
 
         text = link.get_text(
             " ",
             strip=True,
-        ).lower()
-
-        aria = link.get(
-            "aria-label",
-            "",
-        ).lower()
-
-        title = link.get(
-            "title",
-            "",
-        ).lower()
-
-        if (
-            "next" in text
-            or "next" in aria
-            or "next" in title
-        ):
-
-            href = link.get(
-                "href"
-            )
-
-            if href:
-
-                return urljoin(
-                    current_url,
-                    href,
-                )
-
-    # ----------------------------------------
-    # ③ URLのpageパラメータを利用
-    # ----------------------------------------
-
-    parsed = urlparse(
-        current_url
-    )
-
-    query = parse_qs(
-        parsed.query
-    )
-
-    current_page = 1
-
-    if "page" in query:
+        )
 
         try:
-            current_page = int(
-                query["page"][0]
+
+            page_number = int(
+                text
             )
+
         except (
             ValueError,
             TypeError,
         ):
-            current_page = 1
 
-    next_page = (
-        current_page + 1
-    )
+            continue
 
-    query["page"] = [
-        str(next_page)
-    ]
+        if page_number > current_page:
 
-    next_query = urlencode(
-        query,
-        doseq=True,
-    )
+            candidate_links.append(
+                (
+                    page_number,
+                    urljoin(
+                        current_url,
+                        href,
+                    ),
+                )
+            )
 
-    return urlunparse(
-        (
-            parsed.scheme,
-            parsed.netloc,
-            parsed.path,
-            parsed.params,
-            next_query,
-            parsed.fragment,
+    if candidate_links:
+
+        candidate_links.sort(
+            key=lambda x: x[0]
         )
-    )
+
+        return candidate_links[0][1]
+
+    # ----------------------------------------
+    # 次ページが確認できない
+    # ----------------------------------------
+
+    return None
 
 
 # ==========================================
@@ -550,75 +627,106 @@ def extract_search_results(
 
     seen_urls = set()
 
-    for link in soup.select(
-        "a[href]"
+    # ----------------------------------------
+    # Search result areaを優先
+    # ----------------------------------------
+
+    search_containers = []
+
+    for selector in (
+        ".block--messages",
+        ".block-body",
+        ".searchResults",
+        ".contentRow",
     ):
 
-        href = link.get(
-            "href"
+        search_containers.extend(
+            soup.select(selector)
         )
 
-        if not href:
-            continue
+    # 検索結果用コンテナが見つからない場合は
+    # ページ全体を対象にする。
+    if search_containers:
 
-        href = urljoin(
-            FORUM_URL,
-            href,
-        )
+        containers = search_containers
 
-        if "/threads/" not in href:
-            continue
+    else:
 
-        if "/page-" in href:
-            continue
+        containers = [
+            soup
+        ]
 
-        if "/post-" in href:
-            continue
+    for container in containers:
 
-        if href.endswith(
-            "/latest"
+        for link in container.select(
+            "a[href]"
         ):
-            continue
 
-        if href in seen_urls:
-            continue
+            href = link.get(
+                "href"
+            )
 
-        seen_urls.add(
-            href
-        )
+            if not href:
+                continue
 
-        # ----------------------------------
-        # Archive済み
-        # ----------------------------------
+            href = urljoin(
+                FORUM_URL,
+                href,
+            )
 
-        if href in archive_index:
-            continue
+            if "/threads/" not in href:
+                continue
 
-        title = link.get_text(
-            " ",
-            strip=True,
-        )
+            if "/page-" in href:
+                continue
 
-        if not title:
-            continue
+            if "/post-" in href:
+                continue
 
-        category = classify_forum(
-            title,
-            "",
-        )
+            if href.endswith(
+                "/latest"
+            ):
+                continue
 
-        if category is None:
-            continue
+            if href in seen_urls:
+                continue
 
-        items.append(
-            {
-                "title": title,
-                "url": href,
-                "category": category,
-                "source": "Forum",
-                "forum_backfill": True,
-            }
-        )
+            seen_urls.add(
+                href
+            )
+
+            # ----------------------------------
+            # Archive済み
+            # ----------------------------------
+
+            if href in archive_index:
+                continue
+
+            title = link.get_text(
+                " ",
+                strip=True,
+            )
+
+            if not title:
+                continue
+
+            category = classify_forum(
+                title,
+                "",
+            )
+
+            if category is None:
+                continue
+
+            items.append(
+                {
+                    "title": title,
+                    "url": href,
+                    "category": category,
+                    "source": "Forum",
+                    "forum_backfill": True,
+                }
+            )
 
     return items
 
@@ -799,6 +907,7 @@ def get_items(seen):
         keyword_index = 0
 
     if keyword_index < 0:
+
         keyword_index = 0
 
     if keyword_index >= len(
@@ -859,7 +968,8 @@ def get_items(seen):
 
         print(
             "[Forum Archive] "
-            f"Keyword {current_keyword_index + 1}/"
+            f"Keyword "
+            f"{current_keyword_index + 1}/"
             f"{len(SEARCH_KEYWORDS)}: "
             f"{keyword}"
         )
@@ -919,6 +1029,17 @@ def get_items(seen):
                     url
                 )
 
+                # ----------------------------------
+                # 同一Action内の重複も除外
+                # ----------------------------------
+
+                if any(
+                    existing.get("url") == url
+                    for existing in all_items
+                ):
+
+                    continue
+
                 all_items.append(
                     item
                 )
@@ -941,7 +1062,7 @@ def get_items(seen):
             pages_processed += 1
 
             # ----------------------------------
-            # 次ページ
+            # 次ページURLを取得
             # ----------------------------------
 
             next_url = (
@@ -951,10 +1072,25 @@ def get_items(seen):
                 )
             )
 
+            # 次ページが明示的に確認できなければ終了
             if not next_url:
+
+                print(
+                    "[Forum Archive] "
+                    "No confirmed next page."
+                )
+
                 break
 
+            # 同一URLならループ防止
             if next_url == current_url:
+
+                print(
+                    "[Forum Archive] "
+                    "Next page URL is identical. "
+                    "Stopping pagination."
+                )
+
                 break
 
             # ----------------------------------
@@ -988,6 +1124,20 @@ def get_items(seen):
                 current_url = (
                     response.url
                 )
+
+                # ----------------------------------
+                # 同一ページ判定
+                # ----------------------------------
+
+                if current_url == search_url:
+
+                    print(
+                        "[Forum Archive] "
+                        "Returned to initial search page. "
+                        "Stopping pagination."
+                    )
+
+                    break
 
             except requests.RequestException as e:
 
@@ -1031,10 +1181,6 @@ def get_items(seen):
             )
 
             next_keyword_index = 0
-
-            # ----------------------------------
-            # ここでは「期間を一つ進める」
-            # ----------------------------------
 
             _pending_progress = {
                 "older_than": (
