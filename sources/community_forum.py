@@ -38,12 +38,12 @@ SEARCH_PAGES_PER_KEYWORD = 3
 #
 SEARCH_KEYWORDS = [
     "RPG Maker",
-    "RPG",
-    "Maker",
     "MZ",
     "MV",
     "VX Ace",
     "XP",
+    "2003",
+    "2000",
     "plugin",
     "resource",
     "tileset",
