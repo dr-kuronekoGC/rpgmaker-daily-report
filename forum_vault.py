@@ -190,6 +190,97 @@ def load_index():
 
     return data
 
+def normalize_index(index):
+    """
+    既存Forum Vault indexを正規化する。
+
+    - 不正なレコードを削除
+    - URLを正規化
+    - 同一URLの重複を削除
+    - 既存レコードの情報を可能な範囲で保持
+    """
+
+    if not isinstance(index, list):
+        return []
+
+    normalized = []
+    url_to_item = {}
+
+    invalid_count = 0
+    duplicate_count = 0
+
+    for item in index:
+
+        if not isinstance(item, dict):
+            invalid_count += 1
+            continue
+
+        url = normalize_url(
+            item.get("url")
+        )
+
+        if not url:
+            invalid_count += 1
+            continue
+
+        if not is_thread_url(url):
+            invalid_count += 1
+            continue
+
+        item = dict(item)
+
+        # 正規化したURLを保存
+        item["url"] = url
+
+        if url in url_to_item:
+
+            duplicate_count += 1
+
+            existing = url_to_item[url]
+
+            # 既存レコードを優先しつつ、
+            # 空いている情報は重複側から補完する。
+            for key, value in item.items():
+
+                if (
+                    key not in existing
+                    or existing.get(key) in (
+                        None,
+                        "",
+                    )
+                ):
+
+                    if value not in (
+                        None,
+                        "",
+                    ):
+
+                        existing[key] = value
+
+            continue
+
+        url_to_item[url] = item
+        normalized.append(item)
+
+    print(
+        "[Forum Vault] "
+        f"Existing index normalized: "
+        f"{len(normalized)} records"
+    )
+
+    print(
+        "[Forum Vault] "
+        f"Duplicate records removed: "
+        f"{duplicate_count}"
+    )
+
+    print(
+        "[Forum Vault] "
+        f"Invalid records removed: "
+        f"{invalid_count}"
+    )
+
+    return normalized
 
 def save_index(index):
     """
@@ -221,6 +312,9 @@ def save_index(index):
 def normalize_url(url):
     """
     Forum URLを正規化する。
+
+    同一スレッドを指す投稿単位URLやページURLを、
+    スレッド本体URLへ統一する。
     """
 
     if not isinstance(url, str):
@@ -237,11 +331,37 @@ def normalize_url(url):
             url,
         )
 
-    # Forumスレッドの不要なfragmentを削除
+    # fragmentを削除
     url = url.split("#", 1)[0]
 
-    return url
+    # 末尾のスラッシュを統一
+    url = url.rstrip("/")
 
+    # XenForoの投稿単位URLをスレッドURLへ統一
+    #
+    # 例:
+    # /threads/example.123/post-456
+    # ↓
+    # /threads/example.123
+    url = re.sub(
+        r"/post-\d+$",
+        "",
+        url,
+    )
+
+    # ページ番号付きURLもスレッド本体へ統一
+    #
+    # 例:
+    # /threads/example.123/page-2
+    # ↓
+    # /threads/example.123
+    url = re.sub(
+        r"/page-\d+$",
+        "",
+        url,
+    )
+
+    return url
 
 def is_thread_url(url):
     """
@@ -251,11 +371,12 @@ def is_thread_url(url):
     if not isinstance(url, str):
         return False
 
-    return (
-        "/threads/" in url
-        and "/page-" not in url
-    )
+    normalized = normalize_url(url)
 
+    if not normalized:
+        return False
+
+    return "/threads/" in normalized
 
 # ==========================================
 # Search Form
@@ -805,6 +926,8 @@ def collect():
     progress = load_progress()
 
     index = load_index()
+
+    index = normalize_index(index)
 
     index_urls = {
         item.get("url")
