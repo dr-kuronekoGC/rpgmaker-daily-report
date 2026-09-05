@@ -217,7 +217,6 @@ def save_index(index):
 # ==========================================
 # URL
 # ==========================================
-
 def normalize_url(url):
     """
     Forum URLを正規化する。
@@ -232,7 +231,7 @@ def normalize_url(url):
         ↓
     /threads/example.123/
 
-    fragmentやqueryも削除する。
+    fragmentとqueryも削除する。
     """
 
     if not isinstance(url, str):
@@ -249,52 +248,37 @@ def normalize_url(url):
             url,
         )
 
-    parsed = urlsplit(url)
+    # fragmentを削除
+    url = url.split("#", 1)[0]
 
-    path = parsed.path
+    # queryを削除
+    url = url.split("?", 1)[0]
 
     # /post-123 を削除
-    path = re.sub(
+    url = re.sub(
         r"/post-\d+/?$",
         "/",
-        path,
+        url,
         flags=re.IGNORECASE,
     )
 
-    # /page-2 を削除
-    path = re.sub(
+    # /page-2 などを削除
+    url = re.sub(
         r"/page-\d+/?$",
         "/",
-        path,
+        url,
         flags=re.IGNORECASE,
     )
 
-    # 余分な連続スラッシュを整理
-    path = re.sub(
-        r"/+",
-        "/",
-        path,
-    )
+    # スレッドURLは末尾を / に統一
+    if "/threads/" in url:
+        url = url.rstrip("/") + "/"
 
-    # スレッドURLは末尾スラッシュに統一
-    if "/threads/" in path:
-        path = path.rstrip("/") + "/"
-
-    # query / fragment は保存しない
-    return urlunsplit(
-        (
-            parsed.scheme,
-            parsed.netloc,
-            path,
-            "",
-            "",
-        )
-    )
-
+    return url
 
 def is_thread_url(url):
     """
-    RPG Maker Web ForumのスレッドURLか判定する。
+    RPG Maker Web Forumの正式なスレッドURLか判定する。
     """
 
     if not isinstance(url, str):
@@ -305,7 +289,6 @@ def is_thread_url(url):
         and "/page-" not in url
         and "/post-" not in url
     )
-
 
 # ==========================================
 # Existing Index Migration
