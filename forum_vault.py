@@ -21,6 +21,7 @@ FORUM_BASE_URL = "https://forums.rpgmakerweb.com"
 
 VAULT_DIR = Path("data/forum_vault")
 INDEX_FILE = VAULT_DIR / "forum_index.json"
+THREADS_DIR = VAULT_DIR / "threads"
 PROGRESS_FILE = Path("forum_vault_progress.json")
 
 # 1回のActionで処理する検索語数
@@ -28,6 +29,9 @@ SEARCH_KEYWORDS_PER_RUN = 3
 
 # 1検索語あたりに確認する最大ページ数
 SEARCH_PAGES_PER_KEYWORD = 3
+
+# 1スレッドあたりに取得する最大ページ数
+THREAD_PAGES_PER_THREAD = 20
 
 # Forum検索に使用するキーワード
 #
@@ -908,6 +912,323 @@ def extract_search_results(
 
     return results
 
+# ==========================================
+# Thread Archive
+# ==========================================
+
+def get_thread_archive_path(url):
+    """
+    スレッドURLから保存先JSONを決定する。
+
+    URL末尾のスレッドIDを利用する。
+    """
+
+    normalized = normalize_url(url)
+
+    if not normalized:
+        return None
+
+    match = re.search(
+        r"\.(\d+)$",
+        normalized.rstrip("/"),
+    )
+
+    if match:
+        thread_id = match.group(1)
+
+    else:
+        thread_id = str(
+            abs(hash(normalized))
+        )
+
+    return THREADS_DIR / f"{thread_id}.json"
+
+
+def extract_thread_posts(html):
+    """
+    スレッドページから投稿本文を抽出する。
+
+    XenForoの標準的なmessage構造を優先する。
+    """
+
+    soup = BeautifulSoup(
+        html,
+        "html.parser",
+    )
+
+    posts = []
+
+    containers = soup.select(
+        "article.message"
+    )
+
+    if not containers:
+        containers = soup.select(
+            ".message"
+        )
+
+    for container in containers:
+
+        post_id = (
+            container.get("id")
+            or ""
+        )
+
+        author = ""
+
+        author_element = container.select_one(
+            ".message-name"
+        )
+
+        if author_element:
+            author = author_element.get_text(
+                " ",
+                strip=True,
+            )
+
+        date = ""
+
+        date_element = container.select_one(
+            "time"
+        )
+
+        if date_element:
+
+            date = (
+                date_element.get("datetime")
+                or date_element.get_text(
+                    " ",
+                    strip=True,
+                )
+            )
+
+        body_element = container.select_one(
+            ".message-body"
+        )
+
+        if body_element is None:
+            body_element = container.select_one(
+                ".message-content"
+            )
+
+        if body_element is None:
+            continue
+
+        # script / style等は本文から除外
+        for unwanted in body_element.select(
+            "script, style"
+        ):
+            unwanted.decompose()
+
+        body = body_element.get_text(
+            "\n",
+            strip=True,
+        )
+
+        if not body:
+            continue
+
+        posts.append(
+            {
+                "post_id": post_id,
+                "author": author,
+                "date": date,
+                "body": body,
+            }
+        )
+
+    return posts
+
+
+def archive_thread(
+    session,
+    item,
+):
+    """
+    1スレッド分の本文を取得して保存する。
+
+    成功:
+        True
+
+    失敗:
+        False
+    """
+
+    url = normalize_url(
+        item.get("url")
+    )
+
+    if not url:
+        return False
+
+    if not is_thread_url(url):
+        return False
+
+    archive_path = get_thread_archive_path(
+        url
+    )
+
+    if archive_path is None:
+        return False
+
+    THREADS_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    all_posts = []
+    visited_urls = set()
+
+    current_url = url
+
+    for page_number in range(
+        1,
+        THREAD_PAGES_PER_THREAD + 1,
+    ):
+
+        if current_url in visited_urls:
+            break
+
+        visited_urls.add(
+            current_url
+        )
+
+        print(
+            "[Forum Vault] "
+            f"    Thread page {page_number}: "
+            f"{current_url}"
+        )
+
+        try:
+
+            response = session.get(
+                current_url,
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            response.raise_for_status()
+
+        except requests.RequestException as e:
+
+            print(
+                "[Forum Vault] "
+                f"    Thread request error: {e}"
+            )
+
+            return False
+
+        posts = extract_thread_posts(
+            response.text
+        )
+
+        print(
+            "[Forum Vault] "
+            f"    Posts found: {len(posts)}"
+        )
+
+        all_posts.extend(
+            posts
+        )
+
+        soup = BeautifulSoup(
+            response.text,
+            "html.parser",
+        )
+
+        next_url = get_next_page_url(
+            soup,
+            response.url,
+        )
+
+        if not next_url:
+            break
+
+        current_url = next_url
+
+    # 投稿が1件も取得できなかった場合は
+    # 空のアーカイブを保存しない。
+    if not all_posts:
+
+        print(
+            "[Forum Vault] "
+            "    No posts extracted."
+        )
+
+        return False
+
+    # 同じ投稿が複数ページから取得された場合に備えて
+    # post_idまたは本文で重複排除する。
+    unique_posts = []
+    seen_posts = set()
+
+    for post in all_posts:
+
+        post_key = (
+            post.get("post_id")
+            or (
+                post.get("author", ""),
+                post.get("date", ""),
+                post.get("body", ""),
+            )
+        )
+
+        if post_key in seen_posts:
+            continue
+
+        seen_posts.add(
+            post_key
+        )
+
+        unique_posts.append(
+            post
+        )
+
+    archive = {
+        "url": url,
+        "title": item.get(
+            "title",
+            "",
+        ),
+        "source": "RPG Maker Web Forum",
+        "category": item.get(
+            "category",
+            "Forumその他",
+        ),
+        "engine": item.get(
+            "engine",
+            "unknown",
+        ),
+        "language": item.get(
+            "language",
+            "英語",
+        ),
+        "archived_at": (
+            datetime.now()
+            .astimezone()
+            .isoformat()
+        ),
+        "posts": unique_posts,
+    }
+
+    with archive_path.open(
+        "w",
+        encoding="utf-8",
+    ) as f:
+
+        json.dump(
+            archive,
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
+
+    print(
+        "[Forum Vault] "
+        f"    Archived: "
+        f"{len(unique_posts)} posts"
+    )
+
+    return True
 
 # ==========================================
 # Main Vault Collection
@@ -1054,6 +1375,24 @@ def collect():
                 item[
                     "vault_older_than"
                 ] = older_than
+
+                # スレッド本文をアーカイブする。
+                # 本文取得に成功した場合のみindexへ追加する。
+                archived = archive_thread(
+                    session,
+                    item,
+                )
+
+                if not archived:
+
+                    print(
+                        "[Forum Vault] "
+                        "  Thread archive failed: "
+                        f"{url}"
+                    )
+
+                    failed = True
+                    break
 
                 index.append(
                     item
