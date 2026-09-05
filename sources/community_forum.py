@@ -1,93 +1,150 @@
 import json
+import re
 from datetime import datetime, timedelta
-from urllib.parse import urljoin
+from pathlib import Path
+from urllib.parse import urljoin, urlsplit, urlunsplit
 
 import requests
 from bs4 import BeautifulSoup
 
 from config import (
     FORUM_URL,
-    FORUM_SEEN_FILE,
-    FORUM_ARCHIVE_PROGRESS_FILE,
+    REQUEST_TIMEOUT,
 )
 
-from categories import classify_forum
-from sources.base import get_html
-from archive import load_archive_index
-
-
-SEEN_FILE = FORUM_SEEN_FILE
-
-_pending_progress = None
-
 
 # ==========================================
-# Forum Archive Search Settings
+# Settings
 # ==========================================
+
+FORUM_BASE_URL = "https://forums.rpgmakerweb.com"
+
+VAULT_DIR = Path("data/forum_vault")
+INDEX_FILE = VAULT_DIR / "forum_index.json"
+PROGRESS_FILE = Path("forum_vault_progress.json")
 
 # 1回のActionで処理する検索語数
 SEARCH_KEYWORDS_PER_RUN = 3
 
-# 1検索語あたり、1回のActionで処理する最大ページ数
+# 1検索語あたりに確認する最大ページ数
 SEARCH_PAGES_PER_KEYWORD = 3
 
-# 検索語
+# Forum検索に使用するキーワード
 #
-# 「RPG Maker」だけでは拾えない記事を救出するため、
-# 複数の検索語を順番に使用する。
-#
+# 単独の短い語はForum側でエラーになる可能性があるため、
+# まずは具体的な検索語を優先する。
 SEARCH_KEYWORDS = [
-    "RPG Maker",
-    "MZ",
-    "MV",
-    "VX Ace",
-    "XP",
-    "2003",
-    "2000",
-    "plugin",
-    "resource",
-    "tileset",
-    "sprite",
-    "tutorial",
+    "RPG Maker MZ",
+    "RPG Maker MV",
+    "RPG Maker VX Ace",
+    "RPG Maker XP",
+    "RPG Maker 2003",
+    "RPG Maker 2000",
+    "RPG Maker plugin",
+    "RPG Maker resource",
+    "RPG Maker tileset",
+    "RPG Maker sprite",
+    "RPG Maker tutorial",
 ]
 
 
 # ==========================================
-# Archive Progress
+# HTTP
 # ==========================================
 
-def load_archive_progress():
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 "
+        "(Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 "
+        "(KHTML, like Gecko) "
+        "Chrome/138.0 Safari/537.36"
+    )
+}
+
+
+def create_session():
+    """
+    Forum検索用Sessionを作成する。
+    """
+
+    session = requests.Session()
+
+    session.headers.update(
+        HEADERS
+    )
+
+    return session
+
+
+# ==========================================
+# Progress
+# ==========================================
+
+def load_progress():
+    """
+    Forum Vaultの進捗を読み込む。
+
+    初回は現在日付から30日前を開始地点とする。
+    """
+
+    if not PROGRESS_FILE.exists():
+
+        today = datetime.now().date()
+
+        initial_date = (
+            today - timedelta(days=30)
+        ).isoformat()
+
+        return {
+            "older_than": initial_date,
+            "keyword_index": 0,
+            "completed": False,
+        }
 
     try:
 
-        with open(
-            FORUM_ARCHIVE_PROGRESS_FILE,
+        with PROGRESS_FILE.open(
             "r",
             encoding="utf-8",
         ) as f:
 
             data = json.load(f)
 
-            if isinstance(data, dict):
-                return data
-
     except (
-        FileNotFoundError,
         json.JSONDecodeError,
+        OSError,
     ):
-        pass
 
-    return {
-        "older_than": None,
-        "keyword_index": 0,
-        "completed": False,
-    }
+        return {
+            "older_than": (
+                datetime.now().date()
+                - timedelta(days=30)
+            ).isoformat(),
+            "keyword_index": 0,
+            "completed": False,
+        }
+
+    if not isinstance(data, dict):
+
+        return {
+            "older_than": (
+                datetime.now().date()
+                - timedelta(days=30)
+            ).isoformat(),
+            "keyword_index": 0,
+            "completed": False,
+        }
+
+    return data
 
 
-def save_archive_progress(progress):
+def save_progress(progress):
+    """
+    Forum Vaultの進捗を保存する。
+    """
 
-    with open(
-        FORUM_ARCHIVE_PROGRESS_FILE,
+    with PROGRESS_FILE.open(
         "w",
         encoding="utf-8",
     ) as f:
@@ -95,91 +152,442 @@ def save_archive_progress(progress):
         json.dump(
             progress,
             f,
-            ensure_ascii=False,
             indent=2,
+            ensure_ascii=False,
         )
 
 
 # ==========================================
-# Date handling
+# Archive Index
 # ==========================================
 
-def get_initial_older_than():
+def load_index():
+    """
+    Forum VaultのURL indexを読み込む。
+    """
 
-    return (
-        datetime.now()
-        - timedelta(days=30)
-    ).strftime(
-        "%Y-%m-%d"
-    )
-
-
-def get_previous_month(date_string):
+    if not INDEX_FILE.exists():
+        return []
 
     try:
 
-        current = datetime.strptime(
-            date_string,
-            "%Y-%m-%d",
+        with INDEX_FILE.open(
+            "r",
+            encoding="utf-8",
+        ) as f:
+
+            data = json.load(f)
+
+    except (
+        json.JSONDecodeError,
+        OSError,
+    ):
+
+        return []
+
+    if not isinstance(data, list):
+        return []
+
+    return data
+
+
+def save_index(index):
+    """
+    Forum VaultのURL indexを保存する。
+    """
+
+    VAULT_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    with INDEX_FILE.open(
+        "w",
+        encoding="utf-8",
+    ) as f:
+
+        json.dump(
+            index,
+            f,
+            indent=2,
+            ensure_ascii=False,
         )
 
-    except ValueError:
 
-        current = datetime.now()
+# ==========================================
+# URL
+# ==========================================
 
-    previous = (
-        current
-        - timedelta(days=30)
+def normalize_url(url):
+    """
+    Forum URLを正規化する。
+
+    例：
+
+    /threads/example.123/post-456
+        ↓
+    /threads/example.123/
+
+    /threads/example.123/page-2
+        ↓
+    /threads/example.123/
+
+    fragmentやqueryも削除する。
+    """
+
+    if not isinstance(url, str):
+        return None
+
+    url = url.strip()
+
+    if not url:
+        return None
+
+    if url.startswith("/"):
+        url = urljoin(
+            FORUM_BASE_URL,
+            url,
+        )
+
+    parsed = urlsplit(url)
+
+    path = parsed.path
+
+    # /post-123 を削除
+    path = re.sub(
+        r"/post-\d+/?$",
+        "/",
+        path,
+        flags=re.IGNORECASE,
     )
 
-    return previous.strftime(
-        "%Y-%m-%d"
+    # /page-2 を削除
+    path = re.sub(
+        r"/page-\d+/?$",
+        "/",
+        path,
+        flags=re.IGNORECASE,
+    )
+
+    # 余分な連続スラッシュを整理
+    path = re.sub(
+        r"/+",
+        "/",
+        path,
+    )
+
+    # スレッドURLは末尾スラッシュに統一
+    if "/threads/" in path:
+        path = path.rstrip("/") + "/"
+
+    # query / fragment は保存しない
+    return urlunsplit(
+        (
+            parsed.scheme,
+            parsed.netloc,
+            path,
+            "",
+            "",
+        )
+    )
+
+
+def is_thread_url(url):
+    """
+    RPG Maker Web ForumのスレッドURLか判定する。
+    """
+
+    if not isinstance(url, str):
+        return False
+
+    return (
+        "/threads/" in url
+        and "/page-" not in url
+        and "/post-" not in url
     )
 
 
 # ==========================================
-# Search URL helpers
+# Existing Index Migration
 # ==========================================
 
-def get_next_page_url(
-    html,
-    current_url,
+def normalize_existing_index(index):
+    """
+    既存Forum Vault indexを正規化する。
+
+    すでに保存されている
+    /post-xxxxx
+    /page-x
+    などを正式なスレッドURLへ統一し、
+    正規化後に重複したレコードを1件にまとめる。
+    """
+
+    normalized = []
+    seen_urls = set()
+
+    changed = 0
+    duplicates = 0
+
+    for item in index:
+
+        if not isinstance(item, dict):
+            continue
+
+        old_url = item.get("url")
+
+        if not old_url:
+            continue
+
+        new_url = normalize_url(
+            old_url
+        )
+
+        if not new_url:
+            continue
+
+        if new_url != old_url:
+            changed += 1
+
+            # 元の検索結果URLを保存
+            if "search_result_url" not in item:
+                item["search_result_url"] = old_url
+
+            item["url"] = new_url
+
+        if new_url in seen_urls:
+            duplicates += 1
+            continue
+
+        seen_urls.add(new_url)
+
+        normalized.append(item)
+
+    if changed or duplicates:
+
+        print(
+            "[Forum Vault] "
+            f"Existing index normalized: "
+            f"{changed} URL(s) changed, "
+            f"{duplicates} duplicate(s) removed."
+        )
+
+    return normalized
+
+
+# ==========================================
+# Search Form
+# ==========================================
+
+def get_search_form(
+    session,
 ):
     """
-    検索結果ページから、実際に存在する次ページURLを取得する。
+    Forum検索ページから検索フォームを取得する。
 
-    重要:
-    ページネーション情報が見つからない場合は、
-    page=2 などを推測してURLを生成しない。
-
-    これにより、存在しないページへのアクセスや
-    同一ページの重複取得を防ぐ。
+    XenForoのCSRF token等を含むhidden fieldを
+    そのまま利用する。
     """
 
-    if not html:
+    search_url = (
+        f"{FORUM_BASE_URL}/search/"
+    )
+
+    try:
+
+        response = session.get(
+            search_url,
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        response.raise_for_status()
+
+    except requests.RequestException as e:
+
+        print(
+            "[Forum Vault] "
+            f"Search page error: {e}"
+        )
+
         return None
 
     soup = BeautifulSoup(
-        html,
+        response.text,
         "html.parser",
     )
 
-    # ----------------------------------------
-    # ① rel="next"
-    # ----------------------------------------
-
-    next_link = soup.find(
-        "a",
-        attrs={
-            "rel": "next",
-        },
+    form = soup.find(
+        "form",
+        action=re.compile(
+            r"/search/search"
+        ),
     )
 
-    if next_link:
+    if form is None:
 
-        href = next_link.get(
-            "href"
+        print(
+            "[Forum Vault] "
+            "Search form not found."
         )
+
+        return None
+
+    return form
+
+
+# ==========================================
+# Search
+# ==========================================
+
+def search_forum(
+    session,
+    keyword,
+    older_than,
+):
+    """
+    Forumをキーワード検索する。
+
+    older_thanより前の投稿を対象とする。
+    """
+
+    form = get_search_form(
+        session
+    )
+
+    if form is None:
+        return None, None
+
+    payload = {}
+
+    # hidden fieldsを引き継ぐ
+    for input_tag in form.find_all(
+        "input"
+    ):
+
+        name = input_tag.get("name")
+
+        if not name:
+            continue
+
+        payload[name] = (
+            input_tag.get("value", "")
+        )
+
+    payload.update(
+        {
+            "keywords": keyword,
+            "c[title_only]": "0",
+            "c[users]": "",
+            "c[newer_than]": "",
+            "c[older_than]": older_than,
+            "order": "date",
+            "search_type": "post",
+        }
+    )
+
+    action = form.get(
+        "action",
+        "/search/search",
+    )
+
+    search_url = urljoin(
+        FORUM_BASE_URL,
+        action,
+    )
+
+    try:
+
+        response = session.post(
+            search_url,
+            data=payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+
+    except requests.RequestException as e:
+
+        print(
+            "[Forum Vault] "
+            f"Search request error: {e}"
+        )
+
+        return None, None
+
+    if response.status_code >= 400:
+
+        print(
+            "[Forum Vault] "
+            f"Search HTTP error: "
+            f"{response.status_code}"
+        )
+
+        return None, None
+
+    soup = BeautifulSoup(
+        response.text,
+        "html.parser",
+    )
+
+    # HTTP 200でもXenForoのエラーページが
+    # 返ってくる場合がある。
+    page_text = soup.get_text(
+        " ",
+        strip=True,
+    )
+
+    error_patterns = [
+        "Oops! We ran into some problems",
+        "The search could not be completed",
+        "Please enter a search term",
+        "The submitted form was invalid",
+    ]
+
+    for pattern in error_patterns:
+
+        if pattern.lower() in page_text.lower():
+
+            print(
+                "[Forum Vault] "
+                f"Search rejected: "
+                f"'{keyword}'"
+            )
+
+            return None, None
+
+    return (
+        response.text,
+        response.url,
+    )
+
+
+# ==========================================
+# Pagination
+# ==========================================
+
+def get_next_page_url(
+    soup,
+    current_url,
+):
+    """
+    HTML内から確認できる次ページURLだけを返す。
+
+    page=2等を推測してURLを生成しない。
+    """
+
+    # まずrel=next
+    link = soup.find(
+        "a",
+        rel=lambda value: (
+            value
+            and (
+                "next" in value
+                if isinstance(value, list)
+                else "next" in str(value)
+            )
+        ),
+    )
+
+    if link:
+
+        href = link.get("href")
 
         if href:
 
@@ -188,473 +596,226 @@ def get_next_page_url(
                 href,
             )
 
-    # ----------------------------------------
-    # ② XenForoのpagination
-    # ----------------------------------------
-
-    pagination_selectors = [
+    # XenForo標準
+    selectors = [
         "a.pageNav-jump--next",
         "a.pageNav-jump",
-        "li.pageNav-page a",
     ]
 
-    for selector in pagination_selectors:
+    for selector in selectors:
 
-        for link in soup.select(
+        link = soup.select_one(
             selector
-        ):
+        )
 
-            text = link.get_text(
-                " ",
-                strip=True,
-            ).lower()
+        if link:
 
-            aria = link.get(
-                "aria-label",
-                "",
-            ).lower()
+            href = link.get("href")
 
-            title = link.get(
-                "title",
-                "",
-            ).lower()
+            if href:
 
-            classes = " ".join(
-                link.get(
-                    "class",
-                    [],
-                )
-            ).lower()
-
-            if (
-                "next" in text
-                or "next" in aria
-                or "next" in title
-                or "next" in classes
-            ):
-
-                href = link.get(
-                    "href"
+                return urljoin(
+                    current_url,
+                    href,
                 )
 
-                if href:
-
-                    return urljoin(
-                        current_url,
-                        href,
-                    )
-
-    # ----------------------------------------
-    # ③ 次ページが存在することを確認できる
-    #    paginationリンクのみを利用
-    # ----------------------------------------
-
-    # 「次へ」という文字がなくても、
-    # pageNav-page の中に現在ページより後の
-    # ページ番号が存在する場合がある。
-    #
-    # ただし、ここでもURLを推測せず、
-    # 実際のリンクをそのまま使用する。
-
+    # pageNav-page内で現在ページより大きい
+    # ページ番号が確認できる場合
     current_page = 1
 
-    try:
-
-        current_soup = BeautifulSoup(
-            html,
-            "html.parser",
-        )
-
-        current_page_link = (
-            current_soup.select_one(
-                "li.pageNav-page--current a, "
-                "li.pageNav-page--current"
-            )
-        )
-
-        if current_page_link:
-
-            current_page_text = (
-                current_page_link.get_text(
-                    " ",
-                    strip=True,
-                )
-            )
-
-            current_page = int(
-                current_page_text
-            )
-
-    except (
-        ValueError,
-        TypeError,
-    ):
-
-        current_page = 1
-
-    page_links = soup.select(
-        "li.pageNav-page a"
+    match = re.search(
+        r"[?&]page=(\d+)",
+        current_url,
     )
 
-    candidate_links = []
+    if match:
 
-    for link in page_links:
-
-        href = link.get(
-            "href"
+        current_page = int(
+            match.group(1)
         )
 
-        if not href:
-            continue
+    candidates = []
 
-        text = link.get_text(
-            " ",
-            strip=True,
+    for link in soup.select(
+        "li.pageNav-page a"
+    ):
+
+        href = link.get("href", "")
+
+        match = re.search(
+            r"[?&]page=(\d+)",
+            href,
         )
 
-        try:
-
-            page_number = int(
-                text
-            )
-
-        except (
-            ValueError,
-            TypeError,
-        ):
-
+        if not match:
             continue
+
+        page_number = int(
+            match.group(1)
+        )
 
         if page_number > current_page:
 
-            candidate_links.append(
+            candidates.append(
                 (
                     page_number,
-                    urljoin(
-                        current_url,
-                        href,
-                    ),
+                    href,
                 )
             )
 
-    if candidate_links:
+    if candidates:
 
-        candidate_links.sort(
+        candidates.sort(
             key=lambda x: x[0]
         )
 
-        return candidate_links[0][1]
-
-    # ----------------------------------------
-    # 次ページが確認できない
-    # ----------------------------------------
+        return urljoin(
+            current_url,
+            candidates[0][1],
+        )
 
     return None
 
 
 # ==========================================
-# Forum Search
+# Classification
 # ==========================================
 
-def search_forum(
-    keyword,
-    older_than,
-    session=None,
+def classify_engine(
+    title,
+    description="",
 ):
     """
-    RPG Maker Web Forum の検索フォームを利用して、
-    指定キーワード・指定日以前の投稿を検索する。
+    スレッドのRPG Maker世代を推定する。
 
-    戻り値:
-        (html, url)
-
-    検索失敗時:
-        (None, None)
+    現段階ではタイトル・説明からの簡易判定。
     """
 
-    search_page_url = urljoin(
-        FORUM_URL,
-        "/search/",
-    )
+    text = (
+        f"{title} {description}"
+    ).lower()
 
-    search_action_url = urljoin(
-        FORUM_URL,
-        "/search/search",
-    )
+    if "rpg maker u2u" in text:
+        return "RPG Maker U2U"
 
-    if session is None:
+    if "rpg maker mz" in text:
+        return "RPG Maker MZ"
 
-        session = requests.Session()
+    if "rpg maker mv" in text:
+        return "RPG Maker MV"
 
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/151.0.0.0 Safari/537.36"
-        )
-    }
+    if "rpg maker vx ace" in text:
+        return "RPG Maker VX Ace"
 
-    try:
+    if "rpg maker vx" in text:
+        return "RPG Maker VX"
 
-        # ----------------------------------------
-        # 1. 検索フォーム GET
-        # ----------------------------------------
+    if "rpg maker xp" in text:
+        return "RPG Maker XP"
 
-        response = session.get(
-            search_page_url,
-            headers=headers,
-            timeout=30,
-        )
+    if "rpg maker 2003" in text:
+        return "RPG Maker 2003"
 
-        response.raise_for_status()
+    if "rpg maker 2000" in text:
+        return "RPG Maker 2000"
 
-        soup = BeautifulSoup(
-            response.text,
-            "html.parser",
-        )
+    if "rpg maker 95" in text:
+        return "RPG Maker 95"
 
-        form = soup.find(
-            "form",
-            attrs={
-                "action": "/search/search",
-            },
-        )
+    return "unknown"
 
-        if form is None:
 
-            for candidate in soup.find_all(
-                "form"
-            ):
+def classify_topic(
+    title,
+    description="",
+):
+    """
+    Forumスレッドの大まかなテーマを推定する。
+    """
 
-                action = candidate.get(
-                    "action",
-                    "",
-                )
+    text = (
+        f"{title} {description}"
+    ).lower()
 
-                if "/search/search" in action:
+    if any(
+        keyword in text
+        for keyword in [
+            "plugin",
+            "plugins",
+            "script",
+        ]
+    ):
+        return "Forumプラグイン"
 
-                    form = candidate
-                    break
+    if any(
+        keyword in text
+        for keyword in [
+            "resource",
+            "resources",
+            "tileset",
+            "sprite",
+            "sprites",
+            "asset",
+            "assets",
+        ]
+    ):
+        return "Forum素材"
 
-        if form is None:
+    if any(
+        keyword in text
+        for keyword in [
+            "tutorial",
+            "how to",
+            "guide",
+        ]
+    ):
+        return "Forumチュートリアル"
 
-            print(
-                "[Forum Archive] "
-                "Search form not found."
-            )
+    if any(
+        keyword in text
+        for keyword in [
+            "question",
+            "help",
+            "problem",
+            "issue",
+        ]
+    ):
+        return "Forum質問"
 
-            return None, None
-
-        # ----------------------------------------
-        # 2. hidden fields
-        # ----------------------------------------
-
-        data = {}
-
-        for input_tag in form.find_all(
-            "input"
-        ):
-
-            name = input_tag.get(
-                "name"
-            )
-
-            if not name:
-                continue
-
-            input_type = input_tag.get(
-                "type",
-                "text",
-            )
-
-            if input_type in (
-                "hidden",
-                "submit",
-            ):
-
-                data[name] = input_tag.get(
-                    "value",
-                    "",
-                )
-
-        # ----------------------------------------
-        # 3. 検索条件
-        # ----------------------------------------
-
-        data.update(
-            {
-                "keywords": keyword,
-                "c[title_only]": "0",
-                "c[users]": "",
-                "c[newer_than]": "",
-                "c[older_than]": older_than,
-                "order": "date",
-                "search_type": "post",
-            }
-        )
-
-        print(
-            "[Forum Archive] "
-            f"Searching keyword='{keyword}', "
-            f"older_than={older_than}"
-        )
-
-        # ----------------------------------------
-        # 4. POST
-        # ----------------------------------------
-
-        response = session.post(
-            search_action_url,
-            data=data,
-            headers={
-                **headers,
-                "Referer": search_page_url,
-            },
-            timeout=30,
-        )
-
-        print(
-            "[Forum Archive] "
-            f"Search response: "
-            f"{response.status_code} "
-            f"{response.url}"
-        )
-
-        response.raise_for_status()
-
-        # ----------------------------------------
-        # 5. Debug HTML
-        # ----------------------------------------
-
-        with open(
-            "forum_search_debug.html",
-            "w",
-            encoding="utf-8",
-        ) as f:
-
-            f.write(
-                response.text
-            )
-
-        # ----------------------------------------
-        # 6. HTTP 200でもエラーの場合がある
-        # ----------------------------------------
-
-        result_soup = BeautifulSoup(
-            response.text,
-            "html.parser",
-        )
-
-        page_title = (
-            result_soup.title.get_text(
-                " ",
-                strip=True,
-            )
-            if result_soup.title
-            else ""
-        )
-
-        page_text = result_soup.get_text(
-            " ",
-            strip=True,
-        )
-
-        error_messages = (
-            "Please specify a search query",
-            "Please specify a search query or the name of a member",
-            "Oops! We ran into some problems",
-        )
-
-        for error_message in error_messages:
-
-            if (
-                error_message.lower()
-                in page_text.lower()
-            ):
-
-                print(
-                    "[Forum Archive] "
-                    "Search returned an error page: "
-                    f"{error_message}"
-                )
-
-                print(
-                    "[Forum Archive] "
-                    f"Page title: {page_title}"
-                )
-
-                return None, None
-
-        print(
-            "[Forum Archive] "
-            "Search page validation passed."
-        )
-
-        return (
-            response.text,
-            response.url,
-        )
-
-    except requests.RequestException as e:
-
-        print(
-            "[Forum Archive] "
-            f"Search request failed: {e}"
-        )
-
-        return None, None
+    return "Forumその他"
 
 
 # ==========================================
-# Search result extraction
+# Search Result Extraction
 # ==========================================
 
 def extract_search_results(
     html,
-    archive_index,
+    search_url,
 ):
-
-    if not html:
-
-        return []
+    """
+    検索結果ページからスレッド情報を抽出する。
+    """
 
     soup = BeautifulSoup(
         html,
         "html.parser",
     )
 
-    items = []
-
+    results = []
     seen_urls = set()
 
-    # ----------------------------------------
-    # Search result areaを優先
-    # ----------------------------------------
+    containers = soup.select(
+        ".block--messages, "
+        ".block-body, "
+        ".searchResults, "
+        ".contentRow"
+    )
 
-    search_containers = []
-
-    for selector in (
-        ".block--messages",
-        ".block-body",
-        ".searchResults",
-        ".contentRow",
-    ):
-
-        search_containers.extend(
-            soup.select(selector)
-        )
-
-    # 検索結果用コンテナが見つからない場合は
-    # ページ全体を対象にする。
-    if search_containers:
-
-        containers = search_containers
-
-    else:
-
-        containers = [
-            soup
-        ]
+    # 検索結果コンテナが見つからない場合も、
+    # ページ全体からthreads URLを探す。
+    if not containers:
+        containers = [soup]
 
     for container in containers:
 
@@ -669,37 +830,25 @@ def extract_search_results(
             if not href:
                 continue
 
-            href = urljoin(
-                FORUM_URL,
-                href,
-            )
-
-            if "/threads/" not in href:
-                continue
-
-            if "/page-" in href:
-                continue
-
-            if "/post-" in href:
-                continue
-
-            if href.endswith(
-                "/latest"
-            ):
-                continue
-
-            if href in seen_urls:
-                continue
-
-            seen_urls.add(
+            raw_url = normalize_url(
                 href
             )
 
-            # ----------------------------------
-            # Archive済み
-            # ----------------------------------
+            if not is_thread_url(
+                raw_url
+            ):
+                continue
 
-            if href in archive_index:
+            # Archive自身のURL等を除外
+            if (
+                "/forum-vault/" in raw_url
+                or "/archive/" in raw_url
+            ):
+                continue
+
+            url = raw_url
+
+            if url in seen_urls:
                 continue
 
             title = link.get_text(
@@ -710,568 +859,364 @@ def extract_search_results(
             if not title:
                 continue
 
-            category = classify_forum(
+            # ページ内の親要素から
+            # 説明文を可能な範囲で取得
+            description = ""
+
+            parent = link.find_parent(
+                class_=re.compile(
+                    r"contentRow|message|structItem"
+                )
+            )
+
+            if parent:
+
+                description = parent.get_text(
+                    " ",
+                    strip=True,
+                )
+
+            engine = classify_engine(
                 title,
-                "",
+                description,
             )
 
-            if category is None:
-                continue
-
-            items.append(
-                {
-                    "title": title,
-                    "url": href,
-                    "category": category,
-                    "source": "Forum",
-                    "forum_backfill": True,
-                }
+            topic = classify_topic(
+                title,
+                description,
             )
 
-    return items
-
-
-# ==========================================
-# Latest Forum
-# ==========================================
-
-def get_latest_items(seen):
-
-    items = []
-
-    html = get_html(
-        FORUM_URL
-    )
-
-    soup = BeautifulSoup(
-        html,
-        "html.parser",
-    )
-
-    local_seen = set()
-
-    for link in soup.select(
-        "a[href]"
-    ):
-
-        href = link.get(
-            "href"
-        )
-
-        if not href:
-            continue
-
-        href = urljoin(
-            FORUM_URL,
-            href,
-        )
-
-        if "/threads/" not in href:
-            continue
-
-        if "/page-" in href:
-            continue
-
-        if "/post-" in href:
-            continue
-
-        if href.endswith(
-            "/latest"
-        ):
-            continue
-
-        if href in local_seen:
-            continue
-
-        local_seen.add(
-            href
-        )
-
-        if href in seen:
-            continue
-
-        title = link.get_text(
-            " ",
-            strip=True,
-        )
-
-        if not title:
-            continue
-
-        category = classify_forum(
-            title,
-            "",
-        )
-
-        if category is None:
-            continue
-
-        items.append(
-            {
+            item = {
+                "url": url,
                 "title": title,
-                "url": href,
-                "category": category,
-                "source": "Forum",
-                "forum_backfill": False,
+                "source": "RPG Maker Web Forum",
+                "category": topic,
+                "engine": engine,
+                "language": "英語",
+                "search_url": search_url,
             }
-        )
 
-    return items
+            # 検索結果として実際に取得したURLも保存。
+            # 正規化によってpost URL等が変わった場合の
+            # 出典確認に利用できる。
+            if href != url:
+                item["search_result_url"] = (
+                    urljoin(
+                        search_url,
+                        href,
+                    )
+                )
 
-
-# ==========================================
-# Main collector
-# ==========================================
-
-def get_items(seen):
-
-    global _pending_progress
-
-    _pending_progress = None
-
-    new_seen = list(
-        seen
-    )
-
-    all_items = []
-
-    # ======================================
-    # ① Latest
-    # ======================================
-
-    try:
-
-        latest_items = get_latest_items(
-            seen
-        )
-
-        all_items.extend(
-            latest_items
-        )
-
-        for item in latest_items:
-
-            new_seen.append(
-                item["url"]
+            results.append(
+                item
             )
 
-        print(
-            "[Forum] Latest new:",
-            len(latest_items),
-        )
+            seen_urls.add(
+                url
+            )
 
-    except Exception as e:
+    return results
 
-        print(
-            "[Forum] Latest Error:",
-            e,
-        )
 
-    # ======================================
-    # ② Archive progress
-    # ======================================
+# ==========================================
+# Main Vault Collection
+# ==========================================
 
-    progress = load_archive_progress()
+def collect():
+    """
+    Forum Vaultの検索・索引作成を実行する。
+    """
 
-    completed = progress.get(
-        "completed",
-        False,
+    VAULT_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
     )
+
+    progress = load_progress()
+
+    index = load_index()
+
+    # ======================================
+    # 既存Indexの正規化
+    # ======================================
+
+    index = normalize_existing_index(
+        index
+    )
+
+    index_urls = {
+        item.get("url")
+        for item in index
+        if item.get("url")
+    }
 
     older_than = progress.get(
         "older_than"
     )
 
-    keyword_index = progress.get(
-        "keyword_index",
-        0,
+    keyword_index = int(
+        progress.get(
+            "keyword_index",
+            0,
+        )
     )
 
-    if not older_than:
-
-        older_than = (
-            get_initial_older_than()
-        )
-
-    try:
-
-        keyword_index = int(
-            keyword_index
-        )
-
-    except (
-        ValueError,
-        TypeError,
-    ):
-
-        keyword_index = 0
-
-    if keyword_index < 0:
-
-        keyword_index = 0
-
-    if keyword_index >= len(
-        SEARCH_KEYWORDS
-    ):
-
-        keyword_index = 0
-
-    # ======================================
-    # ③ Already completed
-    # ======================================
-
-    if completed:
-
-        print(
-            "[Forum Archive] "
-            "Backfill already completed."
-        )
-
-        return (
-            all_items,
-            new_seen,
-        )
-
-    # ======================================
-    # ④ Search
-    # ======================================
-
-    archive_index = (
-        load_archive_index()
+    print(
+        "[Forum Vault] "
+        f"older_than={older_than}"
     )
 
-    session = requests.Session()
-
-    processed_keywords = 0
-
-    current_keyword_index = (
-        keyword_index
+    print(
+        "[Forum Vault] "
+        f"keyword_index={keyword_index}"
     )
 
-    progress_failed = False
+    session = create_session()
+
+    processed = 0
+    added = 0
+    failed = False
 
     while (
-        processed_keywords
-        < SEARCH_KEYWORDS_PER_RUN
+        processed < SEARCH_KEYWORDS_PER_RUN
+        and keyword_index < len(
+            SEARCH_KEYWORDS
+        )
     ):
 
-        if (
-            current_keyword_index
-            >= len(SEARCH_KEYWORDS)
-        ):
-
-            break
-
         keyword = SEARCH_KEYWORDS[
-            current_keyword_index
+            keyword_index
         ]
 
         print(
-            "[Forum Archive] "
+            "[Forum Vault] "
             f"Keyword "
-            f"{current_keyword_index + 1}/"
+            f"{keyword_index + 1}/"
             f"{len(SEARCH_KEYWORDS)}: "
             f"{keyword}"
         )
 
         html, search_url = search_forum(
+            session,
             keyword,
             older_than,
-            session=session,
         )
 
         if html is None:
 
             print(
-                "[Forum Archive] "
-                "Search failed. "
-                "Progress will NOT advance."
+                "[Forum Vault] "
+                f"Keyword failed: {keyword}"
             )
 
-            progress_failed = True
+            # 失敗した場合は進捗を進めない。
+            failed = True
             break
-
-        # ----------------------------------
-        # Search result page
-        # ----------------------------------
 
         current_html = html
         current_url = search_url
 
-        pages_processed = 0
+        keyword_seen = set()
 
-        keyword_seen_urls = set()
-
-        while (
-            pages_processed
-            < SEARCH_PAGES_PER_KEYWORD
+        for page_number in range(
+            1,
+            SEARCH_PAGES_PER_KEYWORD + 1,
         ):
 
-            candidates = (
-                extract_search_results(
-                    current_html,
-                    archive_index,
-                )
-            )
-
-            added_count = 0
-
-            for item in candidates:
-
-                url = item[
-                    "url"
-                ]
-
-                if url in keyword_seen_urls:
-                    continue
-
-                keyword_seen_urls.add(
-                    url
-                )
-
-                # ----------------------------------
-                # 同一Action内の重複も除外
-                # ----------------------------------
-
-                if any(
-                    existing.get("url") == url
-                    for existing in all_items
-                ):
-
-                    continue
-
-                all_items.append(
-                    item
-                )
-
-                added_count += 1
-
-                print(
-                    "[Forum Archive]"
-                    "[Candidate] "
-                    f"{item['title']}"
-                )
-
             print(
-                "[Forum Archive] "
-                f"Keyword='{keyword}' "
-                f"page={pages_processed + 1} "
-                f"candidates={added_count}"
+                "[Forum Vault] "
+                f"  Page {page_number}"
             )
 
-            pages_processed += 1
-
-            # ----------------------------------
-            # 次ページURLを取得
-            # ----------------------------------
-
-            next_url = (
-                get_next_page_url(
+            page_items = (
+                extract_search_results(
                     current_html,
                     current_url,
                 )
             )
 
-            # 次ページが明示的に確認できなければ終了
+            print(
+                "[Forum Vault] "
+                f"  Candidates: "
+                f"{len(page_items)}"
+            )
+
+            for item in page_items:
+
+                url = item.get(
+                    "url"
+                )
+
+                if not url:
+                    continue
+
+                if url in keyword_seen:
+                    continue
+
+                keyword_seen.add(url)
+
+                if url in index_urls:
+                    continue
+
+                item["vault_collected_at"] = (
+                    datetime.now()
+                    .astimezone()
+                    .isoformat()
+                )
+
+                item[
+                    "vault_search_keyword"
+                ] = keyword
+
+                item[
+                    "vault_older_than"
+                ] = older_than
+
+                index.append(
+                    item
+                )
+
+                index_urls.add(
+                    url
+                )
+
+                added += 1
+
+            next_url = (
+                get_next_page_url(
+                    BeautifulSoup(
+                        current_html,
+                        "html.parser",
+                    ),
+                    current_url,
+                )
+            )
+
             if not next_url:
-
-                print(
-                    "[Forum Archive] "
-                    "No confirmed next page."
-                )
-
                 break
-
-            # 同一URLならループ防止
-            if next_url == current_url:
-
-                print(
-                    "[Forum Archive] "
-                    "Next page URL is identical. "
-                    "Stopping pagination."
-                )
-
-                break
-
-            # ----------------------------------
-            # 次ページ GET
-            # ----------------------------------
 
             try:
 
                 response = session.get(
                     next_url,
-                    headers={
-                        "User-Agent": (
-                            "Mozilla/5.0 "
-                            "(Windows NT 10.0; Win64; x64) "
-                            "AppleWebKit/537.36 "
-                            "(KHTML, like Gecko) "
-                            "Chrome/151.0.0.0 "
-                            "Safari/537.36"
-                        ),
-                        "Referer": current_url,
-                    },
-                    timeout=30,
+                    timeout=REQUEST_TIMEOUT,
                 )
 
                 response.raise_for_status()
 
-                current_html = (
-                    response.text
-                )
-
-                current_url = (
-                    response.url
-                )
-
-                # ----------------------------------
-                # 同一ページ判定
-                # ----------------------------------
-
-                if current_url == search_url:
-
-                    print(
-                        "[Forum Archive] "
-                        "Returned to initial search page. "
-                        "Stopping pagination."
-                    )
-
-                    break
-
             except requests.RequestException as e:
 
                 print(
-                    "[Forum Archive] "
-                    f"Next page request failed: {e}"
+                    "[Forum Vault] "
+                    f"  Page request error: {e}"
                 )
 
-                progress_failed = True
+                failed = True
                 break
 
-        if progress_failed:
+            current_html = (
+                response.text
+            )
+
+            current_url = (
+                response.url
+            )
+
+        if failed:
             break
 
-        # ----------------------------------
-        # 次の検索語へ
-        # ----------------------------------
-
-        current_keyword_index += 1
-        processed_keywords += 1
+        keyword_index += 1
+        processed += 1
 
     # ======================================
-    # ⑤ Progress
+    # Progress
     # ======================================
 
-    if not progress_failed:
+    if failed:
 
-        # ----------------------------------
-        # 全検索語を終了した場合
-        # ----------------------------------
+        print(
+            "[Forum Vault] "
+            "Collection failed."
+        )
 
-        if (
-            current_keyword_index
-            >= len(SEARCH_KEYWORDS)
+        print(
+            "[Forum Vault] "
+            "Progress will NOT advance."
+        )
+
+    else:
+
+        # 全検索語を処理した場合
+        if keyword_index >= len(
+            SEARCH_KEYWORDS
         ):
 
-            next_older_than = (
-                get_previous_month(
-                    older_than
+            # 30日前の期間をさらに30日戻す
+            try:
+
+                current_date = datetime.strptime(
+                    older_than,
+                    "%Y-%m-%d",
+                ).date()
+
+                next_date = (
+                    current_date
+                    - timedelta(days=30)
                 )
-            )
 
-            next_keyword_index = 0
+                older_than = (
+                    next_date.isoformat()
+                )
 
-            _pending_progress = {
-                "older_than": (
-                    next_older_than
-                ),
-                "keyword_index": (
-                    next_keyword_index
-                ),
-                "completed": False,
-            }
+            except ValueError:
 
-            print(
-                "[Forum Archive] "
-                "All keywords completed."
-            )
+                print(
+                    "[Forum Vault] "
+                    "Invalid older_than date."
+                )
 
-            print(
-                "[Forum Archive] "
-                f"Next older_than: "
-                f"{next_older_than}"
-            )
+            keyword_index = 0
 
-        else:
+        progress = {
+            "older_than": older_than,
+            "keyword_index": keyword_index,
+            "completed": False,
+        }
 
-            # ----------------------------------
-            # 今回処理した検索語まで保存
-            # ----------------------------------
-
-            _pending_progress = {
-                "older_than": older_than,
-                "keyword_index": (
-                    current_keyword_index
-                ),
-                "completed": False,
-            }
-
-            print(
-                "[Forum Archive] "
-                "Next keyword index: "
-                f"{current_keyword_index}"
-            )
-
-    # ======================================
-    # Summary
-    # ======================================
-
-    backfill_count = sum(
-        1
-        for item in all_items
-        if item.get(
-            "forum_backfill",
-            False,
+        save_progress(
+            progress
         )
+
+    save_index(
+        index
     )
 
     print(
-        "[Forum] New:",
-        len(all_items),
+        "[Forum Vault] "
+        f"Added: {added}"
     )
 
     print(
-        "[Forum] "
-        "Backfill candidates:",
-        backfill_count,
+        "[Forum Vault] "
+        f"Total index: {len(index)}"
     )
 
-    return (
-        all_items,
-        new_seen,
+    print(
+        "[Forum Vault] "
+        f"Next keyword index: "
+        f"{keyword_index}"
+    )
+
+    print(
+        "[Forum Vault] "
+        f"Next older_than: "
+        f"{older_than}"
     )
 
 
 # ==========================================
-# Finalize
+# Entry Point
 # ==========================================
 
-def finalize():
-
-    global _pending_progress
-
-    if _pending_progress is None:
-        return
-
-    save_archive_progress(
-        _pending_progress
-    )
-
-    print(
-        "[Forum Archive] "
-        "Progress saved after "
-        "successful Slack delivery."
-    )
-
-    _pending_progress = None
+if __name__ == "__main__":
+    collect()
