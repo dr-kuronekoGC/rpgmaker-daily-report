@@ -1584,6 +1584,7 @@ def collect():
         progress = {
             "older_than": older_than,
             "keyword_index": keyword_index,
+            "thread_archive_index": thread_archive_index,
             "completed": False,
         }
 
