@@ -33,6 +33,9 @@ SEARCH_PAGES_PER_KEYWORD = 3
 # 1スレッドあたりに取得する最大ページ数
 THREAD_PAGES_PER_THREAD = 20
 
+# 1回のActionで本文アーカイブする既存スレッド数
+THREAD_ARCHIVES_PER_RUN = 5
+
 # Forum検索に使用するキーワード
 #
 # 単独の短い語はForum側でエラーになる可能性があるため、
@@ -1250,6 +1253,13 @@ def collect():
 
     index = normalize_index(index)
 
+    thread_archive_index = int(
+        progress.get(
+            "thread_archive_index",
+            0,
+        )
+    )
+
     index_urls = {
         item.get("url")
         for item in index
@@ -1282,6 +1292,78 @@ def collect():
     processed = 0
     added = 0
     failed = False
+    
+    # ======================================
+    # Existing Thread Archive
+    # ======================================
+
+    archive_processed = 0
+
+    while (
+        archive_processed < THREAD_ARCHIVES_PER_RUN
+        and thread_archive_index < len(index)
+    ):
+
+        item = index[thread_archive_index]
+        url = item.get(
+            "url"
+        )
+
+        print(
+            "[Forum Vault] "
+            f"Archive {thread_archive_index + 1}/"
+            f"{len(index)}: "
+            f"{url}"
+        )
+        archive_path = get_thread_archive_path(
+            url
+        )
+
+        # すでに本文アーカイブが存在する場合は
+        # 取得済みとして次へ進む。
+
+        if (
+            archive_path is not None
+            and archive_path.exists()
+        ):
+
+            print(
+                "[Forum Vault] "
+                "  Archive already exists. Skip."
+            )
+            thread_archive_index += 1
+            archive_processed += 1
+            continue
+
+        archived = archive_thread(
+            session,
+            item,
+        )
+
+        if not archived:
+
+            print(
+                "[Forum Vault] "
+                "  Existing thread archive failed: "
+                f"{url}"
+            )
+
+            failed = True
+            break
+        thread_archive_index += 1
+        archive_processed += 1
+
+    print(
+        "[Forum Vault] "
+        f"Existing archives processed: "
+        f"{archive_processed}"
+    )
+
+    print(
+        "[Forum Vault] "
+        f"Next thread archive index: "
+        f"{thread_archive_index}"
+    )
 
     while (
         processed < SEARCH_KEYWORDS_PER_RUN
