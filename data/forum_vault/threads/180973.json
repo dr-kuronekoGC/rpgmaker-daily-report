@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-it-possible-to-create-a-window_selectable-with-separate-drawtext.180973",
+  "title": "MV Is it possible to create a Window_Selectable with separate drawText?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:54:26.448784+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1536577",
+      "author": "Khali",
+      "date": "2025-11-11T17:02:33+0900",
+      "body": "I want to have my description above a yes or no answer.  I've been using Eli's excellent Choice Manager plugin for in game stuff, but now that I'm creating a totally a menu scene for a custom feature in the game I'm working on, I'm wondering if it's possible to do this through JS or not?\nPerhaps even if the first selection was index 2 instead of 0, and if it exceeded 3, return to 2, goes below 2, returns to 3, if that makes sense?\n[edit]\nAlso trying to open a sub window, which I got working.  When closing the window though, it keeps closing the main window on the same frame.  Is there an obvious and easy way to close the sub window without this happening?"
+    },
+    {
+      "post_id": "js-post-1536586",
+      "author": "Aerosys",
+      "date": "2025-11-11T18:26:42+0900",
+      "body": "Yes, it's absolutely possible to add some new text to a window even if it's a selectable. Can you maybe make a draft with paint so I can imagine better how it should look like?\nKhali said:\nPerhaps even if the first selection was index 2 instead of 0, and if it exceeded 3, return to 2, goes below 2, returns to 3, if that makes sense?\nClick to expand...\nNope, that doesn't sound right. I think the correct way will be something else."
+    },
+    {
+      "post_id": "js-post-1536593",
+      "author": "rpgLord69",
+      "date": "2025-11-11T21:24:18+0900",
+      "body": "Hmmm, below is an example for base game where I made show choices window show line of text ('TEST') and then the choices below that. So I added itemHeight to the heights and itemRect (edit: itemRect y) and then made it draw the base text in drawAllItems. Hope I'm not forgetting anything.\nFor your question in the edit, are you sure you remembered to deactivate the \"parent window\"? Else it'll keep reading your inputs I think.\nWindow_ChoiceList.prototype.windowHeight = function() {\nreturn this.fittingHeight(this.numVisibleRows()) + this.itemHeight();\n};\nWindow_ChoiceList.prototype.contentsHeight = function() {\nreturn this.maxItems() * this.itemHeight() + this.itemHeight();\n};\nWindow_ChoiceList.prototype.itemRect = function(index) {\nvar rect = new Rectangle();\nvar maxCols = this.maxCols();\nrect.width = this.itemWidth();\nrect.height = this.itemHeight();\nrect.x = index % maxCols * (rect.width + this.spacing()) - this._scrollX;\nrect.y = Math.floor(index / maxCols) * rect.height - this._scrollY + this.itemHeight();\nreturn rect;\n};\nWindow_ChoiceList.prototype.drawAllItems = function() {\nthis.drawText('TEST', 0, 0, this.itemWidth(), 'center');\nvar topIndex = this.topIndex();\nfor (var i = 0; i < this.maxPageItems(); i++) {\nvar index = topIndex + i;\nif (index < this.maxItems()) {\nthis.drawItem(index);\n}\n}\n};"
+    },
+    {
+      "post_id": "js-post-1536624",
+      "author": "Khali",
+      "date": "2025-11-12T03:45:53+0900",
+      "body": "This is probably poorly explained on my part, it sounds like this is for the map scene.  I'm creating a custom menu scene, like say, an equipment menu.  Really, it's a pseudo crafting system, but not really a full crafting menu because I only want it to be able to edit very specific items and nothing else.\nThe menu works, I can scroll, information updates correctly, but when selecting an item, I want to convert it between an attack and defense item, so a choice box opens up asking \"Atk > Def\" or \"Def > Atk\", you make a selection and it will pay x gold, swap, and update.  Currently, I'm drawing 2 windows, 1 with a descript and price, and the other with the options.  I'm wondering if the options can be merged into that description window somehow.\nI'm currently using Window_Selectable, is this the incorrect way to do this?  Should I be using Window_ChoiceList instead?"
+    },
+    {
+      "post_id": "js-post-1536626",
+      "author": "rpgLord69",
+      "date": "2025-11-12T03:56:51+0900",
+      "body": "That was just an example, as Window_ChoiceList inherits from Window_Command and Window_Selectable. So if you're making your custom windows, can't you do similar stuff? But maybe Aerosys will give you the full code."
+    },
+    {
+      "post_id": "js-post-1536630",
+      "author": "Khali",
+      "date": "2025-11-12T04:28:23+0900",
+      "body": "I'm starting to make some progress here.  Before I was trying to figure it out the only way I knew how with delays and stuff and I was like there has to be a better way.\nCode:\nScene_CustomMenu.prototype.onSelectItem = function () {\n    subMenu = true;\n    this._convertExplanationWindow.show();\n    this._convertSelectionWindow.show();\n}\nI added this to create:\nCode:\nthis._selectionWindow.setHandler(\"ok\", this.onSelectItem.bind(this));\n    this._selectionWindow.setHandler(\"cancel\", this.onSelectItemCancel.bind(this));\nThis cancel just has a scene pop function in it, when pressing \"ok\", it opens the other menu but immediately freezes the scene.  Any idea why update stopped running?\n[edit]\nAlso, if I just want to create the choice list and have those two options, how do I do that?  Like how do you format it:\nDescription\nCost\nChoice1\nChoice2"
+    },
+    {
+      "post_id": "js-post-1536631",
+      "author": "Aerosys",
+      "date": "2025-11-12T04:36:23+0900",
+      "body": "Let's assume that all options are visible without the need of scrolling, because scrolling would make it much more difficult.\nThere's a function called Window_Selectable.prototype.itemRect that you can modify for your window to move all options downwards by Y pixels, e.g.\nCode:\nCustom_Window.prototype.itemRect = function(index) {\n  const rect = Window_Selectable.prototype.itemRect.call(this, index);\n  rect.y += 100;\n  return rect;\n}\nOr you write any custom function you need for your window.\nThen you can draw any additional text like this:\nCode:\nCustom_Window.prototype.drawAllItems = function() {\n  Window_Selectable.prototype.drawAllItems();\n\n  this.drawText(\"whatever\", 0, 0, this.contentsWidth());\n}"
+    },
+    {
+      "post_id": "js-post-1536632",
+      "author": "Khali",
+      "date": "2025-11-12T04:56:08+0900",
+      "body": "Aerosys said:\nLet's assume that all options are visible without the need of scrolling, because scrolling would make it much more difficult.\nThere's a function called Window_Selectable.prototype.itemRect that you can modify for your window to move all options downwards by Y pixels, e.g.\nCode:\nCustom_Window.prototype.itemRect = function(index) {\n  const rect = Window_Selectable.prototype.itemRect.call(this, index);\n  rect.y += 100;\n  return rect;\n}\nOr you write any custom function you need for your window.\nThen you can draw any additional text like this:\nCode:\nCustom_Window.prototype.drawAllItems = function() {\n  Window_Selectable.prototype.drawAllItems();\n\n  this.drawText(\"whatever\", 0, 0, this.contentsWidth());\n}\nClick to expand...\nI got it to draw the text in one window, and move the selector, but I can't get it to draw the list of selectable items now, and it also freezes the entire game with the input handler.\nAm I using this correctly?:\nCode:\nWindow_Orbcraft_Conversion.prototype.drawItem = function (index) {\n    this._list = [\"Attack > Defence\", \"Defence < Attack\"];\n    var options = this._list[index];\n    var rect = this.itemRectForText(index);\n    this.drawText(options, rect.x, rect.y, rect.width);\n};\n[edit]\nOkay, I figured out that .activate() is required when calling the handler, otherwise update will freeze."
+    },
+    {
+      "post_id": "js-post-1536648",
+      "author": "Aerosys",
+      "date": "2025-11-12T06:15:15+0900",
+      "body": "Might be easier to inherit from Window_Command instead of Window_Selectable. Then you can do this instead:\nCode:\nWindow_Orbcraft_Conversion.prototype.makeCommandList = function() {\n  this.addCommand(\"Attack > Defense\", \"atkDef\");\n  this.addCommand(\"Defense > Attack\", \"defAtk\");\n}\nThen you can remove your Window_Orbcraft_Conversion.prototype.drawItem override."
+    },
+    {
+      "post_id": "js-post-1536650",
+      "author": "Khali",
+      "date": "2025-11-12T06:19:14+0900",
+      "body": "Aerosys said:\nThen you can remove your Window_Orbcraft_Conversion.prototype.drawItem override.\nClick to expand...\nYeah, I haven't played with Window_Command yet, but this might be the way.  I did manage to get selectable to display correctly now, but it's such a hassle and I didn't realize what the difference was between the two.  I'm going to dig into that a bit more.  It looks like with selectable in order to \"select\" options I'll have to check the index of select(), whereas it looks like command just binds right to the function I want instead."
+    },
+    {
+      "post_id": "js-post-1536655",
+      "author": "Khali",
+      "date": "2025-11-12T06:56:15+0900",
+      "body": "This is horrific man.  There's so little documentation or tutorials on this stuff and Window_Selectable, Window_Command, Window_ChoiceList, etc, are all controlled so drastically differently.\nI just drew this out in Window_Selectable and had it working, but I erased everything to change it to Window_Command and now the I can't set X and Y positions of the window itself (what the actual f?), I can only either draw the text, or draw the commands, but not both?  Deactivating the command window crashes the entire game?\nHow do you do this?  I'm losing my sanity here, it shouldn't have to be this difficult.\n[edit]\nI gave up and returned to Window_Selectable.  Everything works as intended and I just created a function that's a switch based on the window.select() indices to run the commands I want.  This may not be the best way, but it works."
+    },
+    {
+      "post_id": "js-post-1536707",
+      "author": "Aerosys",
+      "date": "2025-11-12T16:43:14+0900",
+      "body": "Well it's a bit unfortunate that they didn't make some tutorials (besides this one\nhttps://developer.rpgmakerweb.com/rpg-maker-mz/\n) but to answer your question...\nKhali said:\nHow do you do this? I'm losing my sanity here, it shouldn't have to be this difficult.\nClick to expand...\nThe code itself is the documentation. And, furthermore, programming\nis\ndifficult. Sure, learning the language itself is easy as the mass of \"learn JavaScript in 60 minutes\" tutorials out there demonstrate, but learn how to work with an already existing framework is not.\nFor those who are interested:\nSpoiler:\nWhy Selectable, Command, & ChoiceList?\nThis is not uncommon for software products, it's actually the reality.\nSelectable is a superclass for every window where the player \"selects\" something from a list, e.g. Items or Skills.\nTechnically, it makes a difference whether you select an Item from a list, or a command such as \"New Game\" from the title screen, this is why we also have Window_Command. But because Window_Command inherits from Window_Selectable anyway it could sometimes a bit tricky to decide which window class to pick.\nChoiceList is only used for the Message Choices and, from my experience, is too situationally to be reused in other plugins.\nWhat also helps is to look at already existing windows that look similar to yours like Window_TitleCommand"
+    },
+    {
+      "post_id": "js-post-1536711",
+      "author": "Khali",
+      "date": "2025-11-12T17:23:21+0900",
+      "body": "Aerosys said:\nThe code itself is the documentation. And, furthermore, programming\nis\ndifficult. Sure, learning the language itself is easy as the mass of \"learn JavaScript in 60 minutes\" tutorials out there demonstrate, but learn how to work with an already existing framework is not.\nClick to expand...\nI don't really agree with this.  It's great that there is documentation for MZ, but it still isn't very good.  I came to RPG Maker because I was feeling nostalgic and decided on MV because it already had a large amount of available plugins, both free and paid.  Yes, learning how to program can be frustrating but comparing RM to Unity, if I want to do something in Unity, I can just look it up:\nUnity - Scripting API: Rigidbody\ndocs.unity3d.com\nAll properties, functions, parameters, etc, are all here.  Is it going to be challenging?  Sure, but it's significantly 1000% less challenging and frustrating than having to open up rpg_windows.js and sift through 6000 lines of someone else's code to try and make sense of how these objects work.\nThis isn't a case of \"this is just how it is,\" I would consider RPG Maker to be up there with the top dogs in terms of availability and popularity.  Godot, Unity, and UE all have clear documentation where RM does not.\nAerosys said:\nWhat also helps is to look at already existing windows that look similar to yours like Window_TitleCommand\nClick to expand...\nIt doesn't though, because in some cases they'll be using an alias, or using some functions but not all.  The closest usable resource I've found is\nhttps://github.com/rpgtkoolmv/corescript\nAs well as:\nhttps://kinoar.github.io/rmmv-doc-web/\nThese two resources as far as I'm aware are the only grip the community has on any form of documentation that shows properties, hierarchy, functions, etc.\nI don't want this to be misconstrued, because I do appreciate the help.  You did try to guide me in a direction that may work, but I gave up on Window_Command because:\nWidth and Height broke immediately.  Why?  Oh, because despite defining it, it has it's own functions for width and height:\nCode:\nWindow_Command.prototype.initialize = function(x, y) {\n    this.clearCommandList();\n    this.makeCommandList();\n    var width = this.windowWidth();\n    var height = this.windowHeight();\n    Window_Selectable.prototype.initialize.call(this, x, y, width, height);\n    this.refresh();\n    this.select(0);\n    this.activate();\n};\nThis is fine, I can change initialize, but it was easier for me to just use .windowWidth() and .windowHeight(), why wouldn't I?  They're alread there.\nThe one I still don't understand is, it doesn't have it's own x or y, but kept setting x and y to 0 and despite everything I tried it just wouldn't stop doing this.  Window_TitleCommand has an updatePlacement function, but I don't see anything like that in Window_Command, although I guess I could just make one.\nIt was so frustrating because I was so close to completing the plugin, and where I see the benefits of Window_Command it's like starting right from scratch even though it's an inherited object.\nI lost interest in trying to find out why it doesn't work and just decided to use Window_Selectable, grab the indices for the Select() method and create switch cases for 0, 1, 2, etc, whatever I want my menu to input and built my own handler.  I would like to learn how to use Window_Command eventually, but the menu is already completed and everything works exactly as intended."
+    },
+    {
+      "post_id": "js-post-1536725",
+      "author": "Aerosys",
+      "date": "2025-11-12T20:03:55+0900",
+      "body": "I wasn't aware that you are using MV. The constructors for windows are a bit inconsistent in MV, luckily they improved that a lot in MZ. Anyway, let's go!\nKhali said:\nThis is fine, I can change initialize, but it was easier for me to just use .windowWidth() and .windowHeight(), why wouldn't I? They're alread there.\nClick to expand...\nExactly, you want to use windowWidth (and maybe windowHeight), like this:\nCode:\nCustom_Window.prototype.windowWidth = function() {\n  return 200;\n}\nThen you don't need a custom constructor for your window class, and I also recommend not having one, because the constructor of Window_Command is already robust.\nYou can also use that code snippet for the height, but by default, the Window_Command class does that automatically for you to fit it to the number of commands in the list (which is a bonus over the Window_Selectable).\nKhali said:\nThe one I still don't understand is, it doesn't have it's own x or y, but kept setting x and y to 0 and despite everything I tried it just wouldn't stop doing this. Window_TitleCommand has an updatePlacement function, but I don't see anything like that in Window_Command, although I guess I could just make one.\nClick to expand...\nI agree, this looks a bit awkward and is probably a reason why they changed it in MZ. It's perhaps the easiest to reposition the window not in the window class itself, but in the scene where you create it and add it to the screen.\nCode:\n...\nconst gameWindow = new Custom_Window(0, 0);\ngameWindow.x = Graphics.boxWidth / 2 - gameWindow.width / 2;\ngameWindow.y = Graphics.boxHeight / 2 - gameWindow.height / 2;\n...\nI could continue and dive deeper but when your plugin is already working using the Window_Selectable class then it's just fine\nPersonally, I think using Window_Command is best practice, but using Window_Selectable is not a bad practice either."
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-get-status-window-to-appear-more-than-4-party-members.183693",
+  "title": "MZ How to get status window to appear more than 4 party members",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:54:23.156158+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1556747",
+      "author": "Darkmoon9",
+      "date": "2026-05-19T05:46:24+0900",
+      "body": "Hi, I am currenty using Visustella Sideways Battle UI in conjunction wih Darkneondragontwins Party Plugin. I have managed to get it to work pretty well. Only remaining issue is that the Status UI does not appear for temporary party members added with summon skillif the party exceeds 4 actors with the summon. Is there a way to add Status UI with 5th and subsequent members of the party?\nEdit. Added image to demonstrate what I mean. Notice how the summoned imp does not have a health bar or mana bar displayed. I tried other ui methods and they all work, escept the Visustella sideways battle ui, which is the one I want to use. Another image was provided showing the status screens being added properly with the default layout."
+    },
+    {
+      "post_id": "js-post-1556804",
+      "author": "rpgLord69",
+      "date": "2026-05-19T18:07:30+0900",
+      "body": "I quickly checked the plugin and it targets the battle status window (since that's used in base game). That VS sideview battle UI creates a number of windows based on your max battle members at battle start I think. So if you change your max battle members mid battle, like that plugin seems to do, there won't be a window to show new stuff.\nSo you can try to make a new window there when you summon the dude and remove it when they leave. Or just try to make an additional window at battle start which is probably easier, but you still probably have to find a way to hide the stuff when the summon leaves.\nBut yeah if you write to console that\nSceneManager._scene.createSideviewUiBattleStatusWindows\nand click the function, even though it's obfuscated you can see that it seems to check max battle members in the loop. Just copy paste that and make a plugin where you add +1 to the formula so that it creates the fifth window there."
+    },
+    {
+      "post_id": "js-post-1556806",
+      "author": "Aerosys",
+      "date": "2026-05-19T20:27:12+0900",
+      "body": "You need to change the max party size outside from battles. There's no standard way in RPG Maker to do that inside, so programming a plugin to support that isn't trivial. Therefore, most devs don't implement it at all instead of implementing something that is risky to break."
+    },
+    {
+      "post_id": "js-post-1556809",
+      "author": "rpgLord69",
+      "date": "2026-05-19T20:42:57+0900",
+      "body": "@Aerosys\nThat plugin has written it like this:\nGame_Party.prototype.maxBattleMembers = function() {\nlet base = Party.maxPartySize;\nif ($gameSystem._tempGuests) {\nbase += $gameSystem._tempGuests.length;\n}\nif (Party.auto_team) {\nbase += Party.auto_team.length;\n}\n//Honestly, the code editor gave me this as a suggestion and it kinda just works...\nreturn base;\n};\nThe op said that it seems to work for them. But that VS side view battle the battle status window has heigth 0 so it isn't showing, instead there's 4 (I assume based on max battle members) Window_SideviewUiBattleStatus"
+    },
+    {
+      "post_id": "js-post-1556812",
+      "author": "Aerosys",
+      "date": "2026-05-19T21:15:06+0900",
+      "body": "This is what I meant with \"there's no standard\". Windows are initialized on battle start, then the plugins usually don't support adding or removing a window/column/row dynamically."
+    },
+    {
+      "post_id": "js-post-1556814",
+      "author": "Darkmoon9",
+      "date": "2026-05-19T22:22:43+0900",
+      "body": "So basically what I seek to do is impossible with my current coding knowledge. Though what I am confused about is that further status windows are added fine with the default layout, its just the sideways battle ui plugin that is having trouble to do this. I also tried permanently increasing the partys size to 5 using visustella party system. Same issue, even with permanent party members, sideways battle ui refuses to show more than 5. So the issue does not lie with the summon plugin.\nI also came across this thread when searching for a solution, where OP did somehow manage to add status windows for more than 4 using the same plugin. What I don't understand is how they did it.\nMZ - Visustella sideview battle UI, help with seperating into 2 rows.\nI'm trying to implement the sideview battle ui. And it's great! However one problem i've ran into is the size of the actors stats, My game has a party limit of 4 by defualt but there are rare items that allow you to increase it to a max of 8. And when this happens the UI does not fit on screen...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1556815",
+      "author": "rpgLord69",
+      "date": "2026-05-19T22:24:37+0900",
+      "body": "Cool, yeah that's why I suggested they make it create a fifth window in the loop. And check if everything works since there's update battler tied to the window update.\nEDIT: above is reply to Aerosys"
+    },
+    {
+      "post_id": "js-post-1556817",
+      "author": "rpgLord69",
+      "date": "2026-05-19T22:47:25+0900",
+      "body": "Darkmoon9 said:\nSo basically what I seek to do is impossible with my current coding knowledge. Though what I am confused about is that further status windows are added fine with the default layout, its just the sideways battle ui plugin that is having trouble to do this. I also tried permanently increasing the partys size to 5 using visustella party system. Same issue, even with permanent party members, sideways battle ui refuses to show more than 5. So the issue does not lie with the summon plugin.\nI also came across this thread when searching for a solution, where OP did somehow manage to add status windows for more than 4 using the same plugin. What I don't understand is how they did it.\nMZ - Visustella sideview battle UI, help with seperating into 2 rows.\nI'm trying to implement the sideview battle ui. And it's great! However one problem i've ran into is the size of the actors stats, My game has a party limit of 4 by defualt but there are rare items that allow you to increase it to a max of 8. And when this happens the UI does not fit on screen...\nforums.rpgmakerweb.com\nClick to expand...\nThey are added in the default layout because the battle status window is one window that has max items as max battle members (I guess the plugin codes change the maxcolumns too). So when you refresh it with your new max battle members it draws all of them there. At least as far as I understand.\nBut with your VS Sideview plugin it creates a number of windows at battle start according to your max battle members. If you have less than max battlers some of the windows just stay \"invisible\".\nYou can't use that party plugin with VS Party plugin because some of the stuff overwrites same methods. I guess you can try to make a system with VS party plugin where you change max battlers with pre-battle common event (and change back post-battle). And have your summon appear as the 5th battler with just a common event and also disappear with a common event. But then you'll probably have to limit some of the actor/party switching stuff mid battle.\nIf you want to use the summon plugin you're currently used (you need to disable VS party plugin) you can try what I suggested. Go to console with F8 and go to console tab and write\nSceneManager._scene.createSideviewUiBattleStatusWindows\nand press enter. Then click on the function and it will take you to sources tab. Click 'pretty print'. Then copy paste the function that as its name highlighter yellow to notepad. For me it looks like below.\nScene_Battle['prototype'][_0x2aaebd(0x195)] = function() {\nconst _0x4b8f27 = _0x2aaebd;\nif (!BattleManager['isUsingSideviewUiLayout']())\nreturn;\nthis['_sideviewUiBattleStatusWindows'] = [];\nconst _0x3d73a6 = $gameParty[_0x4b8f27(0xff)]();\nfor (let _0x4d90f0 = 0x0; _0x4d90f0 < _0x3d73a6 + 1; _0x4d90f0++) {\nif (_0x4b8f27(0x1f6) === _0x4b8f27(0x1f6)) {\nconst _0x58c226 = new Window_SideviewUiBattleStatus(_0x4d90f0);\nthis[_0x4b8f27(0xf8)](_0x58c226),\nthis['_sideviewUiBattleStatusWindows'][_0x4b8f27(0xbf)](_0x58c226);\n} else\nthis[_0x4b8f27(0x16e)]['updateSideviewUiPosition']();\n}\n}\nIn the loop it's creating those windows based on maxBattleMembers. I wrote + 1 there in the for loop. Do the same and then save the notepad as .js file to your plugin folder and add as a plugin.\nI haven't tested if doing that is enough, but you can try it.\nEDIT: go to console during battle, if you want to get the function with that line"
+    },
+    {
+      "post_id": "js-post-1556820",
+      "author": "Darkmoon9",
+      "date": "2026-05-19T23:00:47+0900",
+      "body": "rpgLord69 said:\nThey are added in the default layout because the battle status window is one window that has max items as max battle members (I guess the plugin codes change the maxcolumns too). So when you refresh it with your new max battle members it draws all of them there. At least as far as I understand.\nBut with your VS Sideview plugin it creates a number of windows at battle start according to your max battle members. If you have less than max battlers some of the windows just stay \"invisible\".\nYou can't use that party plugin with VS Party plugin because some of the stuff overwrites same methods. I guess you can try to make a system with VS party plugin where you change max battlers with pre-battle common event (and change back post-battle). And have your summon appear as the 5th battler with just a common event and also disappear with a common event. But then you'll probably have to limit some of the actor/party switching stuff mid battle.\nIf you want to use the summon plugin you're currently used (you need to disable VS party plugin) you can try what I suggested. Go to console with F8 and go to console tab and write\nSceneManager._scene.createSideviewUiBattleStatusWindows\nand press enter. Then click on the function and it will take you to sources tab. Click 'pretty print'. Then copy paste the function that as its name highlighter yellow to notepad. For me it looks like below.\nScene_Battle['prototype'][_0x2aaebd(0x195)] = function() {\nconst _0x4b8f27 = _0x2aaebd;\nif (!BattleManager['isUsingSideviewUiLayout']())\nreturn;\nthis['_sideviewUiBattleStatusWindows'] = [];\nconst _0x3d73a6 = $gameParty[_0x4b8f27(0xff)]();\nfor (let _0x4d90f0 = 0x0; _0x4d90f0 < _0x3d73a6 + 1; _0x4d90f0++) {\nif (_0x4b8f27(0x1f6) === _0x4b8f27(0x1f6)) {\nconst _0x58c226 = new Window_SideviewUiBattleStatus(_0x4d90f0);\nthis[_0x4b8f27(0xf8)](_0x58c226),\nthis['_sideviewUiBattleStatusWindows'][_0x4b8f27(0xbf)](_0x58c226);\n} else\nthis[_0x4b8f27(0x16e)]['updateSideviewUiPosition']();\n}\n}\nIn the loop it's creating those windows based on maxBattleMembers. I wrote + 1 there in the for loop. Do the same and then save the notepad as .js file to your plugin folder and add as a plugin.\nI haven't tested if doing that is enough, but you can try it.\nEDIT: go to console during battle, if you want to get the function with that line\nClick to expand...\nIs there any alternate way to open console? Because nothing happens when I press F8. Though in any case, I do wonder if it perhaps would be easier to return to the old summon system. Though summons taking a party slot an be annoying. Either that or restructure the battle screen to use default ui. Which UI do you gues think look the best? The sideways battle ui or the default battle ui?"
+    },
+    {
+      "post_id": "js-post-1556823",
+      "author": "rpgLord69",
+      "date": "2026-05-19T23:05:01+0900",
+      "body": "Hmmm strange if nothing happens. Though if you use VisuStella stuff the console should open automatically when you playtest. Doesn't it like open two different \"apps\" or whatever you call those that you see in windows botton row when you playtest?\nI like the sideview UI better myself, though you could always try to create something completely custom. And trying what I showed there isn't a difficult thing. If that doesn't work then editing it more would probably be more difficult."
+    },
+    {
+      "post_id": "js-post-1556825",
+      "author": "Darkmoon9",
+      "date": "2026-05-19T23:22:06+0900",
+      "body": "rpgLord69 said:\nThey are added in the default layout because the battle status window is one window that has max items as max battle members (I guess the plugin codes change the maxcolumns too). So when you refresh it with your new max battle members it draws all of them there. At least as far as I understand.\nBut with your VS Sideview plugin it creates a number of windows at battle start according to your max battle members. If you have less than max battlers some of the windows just stay \"invisible\".\nYou can't use that party plugin with VS Party plugin because some of the stuff overwrites same methods. I guess you can try to make a system with VS party plugin where you change max battlers with pre-battle common event (and change back post-battle). And have your summon appear as the 5th battler with just a common event and also disappear with a common event. But then you'll probably have to limit some of the actor/party switching stuff mid battle.\nIf you want to use the summon plugin you're currently used (you need to disable VS party plugin) you can try what I suggested. Go to console with F8 and go to console tab and write\nSceneManager._scene.createSideviewUiBattleStatusWindows\nand press enter. Then click on the function and it will take you to sources tab. Click 'pretty print'. Then copy paste the function that as its name highlighter yellow to notepad. For me it looks like below.\nScene_Battle['prototype'][_0x2aaebd(0x195)] = function() {\nconst _0x4b8f27 = _0x2aaebd;\nif (!BattleManager['isUsingSideviewUiLayout']())\nreturn;\nthis['_sideviewUiBattleStatusWindows'] = [];\nconst _0x3d73a6 = $gameParty[_0x4b8f27(0xff)]();\nfor (let _0x4d90f0 = 0x0; _0x4d90f0 < _0x3d73a6 + 1; _0x4d90f0++) {\nif (_0x4b8f27(0x1f6) === _0x4b8f27(0x1f6)) {\nconst _0x58c226 = new Window_SideviewUiBattleStatus(_0x4d90f0);\nthis[_0x4b8f27(0xf8)](_0x58c226),\nthis['_sideviewUiBattleStatusWindows'][_0x4b8f27(0xbf)](_0x58c226);\n} else\nthis[_0x4b8f27(0x16e)]['updateSideviewUiPosition']();\n}\n}\nIn the loop it's creating those windows based on maxBattleMembers. I wrote + 1 there in the for loop. Do the same and then save the notepad as .js file to your plugin folder and add as a plugin.\nI haven't tested if doing that is enough, but you can try it.\nEDIT: go to console during battle, if you want to get the function with that line\nClick to expand...\nExtracted the code, though where do you want me to put the +1? This code is kinda gibberish to me.\nEdit. did figure out how to create the plugin, but for some reason the game won't launch with it on."
+    },
+    {
+      "post_id": "js-post-1556826",
+      "author": "rpgLord69",
+      "date": "2026-05-19T23:31:01+0900",
+      "body": "In the same place I put it in the for loop:\nfor (let _0x4d90f0 = 0x0; _0x4d90f0 < _0x3d73a6 + 1; _0x4d90f0++)\n(The code is gibberish but if it's name is createSideviewUiBattleStatusWindows and you see a for loop there that uses in the comparison a const that was declared earlier using something that you see is a $gameParty method, you can guess it's maxBattleMembers. And test it with console.log)\nEDIT:\nYou seem to be missing some brackets at the bottom, compare it to my code."
+    },
+    {
+      "post_id": "js-post-1556849",
+      "author": "Darkmoon9",
+      "date": "2026-05-20T03:49:40+0900",
+      "body": "rpgLord69 said:\nIn the same place I put it in the for loop:\nfor (let _0x4d90f0 = 0x0; _0x4d90f0 < _0x3d73a6 + 1; _0x4d90f0++)\n(The code is gibberish but if it's name is createSideviewUiBattleStatusWindows and you see a for loop there that uses in the comparison a const that was declared earlier using something that you see is a $gameParty method, you can guess it's maxBattleMembers. And test it with console.log)\nEDIT:\nYou seem to be missing some brackets at the bottom, compare it to my code.\nClick to expand...\nThank you, it worked, at least for a 5th member. I wonder if I can push it to more. Right now there doesn't seem to be a limit of the number to the amount of summons with the current system. And I am unsure how to implement a limit to the summons, except maybe the skills sharing a cooldown.\nDo anyone know a way to create an even tha limits the total summons on screen to 1 or two?\nEdit. This worked pretty decently. Look at the image with 7 members."
+    },
+    {
+      "post_id": "js-post-1556857",
+      "author": "rpgLord69",
+      "date": "2026-05-20T06:00:19+0900",
+      "body": "Cool.\nFor your new question, I didn't check the plugin code, but if you don't change the number of normal characters mid battle, I guess one way of doing it is using VS pre-battle common event to store the number of\n$gameParty.allBattleMembers().length\nto a variable. Then you can use VS JS Skill Enable notetags for the summon skills to check that (change variable id and amount of summons to what you want):\n<JS Skill Enable>\nenabled = $gameParty.allBattleMembers().length < $gameVariables.value(100) + 2;\n</JS Skill Enable>"
+    },
+    {
+      "post_id": "js-post-1556861",
+      "author": "Darkmoon9",
+      "date": "2026-05-20T06:25:03+0900",
+      "body": "rpgLord69 said:\nCool.\nFor your new question, I didn't check the plugin code, but if you don't change the number of normal characters mid battle, I guess one way of doing it is using VS pre-battle common event to store the number of\n$gameParty.allBattleMembers().length\nto a variable. Then you can use VS JS Skill Enable notetags for the summon skills to check that (change variable id and amount of summons to what you want):\n<JS Skill Enable>\nenabled = $gameParty.allBattleMembers().length < $gameVariables.value(100) + 2;\n</JS Skill Enable>\nClick to expand...\nI did manage to figure out a solution, I simply made all summon skills share a cooldown of 99 turns, which resets at the start of each battle. Which effectively made it so that a single summoner can only summon one minion per battle, to a maximum of 4 minions if all 4 actors are classes that can summon, for a total of 8 party members. Noticed the summon plugin had no upper limit, so without it, you could summon a ridiculous number of additional actors, more than a bit broken.\nEven with the global cooldown, summoner classes like the warlock or ranger are probably pretty strong. Might even be broken."
+    }
+  ]
+}
