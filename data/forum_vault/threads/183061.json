@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/item-pop-up.183061",
+  "title": "MV Item Pop-up",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:14.933299+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1552278",
+      "author": "Iohiko",
+      "date": "2026-03-30T02:59:24+0900",
+      "body": "Hi everyone, I was looking for plugins that display a notification for the last item obtained, but the few I've found are either paid or don't work properly. If you know of any plugin that can do that, I'd appreciate it if you could recommend one. Otherwise, it would be great if you could tell me how I could build such a system myself. I was thinking of using a plugin that displays messages above the player, but I need to know if there’s a script that returns the last item obtained by the player so I can include it in the message. Thank you very much."
+    },
+    {
+      "post_id": "js-post-1552292",
+      "author": "rpgLord69",
+      "date": "2026-03-30T04:24:52+0900",
+      "body": "If you tell people what plugins you tried, maybe someone can recommend something else.\nBut if you want to show it with your display text plugin, I assume you can modify the gainItem method and make your plugin show the notification there. Something like this:\nconst _myEdit1_GameParty_gainItem = Game_Party.prototype.gainItem;\nGame_Party.prototype.gainItem = function(item, amount, includeEquip) {\n_myEdit1_GameParty_gainItem.call(this, item, amount, includeEquip);\nif (SceneManager._scene instanceof Scene_Map && amount > 0) {\nconst itemName = item.name;\n// CODE CODE CODE to show message with your plugin\n}\n};"
+    },
+    {
+      "post_id": "js-post-1552304",
+      "author": "Solar_Flare",
+      "date": "2026-03-30T06:14:48+0900",
+      "body": "This is something I've strongly considered doing myself. The only (minor?) problem is that not all instances of gainItem need an announcement – if you just got an item from a chest or something, sure, but if it's the result of a quest, the announcement is probably different and baked into the quest."
+    },
+    {
+      "post_id": "js-post-1552305",
+      "author": "caethyril",
+      "date": "2026-03-30T06:36:59+0900",
+      "body": "Iohiko said:\nI was thinking of using a plugin that displays messages above the player, but I need to know if there’s a script that returns the last item obtained by the player so I can include it in the message.\nClick to expand...\nI don't think the core engine tracks \"last item obtained\" in any way. There might be a plugin for that? If the plugin you're considering permits variables, you could store an item's name in a variable, e.g.\nControl Variables -> Script:\n$dataArmors[123].name\nAlternatively, there's a plugin named\nTinyGetInfoWnd.js\n: when the plugin's switch is on, a small, non-interrupting message shows at the top or bottom of the screen (configurable) whenever you gain/lose items/money. The message displays for a time, then disappears. It ships with the Steam version of RPG Maker MV (I assume it's also available for the standalone version). In the Steam version it can be found at:\n<RPG Maker MV install folder>/dlc/KadokawaPlugins/TinyGetInfoWnd.js"
+    },
+    {
+      "post_id": "js-post-1552306",
+      "author": "Iohiko",
+      "date": "2026-03-30T06:39:44+0900",
+      "body": "rpgLord69 said:\nIf you tell people what plugins you tried, maybe someone can recommend something else.\nBut if you want to show it with your display text plugin, I assume you can modify the gainItem method and make your plugin show the notification there. Something like this:\nconst _myEdit1_GameParty_gainItem = Game_Party.prototype.gainItem;\nGame_Party.prototype.gainItem = function(item, amount, includeEquip) {\n_myEdit1_GameParty_gainItem.call(this, item, amount, includeEquip);\nif (SceneManager._scene instanceof Scene_Map && amount > 0) {\nconst itemName = item.name;\n// CODE CODE CODE to show message with your plugin\n}\n};\nClick to expand...\nThe plugin I'm using right now is DAN_ItemPopup. I'm not sure what the problem is, but it works at first, then stops displaying notifications, and the notification starts appearing in a different place (it's as if the spot where it appears has shifted).\nBy the way, do I need to run that code as a script in an event, install it as a plugin, or can I just include it along with this code?: $gameMessage.add"
+    },
+    {
+      "post_id": "js-post-1552313",
+      "author": "Iohiko",
+      "date": "2026-03-30T07:34:51+0900",
+      "body": "caethyril said:\nI don't think the core engine tracks \"last item obtained\" in any way. There might be a plugin for that? If the plugin you're considering permits variables, you could store an item's name in a variable, e.g.\nControl Variables -> Script:\n$dataArmors[123].name\nAlternatively, there's a plugin named\nTinyGetInfoWnd.js\n: when the plugin's switch is on, a small, non-interrupting message shows at the top or bottom of the screen (configurable) whenever you gain/lose items/money. The message displays for a time, then disappears. It ships with the Steam version of RPG Maker MV (I assume it's also available for the standalone version). In the Steam version it can be found at:\n<RPG Maker MV install folder>/dlc/KadokawaPlugins/TinyGetInfoWnd.js\nClick to expand...\nI've been testing this plugin for quite a while now and haven't had any problems with it. I really appreciate it"
+    }
+  ]
+}

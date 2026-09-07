@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/referring-to-target-in-custom-battle-messages.182200",
+  "title": "Referring to target in custom battle messages",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:19.112171+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1546099",
+      "author": "Rethy",
+      "date": "2026-01-30T16:53:58+0900",
+      "body": "How would one include the target’s name (or the caster’s name for that matter) in a custom battle message? Like “A casts %1 on B”. I tried a couple different javascript calls, but couldn’t figure out how to insert them properly in the markup. I’m pretty sure I could do a work around with action sequences, but I’m hoping there’s a shorthand."
+    },
+    {
+      "post_id": "js-post-1546109",
+      "author": "rpgLord69",
+      "date": "2026-01-30T18:27:07+0900",
+      "body": "The method:\nString.prototype.format = function() {\nreturn this.replace(/%([0-9]+)/g, (s, n) => arguments[Number(n) - 1]);\n};\nSo you'd use something like:\nconst attacker = BattleManager._subject.name();\nconst skill = BattleManager._subject.currentAction().item().name\nconst defender = BattleManager._targets[0].name();\nconst text = \"%1 casts %2 on %3\".format(attacker, skill, defender);"
+    },
+    {
+      "post_id": "js-post-1546114",
+      "author": "Robro33",
+      "date": "2026-01-30T19:59:28+0900",
+      "body": "have you come across this thread?\nHow to make battlelog include name of the target?\nFor example, If I wanted the battlelog to say to say \"casts heal on target A\" when using the skill on target A but \"casts heal on target B\" when using the skill on target B, how would I do this, I found a few older forum posts about the issue but I wasn't able to get anything to work. Here are...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1546119",
+      "author": "rpgLord69",
+      "date": "2026-01-30T20:47:09+0900",
+      "body": "Ah yeah when the op said custom, I thought they meant they were just throwing their own messages there. But if you just want to have the display action show the target, then yeah there's the edit."
+    },
+    {
+      "post_id": "js-post-1546475",
+      "author": "Rethy",
+      "date": "2026-02-02T08:45:45+0900",
+      "body": "Robro33 said:\nhave you come across this thread?\nHow to make battlelog include name of the target?\nFor example, If I wanted the battlelog to say to say \"casts heal on target A\" when using the skill on target A but \"casts heal on target B\" when using the skill on target B, how would I do this, I found a few older forum posts about the issue but I wasn't able to get anything to work. Here are...\nforums.rpgmakerweb.com\nClick to expand...\nI actually hadn't seen the earlier threads, must've been using search terms that were too generic.\nATT_turan's code here seems to do the job\n, and I was able to mod it so %3 returns the action-doer as well:\nCode:\nWindow_BattleLog.prototype.displayAction = function(subject, item) {\n    var numMethods = this._methods.length;\n    if (DataManager.isSkill(item)) {\n        if (item.message1) {\n            this.push('addText', subject.name() + item.message1.format(item.name, BattleManager._targets[0].name(), BattleManager._subject.name()));\n        }\n        if (item.message2) {\n            this.push('addText', item.message2.format(item.name, BattleManager._targets[0].name(), BattleManager._subject.name()));\n        }\n    } else {\n        this.push('addText', TextManager.useItem.format(subject.name(), item.name));\n    }\n    if (this._methods.length === numMethods) {\n        this.push('wait');\n    }\n};\nSo it can accommodate stuff like \"Light begins to gather around %3\" or \"A spectral green thread appears between %3 and %2.\"\nDouble Edit: Found a conflict between ATT_turan's original code and\nVictor Engine - Unreachable Targets\nthat crashes the game when an enemy doesn't have any valid targets. The way I'm currently planning to implement things, that shouldn't be possible in the final game, so not really concerned about it at the moment.\nSpoiler:\nError Message"
+    },
+    {
+      "post_id": "js-post-1547438",
+      "author": "Rethy",
+      "date": "2026-02-12T16:55:46+0900",
+      "body": "Did some more testing, found that the crashing from the edit in my last post extended beyond that specific plugin/skill, so things like skills that have a scope of \"none\" because they're intended to play a common event or something also cause a crash.\nI gave this goofy idea a shot (thanks Robro33 for the idea of checking a value as a boolean in the other thread) but it didn't seem to accept messing with parameters in this way, and %2 and %3 come out as undefined here:\nCode:\nWindow_BattleLog.prototype.displayAction = function(subject, item) {\n    var numMethods = this._methods.length;\n    if (DataManager.isSkill(item)) {\n        if (item.message1) {\n            this.push('addText', subject.name() + item.message1.format(item.name, if (BattleManager._targets[0]){BattleManager._targets[0].name()}, BattleManager._subject.name()));\n        }\n        if (item.message2) {\n            this.push('addText', item.message2.format(item.name, if (BattleManager._targets[0]){BattleManager._targets[0].name()}, BattleManager._subject.name()));\n        }\n    } else {\n        this.push('addText', TextManager.useItem.format(subject.name(), item.name));\n    }\n    if (this._methods.length === numMethods) {\n        this.push('wait');\n    }\n};"
+    },
+    {
+      "post_id": "js-post-1547468",
+      "author": "Robro33",
+      "date": "2026-02-13T00:18:09+0900",
+      "body": "Rethy said:\nI gave this goofy idea a shot (thanks Robro33 for the idea of checking a value as a boolean in the other thread) but it didn't seem to accept messing with parameters in this way, and %2 and %3 come out as undefined here:\nClick to expand...\nyou shouldnt be able to place an IF there like that as an argument. you'd want to use a ternary operation for situations like that. IFs dont return anything while ternary operations explicitly have to\nRethy said:\nDid some more testing, found that the crashing from the edit in my last post extended beyond that specific plugin/skill, so things like skills that have a scope of \"none\" because they're intended to play a common event or something also cause a crash.\nClick to expand...\ngive this a shot then. it shouldnt crash if theres no target, but also if you use %2 on something without a target, it should use the user for the name\nCode:\n(() => {\nWindow_BattleLog.prototype.displayAction = function(subject, item) {\n    var numMethods = this._methods.length;\n    var target = BattleManager._targets[0] || subject;\n    if (DataManager.isSkill(item)) {\n        if (item.message1) {\n            this.push('addText', subject.name() + item.message1.format(item.name, target.name(), subject.name()));\n        }\n        if (item.message2) {\n            this.push('addText', item.message2.format(item.name, target.name(), subject.name()));\n        }\n    } else {\n        this.push('addText', TextManager.useItem.format(subject.name(), item.name));\n    }\n    if (this._methods.length === numMethods) {\n        this.push('wait');\n    }\n};\n})();\nEdit: fixed a \"targets\" typo"
+    },
+    {
+      "post_id": "js-post-1547478",
+      "author": "Rethy",
+      "date": "2026-02-13T02:33:44+0900",
+      "body": "There was one typo of\ntargets.name()\ninstead of\ntarget.name()\n, but after fixing that it seems to be working properly.\nCan I ask what the\n(() => { ... })();\nis doing?"
+    },
+    {
+      "post_id": "js-post-1547480",
+      "author": "Robro33",
+      "date": "2026-02-13T02:40:20+0900",
+      "body": "Rethy said:\nThere was one typo of\ntargets.name()\ninstead of\ntarget.name()\n, but after fixing that it seems to be working properly.\nClick to expand...\nyeah, i had caught it a few minutes ago myself and updated the last post, but you had already saw it\nRethy said:\nCan I ask what the\n(() => { ... })();\nis doing?\nClick to expand...\ni just pasted the function into an\nIIFE\n. Its not actually doing anything at all in this situation and can be removed if you want. I had pasted your code into a test plugin that already had it when I checked for syntax errors."
+    },
+    {
+      "post_id": "js-post-1549763",
+      "author": "Rethy",
+      "date": "2026-03-05T12:34:56+0900",
+      "body": "A couple more questions regarding battle log messages:\n1. I'd previously been trying to use\n\\.\nto delay messages that flash by too quickly, especially information about states that don't have an animation or sound effect attached to them. While it seems to cause a slight delay (I'm guessing just due to the interpreter having to read slightly more), after a bit of testing it definitely does not pause for the full 0.25 or 1 second it would in a regular message box, or at very least adding multiples does not lengthen the delay.\nMessages from script calls also disappear almost instantly. I have solved this in common events using\nthis.wait()\n, but it seems to not work in notetags. It might need a specific interpreter identified?\nI'm not looking for a plugin that slows down every battle message, I just need to give a bit more time to the few that the engine clears too quickly.\n2. The other issue that I haven't been able to find a solution for online is either changing or hiding the Action Failure message in specific situations. There's plenty of times I want the default message to display, like with status effect inducing skills, but I haven't found a way to disable them just for skills that run common events, since selecting the target as \"none\" prevents common events from running. There are also times when I want the failure message to match the skill better, like \"X dodged out of the way\", but haven't found a way to do that without just changing it at the system level."
+    },
+    {
+      "post_id": "js-post-1549818",
+      "author": "rpgLord69",
+      "date": "2026-03-06T00:02:39+0900",
+      "body": "Isn't the interpreter for reading event lists? Battle Log window has it's own mechanics. You can manipulate the\n._waitCount\nbut usually that stuff is done via pushing the wait method in there that manipulates that, with the\nthis.push('wait');\nAlso using scope none doesn't stop common events from running?"
+    },
+    {
+      "post_id": "js-post-1549843",
+      "author": "Rethy",
+      "date": "2026-03-06T06:04:36+0900",
+      "body": "rpgLord69 said:\nIsn't the interpreter for reading event lists? Battle Log window has it's own mechanics. You can manipulate the\n._waitCount\nbut usually that stuff is done via pushing the wait method in there that manipulates that, with the\nthis.push('wait');\nAlso using scope none doesn't stop common events from running?\nClick to expand...\nSo would the full line be something like\nWindow_BattleLog._waitCount.push('wait()');\n?\nthis.push('wait');\non it's own doesn't seem to do anything.\nI thought that was the case, and when I checked other common event skills they were working as intended with scope none, so I think I have run into a weird interaction between it and\ncounter actions\n. It seems like if a counter attack has a scope of none it will be nullified? Changing the scope to \"The User\" has it working as intended, with the exception of the \"There was no effect on The User!\" message."
+    },
+    {
+      "post_id": "js-post-1549846",
+      "author": "rpgLord69",
+      "date": "2026-03-06T06:47:15+0900",
+      "body": "I think you can access it with either\nBattleManager._logWindow\nor\nSceneManager._scene._logWindow\nSo for example\nBattleManager._logWindow.push('wait');"
+    },
+    {
+      "post_id": "js-post-1549850",
+      "author": "Rethy",
+      "date": "2026-03-06T07:43:49+0900",
+      "body": "rpgLord69 said:\nI think you can access it with either\nBattleManager._logWindow\nor\nSceneManager._scene._logWindow\nSo for example\nBattleManager._logWindow.push('wait');\nClick to expand...\nThat seems to have done the trick, thanks!\nI'm guessing that since state messages take markup, I need to look for a plugin that allows code to be evaluated in messages?\nThis one from Yanfly\nseems to be paid only."
+    },
+    {
+      "post_id": "js-post-1551058",
+      "author": "Rethy",
+      "date": "2026-03-18T15:11:28+0900",
+      "body": "Still struggling a little bit with inserting waits in the battlelog, I found the\nVictor Engine\nhad a free plugin to evaluate code in message windows, but my attempt with inserting\n\\e['this.push(\\'wait\\')']\nin a battle message ended up just printing \"['this.push('wait')']\" at the end. Looking at the page again, it might just be intended for code that returns strings, or only compatible with regular message windows or something.\nI was able to get some progress with the state messages specifically by digging into the plugin route, like so:\nCode:\nWindow_BattleLog.prototype.displayCurrentState = function(subject) {\n    var stateText = subject.mostImportantStateText();\n    if (stateText) {\n        this.push('addText', \"\\\\c[\\\\v[6]]\" + subject.name() + \"\\\\c[0]\" + stateText);\n        this.push('wait');\n        this.push('wait'); // extra wait\n        this.push('clear');\n    }\n};\nBut it's a bit lacking in finesse. There's still the matter of battle messages for skills that don't have an animation, which extends to every skill that has a scope of \"None\", which all tend to have unique and important functions.\nFor getting the \"No effect on X\" message to go away on common event skills that need a specified target to work properly, I tried a similar plugin approach but wasn't getting any results attempting to add extra conditions to Window_BattleLog.prototype.displayFailure.  This might be because I was using the wrong call, the closest I could find to \"the skill that is being evaluated right now\" was\n$gameTemp.lastActionData(0)\n.\nHOWEVER I found an extremely dumb workaround.\nAdding the remove state trait for a state that the user cannot possibly have removes the failure message with 0 consequences on the effect, so I'm okay with calling that portion solved for now."
+    },
+    {
+      "post_id": "js-post-1551093",
+      "author": "rpgLord69",
+      "date": "2026-03-18T21:51:43+0900",
+      "body": "Not 100% sure what you're trying to do, but if you want a longer wait without pushing wait 2 times, just make a plugin to add a method like (and push 'longWait'):\nWindow_BattleLog.prototype.longWait = function() {\nthis._waitCount = this.messageSpeed() * 2;\n};\nAlso, that workaround is the standard way, add/remove an empty dummy state. If you want to do it with code, I think it's something like:\nGame_Action.prototype.itemEffectCommonEvent = function(target, effect) {\n//\nthis.makeSuccess(target);\n};\nEDIT: removed the comment out stuff from the arguments that the base code had\nEDIT: actually the comment out was in MZ files, but since it's otherwise the same as MV, whatever"
+    }
+  ]
+}

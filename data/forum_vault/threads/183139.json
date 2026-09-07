@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/interrupting-a-current-event-with-another-event-by-clicking-a-picturebutton.183139",
+  "title": "Interrupting a current event with another event by clicking a PictureButton?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:13.715313+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1552882",
+      "author": "Dreamzzz",
+      "date": "2026-04-05T02:22:21+0900",
+      "body": "I am using\nAnya and Loo's Button Picture Plugin\n, works as intended and is simple enough for me to understand.\nWhat I'm trying to do:\nis have a clickable picture button using this plugin, that interrupts an ongoing event when clicked on, and instead makes whatever the picture button is connected to run.\nThe button clicking\ndoes\nmake the common event run, but\nonly after the\ncur\nrent event is finished.\nIf the player is clicking the button, it just progresses the text of the current event, it doesn't actually activate the button until everything is done. I know\nin theory-\nto solve this, there should be a parallel event running to check for inputs, but I cant wrap my head around how to do it. I don't want the current event to stop completely when the parallel event checks to see if something is clicked, because if the picture\nwasn't\nclicked, then it needs to keep going as usual.\nThe player needs to be able to \"interrupt\" the event that's happening\nat any point in time during the current event,\nwith the player having the choice to do nothing, and have the event proceed unimpeded. But in every instance of me trying to fix it, it still needs to wait until the current event is done, and I cant figure out what to even check for in the parallel event, because after a certain point, I'd just be rewriting the picture button event myself. How do I do this?"
+    },
+    {
+      "post_id": "js-post-1552885",
+      "author": "rpgLord69",
+      "date": "2026-04-05T02:45:00+0900",
+      "body": "I didn't test it but try removing the message busy conditional in the plugin code (the thing I put a line over):\nSprite_Picture.prototype.isClickEnabled = function() {\nvar pic = this.picture();\nreturn !!(pic && pic._commonEventId > 0 [S]&& !$gameMessage.isBusy()[/S]);\n};\nAnd then I checked the script call list and it says that:\n// Anywhere: end the current non-Parallel map event\n$gameMap._interpreter.command115();\nSo try adding to the plugin code that line:\nSprite_Picture.prototype.onClick = function() {\nvar pic = this.picture();\nif (pic && pic._commonEventId > 0) {\n$gameMap._interpreter.command115();\n// prevent map touch-move + click-through\nif ($gameTemp && $gameTemp.clearDestination) $gameTemp.clearDestination();\nif (TouchInput && TouchInput.clear) TouchInput.clear();\n$gameTemp.reserveCommonEvent(pic._commonEventId);\n}\n};\nEDIT: Seems like the strike-through line didn't appear in the code, but it's that thing between the S and /S in brackets"
+    },
+    {
+      "post_id": "js-post-1552886",
+      "author": "Eliaquim",
+      "date": "2026-04-05T02:46:42+0900",
+      "body": "What exactly commands the event that must be stoped is running? Its a text or something else?\nThe plugin you are using, has any way to run a script call besides the common event it runs when click a picture?"
+    },
+    {
+      "post_id": "js-post-1552896",
+      "author": "Dreamzzz",
+      "date": "2026-04-05T05:27:18+0900",
+      "body": "Eliaquim said:\nWhat exactly commands the event that must be stoped is running? Its a text or something else?\nThe plugin you are using, has any way to run a script call besides the common event it runs when click a picture?\nClick to expand...\nIt's going to be text. I'm basically trying to emulate a visual novel with interactable things you can click on while things are happening, and interrupt them. The plugin, as far as I'm aware, just has the script call to make the picture into a button : \"ButtonPicture set pictureId commonEventId\" = Picture #1 will trigger Common Event #5 when clicked."
+    },
+    {
+      "post_id": "js-post-1552898",
+      "author": "Dreamzzz",
+      "date": "2026-04-05T05:34:31+0900",
+      "body": "rpgLord69 said:\nI didn't test it but try removing the message busy conditional in the plugin code (the thing I put a line over):\nSprite_Picture.prototype.isClickEnabled = function() {\nvar pic = this.picture();\nreturn !!(pic && pic._commonEventId > 0 [S]&& !$gameMessage.isBusy()[/S]);\n};\nAnd then I checked the script call list and it says that:\n// Anywhere: end the current non-Parallel map event\n$gameMap._interpreter.command115();\nSo try adding to the plugin code that line:\nSprite_Picture.prototype.onClick = function() {\nvar pic = this.picture();\nif (pic && pic._commonEventId > 0) {\n$gameMap._interpreter.command115();\n// prevent map touch-move + click-through\nif ($gameTemp && $gameTemp.clearDestination) $gameTemp.clearDestination();\nif (TouchInput && TouchInput.clear) TouchInput.clear();\n$gameTemp.reserveCommonEvent(pic._commonEventId);\n}\n};\nEDIT: Seems like the strike-through line didn't appear in the code, but it's that thing between the S and /S in brackets\nClick to expand...\n*Edit -\nAfter re-reading this more, I understood what you meant, I think?\nRemoving\nCode:\n&& !$gameMessage.isBusy()\ndid\nnot\nbreak the code\n, (that was due to a mistake I made) but it still didn't allow for the PictureButton to be clicked while an event was running.\nI left the\nCode:\n&& !$gameMessage.isBusy()\nremoved, and input\nCode:\n$gameMap._interpreter.command115();\ninto the \"Sprite_Picture.prototype.onClick = function()\" like you showed above. At first it gave an error about something being null, but I tried it again, and the error went away- but now the PictureButton is not clickable at all."
+    }
+  ]
+}

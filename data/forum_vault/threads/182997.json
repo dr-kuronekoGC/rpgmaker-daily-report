@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/fullscreen-laggy-pixels.182997",
+  "title": "Fullscreen \"laggy\" pixels",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:17.328263+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1551628",
+      "author": "LongSnoutWeevlil",
+      "date": "2026-03-24T22:50:53+0900",
+      "body": "Hello, i'm trying to make my game fullscreen, not 16:9 ratio, but basic fullscreen you can accomplish in game by pressing f4, normally, that would blur pixels, so i got tdp pixel perfect plugin, wich works perfectly and it removes the blur that would otherwise be applied when pressing f4, the only problem with this is that when moving, every pixel gets \"laggy\" almost looks like a crt effect, this applies to the whole map but is more evident on sprites that have something that doesent happen if the game is normally windowed, i'm not really sure how to explain it better, i'd guess it has to do with motion blur, also, i've noticed that this doesen't seem to appear in recordings, only when playing and seeing it real time\nThanks in advance to everyone, if you have any suggestions"
+    },
+    {
+      "post_id": "js-post-1551634",
+      "author": "JGreene",
+      "date": "2026-03-24T23:25:52+0900",
+      "body": "Is that Pixel Perfect the Chrome extension? It might not be fully compatible with however MV is processed. There are other ways to increase your game screen's resolution up to your monitor's native resolution.\nYanfly Core Engine\nhas a parameter that allow you to change the resolution. Just note that, by default, each tile is 48x48. So your dimensions need to be divisible by 48 on each side for it to look the cleanest. For your convenience, the math for a 1600x900 screen would come to 1584x864."
+    },
+    {
+      "post_id": "js-post-1551668",
+      "author": "LongSnoutWeevlil",
+      "date": "2026-03-25T05:00:45+0900",
+      "body": "JGreene said:\nIs that Pixel Perfect the Chrome extension? It might not be fully compatible with however MV is processed. There are other ways to increase your game screen's resolution up to your monitor's native resolution.\nYanfly Core Engine\nhas a parameter that allow you to change the resolution. Just note that, by default, each tile is 48x48. So your dimensions need to be divisible by 48 on each side for it to look the cleanest. For your convenience, the math for a 1600x900 screen would come to 1584x864.\nClick to expand...\nHello thanks for the help, it's this\nhttps://galenmereth.itch.io/pixel-perfect-for-rpg-maker\nextensions here, what im trying to do tough isn't a 16:9 ratio, but this fullscreen here:\nfor example this screenshot uses pixel perfect, so that it's not blurred, tough if i were to move around pixels would stagger or lag, feels like they're being dragged back, i realized in the meantime that yanfly's core engine seems to apply the same fix, tough i can't wrap my head around what sizes to put in, or if i have to change them i correspondence with comunity basic screen height and width"
+    },
+    {
+      "post_id": "js-post-1551680",
+      "author": "JGreene",
+      "date": "2026-03-25T06:53:26+0900",
+      "body": "Think of the screen as the player's field of view. It's always a static width and height (aka window size, or screen resolution). Whatever size game window you feel comfortable with, just measure how many tiles it is in width and height. Then multiply each by 48 to get the resolution for your plugin. It doesn't have to be 16:9. In fact, yours looks closer to 4:3.\nEdit: Also, I didn't see the part about community basic. But, you probably won't need it at all if you're using Yanfly's."
+    },
+    {
+      "post_id": "js-post-1551763",
+      "author": "LongSnoutWeevlil",
+      "date": "2026-03-26T06:20:38+0900",
+      "body": "JGreene said:\nThink of the screen as the player's field of view. It's always a static width and height (aka window size, or screen resolution). Whatever size game window you feel comfortable with, just measure how many tiles it is in width and height. Then multiply each by 48 to get the resolution for your plugin. It doesn't have to be 16:9. In fact, yours looks closer to 4:3.\nEdit: Also, I didn't see the part about community basic. But, you probably won't need it at all if you're using Yanfly's.\nClick to expand...\nThanks again\nI believed that basic resolution was 816x624, since a base map that occupies the whole camera is 17x13 tiles, and when its fullscreened it multiplies it giving it the blur effect, tough when i put it in yanfly's it ends up like this, and changing the value slightly  makes the map repeat itself\nwhat i also noticed is that what i mentioned earlier, when i said that the plugin also fixes the blur automatically without needing pixel perfect, it seems to only be working for certain sizes, for example here it's still getting blurred\nI've also tried looking at more posts about it\nhttps://forums.rpgmakerweb.com/threads/how-to-remove-blur.47504/#comment-475661\n, this fix for example does exactly what the pixel perfect plugin does, and it has the same issue too, so i believe it has to do with nearest-neighbor rendering, wich is necessary to remove the blur"
+    },
+    {
+      "post_id": "js-post-1552455",
+      "author": "LongSnoutWeevlil",
+      "date": "2026-03-31T18:11:55+0900",
+      "body": "bump"
+    },
+    {
+      "post_id": "js-post-1552460",
+      "author": "TheAM-Dol",
+      "date": "2026-03-31T21:30:46+0900",
+      "body": "Please read about integer scaling.\nInteger scaling — pixel-perfect integer-ratio scaling with no blur\ntanalin.com\nIn short, there is no one-size-fits-all solution."
+    },
+    {
+      "post_id": "js-post-1552550",
+      "author": "LongSnoutWeevlil",
+      "date": "2026-04-01T20:00:35+0900",
+      "body": "Well, i've kinda of found a way to do it by tweaking what has been said in this post, my solution is to use this guide:\nhttps://forums.rpgmakerweb.com/threads/how-to-remove-blur.47504/#comment-475661\nand then put Yanfly's core engine plugin and put 700x540 on the resolution, and update real scale to true\nHonestly i'm not sure what anything does here, the only thing i figured out is by following the guide i linked you make the engine render with nearest neighbor, fixing the blur when in fullscreen, and somehow that mixed with Yanfly's core engine size tweaks works without having the laggy pixels, there is one problem tough, wich is the default 17x13 tiles map isnt completely shown in the camera, it's like a 2 or 3 tiles difference, also the character's sprite goes under the borders of the screen when you reach them, tough all of this things can easily be worked around"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/vx-ace-tile-battle-background.181886",
+  "title": "VXAce VX Ace tile battle background",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:29.014908+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1543833",
+      "author": "Roninator2",
+      "date": "2026-01-11T08:31:01+0900",
+      "body": "Good day,\nIs it possible to script an override of the hardcoded link from tiles to what battleback image is used?\nOr is there somewhere, where I can find what tile id is linked to what battle background file?\nShort of me reading through the hundred or so scripts on battlebacks, what other methods are there to control what image is used based on the tile. Some scripts will overwrite with region id, but I don't remember if there is one that does it by tile id."
+    },
+    {
+      "post_id": "js-post-1543835",
+      "author": "DevRPG2k",
+      "date": "2026-01-11T08:41:36+0900",
+      "body": "Sorry if I misunderstood, but in this context, what would Tile ID be? I assume it's not the same thing as Terrain ID.\nWould it be something like an array, where the first Autotile would be 0 and the first tile would be 16?"
+    },
+    {
+      "post_id": "js-post-1543873",
+      "author": "Roninator2",
+      "date": "2026-01-11T12:48:24+0900",
+      "body": "Dev_With_Coffee said:\nwhat would Tile ID be? I assume it's not the same thing as Terrain ID.\nClick to expand...\nyes the number of the tile in the sequence of tile positions on the tileset.\n0-511 for autotiles (I think) 512-2048 for B-E tabs\nthe A2 ground is hardcoded (as I understand it) to link directly to a specific battle back file(s)."
+    },
+    {
+      "post_id": "js-post-1543883",
+      "author": "DevRPG2k",
+      "date": "2026-01-11T13:56:20+0900",
+      "body": "Since Battlebacks consist of two images, I imagine it could be a combination of possibilities, probably lines 135 and 158 of\nSpriteset_Battle\n.\nAll Battleback checks are performed using the\nnormal_battleback1_name\nand\nnormal_battleback2_name\ntags.\nIn the midst of all this, it would be possible to override this to check the tile ID. I'm not sure how it works, but I suspect the method used would be the same as\nlayered_tiles\nin\nGame_Map\n:\n$game_map.tile_id($game_player.x, $game_player.y, 0)\nEdit:\nThere's one detail I'd forgotten: The autotiles from A1, A2, A4 and half of the A3 have various values due to the different possibilities for assembling them, while the tiles from A5 start at ID 1536 and end at 1663"
+    },
+    {
+      "post_id": "js-post-1543899",
+      "author": "Timtrack",
+      "date": "2026-01-11T17:08:14+0900",
+      "body": "Hello,\nThe battleback choice is handled in Spriteset_Battle:\nYou can check methods\nbattleback1_name\nand\nbattleback2_name\nas well as called methods.\nAs for the hardcoded names, they are here:\nRuby:\nclass Spriteset_Battle\n  def terrain_battleback1_name(type)\n    case type\n    when 24,25        # Wasteland\n      \"Wasteland\"\n    when 26,27        # Dirt field\n      \"DirtField\"\n    when 32,33        # Desert\n      \"Desert\"\n    when 34           # Rocks\n      \"Lava1\"\n    when 35           # Rocks (lava)\n      \"Lava2\"\n    when 40,41        # Snowfield\n      \"Snowfield\"\n    when 42           # Clouds\n      \"Clouds\"\n    when 4,5          # Poisonous swamp\n      \"PoisonSwamp\"\n    end\n  end\n  #--------------------------------------------------------------------------\n  # * Get Filename of Battle Background (Wall) Corresponding to Terrain\n  #--------------------------------------------------------------------------\n  def terrain_battleback2_name(type)\n    case type\n    when 20,21        # Forest\n      \"Forest1\"\n    when 22,30,38     # Low hill\n      \"Cliff\"\n    when 24,25,26,27  # Wasteland, dirt field\n      \"Wasteland\"\n    when 32,33        # Desert\n      \"Desert\"\n    when 34,35        #  Rocks\n      \"Lava\"\n    when 40,41        # Snowfield\n      \"Snowfield\"\n    when 42           # Clouds\n      \"Clouds\"\n    when 4,5          # Poisonous swamp\n      \"PoisonSwamp\"\n    end\n  end\n  #--------------------------------------------------------------------------\n  # * Get Filename of Default Battle Background (Floor)\n  #--------------------------------------------------------------------------\n  def default_battleback1_name\n    \"Grassland\"\n  end\n  #--------------------------------------------------------------------------\n  # * Get Filename of Default Battle Background (Wall)\n  #--------------------------------------------------------------------------\n  def default_battleback2_name\n    \"Grassland\"\n  end\n  #--------------------------------------------------------------------------\n  # * Get Filename of Battle Background (Floor) When on Ship\n  #--------------------------------------------------------------------------\n  def ship_battleback1_name\n    \"Ship\"\n  end\n  #--------------------------------------------------------------------------\n  # * Get Filename of Battle Background (Wall) When on Ship\n  #--------------------------------------------------------------------------\n  def ship_battleback2_name\n    \"Ship\"\n  end\nend\nThe type refers to the\nautotile_type\nof the highest\nautotile\nlayer (0 or 1). And I guess this value will be the index of the tile in your tileset A (here the autotiles are counted once).\nEdit: Actually the autotile_type will return -1 if there is no autotile on the given layer, so it handles the id of autotiles up to 127, ie from A1 to A4.\nAnd as Dev_With_Coffee said, if the tile_id is between 1536 and end at 1663, then it is in A5."
+    },
+    {
+      "post_id": "js-post-1543931",
+      "author": "Roninator2",
+      "date": "2026-01-11T22:13:22+0900",
+      "body": "Thanks. All the years I've been using VX Ace I never saw this.\nI assumed it was coded somewhere that was not accessible to us.\nThis opens possibilities as soon as I understand Autotiles better."
+    },
+    {
+      "post_id": "js-post-1544038",
+      "author": "DevRPG2k",
+      "date": "2026-01-12T09:26:39+0900",
+      "body": "I noticed that the first Autotiles for water have the same IDs:"
+    },
+    {
+      "post_id": "js-post-1544081",
+      "author": "Timtrack",
+      "date": "2026-01-12T14:45:24+0900",
+      "body": "Dev_With_Coffee said:\nI noticed that the first Autotiles for water have the same IDs:\nClick to expand...\nI'm fairly sure that's because you are looking at the first layer (layer 0), if you look at layer 1, you will find the id of the autotiles 1,2,3.\nAs for the battle back, it will first check layer 1 before layer 0.\nAll of this is because ace mapping is actually 3 layers like XP, but they decided that the second layer was reserved to only a few tiles from A."
+    }
+  ]
+}

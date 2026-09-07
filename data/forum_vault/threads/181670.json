@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/side-view-action-scene-during-battle.181670",
+  "title": "Side-View action scene during battle",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:30.062029+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1542306",
+      "author": "Timtrack",
+      "date": "2025-12-29T23:31:08+0900",
+      "body": "Hey everyone,\nI'm back with another request, as my TBS is reaching the end of its development (assuming I manage to fix my current major bugs ahahah), I'm a bit sad that I have not found the time or will to make side-view mini battles in it (like in Fire Emblem of other tactical battles). I won't really have the time to develop one and I personally don't really mind as I would not use this. But I thought this might be useful to have this as an addon? I am aware that this is a HUGE request, so it's up to whoever is willing to give it a try.\nOf course, adding this to my script would be an even bigger request as one would need to understand how it works. So instead, I ask if anyone could make a side-view action sequence for the default battle scene (\nScene_Battle\n), that I can then adapt to TBS quickly because my battle scene follows a similar structure as\nScene_Battle\n(except it's bigger and scarier).\nWhat is an action sequence?\nWell, the idea is: when I execute an action (using a skill or item), and my targets are selected (targets being battlers that may be part of different teams, so an array of battlers), it starts the side-view sequence with the user on one side, and the targets on the other, it then displays the effects, and returns to the battle scene (I guess without actually leaving it).\nSo I suppose the method to change would be\nuse_item\nfrom the battle scene. Here is a basic code:\nRuby:\nclass Scene_Battle\n  #--------------------------------------------------------------------------\n  # new method: side_view_mini? -> for eventual enabling/disabling\n  #--------------------------------------------------------------------------\n  def side_view_mini?\n    true\n  end\n \n  #--------------------------------------------------------------------------\n  # alias method: use_item -> the method to change\n  #--------------------------------------------------------------------------\n  alias side_view_mini_use_item use_item\n  def use_item\n    return side_view_mini_use_item unless side_view_mini?\n    #do something here to call side_view_mini\n    #-----\n    #original code:\n    #item = @subject.current_action.item\n    #@log_window.display_use_item(@subject, item)\n    #@subject.use_item(item)\n    #refresh_status\n    #targets = @subject.current_action.make_targets.compact\n    #show_animation(targets, item.animation_id)\n    #targets.each {|target| item.repeats.times { invoke_item(target, item) } }\n  end\n \n  #--------------------------------------------------------------------------\n  # new method: side_view_mini -> probably somehting like this?\n  #--------------------------------------------------------------------------\n  def side_view_mini(user, action, targets)\n    #open_mini_scene\n    #update_mini while mini_scene?\n    #close_mini_scene\n  end\nend #Scene_Battle\nVoilà, I'm aware that such request could be very big, especially because side-view can imply action sequences and animated sprites, so unless such script already exists, then this might be very difficult."
+    },
+    {
+      "post_id": "js-post-1542353",
+      "author": "BCj",
+      "date": "2025-12-30T05:56:31+0900",
+      "body": "I know it has been done before for VX Ace, in Symphony of War, I believe the coder (Mithran)  is on this forum as well."
+    },
+    {
+      "post_id": "js-post-1542695",
+      "author": "Timtrack",
+      "date": "2026-01-02T19:53:34+0900",
+      "body": "BCj said:\nI know it has been done before for VX Ace, in Symphony of War, I believe the coder (Mithran) is on this forum as well.\nClick to expand...\nSorry for my late response, and thank you for the suggestion. The symphony of war sideview system is very specific because I don't think it follows the same structure compared to vanilla rpg maker (in terms of party, troop and skills), there is also the risk of it being not public. I can try to contact Mithran in case.\nI think it would be easier to either study the code from the mini battles from the GTBS, or go from an already existing side-view system (like Theo SBS Yami's Battle Symphony or Tankentai).\nAfter a bit of research I stumbled across\nGalv's animated battles\n. The code seems light and not scene-dependent, so maybe I can make an addon requiring it, mmh...\nDo you guys know any other easy to parametrize (in term of animations) side-view battle display?"
+    }
+  ]
+}

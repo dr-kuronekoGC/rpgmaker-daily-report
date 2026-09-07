@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/pushing-a-rock-into-a-wall-causes-the-playtest-game-to-freeze-what-should-i-do.183031",
+  "title": "MZ Pushing a rock into a wall causes the playtest game to freeze-what should I do?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:07.748112+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1551898",
+      "author": "string249",
+      "date": "2026-03-27T04:13:25+0900",
+      "body": "Hi all. Noob hobbyist here looking to try RPG Maker MZ and make a game for fun. This is probably nothing compared to the projects and troubleshooting that everyone's posted here, but I'm a bit stuck on something quite basic.\nI'm following the in-built tutorials just to get a feel of the engine, and I reached step 10, the one about pushing boulders (Event application 2). I've followed the steps fine, but I've ran into a problem; pushing the rock into a wall or any surface with collision causes the playtest to freeze and stop running. I can't move or exit to menu and the only way to \"fix\" this is to close the playtest.\nI've played around with the \"skip if cannot move\", and \"wait for completion\" boxes on the commands for both the rock and the player but no matter what combination of ticks or no-ticks I do, this always seems to persist.\nWhat am I doing wrong? Is this a bug? Any way to fix this at all?\nAny help would be greatly appreciated!"
+    },
+    {
+      "post_id": "js-post-1551900",
+      "author": "SGHarlekin",
+      "date": "2026-03-27T04:25:27+0900",
+      "body": "Probably because you've made a moveroute and didn't enable skip if can not move so the rock continuously tries to step into a tile that's not passable(Though you said you enabled that). But without any screenshots of what you actually did, it's hard to say.\nRefer to this post when asking for help:\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com\nEspecially the last point. Screenshots. We need to be able to see what you've concocted to be able to tell you what you did wrong."
+    },
+    {
+      "post_id": "js-post-1551903",
+      "author": "string249",
+      "date": "2026-03-27T04:37:22+0900",
+      "body": "SGHarlekin said:\nProbably because you've made a moveroute and didn't enable skip if can not move so the rock continuously tries to step into a tile that's not passable(Though you said you enabled that). But without any screenshots of what you actually did, it's hard to say.\nRefer to this post when asking for help:\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com\nEspecially the last point. Screenshots. We need to be able to see what you've concocted to be able to tell you what you did wrong.\nClick to expand...\nHere's some screenshots. I'm not sure if this is the best format they could be in, but this is what I have:\nThis is the event page of the rock itself ^\nThis is what I have when I open the first line on Contents (Set Movement Route: This Event) ^\nAnd this is what I have when I open the \"Set Movement Route: Player\" line ^\nPlease let me know if any other screenshots are required (I'm new to this engine and coding/programming as a whole so I have no idea what I should be including in these-apologies)"
+    },
+    {
+      "post_id": "js-post-1551911",
+      "author": "SGHarlekin",
+      "date": "2026-03-27T05:16:54+0900",
+      "body": "Yeah so both moveroutes have no \"Skip if can not move\" and \"Wait for completion\", so the game tries to let the boulder move into a wall, which is obviously not passable and you're telling it to wait until the boulder is inside the wall, which will never happen, making it so you will never be able to move, open the menu, or do anything else.\nAlso not sure why the boulder has a direction fix ON when the first thing you do is turning direction fix OFF when touching it."
+    },
+    {
+      "post_id": "js-post-1551914",
+      "author": "alasth",
+      "date": "2026-03-27T05:47:20+0900",
+      "body": "SGHarlekin said:\nAlso not sure why the boulder has a direction fix ON when the first thing you do is turning direction fix OFF when touching it.\nClick to expand...\nMaybe because he is : \"\nNoob hobbyist\n\"\nstring249 said:\nHere's some screenshots. I'm not sure if this is the best format they could be in, but this is what I have:\nView attachment 363540\nThis is the event page of the rock itself ^\nView attachment 363541\nThis is what I have when I open the first line on Contents (Set Movement Route: This Event) ^\nView attachment 363542\nAnd this is what I have when I open the \"Set Movement Route: Player\" line ^\nPlease let me know if any other screenshots are required (I'm new to this engine and coding/programming as a whole so I have no idea what I should be including in these-apologies)\nClick to expand...\nAs\n@SGHarlekin\nsaid, you need to check the “skip if cannot move” box; otherwise, the game will keep trying to force the action over and over.\nAnd you need to uncheck the “fixed direction” box for the rock because, anyway, when you touch it with your character, it switches to “fixed direction off,” so you might as well just never enable it...\nAs for the “player's forward step,” I find it strange as a player to see my character follow the rock even though I'm no longer pressing the directional key.\nIn my opinion, you shouldn’t have the player follow it\n(in Pokémon, the trainer doesn’t move once they’ve moved the rock; they have to take another step to move it again)\nTest both versions and use the one you like best, of course"
+    },
+    {
+      "post_id": "js-post-1551930",
+      "author": "Solar_Flare",
+      "date": "2026-03-27T08:02:20+0900",
+      "body": "alasth said:\nAs for the “player's forward step,” I find it strange as a player to see my character follow the rock even though I'm no longer pressing the directional key.\nIn my opinion, you shouldn’t have the player follow it\nClick to expand...\nJust chiming in with an opposite opinion. Unless your game is built entirely around the mechanic of pushing things, I prefer the player to follow the thing pushed, like you've done. 99.999% of the time you're going to follow it anyway to push it further, and the player already pressed the directional key to initiate the push.\nIf your game\nis\nbuilt entirely around the mechanic of pushing things, I'd say you should base it on how long the directional key was pressed – short tap to push without moving, otherwise push and move. This might boil down to not having a forward step (because if your key is still held the player will move anyway), but I'm not sure."
+    },
+    {
+      "post_id": "js-post-1551945",
+      "author": "SGHarlekin",
+      "date": "2026-03-27T09:04:21+0900",
+      "body": "alasth said:\nMaybe because he is : \"\nNoob hobbyist\n\"\nClick to expand...\nThat's why I pointed it out."
+    },
+    {
+      "post_id": "js-post-1551985",
+      "author": "string249",
+      "date": "2026-03-27T22:29:55+0900",
+      "body": "Update: I think I figured out what was the problem.\nTurns out, part of the problem was that I was editing the contents wrong. On the contents page, I was double clicking on the already existing command, believing that would open the highlighted one, when in reality it should've been right click + edit. Seems like I was adding a whole new command and just confusing the engine. I didn't know that you should be using right click + edit this whole time. :I\nSo the way I understand it, there should be a tick on \"Skip if cannot move\", and no tick on \"Wait for completion\" for This Event, and putting a tick on both for \"Player\", as per\n@SGHarlekin\nsaid. I think that was the sequence, but at the very least this got rid of the freezing.\n@Solar_Flare\nI honestly don't think my game will involve too much pushing obstacles as a gameplay feature, but I'll keep that in mind should I ever include a pushing puzzle or a game based around it, thanks.\n@alasth\nTurns out not putting a tick on \"Direction fix\" does indeed not conflict with the commands, it was what the tutorial told me to do so I just went along with it. I guess this saves a step though in the grand scheme of things.\nAgain-apologies for the really novice question-coding and syntax and programming was never my strong suit! Thanks for everyone's help!"
+    },
+    {
+      "post_id": "js-post-1551986",
+      "author": "SGHarlekin",
+      "date": "2026-03-27T22:37:10+0900",
+      "body": "string249 said:\nI was adding a whole new command\nClick to expand...\nThere was nothing of the sort in the screenshots tho.\nstring249 said:\nright click + edit\nClick to expand...\nYou can also hit the space bar once you selected an event command to open the edit. I find that to be a little quicker and less cumbersome than right click>edit."
+    },
+    {
+      "post_id": "js-post-1551987",
+      "author": "string249",
+      "date": "2026-03-27T22:46:27+0900",
+      "body": "SGHarlekin said:\nThere was nothing of the sort in the screenshots tho.\nYou can also hit the space bar once you selected an event command to open the edit. I find that to be a little quicker and less cumbersome than right click>edit.\nClick to expand...\nAt the time, in the screenshot, I hadn't yet done that, but I do recall from memory that I had been doing that the whole time while attempting to \"fix\" it.\nAlso-thanks for the spacebar shortcut, this is actually really helpful"
+    },
+    {
+      "post_id": "js-post-1552004",
+      "author": "SGHarlekin",
+      "date": "2026-03-28T00:53:56+0900",
+      "body": "string249 said:\nAt the time, in the screenshot, I hadn't yet done that, but I do recall from memory that I had been doing that the whole time while attempting to \"fix\" it.\nAlso-thanks for the spacebar shortcut, this is actually really helpful\nClick to expand...\nYou're very welcome. Good luck with your project and feel free to make new threads for the inevitable new problems you will encounter.\n(Also feel free to report your first post as \"Solved\" so mods can close it.)"
+    },
+    {
+      "post_id": "js-post-1552097",
+      "author": "Norintha",
+      "date": "2026-03-28T14:15:26+0900",
+      "body": "alasth said:\nAs for the “player's forward step,” I find it strange as a player to see my character follow the rock even though I'm no longer pressing the directional key.\nIn my opinion, you shouldn’t have the player follow it\n(in Pokémon, the trainer doesn’t move once they’ve moved the rock; they have to take another step to move it again)\nTest both versions and use the one you like best, of course\nClick to expand...\nIf you can push a human sized rock five feet without you yourself moving, I am impressed."
+    },
+    {
+      "post_id": "js-post-1552262",
+      "author": "alasth",
+      "date": "2026-03-29T23:58:17+0900",
+      "body": "Norintha said:\nIf you can push a human sized rock five feet without you yourself moving, I am impressed.\nClick to expand...\nIf it's only as big as a human, then I don't even need to push it... I just have to step on it"
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/force-action-causing-error-with-paralyzing-state-solved.183002",
+  "title": "MV Force Action causing error with paralyzing State [Solved]",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:16.503600+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1551662",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-25T03:50:45+0900",
+      "body": "I have some bosses in my game that will perform an Action after hitting a certain percentage of their HP while I also have States in the game that can cause the Actor or Enemy inflicted to Act but have it cancelled before anything is done if the chance for it to happen is rolled. The chance calculation uses this notetag in the State:\n<Custom Action Start Effect>\n// Set the paralyze success rate.\nvar paralyzeRate = 0.5;\n// Make a random number check to see if paralyze passes...\nif (Math.random() < paralyzeRate) {\n// If it does, play the paralyze animation on the target.\nuser.startAnimation(64);\n// Check for the user's current action...\nif (user.currentAction()) {\n// And make the user consume its resources.\nuser.useItem(user.currentAction().item());\n}\n// Clear the user's actions making the user lose the actions.\nuser.clearActions();\n// Get the log window from battle.\nvar logWindow = SceneManager._scene._logWindow;\n// Check if the paralyze state has text in message 3\nif (state.message3) {\n// If it does, create a message based on it.\nvar msg = '<CENTER>' + user.name() + state.message3;\n// Add the text to the log window to display in battle.\nlogWindow.addText(msg);\n}\n// Make the battle wait for the paralysis animation to finish playing.\nBattleManager.actionWaitForAnimation();\n// Clear the log window.\nlogWindow.push('clear');\n}\n</Custom Action Start Effect>\nClick to expand...\nAnd it seems whenever it activates during a Force Action command in the Battle Events, it makes this error show up\nSo is there anyway I could fix this while still keeping the State acting the same way, I wouldnt mind if the Forced Action were to ignore the Paralyze Chance but I dont want it to just remove the State from the Enemy so it doesnt break the game, I'd just want it to like ignore the whole process for any Forced Actions if possible"
+    },
+    {
+      "post_id": "js-post-1551667",
+      "author": "Robro33",
+      "date": "2026-03-25T04:56:03+0900",
+      "body": "caethyril said:\nThe usual reason for this error message is that something has tried to pass\nundefined\nto\nJSON.parse\n. Based on the stack trace, it looks like something is trying to do Force Action on an actor, but\nBattleManager._action\nis\nundefined\nso YEP Battle Engine Core cannot memorise...hang on, I've seen this before. I'll go do a search~\n...OK here's the thread:\nNeed help with an error please.\nHey there gang. I have been getting a seemingly random crash in battle. I understand most of the error code but it references a .json.parse () and that is throwing me off I was hoping some could help me with this one. My MV is version 1.6.2. I'll post an image of the error below.  Big thanks for...\nforums.rpgmakerweb.com\nNotably:\ncaethyril said:\nI came up with something that might solve the problem (just theory, I haven't tested it). Save the following code as a .js file (Save As > File Type: All Files, Filename: whateverYouLike.js), import as a plugin, and make sure to load it immediately after Battle Engine Core in the Plugin Manager~\nSpoiler:\nA fix?\nJavaScript:\n// Place immediately below YEP_BattleEngineCore in the Plugin Manager\n\n// Override - \"no action\" failsafe to avoid JSON.parse failure\nBattleManager.setPreForceActionSettings = function() {\n  return {\n    subject: this._subject,\n    action: this._action ? JsonEx.makeDeepCopy(this._action) : undefined,  // <- edit 1 of 1\n    actionList: JsonEx.makeDeepCopy(this._actionList),\n    targets: this._targets.slice(),\n    allTargets: this._allTargets.slice(),\n    indTargets: this._individualTargets.slice(),\n    phaseSteps: JsonEx.makeDeepCopy(this._phaseSteps),\n    returnPhase: this._returnPhase,\n    phase: this._phase,\n    conditionFlags: JsonEx.makeDeepCopy(this._conditionFlags),\n    trueFlags: JsonEx.makeDeepCopy(this._trueFlags)\n  }\n};\n\n// Override - do not restore \"no action\"\nBattleManager.loadPreForceActionSettings = function() {\n    var settings = this._forceActionQueue[0];\n    if (settings) {\n      this._forceActionQueue.shift();\n      if (!settings.action) return false;  // <- edit 1 of 1\n      this.resetPreForceActionSettings(settings);\n      return this._subject && this._subject.isAppeared();\n    } else {\n      return false;\n    }  \n};\nClick to expand...\nThere are probably various things that can cause it, this \"fix\" treats the symptom, not the cause.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1551737",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-26T02:10:45+0900",
+      "body": "I believe it did fix something? But the error seems to be different now?\nI forgot to mention I use STB so im confused as to why the other ones appear in the error message?\nIm pretty sure im supposed to have ATB and CTB turned on still despite not using them in my game, right?"
+    },
+    {
+      "post_id": "js-post-1551739",
+      "author": "Robro33",
+      "date": "2026-03-26T02:18:33+0900",
+      "body": "Twig_the_Blue_Pikmin said:\nIm pretty sure im supposed to have ATB and CTB turned on still despite not using them in my game, right?\nClick to expand...\nyanfly's battle systems are mutually exclusive. if you have one, youre not supposed to be running the others"
+    },
+    {
+      "post_id": "js-post-1551746",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-26T02:45:01+0900",
+      "body": "Robro33 said:\nyanfly's battle systems are mutually exclusive. if you have one, youre not supposed to be running the others\nClick to expand...\nOh! Ok! Well I got rid of them but it seems this still shows up, just without those systems there now?"
+    },
+    {
+      "post_id": "js-post-1551764",
+      "author": "Robro33",
+      "date": "2026-03-26T06:26:13+0900",
+      "body": "Twig_the_Blue_Pikmin said:\nOh! Ok! Well I got rid of them but it seems this still shows up\nClick to expand...\nfrom here, share a complete screenshot of your plugin manager to confirm the load order. i believe that something may be happening out of order.\nalso confirm that in yanfly's battle engine core plugin parameters you have STB selected as your battle system as well. no need to show a screenshot of it, but just make sure its on STB"
+    },
+    {
+      "post_id": "js-post-1551770",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-26T07:18:45+0900",
+      "body": "Robro33 said:\nfrom here, share a complete screenshot of your plugin manager to confirm the load order. i believe that something may be happening out of order.\nalso confirm that in yanfly's battle engine core plugin parameters you have STB selected as your battle system as well. no need to show a screenshot of it, but just make sure its on STB\nClick to expand...\nOk so I got all of them from top to bottom? I've got quite a lot of em... but mainly I think it would just be the Battle Plugins causing the issue, just figured I show all of them anyway\nIm thinking the \"BattleEngineFix\" one at the very bottom needs place somewhere else perhaps but idk where exactly? Maybe that's it?"
+    },
+    {
+      "post_id": "js-post-1551771",
+      "author": "Robro33",
+      "date": "2026-03-26T07:36:46+0900",
+      "body": "Twig_the_Blue_Pikmin said:\nIm thinking the \"BattleEngineFix\" one at the very bottom needs place somewhere else perhaps but idk where exactly? Maybe that's it?\nClick to expand...\ntry it immediately after the battle core engine"
+    },
+    {
+      "post_id": "js-post-1551775",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-26T08:06:18+0900",
+      "body": "Robro33 said:\ntry it immediately after the battle core engine\nClick to expand...\nSame error happens sadly..."
+    },
+    {
+      "post_id": "js-post-1551781",
+      "author": "Robro33",
+      "date": "2026-03-26T09:19:10+0900",
+      "body": "i was hoping it would have been just where it was being loaded.\nI tried just the battle engine core and the buffs and states core to get the initial error, and tried Cae's fix to be sure its the right issue. I also use the fix in my main project with many other plugins without an issue. if you disable every plugin besides those 3, can you confirm whether or not you get the crash? if not, then then youd have to reenable your plugins until you find the first plugin that the issue presents itself when enabled.\nalso, you do have a few yanfly plugins out of order like the passive state plugin being high and the base param plugin being low, but I dont think theyd be contributing to the error. I'd reorder them if i were you"
+    },
+    {
+      "post_id": "js-post-1551783",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-26T10:07:36+0900",
+      "body": "Robro33 said:\ni was hoping it would have been just where it was being loaded.\nI tried just the battle engine core and the buffs and states core to get the initial error, and tried Cae's fix to be sure its the right issue. I also use the fix in my main project with a many other plugins without an issue. if you disable every plugin besides those 3, can you confirm whether or not you get the crash? if not, then then youd have to reenable your plugins until you find the first plugin that the issue presents itself when enabled.\nalso, you do have a few yanfly plugins out of order like the passive state plugin being high and the base param plugin being low, but I dont think theyd be contributing to the error. I'd reorder them if i were you\nClick to expand...\nAh okay I'll reorder those, also I'll see what I can do with the 3 plugins"
+    },
+    {
+      "post_id": "js-post-1551790",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-26T11:59:55+0900",
+      "body": "Robro33 said:\ni was hoping it would have been just where it was being loaded.\nI tried just the battle engine core and the buffs and states core to get the initial error, and tried Cae's fix to be sure its the right issue. I also use the fix in my main project with a many other plugins without an issue. if you disable every plugin besides those 3, can you confirm whether or not you get the crash? if not, then then youd have to reenable your plugins until you find the first plugin that the issue presents itself when enabled.\nalso, you do have a few yanfly plugins out of order like the passive state plugin being high and the base param plugin being low, but I dont think theyd be contributing to the error. I'd reorder them if i were you\nClick to expand...\nI turned off every plugin except YEP Core Engine, Battle Engine, STB Battle, Buff States, and the plugin suppose to fix stuff like you said and got this error? A bit different from the other one but it still gives an error the same way as before"
+    },
+    {
+      "post_id": "js-post-1551804",
+      "author": "caethyril",
+      "date": "2026-03-26T19:19:12+0900",
+      "body": "That looks to me like the same error as the one in the first post of this thread, without my plugin.\nMy plugin\noverrides\nsetPreForceActionSettings\n, so I think it's impossible to get the error trace in your screenshot if you are actually using my plugin and loading it after YEP_BattleEngineCore?\nIdeas:\nDid you save your project to apply Plugin Manager changes before testing?\nMaybe you saved the plugin incorrectly. If a plugin causes a syntax error when the game attempts to load it, then that plugin will silently be skipped/disabled. Try the attached file instead?\nIf you press F8 or F12 during playtest, it should show the dev tools window. That window has a Console tab. Detailed error information should show here, including non-fatal errors that would otherwise go unnoticed. So a screenshot of the Console tab might be helpful."
+    },
+    {
+      "post_id": "js-post-1551953",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-27T12:27:10+0900",
+      "body": "caethyril said:\nThat looks to me like the same error as the one in the first post of this thread, without my plugin.\nMy plugin\noverrides\nsetPreForceActionSettings\n, so I think it's impossible to get the error trace in your screenshot if you are actually using my plugin and loading it after YEP_BattleEngineCore?\nIdeas:\nDid you save your project to apply Plugin Manager changes before testing?\nMaybe you saved the plugin incorrectly. If a plugin causes a syntax error when the game attempts to load it, then that plugin will silently be skipped/disabled. Try the attached file instead?\nIf you press F8 or F12 during playtest, it should show the dev tools window. That window has a Console tab. Detailed error information should show here, including non-fatal errors that would otherwise go unnoticed. So a screenshot of the Console tab might be helpful.\nClick to expand...\nOkay I did both 1 and 2 correctly, as for 3 here is the screenshot of the console for when the error occurs? It seems to say it's YEP's Core Engine rather than the Battle Engine I believe with the thing on the far right?"
+    },
+    {
+      "post_id": "js-post-1551993",
+      "author": "caethyril",
+      "date": "2026-03-27T23:01:59+0900",
+      "body": "Twig_the_Blue_Pikmin said:\nIt seems to say it's YEP's Core Engine rather than the Battle Engine I believe with the thing on the far right?\nClick to expand...\nYEP_CoreEngine is unrelated: it modifies the error-reporting method to show the trace in-game, that's why it's showing there.\nThe error seems to be back to what it was in\npost #5\n, which is promising. This error makes me think that the\nBattleManager.startAction\nmethod is setting the current\n_subject\nto\nnull\n, because this is the core method (rpg_managers.js) giving rise to the error (comments by me):\nJavaScript:\nBattleManager.processForcedAction = function() {\n    if (this._actionForcedBattler) {                // if true, forced battler is not null\n        this._turnForced = true;\n        this._subject = this._actionForcedBattler;  // so cannot be null here\n        this._actionForcedBattler = null;\n        this.startAction();                         // so must be set null here\n        this._subject.removeCurrentAction();        // to cause that error here\n    }\n};\nYou're manipulating the action via the\n<Custom Action Start Effect>\ntag of Buffs & States Core, which hooks into\nstartAction\n. However, I don't see you doing anything obvious to change the battle manager subject in that notetag, and the code itself seems to be straight from\nYanfly's Paralyze Tips & Tricks article\n...\nThat said,\nthe STB plugin is unsupported\n. You could try testing:\nWith only 3 plugins turned on (for the Paralyze notetag):\nYEP_BattleEngineCore, my fix, and YEP_BuffsStatesCore.\nWith only 4 plugins turned on (STB system enabled):\nYEP_BattleEngineCore, my fix, YEP_X_BattleSysSTB, and YEP_BuffsStatesCore.\n(Note that you can press Ctrl+A in the Plugin Manager to select all plugins, then right-click -> Turn OFF to turn them all off at once.\nI suggest testing in a copy of your project\n, rather than the real thing. Alternatively you could try to reproduce the relevant setup in a new project, without all the extra plugins & content complicating things.)\nIf it errors out even in case 1, then I'm not sure what's happening.\nIf it works in case 1 but not in case 2, I'd guess it's an issue with forced actions in STB?\nIf it works in case 1 and case 2, check your other plugins. I'd start with battle-related stuff.\nAs always, remember to save your project to apply Plugin Manager changes before testing, and make sure you Yanfly's plugins are loaded in the recommended order, listed on Yanfly's site:\nCategory:Yanfly Engine Plugins - Yanfly.moe Wiki\nwww.yanfly.moe\nIt's also possible you are using outdated or edited core scripts. More info below in case you want to check that~\nSpoiler:\ninfo on how to check/update core scripts\nChoose Game -> Open Folder from the editor's menu bar;\nOpen the\njs\nsubfolder there;\nOpen e.g.\nrpg_core.js\nin any text editor (Notepad is sufficient).\nYou'll see something like this at the top, unless it's really old:\n//=============================================================================\n// rpg_core.js v1.6.2\n//=============================================================================\nFunctionally, I don't think the core scripts have changed since v1.6.1? If you're using an older version, or if you have edited any core script files at any point, you can update your project by carefully following the instructions in this announcement:\nAnnouncement - RPG Maker MV - v1.6.1 Stable Release!\n6/21/2018 Everyone, please read the instructions carefully. The bugs that are being reported shouldn't happen if the correct files were even copied properly. Such examples like the \"CTRL BUG\" shouldn't happen if you copied index.html, package.json, the rpg*.js files and so on.  I also received...\nforums.rpgmakerweb.com\nMaybe someone else has more ideas. Either way, good luck!"
+    },
+    {
+      "post_id": "js-post-1552009",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-28T02:01:12+0900",
+      "body": "caethyril said:\nYEP_CoreEngine is unrelated: it modifies the error-reporting method to show the trace in-game, that's why it's showing there.\nThe error seems to be back to what it was in\npost #5\n, which is promising. This error makes me think that the\nBattleManager.startAction\nmethod is setting the current\n_subject\nto\nnull\n, because this is the core method (rpg_managers.js) giving rise to the error (comments by me):\nJavaScript:\nBattleManager.processForcedAction = function() {\n    if (this._actionForcedBattler) {                // if true, forced battler is not null\n        this._turnForced = true;\n        this._subject = this._actionForcedBattler;  // so cannot be null here\n        this._actionForcedBattler = null;\n        this.startAction();                         // so must be set null here\n        this._subject.removeCurrentAction();        // to cause that error here\n    }\n};\nYou're manipulating the action via the\n<Custom Action Start Effect>\ntag of Buffs & States Core, which hooks into\nstartAction\n. However, I don't see you doing anything obvious to change the battle manager subject in that notetag, and the code itself seems to be straight from\nYanfly's Paralyze Tips & Tricks article\n...\nThat said,\nthe STB plugin is unsupported\n. You could try testing:\nWith only 3 plugins turned on (for the Paralyze notetag):\nYEP_BattleEngineCore, my fix, and YEP_BuffsStatesCore.\nWith only 4 plugins turned on (STB system enabled):\nYEP_BattleEngineCore, my fix, YEP_X_BattleSysSTB, and YEP_BuffsStatesCore.\n(Note that you can press Ctrl+A in the Plugin Manager to select all plugins, then right-click -> Turn OFF to turn them all off at once.\nI suggest testing in a copy of your project\n, rather than the real thing. Alternatively you could try to reproduce the relevant setup in a new project, without all the extra plugins & content complicating things.)\nIf it errors out even in case 1, then I'm not sure what's happening.\nIf it works in case 1 but not in case 2, I'd guess it's an issue with forced actions in STB?\nIf it works in case 1 and case 2, check your other plugins. I'd start with battle-related stuff.\nAs always, remember to save your project to apply Plugin Manager changes before testing, and make sure you Yanfly's plugins are loaded in the recommended order, listed on Yanfly's site:\nCategory:Yanfly Engine Plugins - Yanfly.moe Wiki\nwww.yanfly.moe\nIt's also possible you are using outdated or edited core scripts. More info below in case you want to check that~\nSpoiler:\ninfo on how to check/update core scripts\nChoose Game -> Open Folder from the editor's menu bar;\nOpen the\njs\nsubfolder there;\nOpen e.g.\nrpg_core.js\nin any text editor (Notepad is sufficient).\nYou'll see something like this at the top, unless it's really old:\nCode:\n//=============================================================================\n // rpg_core.js v1.6.2\n //=============================================================================\nFunctionally, I don't think the core scripts have changed since v1.6.1? If you're using an older version, or if you have edited any core script files at any point, you can update your project by carefully following the instructions in this announcement:\nAnnouncement - RPG Maker MV - v1.6.1 Stable Release!\n6/21/2018 Everyone, please read the instructions carefully. The bugs that are being reported shouldn't happen if the correct files were even copied properly. Such examples like the \"CTRL BUG\" shouldn't happen if you copied index.html, package.json, the rpg*.js files and so on.  I also received...\nforums.rpgmakerweb.com\nMaybe someone else has more ideas. Either way, good luck!\nClick to expand...\nI tried out everything here and it seems to be entirely related to STB as it worked in case 1 with it turned off and started giving the error again upon STB being turned back on. Also I checked rpg_core and it's that exact version in the screenshot so im not using an older one!"
+    },
+    {
+      "post_id": "js-post-1552024",
+      "author": "rpgLord69",
+      "date": "2026-03-28T04:52:31+0900",
+      "body": "I didn't read all that so maybe pointless, but if the error has something to do with you clearing the actions, you can instead try to set the actions to some skill that does nothing"
+    },
+    {
+      "post_id": "js-post-1552090",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-28T13:17:15+0900",
+      "body": "rpgLord69 said:\nI didn't read all that so maybe pointless, but if the error has something to do with you clearing the actions, you can instead try to set the actions to some skill that does nothing\nClick to expand...\nOoo! Maybe that could work! Although, I have no idea how to do that without breaking stuff..."
+    },
+    {
+      "post_id": "js-post-1552111",
+      "author": "rpgLord69",
+      "date": "2026-03-28T18:22:42+0900",
+      "body": "Try replacing:\nif (user.currentAction()) {\nuser.useItem(user.currentAction().item());\n}\nuser.clearActions();\nwith (replace ID with your skill id):\nif (user.currentAction()) {\nuser.useItem(user.currentAction().item());\nuser.currentAction().setSkill(ID);\n}\n(If your dudes use multiple actions you need to change the skill for all, but you can try it like that)"
+    },
+    {
+      "post_id": "js-post-1552145",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-29T01:24:10+0900",
+      "body": "rpgLord69 said:\nTry replacing:\nif (user.currentAction()) {\nuser.useItem(user.currentAction().item());\n}\nuser.clearActions();\nwith (replace ID with your skill id):\nif (user.currentAction()) {\nuser.useItem(user.currentAction().item());\nuser.currentAction().setSkill(ID);\n}\n(If your dudes use multiple actions you need to change the skill for all, but you can try it like that)\nClick to expand...\nI tried this and the game doesnt cause an error anymore! But it also makes the paralyze state not paralyze anymore..."
+    },
+    {
+      "post_id": "js-post-1552300",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-03-30T05:50:35+0900",
+      "body": "Twig_the_Blue_Pikmin said:\nI have some bosses in my game that will perform an Action after hitting a certain percentage of their HP while I also have States in the game that can cause the Actor or Enemy inflicted to Act but have it cancelled before anything is done if the chance for it to happen is rolled. The chance calculation uses this notetag in the State:\nAnd it seems whenever it activates during a Force Action command in the Battle Events, it makes this error show up\nView attachment 363408\nSo is there anyway I could fix this while still keeping the State acting the same way, I wouldnt mind if the Forced Action were to ignore the Paralyze Chance but I dont want it to just remove the State from the Enemy so it doesnt break the game, I'd just want it to like ignore the whole process for any Forced Actions if possible\nClick to expand...\nI FINALLY SOLVED THIS! KINDA! BUT IT WORKS NOW!\nBasically it seems whenever a Force Action is triggered in a STB Battle after EVERYONE has performed an Action, the Error is caused. Force Action seems to work perfectly fine when triggered DURING the Turn as the Turn doesnt count as over till everyone finishes their Actions, and the Turn being over is what causes the Error soooo, I made the Troop Event rely on the Condition of having a Switch turned On to be able to run and then plugged in these codes(?) into the notetag of a Paralyze State!\n<Custom Turn End Effect>\n$gameSwitches.setValue(ID, false);\n</Custom Turn End Effect>\n<Custom Respond Effect>\n$gameSwitches.setValue(ID, true);\n</Custom Respond Effect>\nClick to expand...\nNow when the Turn Ends if the Enemy has the Paralyze State, it'll turn that Switch OFF before any damage is done thus preventing the Error from occuring, then with the Custom Respond Action the Switch will be turned back ON the second an Actor damages the Enemy so that the Troop Event with the Force Action will trigger DURING the Turn rather than the Turn End as to allow everything to work!\nThank you everyone for helping me as much as yall did, i dont think I would've figured out this work around if it werent for yall! :>"
+    }
+  ]
+}

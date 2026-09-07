@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/escape-via-item-sv-issues.182622",
+  "title": "MZ Escape via Item (SV Issues)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:07.080856+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1548943",
+      "author": "Nirriti",
+      "date": "2026-02-26T04:19:10+0900",
+      "body": "Hello! Recently made a 100% escape chance item. Two issues came up\n(this is in SV/Sideview).\nThe ESCAPE animation\n(if based off an item)\nis really awful. I would like it to instead reflect the regular escape command anim. Would it referring to a common event's effect make that possible? Ive no idea how, alas. It would ideally make the chances 100%\n(unless in a battle specified as unescapable). If in a boss battle Id have it pop a message window saying \"Can't Escape!\" with the error SFX played.\nIn SV still, when using escape via an item, the game freezes after the animation is performed\n(aka when the party members are offscreen).\nThe error log window shows nothing\n(except the usual \"missing pixi.js.map\" non-issue)\n.\n[ About Point #2 ] Just to make sure, Ive tested by copying my game project + deleted ALL plugins from the list. So none were in effect. Regardless, nothing changed. For the escape item, Ive set it to ALL ALLIES or else one ally remains in battle\n(testing with 2 party members).\nThanks in advance."
+    },
+    {
+      "post_id": "js-post-1548945",
+      "author": "Solar_Flare",
+      "date": "2026-02-26T04:28:34+0900",
+      "body": "I'm assuming you used Special Effect: Escape to implement this? I'm assuming you haven't run into an issue where you get Game Over after escaping (which can happen if escape isn't done properly).\nIf you want it to\nexactly\nfollow the default Escape command, but always succeed, the script call would be:\nJavaScript:\nBattleManager._preemptive = true;\nBattleManager.processEscape()\nThe\nprocessEscape\ncommand goes through the regular \"chance to escape\" routine, but the\n_preemptive\nflag overrides the chance to 100%. You'd need to put this in a Common Event instead of using Special Effect: Escape. Since it's a common event, that means you can easily check if it's a battle flagged as inescapable, using the following script call in a Conditional Branch:\nJavaScript:\nBattleManager.canEscape()"
+    },
+    {
+      "post_id": "js-post-1548953",
+      "author": "Nirriti",
+      "date": "2026-02-26T05:45:48+0900",
+      "body": "Correct, it was using the <SE: Escape> trait in the item's effect tab.\nInteresting... So when youve got the drop on the enemies, you get a free escape? Makes sense, I really didnt think of that! It seems to work. After a lot of tests fine-tuning things, I had to put a 1-frame pause between the animation call and the escape effect or else it all played simultaneously. Now it doesnt seem to break the game either, so ty for that.\nThat said, during their escape, they stay facing the enemies\n(instead of turning around)\nand dont run either. Their sprites remain static and move backward!"
+    },
+    {
+      "post_id": "js-post-1548975",
+      "author": "Solar_Flare",
+      "date": "2026-02-26T09:14:12+0900",
+      "body": "Nirriti said:\nSo when youve got the drop on the enemies, you get a free escape?\nClick to expand...\nYes, as long as you use it immediately. If you wait until the next turn, it's not free anymore.\nNirriti said:\nThat said, during their escape, they stay facing the enemies\n(instead of turning around)\nand dont run either. Their sprites remain static and move backward!\nClick to expand...\nHmm. Maybe something like this could work…? I haven't tested. Put it in a .js file and add it as a plugin near the bottom of the list.\nJavaScript:\n(function(old) {\n    Sprite_Actor.prototype.retreat = function() {\n        old.call(this);\n        this.scale.x = -1;\n    };\n})(Sprite_Actor.prototype.retreat);"
+    },
+    {
+      "post_id": "js-post-1548988",
+      "author": "Nirriti",
+      "date": "2026-02-26T11:19:39+0900",
+      "body": "This makes them turn around (yay) but their feet dont move\n(stucked on 1 of their 3 escape sprites as they move offscreen).\nIm still amazed you\n(and many others)\ncan come up with so much on the fly."
+    },
+    {
+      "post_id": "js-post-1549051",
+      "author": "rpgLord69",
+      "date": "2026-02-27T00:23:04+0900",
+      "body": "Hmmm, I tested it just for fun and with that script I think it's cycling frames but the escape and fade to black happens so fast that you barely see it. Also, I received the escape related messages ('Started to escape') in the map scene. So yeah I guess something in the methods isn't stopping ending the battle at that point before everything is resolved.\nAre you using VisuStella for action sequences? I'd just add an action sequence to the item where I move all the alive party members and then use abort battle (that goes to the escape branch too I think). And if you need add +1 to the $gameSystem._escapeCount\nThough it seems like abort battle doesn't work in action sequences, but you can make the item turn on a switch and use base troop event with moment switch is ON to do the same. And then just put in the plugin settings to turn the switch OFF when battles end. LOL."
+    },
+    {
+      "post_id": "js-post-1549053",
+      "author": "Nirriti",
+      "date": "2026-02-27T00:36:45+0900",
+      "body": "Thats strange. No, I even go out of my way to avoid anything Yanfly / V.Stella. Youre right that it all happens so fast, but if you do a regular escape (not via item) even then you see their sprites cycling proper.\nEDIT: Oh God... I just tested the regular flee command and the plugin makes it happen horizontally flipped\n(walking backward)\n."
+    },
+    {
+      "post_id": "js-post-1549075",
+      "author": "Solar_Flare",
+      "date": "2026-02-27T05:00:58+0900",
+      "body": "So that implies that there's already logic to flip them, but that logic was missed i your common event… meaning, my added code to flip them reversed the built-in logic…"
+    },
+    {
+      "post_id": "js-post-1549094",
+      "author": "Nirriti",
+      "date": "2026-02-27T09:43:22+0900",
+      "body": "Ive made some more tests—with my project copied and all other plugins wiped (except Solar_Flare's).\nIf the\nplugin is ON\n: Escape Command makes the PC walk backward\n(facing the enemies)\nbut their running sprites are animated. Escaping via the common event + item has the characters turn around correctly, but they have their sprites frozen to 1 frame.\nIf the\nplugin is OFF\n: Escape command works as intended. Escaping via the common event + item has the characters walking backward\n(facing the enemies)\nwith their sprite frozen to 1 frame."
+    },
+    {
+      "post_id": "js-post-1551950",
+      "author": "Nirriti",
+      "date": "2026-03-27T10:50:40+0900",
+      "body": "Bump\n!"
+    },
+    {
+      "post_id": "js-post-1551991",
+      "author": "rpgLord69",
+      "date": "2026-03-27T23:00:54+0900",
+      "body": "Try using that plugin and the escape item common event has:\nScript:\n$gameParty.performEscape();\nSoundManager.playEscape();\nBattleManager._escaped = true;\nWait: 60 frames\nScript:\nBattleManager.processAbort();\nOr you can change the plugin a bit to increase the retreat move time:\nSprite_Actor.prototype.retreat = function() {\nthis.scale.x = -1;\nthis.startMove(300, 0, 60);\n};\nPS. Just to make sure, the rpg maker mz character generator has the same frame for escape for all frames I think, so unless you've changed the escape frames, you'll see it \"frozen\", even if the motion is looping by default."
+    },
+    {
+      "post_id": "js-post-1552727",
+      "author": "Nirriti",
+      "date": "2026-04-03T11:35:01+0900",
+      "body": "Since Ive made my own sprites from scratch, I do expect them to move in both cases\n(regular-escape and item-escape).\nAlso made them taller than most! Okay so I tested your answer and it basically caused a split-second mirroring and BOTH cases to be reversed. But they were animated... So I tried disabling the plugin, and now its perfect.\nAnimated in both cases—both facing offscreen! I cannot explain the whys or hows, but regardless, thank you both. <3\nSorry for the late answer."
+    },
+    {
+      "post_id": "js-post-1552754",
+      "author": "slimmmeiske2",
+      "date": "2026-04-03T20:17:49+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-mv-is-constantly-crashing-amd-driver-is-at-issue.182990",
+  "title": "MV RPG Maker MV is constantly crashing, AMD driver is at issue",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:10.239785+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1551563",
+      "author": "Jacie0krece",
+      "date": "2026-03-24T03:43:21+0900",
+      "body": "Hello,\nI recently bought and downloaded RPG Maker MV to collaborate on a project, but it has an unimaginably high amount of crashes - every as often as few minutes, even.\nAs visible in this Event Viewer screenshot, it is related to graphics - more specifically the AMD driver. Updating didn't solve the problem, neither did telling Windows to use the integrated graphics with MV:\nOr just straight-up updating the nw.js to 49.2 (which is newer than MZ's btw, at least in my case - yet MZ didn't crash on me ever, and definitely not this often).\nIt happens regardless of the project, and mostly affects the editor itself - I didn't manage to make the playtest to crash in this way ever (and the closest was probably the editor crashing while the playtest is running). However, rapidly clicking things around seems to quicken the crash - even though the editor can also crash when left idle.\nThe crash also just makes MV hang and then quit to desktop, with the only info about the crash showing up in the Event Viewer.\nMy graphics card info, copied straight from the Task Manager:\nProcesor graficzny 0\nAMD Radeon RX 7800 XT\nWersja sterownika:    32.0.23033.1002\nData sterownika:    09.03.2026\nWersja programu DirectX:    12 (FL 12.2)\nLokalizacja fizyczna:    Magistrala PCI 3, urządzenie 0, funkcja 0\nWykorzystanie    2%\nDedykowana pamięć procesora graficznego    5,2/16,0 GB\nWspółużytkowana pamięć procesora graficznego    0,4/15,6 GB\nPamięć procesora graficznego    5,6/31,6 GB\nProcesor graficzny 1\nAMD Radeon(TM) Graphics\nWersja sterownika:    32.0.21043.5001\nData sterownika:    03.03.2026\nWersja programu DirectX:    12 (FL 12.1)\nLokalizacja fizyczna:    Magistrala PCI 19, urządzenie 0, funkcja 0\nWykorzystanie    0%\nDedykowana pamięć procesora graficznego    0,3/512 MB\nWspółużytkowana pamięć procesora graficznego    0,0/15,6 GB\nPamięć procesora graficznego    0,0/16,1 GB\nFor a bit of additional context, I'm running Windows 11, version 25H2.\nDoes anyone have any idea on how to help with this issue? It is very, VERY aggravating...\nAt least I have a workaround called \"work at the project on my laptop with Nvidia graphics\"."
+    },
+    {
+      "post_id": "js-post-1551565",
+      "author": "Jacie0krece",
+      "date": "2026-03-24T03:44:55+0900",
+      "body": "Here is the raw XML of the Event Viewer error if that's useful:\nXML:\n- <Event xmlns=\"http://schemas.microsoft.com/win/2004/08/events/event\">\n- <System>\n  <Provider Name=\"Application Error\" Guid=\"{a0e9b465-b939-57d7-b27d-95d8e925ff57}\" />\n  <EventID>1000</EventID>\n  <Version>0</Version>\n  <Level>2</Level>\n  <Task>100</Task>\n  <Opcode>0</Opcode>\n  <Keywords>0x8000000000000000</Keywords>\n  <TimeCreated SystemTime=\"2026-03-23T18:36:56.8948111Z\" />\n  <EventRecordID>110453</EventRecordID>\n  <Correlation />\n  <Execution ProcessID=\"39156\" ThreadID=\"5476\" />\n  <Channel>Application</Channel>\n  <Computer>Janek-</Computer>\n  <Security UserID=\"S-1-5-21-1523863949-604123787-159707755-1001\" />\n  </System>\n- <EventData>\n  <Data Name=\"AppName\">RPGMV.exe</Data>\n  <Data Name=\"AppVersion\">1.6.3.0</Data>\n  <Data Name=\"AppTimeStamp\">6503fea8</Data>\n  <Data Name=\"ModuleName\">atioglxx.dll</Data>\n  <Data Name=\"ModuleVersion\">32.0.23033.1002</Data>\n  <Data Name=\"ModuleTimeStamp\">69af3777</Data>\n  <Data Name=\"ExceptionCode\">c0000005</Data>\n  <Data Name=\"FaultingOffset\">00f39f5c</Data>\n  <Data Name=\"ProcessId\">0xa1e4</Data>\n  <Data Name=\"ProcessCreationTime\">0x1dcbaf3f16134ad</Data>\n  <Data Name=\"AppPath\">F:\\SteamLibrary\\steamapps\\common\\RPG Maker MV\\RPGMV.exe</Data>\n  <Data Name=\"ModulePath\">C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\amdogl.inf_amd64_0990da738a427e47\\atioglxx.dll</Data>\n  <Data Name=\"IntegratorReportId\">e6c1347b-cebd-4398-abf9-82f54c9147c0</Data>\n  <Data Name=\"PackageFullName\" />\n  <Data Name=\"PackageRelativeAppId\" />\n  </EventData>\n  </Event>"
+    },
+    {
+      "post_id": "js-post-1551575",
+      "author": "SGHarlekin",
+      "date": "2026-03-24T04:59:18+0900",
+      "body": "Just taking a blind shot here, but did you try monitoring the RAM usage via task manage while using MV? WIndows 11 had the issue for a while now that the RAM usage would simply keep increasing until the programm crashes. I know you've mentioned the GPU driver, but I can neither read russian, nor do I see why that would be a problem.\nEIther way it's worth checking out."
+    },
+    {
+      "post_id": "js-post-1551579",
+      "author": "Jacie0krece",
+      "date": "2026-03-24T05:35:42+0900",
+      "body": "Nope, I reproduced the crash a few times with the Task Manager open to monitor MV's RAM usage, and the memory usage barely got to above 300MB before it crashes. (Not only do I have 32 GB of RAM on my system, only half of which is used right now, but I would expect an 32-bit program to run out of memory at 2, maybe 4 GB, not 300 megabytes).\nAlso it reminds me of a similar \"driver acting up\" problem I had with osu!stable years back on my old PC. (which runs absolutely fine on my current PC though). And even that, it was more of osu! straight-up refusing to run, rather than it crashing after a short while like MV does.\n(also it's not Russian it's Polish...)"
+    },
+    {
+      "post_id": "js-post-1551587",
+      "author": "SGHarlekin",
+      "date": "2026-03-24T07:29:03+0900",
+      "body": "Jacie0krece said:\nalso it's not Russian it's Polish...\nClick to expand...\nWell, that should make it obvious I can't read it at least. xD\nHmm... Have you tried downgrading the driver? It's not unheard of that downgrading helps with certain programms."
+    }
+  ]
+}

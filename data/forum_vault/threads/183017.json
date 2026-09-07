@@ -1,0 +1,143 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/skill-limit-help.183017",
+  "title": "MZ Skill Limit Help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:28:08.995164+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1551774",
+      "author": "AC11",
+      "date": "2026-03-26T08:00:48+0900",
+      "body": "Hey folks! I've read previous threads about making skill limits, but they seem geared towards receiving skills from like Skill Vendors or Skill Point systems. What I want is for skills you get when leveling up, just like in Pokemon and Persona. You level up, you gain skill, if you exceed the cap then the game asks if you want to forget one to make room.\nHow would I do that? Would I need to make a plugin for it? Or is there a way to make a common event take care of it?"
+    },
+    {
+      "post_id": "js-post-1551784",
+      "author": "Son_ofHiro",
+      "date": "2026-03-26T11:19:04+0900",
+      "body": "Well, you just need to set the level you the player to learn a certain skill in the class command found in the database. If I understood what you are saying, you want your player to be able to equip certain amount of skills and change them when they learn a new skill.\nI know Yanfly has a plugin for rpg maker mv. But for mz you will need\nEquip Battle Skills VisuStella MZ\n. It will allow you to let your player have limit to number of skills to equip .\nBut I can't say it will be able to do the same forget mechanics in Pokemon games.\nYou can also search for Pokemon essentials plugins if they have some for mz."
+    },
+    {
+      "post_id": "js-post-1551789",
+      "author": "AC11",
+      "date": "2026-03-26T11:47:01+0900",
+      "body": "Yeah, I am aware of VS Equip Battle Skills, but it's not quite what I was aiming for. It's less about equipping skills and more about being given the choice to forget a skill upon learning a new one after leveling up. 'Cause the threads and tutorials I've found so far don't include suggestions for skills gained when leveling up, only for skills learned by items or tutors.\nAnd sadly Pokemon Essentials doesn't have anything for MZ, it's all for XP."
+    },
+    {
+      "post_id": "js-post-1551797",
+      "author": "rpgLord69",
+      "date": "2026-03-26T17:37:29+0900",
+      "body": "But if you're using VS Equip Battle Skills, I guess you can have a common event run when you exit the menu to make your actors forget the skills that you haven't equipped. And then when you level up you push that skill equip scene where they can change them.\nOr make something yourself, maybe make a copypaste of Window_SkillList where you show the actor skills, rename it and then make the selection make the actor forget that skill and show that when you level up."
+    },
+    {
+      "post_id": "js-post-1551870",
+      "author": "AC11",
+      "date": "2026-03-27T02:03:00+0900",
+      "body": "That looks like an option, yes! I think I could make a common event like that, but how would I get it to run when the actor levels up?"
+    },
+    {
+      "post_id": "js-post-1551876",
+      "author": "rpgLord69",
+      "date": "2026-03-27T02:50:04+0900",
+      "body": "Drag's Common Event Trigger for MZ by Drag & Plugin\nA plugin to trigger common event at specific moment in your game.\ndrag-and-plug-in.itch.io\nThough if multiple characters level up at same time, you'd have to think how to deal with that. Maybe try to change it in a way that if the scene is pushed when you turned some switch on, pressing esc throws you to the next character who level upped instead of leaving if you try to press that. But yeah, you either need to find a way to work with that or make a custom thing for the system."
+    },
+    {
+      "post_id": "js-post-1551878",
+      "author": "Eliaquim",
+      "date": "2026-03-27T02:57:30+0900",
+      "body": "Hi there!\nMade a little mockup with events. Well, almost like a plugin in a common event... haha\n1 - First you iterate through all party members and check if any of them has more than 4 skills (It says \"> 3 \" because arrays in javascript always start with the index 0. Meaning 0 is also a skill).\nWe flip a switch so we can use that as a condition to show the choice so the player can select what skill to forget.\nIf does, we store the Actor Name and id on variables.\nthen store all skill names on variables (to be used on choice commands)\nthen store all the skill ids to be used on later script calls.\n2 - We make each choice with each skill the actor already have.\nAnd for each choice, we use the script call so the actor can forget the skill related to the choice.\nThen on the end of the choice event, turn off the Switch 270.\nThis is a basic structure, without plugins. I guess you can start with this if you want.\nYou can place this on a parallel event to run through all the game. Put a wait 10 frames on the end of the event so you don't need to worry about performance.\nThat will not only cover the cases when level up, but also if you want to teach a skill to an actor with event commands for example.\nHope it helps!\nScript call text:\nJavaScript:\nfor(const member of $gameParty.members()){\nconst skills = member.skills()\n if(skills.lenght > 3){\n  $gameSwitches.setValue(270, true)\n  $gameVariables.setValue(268, member.name())\n  $gameVariables.setValue(269, member.actorId())\n\n  $gameVariables.setValue(270, skills[0].name)\n  $gameVariables.setValue(271, skills[1].name)\n  $gameVariables.setValue(272, skills[2].name)\n  $gameVariables.setValue(273, skills[3].name)\n  $gameVariables.setValue(274, skills[4].name)\n\n  $gameVariables.setValue(275, skills[0].id)\n  $gameVariables.setValue(276, skills[1].id)\n  $gameVariables.setValue(277, skills[2].id)\n  $gameVariables.setValue(278, skills[3].id)\n  $gameVariables.setValue(279, skills[4].id)\n  // Necessary add a break here, in case more than one actor has more than 4 skill at the same time. \n  // With this we can deal with one at the time.\n  break\n\n }\n}"
+    },
+    {
+      "post_id": "js-post-1551881",
+      "author": "rpgLord69",
+      "date": "2026-03-27T03:04:50+0900",
+      "body": "@Eliaquim\nCool! But doesn't that also have the problem that if more than 1 character level up and get a skill at the same time.\nEDIT: Though can be solved by making the choices for each dude in the loop I guess"
+    },
+    {
+      "post_id": "js-post-1551885",
+      "author": "Eliaquim",
+      "date": "2026-03-27T03:14:02+0900",
+      "body": "rpgLord69 said:\n@Eliaquim\nCool! But doesn't that also have the problem that if more than 1 character level up and get a skill at the same time.\nClick to expand...\nYes, it does! nice catch. I guess is just a matter of add a break on the iteration when find a member with more than 4 skills:\nJavaScript:\nfor(const member of $gameParty.members()){\nconst skills = member.skills()\n if(skills.lenght > 3){\n  $gameSwitches.setValue(270, true)\n  $gameVariables.setValue(268, member.name())\n  $gameVariables.setValue(269, member.actorId())\n\n  $gameVariables.setValue(270, skills[0].name)\n  $gameVariables.setValue(271, skills[1].name)\n  $gameVariables.setValue(272, skills[2].name)\n  $gameVariables.setValue(273, skills[3].name)\n  $gameVariables.setValue(274, skills[4].name)\n\n  $gameVariables.setValue(275, skills[0].id)\n  $gameVariables.setValue(276, skills[1].id)\n  $gameVariables.setValue(277, skills[2].id)\n  $gameVariables.setValue(278, skills[3].id)\n  $gameVariables.setValue(279, skills[4].id)\n  // This will stop iteration and move forward with the event\n  break\n    \n\n }\n}\nEdited the first code!"
+    },
+    {
+      "post_id": "js-post-1551905",
+      "author": "rpgLord69",
+      "date": "2026-03-27T04:56:35+0900",
+      "body": "@Eliaquim\nHmmm, but don't you still need to restructure the event so that it goes through all the members? Now when you break you get the first dude who got more skills, but then it never checks the others after that."
+    },
+    {
+      "post_id": "js-post-1551918",
+      "author": "Eliaquim",
+      "date": "2026-03-27T06:09:00+0900",
+      "body": "rpgLord69 said:\n@Eliaquim\nHmmm, but don't you still need to restructure the event so that it goes through all the members? Now when you break you get the first dude who got more skills, but then it never checks the others after that.\nClick to expand...\nIt will check the others because it's a parallel event. When the break is used, the loop will stop with the variables assigned.\nThen it will proceed to what left of the event list.\nWhen the event ends, since it is a parallel event, it will run again, checking the party members all over again."
+    },
+    {
+      "post_id": "js-post-1551920",
+      "author": "rpgLord69",
+      "date": "2026-03-27T06:15:25+0900",
+      "body": "Ah ok cool, yeah if you keep running it on parallel."
+    },
+    {
+      "post_id": "js-post-1551921",
+      "author": "AC11",
+      "date": "2026-03-27T06:19:33+0900",
+      "body": "Eliaquim, I could kiss your right now! I'll go ahead and test this right away, and I'll report with my findings!"
+    },
+    {
+      "post_id": "js-post-1551989",
+      "author": "AC11",
+      "date": "2026-03-27T22:53:36+0900",
+      "body": "@Eliaquim\nWell, reporting with good news and bad news! The good news, the event runs! It detects when a new skill is being added and procs the choice menu...\nThe bad news is that it doesn't actually delete the skill... or move on to another Actor. It just repeats the same set of names and variables as many times as Actors have gained skills."
+    },
+    {
+      "post_id": "js-post-1552025",
+      "author": "Eliaquim",
+      "date": "2026-03-28T04:53:15+0900",
+      "body": "AC11 said:\n@Eliaquim\nWell, reporting with good news and bad news! The good news, the event runs! It detects when a new skill is being added and procs the choice menu...\nThe bad news is that it doesn't actually delete the skill... or move on to another Actor. It just repeats the same set of names and variables as many times as Actors have gained skills.\nClick to expand...\nI found the problems, my bad!\n1 - There was a typo on skills.len\nght\n. The right would be `skills.len\ngth\n`\n2 - The amount of skills to check was wrong. Before we have skills.length\n> 3\n. The right would be skills.length\n> 4\nYou can replace the first script call block with this already fixed:\nJavaScript:\nfor(const member of $gameParty.members()){\n    const skills = member.skills()\n\n    if(skills.length > 4){\n        $gameSwitches.setValue(499, true)\n        $gameVariables.setValue(268, member.name())\n        $gameVariables.setValue(269, member.actorId())\n\n        $gameVariables.setValue(270, skills[0].name)\n        $gameVariables.setValue(271, skills[1].name)\n        $gameVariables.setValue(272, skills[2].name)\n        $gameVariables.setValue(273, skills[3].name)\n        $gameVariables.setValue(274, skills[4].name)\n\n        $gameVariables.setValue(275, skills[0].id)\n        $gameVariables.setValue(276, skills[1].id)\n        $gameVariables.setValue(277, skills[2].id)\n        $gameVariables.setValue(278, skills[3].id)\n        $gameVariables.setValue(279, skills[4].id)\n        break\n    }\n\n}\n3 - There is another typo on each choice script command to forget the skill:\nthe first line `const actorId...` has a typo. It's missing an \"s\" at the end of $gameVariable. You need to fix that on each script block.\n4 - You need to turn the switch off at the end of the choice command:\nI tested it now and it worked!\n[EDIT] If you still having problems, and checked that every switch and variable id are right, send me a screenshot so I can take a look"
+    },
+    {
+      "post_id": "js-post-1552036",
+      "author": "AC11",
+      "date": "2026-03-28T05:58:57+0900",
+      "body": "@Eliaquim\nThis is what I have! I did notice the typos and the > 3, so don't worry about them!\nIt works pretty well, but what ends up happening is that for some reason, it runs twice. First time it runs okay, displays the message X forgot the move... and then it prompts to choose which move to forget once more before ending. And if more than 1 Actors gain skills, the second loop has the skills of the next Actor but still displays the first actor's name, the third loop has the the second Actor's name and skills, and then it repeats that once more before it finishes."
+    },
+    {
+      "post_id": "js-post-1552045",
+      "author": "Eliaquim",
+      "date": "2026-03-28T06:38:03+0900",
+      "body": "AC11 said:\n@Eliaquim\nThis is what I have! I did notice the typos and the > 3, so don't worry about them!\nView attachment 363619\nView attachment 363620\nIt works pretty well, but what ends up happening is that for some reason, it runs twice. First time it runs okay, displays the message X forgot the move... and then it prompts to choose which move to forget once more before ending. And if more than 1 Actors gain skills, the second loop has the skills of the next Actor but still displays the first actor's name, the third loop has the the second Actor's name and skills, and then it repeats that once more before it finishes.\nClick to expand...\nThat is strange... The only reason I can see that happening is if you have another parallel common event doing the same thing.\nmaybe also if an actor learn more than one skill per level up(or event command)? That maybe would cause a strange behavior.\nI did manage to make it work here. So, if you want you can send me a sample project replicating the error so I can take a look."
+    },
+    {
+      "post_id": "js-post-1552053",
+      "author": "AC11",
+      "date": "2026-03-28T07:57:51+0900",
+      "body": "Eliaquim said:\nThat is strange... The only reason I can see that happening is if you have another parallel common event doing the same thing.\nmaybe also if an actor learn more than one skill per level up(or event command)? That maybe would cause a strange behavior.\nI did manage to make it work here. So, if you want you can send me a sample project replicating the error so I can take a look.\nClick to expand...\nHere it is! Hopefully this works?"
+    },
+    {
+      "post_id": "js-post-1552065",
+      "author": "Eliaquim",
+      "date": "2026-03-28T09:13:31+0900",
+      "body": "AC11 said:\nHere it is! Hopefully this works?\nClick to expand...\nThere are two problems here.\n1 - You are using the same switch that activates the common parallel event to also checks when the actor has gained more than 4 skills on the conditional branch. They need to be different switches. One for activate the event. Another one to be set to true inside the script call and on the conditional branch.\n2 - You have a plugin called SkillCheck that is calling the same common event. So that is why the common event is being called twice.\nonce I deactivate that plugin and fixed the switches, everything worked just fine."
+    },
+    {
+      "post_id": "js-post-1552067",
+      "author": "AC11",
+      "date": "2026-03-28T09:20:14+0900",
+      "body": "Oooh, I completely forgot about that plugin! A friend from Discord was helping me out and made it for me, I forgot to remove it once I asked here. Oh my God, I feel so embarrassed...\nAs for the switch, I for sure confused your screenshots. I thought the switch you activated by code and the one on the conditional branch where the same. Now I know"
+    },
+    {
+      "post_id": "js-post-1552112",
+      "author": "rpgLord69",
+      "date": "2026-03-28T19:03:45+0900",
+      "body": "Eliaquim was nice to make you a system, but since we talked about VS before, I had completely forgotten that their Message Core plugin actually has a skill select plugin command where you can record the selected skill id to a variable. And then use that to forget skills. So that's an additional option you can check."
+    },
+    {
+      "post_id": "js-post-1552133",
+      "author": "AC11",
+      "date": "2026-03-28T22:59:15+0900",
+      "body": "I appreciate you guys so much <3<3 I'll try VS just to be thorough but Eliaquim's system (now that we got the kinks sorted out) works like charm for what I want to do!"
+    }
+  ]
+}
