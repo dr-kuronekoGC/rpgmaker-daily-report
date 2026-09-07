@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/require-a-method-to-queue-songs-after-one-another-during-battle.183833",
+  "title": "Require a method to queue songs after one another during battle.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:50:03.061037+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1557819",
+      "author": "odtffssen",
+      "date": "2026-05-28T07:49:04+0900",
+      "body": "Hello. I am using RPG Maker MV.\nI want to play two songs back-to-back during battle. One with actual lyrics once, followed by then looping one without the lyrics. I only found dead ends like \"hp\" flags that work but not what I want, and making a parallel process with a common event by using \"wait\", it somewhat works but \"wait\" freezes the entire battle, even with a parallel process.\nIn other words, I need to queue the songs or somehow create a flag that one song is finished, then play the other.\nI am willing to pay on Patreon, or whatever, for your script or method if it works."
+    },
+    {
+      "post_id": "js-post-1557820",
+      "author": "jshunter",
+      "date": "2026-05-28T08:03:27+0900",
+      "body": "I had something similar in my game. I had an event which played battle events one after the other, and after the second battle I changed the battle music to a different song. But I don't think this is what you want.\nThere's is a really simple solution, if you have the right to modify the music: just use Audacity or some other music editor to splice the two songs together into one file, and play that instead of two smaller ones."
+    },
+    {
+      "post_id": "js-post-1557823",
+      "author": "odtffssen",
+      "date": "2026-05-28T08:19:57+0900",
+      "body": "jshunter said:\nI had something similar in my game. I had an event which played battle events one after the other, and after the second battle I changed the battle music to a different song. But I don't think this is what you want.\nThere's is a really simple solution, if you have the right to modify the music: just use Audacity or some other music editor to splice the two songs together into one file, and play that instead of two smaller ones.\nClick to expand...\nI made the songs, however, I dont want it to repeat entirely from the start, just a certain part that I made that I made specifically to loop. I am trying to add metadata in Audacity right now, hopefully, that might work."
+    },
+    {
+      "post_id": "js-post-1557825",
+      "author": "odtffssen",
+      "date": "2026-05-28T08:34:29+0900",
+      "body": "Metadata worked, thank you anyway. The thread is useless, a mod can lock it or delete.\nSorry, dunno how to delete my posts."
+    },
+    {
+      "post_id": "js-post-1557853",
+      "author": "TheAM-Dol",
+      "date": "2026-05-28T12:32:27+0900",
+      "body": "odtffssen said:\nMetadata worked, thank you anyway. The thread is useless, a mod can lock it or delete.\nSorry, dunno how to delete my posts.\nClick to expand...\nClick the report button in the bottom left and write the reason \"thread solved\". A mod will swing by and lock it when they have time.\nJust to confirm: you solution was to put the 2 songs together then set the start of the loop point after the first song, right?\nI believe there is a way to check how far a song has progressed in playback and write that value to a variable. I don't know how to do that, but would be a little script.\nWith that you'd be able to detect if the song has passed a certain sample value (point in the song), and if it equals that value or great, trigger the next song.\nYou'd probably want to set a loop point at the very end of the song to loop during the silence.\nAlternatively, you can set it as a ME song, which ignores loop points.\nThe biggest challenge is that you want to do it during battle where the game doesn't progress in real time, but in turns, and a turn can last an arbitrary amount of time.\nif\nit were on the map, you can just use a parallel event basically waiting the length of the song - incrementing a variable each second. Once the variable reaches the value length of the song, you switch to the next song.\nHowever, by default, you don't have access to parallel events in combat.\nYou could estimate about how many turns it takes on average before the end of the song and then trigger the next song around that time.\nIt may be imperfect, so again, you may want to loop the silence for when the players take longer than the song, and maybe add a fade out before transitioning to the new song for the players who move quickly through the turns."
+    }
+  ]
+}

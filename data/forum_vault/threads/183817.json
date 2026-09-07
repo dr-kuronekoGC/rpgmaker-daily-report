@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/pixel-perfect-rendering-incorrectly-in-fullscreen.183817",
+  "title": "MZ Pixel perfect rendering incorrectly in fullscreen",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:49:52.660150+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1557682",
+      "author": "Tri",
+      "date": "2026-05-27T03:02:43+0900",
+      "body": "I've had this long time issue of whenever I fullscreen my game with MZ and pixel-perfect image rendering (VisuMZ) the pixels of everything will look off and weird. Singular pixels will either be half it's size or too large.\nThe first image is of the character standing in the middle of the room\nwhile fullscreened.\nThe second image is the same though\nwindowed instead.\nI've also noticed when standing in certain areas of the screen or in smaller rooms the sprite will render correctly? In the last image of the darker room, the character is standing\non the far right\nof my screen in a\nsmaller room\nand looks relatively fine.\nI'm purely using VisuMZ's core engine plugin to render pixel perfect although every other plugin that renders pixel perfect keeps this issue. Any help would be greatly appreciated. Additionally, I've also tried changing screen width and height to no avail, though I'm currently at the default of 816 x 624.\n<---Windowed (Good)\n<--- Fullscreen (Bad)"
+    },
+    {
+      "post_id": "js-post-1557684",
+      "author": "DevRPG2k",
+      "date": "2026-05-27T03:38:55+0900",
+      "body": "There are several topics on the subject with some explanations of why this happens.\nPerhaps something here will shed light on the matter and help you find a more appropriate solution:\nPixel warping fix?\nSo I'm using sprite sheets with the $ prefix to make use of bigger sprites for my characters, and I've noticed around the right side of the sprite tends to look thicker or thinner when looked at closely. It's a small detail admittedly but is there any way to fix this?  In game:   In edit:   I'm...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1557692",
+      "author": "Eliaquim",
+      "date": "2026-05-27T04:33:25+0900",
+      "body": "Hi there!\nOne of the things that can be causing this is a incompatible fullscreen resolution.\nLet's say you have a 2560x1440 monitor.\nYour game resolution is 816x624.\nWhen you go fullscreen, the game's resolution will try to fit into your monitor resolution. It will calculate how far it can go:\nWidth → 2560/816 = 3,137254901960784\nheight → 1440/624 = 2,307692307692308\nSo your game height is being multiplied by\n2,307692307692308\nand your game width is being multiplied by\n3,137254901960784\n. It's impossivle to keep a pixel perfect while the game window is resizing like that.\nThat is why resolution matters. You either need to have a game resolution that can match the most common resolutions(16/9) or find a way to resize the screen only by integer numbers.\nYou can try using my EliMZ_ScreenManager for that. It has an option to scale the window only by integers. So your game resolution will scale width and height by the same integer number.\nOn the example above, using my plugin, it would let your game with that resolution:\n816*2 =\n1632\n624*2 =\n1248\nBecause he know if it go higher than that, it will have to fit into the fullscreen and scramble the aspect ratio.\nEliMZ_ScreenManager.js\nHakuen Studio Screen Manager for RPG Maker MZ by Hakuen Studio\nManage screen resolutions, screen scales and fullscreen on your game!\nhakuenstudio.itch.io\nyou also need my core plugin, EliMZ_Book.js, somewhere above all Eli plugins:\nHakuen Studio Eli Book RPG Maker MZ by Hakuen Studio\nEssential plugin for all Eli plugins in RPG Maker MV/MZ!\nhakuenstudio.itch.io\nIf you want, you can also use my pixel perfect plugin:\nHakuen Studio Pixel Perfect for RPG Maker MZ by Hakuen Studio\nAdds pixel perfect rendering for your rpg maker mz game!\nhakuenstudio.itch.io"
+    },
+    {
+      "post_id": "js-post-1557695",
+      "author": "Tri",
+      "date": "2026-05-27T05:01:18+0900",
+      "body": "Dev_With_Coffee said:\nThere are several topics on the subject with some explanations of why this happens.\nPerhaps something here will shed light on the matter and help you find a more appropriate solution:\nPixel warping fix?\nSo I'm using sprite sheets with the $ prefix to make use of bigger sprites for my characters, and I've noticed around the right side of the sprite tends to look thicker or thinner when looked at closely. It's a small detail admittedly but is there any way to fix this?  In game:   In edit:   I'm...\nforums.rpgmakerweb.com\nClick to expand...\nThank you for the forum references, I eventually fixed it after some trial and error but it now renders and looks great!\nI found that the weird resolution of 630x456 somehow fixed it?\ncaethyril said:\nJavaScript:\nCode:\n/*:\n * @target MV MZ\n * @plugindesc Integer game canvas scale.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/164033/\n * @help Free to use and/or modify for any project, no credit required.\n */\n;void (function(alias) {\n  Graphics._updateRealScale = function() {\n    alias.apply(this, arguments);\n    if (this._realScale > 1)\n      this._realScale = Math.floor(this._realScale);\n  };\n})(Graphics._updateRealScale);\nClick to expand...\nUsing this plugin alongside a pixel perfect plugin allowed the game to render properly in windowed and fullscreen.\nEliaquim said:\nYou can try using my EliMZ_ScreenManager for that. It has an option to scale the window only by integers. So your game resolution will scale width and height by the same integer number.\nClick to expand...\nAlso I didn't need this initially, but seeing as the resolution isn't natural I'm probably gonna use this later on, thanks in advance!"
+    }
+  ]
+}

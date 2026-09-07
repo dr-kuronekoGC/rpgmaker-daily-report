@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/counterattack-message-display.183750",
+  "title": "MZ Counterattack (message display)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:49:56.326316+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1557126",
+      "author": "Nirriti",
+      "date": "2026-05-22T07:52:55+0900",
+      "body": "RPGMaker MZ natively handles counterattacks as a super-dodge. Wanting the character/enemy to ALSO take damage first, I got a plugin. Here's a\nlink (translated)\n. Works great! But with a downside. It negates the display of Counter Attack messages\n(as set in the TERMS tab of the editor)\n. I thought about duplicating the Attack skill (001 > 003) and rename it to Counter—This should FORCE the engine to put \"Counter!\" over the upper message box, right? This works, however, the battle animation strangely goes to \"defending sprites\"\n(as it counters).\nSo, on either methods, I either get no specified message OR the wrong animation. I did ask the site owner and was suggested what seemed to be a pretty good and complex plugin. What I'm asking here: Is there a way to make it right in a simpler way? Thanks in advance."
+    },
+    {
+      "post_id": "js-post-1557143",
+      "author": "sunhihi",
+      "date": "2026-05-22T10:35:03+0900",
+      "body": "Nirriti said:\nRPGMaker MZ natively handles counterattacks as a super-dodge. Wanting the character/enemy to ALSO take damage first, I got a plugin. Here's a\nlink (translated)\n. Works great! But with a downside. It negates the display of Counter Attack messages\n(as set in the TERMS tab of the editor)\n. I thought about duplicating the Attack skill (001 > 003) and rename it to Counter—This should FORCE the engine to put \"Counter!\" over the upper message box, right? This works, however, the battle animation strangely goes to \"defending sprites\"\n(as it counters).\nSo, on either methods, I either get no specified message OR the wrong animation. I did ask the site owner and was suggested what seemed to be a pretty good and complex plugin. What I'm asking here: Is there a way to make it right in a simpler way? Thanks in advance.\nClick to expand...\nI'm curious which plugin he was referring to."
+    },
+    {
+      "post_id": "js-post-1557144",
+      "author": "Kenen",
+      "date": "2026-05-22T10:41:40+0900",
+      "body": "As a quick solution, edit goCounterSkill in the plugin that was linked:\nCode:\nfunction goCounterSkill(subject, target, skillId) {\n    // 戦闘行動の強制を実行\n    const counterOk = subject.counterForceAction(skillId, target);\n    // 不発の場合は終了\n    if (!counterOk) {\n        return;\n    }\n    // begin edit: display the counter attack message\n    const text = TextManager.counterAttack.format(subject.name());\n    BattleManager._logWindow.push(\"addText\", text);\n    // end edit\n    // カウンター実行フラグオン\n    mInCounter = true;\n    BattleManager._actionForcedBattler = subject;\n    BattleManager.processForcedAction();\n    // 【ＭＶ】強制実行フラグを解除\n    // ※強制フラグが立っていると、ステートのターン経過が行われないため。\n    if (BattleManager.isForcedTurn && BattleManager.isForcedTurn()) {\n        BattleManager._turnForced = false;\n    }\n}\nNot seeing a nicer way to patch/alias from the quick look I took."
+    },
+    {
+      "post_id": "js-post-1557182",
+      "author": "Nirriti",
+      "date": "2026-05-22T22:45:50+0900",
+      "body": "sunhihi said:\nI'm curious which plugin he was referring to.\nClick to expand...\nHello\n@sunhihi\n! Here you go:\nDynamicMotionMZ\n.\nWhen I made a character specific animation recently, I added said character sprites in the skill animations. This works but if your sprites are larger than the norm, its very easy to cause overlapping/clipping issues... This plugin seems to makes use of the actual characters\n(not just a copy)\nwhen animating. They can go up close the enemy to attack, for example.\nI only skimmed it so I could be wrong.\n@Kenen\nIt works! Thank you so much."
+    },
+    {
+      "post_id": "js-post-1557249",
+      "author": "sunhihi",
+      "date": "2026-05-23T08:49:44+0900",
+      "body": "Nirriti said:\nHello\n@sunhihi\n! Here you go:\nDynamicMotionMZ\n.\nWhen I made a character specific animation recently, I added said character sprites in the skill animations. This works but if your sprites are larger than the norm, its very easy to cause overlapping/clipping issues... This plugin seems to makes use of the actual characters\n(not just a copy)\nwhen animating. They can go up close the enemy to attack, for example.\nI only skimmed it so I could be wrong.\n@Kenen\nIt works! Thank you so much.\nClick to expand...\nI think the author of NRP may have misunderstood your question a bit.\nYou were asking about the counterattack message display issue, but he ended up introducing the action module instead.\nI was curious about the plugin he mentioned because I actually use some of his plugins too.\nHowever, I only use the action module — the rest of the systems are developed by myself."
+    },
+    {
+      "post_id": "js-post-1557259",
+      "author": "Nirriti",
+      "date": "2026-05-23T11:54:03+0900",
+      "body": "Well, the action module part was an attempt to guide me towards a solution for the 'second path' of my issue with its plugin by forcing specific animations for the counter skill. Ill copy-paste you the translated answer.\nFrom: NewRpgProject\nFirst, the fact that the \"Counter Attack\" message doesn't display is by design of this plugin. If necessary, implement it as a different skill number, or modify it using Claude or something similar.  I could add the feature myself, but for the time being, I'm too busy and can't manage it....\nAlso, for skills other than \"0001:Attack,\" the fact that weapons are not displayed is due to RPG Maker's specifications. Regarding this, there's no choice but to specify it with some kind of plugin. In my case, I'm specifying the motions with Dynamic Motion. However, this plugin is highly functional, so it's difficult.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1557479",
+      "author": "sunhihi",
+      "date": "2026-05-25T11:32:57+0900",
+      "body": "Nirriti said:\nWell, the action module part was an attempt to guide me towards a solution for the 'second path' of my issue with its plugin by forcing specific animations for the counter skill. Ill copy-paste you the translated answer.\nClick to expand...\nOkay, I think what the author of NRP was trying to say is that\nhis plugins have become very complex,\nand he doesn't have enough spare time to make every detail absolutely perfect.\nFortunately, the action module is the only part I can't really handle by myself.\nFor the rest, I can probably manage on my own."
+    }
+  ]
+}

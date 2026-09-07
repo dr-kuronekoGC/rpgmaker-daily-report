@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-move-title-screen-text-box-make-text-boxes-opaque.182944",
+  "title": "VXAce How to move title screen text box + make text boxes opaque?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:50:10.523474+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1551231",
+      "author": "Snowi_Husky",
+      "date": "2026-03-20T04:18:38+0900",
+      "body": "I'm trying to make a game, and I really want to learn how to move the text box to be as shown here\n(Adjustment not as accurate; but just something along the lines of moving the text box to the right.)\nThat way I have more room to do the title screen art.\nI also have the problem with making the background text box opaque. I tried to do it myself in an attempt to sort of learn but I just don't understand a bunch of the code and how it works."
+    },
+    {
+      "post_id": "js-post-1551233",
+      "author": "Chiispiitas",
+      "date": "2026-03-20T04:25:27+0900",
+      "body": "Open your Script Editor (F11 key) and look for Window_TitleCommand.\nYou can change the window placement here on line 24:\nRuby:\n#--------------------------------------------------------------------------\n  # * Update Window Position\n  #--------------------------------------------------------------------------\n  def update_placement\n    self.x = (Graphics.width - width) / 2\n    self.y = (Graphics.height * 1.6 - height) / 2\n  end\nAs you can see, there are some formulas, but they're safe to remove and you can just specify your own X,Y coordinates. Try something like this and adjust the numbers to achieve the result you'd like:\nRuby:\n#--------------------------------------------------------------------------\n  # * Update Window Position\n  #--------------------------------------------------------------------------\n  def update_placement\n    self.x = 360\n    self.y = 280\n  end"
+    },
+    {
+      "post_id": "js-post-1551244",
+      "author": "Snowi_Husky",
+      "date": "2026-03-20T05:00:14+0900",
+      "body": "This is perfect! Thank you so much!"
+    },
+    {
+      "post_id": "js-post-1551254",
+      "author": "Solita",
+      "date": "2026-03-20T06:18:07+0900",
+      "body": "There's a bunch of scripts you can use for custom titles, if you want to have more custom designs like the transparent box, you mentioned, here\nhttps://mogplugins.com/rpg-maker-vx-ace/\nThere's also this script to allow more options -\nhttps://gdu.one/scripts/rpg-maker-vx-ace/v-s-awesome-options/\nIf you don't want to use them, you can use this script for the transparent window.\nRuby:\nclass Scene_Title < Scene_Base\n  alias :title_create_command_window_base :create_command_window\n  def create_command_window\n    title_create_command_window_base\n    @command_window.opacity = 0\n  end\nend"
+    }
+  ]
+}

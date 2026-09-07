@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/browser-based-database-auditor-script-extractor.183835",
+  "title": "MZ (Browser-Based Database Auditor & Script Extractor)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:49:52.310636+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1557829",
+      "author": "Austrian",
+      "date": "2026-05-28T08:56:51+0900",
+      "body": "Hey everyone,\nI wanted to share a free, browser-based utility suite I’ve been building to help developers audit their project databases, protect against hidden script crashes, and optimize load order layouts for RPG Maker MZ. It runs 100% locally in your browser with zero server uploads required.\nHere is a breakdown of what the suite handles:\nLive Tool:\nhttps://manx110.github.io/mz-nexus/index.html\nOpen Source Core:\nhttps://github.com/Manx110/mz-nexus\nStatus:\nOpen Beta / Active Work-In-Progress.\nKey Features:\nDatabase QA Audit:\nAutomatically parses project database assets to instantly diagnose invalid JavaScript syntax, missing closing braces, or broken damage formulas in notetags before they cause runtime game crashes.\nLoad Order Optimizer:\nScans active plugin arrays to visually map out method overwrite conflicts and flag structural tier placement violations.\nGlobal Script Extractor:\nProcesses dialogue, speaker names, and choice prompts from your data files into an interactive preview table or clean CSV export for seamless proofreading or localization.\n1-Click Sandbox Demo:\nNo files on hand? The workspace features a\nLoad Demo Sandbox\ntrigger so you can test and simulate the entire diagnostic engine instantly from any browser or mobile device."
+    },
+    {
+      "post_id": "js-post-1557866",
+      "author": "Aerosys",
+      "date": "2026-05-28T16:45:58+0900",
+      "body": "Haven't spent much time looking into your stuff, but just a quick note:\nMK_Core is no longer a plugin. It's MK_RNGMaps_Core for a while.\nYes, putting it below YEP&VS usually is the better way, but this is only a recommendation and not a must. Putting plugins below VS is something I recommend for every plugin anyway.\nBy the way, I actually avoid the term \"ecosystem\" for my plugins. All of my plugins are stand-alone (except for addons, of course); people can use another Random Maps but still use my Minimap, or they can use my Random Maps but with a Minimap from a different author. This is actually something that I invest a lot of time in, and I'm very proud of.\nIf not too much to ask, please avoid using the term \"ecosystem\" in conjunction with my plugins, as it can give people a false impression."
+    },
+    {
+      "post_id": "js-post-1557867",
+      "author": "Dark_Ansem",
+      "date": "2026-05-28T19:24:36+0900",
+      "body": "I'd actually be happy to have this as a non-browser, local config. That's how impressed I am."
+    },
+    {
+      "post_id": "js-post-1557903",
+      "author": "Austrian",
+      "date": "2026-05-29T10:56:58+0900",
+      "body": "Aerosys said:\nHaven't spent much time looking into your stuff, but just a quick note:\nMK_Core is no longer a plugin. It's MK_RNGMaps_Core for a while.\nYes, putting it below YEP&VS usually is the better way, but this is only a recommendation and not a must. Putting plugins below VS is something I recommend for every plugin anyway.\nBy the way, I actually avoid the term \"ecosystem\" for my plugins. All of my plugins are stand-alone (except for addons, of course); people can use another Random Maps but still use my Minimap, or they can use my Random Maps but with a Minimap from a different author. This is actually something that I invest a lot of time in, and I'm very proud of.\nIf not too much to ask, please avoid using the term \"ecosystem\" in conjunction with my plugins, as it can give people a false impression.\nClick to expand...\nWow Aerosys, I didn't expect to get a response from you. I bought a few of your plugins by the way.\nI appreciate the correction on the naming convention. I'll update the scanning array from MK_Core to MK_RNGMaps_Core right away to reflect the current framework.\nI completely understand and respect your point about avoiding the term \"ecosystem.\" I’ll adjust the wording in the documentation and future updates to emphasize that your plugins are built as standalone.\nI really appreciate the insight and the feedback!"
+    },
+    {
+      "post_id": "js-post-1557904",
+      "author": "Austrian",
+      "date": "2026-05-29T11:12:12+0900",
+      "body": "Dark_Ansem said:\nI'd actually be happy to have this as a non-browser, local config. That's how impressed I am.\nClick to expand...\nThanks for the feedback! I'm glad the tool made a strong first impression. I went with a browser-based setup so anyone can run audits quickly without installs or security prompts. But now that you mentioned a local desktop version... I may have to consider it in the future. But for now this is still a work in progress."
+    },
+    {
+      "post_id": "js-post-1557907",
+      "author": "Solar_Flare",
+      "date": "2026-05-29T12:03:08+0900",
+      "body": "Okay, so I gave it a try by dropping in my recently-released game (I cloned the repository and opened index.html locally in my browser). I'd say I've found a few issues (with your tool, not my game). It also confused me a bit that the drop area was only in the top left (at first I tried to drop on the list area, then the report area), but that's not really a bug, at most a minor UX issue.\nIt did correctly identify three places where I overwrite a method without aliasing. Two of them were definitely intentional on my part; the other is in a 3rd-party plugin, but it was probably intentional too. I was a bit surprised it didn't find more cases, mind you (I thought I had quite a few more methods that were overwritten without aliasing). But it also identified one more place where a method was overwritten, in my Improved Pathfinding plugin (you can find it from my signature if you want to take a look). This one is a false positive. The plugin defines the method twice in different ways (based on whether the plugin is running in MV or MZ), but your tool detects it as a conflict with itself.\nThe next issue I see is that your damage formula check doesn't seem to account for the S and X parameters, nor for functions defined on the battlers. Here are some examples of perfectly valid formulas that the tool detected as an error (one formula per line):\nJavaScript:\nMath.floor(25 * b.pha ** 3)\na.pha * a.luk / 4\n200 + a.mat * a.pha\n10 * a.agi / b.agi * b.paramBuffRate(3) * b.paramBuffRate(5)\n(50 + (a.mat + a.luk + b.luk) / 2) * +!a.isStateResist(67)\n$gameSwitches.setValue(260,true); 110 + a.mat * 2 - b.def\nI could understand if it doesn't understand custom functions define by plugins, and maybe it's fine to not support access to globals like\n$gameSwitches\n(I don't imagine that's super common), but I'd expect it to at least understand the core, built-in functions.\nI also checked the 3 cases of unbalanced angle brackets that your tool detected in my game. 2 of them are a\n<\nplaced inside the value of a note tag, something like\n<noteTag:something < somethingElse>\n. This does not cause problems as far as I am aware (though a\n>\nin such a location would definitely cause a problem). The other was a\n>\nin a JS code block from Hime's Effect Conditions plugin. So, they were all false positives. I'm not sure how useful this check is; I imagine unbalanced brackets do cause problems sometimes, though, and I could totally see that\n>\nin the JS block causing a major problem if there happened to be an unbalanced\n<\na bit earlier and a\n:\nsomewhere as well."
+    },
+    {
+      "post_id": "js-post-1557969",
+      "author": "Austrian",
+      "date": "2026-05-30T06:14:54+0900",
+      "body": "Nice.\nThanks for testing it with a real project. Your feedback helped surface a few issues, and I’ve pushed updates to address them. I really appreciate the input."
+    },
+    {
+      "post_id": "js-post-1557976",
+      "author": "Solar_Flare",
+      "date": "2026-05-30T08:08:53+0900",
+      "body": "Cool!\nI do believe you misunderstood one little thing though. Your new test case for balanced brackets is:\nCode:\n<Custom Note: value < 5>\n<Range: a.hp > 50>\nIn this case, Custom Note should be fine, while Range would ideally raise an error – though it depends on the plugin, that'll typically give the note tag a value of\na.hp\nrather than the intended\na.hp > 50\n. The case where a greater-than in a note-tag should usually be fine is this kind of situation:\nCode:\n<JS>\nif(a.hp > 5) {\n// do something\n}\n</JS>"
+    },
+    {
+      "post_id": "js-post-1558115",
+      "author": "Austrian",
+      "date": "2026-06-01T01:16:34+0900",
+      "body": "Ahh I see.\nI reviewed extractMetadata again and updated the validator to follow the engine’s exact parsing order. It now strips JS blocks first, handles inline tags the same way the engine does, ignores valid operators, and only counts the remaining brackets. With this change, your safe example passes and <Range: a.hp > 50> is correctly flagged.\nNote:\nEven if a plugin supports something like <Custom Note: value > 5>, the tool will still mark it as invalid because the engine itself truncates the tag at the first >."
+    },
+    {
+      "post_id": "js-post-1558120",
+      "author": "ShadowDragon",
+      "date": "2026-06-01T01:58:05+0900",
+      "body": "I just tested my project plugins.js from MV into it, mostly is yellow\nof validation mismatch, as it can read the tiers I had in the desc on top.\nbut I do wonder, what does \"need script\" means behind the plugin name?\nI know my own plugins, the order doesn't really matter here, but I categorize them\nfor what they do, but its a nice little tool.\nIm not sure for what it could be used if it requires the plugins.js?\nall I know from quick checking, it works, and looks cool ^^"
+    },
+    {
+      "post_id": "js-post-1558126",
+      "author": "Austrian",
+      "date": "2026-06-01T03:19:07+0900",
+      "body": "Hey, thanks for giving it a test run.\n“Need Script” just means you only dropped in\nplugins.js\n. The tool can read your load order and descriptions, but it can’t scan the actual code. That’s why you saw those yellow tier warnings—it was treating your custom category tags as strict load‑order tiers.\nTo get the full results, highlight your actual plugin\n.js files\nfrom js/plugins and drop them in together with plugins.js.\nNote:\nPersonally, I just drag in all the .js files from js/plugins even the disabled ones. The tool still works as expected.\nYou can also drop in your\ndata/\n(Skills, Items, Weapons, etc).\nJSON\nfiles to check for broken formulas or unclosed notetags.\nThough I am still working on this as some of the .JSON data needs reviewing."
+    }
+  ]
+}

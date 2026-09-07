@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-do-rpg-maker-mz-games-handle-save-files-between-updates.183712",
+  "title": "How Do RPG Maker MZ Games Handle Save Files Between Updates?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:49:59.057535+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1556850",
+      "author": "x_mumucry_x",
+      "date": "2026-05-20T03:50:47+0900",
+      "body": "Hello, I’m a beginner with RPG Maker MZ.\nOriginally, I planned to make an adventure game. Development has been going well and the game is almost complete, but recently I started thinking about adding RPG elements to it in the future.\nSo I’d like to ask a few things:\n1. When a game made in RPG Maker gets updated, how are save files usually carried over from the old version?\nIs it enough to simply copy and paste the save files into the new version?\n2. If I want to design the game with future updates in mind, what kinds of things should I avoid changing during development?\nI assume changing switch numbers or event IDs is a bad idea. But what about expanding maps or moving events to different locations? Could that break existing save data?\nI tried looking this up, but I couldn’t find much detailed information.\nIf anyone knowledgeable could explain it, I’d really appreciate it."
+    },
+    {
+      "post_id": "js-post-1556851",
+      "author": "SGHarlekin",
+      "date": "2026-05-20T04:23:28+0900",
+      "body": "Generally speaking, editor stuff transfers, any changes to the plugin manager or the plugins does not.\nNow of course if you make item ID 1 \"Healing potion\" into \"Deadly poison\", the player now has deadly poison if I'm not mistaken.\nAnd of course when in doubt, you can just try it out yourself... Add an event to the map of an existing save file. Does it exist? Does it work? What if you changed and item into something else when the player already has that item? Sometimes just trying stuff out yourself is faster than waiting for a forum response."
+    },
+    {
+      "post_id": "js-post-1556855",
+      "author": "Andar",
+      "date": "2026-05-20T05:32:00+0900",
+      "body": "If you want to update, you can only add new entries or new maps, you cannot delete anything.\nChanging any entry or map may work depending on what and how it was changed - the healing to poison above is a good example on what not to change.\nBut reducing or increasing the healing strength for balance purposes simply changes all potions to the new values.\nIn case of a map you need to keep in mind that the current map is saved into the savefile, so it only changes after leaving and returning to it. So you better not disconnect any map with the update (although you can redirect an exit without placing an entry point to prepare for abandoning the map).\nHowever as mentioned both above and hundreds of other times here on the forum, adding or removing a plugin almost always requires the player to start a new game. That is because most plugins add values to the savefiles, making older savefiles incompatible with the new plugin structure.\nWith these restrictions simply update the game into the same folder and the savefiles can be loaded as normal."
+    },
+    {
+      "post_id": "js-post-1556866",
+      "author": "Solar_Flare",
+      "date": "2026-05-20T07:38:32+0900",
+      "body": "Although it's true that adding (or removing) a plugin can break save compatibility, it won't always do it in an obvious way. If you're lucky, the game won't let you load any of the old saves. Sometimes loading an old save will crash the game immediately. Sometimes it'll crash the game a few minutes later. Sometimes it won't crash the game, but certain things won't behave as expected.\nIt's possible to rig specific plugins to avoid save compatibility issues when the plugin is added. Some plugins do make an effort to do so. So, if you do feel a need to add a plugin, it's at least possible to keep the saves compatible, though you may need to edit the plugin. Removing a plugin without compatibility issues is a bit trickier, but it could still be done with some effort (you'd replace it with a dummy plugin that migrates the save data)."
+    },
+    {
+      "post_id": "js-post-1556972",
+      "author": "x_mumucry_x",
+      "date": "2026-05-21T00:36:48+0900",
+      "body": "Thank you everyone for the detailed explanations!\nThis helped me understand save compatibility in RPG Maker MZ much better.\nIt seems like “adding is usually safe, deleting/changing is dangerous,” especially with plugins and IDs.\nI’ll definitely start testing updates with old save files myself from now on.\nReally appreciate all the advice!\nSolar_Flare said:\nAlthough it's true that adding (or removing) a plugin can break save compatibility, it won't always do it in an obvious way. If you're lucky, the game won't let you load any of the old saves. Sometimes loading an old save will crash the game immediately. Sometimes it'll crash the game a few minutes later. Sometimes it won't crash the game, but certain things won't behave as expected.\nIt's possible to rig specific plugins to avoid save compatibility issues when the plugin is added. Some plugins do make an effort to do so. So, if you do feel a need to add a plugin, it's at least possible to keep the saves compatible, though you may need to edit the plugin. Removing a plugin without compatibility issues is a bit trickier, but it could still be done with some effort (you'd replace it with a dummy plugin that migrates the save data).\nClick to expand...\nAndar said:\nIf you want to update, you can only add new entries or new maps, you cannot delete anything.\nChanging any entry or map may work depending on what and how it was changed - the healing to poison above is a good example on what not to change.\nBut reducing or increasing the healing strength for balance purposes simply changes all potions to the new values.\nIn case of a map you need to keep in mind that the current map is saved into the savefile, so it only changes after leaving and returning to it. So you better not disconnect any map with the update (although you can redirect an exit without placing an entry point to prepare for abandoning the map).\nHowever as mentioned both above and hundreds of other times here on the forum, adding or removing a plugin almost always requires the player to start a new game. That is because most plugins add values to the savefiles, making older savefiles incompatible with the new plugin structure.\nWith these restrictions simply update the game into the same folder and the savefiles can be loaded as normal.\nClick to expand...\nSGHarlekin said:\nGenerally speaking, editor stuff transfers, any changes to the plugin manager or the plugins does not.\nNow of course if you make item ID 1 \"Healing potion\" into \"Deadly poison\", the player now has deadly poison if I'm not mistaken.\nAnd of course when in doubt, you can just try it out yourself... Add an event to the map of an existing save file. Does it exist? Does it work? What if you changed and item into something else when the player already has that item? Sometimes just trying stuff out yourself is faster than waiting for a forum response.\nClick to expand..."
+    }
+  ]
+}

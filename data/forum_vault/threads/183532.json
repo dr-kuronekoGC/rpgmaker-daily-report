@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/dynamic-enemy-respawn.183532",
+  "title": "MZ Dynamic Enemy Respawn",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:49:53.810050+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1555811",
+      "author": "ZimXero",
+      "date": "2026-05-09T00:31:17+0900",
+      "body": "Just throwing a plugin idea into the wind.  If someone makes it I'll buy it.\nThe concept is to have on-map enemies with Dynamic notetag be affected by plugin parameters after victory/defeat:\n%chance to be removed\n%chance to return\n%chance to evolve\n(remove/repeat/restart) - action to take when no more evolutions exist\nIt would need to come with a method to designate event evolution sequences as lists... so they dont need to be managed using event page switches and callouts.\n‐-------------\nThis plugin would make it so that when you re-enter a map, some defeated enemies would be gone forever, some would return, and some would be replaced with alternate events.  The evolved events could keep getting stronger... and if you want you could replace a defeated boss with a weak enemy that gives a special item.  It makes a map feel more alive."
+    },
+    {
+      "post_id": "js-post-1557211",
+      "author": "ShadowDragon",
+      "date": "2026-05-23T02:12:58+0900",
+      "body": "does the change perma exist?\nas notetag (which are global) which is better using comments.\nvariable based ( switch A/Switch B ) as 50/50 change + % change to return.\nif this is perma change per re-entering or map refresh.\nmap refresh refreshes mostly all events on that map.\nbut for evolve, do you mean event upgrade? or something else?"
+    },
+    {
+      "post_id": "js-post-1557219",
+      "author": "ZimXero",
+      "date": "2026-05-23T02:27:09+0900",
+      "body": "I have a working system evented now.  How it works:  On screen enemy events have a multipage flow so once defeated they have a 25% chance to be gone for ever from the game.  If not gone forever, they have a 25% chance to respawn each map re-entry (the natural trigger).  If they do respawn... they have a 50% chance to come back the same, 50% chance as a monster +1.  (capped at monster +++)  This requires making 4 versions of each troop though, which could certainly be more efficient.   No work needed, unless you want to make a similar (but better?) system on your own.\nThe intent is to make it so when the player clears monsters from a map, the map becomes mostly cleared for a while, but over time... a good chunk of the monsters come back, some mutated into more powerful versions.  My game lets you view the encounter name when you approach closely... so you can avoid the powerful ++ versions if you have the chance.  This makes the area more alive and dynamic.  The player may want to revisit old areas and look for new challenges.\nAs a side note: The low level versions of these encounter types give pathetic experience reward, as an anti-farming mechanism.  Most EXP comes from quests and exploration.   The super version (+++) encounters, I might go the other direction and have them give VERY good rewards."
+    },
+    {
+      "post_id": "js-post-1557225",
+      "author": "ShadowDragon",
+      "date": "2026-05-23T03:06:50+0900",
+      "body": "I did have selfVariables which I can add selfSwitches on comment tag\nto handle pages cleaner, instead of the ABCD which can be used too.\nso it has  4 pages from what I can read, variable that could add \"+1\"\ncan check which enemy to throw in (which you can also control the event sprite).\n1 default\n2 chance on respawn\n3 evolve (+1 strength)\n4 perma death (removed without respawn).\nbased on those, each of the page can have a comment tag <respawn change: X)\nX being a number or X% which can be optional as the effect would be same.\nI think there is still eventing required, but probably less.\nI think the enemy fight can also be drawn based on tag.\nlike enemy ID 1 (base)\nid 2 ++\nid 3 +++\nid 4 (new)\nid 5 ++\nid 6 +++\nwhich can have <frog: 1 0>   (1 is variable ID, 0 is the value)\nfrog 1 1  makes variable 1, value 1 automatically (like a my switch group)\nbut more enemy groups.\nso <frog> is the identifier here, so it could draw the enemy.\nif you have frog 1, frog 2, frog 3,  you can basicly call frog 1 always,\nbut the identifier grab frog 2 if the value is equal. so this makes adding\nenemy easy.\nno tag behave as normal this way,  this only allow a bit simplicity (or laziness) ^^"
+    },
+    {
+      "post_id": "js-post-1557226",
+      "author": "ZimXero",
+      "date": "2026-05-23T03:13:59+0900",
+      "body": "I like that.  Was thinking for greatest portability between systems since everybody has a different system that a plug in could automate the evolution chain sequence. And maybe even scale the stats and rewards, and that sort of thing.\nIt could also automate the naming convention. So if a person wanted to go just 123, they could. But they could also call it slime, advanced slime, super slime, devastating slime, whatever you want, it is a sequence of words.\nThe inspiration is to make it feel like a living ecosystem by pulling in mechanics from rogue games that can port well into other formats of gameplay.\nYou know how games have Asuper challenge. Somewhere near the end game to defeat, or in newgame+... you could also make another tier of evolution that gives no experience that can be escaped from or avoided. But is a super super version of the other of the others, just for challenge."
+    },
+    {
+      "post_id": "js-post-1557227",
+      "author": "ShadowDragon",
+      "date": "2026-05-23T03:35:01+0900",
+      "body": "I don't own MZ fully, but using a hybrid, so I will test it in MV\nand try in MZ and make patches if required.\nI also think its possible to omit pages entirely to make it more data driven\nby 1 page that controls everything.\nits possible to make 2 pages tops, but I need some time to get it done though,\nso I try to make the base work first, if it works, I send it you by DM to test it\nin a native MZ version as I don't know if hybrid and native engine are different?\nfrom there, I can try to extend it further, but it does require my base (mini version for MZ)\nbecause it can parse my parameters for me automatic, so I don't have to think much\nhow to parse them correctly ^^\nI let you know when I got something done so I try to built a foundation.\nas thats where it starts once its working."
+    },
+    {
+      "post_id": "js-post-1557230",
+      "author": "Sword_of_Dusk",
+      "date": "2026-05-23T04:27:31+0900",
+      "body": "ShadowDragon said:\nI don't own MZ fully, but using a hybrid,\nClick to expand...\nWhat exactly do you mean by this? Either you own MZ or you don't."
+    },
+    {
+      "post_id": "js-post-1557237",
+      "author": "ShadowDragon",
+      "date": "2026-05-23T05:32:19+0900",
+      "body": "Sword_of_Dusk said:\nWhat exactly do you mean by this? Either you own MZ or you don't.\nClick to expand...\nI use a hybrid version (MV exe in MZ project) so it uses the RMMZ cores.\nwhile I can't really make any maps like MZ or deploy in any way, but testing\nstill works."
+    },
+    {
+      "post_id": "js-post-1557246",
+      "author": "Sword_of_Dusk",
+      "date": "2026-05-23T07:26:46+0900",
+      "body": "ShadowDragon said:\nI use a hybrid version (MV exe in MZ project) so it uses the RMMZ cores.\nwhile I can't really make any maps like MZ or deploy in any way, but testing\nstill works.\nClick to expand...\nSo, you haven't purchased MZ in anyway? Man, that sounds a bit sketch."
+    },
+    {
+      "post_id": "js-post-1557270",
+      "author": "ShadowDragon",
+      "date": "2026-05-23T16:45:07+0900",
+      "body": "Sword_of_Dusk said:\nSo, you haven't purchased MZ in anyway? Man, that sounds a bit sketch.\nClick to expand...\nits just for testing purpose, nothing else though, but at least I can find the\nissue if something would crash ^^\nit's not illegal though, as I do use that for my 2 plugins (animated icon/verhicles).\nto make it work nicely."
+    },
+    {
+      "post_id": "js-post-1557279",
+      "author": "ZimXero",
+      "date": "2026-05-23T20:43:18+0900",
+      "body": "Here is the event flow.  In this version, mutation/evolution chance is 60% (easier to playtest), with a 40% chance creature respawns the same as before.  Once it evolves it doesn't devolve.  At max tier (event page 4) there are options.  You can have it keep returning until permadeath (25% chance from page 5), or you could devolve it by setting all switches back off, or you could make it stay at that tier permanently and bypass page 5 from then on."
+    },
+    {
+      "post_id": "js-post-1557310",
+      "author": "ShadowDragon",
+      "date": "2026-05-24T00:25:17+0900",
+      "body": "I wonder why A and B is on while B would run.\nif B and C is on, B would run, so i t always skip 1 page.\nhowever, the system I try to make require 1 page, 1 call, and its controlled\nfrom there as the state remember itself for that event.\nso its simplify by a lot of this kind of logic."
+    },
+    {
+      "post_id": "js-post-1557465",
+      "author": "ATT_Turan",
+      "date": "2026-05-25T08:10:09+0900",
+      "body": "ShadowDragon said:\nit's not illegal though\nClick to expand...\nWhy do you say that? The code files have the same restrictions as all the other assets included with RPG Maker MZ: you're only permitted to use them in other programs (e.g. RPG Maker MV) if you own the Maker they came from."
+    },
+    {
+      "post_id": "js-post-1557811",
+      "author": "ShadowDragon",
+      "date": "2026-05-28T06:03:01+0900",
+      "body": "@ZimXero\nI sended you a demo layout of your routine into 1 event page logic.\nthat should do all of your 5 pages in 1.\ntest them out if you like and give feedback if it works as expected.\nso I can try to add sprite change."
+    }
+  ]
+}

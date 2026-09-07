@@ -1,0 +1,143 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/sound-effects-for-opening-closing-and-advancing-text-boxes.183718",
+  "title": "MZ Sound effects for opening, closing, and advancing text boxes?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:49:58.252169+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1556892",
+      "author": "MHDevBlue",
+      "date": "2026-05-20T11:10:29+0900",
+      "body": "I've been told that the only way to do this is by manually placing sound effects before, between and after each text box. However, this would be a really big time sink and I would have to go back and retrofit a ton of messages.\nWould it be reasonable to ask if anyone could whip up a plugin that plays SFX upon the text box opening, advancing to the next text box, and then closing?"
+    },
+    {
+      "post_id": "js-post-1556913",
+      "author": "Eliaquim",
+      "date": "2026-05-20T16:03:15+0900",
+      "body": "Hi there!\nYou can do that with my free plugin Message Manager:\nHakuen Studio Message Manager for RPG Maker by Hakuen Studio\nImproves the Message System with several changes!\nhakuenstudio.itch.io\nOr with my Message Common Event:\nHakuen Studio Message Common Event for RPG Maker MZ by Hakuen Studio\nAutomatically add common events before and after every show text command!\nhakuenstudio.itch.io\nAll my plugins need my core plugin somewhere above them:\nHakuen Studio Eli Book RPG Maker MZ by Hakuen Studio\nEssential plugin for all Eli plugins in RPG Maker MV/MZ!\nhakuenstudio.itch.io"
+    },
+    {
+      "post_id": "js-post-1557023",
+      "author": "MHDevBlue",
+      "date": "2026-05-21T13:23:00+0900",
+      "body": "Eliaquim said:\nHi there!\nYou can do that with my free plugin Message Manager:\nHakuen Studio Message Manager for RPG Maker by Hakuen Studio\nImproves the Message System with several changes!\nhakuenstudio.itch.io\nOr with my Message Common Event:\nHakuen Studio Message Common Event for RPG Maker MZ by Hakuen Studio\nAutomatically add common events before and after every show text command!\nhakuenstudio.itch.io\nAll my plugins need my core plugin somewhere above them:\nHakuen Studio Eli Book RPG Maker MZ by Hakuen Studio\nEssential plugin for all Eli plugins in RPG Maker MV/MZ!\nhakuenstudio.itch.io\nClick to expand...\nThank you so much, but where in this plugin settings can I find the sound effect options?"
+    },
+    {
+      "post_id": "js-post-1557025",
+      "author": "Eliaquim",
+      "date": "2026-05-21T13:40:27+0900",
+      "body": "MHDevBlue said:\nThank you so much, but where in this plugin settings can I find the sound effect options?\nClick to expand...\nMy bad! Is just the EliMZ_MessageCommonEvent that would work for you. You can setup a before and after common event. With that, you can play any sound with the common event"
+    },
+    {
+      "post_id": "js-post-1557027",
+      "author": "champion53",
+      "date": "2026-05-21T14:12:30+0900",
+      "body": "MHDevBlue said:\nI've been told that the only way to do this is by manually placing sound effects before, between and after each text box. However, this would be a really big time sink and I would have to go back and retrofit a ton of messages.\nWould it be reasonable to ask if anyone could whip up a plugin that plays SFX upon the text box opening, advancing to the next text box, and then closing?\nClick to expand...\nYou don't need a custom plugin for this. VisuStella MZ Message Core has built-in options for open, next, and close sounds. Yanfly's Message Core for MV does the same. If you're not using those, a simple plugin would still be easy to make. Check the plugin request section—someone might have already done it."
+    },
+    {
+      "post_id": "js-post-1557029",
+      "author": "MHDevBlue",
+      "date": "2026-05-21T14:39:52+0900",
+      "body": "champion53 said:\nYou don't need a custom plugin for this. VisuStella MZ Message Core has built-in options for open, next, and close sounds. Yanfly's Message Core for MV does the same. If you're not using those, a simple plugin would still be easy to make. Check the plugin request section—someone might have already done it.\nClick to expand...\nI will check this Yanfly one out as well.\nI've been warned against using VisuStella since apparently you can't see the code, and we want a fair few plugins so that wouldn't work for us."
+    },
+    {
+      "post_id": "js-post-1557056",
+      "author": "rpgLord69",
+      "date": "2026-05-21T20:32:28+0900",
+      "body": "Yanfly is for MV though it might work with Fossil. Didn't spot options in VS Message Core of setting SEs like that (edit: but maybe there are ones?).\nAnyway, you should clarify if you want 3 different SEs for open, close and \"continue\" or just same SE for all those cases? If it's same for everything, it's just simple edits of two methods I think. If you want different ones, I guess you'd have to check the interpreter what is the next command so you can differentiate between continue and close.\nedit: Or actually maybe you can just check\n$gameMessage.hasText()\nbecause that seemed to return true even when it's an empty text box."
+    },
+    {
+      "post_id": "js-post-1557100",
+      "author": "MHDevBlue",
+      "date": "2026-05-22T03:33:35+0900",
+      "body": "rpgLord69 said:\nYanfly is for MV though it might work with Fossil. Didn't spot options in VS Message Core of setting SEs like that (edit: but maybe there are ones?).\nAnyway, you should clarify if you want 3 different SEs for open, close and \"continue\" or just same SE for all those cases? If it's same for everything, it's just simple edits of two methods I think. If you want different ones, I guess you'd have to check the interpreter what is the next command so you can differentiate between continue and close.\nedit: Or actually maybe you can just check\n$gameMessage.hasText()\nbecause that seemed to return true even when it's an empty text box.\nClick to expand...\nI am after a method of playing all 3 of those sound effects, yes"
+    },
+    {
+      "post_id": "js-post-1557107",
+      "author": "rpgLord69",
+      "date": "2026-05-22T05:01:25+0900",
+      "body": "I think this works (copy paste to notepad, save as .js file and add as a plugin). Change the SEs to what you like. But yeah, there's cases like if you change the position of the message box from like bottom to middle, then that doesContinue no longer counts, so it counts it as opening (edit: actually closing) instead of continuing. Though of course it actually does close and open in that situation.\nconst _myEdit1_WindowMessage_newPage = Window_Message.prototype.newPage;\nWindow_Message.prototype.newPage = function(textState) {\n_myEdit1_WindowMessage_newPage.call(this, textState);\nif (this.isClosed()){\nAudioManager.playSe({\nname: 'Bell1',\nvolume: 100,\npitch: 100,\npan: 0\n});\n} else {\nAudioManager.playSe({\nname: 'Buzzer1',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n};\nconst _myEdit1_WindowMessage_update = Window_Message.prototype.update;\nWindow_Message.prototype.update = function() {\nif (this.isOpen() && this.isClosing() && !this.doesContinue()) {\nAudioManager.playSe({\nname: 'Cow',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n_myEdit1_WindowMessage_update.call(this);\n};"
+    },
+    {
+      "post_id": "js-post-1557129",
+      "author": "MHDevBlue",
+      "date": "2026-05-22T08:22:51+0900",
+      "body": "rpgLord69 said:\nI think this works (copy paste to notepad, save as .js file and add as a plugin). Change the SEs to what you like. But yeah, there's cases like if you change the position of the message box from like bottom to middle, then that doesContinue no longer counts, so it counts it as opening (edit: actually closing) instead of continuing. Though of course it actually does close and open in that situation.\nconst _myEdit1_WindowMessage_newPage = Window_Message.prototype.newPage;\nWindow_Message.prototype.newPage = function(textState) {\n_myEdit1_WindowMessage_newPage.call(this, textState);\nif (this.isClosed()){\nAudioManager.playSe({\nname: 'Bell1',\nvolume: 100,\npitch: 100,\npan: 0\n});\n} else {\nAudioManager.playSe({\nname: 'Buzzer1',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n};\nconst _myEdit1_WindowMessage_update = Window_Message.prototype.update;\nWindow_Message.prototype.update = function() {\nif (this.isOpen() && this.isClosing() && !this.doesContinue()) {\nAudioManager.playSe({\nname: 'Cow',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n_myEdit1_WindowMessage_update.call(this);\n};\nClick to expand...\nThank you so much for this!\nIt almost works, but it plays all 3 sound effects one after the other upon a new message box appearing (whether from being newly opened or from progressing to the next box), instead of them each playing at their respective moment. That's the best I can explain it, does it make sense?"
+    },
+    {
+      "post_id": "js-post-1557164",
+      "author": "rpgLord69",
+      "date": "2026-05-22T16:38:44+0900",
+      "body": "Hmmm I mean I tested it and it seemed to work for me. Do you have other plugins that affect message box? Turn them off and see if it works. Though I have to wonder what kind of plugin would return true for this.isClosing() when you first open a message box."
+    },
+    {
+      "post_id": "js-post-1557895",
+      "author": "MHDevBlue",
+      "date": "2026-05-29T06:43:47+0900",
+      "body": "rpgLord69 said:\nHmmm I mean I tested it and it seemed to work for me. Do you have other plugins that affect message box? Turn them off and see if it works. Though I have to wonder what kind of plugin would return true for this.isClosing() when you first open a message box.\nClick to expand...\nSorry for the late response.\nThe only other plugin related to message boxes is Theo_TypingSoundMZ, and MAYBE EliMZ_Book because I don't know what's in it. I turned them both off, and the MessageSFX plugin still plays all 3 sound effects one after the other instead of playing them on open, progress, and close. Do you have any ideas? Thank you for your patience and for working with me on this, again!"
+    },
+    {
+      "post_id": "js-post-1557925",
+      "author": "rpgLord69",
+      "date": "2026-05-29T19:37:06+0900",
+      "body": "Like I said, seems to work for me (though I only tested showing text boxes in succession) with no other plugins or with VisuStella cores.\nDo you have some other event commands between the text boxes, like moving a bust or whatever? Other than that, all I can suggest is turning off all other plugins (fast in MZ) and testing if there's something affecting it."
+    },
+    {
+      "post_id": "js-post-1557972",
+      "author": "MHDevBlue",
+      "date": "2026-05-30T07:05:34+0900",
+      "body": "rpgLord69 said:\nLike I said, seems to work for me (though I only tested showing text boxes in succession) with no other plugins or with VisuStella cores.\nDo you have some other event commands between the text boxes, like moving a bust or whatever? Other than that, all I can suggest is turning off all other plugins (fast in MZ) and testing if there's something affecting it.\nClick to expand...\nI managed to get it working actually! Thank you so much, it's exactly what I was looking for!"
+    },
+    {
+      "post_id": "js-post-1558219",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T05:40:23+0900",
+      "body": "rpgLord69 said:\nLike I said, seems to work for me (though I only tested showing text boxes in succession) with no other plugins or with VisuStella cores.\nDo you have some other event commands between the text boxes, like moving a bust or whatever? Other than that, all I can suggest is turning off all other plugins (fast in MZ) and testing if there's something affecting it.\nClick to expand...\nJust one more thing I'd like to ask, and this is not a big deal if it's more trouble than its worth. Is it possible for the open/close sound effects not to play if the text window behind is set to transparent?"
+    },
+    {
+      "post_id": "js-post-1558222",
+      "author": "rpgLord69",
+      "date": "2026-06-02T06:08:33+0900",
+      "body": "If you want transparent not to play it, I think you can add checks for the backgrounds like below.\nBut these edits I've made don't take into account if you keep mixing different bg types in succession, because then the message window will keep opening and closing I think. You'd need heavier edits to account for all cases.\nconst _myEdit1_WindowMessage_newPage = Window_Message.prototype.newPage;\nWindow_Message.prototype.newPage = function(textState) {\n_myEdit1_WindowMessage_newPage.call(this, textState);\nif (this.isClosed()) {\nif ($gameMessage.background() !== 2) {\nAudioManager.playSe({\nname: 'Bell1',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n} else {\nAudioManager.playSe({\nname: 'Buzzer1',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n};\nconst _myEdit1_WindowMessage_update = Window_Message.prototype.update;\nWindow_Message.prototype.update = function() {\nif (this.isOpen() && this.isClosing() && !this.doesContinue() && this._background !== 2) {\nAudioManager.playSe({\nname: 'Cow',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n_myEdit1_WindowMessage_update.call(this);\n};"
+    },
+    {
+      "post_id": "js-post-1558224",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T07:12:23+0900",
+      "body": "rpgLord69 said:\nIf you want transparent not to play it, I think you can add checks for the backgrounds like below.\nBut these edits I've made don't take into account if you keep mixing different bg types in succession, because then the message window will keep opening and closing I think. You'd need heavier edits to account for all cases.\nconst _myEdit1_WindowMessage_newPage = Window_Message.prototype.newPage;\nWindow_Message.prototype.newPage = function(textState) {\n_myEdit1_WindowMessage_newPage.call(this, textState);\nif (this.isClosed()) {\nif ($gameMessage.background() !== 2) {\nAudioManager.playSe({\nname: 'Bell1',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n} else {\nAudioManager.playSe({\nname: 'Buzzer1',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n};\nconst _myEdit1_WindowMessage_update = Window_Message.prototype.update;\nWindow_Message.prototype.update = function() {\nif (this.isOpen() && this.isClosing() && !this.doesContinue() && this._background !== 2) {\nAudioManager.playSe({\nname: 'Cow',\nvolume: 100,\npitch: 100,\npan: 0\n});\n}\n_myEdit1_WindowMessage_update.call(this);\n};\nClick to expand...\nIngame I'm only using a generic window BG and a transparent BG, will I be okay?"
+    },
+    {
+      "post_id": "js-post-1558227",
+      "author": "rpgLord69",
+      "date": "2026-06-02T07:22:52+0900",
+      "body": "Well you can just test it\nCheck if there's cases in your game where it behaves how you don't want."
+    },
+    {
+      "post_id": "js-post-1558229",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T07:31:17+0900",
+      "body": "rpgLord69 said:\nWell you can just test it\nCheck if there's cases in your game where it behaves how you don't want.\nClick to expand...\nIt appears to be working like a charm! Thanks so much for all the help."
+    },
+    {
+      "post_id": "js-post-1558237",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T08:53:56+0900",
+      "body": "rpgLord69 said:\nWell you can just test it\nCheck if there's cases in your game where it behaves how you don't want.\nClick to expand...\nOne more small thing-sorry, I keep finding things I wish to tweak and I'm useless at Java at the moment so the best I can do is ask. Would it be possible to disable the \"text advance\" sound when picking a yes/no option? Yes/no options have their own SFX when selected, so it plays both \"text advance\" and \"option select\" on top of each other.\nAgain if this is more trouble than its worth it's totally okay, you've already helped me way more than I expected you to"
+    },
+    {
+      "post_id": "js-post-1558256",
+      "author": "rpgLord69",
+      "date": "2026-06-02T17:24:29+0900",
+      "body": "For that additional functionality you can check for the subwindows.\nBelow is edited code. I changed the structure a bit to make it cleaner. So replace the old with this new one and change the sound effects to what you want. (edit: don't change where it says SE, just the 3 names in quote marks)\nconst _myEdit1_WindowMessage_newPage = Window_Message.prototype.newPage;\nWindow_Message.prototype.newPage = function(textState) {\n_myEdit1_WindowMessage_newPage.call(this, textState);\nif (this.isClosed()) {\nif ($gameMessage.background() !== 2) {\nthis.playOpenCloseContinueSE('Bell1');\n}\n} else {\nif (!this.isAnySubWindowClosing()) {\nthis.playOpenCloseContinueSE('Buzzer1');\n}\n}\n};\nconst _myEdit1_WindowMessage_update = Window_Message.prototype.update;\nWindow_Message.prototype.update = function() {\nif (this.isOpen() && this.isClosing() && !this.doesContinue() && this._background !== 2) {\nthis.playOpenCloseContinueSE('Cow');\n}\n_myEdit1_WindowMessage_update.call(this);\n};\nWindow_Message.prototype.playOpenCloseContinueSE = function(SE) {\nAudioManager.playSe({\nname: SE,\nvolume: 100,\npitch: 100,\npan: 0\n});\n};\nWindow_Message.prototype.isAnySubWindowClosing = function() {\nreturn (\nthis._choiceListWindow?.isClosing() ||\nthis._numberInputWindow?.isClosing() ||\nthis._eventItemWindow?.isClosing()\n);\n};"
+    },
+    {
+      "post_id": "js-post-1558340",
+      "author": "MHDevBlue",
+      "date": "2026-06-03T13:02:15+0900",
+      "body": "rpgLord69 said:\nFor that additional functionality you can check for the subwindows.\nBelow is edited code. I changed the structure a bit to make it cleaner. So replace the old with this new one and change the sound effects to what you want. (edit: don't change where it says SE, just the 3 names in quote marks)\nconst _myEdit1_WindowMessage_newPage = Window_Message.prototype.newPage;\nWindow_Message.prototype.newPage = function(textState) {\n_myEdit1_WindowMessage_newPage.call(this, textState);\nif (this.isClosed()) {\nif ($gameMessage.background() !== 2) {\nthis.playOpenCloseContinueSE('Bell1');\n}\n} else {\nif (!this.isAnySubWindowClosing()) {\nthis.playOpenCloseContinueSE('Buzzer1');\n}\n}\n};\nconst _myEdit1_WindowMessage_update = Window_Message.prototype.update;\nWindow_Message.prototype.update = function() {\nif (this.isOpen() && this.isClosing() && !this.doesContinue() && this._background !== 2) {\nthis.playOpenCloseContinueSE('Cow');\n}\n_myEdit1_WindowMessage_update.call(this);\n};\nWindow_Message.prototype.playOpenCloseContinueSE = function(SE) {\nAudioManager.playSe({\nname: SE,\nvolume: 100,\npitch: 100,\npan: 0\n});\n};\nWindow_Message.prototype.isAnySubWindowClosing = function() {\nreturn (\nthis._choiceListWindow?.isClosing() ||\nthis._numberInputWindow?.isClosing() ||\nthis._eventItemWindow?.isClosing()\n);\n};\nClick to expand...\nWorks great! Thank you again!!!"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/ui-spacing-issue-after-removing-hp-mp-tp-bars.183754",
+  "title": "MV UI spacing issue after removing HP/MP/TP bars",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:50:05.431189+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1557190",
+      "author": "Solarae",
+      "date": "2026-05-23T00:21:37+0900",
+      "body": "I’m working on a small UI tweak in RPG Maker MV and could use a bit of help. I’m pretty new to JavaScript and have mostly been using premade plugins (like Yanfly). I couldn’t really find one that does exactly what I wanted for this case, so I tried putting something together myself.\n(I couldn't figure out a way to fix it with the Yanfly plugins I have, but if anyone knows one from Yanfly that can do what I need without this plugin I tried making, that could be great too. Not sure if I'm missing anything that they offer.)\nSo far, I’ve been able to remove the HP/MP/TP gauges with:\nWindow_Base.prototype.drawGauge = function() {};\nThat part works fine. Now I’m trying to keep the HP/MP/TP text visible (going for a more classic Final Fantasy-style layout), but adjust the spacing so the labels sit closer to the actual numbers.\nRight now everything feels a bit off... the labels sit too far left compared to the values, and since the gauges are gone, the whole layout looks stretched and uneven.\nMy game is running at 1104x624, which I think is part of what’s causing it. I do like the widescreen look during gameplay, but the menu UI doesn’t quite line up nicely where the bars used to be.\nI was also wondering if there’s a way to keep the menu itself at 816x624 with a black background while still running the game at 1104x624 overall. Though I’m not sure if that would break other menus like shops, since those actually look fine as they are.\nHonestly, the main issue is just the HP/MP/TP text being shifted out of place. If I can nudge that closer and clean up the spacing, I’d be happy with it.\nPhotos for examples:\nFinal Fantasy VII main menu UI:\nIn my game with my current plugin, I showed:\nI like the menu so far, other than the spaced area..."
+    },
+    {
+      "post_id": "js-post-1557201",
+      "author": "rpgLord69",
+      "date": "2026-05-23T01:09:27+0900",
+      "body": "They come from:\nWindow_MenuStatus.prototype.drawItemStatus\nwhich uses (inherited from Window_Base)\ndrawActorSimpleStatus\nwhich uses\ndrawActorHp\ndrawActorMp\ndrawActorTp\nHp and Mp use\ndrawCurrentAndMax\nYou can change x coordinate, width of drawing area and also change the\ncentering\n(edit: aligment) from right.\nIf you want only one menu smaller, but keep others full screen, I think easiest is just to change window x and widths in the methods that create them."
+    }
+  ]
+}
