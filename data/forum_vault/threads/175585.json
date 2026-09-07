@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-rpg-maker-2000-2003-uses-ram-and-cpu.175585",
+  "title": "How RPG Maker 2000 /2003 uses RAM and CPU",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker 2000",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:04:09.304550+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1499811",
+      "author": "bubblezzzzzz",
+      "date": "2025-02-19T11:37:48+0900",
+      "body": "When RPG Maker 2003 loads the game for you to play does the entire chipset/tileset get loaded into the RAM? If your chipset/tileset is somewhat empty does it still use the same amount of space due to the background color? Was also wondering if pictures are used in a map if they are automatically loaded in the RAM and sit there until being called on to use or how that works. If anyone knows of documentation on stuff like this could you direct me please? I am also interested in CPU usage with the different things too."
+    },
+    {
+      "post_id": "js-post-1502043",
+      "author": "AkiraKotatsuhime",
+      "date": "2025-03-02T01:04:32+0900",
+      "body": "Once you start new-game or load a previously saved slot, the ChipSet graphic used on the current map will stay in RAM and always has the same size of basic image-data structures, the default palette, the palette fitting current screen-tone etc and the image-content (480×256 equals 122880 references to palette-colors in total, one byte each). That's approximately somewhat around 128kb and it doesn't matter at all how simple or complex the source-image actually looks.\nSimilar with events on the map accessing CharSet graphic sources. CharSets in active use are added to a list in RAM and picked from there instead of loading from drive when another event already takes its graphic from the same filename.\nPictures are loaded from drive at their moment of demand, and will unload marked as deleted (swapping to menu, battle, debug, etc does not count). Current 2003EN may clone images from RAM if they're already present on another ID, to \"preload\" you'd have to load images manually and make these stay active (can be set invisible or out of gamescreen-range) on some IDs as long as needed.\nAnd by CPU-usage you mean what exactly? Of course, it will increase if more pictures are displayed on screen and actively moving around, but your question is a bit vague.\n～炬燵あ"
+    },
+    {
+      "post_id": "js-post-1502057",
+      "author": "bubblezzzzzz",
+      "date": "2025-03-02T03:10:59+0900",
+      "body": "AkiraKotatsuhime said:\nOnce you start new-game or load a previously saved slot, the ChipSet graphic used on the current map will stay in RAM and always has the same size of basic image-data structures, the default palette, the palette fitting current screen-tone etc and the image-content (480×256 equals 122880 references to palette-colors in total, one byte each). That's approximately somewhat around 128kb and it doesn't matter at all how simple or complex the source-image actually looks.\nSimilar with events on the map accessing CharSet graphic sources. CharSets in active use are added to a list in RAM and picked from there instead of loading from drive when another event already takes its graphic from the same filename.\nPictures are loaded from drive at their moment of demand, and will unload marked as deleted (swapping to menu, battle, debug, etc does not count). Current 2003EN may clone images from RAM if they're already present on another ID, to \"preload\" you'd have to load images manually and make these stay active (can be set invisible or out of gamescreen-range) on some IDs as long as needed.\nAnd by CPU-usage you mean what exactly? Of course, it will increase if more pictures are displayed on screen and actively moving around, but your question is a bit vague.\n～炬燵あ\nClick to expand...\ntysm for this, it helps a lot. I am assisting someone with a game and there were questions as to why I would do a specific thing vs another and I didn't have answers so I wanted to get more information on how things work. To make sure I understand this correctly, it would be good to group the CharSet sprites you need for the map in one CharSet verses having them spread out in multiple CharSets. For example: I need to use 8 sprites and they are currently from 3 different CharSets, so I would try to put those 8 sprites in the same CharSet so there is only one CharSet in the RAM instead of 3 different CharSets. Is this right?"
+    },
+    {
+      "post_id": "js-post-1503529",
+      "author": "Ms Littlefish",
+      "date": "2025-03-10T06:11:43+0900",
+      "body": "This thread is closed due to being reported as solved. If you need it reopened, report it let us know. Thank you!"
+    }
+  ]
+}
