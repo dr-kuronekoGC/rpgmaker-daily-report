@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/sv_battler-sprite-mostly-using-idle-sprite.180717",
+  "title": "MZ SV_Battler sprite mostly using Idle Sprite",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:43:15.911872+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1534740",
+      "author": "Gatamandra",
+      "date": "2025-10-27T00:17:35+0900",
+      "body": "Hi! this might be super silly, using this image from this super useful  thread:\nhttps://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mv-mz-templates-and-guideline.46839/\nI was trying to give  bit more live to the sprites in battle in my game, animating more the spridesheet for sv_battlers, however I noticed that even copypaste-ing the \"Idle\" animation into the \"Ready/Phisical\" \"Ready Magical\" \"Guard\" \"Crisis/Danger\" and \"Abnormal State\" (as I don´t want it to be as complex, so I just want the idle animation keep playing in those moments) the engine still refreshes them in battle making the animation go uncordinated, and is a bit distracting, so I was wondering if it´d be possible to have a plugin that makes so that for those action it doesn´t refresh the sprite to keep the idle animation playing.\nI´m using YEP Battle core and YEP SVEnemieSprite plugins but I couldn´t find anything there to fix it, I also tried deep diving in the js.files but I wasn´t even sure were to even look for it.\nEDIT: re-reading my post I don´t know if it´s a bit confusing, I would like the battler's animations to be mainly on their idle animation and be as much on synch as possible. so I thought by doing what is written up could be a start, but later I thought maybe the main goal wasn´t very well explained, thanks a mil!!\nThanks a mil!!"
+    },
+    {
+      "post_id": "js-post-1534766",
+      "author": "SGHarlekin",
+      "date": "2025-10-27T04:26:20+0900",
+      "body": "You could just open your rpg_sprites.js in the js folder of your project, scroll to line 649 and change the motion directly. (Or for good practice, copy the function and put it in a new file, call it ActorMotions.js or whatever and use as a plugin. It's better to not edit core scripts directly.)\nNot sure if it will still do a hiccup, but worth a shot.\nas for using a skill, you could use yanfly's action sequence packs and just leave the <target action> / <whole action> empty. Then the sprite will just continues to idle."
+    },
+    {
+      "post_id": "js-post-1534783",
+      "author": "Gatamandra",
+      "date": "2025-10-27T07:39:56+0900",
+      "body": "SGHarlekin said:\nYou could just open your rpg_sprites.js in the js folder of your project, scroll to line 649 and change the motion directly. (Or for good practice, copy the function and put it in a new file, call it ActorMotions.js or whatever and use as a plugin. It's better to not edit core scripts directly.)\nView attachment 351993\nNot sure if it will still do a hiccup, but worth a shot.\nas for using a skill, you could use yanfly's action sequence packs and just leave the <target action> / <whole action> empty. Then the sprite will just continues to idle.\nClick to expand...\nThanks!! I tweaked the lines on a different .js file and also I saw down bellow  this other lines:\nSprite_Actor.prototype.refreshMotion = function() {\nconst actor = this._actor;\nif (actor) {\nconst stateMotion = actor.stateMotionIndex();\nif (actor.isInputting() || actor.isActing()) {\nthis.startMotion(\"walk\");\n} else if (stateMotion === 3) {\nthis.startMotion(\"dead\");\n} else if (stateMotion === 2) {\nthis.startMotion(\"sleep\");\n} else if (actor.isChanting()) {\nthis.startMotion(\"chant\");\n} else if (actor.isGuard() || actor.isGuardWaiting()) {\nthis.startMotion(\"guard\");\n} else if (stateMotion === 1) {\nthis.startMotion(\"abnormal\");\n} else if (actor.isDying()) {\nthis.startMotion(\"dying\");\n} else if (actor.isUndecided()) {\nthis.startMotion(\"walk\");\n} else {\nthis.startMotion(\"wait\");\n}\n}\n};\nWhich I´m guessing dictate when to refresh and start other motions, so I deleted  the chanting, guard, abnormal and dying and I think it helped quite a bit! thanks a mil! though it´d be great to know if these lines here were okay to tweak too, nothing seems to have been broken in my testing (?)"
+    }
+  ]
+}

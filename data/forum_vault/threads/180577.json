@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/massive-error-after-transferring-game-project-to-a-new-computer.180577",
+  "title": "MV Massive error after transferring game project to a new computer",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:43:17.669574+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1533621",
+      "author": "muffinswords",
+      "date": "2025-10-16T18:58:02+0900",
+      "body": "I recently came into a new computer and put RPG Maker MV on it, then transferred a copy of my project too.\nAt first glance, everything seemed to be working fine. But upon transferring to a map that made use of Galv's Layer Graphics and show pictures (those were what happened in the only event on the map), I ran into an error that was not present on my old computer.\nThe screen is also completely black when it was fine on the other laptop.\nPixiJS 4.5.4 - ✰ WebGL ✰\nhttp://www.pixijs.com/\n♥♥♥\n36WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost\n142WebGL: INVALID_OPERATION: bindFramebuffer: object not from this context\n246WebGL: INVALID_OPERATION: bindBuffer: object not from this context\n70WebGL: INVALID_OPERATION: useProgram: object not from this context\n70WebGL: INVALID_OPERATION: uniformMatrix3fv: location is not from current program\n35WebGL: INVALID_OPERATION: uniform1fv: location is not from current program\n35WebGL: INVALID_OPERATION: uniform1f: location not for current program\n70WebGL: INVALID_OPERATION: bindTexture: object not from this context\nindex.html:1 [.Offscreen-For-WebGL-0FCE3708] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-0BB57200] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-0FCE3708] GL_INVALID_OPERATION: Insufficient buffer size.\n9[.Offscreen-For-WebGL-0F8F9AE0] GL_INVALID_OPERATION: Insufficient buffer size.\n6[.Offscreen-For-WebGL-0F997E30] GL_INVALID_OPERATION: Insufficient buffer size.\n4index.html:1 [.Offscreen-For-WebGL-1A18D788] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-0F963F98] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-1A382538] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-0BE5AAB0] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-1A382538] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-1B3DEB18] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-1A382538] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-1B3DEB18] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-1A382538] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-0BE681A8] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-1B3DEB18] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-0FF69A28] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-19C89280] GL_INVALID_OPERATION: Insufficient buffer size.\nindex.html:1 [.Offscreen-For-WebGL-0FF69A28] GL_INVALID_OPERATION: Insufficient buffer size.\nClick to expand...\nI wonder if I am missing Pixi on this computer? Or missing WebGL? I don't know where to start. I don't think it's a plugin error, I feel like the cause is loading the project on a different computer. Implying maybe that something is missing that I failed to copy over.\nThank you for reading. I'm sorry I ask so many questions haha!"
+    },
+    {
+      "post_id": "js-post-1533623",
+      "author": "ShadowDragon",
+      "date": "2025-10-16T19:09:56+0900",
+      "body": "the error is from an webGL buffer which is to low, unknown why.\nif its new, did you update all drivers as well?\nwhat OS do you use? 10, 11, other operation system (max, linux)?\nif you didn't update all drivers yet, I would recommend (like IObit Driver Booster 13)\nor other, update each one.\nmake sure windows up has its latest updates too, which may fix this issue.\nif not, feel free to post more info if needed =)"
+    },
+    {
+      "post_id": "js-post-1533624",
+      "author": "muffinswords",
+      "date": "2025-10-16T19:22:38+0900",
+      "body": "ShadowDragon said:\nthe error is from an webGL buffer which is to low, unknown why.\nif its new, did you update all drivers as well?\nwhat OS do you use? 10, 11, other operation system (max, linux)?\nif you didn't update all drivers yet, I would recommend (like IObit Driver Booster 13)\nor other, update each one.\nmake sure windows up has its latest updates too, which may fix this issue.\nif not, feel free to post more info if needed =)\nClick to expand...\nIt's windows 11. I believe I have fully updated windows and my graphics cards. I'm about to test using my NVIDIA card specifically for RPG Maker. I'll also see how many other drivers(?) need updated.\nI also wonder if somewhere there is an incorrect file path being called?\nAnd something about resolution...\nI used the program you recommended to update all my drivers, thank you!\nEDIT: I have isolated the problem. It is Galv's Layer Graphics. Calling the layer works fine on my old pc, calling the layer here leads to the error. (Removing the layer call made the map load fine, no black screen or anything.)"
+    },
+    {
+      "post_id": "js-post-1533648",
+      "author": "ShadowDragon",
+      "date": "2025-10-16T22:24:42+0900",
+      "body": "maybe reinitialize the files from that plugin to make it work.\nI don't know how it exactly work or how the layers are saved and called.\nso if every driver is updated, and issue persist from galv.\nmaybe see if there is a update so it works correctly.\nanother way to validate is a new project => check layers to see if its works.\nif it works, maybe update the corefiles.\nas if core files are different (1.5.x project => maker 1.6.1 (1.6.3)) than it can cause\nthis as well."
+    },
+    {
+      "post_id": "js-post-1533652",
+      "author": "muffinswords",
+      "date": "2025-10-16T22:36:18+0900",
+      "body": "I ran a test and found out that a smaller size layer loads correctly on a different map. It might have to do with it being a very large layer? Yet it was okay on my old laptop. I went ahead and asked on Galv's site too. And I'll make sure to get the latest files."
+    },
+    {
+      "post_id": "js-post-1533668",
+      "author": "Galv",
+      "date": "2025-10-17T01:19:35+0900",
+      "body": "If you are using huge layers (which I do not recommend you do), that could be the cause.\nDoing some research, the maximum image size WebGL can draw is dependent on GPU and browser, but a common hardware-supported limit is 4096×4096 pixels."
+    },
+    {
+      "post_id": "js-post-1533676",
+      "author": "Ziorke",
+      "date": "2025-10-17T01:51:43+0900",
+      "body": "to tiny Layers 16px not good, medium size is the best 300px or more also, not to huge like Galv saying.\nalso this layer thing Galv made is so super cool! just Engine itself is kinda ehh need resolution plugins... RPG maker miss so much made on Final Fantasy stuff also no hitbox or other options... very poor at performance handling, for learning basics for games super cool! i learned more English learned about coding learn about XY coordinates sprite sheet animations pixel art 2D 3D because of RPGmaker the worst engine! was the best"
+    },
+    {
+      "post_id": "js-post-1533733",
+      "author": "muffinswords",
+      "date": "2025-10-17T12:46:08+0900",
+      "body": "Galv said:\nIf you are using huge layers (which I do not recommend you do), that could be the cause.\nDoing some research, the maximum image size WebGL can draw is dependent on GPU and browser, but a common hardware-supported limit is 4096×4096 pixels.\nClick to expand...\nThanks for replying. I love your Layer Graphics plugin!\nBig maps are important to me, and I wonder why it was working on a laptop that was older while this is a gaming pc with a good GPU and CPU.\nThat being said, if players would end up having technical problems with huge maps, I don't want that. I tried cutting the test map in half, to a 100x100 map with a 4800x4800 layer. It worked!\nI then tried it as 150x150 with 7200x7200. It still works!\nBut I am wary that as you say, the common limit is 4096. I want most players to be able to play. Another problem is that the (7200) layer is almost 100MB! The 200x200 map I was testing must have had that layer be MORE than 100MB. My project would have become ridiculously HUGE. No wonder big layers cause problems.\nAre there any alternatives for having nicer big maps? I am considering Yanfly Grid Free Doodads as an option. Also considering making many smaller (100x100) maps with layer graphics and linking them together somehow."
+    },
+    {
+      "post_id": "js-post-1533743",
+      "author": "Galv",
+      "date": "2025-10-17T16:03:19+0900",
+      "body": "Those sound like good options. In the layer graphics plugin you can create smaller static layers set to x,y positions so could make your map from smaller layers and only load them as needed depending on player position. That would be more complex setup, though. I would recommend smaller maps and more optimized layer graphics (png files increase more in file size with things like gradient transparencies and different colors they have)."
+    },
+    {
+      "post_id": "js-post-1533745",
+      "author": "Ziorke",
+      "date": "2025-10-17T16:10:45+0900",
+      "body": "yeap there is PNG compressors they do reduce some colors you hardly see so you can compress PNG file to 80% less memory, so from 10mb picture it can go to 2mb"
+    },
+    {
+      "post_id": "js-post-1533777",
+      "author": "Andar",
+      "date": "2025-10-18T01:13:59+0900",
+      "body": "Ziorke said:\nyeap there is PNG compressors they do reduce some colors you hardly see so you can compress PNG file to 80% less memory, so from 10mb picture it can go to 2mb\nClick to expand...\nThe problem with that idea is that it's only the filesize on HDD that gets compressed. That helps with download sizes, but nothing else.\nA picture in RAM needs to be uncompressed to be worked with, so all your compression utilities for the filesize do nothing for the RAM limits themselves."
+    },
+    {
+      "post_id": "js-post-1533779",
+      "author": "Ziorke",
+      "date": "2025-10-18T01:34:21+0900",
+      "body": "Andar\n​\nyes but at the end of your game is good to compress all PNG pictures... so game will take not 1GB memory but 200mb\ni mean Paralax is huge"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-get-rid-of-or-reformat-enemy-state-icons.180660",
+  "title": "How to get rid of or reformat enemy state icons",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:43:16.311861+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1534323",
+      "author": "PersistentDreamerGames",
+      "date": "2025-10-22T21:58:14+0900",
+      "body": "So my game uses YED_Sideview Battler and SRD_HUDMaker plugins so it can be a little more resource intensive during the battle scene, but usually it runs well. The exception being when I get a lot of stacks of icons on multiple enemies like in the pic above. It doesn't show here because it's not animated, but each of the enemies has about 3-4 icons that the game is cycling through constantly and when combined with my plugins it slows to a crawl. I could remove the icons altogether, but then I have no way for the player to know what status effects the enemies have.\nIdeally, I'm trying to see if there is a way to display them differently, like in a small row underneath the enemy, or have only highest priority one show with a popup box showing the rest when you hover over the enemy.\nChecking first to make sure I didn't overlook anything. Is there a way to do this in default game or in any of Yanfly's plugins?\nIf not, reaching out to see if anybody knows a plugin that can do this? I have a different menu for the players so it's not an issue there, I'm mainly needing this changed on the enemies."
+    },
+    {
+      "post_id": "js-post-1534340",
+      "author": "rpgLord69",
+      "date": "2025-10-23T02:55:45+0900",
+      "body": "In base rpg maker mv I think you can just remove the animation stuff from the stateicon methods and always have it show the first index (but I didn't check this extensively). I added a conditional for it to only use the updateFrame if the icon changed (like there's a new one with higher priority, because I think it sorts the battler states when new states are added). Though depending on what other Yanfly plugins you're using, they have probably modified that stuff, but it seemed to work with some of them on when I quickly tested it.\nThen you can use Olivia's State Tooltips plugin to show the rest.\nSprite_StateIcon.prototype.update = function() {\nSprite.prototype.update.call(this);\nthis._animationCount++;\nconst currentIconIndex = this._iconIndex;\nif (this._animationCount >= this.animationWait()) {\nthis.updateIcon();\nif (currentIconIndex !== this._iconIndex) {\nthis.updateFrame();\n}\nthis._animationCount = 0;\n}\n};\nSprite_StateIcon.prototype.updateIcon = function() {\nvar icons = [];\nif (this._battler && this._battler.isAlive()) {\nicons = this._battler.allIcons();\n}\nif (icons.length > 0) {\nthis._iconIndex = icons[0];\n} else {\nthis._iconIndex = 0;\n}\n};"
+    },
+    {
+      "post_id": "js-post-1534343",
+      "author": "PersistentDreamerGames",
+      "date": "2025-10-23T05:26:34+0900",
+      "body": "That's awesome! Thank you, I'll try it out! What order would I put in your plugin?\nWell I just put it at the end and it seems to be working. Thank you! Solved a giant problem for me."
+    },
+    {
+      "post_id": "js-post-1534351",
+      "author": "Solar_Flare",
+      "date": "2025-10-23T07:38:49+0900",
+      "body": "No – you should put that plugin towards the top of your list, because it overwrites methods without aliasing, so it'll definitely conflict with anything else that touches enemy state icons. Maybe you don't have anything else like that, so it won't matter, but who knows if you'll add something like that later? Or maybe you aren't aware that something touches it."
+    },
+    {
+      "post_id": "js-post-1534354",
+      "author": "PersistentDreamerGames",
+      "date": "2025-10-23T08:05:05+0900",
+      "body": "Thanks for the heads up. I'll adjust."
+    },
+    {
+      "post_id": "js-post-1534372",
+      "author": "rpgLord69",
+      "date": "2025-10-23T15:41:56+0900",
+      "body": "PersistentDreamerGames said:\nThat's awesome! Thank you, I'll try it out! What order would I put in your plugin?\nWell I just put it at the end and it seems to be working. Thank you! Solved a giant problem for me.\nClick to expand...\nOk, great that it works!\nYeah, usually it's good to alias stuff, but with some extensive changes, I don't know how aliasing would work. Anyway, it won't 100% not work even if something else has to do with the state icons. Like I think one Yanfly plugin just modifies the updateFrame, which I didn't touch."
+    },
+    {
+      "post_id": "js-post-1534409",
+      "author": "Solar_Flare",
+      "date": "2025-10-23T22:39:07+0900",
+      "body": "I suppose I exaggerated a little, but it would 100% not work if that was placed below another plugin that touches the same functions."
+    }
+  ]
+}

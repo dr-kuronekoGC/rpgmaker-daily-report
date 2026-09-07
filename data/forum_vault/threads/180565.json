@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/draw-sprite-on-status-scene.180565",
+  "title": "MZ Draw Sprite on Status Scene",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:43:17.148374+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1533515",
+      "author": "Gatamandra",
+      "date": "2025-10-15T17:18:44+0900",
+      "body": "Hi!! So a while ago you helped me with this plugin to draw the walking sprite on the Menu Scene.\n(function() {\nconst _drawItem = Window_MenuStatus.prototype.drawItem;\nWindow_MenuStatus.prototype.drawItem = function(index) {\n_drawItem.call(this, index);\nconst actor = this.actor(index);\nconst rect = this.itemRect(index);\nconst x = rect.width - 543; // <-- adjust this number as you prefer\nconst y = rect.y + 113; // <-- adjust this number as you prefer\nthis.drawActorCharacter(actor, x, y);\n}\n})()\nAnd it is amazing as it was super easy to move around and such, so I was wondering if there was a similar way of drawing the sv_battler sprite onto the Status Scene menu, thanks a mil!!"
+    },
+    {
+      "post_id": "js-post-1533517",
+      "author": "ThatIndieSphinx",
+      "date": "2025-10-15T17:38:10+0900",
+      "body": "Hello!\nI'm not too good with plugins or JS in general, but I have been using this plugin by SumRanDev that shows the bust in the menu screen, along with an SV battler with the idle animation.\nI don't know how to edit, so it only shows the SV battler sprite, but I'll link it\nhere\nanyway, just in case"
+    },
+    {
+      "post_id": "js-post-1533523",
+      "author": "ShadowDragon",
+      "date": "2025-10-15T19:31:42+0900",
+      "body": "you may need to change this.drawActorCharacter to the one\nthat draw the sv actors, but you need to check the core plugin\nwhich function is responsible for it if you want it in the status scene.\nyou may need to look ino the rmmz-mananger to look for it.\nelse the rmmz_objects."
+    },
+    {
+      "post_id": "js-post-1533526",
+      "author": "Gatamandra",
+      "date": "2025-10-15T20:09:02+0900",
+      "body": "ShadowDragon said:\nyou may need to change this.drawActorCharacter to the one\nthat draw the sv actors, but you need to check the core plugin\nwhich function is responsible for it if you want it in the status scene.\nyou may need to look ino the rmmz-mananger to look for it.\nelse the rmmz_objects.\nClick to expand...\nI see, thanks! I´ve been digging around a bit but the only one I found might be related to it was\nSprite_Actor.prototype.updateBitmap = function() {\nSprite_Battler.prototype.updateBitmap.call(this);\nconst name = this._actor.battlerName();\nif (this._battlerName !== name) {\nthis._battlerName = name;\nthis._mainSprite.bitmap = ImageManager.loadSvActor(name);\n}\n};\nOn the rmmz_sprite, I don´t know a lot about coding so I've tried to search on the different files for \"ActorCharacter\" \"SvActor\" or \"this.drawActorCharacter\" but nothing was coming up besides this that I thought might be related, though I can´t really make head or tails of it to mix it up with the code I have.\nThatIndieSphinx said:\nHello!\nI'm not too good with plugins or JS in general, but I have been using this plugin by SumRanDev that shows the bust in the menu screen, along with an SV battler with the idle animation.\nI don't know how to edit, so it only shows the SV battler sprite, but I'll link it\nhere\nanyway, just in case\nClick to expand...\nAnd thanks ! though I see that's for the menu and I was looking to add it on the Status Scene (where you see the character's stats and such)"
+    },
+    {
+      "post_id": "js-post-1533533",
+      "author": "ShadowDragon",
+      "date": "2025-10-15T21:03:02+0900",
+      "body": "there was a plugin for MV made, but forgot its name, which uses\nbattle actor sheet.\n[\nhere\n] is one for MV, I don't know how much different there is to\nget it to work in MZ, but maybe there is some link for it for what you need."
+    },
+    {
+      "post_id": "js-post-1533536",
+      "author": "Gatamandra",
+      "date": "2025-10-15T21:23:46+0900",
+      "body": "ShadowDragon said:\nthere was a plugin for MV made, but forgot its name, which uses\nbattle actor sheet.\n[\nhere\n] is one for MV, I don't know how much different there is to\nget it to work in MZ, but maybe there is some link for it for what you need.\nClick to expand...\nThanks! though this plugin is for adding the sv battle sprites to the menu in substitution of the Face icon, while I wanted to draw it on the status scene (where you see the stats of the characters) besides the Face icon to put it on an empty corner, sorry if I didn´t explain myself properly, but thanks for the suggestion!"
+    },
+    {
+      "post_id": "js-post-1533581",
+      "author": "ThatIndieSphinx",
+      "date": "2025-10-16T05:36:21+0900",
+      "body": "Gatamandra said:\nAnd thanks ! though I see that's for the menu and I was looking to add it on the Status Scene (where you see the character's stats and such)\nClick to expand...\nOh, my bad, I didn't see that.\nP.S I just realised the plugin I porvided is for MV\nmy bad."
+    },
+    {
+      "post_id": "js-post-1533851",
+      "author": "rpgLord69",
+      "date": "2025-10-18T18:20:49+0900",
+      "body": "I think you can just imitate the existing draw functions to add the sideview battler sprite like below (for base rpg maker). You don't need any indexes, because you just take the first (or I made it to take the middle) pic from the idle pose. Then add in the status draw function to draw the sprite for\nthis._actor.battlerName()\n. I had to add that load listener to it though, so it does the blt and refresh as it wasn't loaded fast enough. I tested it and it seems to work, change the coordinates in the draw function to move it around.\nWindow_Status.prototype.drawBlock2 = function() {\nconst y = this.block2Y();\nthis.drawActorFace(this._actor, 12, y);\nthis.drawBasicInfo(204, y);\nthis.drawExpInfo(456, y);\nthis.drawSideviewCharacterSprite(this._actor.battlerName(), 70, y + 230);\n};\nWindow_Base.prototype.drawSideviewCharacterSprite = function(\nfileName, x, y\n) {\nconst bitmap = ImageManager.loadSvActor(fileName);\nconst pw = Math.round(bitmap.width / 9);\nconst ph = Math.round(bitmap.height / 6);\nconst sx = pw;\nconst sy = 0;\nif (bitmap.isReady()) {\nthis.contents.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);\n} else {\nbitmap.addLoadListener(() => this.refresh())\n}\n};"
+    },
+    {
+      "post_id": "js-post-1533855",
+      "author": "Gatamandra",
+      "date": "2025-10-18T20:57:44+0900",
+      "body": "rpgLord69 said:\nI think you can just imitate the existing draw functions to add the sideview battler sprite like below (for base rpg maker). You don't need any indexes, because you just take the first (or I made it to take the middle) pic from the idle pose. Then add in the status draw function to draw the sprite for\nthis._actor.battlerName()\n. I had to add that load listener to it though, so it does the blt and refresh as it wasn't loaded fast enough. I tested it and it seems to work, change the coordinates in the draw function to move it around.\nWindow_Status.prototype.drawBlock2 = function() {\nconst y = this.block2Y();\nthis.drawActorFace(this._actor, 12, y);\nthis.drawBasicInfo(204, y);\nthis.drawExpInfo(456, y);\nthis.drawSideviewCharacterSprite(this._actor.battlerName(), 70, y + 230);\n};\nWindow_Base.prototype.drawSideviewCharacterSprite = function(\nfileName, x, y\n) {\nconst bitmap = ImageManager.loadSvActor(fileName);\nconst pw = Math.round(bitmap.width / 9);\nconst ph = Math.round(bitmap.height / 6);\nconst sx = pw;\nconst sy = 0;\nif (bitmap.isReady()) {\nthis.contents.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);\n} else {\nbitmap.addLoadListener(() => this.refresh())\n}\n};\nClick to expand...\nIt worked like a charm!! thanks a million ;v; <3<3<333"
+    },
+    {
+      "post_id": "js-post-1533951",
+      "author": "caethyril",
+      "date": "2025-10-19T20:52:16+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}
