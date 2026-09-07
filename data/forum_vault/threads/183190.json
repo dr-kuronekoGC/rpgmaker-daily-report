@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/standalone-nw-js-build-looks-blurry-and-less-sharp-compared-to-playtest-execution-fixed.183190",
+  "title": "MZ Standalone NW.js build looks blurry and less sharp compared to Playtest execution [FIXED]",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:25:30.066591+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1553268",
+      "author": "byte",
+      "date": "2026-04-09T22:00:10+0900",
+      "body": "Hey there,\nFor several months now, I've been experiencing a fairly significant issue when\nexporting my game to a standalone\nnw.js\ninstance\n.\nSpecifically, when I run the game instance within the\nRPG Maker MZ\nengine (\nVersion 1.10.0\n), the\nnw.js\nSDK loads correctly with the following properties:\nnw.js v0.109.0\nNode v25.2.1\nChromium 146.0.7680.31\nHere's the URL to the\nnw.js\nversion im using:\nhttps://dl.nwjs.io/v0.109.0/\nInstead of using the default distribution provided by RPG Maker, I created a custom build. However, once the game’s standalone directory is set up correctly (which is an exact copy of the nwjs-win folder from RPG Maker MZ) and nw.js executable is launched the game launches without issues or internal errors and the entire\n2D UI rendered via Canvas2D bitmaps\nis displayed correctly at the preset resolution.\nOn the other hand\n, everything\nrelated to the game map\n, specifically tilesets and event sprites, appears to\nsuffer a drop in quality\n; consequently, the entire portion\nrendered by the WebGL canvas\nbecomes\nblurry\nand\nloses detail\n, making the game\nappear less sharp and crisp\n.\nHere's what I have checked:\nI checked the\nSHA\nof both\nnw.exe\nfiles (RPG Maker directory and Standalone), and they are identical.\nI tried creating a\nnew blank project\nto see if the issue was caused by one of my plugins, but even with a blank project and using the\ndefault distribution\n, the\nmap still appears less sharp and crisp\n.\nI am using a\nPixel Perfect plugin\n.\nI am using third-party software\nTileD\nfor the for managing and creating game maps, using the\nVisuMZ_5_TiledMZ.js\nplugin as bridge.\nMy current\npackage.json\nis structured\n{\n“name”: “rmmz-game”,\n“main”: “index.html”,\n“chromium-args”: “--force-color-profile=srgb”,\n“window”: {\n“title”: “game-title”,\n“width”: 1280,\n“height”: 960,\n“position”: “center”,\n“icon”: “icon/icon.png”\n}\n}\nI’ve attached below the two comparisons between the playtest version and the standalone nw.js version.\nThank you in advance to anyone who can provide a solution or assistance.\nPLAYTEST EXECUTION\nSTANDALONE NW.JS EXECUTION"
+    },
+    {
+      "post_id": "js-post-1558085",
+      "author": "byte",
+      "date": "2026-05-31T16:35:10+0900",
+      "body": "byte said:\nTHE FIX\n​\nAfter three months of searching, I finally figured it out. The playtest is a process that is launched with the environment variable SteamAppId=1096900, which, as it happens, is the AppID for RPG Maker MZ, by creating a batch file like this:\noff\nset SteamAppId=1096900\n“%~dp0Game.exe”\nAnd by launching the game in the deployed folder using this\n.bat\nfile, the resolution is the same as in the playtest, but that's not enough, because that would mean you'd have to have RPG Maker MZ on your Steam profile.\nTHE FINAL SOLUTION\n​\nIn the end, I think I’ve found the definitive solution to the problem. Using a screenshot plugin that captures the canvas, I realized that when I took a screenshot during the playtest, the resolution looked EXACTLY the same as the deployed game. So, the degraded resolution is\nnothing more than a Steam shader\n. I recreated the shader using a plugin, and that solved everything.\nIf anyone finds themselves in this situation, at least they’ll know what to do, or, if not, web crawlers will find this page and the AI will know how to help you better!\nClick to expand..."
+    }
+  ]
+}

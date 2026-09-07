@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/arpg-plug-in-set-how-do-i-change-the-players-sprite-when-attacking.182163",
+  "title": "MZ (ARPG Plug-in Set) How do I change the player’s sprite when attacking?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:25:46.549979+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1545866",
+      "author": "TheX",
+      "date": "2026-01-28T04:34:27+0900",
+      "body": "Hello,\nI have a question regarding the\nRPG Maker MZ – ARPG Plug-in Set\nI’m trying to implement a system where the player’s sprite changes when attacking, similar to how it works in the Chrono Engine. However, I’m having trouble making the animation fluid and functional.\nAs shown in the video below, when the attack key is pressed several times in quick succession, the animation becomes buggy and loses consistency.\nHas anyone experienced something similar or knows the best way to handle this type of animation in the ARPG Plug-in Set?\nSpoiler:\nvideo test\nHere is an image of the Common Event tab for the attack, showing how I’m currently trying to implement it.\nIf anyone has any ideas on how to implement this system in a smoother and more proper way, I would really appreciate it."
+    },
+    {
+      "post_id": "js-post-1545943",
+      "author": "rpgLord69",
+      "date": "2026-01-28T23:50:54+0900",
+      "body": "Wasn't there a way to control how often you can launch an attack / skill with a notetag or plugin settings (don't remember if that works for normal attack too). But if it did, you can just make the \"cooldown\" as long as needed so your animation / skill sequence has completed."
+    },
+    {
+      "post_id": "js-post-1546710",
+      "author": "TheX",
+      "date": "2026-02-05T20:23:42+0900",
+      "body": "Hello, sorry for the delay in replying, but I only discovered a really good solution yesterday.\nSetting the cooldown time to match the time required for the sequence to happen didn’t feel smooth in my tests, and a pattern still wasn’t resetting properly after each attack.\nFortunately, the solution I found is actually really simple:\nIn the skill’s common event settings, we can set the step speed to a very low value (-99) to ensure the frame-by-frame animation stays smooth. Then we control the frame changes by defining which patterns are displayed at each time interval. At the end of the Set Movement command, I added a pattern reset to make sure the animation always starts from the beginning on the next attack, which helps prevent visual bugs.\nThis way, the charset animation stays perfectly synchronized with the attack hitbox and plays very smoothly."
+    }
+  ]
+}

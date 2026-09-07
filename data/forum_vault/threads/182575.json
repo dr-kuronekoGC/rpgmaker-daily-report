@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/optimization-in-mz.182575",
+  "title": "Optimization in MZ",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:25:40.172886+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1548647",
+      "author": "Danielor4",
+      "date": "2026-02-23T14:16:59+0900",
+      "body": "Hi all! This may seem like a boringly simple or incomprehensibly complex complex question, but I just wanted to hear from people with more experience than I.\nBasically, what is the biggest/most common source of lag/stuttering/general performance drops in MZ? For instance, if I made a stupidly large map I was warned that it would cause lag in-game on some devices. I can find some tips here and there, but is there a long and short explanation of what to watch out for and what causes these sorts of problems as well as how to fix it?"
+    },
+    {
+      "post_id": "js-post-1548656",
+      "author": "TheAM-Dol",
+      "date": "2026-02-23T15:38:11+0900",
+      "body": "The biggest source of lag is always going to be improperly made/too many parallel events. While other things\ncan\nand\nwill\ncontribute to \"lag\", poorly made parallel events are the most likely.\nParallel events should not be relied on where possible, and in the event a parallel event is needed: make sure to purge it when not necessary (erase event/set the event to a different event page) and add wait frames at the end of the loop.\nIn truth, map size hardly has anything to do with lag.\nYou can test this right now. Create a maximum size map, fill it just grass tiles, walk around. Performance will not be impacted."
+    },
+    {
+      "post_id": "js-post-1548679",
+      "author": "satilte",
+      "date": "2026-02-24T01:04:23+0900",
+      "body": "From what I've experienced, a great chunk of lag comes from events and active updates of variables/switches. In MZ, I use a lot of VisuStella's plugins and while I do like them, plugins like Events and Movement Core add a lot of data to events, such as Event self switches/self variables, Map switches/variables, variables/switches that update every frame, etc. These are really useful functions, but the problem arises that a simple event, even like an aesthetic potted plant or something like that that does nothing has all this data attached to it, and it has to update regularly (especially when entering/leaving the menu scene). This isn't exclusive to VZ's plugins, it's just an example that came to mind.\nHere's an example of what I'm talking about, and a script developed to disable event updates (not sure if this is the same plugin I found before, but it appears to do what I remember). I believe some small functionality is left intact without updates such as sprite offsets, but skipping updates for events does tend to break their processes. It seems the plugin has a Proximity note tag to re-enable updates when close to the player which mitigates this issue.\nRPG-Maker-MZ/X_SNK_SkipUpdate.js at main · SnakekillerX/RPG-Maker-MZ\nPlugins for RPG Maker MZ. Contribute to SnakekillerX/RPG-Maker-MZ development by creating an account on GitHub.\ngithub.com\nThis lag is not that noticeable with maps that have few events, but the more events there are, the more this lag builds up. I personally haven't had the use for it yet, but I keep it in mind. I found this out when I was using events to display a lot of tree sprites in an earlier project which caused a lot of lag, but I've since moved on to more efficient means of displaying them."
+    }
+  ]
+}
