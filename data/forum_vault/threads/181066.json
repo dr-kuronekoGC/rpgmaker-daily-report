@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/anyone-know-how-to-make-a-pseudorandom-number-generator.181066",
+  "title": "2k/3 Anyone know how to make a Pseudorandom Number Generator?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:52:04.013845+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1537254",
+      "author": "JimFrom2003",
+      "date": "2025-11-18T11:40:52+0900",
+      "body": "I want to use a pseudorandom number generator that generates a seemingly random output from a seed number. Is there any way to do this using RPGM2k3's variable control commands? I want to stress that while the output is seemingly random, the same input number should have the same output every time."
+    },
+    {
+      "post_id": "js-post-1537256",
+      "author": "TheAM-Dol",
+      "date": "2025-11-18T12:48:34+0900",
+      "body": "Randomness is only what the player perceives as random.\nTherefore tying a variable change function to... Anything without informing the player would create a sense of randomness.\nYou can base it off steps taken, buttons pushed, events activated, time, or a combination of all of the above.\nAs far as the seed, yes. I mean it's just a math function. Taking input apply a formula, give output. Take output feed it into the formula, rinse repeat.\nYou'd likely need to be more specific on what exactly it is you want to achieve."
+    },
+    {
+      "post_id": "js-post-1537264",
+      "author": "JimFrom2003",
+      "date": "2025-11-18T14:28:58+0900",
+      "body": "TheAM-Dol said:\nRandomness is only what the player perceives as random.\nTherefore tying a variable change function to... Anything without informing the player would create a sense of randomness.\nYou can base it off steps taken, buttons pushed, events activated, time, or a combination of all of the above.\nAs far as the seed, yes. I mean it's just a math function. Taking input apply a formula, give output. Take output feed it into the formula, rinse repeat.\nYou'd likely need to be more specific on what exactly it is you want to achieve.\nClick to expand...\nWhat I'm trying to figure out is a formula where the outputs won't repeat themselves or have a noticeable pattern."
+    },
+    {
+      "post_id": "js-post-1537269",
+      "author": "TG22",
+      "date": "2025-11-18T17:42:50+0900",
+      "body": "As a common, reliable, Pseudo-RNG algorithm, you have the Mersenne Twister.\nGithub is full of implementation of this algorithm in every language."
+    },
+    {
+      "post_id": "js-post-1537272",
+      "author": "JimFrom2003",
+      "date": "2025-11-18T18:48:54+0900",
+      "body": "I need an algorithm I make with RPG Maker 2003's variable manipulation commands."
+    },
+    {
+      "post_id": "js-post-1537318",
+      "author": "Cherry",
+      "date": "2025-11-19T00:20:08+0900",
+      "body": "You can implement some existing algorithm. Maybe a linear congruential generator with some modifications to ensure you stay in the RM2k3 variable range, you probably need some tweaks to avoid the `(a * state) % m` part which would otherwise leave the range, maybe adjusting the algorithm to work with two smaller parts in the calculation. I suggest you ask ChatGPT or some other AI for details here, make sure to state the limitations you are working with (variable range is -9999999 to +9999999 and you have +-*/% operations and conditions and no bitwise operations)."
+    },
+    {
+      "post_id": "js-post-1537329",
+      "author": "Another Fen",
+      "date": "2025-11-19T02:23:08+0900",
+      "body": "If you want to stick with the linear congruential generator idea, Wikipedia also has a good overview and links for possible settings (for example\nthis paper\n)\nIf you mainly need some smaller values, you could use the example\noutput = x' = (x * 219) mod 32749\nwhich works within the 9,999,999 limit without the need for emulation (x is your previous RNG output/seed value). It should cycle through 1-32748 in a messy but ultimately repeated order.\nLate Edit\n: The starting value for x must not be 0\n(or a multiple of 32749)\n, other values are allowed.\nTo transform your random output into specific number ranges you can use\nnumber = output mod (max - min + 1) + min\nE.g. if you want a number between 30 and 100, you would transform your random output as\nnumber = output mod 71 + 30\nFor bigger number ranges this will lead to smaller results being a bit more common. If that bothers you then you can reroll output values that are greater than\nreroll threshold = 32749 / (max - min + 1) * (max - min + 1)\nIf you need bigger ranges than 3-4 digits you can also fuse multiple RNG rolls together.\nAlternatively, if you also need a longer period, you can probably emulate bigger modulo operations, although at the cost of some performance. (Might be a bit more complex though)"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/in-battle-skill-item-menu-adjustment-code-help.184040",
+  "title": "In battle skill/item menu adjustment Code Help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:51:51.862016+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1559955",
+      "author": "K-apple",
+      "date": "2026-06-15T03:00:36+0900",
+      "body": "I'm using Visustella's Frontview UI core but there are some changes I want to make that don't seem to be part of the plugin (or maybe it is and I can't find it.)\nFor starters I want to adjust the actor window and the item/skill windows that open up when you use the commands. I want the skill/item windows to parallel the actor command windows when you open them. Similar to this image below. (Potentially this could just be the item window as I could just add the skills to the main actor window.)\n(Also is it possible to have the item window have two items per row instead of 1 but keep the actor window 1 command and 1 row? I tried looking but couldn't find that either.)\nThe 2nd issue is the Blue bar help window. I want to remove that because its honestly redundant as the help window at the top of the screen already explains what the item does and it causes the item window to move awkwardly as the game tries to fit all these boxes on the screen. Again, I don't know if the option to do all those things are part of the plug in natural, I just can't find it.\nIf anyone knows anything, I appreciate the help."
+    },
+    {
+      "post_id": "js-post-1559974",
+      "author": "rpgLord69",
+      "date": "2026-06-15T04:08:15+0900",
+      "body": "You can turn off the shop status window in plugin settings.\nBattle Scene Settings - General - Show Shop Stauts?\nFor the other things you can put this as a plugin below VS (copy paste to notepad, save as .js file and add as plugin).\nYou might need to add/subtract from the x values.\nconst _myEdit1_SceneBattle_updateFrontviewBattleUiPositions = Scene_Battle.prototype.updateFrontviewBattleUiPositions;\nScene_Battle.prototype.updateFrontviewBattleUiPositions = function() {\n_myEdit1_SceneBattle_updateFrontviewBattleUiPositions.call(this);\nthis._itemWindow.x = this._actorCommandWindow.x + this._actorCommandWindow.width;\nthis._itemWindow.y = this._actorCommandWindow.y;\nthis._skillWindow.x = this._actorCommandWindow.x + this._actorCommandWindow.width;\nthis._skillWindow.y = this._actorCommandWindow.y;\n}\nWindow_BattleItem.prototype.maxCols = function() {\nreturn 2;\n};\nHowever, that might cause a bit of a 1 frame flash in some instances when the window moves for some reason. If you want to get rid of that, I think it works if you write that method name in the console and get the obfuscated method and try to comment out lines until you find the one that moves the item or skill windows and make a plugin out of that."
+    },
+    {
+      "post_id": "js-post-1560037",
+      "author": "K-apple",
+      "date": "2026-06-15T17:53:50+0900",
+      "body": "rpgLord69 said:\nYou can turn off the shop status window in plugin settings.\nBattle Scene Settings - General - Show Shop Stauts?\nFor the other things you can put this as a plugin below VS (copy paste to notepad, save as .js file and add as plugin).\nYou might need to add/subtract from the x values.\nconst _myEdit1_SceneBattle_updateFrontviewBattleUiPositions = Scene_Battle.prototype.updateFrontviewBattleUiPositions;\nScene_Battle.prototype.updateFrontviewBattleUiPositions = function() {\n_myEdit1_SceneBattle_updateFrontviewBattleUiPositions.call(this);\nthis._itemWindow.x = this._actorCommandWindow.x + this._actorCommandWindow.width;\nthis._itemWindow.y = this._actorCommandWindow.y;\nthis._skillWindow.x = this._actorCommandWindow.x + this._actorCommandWindow.width;\nthis._skillWindow.y = this._actorCommandWindow.y;\n}\nWindow_BattleItem.prototype.maxCols = function() {\nreturn 2;\n};\nHowever, that might cause a bit of a 1 frame flash in some instances when the window moves for some reason. If you want to get rid of that, I think it works if you write that method name in the console and get the obfuscated method and try to comment out lines until you find the one that moves the item or skill windows and make a plugin out of that.\nClick to expand...\nThanks. The code works perfectly. I decided to change the return value to 1 as having 2, squished the texts so much it was practically illegible."
+    }
+  ]
+}
