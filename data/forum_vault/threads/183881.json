@@ -1,0 +1,119 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-few-small-questions-in-one-june-1.183881",
+  "title": "MZ A few small questions in one-June 1",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:21:42.011198+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1558218",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T05:39:03+0900",
+      "body": "1: The game seems to have a soft filter over it. It's very subtle, but it seems to not be sharp and pixelated like the sprites are. I changed the resolution to 1024x576. Is this the culprit? I'd like to keep the screen size as close to this as possible.\n2: Is there a way that allows the overlaying of a picture over an entire map to simulate map-wide lighting? Think something like, the player is in a forest, and there is an overlay over the top of the map that gives the spotty, random lighting effect of the sun through leaves. Is this possible?\n3: Is there a way I can turn down the master volume of a whole project? I've decided that the music ingame is a bit too loud, and it would be a pain to go through and turn down every individual song. I know it's not a disaster if I have to do that, but I'm wondering if there's a way to do it this way.\n4: Is there a way to put a balloon over the top of a character who has a sidequest, that moves with them and goes away when it's finished?"
+    },
+    {
+      "post_id": "js-post-1558221",
+      "author": "ShadowDragon",
+      "date": "2026-06-02T05:46:55+0900",
+      "body": "1) make sure its can be divived by 48 (unless you choose a different tile size).\n2) lightning plugin? or parallax mapping can solve this issue\n3) there is a plugin to do that or by scriptcall for its base of the start of the game.\n4) I believe MOG hunter has one if its ported from MV to MZ, which allows this\nkind of thing.\nyou can also event it otherwise to make it more simple."
+    },
+    {
+      "post_id": "js-post-1558225",
+      "author": "Solar_Flare",
+      "date": "2026-06-02T07:15:37+0900",
+      "body": "MHDevBlue said:\n2: Is there a way that allows the overlaying of a picture over an entire map to simulate map-wide lighting? Think something like, the player is in a forest, and there is an overlay over the top of the map that gives the spotty, random lighting effect of the sun through leaves. Is this possible?\nClick to expand...\nThere might be plugins for this, but I think just using Show Picture could also get the effect you want.\nMHDevBlue said:\n3: Is there a way I can turn down the master volume of a whole project? I've decided that the music ingame is a bit too loud, and it would be a pain to go through and turn down every individual song. I know it's not a disaster if I have to do that, but I'm wondering if there's a way to do it this way.\nClick to expand...\nYes! I did exactly that for my own project. Save the following code as a .js file and load it as a plugin:\nSpoiler\nJavaScript:\n(function() {\n\t// CONFIGURATION: Edit these values as you see fit\n\t// Master volume, as a fraction of the default level.\n\tconst masterVolumeScale = 0.25; \n\t// In settings, adjust volume by this increment (a percentage)\n\tconst volumeIncrement = 20;\n\t// Maximum volume level to allow in settings\n\tconst volumeMax = 100;\n\t\n\t// END CONFIGURATION: Don't touch anything below here\n\tWebAudio.setMasterVolume(masterVolumeScale);\n\tWindow_Options.prototype.volumeOffset = function() {\n\t\treturn volumeIncrement;\n\t};\n\tWindow_Options.prototype.volumeMax = function() {\n\t\treturn volumeMax;\n\t};\n\tWindow_Options.prototype.adjustVolume = function(mode) {\n\t\tvar symbol = this.commandSymbol(this.index());\n\t\tif(!this.isVolumeSymbol(symbol)) return false;\n\t\tvar value = this.getConfigValue(symbol);\n\t\tswitch(mode) {\n\t\t\tcase -1: value -= this.volumeOffset(); break;\n\t\t\tcase 1: value += this.volumeOffset(); break;\n\t\t\tcase 0:\n\t\t\t\tvalue += this.volumeOffset();\n\t\t\t\tif(value > this.volumeMax()) {\n\t\t\t\t\tvalue = 0;\n\t\t\t\t}\n\t\t\t\tbreak;\n\t\t}\n        value = value.clamp(0, this.volumeMax());\n        this.changeValue(symbol, value);\n\t\treturn true;\n\t};\n\tconst old_optOk = Window_Options.prototype.processOk;\n\tWindow_Options.prototype.processOk = function() {\n\t\tif(!this.adjustVolume(0)) old_optOk.call(this);\n\t};\n\tconst old_optLeft = Window_Options.prototype.cursorLeft;\n\tWindow_Options.prototype.cursorLeft = function() {\n\t\tif(!this.adjustVolume(-1)) old_optLeft.call(this);\n\t};\n\tconst old_optRight = Window_Options.prototype.cursorRight;\n\tWindow_Options.prototype.cursorRight = function() {\n\t\tif(!this.adjustVolume(1)) old_optRight.call(this);\n\t};\n\tConfigManager.readVolume = function(config, name) {\n\t\tvar value = config[name];\n\t\tif (value !== undefined) {\n\t\t\treturn Number(value).clamp(0, volumeMax);\n\t\t} else {\n\t\t\treturn 100;\n\t\t}\n\t};\n})();\nIt was tested in MV, but I'm pretty sure it'll also work in MZ.\nMHDevBlue said:\n4: Is there a way to put a balloon over the top of a character who has a sidequest, that moves with them and goes away when it's finished?\nClick to expand...\nYes! In your character's move route (either set their movement type to Custom, or use Set Movement Route), add two script calls with the following lines of code:\nJavaScript:\n$gameTemp.requestBalloon(this, 3)\nif(this.isBalloonPlaying()) this._moveRouteIndex--\nReplace 3 with the number of the balloon you want.\nWith a bit of tweaking, this approach could probably create a balloon that just sticks and doesn't bob around, but I'm not 100% what you'd need to change for that. It'll also get a bit more complicated if the character moves around (rather than standing in one place); you might not need the second line of code in that case.\nIf you want something more complicated, such as a balloon with text in it, you'll need a plugin. However, if the standard balloon icon system works but you just don't like the specific balloons (maybe you want a scroll icon for example), you can add extra balloons at the bottom of the Balloon.png file in img/system (or even edit the default ones). Make sure they conform to the grid if you do this."
+    },
+    {
+      "post_id": "js-post-1558226",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T07:17:32+0900",
+      "body": "ShadowDragon said:\n1) make sure its can be divived by 48 (unless you choose a different tile size).\n2) lightning plugin? or parallax mapping can solve this issue\n3) there is a plugin to do that or by scriptcall for its base of the start of the game.\n4) I believe MOG hunter has one if its ported from MV to MZ, which allows this\nkind of thing.\nyou can also event it otherwise to make it more simple\nClick to expand...\nThanks for your help, I changed my size to 1008, I don't see a difference but maybe the screen just looks like that. I'm okay to leave it like that"
+    },
+    {
+      "post_id": "js-post-1558228",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T07:28:56+0900",
+      "body": "Solar_Flare said:\nThere might be plugins for this, but I think just using Show Picture could also get the effect you want.\nYes! I did exactly that for my own project. Save the following code as a .js file and load it as a plugin:\nSpoiler\nJavaScript:\n(function() {\n    // CONFIGURATION: Edit these values as you see fit\n    // Master volume, as a fraction of the default level.\n    const masterVolumeScale = 0.25;\n    // In settings, adjust volume by this increment (a percentage)\n    const volumeIncrement = 20;\n    // Maximum volume level to allow in settings\n    const volumeMax = 100;\n   \n    // END CONFIGURATION: Don't touch anything below here\n    WebAudio.setMasterVolume(masterVolumeScale);\n    Window_Options.prototype.volumeOffset = function() {\n        return volumeIncrement;\n    };\n    Window_Options.prototype.volumeMax = function() {\n        return volumeMax;\n    };\n    Window_Options.prototype.adjustVolume = function(mode) {\n        var symbol = this.commandSymbol(this.index());\n        if(!this.isVolumeSymbol(symbol)) return false;\n        var value = this.getConfigValue(symbol);\n        switch(mode) {\n            case -1: value -= this.volumeOffset(); break;\n            case 1: value += this.volumeOffset(); break;\n            case 0:\n                value += this.volumeOffset();\n                if(value > this.volumeMax()) {\n                    value = 0;\n                }\n                break;\n        }\n        value = value.clamp(0, this.volumeMax());\n        this.changeValue(symbol, value);\n        return true;\n    };\n    const old_optOk = Window_Options.prototype.processOk;\n    Window_Options.prototype.processOk = function() {\n        if(!this.adjustVolume(0)) old_optOk.call(this);\n    };\n    const old_optLeft = Window_Options.prototype.cursorLeft;\n    Window_Options.prototype.cursorLeft = function() {\n        if(!this.adjustVolume(-1)) old_optLeft.call(this);\n    };\n    const old_optRight = Window_Options.prototype.cursorRight;\n    Window_Options.prototype.cursorRight = function() {\n        if(!this.adjustVolume(1)) old_optRight.call(this);\n    };\n    ConfigManager.readVolume = function(config, name) {\n        var value = config[name];\n        if (value !== undefined) {\n            return Number(value).clamp(0, volumeMax);\n        } else {\n            return 100;\n        }\n    };\n})();\nIt was tested in MV, but I'm pretty sure it'll also work in MZ.\nYes! In your character's move route (either set their movement type to Custom, or use Set Movement Route), add two script calls with the following lines of code:\nJavaScript:\n$gameTemp.requestBalloon(this, 3)\nif(this.isBalloonPlaying()) this._moveRouteIndex--\nReplace 3 with the number of the balloon you want.\nWith a bit of tweaking, this approach could probably create a balloon that just sticks and doesn't bob around, but I'm not 100% what you'd need to change for that. It'll also get a bit more complicated if the character moves around (rather than standing in one place); you might not need the second line of code in that case.\nIf you want something more complicated, such as a balloon with text in it, you'll need a plugin. However, if the standard balloon icon system works but you just don't like the specific balloons (maybe you want a scroll icon for example), you can add extra balloons at the bottom of the Balloon.png file in img/system (or even edit the default ones). Make sure they conform to the grid if you do this.\nClick to expand...\nThank you for all your help! The Master Volume plugin works great. Just curious, is there a way to individually tweak BGM, BGS, ME and SE master volumes, or is it just the master volume for the whole game?\nI did indeed just want a simple visual balloon, no text, and the Balloon plugin also does seem to work fine! It would be\nnice\nif this plugin could be applied to events that randomly wander around, but seeing as the balloon command requires the Custom move command, I'm content with this not being possible and just making them static; it is no big deal.\nHowever (I don't know how to do this right now but) I did want to edit the balloons later on in development, to make a new simple animation and adding a sound effect. Is this plugin going to spam sound effects at that point?\nAgain, thanks for your help so far!"
+    },
+    {
+      "post_id": "js-post-1558234",
+      "author": "Solar_Flare",
+      "date": "2026-06-02T07:59:12+0900",
+      "body": "MHDevBlue said:\nIt would be\nnice\nif this plugin could be applied to events that randomly wander around, but seeing as the balloon command requires the Custom move command,\nClick to expand...\nThere is a Move Random command that you can put in the move route. You'd probably have to do it something like…\nrequestBalloon script call\na few Move Random calls\nmaaaybe the if balloon playing script call; might not need this."
+    },
+    {
+      "post_id": "js-post-1558235",
+      "author": "ATT_Turan",
+      "date": "2026-06-02T08:19:52+0900",
+      "body": "MHDevBlue said:\n3: Is there a way I can turn down the master volume of a whole project?\nClick to expand...\nTuran's Christmas Calendar - Day 7\nMerry Christmas, everyone!  I've been particularly inspired by the multitude of Advent calendars this year, so I decided at the last minute to try to produce some seasonal community contributions of my own.  For those whose Christmas knowledge is primarily secular, a touch of background...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1558236",
+      "author": "I_LIKE_BREAD7",
+      "date": "2026-06-02T08:25:19+0900",
+      "body": "MHDevBlue said:\nThanks for your help, I changed my size to 1008, I don't see a difference but maybe the screen just looks like that. I'm okay to leave it like that\nClick to expand...\nRPG Maker blurs the screen by default, even when the resolution is perfectly divisible by the tile size. You can use a plugin to turn off this behavior and get pixel perfect scaling.\nHakuen Studio Pixel Perfect for RPG Maker MZ by Hakuen Studio\nAdds pixel perfect rendering for your rpg maker mz game!\nhakuenstudio.itch.io"
+    },
+    {
+      "post_id": "js-post-1558240",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T09:59:50+0900",
+      "body": "Solar_Flare said:\nThere is a Move Random command that you can put in the move route. You'd probably have to do it something like…\nrequestBalloon script call\na few Move Random calls\nmaaaybe the if balloon playing script call; might not need this.\nClick to expand...\nThat's true, I'll keep that in mind if I ever need it. I guess I could put a random variable for the waits to make it move like other NPCs (if i figure out how to make it) and either way its not too high priority. Thank you!"
+    },
+    {
+      "post_id": "js-post-1558241",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T10:00:27+0900",
+      "body": "ATT_Turan said:\nTuran's Christmas Calendar - Day 7\nMerry Christmas, everyone!  I've been particularly inspired by the multitude of Advent calendars this year, so I decided at the last minute to try to produce some seasonal community contributions of my own.  For those whose Christmas knowledge is primarily secular, a touch of background...\nforums.rpgmakerweb.com\nClick to expand...\nThank you! Is this a master volume for the entire game, or for individual BGM/BGS/ME/SE? Either is nice."
+    },
+    {
+      "post_id": "js-post-1558242",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T10:02:50+0900",
+      "body": "I_LIKE_BREAD7 said:\nRPG Maker blurs the screen by default, even when the resolution is perfectly divisible by the tile size. You can use a plugin to turn off this behavior and get pixel perfect scaling.\nHakuen Studio Pixel Perfect for RPG Maker MZ by Hakuen Studio\nAdds pixel perfect rendering for your rpg maker mz game!\nhakuenstudio.itch.io\nClick to expand...\nAbsolutely perfect! Thank you!"
+    },
+    {
+      "post_id": "js-post-1558244",
+      "author": "ATT_Turan",
+      "date": "2026-06-02T10:16:22+0900",
+      "body": "MHDevBlue said:\nThank you! Is this a master volume for the entire game, or for individual BGM/BGS/ME/SE? Either is nice.\nClick to expand...\nFor the game. It never occurred to me that someone might have started adjusting the BGM to the level they wanted but not the SE.\nThis is assuming you've left all the sounds at the default levels (or adjusted them relative to each other) and want to make the default levels less painfully loud."
+    },
+    {
+      "post_id": "js-post-1558245",
+      "author": "MHDevBlue",
+      "date": "2026-06-02T10:29:34+0900",
+      "body": "ATT_Turan said:\nFor the game. It never occurred to me that someone might have started adjusting the BGM to the level they wanted but not the SE.\nThis is assuming you've left all the sounds at the default levels (or adjusted them relative to each other) and want to make the default levels less painfully loud.\nClick to expand...\nIt was a retroactive decision-I decided that, once the SE were all finalized, that the BGM was too loud. It's no biggie, it's still a tool that was needed. Thank you"
+    },
+    {
+      "post_id": "js-post-1558341",
+      "author": "MHDevBlue",
+      "date": "2026-06-03T13:04:13+0900",
+      "body": "Does anyone happen to know a good plugin/method for 2?\n2: Is there a way that allows the overlaying of a picture over an entire map to simulate map-wide lighting? Think something like, the player is in a forest, and there is an overlay over the top of the map that gives the spotty, random lighting effect of the sun through leaves. Is this possible?"
+    },
+    {
+      "post_id": "js-post-1558344",
+      "author": "Solar_Flare",
+      "date": "2026-06-03T15:20:14+0900",
+      "body": "Did you try using Show Picture like I suggested?\nYou could probably get a parallax plugin for \"above map\" parallax for a cooler effect, but what you describe should be possible without any plugins using just a picture."
+    },
+    {
+      "post_id": "js-post-1558590",
+      "author": "MHDevBlue",
+      "date": "2026-06-07T03:12:33+0900",
+      "body": "Solar_Flare said:\nDid you try using Show Picture like I suggested?\nYou could probably get a parallax plugin for \"above map\" parallax for a cooler effect, but what you describe should be possible without any plugins using just a picture.\nClick to expand...\nThat just shows a static image above the map, unless there's a way to move it around with the player. That parallax plugin is definitely what I'm after, would you happen to know one?"
+    },
+    {
+      "post_id": "js-post-1558604",
+      "author": "Solar_Flare",
+      "date": "2026-06-07T04:48:43+0900",
+      "body": "Well, your description didn't mention anything about moving with the player – a static image above the map seems to satisfy what you originally described. But if you do want it to move with the player, then parallax is definitely what you want. I don't know anything about the options available for parallax plugins in MZ though; I think possibly Galv had one for MV, but I've no idea if it was ported."
+    },
+    {
+      "post_id": "js-post-1558625",
+      "author": "MHDevBlue",
+      "date": "2026-06-07T08:47:37+0900",
+      "body": "Solar_Flare said:\nWell, your description didn't mention anything about moving with the player – a static image above the map seems to satisfy what you originally described. But if you do want it to move with the player, then parallax is definitely what you want. I don't know anything about the options available for parallax plugins in MZ though; I think possibly Galv had one for MV, but I've no idea if it was ported.\nClick to expand...\nI guess I should've been clearer, my bad. I'll look for a parallax plugin. In the meantime, this remains open to anyone who wants to suggest one."
+    }
+  ]
+}

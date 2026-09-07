@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/chessbots-in-rpgmaker.183373",
+  "title": "Chessbots in RPG maker",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:21:48.050552+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1554406",
+      "author": "StultusTemporis",
+      "date": "2026-04-24T06:32:43+0900",
+      "body": "Hello,\nI'm trying to re-create a chesslike game in RPG maker.  I've designed it so it can work with two players playing against one another, but I'm not sure how to implement a computer player, where the computer chooses a piece on their side to play after the human player takes a turn.  Does anyone have experience with that sort of problem, or thoughts on how to solve it?  (It doesn't have to be within the specific framework of what I've designed, since this is the sort of problem where I already suspect I'll have to re-design things from the ground up to fix.)\nThank you for your help!"
+    },
+    {
+      "post_id": "js-post-1554408",
+      "author": "Arcaines",
+      "date": "2026-04-24T07:02:03+0900",
+      "body": "So, I am no chess master, never played it lol.\nBut I feel like you *can achieve* this with events, but that would probs takes months of trial, testing,\nheck probs even a year if you're new to RPG Maker.\nNot to mention the framework of it all for the computer to make smart moves.\nHow much of it have you done so far?  Can the chess peices move correctly? Will they interact correctly when they meet?\nIs it possible? Yes, it is, but I would highly recommend requesting a plugin to do so, and I would get the bare bones of it done first before doing the next step of adding a computer opponent.\nHave you tried searching online for said plugin?"
+    },
+    {
+      "post_id": "js-post-1554409",
+      "author": "Trihan",
+      "date": "2026-04-24T07:17:05+0900",
+      "body": "There are quite a few REST APIs for chess move analysis; you'd just have to have a plugin that hooks into one of those and uses the return values to determine where the computer player is moving its pieces."
+    },
+    {
+      "post_id": "js-post-1554411",
+      "author": "StultusTemporis",
+      "date": "2026-04-24T08:15:04+0900",
+      "body": "I have it set up so that two players can play against each other--the pieces will move properly and will not move improperly, players cannot move their opponent's pieces, and players can capture enemy pieces as appropriate.  I even have it so players can visualize potential moves when they select a piece and cancel them if they don't really want to move that piece.\nThank you for bringing up REST APIs--could you please provide a little more information as to what can be done with them?  For example, do they have to specifically be chess pieces on a chess board, or could someone apply them to something like Ko Shogi pieces on a non-standard board?\nEDIT:\nIt might be best to break this down into several problems.  The ones I see are:\n1. The computer needs a way to visualize the board.\n2. The computer needs to understand how each piece moves.\n3. The computer needs a way to evaluate each potential move.\n4. The computer needs a way to make a move (i.e. move the event that represents the piece).\n4 should be easy enough once the other 3 are solved--it just needs an autorun common event to move the event to the determined position and activate the events that fire when a player moves the event.  1 should also be pretty easy--I visualize it as a 2-axis matrix where each \"box\" represents a space on the board.  Boxes below a certain value are the computer's pieces--boxes above a certain value are the player's.  Likewise, certain spaces deemed more valuable (e.g. more central squares) can be given a greater value than normal, while those deemed less valuable (e.g. threatened squares) can be given a lesser one.\nIt's the intersection between 2 and 3 where the problems come up.  The way I have it set up, each event is programmed with the information it needs to move--but the computer itself can't read that information.  How do I tell the computer that its bishops move diagonally, or that its rooks move orthogonally?  Then, how do I get it to pick one piece to move so that it makes an engaging (not necessarily optimal) move?"
+    },
+    {
+      "post_id": "js-post-1554417",
+      "author": "Solar_Flare",
+      "date": "2026-04-24T11:07:18+0900",
+      "body": "StultusTemporis said:\nbut the computer itself can't read that information\nClick to expand...\nWhat are you talking about? Of course the computer can read that information. How would it be able to execute that event if it couldn't read that information?\nIt sounds like you could create a parallel event that functions roughly as follows:\nWait until its turn comes.\nChoose an event that represents one of its own pieces.\nInvoke that event to move the piece.\nThat's a very broad, high-level outline, so there are a lot of missing pieces there, but it seems plausible to me."
+    },
+    {
+      "post_id": "js-post-1554418",
+      "author": "StultusTemporis",
+      "date": "2026-04-24T12:08:55+0900",
+      "body": "Simple.  I mean that invoking the event doesn't move the piece--it allows the piece to be moved.\nAs an example:\nThis piece moves like a bishop.  In order to do that, it first takes the X and Y coordinates of the player (i.e. the selection box) and sets them to variables.  It then checks if the piece is \"frozen\"--if it is, then it immediately ends the script.  If it isn't, then it puts an image centered on the piece that shows how the piece moves.  (I don't know why it shows the sylph home position at this point--it isn't relevant to the piece and probably should be removed).  From there, it gets the player's position (to clear out any previous instances of the player's position), sets the turn as Active and moves on to page 3.\nPage 2 prevents the player from activating other pieces when they are moving a piece.\nPage 3 handles the movement.  In the case of a bishop, it first checks if the player has selected the piece again (i.e. deselected it) and then checks if the space the player has selected matches the movement of a bishop (i.e. it's on a diagonal when compared to the space the bishop was in--that's the cutoff script line checking the difference in X is the same as the difference in Y, and it isn't blocked by another piece--that's handled by the check movement loop and the scarlet capture loop).  If it's a valid position, the piece moves there and removes the graphic showing how the piece moves.\nPage 4 prevents the player from activating the opponent's pieces.\nIn any case, the computer isn't moving the piece--the player is.  The computer just checks to see if the player made a valid move and prevents the player from making an invalid move.  Which works fine if you have two players--indeed, that's what you want for that instance.  But it doesn't tell the computer how to move the piece.  If the computer were to activate the event, it would just sit there.\nEDIT: I think I see what you mean.  Essentially, having the data to move each individual piece stored in a common event, and then having a common event decision tree to read the board state and determine which piece to move.  I'd need to think on how to execute that, but it's certainly getting somewhere."
+    },
+    {
+      "post_id": "js-post-1554421",
+      "author": "Solar_Flare",
+      "date": "2026-04-24T13:18:41+0900",
+      "body": "StultusTemporis said:\nBut it doesn't tell the computer how to move the piece.\nClick to expand...\nIt actually does, though indirectly, so it might be a bit tricky to get the computer to make use of that information…"
+    },
+    {
+      "post_id": "js-post-1554444",
+      "author": "StultusTemporis",
+      "date": "2026-04-24T22:03:24+0900",
+      "body": "And that's where the rub lies.  But your comment has provided an idea for how movement could work, and for that I thank you.\nNow, it's just a matter of figuring out how the computer decides what to move and where.  My current thought (if I were using a standard chessboard) would be something like this:\nComputer Side\n4  7  9  12 15 9  7  4\n1  1  1  1  1  1  1  1\n19 18 19 18 18 19 18 19\n18 18 18 18 18 18 18 18\n18 18 18 18 18 18 18 18\n17 17 17 17 17 17 17 17\n21 21 21 21 21 21 21 21\n24 27 30 33 36 30 27 24\nPlayer side\nwhere each space is assigned a value based on what piece it contains, whether the space is threatened (i.e. whether an opponent can attack it), and whether the space is protected (i.e. whether two or more of the computer's pieces can move there).  While I'm not certain where to go from there, it at least gives the computer a way to read the state of the board, and then be able to write conditional statements to determine movement."
+    },
+    {
+      "post_id": "js-post-1554445",
+      "author": "Trihan",
+      "date": "2026-04-24T22:22:23+0900",
+      "body": "StultusTemporis said:\nI have it set up so that two players can play against each other--the pieces will move properly and will not move improperly, players cannot move their opponent's pieces, and players can capture enemy pieces as appropriate.  I even have it so players can visualize potential moves when they select a piece and cancel them if they don't really want to move that piece.\nThank you for bringing up REST APIs--could you please provide a little more information as to what can be done with them?  For example, do they have to specifically be chess pieces on a chess board, or could someone apply them to something like Ko Shogi pieces on a non-standard board?\nEDIT:\nIt might be best to break this down into several problems.  The ones I see are:\n1. The computer needs a way to visualize the board.\n2. The computer needs to understand how each piece moves.\n3. The computer needs a way to evaluate each potential move.\n4. The computer needs a way to make a move (i.e. move the event that represents the piece).\n4 should be easy enough once the other 3 are solved--it just needs an autorun common event to move the event to the determined position and activate the events that fire when a player moves the event.  1 should also be pretty easy--I visualize it as a 2-axis matrix where each \"box\" represents a space on the board.  Boxes below a certain value are the computer's pieces--boxes above a certain value are the player's.  Likewise, certain spaces deemed more valuable (e.g. more central squares) can be given a greater value than normal, while those deemed less valuable (e.g. threatened squares) can be given a lesser one.\nIt's the intersection between 2 and 3 where the problems come up.  The way I have it set up, each event is programmed with the information it needs to move--but the computer itself can't read that information.  How do I tell the computer that its bishops move diagonally, or that its rooks move orthogonally?  Then, how do I get it to pick one piece to move so that it makes an engaging (not necessarily optimal) move?\nClick to expand...\nChess API - free Stockfish online REST API.\nUp to 80 MNPS calculation power. Easy to use, cross-origin, WebSockets support.\nchess-api.com\nSo with this one, for example, your input is the FEN position data of the board, and you get either a POST or WebSocket response back with the best calculated move.\nYou'd basically then figure out the move itself on the client end; if you know what pieces are where and where they want to go, you can calculate how many spaces they want to move and in what direction."
+    },
+    {
+      "post_id": "js-post-1554448",
+      "author": "StultusTemporis",
+      "date": "2026-04-24T23:46:19+0900",
+      "body": "Nifty!  Thank you!  I think this will be very useful!"
+    },
+    {
+      "post_id": "js-post-1554488",
+      "author": "Trihan",
+      "date": "2026-04-25T08:53:55+0900",
+      "body": "It's easy to use in MZ since it natively supports WebSocket as well."
+    }
+  ]
+}

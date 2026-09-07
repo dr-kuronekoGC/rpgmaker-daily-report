@@ -1,0 +1,239 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/makevideoplayableinline-is-not-defined-listed-advices-did-not-help.183467",
+  "title": "MV makeVideoPlayableInline is not defined (listed advices did not help)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:21:45.160827+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1555180",
+      "author": "ElvenNeko",
+      "date": "2026-05-03T01:41:55+0900",
+      "body": "Hello. I am trying to upload an old game to a website (as a HTML), but got the \"makeVideoPlayableInline is not defined\" when i start it. I have read each post linked in one of the comments\nhere\nSo what i did - updated the index file from a newly created project. Replaced all the js files except plugins.\nNo problems with game itself, i took a stable playable build, but i haven't exported it to HTML before, so something must be wrong in this aspect. But what? I even tried to not encrypt or exclude unused files, still getting the same error."
+    },
+    {
+      "post_id": "js-post-1555183",
+      "author": "Andar",
+      "date": "2026-05-03T01:55:20+0900",
+      "body": "can you give a screenshot of the error message, preferably with an output of the console trace?\nthere are two different but similar sounding error messages, and your text alone does not allow to determine what exactly is undefined - the function itself or the data object that functions belong to."
+    },
+    {
+      "post_id": "js-post-1555185",
+      "author": "DevRPG2k",
+      "date": "2026-05-03T01:58:52+0900",
+      "body": "This function is part of a library called iphone-inline-video.js\nProvided by: npm.im/iphone-inline-video\nHave you tried running the HTML through an online service or directly in the browser? (given the appropriate read and write permissions)"
+    },
+    {
+      "post_id": "js-post-1555192",
+      "author": "Solar_Flare",
+      "date": "2026-05-03T02:42:09+0900",
+      "body": "That file should be in the js/libs folder – you can find it in RPGMaker MV's NewData folder and copy it over. (You could probably just copy the entire libs folder.)"
+    },
+    {
+      "post_id": "js-post-1555199",
+      "author": "ElvenNeko",
+      "date": "2026-05-03T02:59:44+0900",
+      "body": "Andar said:\ncan you give a screenshot of the error message, preferably with an output of the console trace?\nthere are two different but similar sounding error messages, and your text alone does not allow to determine what exactly is undefined - the function itself or the data object that functions belong to.\nClick to expand...\nDev_With_Coffee said:\nThis function is part of a library called iphone-inline-video.js\nProvided by: npm.im/iphone-inline-video\nHave you tried running the HTML through an online service or directly in the browser? (given the appropriate read and write permissions)\nClick to expand...\nOnline. In browser it does not run for some reason, it gives me various errors for missing files, but all the files are present. That happens if i directly run the index.html, but that always happened with htm version so i don't bother testing it in browser. When uploaded they usually work.\nSolar_Flare said:\nThat file should be in the js/libs folder – you can find it in RPGMaker MV's NewData folder and copy it over. (You could probably just copy the entire libs folder.)\nClick to expand...\nDid that."
+    },
+    {
+      "post_id": "js-post-1555205",
+      "author": "DevRPG2k",
+      "date": "2026-05-03T03:13:39+0900",
+      "body": "If you run index.html directly, you need to test it in different browsers to make sure the problem is actually in the project and not due to some modification in your main browser's settings.\nSee this:\nFix error Failed to load data/Actors.json\nThis error happens because you try to play a game in the web browser directly when running INDEX.HTML.  Modern  browsers have a security system that prevents local files from trying  to capture information from other sites via AJAX, but you can disable  this security (CROSS-ORIGIN).  The...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1555220",
+      "author": "ElvenNeko",
+      "date": "2026-05-03T04:57:28+0900",
+      "body": "Dev_With_Coffee said:\nIf you run index.html directly, you need to test it in different browsers to make sure the problem is actually in the project and not due to some modification in your main browser's settings.\nSee this:\nFix error Failed to load data/Actors.json\nThis error happens because you try to play a game in the web browser directly when running INDEX.HTML.  Modern  browsers have a security system that prevents local files from trying  to capture information from other sites via AJAX, but you can disable  this security (CROSS-ORIGIN).  The...\nforums.rpgmakerweb.com\nClick to expand...\nThank you, i can now launch it, it plays allright, no errors. Does it mean that the error is caused by the site i am uploading to?"
+    },
+    {
+      "post_id": "js-post-1555223",
+      "author": "DevRPG2k",
+      "date": "2026-05-03T05:16:17+0900",
+      "body": "I don't know, I would need more information. It could be your browser, as the game might be running within an IFRAME with\ncross-origin\nparameters that prevent access to file reading."
+    },
+    {
+      "post_id": "js-post-1555227",
+      "author": "Solar_Flare",
+      "date": "2026-05-03T05:25:53+0900",
+      "body": "Cross-origin is definitely something that breaks RPGMaker games quite frequently. For example, if you upload it to Itch.io, it'll be shown in a frame, and usually fail to load because the frame is on a different domain than Itch.io. In that case you can right-click and choose \"Show only this frame\", and it'll work. I'd suggest trying that on your uploaded game, at least as a test to see if it's the problem."
+    },
+    {
+      "post_id": "js-post-1555230",
+      "author": "ElvenNeko",
+      "date": "2026-05-03T05:38:18+0900",
+      "body": "Dev_With_Coffee said:\nI don't know, I would need more information. It could be your browser, as the game might be running within an IFRAME with\ncross-origin\nparameters that prevent access to file reading.\nView attachment 365438\nClick to expand...\nSorry, i don't know the code at all, so don't know what that is. Is there a way to try disabeling it to see if it will solve the issue?\nWhen i upload, i can chose something different then Iframe, but what should i chose?\nSolar_Flare said:\nCross-origin is definitely something that breaks RPGMaker games quite frequently. For example, if you upload it to Itch.io, it'll be shown in a frame, and usually fail to load because the frame is on a different domain than Itch.io. In that case you can right-click and choose \"Show only this frame\", and it'll work. I'd suggest trying that on your uploaded game, at least as a test to see if it's the problem.\nClick to expand...\nCan't test it on Itch since it gives me too many files in the archive error.\nAnd the site where i upload it to (glitch.fun) does nothing on right click."
+    },
+    {
+      "post_id": "js-post-1555231",
+      "author": "DevRPG2k",
+      "date": "2026-05-03T05:47:51+0900",
+      "body": "ElvenNeko said:\nSorry, i don't know the code at all, so don't know what that is\nClick to expand...\nThis is basic HTML, very basic indeed, unlike JAVASCRIPT, which is a programming language with many native functions.\nI showed it to see where the script that wasn't loading was coming from; it's being requested in the simplest way possible, which means it's probably the service that's blocking it, try selecting the\nNode.JS\noption.\nI just need confirmation that you've tested it in other browsers to be sure the problem is with the service."
+    },
+    {
+      "post_id": "js-post-1555235",
+      "author": "Solar_Flare",
+      "date": "2026-05-03T07:23:28+0900",
+      "body": "ElvenNeko said:\nAnd the site where i upload it to (glitch.fun) does nothing on right click.\nClick to expand...\nFor sites that override normal right-click behaviour, you can usually still get the right-click menu by holding Control or Alt while right-clicking.\nIt's hard to say, but looking at your upload options, I think iframe is most likely the correct one. That said, it certainly can't hurt to try node.js. The other two definitely aren't valid choices for an RPGMaker game."
+    },
+    {
+      "post_id": "js-post-1555247",
+      "author": "ElvenNeko",
+      "date": "2026-05-03T14:24:16+0900",
+      "body": "Dev_With_Coffee said:\nThis is basic HTML, very basic indeed, unlike JAVASCRIPT, which is a programming language with many native functions.\nI showed it to see where the script that wasn't loading was coming from; it's being requested in the simplest way possible, which means it's probably the service that's blocking it, try selecting the\nNode.JS\noption.\nI just need confirmation that you've tested it in other browsers to be sure the problem is with the service.\nClick to expand...\nFor some reason i can't run it on Chrome, the error is still there despite me entering command after a space in shortcut.\nTried nodejs, got \"Node deployment requires a Dockerfile in the root of your ZIP.\" error after uploading\nyou can usually still get the right-click menu by holding Control or Alt while right-clicking.\nClick to expand...\nDoes not work as well"
+    },
+    {
+      "post_id": "js-post-1555248",
+      "author": "Solar_Flare",
+      "date": "2026-05-03T15:29:19+0900",
+      "body": "ElvenNeko said:\nDoes not work as well\nClick to expand...\nIt likely depends on the browser as well. I don't know what browser you're using, but that approach works in Firefox, at least."
+    },
+    {
+      "post_id": "js-post-1555255",
+      "author": "ElvenNeko",
+      "date": "2026-05-03T16:35:50+0900",
+      "body": "Solar_Flare said:\nIt likely depends on the browser as well. I don't know what browser you're using, but that approach works in Firefox, at least.\nClick to expand...\nFirefox..."
+    },
+    {
+      "post_id": "js-post-1555303",
+      "author": "DevRPG2k",
+      "date": "2026-05-04T02:00:52+0900",
+      "body": "Firefox users often use U-Block, which may be affecting the loading of some scripts that it interprets as displaying advertisements on the screen, since this particular library appears to be for video playback."
+    },
+    {
+      "post_id": "js-post-1555323",
+      "author": "ElvenNeko",
+      "date": "2026-05-04T03:41:47+0900",
+      "body": "Dev_With_Coffee said:\nFirefox users often use U-Block, which may be affecting the loading of some scripts that it interprets as displaying advertisements on the screen, since this particular library appears to be for video playback.\nClick to expand...\nYes, you are correct. I am using that addon, hovewed disabeling it does nothing."
+    },
+    {
+      "post_id": "js-post-1555331",
+      "author": "DevRPG2k",
+      "date": "2026-05-04T05:31:31+0900",
+      "body": "ElvenNeko said:\nAnd the site where i upload it to (glitch.fun)\nClick to expand...\nI tried using this platform and I think I couldn't understand where the problem arises, like how to upload the game."
+    },
+    {
+      "post_id": "js-post-1555355",
+      "author": "ElvenNeko",
+      "date": "2026-05-04T14:39:26+0900",
+      "body": "Dev_With_Coffee said:\nI tried using this platform and I think I couldn't understand where the problem arises, like how to upload the game.\nClick to expand...\nYeah, the authors didn't make it easy to find, i had troubles as well...\nhttps://glitch.fun/games/admin\n- on this page there would be the deploy files button. But before that you need to press \"register new game\" button on the same page."
+    },
+    {
+      "post_id": "js-post-1555413",
+      "author": "DevRPG2k",
+      "date": "2026-05-05T06:52:50+0900",
+      "body": "Something I had no trouble with, right-clicking, worked normally:\nBut I didn't even need to; I opened it with F12 by clicking on the address bar to avoid freezing and found the problem:\nWhen uploading the files, specifically this \"iphone-inline-video.browser.js\" file is deleted, likely for violating some usage rule.\nHow to fix:\nIn index.html, remove line 19:\n<script type=\"text/javascript\" src=\"js/libs/iphone-inline-video.browser.js\"></script>\nIn rpg_core.js, remove line 2505:\nmakeVideoPlayableInline(this._video);\nWorking:\nDon't get me wrong, but let's say hypothetically you don't know how to open Notepad and locate a line using\nEdit\n-->\nGo to Line...\n(Ctrl + G)... install this plugin that's attached\nEdit:\nAnother tip, I might be wrong, but in my tests none of my laptops required m4a, so web players probably won't need this format. As you can see in all the audio folders, each song has two formats; if you remove all m4a files, the size of your project will be drastically reduced."
+    },
+    {
+      "post_id": "js-post-1555420",
+      "author": "Solar_Flare",
+      "date": "2026-05-05T09:10:06+0900",
+      "body": "The m4a format is only used on iOS and possibly Android, from my understanding. However, a web game could\ntechnically\nend up being played on iOS, so theoretically, a web build should contain both formats (I think)."
+    },
+    {
+      "post_id": "js-post-1555433",
+      "author": "DevRPG2k",
+      "date": "2026-05-05T11:52:48+0900",
+      "body": "I tested it and it worked in Chrome, but in Firefox I had to force the use of OGG because it simply didn't produce any sound:\nJavaScript:\nAudioManager.audioFileExt = function() {\n    return '.ogg';\n};\nOnly do this if you have full knowledge of how to back up or restore the original files. In my case, I only did it with the content that comes with RPG Maker, not the add-ons:\nSpoiler\nAnother thing I did was reduce the quality of all the OGG files after deleting the M4A files using FFMPEG. So, it went from 163 MB to 27 MB. Since none of the songs have vocals, the quality isn't bad; I tested it on different devices"
+    },
+    {
+      "post_id": "js-post-1555453",
+      "author": "ElvenNeko",
+      "date": "2026-05-05T17:54:48+0900",
+      "body": "Dev_With_Coffee said:\nSomething I had no trouble with, right-clicking, worked normally:\nView attachment 365565\nBut I didn't even need to; I opened it with F12 by clicking on the address bar to avoid freezing and found the problem:\nView attachment 365564\nWhen uploading the files, specifically this \"iphone-inline-video.browser.js\" file is deleted, likely for violating some usage rule.\nHow to fix:\nIn index.html, remove line 19:\n<script type=\"text/javascript\" src=\"js/libs/iphone-inline-video.browser.js\"></script>\nIn rpg_core.js, remove line 2505:\nmakeVideoPlayableInline(this._video);\nWorking:\nView attachment 365566\nDon't get me wrong, but let's say hypothetically you don't know how to open Notepad and locate a line using\nEdit\n-->\nGo to Line...\n(Ctrl + G)... install this plugin that's attached\nEdit:\nAnother tip, I might be wrong, but in my tests none of my laptops required m4a, so web players probably won't need this format. As you can see in all the audio folders, each song has two formats; if you remove all m4a files, the size of your project will be drastically reduced.\nClick to expand...\nThank you a lot for the help, i will try that! And may your coffee never end."
+    },
+    {
+      "post_id": "js-post-1555611",
+      "author": "ElvenNeko",
+      "date": "2026-05-06T21:23:08+0900",
+      "body": "Dev_With_Coffee said:\nSomething I had no trouble with, right-clicking, worked normally:\nView attachment 365565\nBut I didn't even need to; I opened it with F12 by clicking on the address bar to avoid freezing and found the problem:\nView attachment 365564\nWhen uploading the files, specifically this \"iphone-inline-video.browser.js\" file is deleted, likely for violating some usage rule.\nHow to fix:\nIn index.html, remove line 19:\n<script type=\"text/javascript\" src=\"js/libs/iphone-inline-video.browser.js\"></script>\nIn rpg_core.js, remove line 2505:\nmakeVideoPlayableInline(this._video);\nWorking:\nView attachment 365566\nDon't get me wrong, but let's say hypothetically you don't know how to open Notepad and locate a line using\nEdit\n-->\nGo to Line...\n(Ctrl + G)... install this plugin that's attached\nEdit:\nAnother tip, I might be wrong, but in my tests none of my laptops required m4a, so web players probably won't need this format. As you can see in all the audio folders, each song has two formats; if you remove all m4a files, the size of your project will be drastically reduced.\nClick to expand...\nI am curious, could it be that the other files did not load the same way? I have an error with one image, \"%zoe-sing\"  located at \\img\\characters. Also i am missing few sounds, they don't give an error, but simply do not play, for example  \"Gun1\" from \\audio\\se\nIs there a way to fix them like you did? Or it will not work with files that are crucial and used by the game?"
+    },
+    {
+      "post_id": "js-post-1555621",
+      "author": "DevRPG2k",
+      "date": "2026-05-06T22:38:02+0900",
+      "body": "Well, it's kind of strange to see a % sign in filenames, it can be confusing when requesting the file URL from the hosting, since it's used in situations like spaces becoming\n%20\n, ! becoming\n%21\n, and so on.\nBut in your case it seems like a slow file reading process, or a lack of permission, as I explained before, the\nM4A\nformat is not currently used by Android browsers."
+    },
+    {
+      "post_id": "js-post-1555629",
+      "author": "ElvenNeko",
+      "date": "2026-05-07T00:18:26+0900",
+      "body": "Not the m4a for sure, since i am using only the ogg. And what is weird, that the majority of audio functions just fine. Only few dialogue lines and pistol shot sound are missing for some reason.\nBut that is less important than missing picture, since game will not work without it. But i guess i will have to ask the site owner to look into that, since it is working fine if not uploaded."
+    },
+    {
+      "post_id": "js-post-1555636",
+      "author": "DevRPG2k",
+      "date": "2026-05-07T01:43:41+0900",
+      "body": "If they are missing, an error will be displayed on the screen.\nTry using DEBUG mode and check if they were actually loaded.\nThe good thing is that you don't need to do this through the browser because of the IFRAME, the service itself has a tool for this (Attached)"
+    },
+    {
+      "post_id": "js-post-1555670",
+      "author": "ElvenNeko",
+      "date": "2026-05-07T05:14:05+0900",
+      "body": "Dev_With_Coffee said:\nIf they are missing, an error will be displayed on the screen.\nTry using DEBUG mode and check if they were actually loaded.\nThe good thing is that you don't need to do this through the browser because of the IFRAME, the service itself has a tool for this (Attached)\nClick to expand...\nOh, thanks, didn't know about that.\nWeird thing is, while this image is on screen -\nAll assets are passed. But they do not update, which probably means that the error happens before level is loaded, so the new assets do not appear in the debug.\nAnd via browser debug i see this. The error seems to be \"400 Invalid URI: isHexDigit\".\nQuess need to report that to the platform owner?\nAnd same thing about audio file, but this time it is \"403 Forbidden\""
+    },
+    {
+      "post_id": "js-post-1555680",
+      "author": "Solar_Flare",
+      "date": "2026-05-07T08:11:26+0900",
+      "body": "It looks like the URL is not being properly encoded. It should be %25zoe-sing.png, but it's actually %zoe-sing.png. I think your best bet is to rename the file to remove the %"
+    },
+    {
+      "post_id": "js-post-1555687",
+      "author": "DevRPG2k",
+      "date": "2026-05-07T10:26:09+0900",
+      "body": "As I said here:\nDev_With_Coffee said:\nWell, it's kind of strange to see a % sign in filenames, it can be confusing when requesting the file URL from the hosting, since it's used in situations like spaces becoming\n%20\n, ! becoming\n%21\n, and so on.\nClick to expand...\nElvenNeko said:\nAnd same thing about audio file, but this time it is \"403 Forbidden\"\nClick to expand...\nThis is very strange; if it were direct hosting, you could change the permissions, but in this case, you might need to batch convert the files back to FFMPEG.\nIt's a wild guess, but I think some of those files aren't OGG, despite the extension."
+    },
+    {
+      "post_id": "js-post-1555690",
+      "author": "Solar_Flare",
+      "date": "2026-05-07T10:56:17+0900",
+      "body": "Right, and my point was that it looks like something should be percent-encoding the URL (replacing % with %25) but isn't, resulting in an invalid URL."
+    },
+    {
+      "post_id": "js-post-1555691",
+      "author": "DevRPG2k",
+      "date": "2026-05-07T11:37:50+0900",
+      "body": "Sorry, I meant that I thought it was implied that he shouldn't use that symbol in the file names.\nThe strange thing is that even without fully understanding the platform, I was able to test most of the audio and image files without difficulty. This leads me to wonder if some of his files might contain Cyrillic characters that, during decoding or extraction from the ZIP file when uploading, were replaced by acceptable characters, as happens in browsers that don't accept that encoding:"
+    },
+    {
+      "post_id": "js-post-1555698",
+      "author": "ElvenNeko",
+      "date": "2026-05-07T14:45:01+0900",
+      "body": "The filename was caused by the default plugin file identifier.\nThe problem is that if i change it to other identifier, it will still try to load the % version of the file for some reason. I think it might be because the qsprite editor itself isn't made to work with different format, at least this is what help file says, and i see nothing about changing it -\nBut then again, why do plugin has the option to change identifier then? It says this is if default plugin settings are used, but what if non default?"
+    },
+    {
+      "post_id": "js-post-1555699",
+      "author": "DevRPG2k",
+      "date": "2026-05-07T15:06:28+0900",
+      "body": "Unfortunately, we've reached a point that involves other third-party plugins.\nJust try the tip I gave to fix the sound effects and possibly the music."
+    },
+    {
+      "post_id": "js-post-1555701",
+      "author": "ElvenNeko",
+      "date": "2026-05-07T15:26:11+0900",
+      "body": "Regarding the music, i have both m4a and ogg files, and neither of those are played. Also, the playse command does not specify which file is played, how does the game determines that?"
+    },
+    {
+      "post_id": "js-post-1555710",
+      "author": "DevRPG2k",
+      "date": "2026-05-07T17:44:55+0900",
+      "body": "Well, in this case I recommend creating a new project in RPG Maker, a very simple one, just with some map events to play sound effects, and upload it to a new game on the account.\nIf no sound or music plays, it means there's some kind of blockage, and this could also be due to a plugin, so test it with this new project.\nEdit:\nThis is all assuming that you've already tried playing other people's games on this platform and didn't have the same problem."
+    },
+    {
+      "post_id": "js-post-1555714",
+      "author": "ElvenNeko",
+      "date": "2026-05-07T18:52:56+0900",
+      "body": "Dev_With_Coffee said:\nThis is all assuming that you've already tried playing other people's games on this platform and didn't have the same problem.\nClick to expand...\nI am not sure how it will help? They have different audio files than me.\nAnd in my game, out of 3800 audio files only several do not play. It seems to be a very rare bug."
+    },
+    {
+      "post_id": "js-post-1555716",
+      "author": "DevRPG2k",
+      "date": "2026-05-07T19:37:35+0900",
+      "body": "ElvenNeko said:\nI am not sure how it will help? They have different audio files than me.\nClick to expand...\nMy mistake, I understood that few files were being played, not the opposite.\nGiven this, the only way to determine the cause is through DEBUG.\nInstall this plugin, then use the debugger to enable the switch you defined to force the M4A format, or disable it to force OGG (fixed):\nJavaScript:\nAudioManager.audioFileExt = function() {\n    return ($gameSwitches._data[1])? '.m4a' : '.ogg';\n};\nThis is just for testing purposes.\nIf it doesn't work, as I said before, you'll need to reconvert these files using FFMPEG preferably. Search Google for the command lines with the correct codecs for these formats.\nDev_With_Coffee said:\nThis is very strange; if it were direct hosting, you could change the permissions, but in this case, you might need to batch convert the files back to FFMPEG.\nClick to expand..."
+    }
+  ]
+}

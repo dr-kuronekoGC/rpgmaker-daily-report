@@ -1,0 +1,185 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/battle-ressources-gauge-as-icons-custom-gauges.179520",
+  "title": "MZ Battle Ressources Gauge As Icons (Custom Gauges)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:22:01.611040+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1526093",
+      "author": "Anohe1",
+      "date": "2025-08-12T09:24:42+0900",
+      "body": "Hello, SO I use VS SkillsStatesCore and I have something I would like to do but can't with this plugin. Basically I want to use Icons as a Gauge. There are 32 Classes in my game that play wildly differently from one another. Each class has its own mechanic and One Class (Marksman) uses Bullets each time they attack or Use as skill, They have a Pistol that has 5 Ammo(A) as a Ressources and Use A Rifle that has 1 Ammo(\nhas a ressource. SO I want to make a custom gauge That will be Icons for both instead of a gauge. It should look like this:\nWhere there would be icons to for when there is Ammo and No Ammo exactly like on the picture. Someone please help me."
+    },
+    {
+      "post_id": "js-post-1526109",
+      "author": "Canned_Dinosaur",
+      "date": "2025-08-12T14:26:41+0900",
+      "body": "You can set custom\nskill cost types\nas well as\ncustom gauges\nusing Skills States Core. Do you already have that in place? After that, it would be a matter of tweaking the \"JS: Draw Gauge\" for the bullets, which is admittedly a bit more involved, but making the costs themselves should be doable (you can use the included example for Potion or Item Cost as starting points)."
+    },
+    {
+      "post_id": "js-post-1526110",
+      "author": "Anohe1",
+      "date": "2025-08-12T14:32:06+0900",
+      "body": "Canned_Dinosaur said:\nYou can set custom\nskill cost types\nas well as\ncustom gauges\nusing Skills States Core. Do you already have that in place? After that, it would be a matter of tweaking the \"JS: Draw Gauge\" for the bullets, which is admittedly a bit more involved, but making the costs themselves should be doable (you can use the included example for Potion or Item Cost as starting points).\nClick to expand...\nThanks but the skills cost type have all been done already. The only thing left is the gauge as I said. Also I don't know what JS: Draw Gauge is nor how to modify it. I was on hiatus for 2 years now, So I forgot a lot about RPG Maker."
+    },
+    {
+      "post_id": "js-post-1526112",
+      "author": "Canned_Dinosaur",
+      "date": "2025-08-12T15:39:36+0900",
+      "body": "Anohe1 said:\nThe only thing left is the gauge as I said.\nClick to expand...\nI’m sure you understand that there was no way for me to tell what stage you were at without seeing how you’ve implemented things. So please share how exactly you’ve implemented the costs. Also, please consider reviewing the\nsupport template\nto refresh your memory as to what is typically needed for effective support!\nAnohe1 said:\nAlso I don't know what JS: Draw Gauge is\nClick to expand...\nIt may not have been obvious but I sneakily linked to the wiki in my previous post. It should contain all the basics so perhaps rereading that might be helpful, too."
+    },
+    {
+      "post_id": "js-post-1526131",
+      "author": "Anohe1",
+      "date": "2025-08-12T21:22:01+0900",
+      "body": "Canned_Dinosaur said:\nI’m sure you understand that there was no way for me to tell what stage you were at without seeing how you’ve implemented things. So please share how exactly you’ve implemented the costs. Also, please consider reviewing the\nsupport template\nto refresh your memory as to what is typically needed for effective support!\nClick to expand...\nI am in no way downplaying the support you are giving me. I am even very thankful for taking the time to try to help me.\nHere's a skill i've done for better context:\nFor JS: Draw Gauge, I don't know what to do. I don't know how to code nor what to tweak to get The result I want.\nI saw this in the Plugin:\n*\n@param\nGaugeDrawJS:func\n* @text JS: Draw Gauge\n* @parent  Gauges\n* @type note\n*\n@desc\nCode to determine how to draw the Skill Cost resource for this gauge type.\n*\n@Default\n\"// Declare Variables\\nconst sprite = this;\\nconst settings = sprite._costSettings;\\nconst bitmap = sprite.bitmap;\\nconst user = sprite._battler;\\nconst currentValue = sprite.currentDisplayedValue();\\n\\n// Draw Gauge\\nconst color1 = ColorManager.textColor(30);\\nconst color2 = ColorManager.textColor(31);\\nconst gx = 0;\\nconst gy = sprite.bitmapHeight() - sprite.gaugeHeight();\\nconst gw = sprite.bitmapWidth() - gx;\\nconst gh = sprite.gaugeHeight();\\nthis.drawFullGauge(color1, color2, gx, gy, gw, gh);\\n\\n// Draw Label\\nconst label = settings.Name;\\nconst lx = 4;\\nconst ly = 0;\\nconst lw = sprite.bitmapWidth();\\nconst lh = sprite.bitmapHeight();\\nsprite.setupLabelFont();\\nbitmap.paintOpacity = 255;\\nbitmap.drawText(label, lx, ly, lw, lh, \\\"left\\\");\\n\\n// Draw Value\\nconst vw = sprite.bitmapWidth() - 2;\\nconst vh = sprite.bitmapHeight();\\nsprite.setupValueFont();\\nbitmap.textColor = ColorManager.normalColor();\\nbitmap.drawText(currentValue, 0, 0, vw, vh, \\\"right\\\");\"\nBut to be honest I don't understand a single Thing."
+    },
+    {
+      "post_id": "js-post-1526137",
+      "author": "Canned_Dinosaur",
+      "date": "2025-08-12T21:48:46+0900",
+      "body": "Anohe1 said:\nI am in no way downplaying the support you are giving me. I am even very thankful for taking the time to try to help me.\nClick to expand...\nThat may have come of a bit more dramatic than I had intended, sorry. What I was trying to say is, assuming that you try to build something on top of Skills and States Core, there's no going around doing it inside the plugin parameters (at least in so far as I have tried in the past).\nIn this case, information on whether you have already succeeded in showing the bullets as a normal bar (from your mock-up I take it replacing the TP bar) and if yes how you have implemented it, is pretty important.\nFrom there, I imagine you would need a plugin that patches the\nVi\nsu\nst\nel\nla\nor\nig\nin\nal\ndrawFullGauge function mentioned under\n//Draw Gauge\nto draw circles in the place of rectangles, or leave the gauge alone and draw circles or icons on top of the gauge. This part is kind of trial and error because of the unspeakable, but doable I think."
+    },
+    {
+      "post_id": "js-post-1526144",
+      "author": "Anohe1",
+      "date": "2025-08-12T22:09:07+0900",
+      "body": "I see. Sadly I have no clue how to code and do that. I'll just put the class on hold for now or delete it completely If I still find nothing. Still thanks a lot for taking time of your day to help me."
+    },
+    {
+      "post_id": "js-post-1526146",
+      "author": "Canned_Dinosaur",
+      "date": "2025-08-12T22:18:26+0900",
+      "body": "I don't understand your response. I was asking for you to show how you have it currently implemented, in order to help you. If you can show that, maybe we can find a solution."
+    },
+    {
+      "post_id": "js-post-1526148",
+      "author": "Anohe1",
+      "date": "2025-08-12T22:36:19+0900",
+      "body": "Ah Sorry I didn't understand it that way. So basically For The Bullet Works like An MP Bar. There are Two Gauge One that serve as ressource of the Pistol and Another that serves as ressource for The Rifle. The Pistol Has 5 Bullets and Rifle Has 1 Bullet (Max Bullets can be increased via unlockable passive skill).Whenever a basic attack or a skill is used it consume a bullet some skills consume more than 1 bullet. When there are no more bullet, you can't shoot anymore. But there's a skill that Allow to reload, putting the bullet gauge back to max. Pistol and Rifle have each their reload skill.\nI saw that VS SkillsStatesCore offer the possibility to create gauge for items that are used as skill cost:\nSo what I wanted was to have the possibility to change the Item Gauge from how it is on the Picture To this:\nI want to be able to use icons that will show the number of ressource available, when a ressource is empty and when it is full, I thought it would look better that way.\nWith the possibility to increase the Max bar through a passive skill (That can be optional as it is not my main goal)\nI tried to be as decriptive as Possible, If you need further information please let me know"
+    },
+    {
+      "post_id": "js-post-1526175",
+      "author": "rpgLord69",
+      "date": "2025-08-13T02:50:59+0900",
+      "body": "There's already a line of code in the VS Skill Cost Types how they draw an icon in there, like in the 'Potion' one at least. Just copy that and add more icons (increase the x spot (the first 0) by 24 each time) LOL. And remove the stuff where it draws the gauge. Then just make conditionals there that if a property/variable (ammo in chamber) is 5, all the icons are the index for white icon, otherwise start adding black ones at the last spots.\nEDIT: I mean like in JS Draw Gauge\nbitmap.blt(iconBitmap, sx, sy, pw, ph, 0, 0, 24, 24);"
+    },
+    {
+      "post_id": "js-post-1526190",
+      "author": "Anohe1",
+      "date": "2025-08-13T04:25:43+0900",
+      "body": "Thanks for your help but to be honest I am totally lost. I don't understand anything. Can you do it for me please if it's not too much to ask or guide me step by step?"
+    },
+    {
+      "post_id": "js-post-1526197",
+      "author": "rpgLord69",
+      "date": "2025-08-13T04:55:31+0900",
+      "body": "Yeah, tomorrow probably. But what are you using for the ammo \"gauges\" current values? Mp, tp, items, variable, custom property? Like when you reload the ammo, what happens?"
+    },
+    {
+      "post_id": "js-post-1526203",
+      "author": "Anohe1",
+      "date": "2025-08-13T05:27:43+0900",
+      "body": "For Now I am Using Items, Ammo(A) and Ammo( B ). I'll change the names soon, these are placeholders. These items will serve as the main ressource for the class. The reload Ammo skill refill the items back to full. Each Ammo belong to a Weapon Ammo(A)=Pistol, Ammo( B )=Rifle. They each have their reload too.\nI'm trying to find a way to limit these items. Ammo(A) Limit should be 5 and Ammo( B ) limit should be 1 but I don't know how to do that so I'm looking"
+    },
+    {
+      "post_id": "js-post-1526254",
+      "author": "Canned_Dinosaur",
+      "date": "2025-08-13T09:50:13+0900",
+      "body": "Okay, so there might be some confusion in what you and I mean with \"already implemented\", so let's just assume that nothing is implemented yet. A couple of things to consider:\nBy default you have three gauges at your disposal to customize (and I honestly don't know if you can add more within the confines of Visustella). Showing special gauges is essentially replacing HP/MP/TP gauges with one of the customized ones. As the gauge replacement can only be set by class, and as there is no way to change the gauge replacements on the fly through plugin commands, you need to make conscious choices on how to implement this.\nNext, you have actually two things to keep track of: number of bullets in inventory, and number of bullets in your firearm. The cost is based off of the latter, and the reload action will replace bullets in your firearm with bullets from your inventory. How you need to implement this can get complicated depending on what you want:\nDo you have multiple actors that can have this class?\nDo you have multiple weapons of each type for which you need to keep track of number of bullets in the gun?\nIt's probably better to focus on implementing this mechanic first, and worry about the esthetics later.\nWhat you need to do:\nHave a skill to fire each fire arm\nDecide on a note tag to specify the special cost of the skill, for example\n<BULLETA COST: 1>\nand\n<BULLETB COST: 1>\nCreate entries under\nSkill Cost Types\nfor Bullet A (for Bullet B it's easier to copy Bullet A after we are finished). Just copy the entry for\nPotion\nand change the value under\nName\nto\nBullet A\nor something.\nIf you can tell us the item ID of the bullet items, we can tell you where you need to tweak what."
+    },
+    {
+      "post_id": "js-post-1526301",
+      "author": "rpgLord69",
+      "date": "2025-08-13T18:16:40+0900",
+      "body": "I assume since you're doing it with items that you have only 1 character using that class.\nHere's an example for the JS draw gauge. Max bullets is currently at 5 and there's no label text, because the default area is so small that if you try to add more than 5 icons or add the text, it cuts off. You can check for yourself if you want to increase the area, I'll leave below the codes to add the \"Ammo\" label and make it reference maxItems.\n(There might be some unnecessary lines left, because I didn't have the energy to check everything, but the extra line shouldn't matter.)\n// Declare Settings\n// Declare Variables\nconst sprite = this;\nconst settings = sprite._costSettings;\nconst bitmap = sprite.bitmap;\nconst user = sprite._battler;\nconst item = $dataItems[7];\nconst currentValue = sprite.currentDisplayedValue();\nconst bitmapWidth = sprite.bitmapWidth();\nconst bitmapHeight = sprite.textHeight ? sprite.textHeight() : sprite.bitmapHeight();\nconst gaugeHeight = sprite.gaugeHeight();\n// Draw Gauge\n// Draw Value\n// Draw Icon\nconst bullets = $gameParty.numItems(item)\nconst maxBullets = 5\nconst emptyChambers = maxBullets - bullets;\nconst iconIndex = 10;\nconst iconIndexEmpty = 26;\nconst iconBitmap = ImageManager.loadSystem(\"IconSet\");\nconst pw = ImageManager.iconWidth;\nconst ph = ImageManager.iconHeight;\nconst sx = (iconIndex % 16) * pw;\nconst sx2 = (iconIndexEmpty % 16) * pw;\nconst sy = Math.floor(iconIndex / 16) * ph;\nconst sy2 = Math.floor(iconIndexEmpty / 16) * ph;\nlet emptyStart = 0;\nfor (let i=1; i<=bullets; i++) {\nbitmap.blt(iconBitmap, sx, sy, pw, ph, (i-1)*24, 0, 24, 24);\nemptyStart += 1;\n}\nfor (let i=1; i<=emptyChambers; i++) {\nbitmap.blt(iconBitmap, sx2, sy2, pw, ph, (emptyStart+i-1)*24, 0, 24, 24);\n}\n///////////////////////////////////\nADD LABEL:\n// Draw Label\nconst label = \"Ammo\";\nconst lx = 0;\nconst ly = 0;\nconst lw = sprite.bitmapWidth();\nconst lh = sprite.bitmapHeight();\nsprite.setupLabelFont();\nbitmap.paintOpacity = 255;\nbitmap.drawText(label, lx, ly, lw, lh, \"left\");\nREFERENCE MAX ITEMS (change line above to):\nconst maxBullets = $gameParty.maxItems(item);\nEDIT:\nWhoops, removed the 48+ from the x position (put it there when I tested to add the \"Ammo\" text)."
+    },
+    {
+      "post_id": "js-post-1526305",
+      "author": "Anohe1",
+      "date": "2025-08-13T19:48:09+0900",
+      "body": "I've done all that You mentionned.\nMultiple actors can have this class, I replace MP and TP with Ammo(A) and Ammo( B ) (These are PlaceHolder Names for now)\nThere are two weapon Type: Pistol and Rifle, PIstol has access to Ammo(A) and Rifle Has Access to Ammo ( B )\nI have already made the Skills with the Cost <Item Cost: 1 Ammo(A)> and <Item Cost: 1 Ammo( B )> I also made a reload skill for Ammo(A) for now.\nEverything will be shown below:\nHere's how it works in Combat:\nThese are The Ammo Items:\nShooting Skills with Ammo Cost:\nReload Skill:\nClass With The Ammo Gauges:"
+    },
+    {
+      "post_id": "js-post-1526311",
+      "author": "rpgLord69",
+      "date": "2025-08-13T20:08:59+0900",
+      "body": "But how will you support multiple characters like that? If your max items is at 5 and actor A fires three times, then actor B can only fire two times. That's why I noted that what I posted above only works with one actor with the class. If you want multiple characters with that class, I think you need to change your system (and also rewrite parts of what I posted).\nEDIT:\nAnd did you get it to work (with 1 character)? I tested it and it seemed to work for me."
+    },
+    {
+      "post_id": "js-post-1526314",
+      "author": "Canned_Dinosaur",
+      "date": "2025-08-13T20:38:10+0900",
+      "body": "It looks good so far and from the looks of it you've also filled in the cost processing stuff. So just to be clear you haven't tried\n@rpgLord69\n's solution to replace the gauge with icons, right?\nAlso\n@rpgLord69\nfunny how you suggest to do it with icons, I was thinking of keeping the gauge intact and overlaying it with a rectangular graphic with five holes in it."
+    },
+    {
+      "post_id": "js-post-1526325",
+      "author": "Anohe1",
+      "date": "2025-08-13T21:52:21+0900",
+      "body": "Ok so I tried a Few things and It worked, It worked exactly like what I had in mind, Thank you\nrpgLord69\nand\nCanned_Dinosaur\n.\nrpgLord69 said:\nBut how will you support multiple characters like that? If your max items is at 5 and actor A fires three times, then actor B can only fire two times. That's why I noted that what I posted above only works with one actor with the class. If you want multiple characters with that class, I think you need to change your system (and also rewrite parts of what I posted).\nEDIT:\nAnd did you get it to work (with 1 character)? I tested it and it seemed to work for me.\nClick to expand...\nI think I will stick to one Character. I'll have to make duplicate items/Skills in the database if I want another character to use the class Too, Tha'ts too much work."
+    },
+    {
+      "post_id": "js-post-1526329",
+      "author": "Anohe1",
+      "date": "2025-08-13T21:56:55+0900",
+      "body": "Canned_Dinosaur said:\nIt looks good so far and from the looks of it you've also filled in the cost processing stuff. So just to be clear you haven't tried\n@rpgLord69\n's solution to replace the gauge with icons, right?\nAlso\n@rpgLord69\nfunny how you suggest to do it with icons, I was thinking of keeping the gauge intact and overlaying it with a rectangular graphic with five holes in it.\nView attachment 347315\nClick to expand...\nI tried it and made some modification in my game system.\nHere's how it looks like now:\nI'll find a way to make Icons look bigger or change them back Maybe\nEdit: Oh God the video Quality is so bad.....\nAnyway here are some screenshots.\nI really hope others who need this will find this post."
+    },
+    {
+      "post_id": "js-post-1526330",
+      "author": "Puppet Knight",
+      "date": "2025-08-13T22:14:33+0900",
+      "body": "Alternative option for the original request\nMZ - Replace HP MP TP text with Icons\nAfternoon All,  Anyone know a clean way to replace the the Text of Basic Gauges (HP, MP, TP) with icons? I'd like a solution that scales across all windows where this.placeGauge or this.placeBasicGauges is being used.   Effectively Going from:    To:     Any help is appreciated, if there's a...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1526331",
+      "author": "rpgLord69",
+      "date": "2025-08-13T22:37:12+0900",
+      "body": "@Puppet Knight\nThey didn't want to replace the label, but they wanted the resource to be indicated with icons.\n@Canned_Dinosaur\nYeah, no doubt you could have done it in several ways. I just use and modify what's available, because as I like to state, I'm not a coder, and my understanding of the sprite/bitmap **** is lacking. And looking at the last post of OP's finished result, doing that with a hamburger would have been difficult\n@Anohe1\nOk, cool that it works how you want now!"
+    },
+    {
+      "post_id": "js-post-1526332",
+      "author": "Anohe1",
+      "date": "2025-08-13T22:41:39+0900",
+      "body": "@rpgLord69\nYou aren't a coder!? Surely You're Joking. WIth everything you did I wouldn't call your knowledge Lacking. You're My God at this point."
+    },
+    {
+      "post_id": "js-post-1526333",
+      "author": "Canned_Dinosaur",
+      "date": "2025-08-13T22:52:07+0900",
+      "body": "rpgLord69 said:\nYeah, no doubt you could have done it in several ways.\nClick to expand...\nIt's very creative, seriously. Might steal the idea for my own project (and thus my journey down scope creep began).\n@Anohe1\nthat looks much much better than I had expected it would be. Bravo!"
+    },
+    {
+      "post_id": "js-post-1526384",
+      "author": "Angy1910",
+      "date": "2025-08-14T09:18:47+0900",
+      "body": "Hi! I also wanted the MP to show an image for every MP instead of having the bar. I'm trying to follow this thread to understand how to do this but I don't understand which solution you used. What plugin do I need? If it's a VisuStella one, are there are any alternatives? :0\nHere is another reference for what I'm trying to achieve. The MP are points as you can see, instead of a bar."
+    },
+    {
+      "post_id": "js-post-1526385",
+      "author": "Anohe1",
+      "date": "2025-08-14T09:25:23+0900",
+      "body": "Angy1910 said:\nHi! I also wanted the MP to show an image for every MP instead of having the bar. I'm trying to follow this thread to understand how to do this but I don't understand which solution you used. What plugin do I need? If it's a VisuStella one, are there are any alternatives? :0\nHere is another reference for what I'm trying to achieve. The MP are points as you can see, instead of a bar.\nView attachment 347349\nClick to expand...\nFirst You need Visustella SkillsStatesCore.\nI don't know much about how to tweak rpglord69 script to fit your need but He and Canned_Dinosaur surely would be able to help you. I'l try things on my end in the morning."
+    },
+    {
+      "post_id": "js-post-1526414",
+      "author": "Canned_Dinosaur",
+      "date": "2025-08-14T15:17:18+0900",
+      "body": "Angy1910 said:\nIf it's a VisuStella one, are there are any alternatives? :0\nClick to expand...\nIf you want a non-Visustella solution it's probably better to open your own thread. If Visustella is fine, sink your teeth into the documentation for cost calculation, as you'll need to do that before you can do fancy things with gauges.\nAnohe1 said:\nI think I will stick to one Character.\nClick to expand...\nI think multiple characters is doable by having bullets in the gun as a variable, and a stock of bullets as an item (with no maximum). Cost processing will reference the variable, and reload will fill the variable to max and subtract a corresponding amount of bullets from your inventory. Can get quite complex if you want to keep track of bullets\nper\nfirearm (as in, you can have multiple pistols in your inventory equippable by anyone)."
+    },
+    {
+      "post_id": "js-post-1526422",
+      "author": "rpgLord69",
+      "date": "2025-08-14T18:01:24+0900",
+      "body": "@Angy1910\nYeah Skill and States Core, Skill Cost Type settings. But MP is already set up there, so you just need to modify it. Remove the draw gauge stuff from there and add similar stuff there to what I posted on the previous page. But instead of checking for items, just loop from 1 to user.mp to add the icons. Make it change the line by adding to target y after every 5 or whatever icons. Also delete the other loop that was adding icons for empty chambers in the ammo system. You can also use the replace gauge notetag to get rid of the tp gauge (whilst still leaving more area on the box).\nThe only problem is that it might fit 2-3 rows (depending on your icon size), but even with the tp gauge set to 'none', it still cuts off somewhere around where it's supposed to be, so you can't use the whole area for your mp crystals. I tested it earlier and trying to resize the mp gauge bitmap height didn't seem to help with the cutoff. And like I said, I'm not an expert with those draw areas. But there are many people here who could probably answer how to claim the bottom area too for the mp gauge.\nIf you don't want to use VS, check the placeBasicGauges, placeGauge and Sprite_Gauge to check if you can use that same blt icon stuff from previous page when it draws your mp type gauge."
+    },
+    {
+      "post_id": "js-post-1526446",
+      "author": "Robro33",
+      "date": "2025-08-14T23:07:24+0900",
+      "body": "Angy1910 said:\nHi! I also wanted the MP to show an image for every MP instead of having the bar. I'm trying to follow this thread to understand how to do this but I don't understand which solution you used. What plugin do I need? If it's a VisuStella one, are there are any alternatives? :0\nHere is another reference for what I'm trying to achieve. The MP are points as you can see, instead of a bar.\nClick to expand...\nPlease refrain from hijacking threads belonging to other members. If you have an issue implementing a solution, create your own thread and refer to where you got it. Thank you."
+    }
+  ]
+}

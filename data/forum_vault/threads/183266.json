@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/does-anybody-know-any-plugin-that-allows-a-skill-to-apply-a-status-effect-on-a-condition.183266",
+  "title": "MV Does anybody know any plugin that allows a skill to apply a status effect on a condition?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:21:49.362440+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1553745",
+      "author": "ambr_",
+      "date": "2026-04-15T04:19:06+0900",
+      "body": "What I am trying to make is a \"Kick\" skill that applies the state \"Stun\" if it hits an enemy which has the state \"Guard\".\nI an new to RPG maker so I don't really know how to write in JavaScript, so if what I want requires any code, it would be much appreciated if I got help with that too."
+    },
+    {
+      "post_id": "js-post-1553747",
+      "author": "Solar_Flare",
+      "date": "2026-04-15T04:38:10+0900",
+      "body": "You could try Hime's\nEffect Conditions\n; it's a bit difficult to use, but it should be able to do it.\nSomething like this:\nCode:\n<effect condition: 1>\na.isStateAffected(2)\n</effect condition>"
+    },
+    {
+      "post_id": "js-post-1553752",
+      "author": "Zevia",
+      "date": "2026-04-15T06:47:48+0900",
+      "body": "Can use the damage formula, no Plugin necessary. Assuming Stun is state 11 and guard is state 2:\nCode:\nif (b.isStateAffected(2)) { b.addState(11); } a.atk - b.def\nWhich is just collapsing the following into a one-line statement:\nCode:\nif (b.isStateAffected(2)) {\n  b.addState(11);\n}\na.atk - b.def\nIn the damage formula, a is always representative of the skill's user and b is always representative of the target. So by checking\nb.isStateAffected(x)\n, you're checking if the target is affected by state x. Then\nb.addState(y)\napplies state y to the target if so.\nAs long as the last statement in your damage formula evaluates to a number, you can throw pretty much anything in there beforehand - though it will become admittedly very difficult to read the more you add."
+    }
+  ]
+}

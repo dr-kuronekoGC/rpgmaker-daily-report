@@ -1,0 +1,239 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/smarter-pathfinding-plugin.180004",
+  "title": "MV/MZ Smarter pathfinding plugin",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:21:47.376254+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1529382",
+      "author": "Solar_Flare",
+      "date": "2025-09-09T07:58:50+0900",
+      "body": "Following up on\nthis thread\n, I've begun work on a plugin to improve customizability of the pathfinding. Currently I'm focused on the pathfinding for touch/mouse movement, but it could theoretically be used for events too.\nI currently have the following customizations working:\nEasier for other plugins to substitute in custom behaviour\nAvoid damage floors unless there's no other path\nAvoid zigzagging on diagonal stairs using Cae_SlopeMove\nAvoid map transfer events unless you click directly on them\nBetter pathing around complex obstacles (by increasing the search limit)\nI'm currently working on detection of \"teleporters\", which are map transfer events that don't change the current map. This is proving to be especially hard, because I wanted to include ones placed on otherwise impassable spaces.\nI've\nattached\nthe current version, if anyone wants to play around with it. It's still a bit rough, so I'd prefer if you don't use it in a real project yet.\nIf anyone can think of other improvements for touch/mouse movement, feel free to say mention them. I'm sure there are quite a few things I haven't thought of."
+    },
+    {
+      "post_id": "js-post-1529594",
+      "author": "Solar_Flare",
+      "date": "2025-09-11T02:11:30+0900",
+      "body": "I have teleporters working now. If you click on a space that can only be reached by a teleporter, the player character will navigate to the teleporter entrance. It unfortunately still stops after teleporting, however; this is because pathfinding always stops if an event is triggered.\nOther things I'm contemplating:\nAn option to tag events as not interrupting pathfinding (so that the navigation will continue after the event has completed). This would be good for events that are supposed to just silently do something, like flipping a switch to toggle between bridge overpass and underpass. It could also be used for simple flavour text events, I suppose.\nAn option to tag events as damaging or obstacles, for the purposes of pathfinding. This would, for example, mean that spike events can be avoided just the same as damage floor would be. Tagging as obstacles would mean you can have an event that you can walk over, but it won't choose to step on it when pathfinding. (Not sure if that's useful.)\nSome way of understanding bridges. I think this might be extremely difficult though and not worth the effort. I think there are at least 3 ways bridges can be created – an event that flips between Below and Above Characters based on a switch; a tileset swap that flips certain tiles between star and regular passability; or the OverpassTile official plugin.\nAn option to avoid tiles based on region ID or terrain tags. I'm including terrain tags here because I used them to create state-afflicting terrains in one of my unreleased plugins. This would be a per-map (or maybe even per-tileset) option rather than a global option."
+    },
+    {
+      "post_id": "js-post-1529652",
+      "author": "ShadowDragon",
+      "date": "2025-09-11T17:18:12+0900",
+      "body": "Solar_Flare said:\nIt unfortunately still stops after teleporting, however; this is because pathfinding always stops if an event is triggered.\nClick to expand...\nthis is true, but if you use\nMac15001900 RunNearbyEvents\n, than you can set a tag\nto avoid this if there is an event.\nI use this as well for a different mechanic if you click, the sensor stops movement,\nbut with the plugin linked and a tag you specified let the player walking on\nplayer touch.\nso you can see if this works, as if it does, you may include this or let them know\nso the player can keep walking\n.\nNice plugin though for smarter pathfinding."
+    },
+    {
+      "post_id": "js-post-1529676",
+      "author": "Solar_Flare",
+      "date": "2025-09-11T22:28:48+0900",
+      "body": "ShadowDragon said:\nthis is true, but if you use\nMac15001900 RunNearbyEvents\n, than you can set a tag\nto avoid this if there is an event.\nClick to expand...\nReally? I don't see anything like that in that plugin –\n<NoTrigger>\nmeans an event can't be triggered at all, not that it'll trigger but then let pathfinding continue…\nThat said, the plugin looks very useful, as I was recently struggling with getting something similar to work in my project for events whose images are larger than one tile."
+    },
+    {
+      "post_id": "js-post-1529681",
+      "author": "ShadowDragon",
+      "date": "2025-09-11T23:27:06+0900",
+      "body": "this parameter:  Force passthrough tag\nlet the player keep walking, as player touch (or sensor) stops the player\nand run the event.\nso if you have tinting and have a conditional branch => player stops\nbut with that tag, it keeps working.\nI use it with regions for tinting in this case.\nso if you have a teleport => player touch => teleport => it may continue to walk\nor dash afterwards.\nas teleport are events, its worth a shot"
+    },
+    {
+      "post_id": "js-post-1529694",
+      "author": "Solar_Flare",
+      "date": "2025-09-12T01:49:56+0900",
+      "body": "Oddly enough, it both works and doesn't. That is to say, I have two almost identical events, and\n<NoStop>\nworks on one but not the other."
+    },
+    {
+      "post_id": "js-post-1529695",
+      "author": "ShadowDragon",
+      "date": "2025-09-12T01:55:39+0900",
+      "body": "if its back and forth, than its weird.\nso if small distance isn't enough or not triggered,\nit may or may not be a bug in the plugin.\nI do use it on some multiple event with similar conditions.\npath finding might be different in this case.\nif same maps works on teleport forwards but not backwards,\nmaybe something is interfering.\nI don't get the code really when looking through so I cannot really\nhelp on it or how it calculates x/y from tiles and such.\nkeyboard part can work, mouse and touch is different on navigating,\nbut if you are able to figure it out to make it work nicely, you get a\nreally nice smart path finding for mouse/touch support\nso keep up the good work, hopefully you can get it to work or with\nsome help to link them clean =)"
+    },
+    {
+      "post_id": "js-post-1529701",
+      "author": "Solar_Flare",
+      "date": "2025-09-12T03:14:03+0900",
+      "body": "I figured out why it worked on one event but not the other. The event that works is Below Characters, and the event that doesn't is Same as Characters. From a player's point of view, you can walk into both of them; but the game considers the one impassable, and so Mac's plugin clears the destination when interacting with it even if\n<NoStop>\nis present."
+    },
+    {
+      "post_id": "js-post-1529707",
+      "author": "ShadowDragon",
+      "date": "2025-09-12T04:19:18+0900",
+      "body": "I hadn't that problem, but if it does, it may be a reason, so you can\nwork around it if it helps improve touch/mouse support in some way.\nI might or may not use the plugin, but it is definitely interesting though.\nspecially if they use mouse for movement and/or navigating the menu.\nI keep an eye out, hope you can make it work smoothly =)"
+    },
+    {
+      "post_id": "js-post-1531963",
+      "author": "Solar_Flare",
+      "date": "2025-09-30T02:15:17+0900",
+      "body": "Solar_Flare said:\nAn option to avoid tiles based on region ID or terrain tags. I'm including terrain tags here because I used them to create state-afflicting terrains in one of my unreleased plugins. This would be a per-map (or maybe even per-tileset) option rather than a global option.\nClick to expand...\nThis is working now, along with parameters to customize the other avoidance features. I also added avoidance of ladders (because it was trivial) but left it disabled by default.\nI'm now trying to find a way to handle pathing both under and over bridges."
+    },
+    {
+      "post_id": "js-post-1532054",
+      "author": "Solar_Flare",
+      "date": "2025-10-01T05:39:55+0900",
+      "body": "Solar_Flare said:\nSome way of understanding bridges. I think this might be extremely difficult though and not worth the effort. I think there are at least 3 ways bridges can be created – an event that flips between Below and Above Characters based on a switch; a tileset swap that flips certain tiles between star and regular passability; or the OverpassTile official plugin.\nClick to expand...\nThis is now working! I had to adjust the pathfinding algorithm to add a 3rd coordinate, since it used the coordinates as a key to identify the tile, but it works perfectly on one of my own maps that has a lot of bridge events (as long as the search limit is increased), and I also tested it with tileset swaps and the OverpassTile plugin – that seems to work as well.\nI think I'd say this current version is ready to be tried out in real projects, if people want to experiment with it. Consider it to have the same terms as my miscellaneous plugin thread, with the exception that I'd really appreciate being credited for this one, as it was somewhat tricky. I'll probably either add it to that thread later, or open a dedicated thread for it in the plugin releases forum (not sure which yet).\nI haven't yet gotten around to testing it in MZ. I'll do that eventually, but if someone gets to it before me, feel free to let me know how it goes."
+    },
+    {
+      "post_id": "js-post-1543641",
+      "author": "Solar_Flare",
+      "date": "2026-01-10T00:24:43+0900",
+      "body": "I've made a few more changes. The big ones are:\nSeparate search limit for the airship. A high search limit causes lags on wide open maps, but to the airship, all maps are wide open, so it should generally use a lower limit than other things.\nCustomize search limit on specific maps, or on all maps using a specific tileset. If most of your maps are wide open but you have three maps that are maze-like, you may want to use a much higher limit on just those three maps.\nWhen you click on a moving event, the pathfinding can now dynamically track that event, rather than just pathing to the location it was on when you clicked it.\nThe calculation of path costs for a tile has been changed to sum up all relevant factors, rather than using an arbitrary priority system to select one factor.\nThere may be a few more that I've forgotten. I haven't yet tested it in MZ however."
+    },
+    {
+      "post_id": "js-post-1555164",
+      "author": "drylilac",
+      "date": "2026-05-02T23:45:40+0900",
+      "body": "Solar_Flare said:\nI've made a few more changes. The big ones are:\nSeparate search limit for the airship. A high search limit causes lags on wide open maps, but to the airship, all maps are wide open, so it should generally use a lower limit than other things.\nCustomize search limit on specific maps, or on all maps using a specific tileset. If most of your maps are wide open but you have three maps that are maze-like, you may want to use a much higher limit on just those three maps.\nWhen you click on a moving event, the pathfinding can now dynamically track that event, rather than just pathing to the location it was on when you clicked it.\nThe calculation of path costs for a tile has been changed to sum up all relevant factors, rather than using an arbitrary priority system to select one factor.\nThere may be a few more that I've forgotten. I haven't yet tested it in MZ however.\nClick to expand...\nMay I use this for a GameJam and credit you? Just asking for safety. Thanks!"
+    },
+    {
+      "post_id": "js-post-1555174",
+      "author": "Solar_Flare",
+      "date": "2026-05-03T01:22:12+0900",
+      "body": "Go for it!\nHere's the latest version. Feel free to use either this or the previous version, but this version does have a lot of performance improvements.\nRough changelog:\nSupport setting directional path costs on events (eg, it can cost more to enter from above than from below, or you could have one-way passages – IIRC I used it for a slippery stairway where you can go down but not up)\nImprove performance by caching the path found, instead of recalculating it with every step. It still recalculates it if it finds the next step to be impossible (which could happen, for example, because another moving event happened to get in the way, or because you triggered a PathThru event that altered another tile's passability).\nThe mechanism to track moving events now tries very hard not to trigger on events that don't move, including those that have an autonomous move route but don't have actual move commands in the route. It counts script commands as movement (because they could be anything and there's no easy way to tell).\nSupport for the MZ version of the OverpassTile plugin. This is untested though.\nSome tweaks to make bridge detection work for events – that is to say, if you use the pathfinding for an event (rather than the player), they can now cross bridges."
+    },
+    {
+      "post_id": "js-post-1555213",
+      "author": "drylilac",
+      "date": "2026-05-03T04:04:24+0900",
+      "body": "Solar_Flare said:\nGo for it!\nHere's the latest version. Feel free to use either this or the previous version, but this version does have a lot of performance improvements.\nRough changelog:\nSupport setting directional path costs on events (eg, it can cost more to enter from above than from below, or you could have one-way passages – IIRC I used it for a slippery stairway where you can go down but not up)\nImprove performance by caching the path found, instead of recalculating it with every step. It still recalculates it if it finds the next step to be impossible (which could happen, for example, because another moving event happened to get in the way, or because you triggered a PathThru event that altered another tile's passability).\nThe mechanism to track moving events now tries very hard not to trigger on events that don't move, including those that have an autonomous move route but don't have actual move commands in the route. It counts script commands as movement (because they could be anything and there's no easy way to tell).\nSupport for the MZ version of the OverpassTile plugin. This is untested though.\nSome tweaks to make bridge detection work for events – that is to say, if you use the pathfinding for an event (rather than the player), they can now cross bridges.\nClick to expand...\nThanks!... Now I just gotta figure out how to put it on an enemy to chase the player around a giant map lol"
+    },
+    {
+      "post_id": "js-post-1555214",
+      "author": "Solar_Flare",
+      "date": "2026-05-03T04:27:38+0900",
+      "body": "The basic way would be to put something like this in a move route script:\nJavaScript:\nthis.moveStraight(this.findDirectionTo($gamePlayer.x, $gamePlayer.y))\nOr you could use a plugin that provides commands to do it a bit more easily, like Shaz's pathfinding plugin."
+    },
+    {
+      "post_id": "js-post-1555221",
+      "author": "drylilac",
+      "date": "2026-05-03T04:58:00+0900",
+      "body": "Solar_Flare said:\nThe basic way would be to put something like this in a move route script:\nJavaScript:\nthis.moveStraight(this.findDirectionTo($gamePlayer.x, $gamePlayer.y))\nOr you could use a plugin that provides commands to do it a bit more easily, like Shaz's pathfinding plugin.\nClick to expand...\nThe thing is, I already tried that and even separate values but the enemy just randomly stutters and stops near the player a lot of the time for whatever reason. I guess my map is just \"too big\" so it breaks automatically."
+    },
+    {
+      "post_id": "js-post-1555226",
+      "author": "Solar_Flare",
+      "date": "2026-05-03T05:23:33+0900",
+      "body": "If it's happening when the enemy is\nnear\nthe player, then I doubt it's related to the size of the map. Can you be more clear about what you mean by \"randomly stutters and stops\"?"
+    },
+    {
+      "post_id": "js-post-1555232",
+      "author": "drylilac",
+      "date": "2026-05-03T06:08:00+0900",
+      "body": "Solar_Flare said:\nIf it's happening when the enemy is\nnear\nthe player, then I doubt it's related to the size of the map. Can you be more clear about what you mean by \"randomly stutters and stops\"?\nClick to expand...\nI have two versions, one with autorun on a separate Event and one that triggers when the player steps on a field:\nI used\nTheOdie's\nscript with $gamePlayer coords and once with separate values:\n//This somewhat solves the \"getting stuck in place\" part but makes the enemies hug the walls\n$gameMap._events[this._eventId].moveStraight($gameMap._events[this._eventId].findDirectionTo(\n$gamePlayer.x,$gamePlayer.y\n));\n//This made the enemies slightly smarter but they tend to stop randomly right next to the player\n$gameMap._events[this._eventId].moveStraight($gameMap._events[this._eventId].findDirectionTo(\n$gameVariables.value(213),$gameVariables.value(214)\n));\nI hope the screenshots and videos suffice. Thank you!"
+    },
+    {
+      "post_id": "js-post-1555234",
+      "author": "Solar_Flare",
+      "date": "2026-05-03T07:20:51+0900",
+      "body": "Assuming you're putting this in a Move Route script command, there is no reason to do this:\nJavaScript:\n$gameMap._events[this._eventId]\nIt is completely equivalent to just\nthis\n, which is shorter. Even if for whatever reason you can't put it in a Move Route script command and must put it in a regular script command, the following is again 100% equivalent and also shorter:\nJavaScript:\nthis.character(0)\nThat wouldn't be the cause of your issue though (since, as I said, both forms are 100% equivalent). Note that the shortened forms are context-sensitive though – one\nonly\nworks in Move Route scripts and the other\nonly\nworks in event Script calls.\nOkay, now I'll try to describe what I think are the issues you're seeing, and you can confirm if I got it right.\nIn the first video, there are two occasions where I see the event is about to touch you but then you back away and the event in turn reverses direction as well. Also, there is one place where it looks like it got stuck at a corner, trying to go down (into the wall) when the correct choice would have been to go left. I'm not quite sure what would cause it to get stuck, unless there's a bug in the passability settings. Reversing direction could happen if it thought the route that appears longer is actually shorter.\nIn the second video, it appears that the event stops before reaching its goal on several occasions. In other words, it simply won't progress any further until the player moves again. This seems like it could be a bug in the system that caches the path to avoid expensive recomputation on every step – that cache is automatically cleared when the destination changes, so the fact that it comes unstuck when the player moves is a pretty good sign that this is the cause.\nDoes that seem correct? I see 3 separate issues – getting stuck at a corner, reversing direction when you back away, and stopping randomly. The first and third might be the same, but they might not be.\nFor the issue of seemingly choosing a \"longer\" path than optimal, I'd suggest checking a few things:\nWhat's the search limit? Did you change it or leave it at the default? This isn't that complicated of a map, so I wouldn't expect problems with the default search limit, but it's possible it could be related.\nCan you reproduce similar issues by moving the player with the mouse? Like, click in various locations and see whether the player chooses the shortest path to get there.\nAre there any invisible events on the map? If so, be sure to set them to THROUGH so the enemy can pass over them."
+    },
+    {
+      "post_id": "js-post-1555265",
+      "author": "ShadowDragon",
+      "date": "2026-05-03T18:13:01+0900",
+      "body": "drylilac said:\nThe thing is, I already tried that and even separate values but the enemy just randomly stutters and stops near the player a lot of the time for whatever reason. I guess my map is just \"too big\" so it breaks automatically.\nClick to expand...\na better way is using this (which I made a mini plugin out of it\nJavaScript:\nGame_Character.prototype.chasePlayer = function() {\n    $gameMap._events[this._eventId].moveStraight($gameMap._events[this._eventId].findDirectionTo($gamePlayer.x, $gamePlayer.y));\n};\n\nGame_Character.prototype.chasePlayerVariables = function(vx, vy) {\n    $gameMap._events[this._eventId].moveStraight($gameMap._events[this._eventId].findDirectionTo($gameVariables.value(vx), $gameVariables.value(vy)));\n};\nthis in a way the event wont get stuck as your gif.\nuse it like\nthis.chasePlayer()\nor\nthis.chasePlayerVariables(vx, vy)\nand your good to go, so it can work with this plugin without issue, save the above in a plugin.\nas its just a snippet I made, and shared in one of the threads as plugin."
+    },
+    {
+      "post_id": "js-post-1555299",
+      "author": "Solar_Flare",
+      "date": "2026-05-04T00:57:27+0900",
+      "body": "ShadowDragon said:\na better way is using this\nClick to expand...\nAgain: just use\nthis\nin place of\n$gameMap._events[this._eventId]\n.\nYou can certainly argue that making a mini plugin is a bit easier to understand, but it doesn't make any actual difference to the result."
+    },
+    {
+      "post_id": "js-post-1555301",
+      "author": "drylilac",
+      "date": "2026-05-04T01:13:48+0900",
+      "body": "Solar_Flare said:\nAssuming you're putting this in a Move Route script command, there is no reason to do this:\nJavaScript:\n$gameMap._events[this._eventId]\nIt is completely equivalent to just\nthis\n, which is shorter. Even if for whatever reason you can't put it in a Move Route script command and must put it in a regular script command, the following is again 100% equivalent and also shorter:\nJavaScript:\nthis.character(0)\nThat wouldn't be the cause of your issue though (since, as I said, both forms are 100% equivalent). Note that the shortened forms are context-sensitive though – one\nonly\nworks in Move Route scripts and the other\nonly\nworks in event Script calls.\nOkay, now I'll try to describe what I think are the issues you're seeing, and you can confirm if I got it right.\nIn the first video, there are two occasions where I see the event is about to touch you but then you back away and the event in turn reverses direction as well. Also, there is one place where it looks like it got stuck at a corner, trying to go down (into the wall) when the correct choice would have been to go left. I'm not quite sure what would cause it to get stuck, unless there's a bug in the passability settings. Reversing direction could happen if it thought the route that appears longer is actually shorter.\nIn the second video, it appears that the event stops before reaching its goal on several occasions. In other words, it simply won't progress any further until the player moves again. This seems like it could be a bug in the system that caches the path to avoid expensive recomputation on every step – that cache is automatically cleared when the destination changes, so the fact that it comes unstuck when the player moves is a pretty good sign that this is the cause.\nDoes that seem correct? I see 3 separate issues – getting stuck at a corner, reversing direction when you back away, and stopping randomly. The first and third might be the same, but they might not be.\nFor the issue of seemingly choosing a \"longer\" path than optimal, I'd suggest checking a few things:\nWhat's the search limit? Did you change it or leave it at the default? This isn't that complicated of a map, so I wouldn't expect problems with the default search limit, but it's possible it could be related.\nCan you reproduce similar issues by moving the player with the mouse? Like, click in various locations and see whether the player chooses the shortest path to get there.\nAre there any invisible events on the map? If so, be sure to set them to THROUGH so the enemy can pass over them.\nClick to expand...\nExcuse my sloppy coding, just learned RPG Maker like 1 month ago for a Game Jam nonetheless.\n-I didn't touch the search limit at all, should be the default\n-Mouse movements seem fine (without your plugin)\n-Any invisible events get erased, made them even passthrough\n-I tried using the newest version of your plugin and it throws back this error on startup:"
+    },
+    {
+      "post_id": "js-post-1555314",
+      "author": "ShadowDragon",
+      "date": "2026-05-04T03:04:54+0900",
+      "body": "that's because it probably require his/her core plugin, which has a recursive parser.\nso its a reason why it fails.\nso you need the core plugin found [\nhere MV\n]  or [\nhere MZ\n].\nit should work after you have its core."
+    },
+    {
+      "post_id": "js-post-1555316",
+      "author": "drylilac",
+      "date": "2026-05-04T03:08:39+0900",
+      "body": "ShadowDragon said:\nthat's because it probably require his/her core plugin, which has a recursive parser.\nso its a reason why it fails.\nso you need the core plugin found [\nhere MV\n]  or [\nhere MZ\n].\nit should work after you have its core.\nClick to expand...\nRookie mistake, gonna try again and will get back to you if I got something new"
+    },
+    {
+      "post_id": "js-post-1555324",
+      "author": "Solar_Flare",
+      "date": "2026-05-04T03:48:43+0900",
+      "body": "drylilac said:\n-Mouse movements seem fine (without your plugin)\nClick to expand...\nAre they fine with my plugin? That was the main point.\nFor what it's worth, SFG_Utils is the same for both MV and MZ."
+    },
+    {
+      "post_id": "js-post-1555342",
+      "author": "drylilac",
+      "date": "2026-05-04T09:14:37+0900",
+      "body": "Solar_Flare said:\nAre they fine with my plugin? That was the main point.\nFor what it's worth, SFG_Utils is the same for both MV and MZ.\nClick to expand...\nShadowDragon said:\nthat's because it probably require his/her core plugin, which has a recursive parser.\nso its a reason why it fails.\nso you need the core plugin found [\nhere MV\n]  or [\nhere MZ\n].\nit should work after you have its core.\nClick to expand...\nThe plugin works fine actually, clicked around and made another room with an event that moves randomly with a <PathChase> Note. The player always caught up and seemingly chose the shortest path\nBack to the enemy in my preview. I discovered that the enemy moves perfectly without any issues when the room is rectangular with nothing in it. Yet the moment there's even a hint of a obstacle or the room itself is slightly shaped it just starts breaking down and not working properly anymore"
+    },
+    {
+      "post_id": "js-post-1555346",
+      "author": "Solar_Flare",
+      "date": "2026-05-04T10:00:32+0900",
+      "body": "Okay. It's probably worth testing with a higher search limit. I don't know if the search limit could be the issue here, but it is one possibility."
+    },
+    {
+      "post_id": "js-post-1555361",
+      "author": "drylilac",
+      "date": "2026-05-04T16:42:21+0900",
+      "body": "ShadowDragon said:\na better way is using this (which I made a mini plugin out of it\nJavaScript:\nGame_Character.prototype.chasePlayer = function() {\n    $gameMap._events[this._eventId].moveStraight($gameMap._events[this._eventId].findDirectionTo($gamePlayer.x, $gamePlayer.y));\n};\n\nGame_Character.prototype.chasePlayerVariables = function(vx, vy) {\n    $gameMap._events[this._eventId].moveStraight($gameMap._events[this._eventId].findDirectionTo($gameVariables.value(vx), $gameVariables.value(vy)));\n};\nthis in a way the event wont get stuck as your gif.\nuse it like\nthis.chasePlayer()\nor\nthis.chasePlayerVariables(vx, vy)\nand your good to go, so it can work with this plugin without issue, save the above in a plugin.\nas its just a snippet I made, and shared in one of the threads as plugin.\nClick to expand...\nTried that as well and it just yielded the same result as my original issue lol"
+    },
+    {
+      "post_id": "js-post-1555363",
+      "author": "ShadowDragon",
+      "date": "2026-05-04T17:08:04+0900",
+      "body": "I didn't test it together as it works fine on its own.\nand there is a lot going on that change this plugin that should make it work without it.\nwhat the snippet does is basicly, walk around impassable tiles and take it.\nthis doesn't take account like \"lave\" tiles, or \"spikes\" if that is added to the SmarterPathfinding plugin.\nwhich walk around it.\nquestion is, do you have something on the map that could \"block\" this?\ndoes it work with only the path finding plugin or only this snippet?\nif it does, than one of your plugins may mess some things up.\nwhere is this plugin placed? on top or bottom or center?"
+    },
+    {
+      "post_id": "js-post-1555377",
+      "author": "drylilac",
+      "date": "2026-05-04T20:15:59+0900",
+      "body": "Solar_Flare said:\nOkay. It's probably worth testing with a higher search limit. I don't know if the search limit could be the issue here, but it is one possibility.\nClick to expand...\nYeah tried changing that as well and still same issue. Not knowing how I could properly implement your plugin in my context, I tried to add a <PathChase> note manually via script to the player... Nothing."
+    },
+    {
+      "post_id": "js-post-1555772",
+      "author": "Solar_Flare",
+      "date": "2026-05-08T09:45:09+0900",
+      "body": "I have a new version of the plugin with a couple of new things:\nAvoid a hitch when clicking on an accessible yet impassable tile. This means a tile that you can stand next to and interact with, but which itself is impassable. Note: This currently doesn't include tiles that are only accessible over a counter.\nSupport <SearchLimit> in individual events."
+    },
+    {
+      "post_id": "js-post-1556165",
+      "author": "drylilac",
+      "date": "2026-05-13T01:48:04+0900",
+      "body": "Solar_Flare said:\nI have a new version of the plugin with a couple of new things:\nAvoid a hitch when clicking on an accessible yet impassable tile. This means a tile that you can stand next to and interact with, but which itself is impassable. Note: This currently doesn't include tiles that are only accessible over a counter.\nSupport <SearchLimit> in individual events.\nClick to expand...\nUpdate on my problem, the basic method I used at the very start worked on another device's build flawlessly. Guess my RPG Maker version is just cursed"
+    },
+    {
+      "post_id": "js-post-1557317",
+      "author": "Skurge",
+      "date": "2026-05-24T01:56:23+0900",
+      "body": "Upon booting the game in play test I am met with these errors and I have no understanding what it's talking about."
+    },
+    {
+      "post_id": "js-post-1557318",
+      "author": "ShadowDragon",
+      "date": "2026-05-24T02:30:13+0900",
+      "body": "Skurge said:\nUpon booting the game in play test I am met with these errors and I have no understanding what it's talking about.\nView attachment 366882\nView attachment 366880\nView attachment 366881\nClick to expand...\nyou need his SFG Core plugin which has the utils. above it, as this is missing."
+    },
+    {
+      "post_id": "js-post-1557326",
+      "author": "Solar_Flare",
+      "date": "2026-05-24T03:10:16+0900",
+      "body": "You can find SFG_Utils in my main plugin thread (see my signature)."
+    },
+    {
+      "post_id": "js-post-1557677",
+      "author": "Solar_Flare",
+      "date": "2026-05-27T02:17:06+0900",
+      "body": "There's now a\nnew thread\nfor it in the releases section, so any further questions can go there."
+    },
+    {
+      "post_id": "js-post-1557686",
+      "author": "hiddenone",
+      "date": "2026-05-27T03:45:39+0900",
+      "body": "Closed at OP's request."
+    }
+  ]
+}
