@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/remember-command.182677",
+  "title": "VXAce Remember Command",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:43.777098+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1549298",
+      "author": "Axel_FireForged",
+      "date": "2026-03-01T13:41:01+0900",
+      "body": "In RPG Maker MV one of the coolest base additions for a player in my opinion was the game remembering what your previous command was and blowing through them very quickly when your selection button was held.\nIs there a script version of this for VXA?\nIf so can I have it!\n-Axel"
+    },
+    {
+      "post_id": "js-post-1549330",
+      "author": "Timtrack",
+      "date": "2026-03-01T20:05:14+0900",
+      "body": "Something like this?\nRuby:\n#==============================================================================\n# Game_Battler\n#==============================================================================\nclass Game_Battler\n  attr_accessor :last_battle_command\nend #Game_Battler\n\n#==============================================================================\n# Window_ActorCommand\n#==============================================================================\nclass Window_ActorCommand < Window_Command\n  #--------------------------------------------------------------------------\n  # overide method: call_ok_handler\n  #--------------------------------------------------------------------------\n  def call_ok_handler\n    @actor.last_battle_command = current_symbol if handle?(current_symbol)\n    super\n  end\n \n  #--------------------------------------------------------------------------\n  # override method: activate\n  #--------------------------------------------------------------------------\n  def activate\n    r = super\n    select_last\n    return r\n  end\n \n  #--------------------------------------------------------------------------\n  # new method: select_last\n  #--------------------------------------------------------------------------\n  def select_last\n    select(0)\n    return unless @actor\n    cmd = @actor.last_battle_command\n    select_symbol(cmd) if cmd\n    if cmd == :skill\n      skill = @actor.last_skill.object\n      select_ext(skill.stype_id) if skill\n    end\n  end\nend #Window_ActorCommand\nThe\nselect_last\ncode is basically the same as the method in MV's version."
+    },
+    {
+      "post_id": "js-post-1549377",
+      "author": "Axel_FireForged",
+      "date": "2026-03-02T05:31:06+0900",
+      "body": "Timtrack said:\nSomething like this?\nRuby:\n#==============================================================================\n# Game_Battler\n#==============================================================================\nclass Game_Battler\n  attr_accessor :last_battle_command\nend #Game_Battler\n\n#==============================================================================\n# Window_ActorCommand\n#==============================================================================\nclass Window_ActorCommand < Window_Command\n  #--------------------------------------------------------------------------\n  # overide method: call_ok_handler\n  #--------------------------------------------------------------------------\n  def call_ok_handler\n    @actor.last_battle_command = current_symbol if handle?(current_symbol)\n    super\n  end\n \n  #--------------------------------------------------------------------------\n  # override method: activate\n  #--------------------------------------------------------------------------\n  def activate\n    r = super\n    select_last\n    return r\n  end\n \n  #--------------------------------------------------------------------------\n  # new method: select_last\n  #--------------------------------------------------------------------------\n  def select_last\n    select(0)\n    return unless @actor\n    cmd = @actor.last_battle_command\n    select_symbol(cmd) if cmd\n    if cmd == :skill\n      skill = @actor.last_skill.object\n      select_ext(skill.stype_id) if skill\n    end\n  end\nend #Window_ActorCommand\nThe\nselect_last\ncode is basically the same as the method in MV's version.\nClick to expand...\nThat works beautifully, is there a way to implement the automash (it may be a yanfly thing, not sure. I just know it was in an MV game I did play) and make this togglable via switch? So I can throw that into my options menu.\n(Edit: It may be a better idea to have the automash as a 2nd script for compatibility)"
+    },
+    {
+      "post_id": "js-post-1549379",
+      "author": "Timtrack",
+      "date": "2026-03-02T05:43:01+0900",
+      "body": "Sorry, what do you mean by automash?"
+    },
+    {
+      "post_id": "js-post-1549382",
+      "author": "Axel_FireForged",
+      "date": "2026-03-02T05:52:08+0900",
+      "body": "Timtrack said:\nSorry, what do you mean by automash?\nClick to expand...\nWhen the action button is held for long enough, it automatically mashes/goes through all menus, which I just checked is something built into MV by default."
+    },
+    {
+      "post_id": "js-post-1549387",
+      "author": "Timtrack",
+      "date": "2026-03-02T06:41:17+0900",
+      "body": "I wrote a base script to have your automash.\nYou can replace the code from\nself.enabled?\nor just set the value of\nSWITCH_ID\nto fit your automash option.\nRuby:\n#==============================================================================\n# AutoMash\n#==============================================================================\nmodule AutoMash\n  #put a value above 0 to have a switch allow the automash when true\n  SWITCH_ID = 0 \n  \n  def self.enabled?(key)\n    SWITCH_ID > 0 ? $game_switches[SWITCH_ID] : true\n  end\nend #AutoMash\n\n#==============================================================================\n# Window_Selectable\n#==============================================================================\nclass Window_Selectable < Window_Base\n  #--------------------------------------------------------------------------\n  # overwrite method: process_handling\n  #--------------------------------------------------------------------------\n  def process_handling\n    return unless open? && active\n    return process_ok       if ok_enabled?        && check_input(:C)\n    return process_cancel   if cancel_enabled?    && check_input(:B)\n    return process_pagedown if handle?(:pagedown) && check_input(:R)\n    return process_pageup   if handle?(:pageup)   && check_input(:L)\n  end\n  \n  #--------------------------------------------------------------------------\n  # new method: check_input -> allow to switch between repeat or trigger based\n  # on module option\n  #--------------------------------------------------------------------------\n  def check_input(key)\n    AutoMash.enabled?(key) ? Input.repeat?(key) : Input.trigger?(key)\n  end\nend #Window_Selectable"
+    },
+    {
+      "post_id": "js-post-1549390",
+      "author": "Axel_FireForged",
+      "date": "2026-03-02T07:19:54+0900",
+      "body": "Timtrack said:\nI wrote a base script to have your automash.\nYou can replace the code from\nself.enabled?\nor just set the value of\nSWITCH_ID\nto fit your automash option.\nRuby:\n#==============================================================================\n# AutoMash\n#==============================================================================\nmodule AutoMash\n  #put a value above 0 to have a switch allow the automash when true\n  SWITCH_ID = 0\n \n  def self.enabled?(key)\n    SWITCH_ID > 0 ? $game_switches[SWITCH_ID] : true\n  end\nend #AutoMash\n\n#==============================================================================\n# Window_Selectable\n#==============================================================================\nclass Window_Selectable < Window_Base\n  #--------------------------------------------------------------------------\n  # overwrite method: process_handling\n  #--------------------------------------------------------------------------\n  def process_handling\n    return unless open? && active\n    return process_ok       if ok_enabled?        && check_input(:C)\n    return process_cancel   if cancel_enabled?    && check_input(:B)\n    return process_pagedown if handle?(:pagedown) && check_input(:R)\n    return process_pageup   if handle?(:pageup)   && check_input(:L)\n  end\n \n  #--------------------------------------------------------------------------\n  # new method: check_input ->\n[QUOTE=\"Timtrack, post: 1549330, member: 36313\"]\nSomething like this?\n\n[CODE=ruby]#==============================================================================\n# Game_Battler\n#==============================================================================\nclass Game_Battler\n  attr_accessor :last_battle_command\nend #Game_Battler\n\n#==============================================================================\n# Window_ActorCommand\n#==============================================================================\nclass Window_ActorCommand < Window_Command\n  #--------------------------------------------------------------------------\n  # overide method: call_ok_handler\n  #--------------------------------------------------------------------------\n  def call_ok_handler\n    @actor.last_battle_command = current_symbol if handle?(current_symbol)\n    super\n  end\n \n  #--------------------------------------------------------------------------\n  # override method: activate\n  #--------------------------------------------------------------------------\n  def activate\n    r = super\n    select_last\n    return r\n  end\n \n  #--------------------------------------------------------------------------\n  # new method: select_last\n  #--------------------------------------------------------------------------\n  def select_last\n    select(0)\n    return unless @actor\n    cmd = @actor.last_battle_command\n    select_symbol(cmd) if cmd\n    if cmd == :skill\n      skill = @actor.last_skill.object\n      select_ext(skill.stype_id) if skill\n    end\n  end\nend #Window_ActorCommand\nThe\nselect_last\ncode is basically the same as the method in MV's version.\nClick to expand...\nI replied to the wrong thing. Meant the first code thing.\nYou able to add a switch toggle to this one too? Tried adding a return if switch true but it didn’t reset skills position."
+    },
+    {
+      "post_id": "js-post-1549393",
+      "author": "Timtrack",
+      "date": "2026-03-02T07:41:49+0900",
+      "body": "You can replace the call to\nselect_last\nin the\nactivate\nmethod to have a switch requirement:\nRuby:\nmodule MemoryBattleCommand\n  SWITCH_ID = 0\n \n  def self.enabled?\n    SWITCH_ID <= 0 || $game_switches[SWITCH_ID]\n  end\nend #MemoryBattleCommand\n\n#==============================================================================\n# Game_Battler\n#==============================================================================\nclass Game_Battler\n  attr_accessor :last_battle_command\nend #Game_Battler\n\n#==============================================================================\n# Window_ActorCommand\n#==============================================================================\nclass Window_ActorCommand < Window_Command\n  #--------------------------------------------------------------------------\n  # overide method: call_ok_handler\n  #--------------------------------------------------------------------------\n  def call_ok_handler\n    @actor.last_battle_command = current_symbol if handle?(current_symbol)\n    super\n  end\n \n  #--------------------------------------------------------------------------\n  # override method: activate\n  #--------------------------------------------------------------------------\n  def activate\n    r = super\n    select_last if MemoryBattleCommand.enabled?\n    return r\n  end\n \n  #--------------------------------------------------------------------------\n  # new method: select_last\n  #--------------------------------------------------------------------------\n  def select_last\n    select(0)\n    return unless @actor\n    cmd = @actor.last_battle_command\n    select_symbol(cmd) if cmd\n    if cmd == :skill\n      skill = @actor.last_skill.object\n      select_ext(skill.stype_id) if skill\n    end\n  end\nend #Window_ActorCommand"
+    },
+    {
+      "post_id": "js-post-1549394",
+      "author": "Axel_FireForged",
+      "date": "2026-03-02T07:54:31+0900",
+      "body": "You’re amazing as always my man. I feel like this will speed up my game so much."
+    },
+    {
+      "post_id": "js-post-1549417",
+      "author": "Axel_FireForged",
+      "date": "2026-03-02T11:27:23+0900",
+      "body": "Did want to come back to add on. At least for me, the game would lag behind if the auto mashed button was held during Actor/Battler Actions so I added in something of a modification to hopefully help, my pc is very low end so, it was something I think I should add.\nCode:\ndef check_input(key)\n  AutoMash.enabled?(key) ? Input.repeat?(key) : Input.trigger?(key) unless BattleManager.in_turn?\nend"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-do-i-make-a-state-that-recovers-hp-upon-death-that-removed-upon-0-hp.181378",
+  "title": "How do I make a state that recovers HP upon death that removed upon 0 HP?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:51.591692+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1540056",
+      "author": "MoltresRider",
+      "date": "2025-12-11T00:58:32+0900",
+      "body": "I am working on an RPG where there is only one character you play as, no additional party members, and I want to make an item \"Phoenix\" that applies a status effect that when the character get down to 0 HP, they auto recover with 25% HP, and then the status effect is removed.\nI know that this is possible because an RPG Maker game called Lisa the Joyful has \"Second Wind\", which basically does the same thing, but as a spell. I want it as an item.\nNow I do not know what engine Lisa the Joyful is, but it is RPG Maker.\nI want to do something like this in VX Ace.\nIs there a way to do this?\nIf a script is required, feel free to move this thread into script requests, but I want to see if it is possible vanilla first.\nAny help would be appreciated. Please and Thank You very much!"
+    },
+    {
+      "post_id": "js-post-1540058",
+      "author": "Roninator2",
+      "date": "2025-12-11T01:09:42+0900",
+      "body": "Vanilla... I doubt it.\nThere are probably a few script that do this. Here is mine.\nSpoiler:\nHerb recover\nRuby:\n# ╔═══════════════════════════════════════════════╦════════════════════╗\n# ║ Title: Herb Recover After Defeat              ║  Version: 1.02b    ║\n# ║ Author: Roninator2                            ║                    ║\n# ╠═══════════════════════════════════════════════╬════════════════════╣\n# ║ Function:                                     ║   Date Created     ║\n# ║   Battle Manager                              ╠════════════════════╣\n# ║   Adjust process defeat                       ║    16 Dec 2020     ║\n# ╚═══════════════════════════════════════════════╩════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Requires: nil                                                      ║\n# ║                                                                    ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Brief Description:                                                 ║\n# ║       Come back to life if you have the herb                       ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Instructions:                                                      ║\n# ║   Simple script to adjust the proces defeat                        ║\n# ║   Party will recover when the party has the item indicated         ║\n# ║   If not then normal defeat is processed                           ║\n# ║   Only for when the party is able to lose                          ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Updates:                                                           ║\n# ║ 1.00 - 16 Dec 2020 - Script finished                               ║\n# ║ 1.01 - 16 Dec 2020 - change                                        ║\n# ║ 1.02 - 16 Dec 2020 - bug fix                                       ║\n# ║ 1.02a - 10 Dec 2025 - altered for no switch                        ║\n# ║ 1.02b - 18 Dec 2025 - Added sound file                             ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Credits and Thanks:                                                ║\n# ║   Roninator2                                                       ║\n# ║                                                                    ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Terms of use:                                                      ║\n# ║  Follow the original Authors terms of use where applicable         ║\n# ║    - When not made by me (Roninator2)                              ║\n# ║  Free for all uses in RPG Maker except nudity                      ║\n# ║  Anyone using this script in their project before these terms      ║\n# ║  were changed are allowed to use this script even if it conflicts  ║\n# ║  with these new terms. New terms effective 03 Apr 2024             ║\n# ║  No part of this code can be used with AI programs or tools        ║\n# ║  Credit must be given                                              ║\n# ╚════════════════════════════════════════════════════════════════════╝\n\nmodule R2_HERB_RECOVER\n    HERB_ITEM = 7     # item that will recovery party.\n    HEAL = 50         # specify value to recover health. % value\n             # \"ME Sound File\", Volume, Pitch\n    SOUND = RPG::ME.new(\"Item\", 80, 100)    # designed for ME\n    # change to SE.new if you want to use SE files\nend\n\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║                      End of editable region                        ║\n# ╚════════════════════════════════════════════════════════════════════╝\n\nmodule BattleManager\n\n  class << self\n    alias_method :process_herb, :process_defeat\n  end  \n\n  def self.process_defeat\n    @herb = \"#{$game_party.leader.name} used Medicinal Herbs, \\n#{R2_HERB_RECOVER::HEAL}%% HP was restored\"\n    if !@can_lose\n      if $game_party.has_item?($data_items[R2_HERB_RECOVER::HERB_ITEM], false)\n        R2_HERB_RECOVER::SOUND.play\n        $game_message.add(sprintf(@herb, $game_party.name))\n        wait_for_message\n        revive_battle_members\n        $game_party.battle_members.each do |actor|\n          actor.hp += [(actor.mhp * R2_HERB_RECOVER::HEAL).to_i / 100 - 1, actor.mhp].min\n        end\n        $game_party.lose_item($data_items[R2_HERB_RECOVER::HERB_ITEM], 1, false)\n        return false\n      else\n        process_herb\n      end\n    else\n      process_herb\n    end\n  end\nend"
+    },
+    {
+      "post_id": "js-post-1540059",
+      "author": "MoltresRider",
+      "date": "2025-12-11T01:22:17+0900",
+      "body": "What does the \"Switch ID\" do? And can I set it to 0 if I do not want to use switches? Or do I need to initialize a \"Switch On\" at game start for it?"
+    },
+    {
+      "post_id": "js-post-1540060",
+      "author": "kyonides",
+      "date": "2025-12-11T01:57:33+0900",
+      "body": "Actually, the custom script would be as easy to make as checking the given state ID before all states are removed by applying the death state. Then after removing states check if the state is no longer listed, and boom! Apply the 25% revitalia effect at once."
+    },
+    {
+      "post_id": "js-post-1540061",
+      "author": "Another Fen",
+      "date": "2025-12-11T02:34:51+0900",
+      "body": "Especially if you only have one actor, you could make a troop event that triggers when your actors HP drop to 0% (you can use Span: Moment as long as you only have one actor), which would then call a common event where you can process the healing.\nYou would have to copy that event into each of your troops, but once you have done so you only need to edit the common event if you want to make changes to the state.\nIf you have multiple actors and don't want to create a troop event page for each, you can instead update the state by calling a \"On Action End\" common event as an effect in each skill/item (if a skill/item already calls another common event, that event has to call the \"On Action End\" event instead). Although this would also cause a 2 frame delay on each action.\nEdit\n: Assuming your Phoenix state has a \"State Resist: Death\" feature."
+    },
+    {
+      "post_id": "js-post-1540070",
+      "author": "Roninator2",
+      "date": "2025-12-11T04:49:19+0900",
+      "body": "MoltresRider said:\nWhat does the \"Switch ID\" do? And can I set it to 0 if I do not want to use switches? Or do I need to initialize a \"Switch On\" at game start for it?\nClick to expand...\nchanged the script above. No switch used"
+    },
+    {
+      "post_id": "js-post-1541050",
+      "author": "MoltresRider",
+      "date": "2025-12-19T07:30:39+0900",
+      "body": "Could you make it so that an animation or at least a sound effect plays upon being resurrected from death with this script?\nThat would be awesome.\nPlease and Thank You very much."
+    },
+    {
+      "post_id": "js-post-1541083",
+      "author": "Roninator2",
+      "date": "2025-12-19T11:55:49+0900",
+      "body": "MoltresRider said:\nsound effect plays\nClick to expand...\nDone. code above changed. Should work, but I didn't test."
+    }
+  ]
+}

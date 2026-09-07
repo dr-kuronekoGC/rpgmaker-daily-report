@@ -1,0 +1,413 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/eli-custom-parameters-add-new-parameters-to-actors-and-enemies.136232",
+  "title": "Eli Custom Parameters - Add new parameters to actors and enemies!",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:18.385475+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1185322",
+      "author": "Eliaquim",
+      "date": "2021-05-06T02:00:50+0900",
+      "body": "Author: Hakuen Studio\n​\nIntroduction\nIf you ever felt that you need more than 8 parameters, that the default parameters are not enough, that is your chance!\nThis plugin lets you add as many new parameters as you want!\n*It's compatible with\nEli_ClassCurves.js\nFeatures\n● Add new custom parameters to actors and enemies!\n● Manipulate these parameters with note tags and script calls!\n● Add buffs, debuffs, and grow effect to these parameters!\nHow to use\nSpoiler\n♦ PLUGIN PARAMETERS ♦\nGo to the plugin parameter \"New parameters\" and add as many parameters as you want.\nShortName → This will be the one that you will use to reference script calls and note tags.\nFullName → This will be the full name of the parameters. That can appear on battle log etc.\nHP/MP/TP type → That will decide if the parameter will work like HP/MP/TP.\nAfter that, you can choose the buff and Debuff icon range for these parameters.\nThey work exactly like the default ones. They will get an icon in the icon sheet and will follow a range.\nWith the exception that the range must follow how many custom parameters you have added.\nThe default works like that:\nYou have 8 default parameters: hp, mp, atk... etc.\nThe buff icons for these parameters go from the icon index 32 to 48.\nThis means the index 32 will be the Hp Buff level 1,\n33 Hp buff level 2. And so on.\nThe same for Debuff, which takes the icon index 48 to 62.\n48 Hp Debuff level 1\n49 Hp Debuff level 2.\nSo you have to follow the same logic for the Buff and Debuff icon for these new parameters.\n♦ NOTE TAGS ♦\nYou can use the following note tags on the item and skill note fields to add effects to the new parameters:\n<AddCBuff: paramId/shortName:turns >\n<RemoveCBuff: paramId/shortName >\n<AddCDebuff: paramId/shortName:turns >\n<RemoveCDebuff: paramId/shortName >\n<GrowC\naramId/shortName:value >\nIf you want to add more than one parameter, separate each one with a comma \",\".\nTo add new parameter changes for the equipment and class, you can use the following note tag on the weapon, armor, or class note fields:\n<CParams\naramId/shortName:value, paramId/shortName:value>\nYou can either use the paramId or the shortName of the new parameters.\nThe id will start at 0. This means that the new parameter id 0 will be the first one you have created.\nExample:\n<CParams: crm:23, 1:37> → Will add 23 to the crm parameter, and 37 for the new parameter id 1.\nOptionally, you can also use the plugin parameter templates for that:\n<CParams: TemplateName>\nFor both ways, if you don't set a specific parameter, it will be equal to 0.\n***ATTENTION! All notes are case sensitive!***\n♦ SCRIPT CALLS ♦\nYou can use them with actors or enemies:\n$gameActors.actor(ID).[script call] => For actors.\n$gameParty.members()[index].[script call] =>  For Party Members.\n$gameTroop.members()[index].[script call] => For Enemies.\n.cparamBase(paramId)\n.cparamPlus(paramId)\n.cparam(paramId)\n.addCParam(paramId, value)\nExample:\n$gameParty.members()[0].cparam(0) → Will return the value of the first Custom Parameter.\nYou can also reference them using the object name directly, which is the short name:\n$gameParty.members()[0].crm → Will return the crm(charm) value\nFor those parameters that work like HP/MP/TP, you will reference the current value of them with the script calls above.\nBut to get the max value, you can use the prefix \"max\" before the shortname:\n$gameParty.members()[0].maxlp → Will return the max lp value\nTo change parameter value, like changing the hp and not the mhp, you can\nuse the following:\n$gameParty.members()[0]._rep += value\n$gameParty.members()[0].refreshCustomParameter(paramId/shortName)\nNOTE¹: The recover all event command will also recover the custom parameters that are HP-like.\nNOTE²: If you are using MZ, you can use the plugin commands.\nScreenshots\nSpoiler\nTerms of Use\nUpdate Log\nHakuen Studio Custom Parameters for RPG Maker MZ by Hakuen Studio\nAdd new custom parameters to battlers (Actor and Enemy)!\nhakuenstudio.itch.io"
+    },
+    {
+      "post_id": "js-post-1185332",
+      "author": "ShadowDragon",
+      "date": "2021-05-06T02:32:41+0900",
+      "body": "1 question though, can this overwrite the current HP,MP,TP or\nalter MP/TP to energy for example? if so, it would be very helpfull\nor params to variable value?"
+    },
+    {
+      "post_id": "js-post-1185333",
+      "author": "ScorchedGround",
+      "date": "2021-05-06T02:36:03+0900",
+      "body": "Great plugin, thanks for your work.\nBut I also have a question:\nI might have missed something, but how do you assign enemies a custom parameter value?\nCan I just do that in the database via notetag or do I have to use script calls IN battle?"
+    },
+    {
+      "post_id": "js-post-1185372",
+      "author": "Eliaquim",
+      "date": "2021-05-06T05:09:22+0900",
+      "body": "ShadowDragon said:\n1 question though, can this overwrite the current HP,MP,TP or\nalter MP/TP to energy for example? if so, it would be very helpfull\nor params to variable value?\nClick to expand...\nHi\n@ShadowDragon\n!\nThe plugin is about to add new parameters to the engine, not changing the current ones.\nYou can create an energy parameter, but it will not replace HP/MP/TP ones.\nIf you want to add a parameter to a variable value, you can use the current event command to assign it to the variables(use script fields for the custom parameter)\nScorchedGround said:\nGreat plugin, thanks for your work.\nBut I also have a question:\nI might have missed something, but how do you assign enemies a custom parameter value?\nCan I just do that in the database via notetag or do I have to use script calls IN battle?\nClick to expand...\nHi\n@ScorchedGround\n!\nWell, in fact, that's me that was missing something xD\nI get used to my Class Curve plugin, but I forgot that not everyone is using that.\nSo, in the older version you will have to put them via script call on the troop event.\nBut can be pretty tedious to set initial values on every battle...\nSo I add a way for the note tag <CParams: > to work on the enemy note field too.\nBut that only works without Eli Class Curves. With Eli Class Curves you have to add via the plugin parameter.\nVersion 1.1.1 - 05/05/2021\n- Added note tag feature to enemy note field too."
+    },
+    {
+      "post_id": "js-post-1185378",
+      "author": "ScorchedGround",
+      "date": "2021-05-06T05:31:40+0900",
+      "body": "@Eliaquim\nThat's great, thank you very much!"
+    },
+    {
+      "post_id": "js-post-1185576",
+      "author": "Elmo_Cosquillas",
+      "date": "2021-05-07T01:58:34+0900",
+      "body": "One quick question, if i add a parameter for example strength with the \"str\" abreviation, how can i use it on damage formulas? jut like the old parameters? for example \"a.atk * a.str\"?"
+    },
+    {
+      "post_id": "js-post-1185610",
+      "author": "Eliaquim",
+      "date": "2021-05-07T04:08:03+0900",
+      "body": "Elmo_Cosquillas said:\nOne quick question, if i add a parameter for example strength with the \"str\" abreviation, how can i use it on damage formulas? jut like the old parameters? for example \"a.atk * a.str\"?\nClick to expand...\nExactly!\nJust like you use the old parameters. The abbreviation creates an object on the actor/enemy to refer to the custom parameter.\nso, if make a parameter with the abbreviation \"str\", you can reference this parameter in any script call:\nthis.str\nIn damage formulas:\na.str => user strength\nb.str => target strength"
+    },
+    {
+      "post_id": "js-post-1185736",
+      "author": "Xeri",
+      "date": "2021-05-07T15:35:33+0900",
+      "body": "I have a question too. How do you add the custom parameters to your class curves plugin? I went to add one of the ones I've made in class curves, but the help text for the name field says the name is for visual purposes only and does nothing in the code."
+    },
+    {
+      "post_id": "js-post-1185742",
+      "author": "RK DracoRoy",
+      "date": "2021-05-07T16:11:12+0900",
+      "body": "XVoid said:\nI have a question too. How do you add the custom parameters to your class curves plugin? I went to add one of the ones I've made in class curves, but the help text for the name field says the name is for visual purposes only and does nothing in the code.\nClick to expand...\nThe naming part was likely there to make it easier to know which custom stat you're using and where things won't get mixed up, just like on the regular stats, you see their names. Think of it as adding a note reference where you won't forget.\nIf you made the first custom stat in the CustomParameter plugin named \"Skill\" and had it abbreviated as \"skl\", you would then go to ClassCurves under \"Custom\" and name that first custom stat \"Skill\" to keep track of it."
+    },
+    {
+      "post_id": "js-post-1185801",
+      "author": "Xeri",
+      "date": "2021-05-07T22:51:11+0900",
+      "body": "Another question: is there any way to positively or negatively affect custom parameters using states? I kinda need that for my project, lol."
+    },
+    {
+      "post_id": "js-post-1185846",
+      "author": "RK DracoRoy",
+      "date": "2021-05-08T02:45:04+0900",
+      "body": "XVoid said:\nAnother question: is there any way to positively or negatively affect custom parameters using states? I kinda need that for my project, lol.\nClick to expand...\nEli Dynamic Parameters - Change parameter values dynamically with states and equipment note tags!\nAuthor: Hakuen Studio  Introduction  If the actor has state id X he gains a +10 attack boost! Easy?  But if the actor has class id X and is equipped with weapon Id X and also has state id X, then he will have a +50 ATK boost! Not too complicated?  If an actor has a state id X, and his level is...\nforums.rpgmakerweb.com\nIt does more than just custom stats. But if you want to use negatives, you have to put the minus beside the number on the notetag."
+    },
+    {
+      "post_id": "js-post-1185885",
+      "author": "Sword_of_Dusk",
+      "date": "2021-05-08T04:42:04+0900",
+      "body": "Probably a longshot, but does this work with Yanfly Status Menu Core?"
+    },
+    {
+      "post_id": "js-post-1186042",
+      "author": "Eliaquim",
+      "date": "2021-05-08T14:51:45+0900",
+      "body": "Sword_of_Dusk said:\nProbably a longshot, but does this work with Yanfly Status Menu Core\nClick to expand...\nYes it works"
+    },
+    {
+      "post_id": "js-post-1186080",
+      "author": "Sword_of_Dusk",
+      "date": "2021-05-08T19:54:31+0900",
+      "body": "Eliaquim said:\nYes it works\nClick to expand...\nWhat?\nYou have just made my day."
+    },
+    {
+      "post_id": "js-post-1187362",
+      "author": "Elmo_Cosquillas",
+      "date": "2021-05-13T14:42:08+0900",
+      "body": "for some reason it stop working today when i use it with custom state damage\nCustom State Damage\nHey guys, I made a script that let you use notetags to determine the damage/regen done by a state (instead of being always a percentage of the target's max hp/mp/tp).   Link: http://www.mediafire.com/download/nj5x5r6wjq4of42/CustomStateDamage.js (fixed state removal bug & save bug)    Guide on...\nforums.rpgmakerweb.com\ni have no idea what could have happen. i think i updated the book core. still it doesnt make sense, well i can just use atk and magic attak, but it destroy my con stat now."
+    },
+    {
+      "post_id": "js-post-1187365",
+      "author": "Eliaquim",
+      "date": "2021-05-13T14:56:14+0900",
+      "body": "Elmo_Cosquillas said:\nfor some reason it stop working today when i use it with custom state damage\nCustom State Damage\nHey guys, I made a script that let you use notetags to determine the damage/regen done by a state (instead of being always a percentage of the target's max hp/mp/tp).   Link: http://www.mediafire.com/download/nj5x5r6wjq4of42/CustomStateDamage.js (fixed state removal bug & save bug)    Guide on...\nforums.rpgmakerweb.com\ni have no idea what could have happen. i think i updated the book core. still it doesnt make sense, well i can just use atk and magic attak, but it destroy my con stat now.\nClick to expand...\nHi there!\nThis plugin overrides 4 functions of the default MV code. Maybe that is the problem.\nI don't know if they are compatible.\nIf you remove the custom state damage plugin, the custom parameter works again?"
+    },
+    {
+      "post_id": "js-post-1187441",
+      "author": "Elmo_Cosquillas",
+      "date": "2021-05-13T23:11:35+0900",
+      "body": "ok i finally solve it, it was not incompatibility, it was my dumb brain loading custom parameters after enemy class. so the parameters were in the skill formulas, but not in the other plugin formulas, because for the plugin they didnt had them.\neverything works now, i can now make things like poison or bleeding to scalate with extra parameters again.\nthis is the load order if someone needs it"
+    },
+    {
+      "post_id": "js-post-1187763",
+      "author": "Xeri",
+      "date": "2021-05-15T09:54:23+0900",
+      "body": "Is there a script call to check whether an actor's custom parameter is above or below a certain value in conditional branch event commands?"
+    },
+    {
+      "post_id": "js-post-1187783",
+      "author": "Eliaquim",
+      "date": "2021-05-15T11:27:11+0900",
+      "body": "XVoid said:\nIs there a script call to check whether an actor's custom parameter is above or below a certain value in conditional branch event commands?\nClick to expand...\nHi there!\nYes, it does have. You just have to use the script field of the conditional branch. The script calls you need are on the help file:\nExample:\n$gameParty.members()[0].cparam(customParameterId) - This will return the value of a custom parameter."
+    },
+    {
+      "post_id": "js-post-1188207",
+      "author": "Eliaquim",
+      "date": "2021-05-17T15:34:48+0900",
+      "body": "Version 1.2.0 - 05/17/2021\n- Add a new option on the plugin commands that lets you change parameters for all the party/troop members at once.\n- Some minor improvement on the code."
+    },
+    {
+      "post_id": "js-post-1209592",
+      "author": "OvErMiNd",
+      "date": "2021-08-20T02:05:50+0900",
+      "body": "Thanks for your work\nCan you tell me how I can put a value directly in a actor no HP/MP custom stats using script call ?\ni tried this but do not work :\n$gameActors.actor(0001).setCustomHpParam(30, 1)\nthe only thing i can do is\n$gameActors.actor(0001).addCParam(30, +1)\n$gameActors.actor(0001).addCParam(30, -1)\nwhich adds or subtracts 1 but I want to be able to put a value, something like that :\n\" $gameActors.actor(0001).cparam(30) = 15 \"\nCan you help me please ?"
+    },
+    {
+      "post_id": "js-post-1209599",
+      "author": "Eliaquim",
+      "date": "2021-08-20T03:56:15+0900",
+      "body": "Hi\n@OvErMiNd\n!\nYeah, you can use this script call:\n$gameActors.actor(ACTORID )._ShortParamName  = value\nACTORID\n= Replace with the actor id you want. If the id is 1, don't use \"0001\". Use only \"1\".\nShortParamName\n= Replace with the short param name defined on the plugin parameter.\nValue\n= Replace with the value you want.\nExample:\n$gameActors.actor(1)._crm = 15\nI will implement another script call to do that in the next updates. But the above will also work."
+    },
+    {
+      "post_id": "js-post-1209612",
+      "author": "OvErMiNd",
+      "date": "2021-08-20T06:10:04+0900",
+      "body": "Sorry it doesn't seem to work, this is what i do :\nresult = 0 while there should be written 69\nmaybe I'm making a mistake somewhere ?"
+    },
+    {
+      "post_id": "js-post-1209626",
+      "author": "Eliaquim",
+      "date": "2021-08-20T07:37:43+0900",
+      "body": "OvErMiNd said:\nSorry it doesn't seem to work, this is what i do :\nView attachment 199089\nView attachment 199090\nView attachment 199091\nresult = 0 while there should be written 69\nmaybe I'm making a mistake somewhere ?\nClick to expand...\nOps, that was my bad. It will not work this way.\nI believe the best way for you to do this is really using the script below:\n$gameActors.actor(ACTORID).addCParam(PARAMID, VALUE)\nSo if the actor has a parameter Charme = 37\nAnd you want to set it to 50, you can do some math to add a value for this parameter, using the following script call:\nJavaScript:\nlet currentValue = $gameActors.actor(1).char\nlet targetValue = 50\nlet finalValue = targetValue - currentValue\n\n$gameActors.actor(ActorId).addCParam(ParamId, finalValue)"
+    },
+    {
+      "post_id": "js-post-1209808",
+      "author": "OvErMiNd",
+      "date": "2021-08-21T06:36:34+0900",
+      "body": "It works this way, thank you very much !\nhope you will add an easier method in the next update"
+    },
+    {
+      "post_id": "js-post-1210492",
+      "author": "Eliaquim",
+      "date": "2021-08-25T16:01:12+0900",
+      "body": "Version 2.0.0 - 08/18/2021\nAdd a plugin parameter to be used as a template to set custom parameter values for classes, armors, weapons or enemies, if you want to optionally avoid the use of the note field.\nAdd a script call to set(instead of add or remove) a value to the custom parameters:\nbattler.setCustomParam(paramId/shortName, value)\nHelp file changes.\nNeed Eli Book 4.0.0 now.\n@OvErMiNd\nI have added the script call you asked for!\nNow you can use:\n$gameActors.actor(ActorId).setCustomParam(ParamId, TargetValue)"
+    },
+    {
+      "post_id": "js-post-1210695",
+      "author": "OvErMiNd",
+      "date": "2021-08-26T16:12:00+0900",
+      "body": "You are the best !  Thank you"
+    },
+    {
+      "post_id": "js-post-1250743",
+      "author": "Eliaquim",
+      "date": "2022-02-09T10:58:28+0900",
+      "body": "Version 5.0.0 is not compatible with my plugins that are below the 5.0.0 versions.\nVersion 5.0.1 - 02/08/2022\nFixed a bug on the name of a plugin parameter.\nVersion 5.0.0 - 02/05/2022\nUpdated terms of use."
+    },
+    {
+      "post_id": "js-post-1251350",
+      "author": "EnigmaEmmy",
+      "date": "2022-02-12T07:21:17+0900",
+      "body": "Hey, I tried using your plugin but whenever I start the game I get an error:\nTypeError\nCannot read property 'createParameters' of undefined\nDo you have any idea how to fix this? I'm using the latest 5.0.1 MZ version.\nEdit: Never mind, I am dumb\nIt requires the base plugin EliMZ_Book! Might be worth adding to the OP, then again maybe most people are already aware of the dependency message in the plugin manager...\nEdit2: I just can't seem to get the Hp functions to work at all. Keep getting the error \"TypeError: Cannot read property 'isHp' of undefined\".\nI've created a Stamina property (sp) and can access and modify 'sp' but not 'maxsp'.\nEdit3: Okay I figured it out, for some reason the HP parameter is using the wrong ParamID. It appears that it doesn't actually register a new ParamID, but just attaches itself to the parameter above it in the list. Placing my HP parameter at the top of the list resolves the issue, and I can refer to it with ParamID '0' but I'm not sure if this would work if you have multiple custom HP type parameters as they might all just register to 0. Alternatively, you could put in an empty custom parameter above any HP ones you have."
+    },
+    {
+      "post_id": "js-post-1251561",
+      "author": "Eliaquim",
+      "date": "2022-02-13T06:40:43+0900",
+      "body": "EnigmaEmmy said:\nHey, I tried using your plugin but whenever I start the game I get an error:\nTypeError\nCannot read property 'createParameters' of undefined\nDo you have any idea how to fix this? I'm using the latest 5.0.1 MZ version.\nEdit: Never mind, I am dumb\nIt requires the base plugin EliMZ_Book! Might be worth adding to the OP, then again maybe most people are already aware of the dependency message in the plugin manager...\nEdit2: I just can't seem to get the Hp functions to work at all. Keep getting the error \"TypeError: Cannot read property 'isHp' of undefined\".\nI've created a Stamina property (sp) and can access and modify 'sp' but not 'maxsp'.\nEdit3: Okay I figured it out, for some reason the HP parameter is using the wrong ParamID. It appears that it doesn't actually register a new ParamID, but just attaches itself to the parameter above it in the list. Placing my HP parameter at the top of the list resolves the issue, and I can refer to it with ParamID '0' but I'm not sure if this would work if you have multiple custom HP type parameters as they might all just register to 0. Alternatively, you could put in an empty custom parameter above any HP ones you have.\nClick to expand...\nHi there!\nNice you manage to make it work!\nBut let's see this HP param type issue. Can you show me a screenshot of your plugin parameters?\n[EDIT] I will make some tests, but I'm pretty sure that this works as intended. The first parameter on the list, has ID =0.\nThe second parameter on the list, has ID = 1. ETC...\nI also will take a look about accessing and changing the max sp value you talked about. Unfortunately, I will only be able to see this on Thursday."
+    },
+    {
+      "post_id": "js-post-1251565",
+      "author": "EnigmaEmmy",
+      "date": "2022-02-13T06:53:05+0900",
+      "body": "Eliaquim said:\nHi there!\nNice you manage to make it work!\nBut let's see this HP param type issue. Can you show me a screenshot of your plugin parameters?\nClick to expand...\nSure!\nSpoiler:\nThis is it working (HP as paramID 0)\nSpoiler:\nIf I move it to anywhere else this the result\nHopefully I'm not doing something really stupid\nI have other plugins installed, but I've tried disabling them all with the same result."
+    },
+    {
+      "post_id": "js-post-1251884",
+      "author": "Eliaquim",
+      "date": "2022-02-14T09:31:12+0900",
+      "body": "EnigmaEmmy said:\nSure!\nSpoiler:\nThis is it working (HP as paramID 0)\nView attachment 216049\nView attachment 216054\nView attachment 216055\nSpoiler:\nIf I move it to anywhere else this the result\nView attachment 216050\nView attachment 216051\nView attachment 216052\nView attachment 216053\nHopefully I'm not doing something really stupid\nI have other plugins installed, but I've tried disabling them all with the same result.\nClick to expand...\nThank you so much for this!\nIt was really helpful, and I manage to find the problem!\nIn your second example, you are using the ID 7 for the SP parameter.\nBut in fact, the right ID number for it is 6.\nThe error is happening because there is no custom parameter with ID 7.\nTheir ID always start at zero index.\nIn your first example, it is working fine because SP is the first on your parameter list. So it's ID is equal to zero (0).\nBut in your second example you have it at the end of the list.\nNow the VIT parameter is the first one on your list, then he got the ID 0.\nSo, in the second example, if you change the script calls for Custom parameter to start at 0 from 5 and then put the SP parameter with ID 6 everything will work.\nJavaScript is trick on that. The counting on indexes always start at zero:\n0 = first element\n1 = second element\nEtc...\nAlternatively(if I remember well), you can replace the ID parameter on the script calls(or in the plugin commands) with the custom parameter short name.\nSo, if you want to add 60 to the vitality.\n$gameActors.actor(1).addCParam(\"vit\",  60)"
+    },
+    {
+      "post_id": "js-post-1251944",
+      "author": "EnigmaEmmy",
+      "date": "2022-02-14T19:08:35+0900",
+      "body": "Eliaquim said:\nThank you so much for this!\nIt was really helpful, and I manage to find the problem!\nIn your second example, you are using the ID 7 for the SP parameter.\nBut in fact, the right ID number for it is 6.\nThe error is happening because there is no custom parameter with ID 7.\nTheir ID always start at zero index.\nIn your first example, it is working fine because SP is the first on your parameter list. So it's ID is equal to zero (0).\nBut in your second example you have it at the end of the list.\nNow the VIT parameter is the first one on your list, then he got the ID 0.\nSo, in the second example, if you change the script calls for Custom parameter to start at 0 from 5 and then put the SP parameter with ID 6 everything will work.\nJavaScript is trick on that. The counting on indexes always start at zero:\n0 = first element\n1 = second element\nEtc...\nAlternatively(if I remember well), you can replace the ID parameter on the script calls(or in the plugin commands) with the custom parameter short name.\nSo, if you want to add 60 to the vitality.\n$gameActors.actor(1).addCParam(\"vit\",  60)\nClick to expand...\nHi, thanks for your reply!\nI did consider if it were zero-based but if that's the case shouldn't the results in the second example be:\nVit: 0\nEnd: 1\nStr: 2\nDex: 3\nInt: 4\nWis: 5\nSP: 0\nMaxSP: 6\nSeeing as Vit would be ParamID 0 and param 0 was never set. I wasn't sure what the ParamIDs for each were, that's why I set them using the ID, then got the values using the short names.\nThank you so much for the tip on using the short name in addCParam(), I was putting the short name in without the quotes - this will make it much more readable!"
+    },
+    {
+      "post_id": "js-post-1252170",
+      "author": "Eliaquim",
+      "date": "2022-02-15T14:30:00+0900",
+      "body": "EnigmaEmmy said:\nHi, thanks for your reply!\nI did consider if it were zero-based but if that's the case shouldn't the results in the second example be:\nVit: 0\nEnd: 1\nStr: 2\nDex: 3\nInt: 4\nWis: 5\nSP: 0\nMaxSP: 6\nSeeing as Vit would be ParamID 0 and param 0 was never set. I wasn't sure what the ParamIDs for each were, that's why I set them using the ID, then got the values using the short names.\nThank you so much for the tip on using the short name in addCParam(), I was putting the short name in without the quotes - this will make it much more readable!\nClick to expand...\nHmm, I think I got what you are saying!\nAll the custom parameters belong to the same list(array) either them are HP-Type or not.\nSo In that second case, the list should be like that:\nVit: 0\nEnd: 1\nStr: 2\nDex: 3\nInt: 4\nWis: 5\nSP: 6\nMaxSP: 6\nThe thing is SP and MaxSp have the same ID. The difference is that some script calls will use the ID to get/set the current value.\nAnd some other script calls will use to get/set the max value.\nBut, to avoid being confused by that, you can always use the short name to reference their IDs.\nI'm not in home, but when I get there I will write a better explanation for you and also update the help file with it. ^^"
+    },
+    {
+      "post_id": "js-post-1262192",
+      "author": "Roguedeus",
+      "date": "2022-03-23T09:46:22+0900",
+      "body": "Eliaquim said:\nVersion 5.0.0 is not compatible with my plugins that are below the 5.0.0 versions.\nVersion 5.0.1 - 02/08/2022\nFixed a bug on the name of a plugin parameter.\nVersion 5.0.0 - 02/05/2022\nUpdated terms of use.\nClick to expand...\nSeems there is an issue with Eli.PluginManager.createParameters()\nCode:\nEliMZ_CustomParameters.js:391 Uncaught TypeError: Cannot read property 'createParameters' of undefined\n    at Object.initParameters (EliMZ_CustomParameters.js:391)\n    at Object.initialize (EliMZ_CustomParameters.js:384)\n    at EliMZ_CustomParameters.js:616\nI would assume it's a dependency issue that is not stated in the use instructions?\nCode:\n@target MZ\n@base EliMZ_Book\n@orderBefore EliMZ_ClassCurves\n@orderAfter EliMZ_EnemyClass\nDoes this mean I need\nEliMZ_Book\nas a prerequisite?\nedit:\nYep... It does.\nIt may help if you explicitly list that plugin as a required dependency in each plugin that requires it.\nBut I do tend to speak before I finish thinking, so... Maybe I'm the only idiot that will mention it."
+    },
+    {
+      "post_id": "js-post-1262199",
+      "author": "Eliaquim",
+      "date": "2022-03-23T10:12:35+0900",
+      "body": "Roguedeus said:\nSeems there is an issue with Eli.PluginManager.createParameters()\nCode:\nEliMZ_CustomParameters.js:391 Uncaught TypeError: Cannot read property 'createParameters' of undefined\n    at Object.initParameters (EliMZ_CustomParameters.js:391)\n    at Object.initialize (EliMZ_CustomParameters.js:384)\n    at EliMZ_CustomParameters.js:616\nI would assume it's a dependency issue that is not stated in the use instructions?\nCode:\n@target MZ\n@base EliMZ_Book\n@orderBefore EliMZ_ClassCurves\n@orderAfter EliMZ_EnemyClass\nDoes this mean I need\nEliMZ_Book\nas a prerequisite?\nClick to expand...\nHi there!\nYes, you will need EliMZ_Book for\nMZ\n.\nAnd, Eli_Book for\nMV\n.\nAt least on RM MZ, if you do not have the EliMZ_Book, the plugin manager should send you a warning:\nThis text on the plugin is responsable for that:\n@target MZ\n@base EliMZ_Book\n@orderBefore EliMZ_ClassCurves\n@orderAfter EliMZ_EnemyClass\nEach of them\n(base, before, and after)\nwill throw you a different warning depending on how you set up the plugin manager."
+    },
+    {
+      "post_id": "js-post-1262207",
+      "author": "Roguedeus",
+      "date": "2022-03-23T10:29:59+0900",
+      "body": "Eliaquim said:\nHi there!\nYes, you will need EliMZ_Book for\nMZ\n.\nAnd, Eli_Book for\nMV\n.\nClick to expand...\nThanks for the clarification.\nSorry for the time it took for you to mention it, yet again - I'm sure.\nThat is not the way I expected to find the dependency. In my experience with other 'makers', plugin authors typically spell it out rather clearly in the 'use instructions' (aka: How to use) section of the plugin.\nIt's nice to see that there are many new ways to notify users. Even if they go initially unrecognized by the likes of me. I'll be sure to keep an eye out for those in the future.\nThanks again.\nEdit:\nIf I still have your attention. You wouldn't know how to get the new parameters to play nicely with YEP_CoreEngine's Status menu?\nIf not, no biggie. I'll fumble my way through, or attempt to ask where more appropriate."
+    },
+    {
+      "post_id": "js-post-1262243",
+      "author": "Eliaquim",
+      "date": "2022-03-23T11:46:43+0900",
+      "body": "Roguedeus said:\nThanks for the clarification.\nSorry for the time it took for you to mention it, yet again - I'm sure.\nThat is not the way I expected to find the dependency. In my experience with other 'makers', plugin authors typically spell it out rather clearly in the 'use instructions' (aka: How to use) section of the plugin.\nIt's nice to see that there are many new ways to notify users. Even if they go initially unrecognized by the likes of me. I'll be sure to keep an eye out for those in the future.\nThanks again.\nEdit:\nIf I still have your attention. You wouldn't know how to get the new parameters to play nicely with YEP_CoreEngine's Status menu?\nIf not, no biggie. I'll fumble my way through, or attempt to ask where more appropriate.\nClick to expand...\nTotally fine\nYeah, since the MZ implemented this feature, I'm using it for MZ plugins.\nBut I still want to implement an alert again, since I have to do it for MV versions anyway...\nI already did manage to make them work together a long time ago(Not with Yep Core Engine, but with Yep Status Menu Core, something like that). If you tell me exactly what you want, maybe I can help you out."
+    },
+    {
+      "post_id": "js-post-1262269",
+      "author": "Roguedeus",
+      "date": "2022-03-23T13:19:55+0900",
+      "body": "Sorry...\nThere I go, not remembering I'm talking about\nMZ\nnow... Not MV.\nI meant to reference\nVisuMZ_0_CoreEngine\n's and\nVisuMZ_1_ElementStatusCore'\ns built in Status Menu.\nCoreEngine has a section to define custom Parameters, but it's only for reference, in relation to existing database params.\nI thought I once saw a way to make params created outside this plugin, to be referenced by the Status Menu, here:\nSpoiler:\nLength\nBut they don't appear when added without defining them in Custom Parameters, and they create a recursive loop when defined, as they seem to require. (After creating them in your Plugin)\nCode:\nDrag_Debugger.js:152 RangeError: Maximum call stack size exceeded\n    at Game_Actor.get (VisuMZ_0_CoreEngine.js:7758)\n    at Game_Actor.eval (eval at VisuMZ.<computed>.<computed> (VisuMZ_0_CoreEngine.js:1), <anonymous>:7:13)\n    at Game_Actor.get (VisuMZ_0_CoreEngine.js:7758)\n    at Game_Actor.eval (eval at VisuMZ.<computed>.<computed> (VisuMZ_0_CoreEngine.js:1), <anonymous>:7:13)\n    at Game_Actor.get (VisuMZ_0_CoreEngine.js:7758)\n    at Game_Actor.eval (eval at VisuMZ.<computed>.<computed> (VisuMZ_0_CoreEngine.js:1), <anonymous>:7:13)\n    at Game_Actor.get (VisuMZ_0_CoreEngine.js:7758)\n    at Game_Actor.eval (eval at VisuMZ.<computed>.<computed> (VisuMZ_0_CoreEngine.js:1), <anonymous>:7:13)\n    at Game_Actor.get (VisuMZ_0_CoreEngine.js:7758)\n    at Game_Actor.eval (eval at VisuMZ.<computed>.<computed> (VisuMZ_0_CoreEngine.js:1), <anonymous>:7:13)\nIn MV I'd just troubleshoot it myself, and fix it. But all this Obfuscation on Visustella's plugins, have me a bit screwed there."
+    },
+    {
+      "post_id": "js-post-1262275",
+      "author": "Eliaquim",
+      "date": "2022-03-23T14:04:48+0900",
+      "body": "Roguedeus said:\nEdit:\nIf I still have your attention. You wouldn't know how to get the new parameters to play nicely with YEP_CoreEngine's Status menu?\nClick to expand...\nI thought you are talking about MV because you said YEP_CoreEngine...\nAbout Visustella, I have no idea.\nAs you showed to me through your screenshots, I would do exactly as you did. Put the short name of the custom params into their Abbreviation param and cross fingers to work.\nUnfortunately, the console error you showed means almost nothing. A\nMaximum call stack size was exceeded.\nBut why? where?\nI guess that somehow, their plugin is checking for the custom parameters(which on my side, is a new property on Game_Actor). Maybe their plugin is overwriting this property and performing a check somehow.\nDon't know, have no idea. that was a long shot, but it does mean nothing anyway since I can't take a look at the code and see it. In the end, is just a guess.\nI believe if I manage to do it, I'm afraid I can \"break\" their terms of use:\nSpoiler\nVisuStella Sample Game Project - Yanfly.moe Wiki\nwww.yanfly.moe\nMaybe you can ask them to take a look since I allow other developers to take a look and make patches on my plugins. But I already have told other users to do that, and these users always come back to me saying that they refused to make a patch. But who knows.\nSo, unfortunately, there is nothing I can do.\nif you did manage to understand something on the Visustella end, like how things work, and want to talk about that with me, is totally fine. I will do what I can."
+    },
+    {
+      "post_id": "js-post-1262279",
+      "author": "Roguedeus",
+      "date": "2022-03-23T14:46:51+0900",
+      "body": "Eliaquim said:\nSo, unfortunately, there is nothing I can do.\nif you did manage to understand something on the Visustella end, like how things work, and want to talk about that with me, is totally fine. I will do what I can.\nClick to expand...\nUnderstood.\nUnfortunately, the Visustella club doesn't do support with interactions with 3rd party plugins. And what little I've managed to 'charm' out of them in the past, has come with an implied sneer.\nI understand that they are a target for a lot of young and rude attention, so I don't take it personally. But I've resolved to never trying again.\nBesides, if it's not obvious, I tend to leap before I look. My active process of elimination often leaves others a bit irritated. I am just too free with my mistakes. It often results in unintentionally wasting others time.\nFortunately, they exposed the function that actually draws the Parameter Menu. So if I poke at it long enough, I\nshould\nfigure out how to display what I need..."
+    },
+    {
+      "post_id": "js-post-1262283",
+      "author": "Eliaquim",
+      "date": "2022-03-23T15:39:34+0900",
+      "body": "Roguedeus said:\nFortunately, they exposed the function that actually draws the Parameter Menu. So if I poke at it long enough, I\nshould\nfigure out how to display what I need...\nClick to expand...\nOh, that is nice then!\nYou can try alias the function, then check the arguments of the function with the console log.\nCompare the state of the properties and arguments before and after the alias. Maybe you can find a solution, I mean if the problem really lies only on that function that draws the parameter on the menu.\nI manage to do some patches this way in the past, but most of the time, my patches get conflict with other Visustella plugins. So in the end, I wasted too much time on the console log \"hack\" and most of that time was for nothing, since I entered in a loop of fixing things in other plugins, without knowing when it will end =/\nBut good luck!"
+    },
+    {
+      "post_id": "js-post-1279692",
+      "author": "SirMortanius",
+      "date": "2022-06-09T10:16:02+0900",
+      "body": "Hi\n@Roguedeus\n! I am exactly where you are in joining VisuStella and Eli's Custom param!\nIn the VisuStella CustomParam I managed to not get the stack error using \"user.cparam(0)\" (for the first Eli custom parameter and go on) instead of the short name (\"user.pdam\" in your case by the printscreens)!!\nAfter beating my head a lot, we now can use the best of the 2 worlds!!"
+    },
+    {
+      "post_id": "js-post-1402445",
+      "author": "dewolf",
+      "date": "2023-12-03T13:51:14+0900",
+      "body": "Eliaquim said:\nLike this trait will increase the Max HP value by 25%.\nBut we need something like that for Custom Parameters!\nSo, hold on a bit, that I will add this feature into the plugin(Custom Parameters, not the Dynamic Parameters)\nHonestly I don't know why I didn't made it before ^^''!\nClick to expand...\nHi there. Was this ever implemented, or is it still going to be?"
+    },
+    {
+      "post_id": "js-post-1426746",
+      "author": "otapic",
+      "date": "2024-03-01T23:12:58+0900",
+      "body": "hi eli, wanted to ask a quick question after messing around with this plugin\nso for some reason the script call \".changeCustomHpParam(paramId/shortName, value)\" doesn't change the parameter's value after the first time it's called\nso for example i set a customHPparam called \"lmt\"\ni set an enemy's \"lmt\" to 100\ni call for said script and it's value to \"-10\"\nthe enemy's lmt goes from 100 to 90, the maxlmt also doesnt get changed\nbut the 2nd time i call for the same script, the enemy's \"lmt\" doesnt change from 90\nnow was this an intended function?\nbecause i was under the impression the code was used like you would \".gainMp\" to \"damage\" or \"heal\" the custom HP param"
+    },
+    {
+      "post_id": "js-post-1426748",
+      "author": "ATT_Turan",
+      "date": "2024-03-01T23:24:57+0900",
+      "body": "@otapic\nIt's a bit hard to understand your description.\nPlease provide a copy/paste or screenshots of your actual code and how you're calling it."
+    },
+    {
+      "post_id": "js-post-1426753",
+      "author": "otapic",
+      "date": "2024-03-01T23:50:14+0900",
+      "body": "ATT_Turan said:\n@otapic\nIt's a bit hard to understand your description.\nPlease provide a copy/paste or screenshots of your actual code and how you're calling it.\nClick to expand...\ni'm using it in a skill and displaying the enemy param's value through hud maker\nthe 2nd time the skill hits, the custom parameter doesnt decrease anymore. same thing happened when not using an if statement"
+    },
+    {
+      "post_id": "js-post-1455299",
+      "author": "dewolf",
+      "date": "2024-07-05T23:48:23+0900",
+      "body": "Big fan of the custom parameters, between this plugin, DynamicParameters, and VS's custom parameter capabilities, I'm able to implement all the extra stats I want and affect them with states, etc.\nI recently added an additional health resource (sani, or cparam 0) and it's my first time using the custom health part of the plugin. I'm guessing for an item to recover the resource, I'd need to have that item call a common event? For some reason when I'm using changeCustomHpParam, it's only behaving correctly for negative integers.\nchangeCustomHpParam(0,-1) reduces sani by one, but changeCustomHpParam(0,1); fully recovers sani to its max value.\nSpoiler:\nScreenshot\nEDIT: I just realized I'm having the same issue as\n@otapic\n, in addition to positive integers not working. If I use the item multiple times with -1 instead, it will only reduce sani by one and no lower. If I use the item 5 times with the stat at 25, it will never go down past 24."
+    },
+    {
+      "post_id": "js-post-1455420",
+      "author": "Eliaquim",
+      "date": "2024-07-06T07:52:51+0900",
+      "body": "@otapic\n(Sorry! It seems that I miss your notification =/) and\n@dewolf\nI fixed the issue. Please download the new version 5.0.2 on itch io.\nAlso, about that:\ndewolf said:\nHi there. Was this ever implemented, or is it still going to be?\nClick to expand...\nI will do. But now, I'm on the process of rewrite this plugin, a lot needs to be changed and improved, so it will take a bit. I remember thinking of implementing this and did not find the code to be friendly to add this. So I though about rewritting some stuff. But forgot =/\nNow, I will do, but it may take some time, because I will also have to rewrite Class Curves and Dynamic Parameters so all they can work together with the new versions."
+    },
+    {
+      "post_id": "js-post-1455422",
+      "author": "dewolf",
+      "date": "2024-07-06T08:03:40+0900",
+      "body": "Eliaquim said:\n@otapic\n(Sorry! It seems that I miss your notification =/) and\n@dewolf\nI fixed the issue. Please download the new version 5.0.2 on itch io.\nClick to expand...\nWorks like a charm, now! Thank you so much, this plugin + dynamic literally makes it possible to build the exact kind of game I want. Now I just need to turn my sani into a gauge, but that's neither here nor there ^^;"
+    },
+    {
+      "post_id": "js-post-1465606",
+      "author": "Jndev9",
+      "date": "2024-08-23T02:07:33+0900",
+      "body": "Hello. I have been using this plugin to help me implement a different equipment system that is disconnected from the player's stats. So far it has worked flawlessly but I was wondering if it was possible to add to the custom parameters in weapons and armor. I'm aware of the plugin command to do this to actors and enemies, but that would make it persist after unequipping the weapon, which isn't the goal.\nPlease forgive me if tgere's an obvious way to do this already, or even another plugin, I'm very new to rpg maker.\nAnyway thanks for the great plugins!"
+    },
+    {
+      "post_id": "js-post-1465650",
+      "author": "Eliaquim",
+      "date": "2024-08-23T05:21:07+0900",
+      "body": "Jndev9 said:\nHello. I have been using this plugin to help me implement a different equipment system that is disconnected from the player's stats. So far it has worked flawlessly but I was wondering if it was possible to add to the custom parameters in weapons and armor. I'm aware of the plugin command to do this to actors and enemies, but that would make it persist after unequipping the weapon, which isn't the goal.\nPlease forgive me if tgere's an obvious way to do this already, or even another plugin, I'm very new to rpg maker.\nAnyway thanks for the great plugins!\nClick to expand...\nHi there!\nYes you can. This screenshot is directly from the help file:"
+    },
+    {
+      "post_id": "js-post-1465679",
+      "author": "Jndev9",
+      "date": "2024-08-23T07:22:22+0900",
+      "body": "Eliaquim said:\nHi there!\nYes you can. This screenshot is directly from the help file:\nView attachment 315487\nClick to expand...\nI'm sorry, I didn't explain my issue well at all. I already have the note tags set on the weapons, what I was looking for was for a way to increase the value mid game through an event. For example I have this in the note tags: <CParams: wdam:30>\nWhat I was looking for is a way to increase that value to create a weapon upgrade system without having to make a new weapon each time I want to increase the damage"
+    },
+    {
+      "post_id": "js-post-1465692",
+      "author": "Eliaquim",
+      "date": "2024-08-23T08:29:58+0900",
+      "body": "Jndev9 said:\nI'm sorry, I didn't explain my issue well at all. I already have the note tags set on the weapons, what I was looking for was for a way to increase the value mid game through an event. For example I have this in the note tags: <CParams: wdam:30>\nWhat I was looking for is a way to increase that value to create a weapon upgrade system without having to make a new weapon each time I want to increase the damage\nClick to expand...\nOh, got it!\nFor that you will need to use another plugin with this one:\nEli Dynamic Parameters\n. And then, add a Dynamic template to a weapon or armor. You can use formulas and variables on the templates. So the value of a parameter a weapon can have, can be dynamic.\nThen attach that template to the weapon note tag."
+    },
+    {
+      "post_id": "js-post-1465776",
+      "author": "Jndev9",
+      "date": "2024-08-23T19:53:23+0900",
+      "body": "Eliaquim said:\nOh, got it!\nFor that you will need to use another plugin with this one:\nEli Dynamic Parameters\n. And then, add a Dynamic template to a weapon or armor. You can use formulas and variables on the templates. So the value of a parameter a weapon can have, can be dynamic.\nView attachment 315518\nThen attach that template to the weapon note tag.\nClick to expand...\nI see. With that I should be able to do what I want and maybe even improving it a bit.\nThing is, I just tried it and I'm getting an error when adding the template to the note tags, it even happens with your test template.\nThis is the error:\nI'm really sorry for wasting your time if it's just me being a dingus"
+    },
+    {
+      "post_id": "js-post-1465907",
+      "author": "Eliaquim",
+      "date": "2024-08-24T05:43:18+0900",
+      "body": "Jndev9 said:\nI see. With that I should be able to do what I want and maybe even improving it a bit.\nThing is, I just tried it and I'm getting an error when adding the template to the note tags, it even happens with your test template.\nThis is the error:\nView attachment 315566\nI'm really sorry for wasting your time if it's just me being a dingus\nClick to expand...\nDon't need to be sorry, I'm here to help\nTry putting the Dynamic Parameter plugin, somewhere after the Custom Parameter, on the plugin manager. And see if it will work.\nOtherwise, you may need to update both plugins, Dynamic and Custom parameter. Download them again, and try again.\nIf still does not work, then I will need you to build a sample project replicating the issue and send it to me so I can take a look and see what is wrong."
+    },
+    {
+      "post_id": "js-post-1466076",
+      "author": "Jndev9",
+      "date": "2024-08-25T05:35:53+0900",
+      "body": "Eliaquim said:\nDon't need to be sorry, I'm here to help\nTry putting the Dynamic Parameter plugin, somewhere after the Custom Parameter, on the plugin manager. And see if it will work.\nOtherwise, you may need to update both plugins, Dynamic and Custom parameter. Download them again, and try again.\nIf still does not work, then I will need you to build a sample project replicating the issue and send it to me so I can take a look and see what is wrong.\nClick to expand...\nGot it working, it was indeed an update that I missed. I also think I can do what I originally wanted now.\nThanks a lot for the help!"
+    },
+    {
+      "post_id": "js-post-1466144",
+      "author": "Eliaquim",
+      "date": "2024-08-25T11:39:23+0900",
+      "body": "Jndev9 said:\nGot it working, it was indeed an update that I missed. I also think I can do what I originally wanted now.\nThanks a lot for the help!\nClick to expand...\nNice! Have fun"
+    },
+    {
+      "post_id": "js-post-1499313",
+      "author": "OperatorGRNN",
+      "date": "2025-02-16T08:45:10+0900",
+      "body": "Hey, so I'm using this plugin to add an infection system to my RPG, im looking for a few things\nCan I make the game automatically check for the stat and apply states?\nFor example:\nIf battler is over 35 infection, apply \"Lightly Infected\" state, if battler is over 55 infection, apply \"Heavily Infected\" state.\nCan I make a stat slowly trickle up or down for each step? Like\nActors lose 1 infection every 10 steps\nActors gain 1 infection every 5 steps (If Heavily Infected)\nThank you."
+    },
+    {
+      "post_id": "js-post-1499359",
+      "author": "Eliaquim",
+      "date": "2025-02-16T13:22:01+0900",
+      "body": "OperatorGRNN said:\nHey, so I'm using this plugin to add an infection system to my RPG, im looking for a few things\nCan I make the game automatically check for the stat and apply states?\nFor example:\nIf battler is over 35 infection, apply \"Lightly Infected\" state, if battler is over 55 infection, apply \"Heavily Infected\" state.\nCan I make a stat slowly trickle up or down for each step? Like\nActors lose 1 infection every 10 steps\nActors gain 1 infection every 5 steps (If Heavily Infected)\nThank you.\nClick to expand...\nHi there!\nThe only thing my plugin can do for you is to add the Infection parameter and let you add or subtract a value for it(by using the plugin commands or script calls listed on the help file).\nNow, you can easily do the steps and auto state thing by just using parallel events with conditional branches to check the player steps and the party members infection parameter to add or remove the state you want."
+    },
+    {
+      "post_id": "js-post-1502248",
+      "author": "OperatorGRNN",
+      "date": "2025-03-03T01:28:55+0900",
+      "body": "Eliaquim said:\nHi there!\nThe only thing my plugin can do for you is to add the Infection parameter and let you add or subtract a value for it(by using the plugin commands or script calls listed on the help file).\nNow, you can easily do the steps and auto state thing by just using parallel events with conditional branches to check the player steps and the party members infection parameter to add or remove the state you want.\nClick to expand...\nThank you for the help! Unfortunately, my attempts at making the game check every party members Infection stat and then apply states based on their Infection stat haven't worked, could you please show me how to make a function that does this?"
+    },
+    {
+      "post_id": "js-post-1503082",
+      "author": "Rigbydigby",
+      "date": "2025-03-07T17:37:33+0900",
+      "body": "Hi Eli, thanks for the amazing plugin!"
+    },
+    {
+      "post_id": "js-post-1508767",
+      "author": "Angy1910",
+      "date": "2025-04-11T19:03:52+0900",
+      "body": "Hey! In my project I have hidden the default parameters and would like to show the Custom Parameters I created in the menus. I will link to the thread I made about this:\nCould you help me with this?\nThank you in advance!\nMZ - Show Custom Parameters in Menus\nI would like to hide all or most of the default parameters in Menus and show the parameters I created with @Eliaquim 's plugin EliMZ_CustomParameters in an order I choose in Menus.  To hide the parameters I have come across this plugin by Shiva in this thread for MV, but it does not seem to do...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1549363",
+      "author": "EdmundTheWizard",
+      "date": "2026-03-02T03:18:59+0900",
+      "body": "Hey, how could I create a skill that consumes an HP/MP/TP type parameter?"
+    },
+    {
+      "post_id": "js-post-1549416",
+      "author": "Eliaquim",
+      "date": "2026-03-02T11:24:25+0900",
+      "body": "EdmundTheWizard said:\nHey, how could I create a skill that consumes an HP/MP/TP type parameter?\nClick to expand...\nHi there!\nYou need my Skill Cost plugin.\nMZ version:\nHakuen Studio Skill Costs for RPG Maker MZ by Hakuen Studio\nAdd several new cost types to your skills!\nhakuenstudio.itch.io\nMV Version:\nHakuen Studio MV Museum by Hakuen Studio\nAll Hakuen Studio MV Plugins! For free!\nhakuenstudio.itch.io"
+    },
+    {
+      "post_id": "js-post-1549429",
+      "author": "EdmundTheWizard",
+      "date": "2026-03-02T15:19:54+0900",
+      "body": "another question I'm afraid, is it it possible to set a variable to be equal to a custom param?"
+    },
+    {
+      "post_id": "js-post-1549472",
+      "author": "Eliaquim",
+      "date": "2026-03-02T22:23:37+0900",
+      "body": "EdmundTheWizard said:\nanother question I'm afraid, is it it possible to set a variable to be equal to a custom param?\nClick to expand...\nYes. Just take a look at the plugin help file and you will see the script calls you can use to assign them to a variable."
+    }
+  ]
+}

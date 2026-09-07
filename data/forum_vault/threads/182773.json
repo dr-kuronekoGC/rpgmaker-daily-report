@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/dashing-running-like-mother-3.182773",
+  "title": "MV Dashing/Running like Mother 3",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:39.860279+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1550013",
+      "author": "Smotherk",
+      "date": "2026-03-08T11:37:00+0900",
+      "body": "hi, i want to know how can i make dashing like in Mother 3 (hold run button for a short period of time then release)\nafter this, the character starts running by their own (the movement keys are used to change the direction) and only stops when they touch a wall or if the player presses the run button again (also, this mechanic can be used to ram weaker enemies to stun or kill them instantly, in case this is too hard to make, then ignore the last part)\nexample below (1:07:58):\nand here is the wiki, i think it explains better what i want:\nhttps://earthbound.fandom.com/wiki/Dash\nalso, i want to know if i can pay someone if needed"
+    },
+    {
+      "post_id": "js-post-1550046",
+      "author": "rpgLord69",
+      "date": "2026-03-08T21:18:38+0900",
+      "body": "Probably you can event it too. Parallel common event checks your run button, changes player speed and puts a repeating move route on you player and turns a switch on for another parallel common event that checks your button presses and turns direction and puts a repeating move route on that direction. Then the parallel event can also check that if the tile in front of player is impassable you stop the move route (maybe with animation and jump in place etc). Same if you press the run button again. Also you can make the run event turn on another switch and then have your enemies and events have a player touch page with that switch condition to launch the ram event.\nBut yeah, maybe someone can make you a plugin too LOL."
+    },
+    {
+      "post_id": "js-post-1550118",
+      "author": "Smotherk",
+      "date": "2026-03-09T10:10:27+0900",
+      "body": "rpgLord69 said:\nProbably you can event it too. Parallel common event checks your run button, changes player speed and puts a repeating move route on you player and turns a switch on for another parallel common event that checks your button presses and turns direction and puts a repeating move route on that direction. Then the parallel event can also check that if the tile in front of player is impassable you stop the move route (maybe with animation and jump in place etc). Same if you press the run button again. Also you can make the run event turn on another switch and then have your enemies and events have a player touch page with that switch condition to launch the ram event.\nBut yeah, maybe someone can make you a plugin too LOL.\nClick to expand...\ni remember doing something like that before and making my game super laggy, but maybe i made the event wrong\n¿is there a problem if i ask you to show me how to make the events? (like screenshots)"
+    },
+    {
+      "post_id": "js-post-1550166",
+      "author": "ShadowDragon",
+      "date": "2026-03-10T04:34:33+0900",
+      "body": "it may be coded with a global switchs.\nif the button \"shift is longPressed\" and is moving => switch on\nif not moving (like against the wall, or stops => switch is off, no dash\nbut shouldn't be to difficult though."
+    },
+    {
+      "post_id": "js-post-1550173",
+      "author": "Smotherk",
+      "date": "2026-03-10T05:53:56+0900",
+      "body": "ShadowDragon said:\nit may be coded with a global switchs.\nif the button \"shift is longPressed\" and is moving => switch on\nif not moving (like against the wall, or stops => switch is off, no dash\nbut shouldn't be to difficult though.\nClick to expand...\nok i did it, now i need to know how can i make the player move in diagonal haha"
+    },
+    {
+      "post_id": "js-post-1550175",
+      "author": "ShadowDragon",
+      "date": "2026-03-10T05:56:08+0900",
+      "body": "Smotherk said:\nok i did it, now i need to know how can i make the player move in diagonal haha\nClick to expand...\neither evented or by plugin, galv_diagonal is one plugin, but there may be others.\nI believe victorEngine (VE) has one too, probably more.\nbut it depends what plugin you use and which one works best.\nyou just have to search to see what works."
+    },
+    {
+      "post_id": "js-post-1550183",
+      "author": "Smotherk",
+      "date": "2026-03-10T07:22:40+0900",
+      "body": "ShadowDragon said:\neither evented or by plugin, galv_diagonal is one plugin, but there may be others.\nI believe victorEngine (VE) has one too, probably more.\nbut it depends what plugin you use and which one works best.\nyou just have to search to see what works.\nClick to expand...\ni use san_analogmove, but i dont know if i can make a check for diagonal movement or how to event diagonal dashing/running (like in mother 3 where the character can dash/run in diagonal too)"
+    },
+    {
+      "post_id": "js-post-1550220",
+      "author": "ShadowDragon",
+      "date": "2026-03-10T18:25:13+0900",
+      "body": "by default, the function  runs through this one:\nJavaScript:\nGame_Player.prototype.updateDashing = function() {\n        if (this.isMoving()) {\n            return;\n        }\n        if (this.canMove() && !this.isInVehicle() && !$gameMap.isDashDisabled()) {\n            this._dashing = this.isDashButtonPressed();\n        } else {\n            this._dashing = false;\n        }\n    };\n\n    Game_Player.prototype.isDashButtonPressed = function() {\n        return Input.isPressed('shift');\n    };\nso any direction should work by default:\n(left, right, up, down, up-left, up-right, down-right, down-left)\nif they implement that part.\nso even event the dashing progress, this runs.\nmodify this code by\nthis._dashing\nto alter to a new switch/function to be true\nif button is long pressed.  it should automatically work for all directions.\nif this isn't the case, than show us what you did.\nI don't know if anolog movement alter dashing or not."
+    },
+    {
+      "post_id": "js-post-1550399",
+      "author": "Smotherk",
+      "date": "2026-03-12T09:20:56+0900",
+      "body": "ShadowDragon said:\nby default, the function  runs through this one:\nJavaScript:\nGame_Player.prototype.updateDashing = function() {\n        if (this.isMoving()) {\n            return;\n        }\n        if (this.canMove() && !this.isInVehicle() && !$gameMap.isDashDisabled()) {\n            this._dashing = this.isDashButtonPressed();\n        } else {\n            this._dashing = false;\n        }\n    };\n\n    Game_Player.prototype.isDashButtonPressed = function() {\n        return Input.isPressed('shift');\n    };\nso any direction should work by default:\n(left, right, up, down, up-left, up-right, down-right, down-left)\nif they implement that part.\nso even event the dashing progress, this runs.\nmodify this code by\nthis._dashing\nto alter to a new switch/function to be true\nif button is long pressed.  it should automatically work for all directions.\nif this isn't the case, than show us what you did.\nI don't know if anolog movement alter dashing or not.\nClick to expand...\noh what i did was what rpglord69 said, but i could try what you did, but idk how to use longpress"
+    },
+    {
+      "post_id": "js-post-1550435",
+      "author": "ShadowDragon",
+      "date": "2026-03-12T18:29:34+0900",
+      "body": "you can try this (untested)\nJavaScript:\nGame_Player.prototype.updateDashing = function() {\n        if (this.isMoving()) {\n            return;\n        }\n        if (this.canMove() && !this.isInVehicle() && !$gameMap.isDashDisabled()) {\n            if (Input.isLongPressed(\"shift\")) {\n                this._dashing = $gameSwitches.setValue(5, true);\n            }\n        } else {\n            this._dashing = $gameSwitches.setValue(5, false);\n        }\n    };\nso if you use longpress shift (this is around .5 seconds up to 1 second when the switch\nflips true.\nonce the player is moving, it will return, once you stop or move into the wall,\nthe switch is false (which makes, dashing is false).\nchange the switch id (5) to your desired switch ID.\nyou can drop in the code in a new JS and into your folder."
+    },
+    {
+      "post_id": "js-post-1550529",
+      "author": "Smotherk",
+      "date": "2026-03-13T10:17:46+0900",
+      "body": "ShadowDragon said:\nyou can try this (untested)\nJavaScript:\nGame_Player.prototype.updateDashing = function() {\n        if (this.isMoving()) {\n            return;\n        }\n        if (this.canMove() && !this.isInVehicle() && !$gameMap.isDashDisabled()) {\n            if (Input.isLongPressed(\"shift\")) {\n                this._dashing = $gameSwitches.setValue(5, true);\n            }\n        } else {\n            this._dashing = $gameSwitches.setValue(5, false);\n        }\n    };\nso if you use longpress shift (this is around .5 seconds up to 1 second when the switch\nflips true.\nonce the player is moving, it will return, once you stop or move into the wall,\nthe switch is false (which makes, dashing is false).\nchange the switch id (5) to your desired switch ID.\nyou can drop in the code in a new JS and into your folder.\nClick to expand...\nok so it works, but i found 2 problems\n1- is when the player touches a wall it didnt stop him from running (if i change direction, he will continue running instead of walking)\n2-cant move diagonally, maybe san analog move changed something, so, i can show/send the plugin if you want"
+    },
+    {
+      "post_id": "js-post-1550562",
+      "author": "ShadowDragon",
+      "date": "2026-03-13T18:41:13+0900",
+      "body": "okay, analog update dashing here:\nJavaScript:\nGame_Player.prototype.updateAnalogDashing = function() {\n    this._dashing = (\n        this.canMove() &&\n        !this.isInVehicle() &&\n        !$gameMap.isDashDisabled() &&\n        (this.isDashButtonPressed() || $gameTemp.isDestinationValid())\n    );\n};\nso while the above may work without this plugin, I have no idea\nhow to make this one work.\nyou can rewrite it, and return the switchId and try out maybe something like:\nJavaScript:\nGame_Player.prototype.updateAnalogDashing = function() {\n    this._dashing = (\n        this.canMove() &&\n        !this.isInVehicle() &&\n        !$gameMap.isDashDisabled() &&\n        $gameSwitches.value(5)\n    );\n};\nbut I don't use it, so its a wild guess, so I can't help you here though.\nthere may need some other changes, but this is the only dashing inside\nthe analog move plugin."
+    },
+    {
+      "post_id": "js-post-1550582",
+      "author": "Smotherk",
+      "date": "2026-03-14T01:42:17+0900",
+      "body": "ShadowDragon said:\nokay, analog update dashing here:\nJavaScript:\nGame_Player.prototype.updateAnalogDashing = function() {\n    this._dashing = (\n        this.canMove() &&\n        !this.isInVehicle() &&\n        !$gameMap.isDashDisabled() &&\n        (this.isDashButtonPressed() || $gameTemp.isDestinationValid())\n    );\n};\nso while the above may work without this plugin, I have no idea\nhow to make this one work.\nyou can rewrite it, and return the switchId and try out maybe something like:\nJavaScript:\nGame_Player.prototype.updateAnalogDashing = function() {\n    this._dashing = (\n        this.canMove() &&\n        !this.isInVehicle() &&\n        !$gameMap.isDashDisabled() &&\n        $gameSwitches.value(5)\n    );\n};\nbut I don't use it, so its a wild guess, so I can't help you here though.\nthere may need some other changes, but this is the only dashing inside\nthe analog move plugin.\nClick to expand...\nsadly it didn't work, but thanks anyway, you helped a lot"
+    }
+  ]
+}

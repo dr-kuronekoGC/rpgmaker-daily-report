@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/script-conflict-issue-fullscreen-with-wiggly-text.183853",
+  "title": "[Script Conflict Issue] Fullscreen++ with Wiggly Text",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:12.290611+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1557980",
+      "author": "xxforgotten",
+      "date": "2026-05-30T08:40:09+0900",
+      "body": "Hello, I'm a newbie when it comes to coding and scripts so please bear with me.I am running into an issue when running a game with both the\nFullscreen ++ Script\nby Zeus81 and\nTuckie's Wiggly Text script\n.\nWhen running both scripts, the text that is written in the text boxes becomes distorted. This only affects the text in the text boxes, not menu text, or inventory text, or save data window text.\nNormal Default appearance\nWhen both scripts are active\nI have seen other threads with the script causing the letters to shrink, but this seems to be the opposite and causes the letters to get wider.\nI believe this has something to do with this part of Wiggly Text Script:\n#--------------------------------------------------------------------------  # * Normal Character Processing | Overwrite  #--------------------------------------------------------------------------  def process_normal_character(c, pos)    if @anim_type && @anim_type > 0      process_anim_character(c, pos)      else      if WiggleText:\nROP_IN        @anim_type = 7        process_anim_character(c, pos)      else        super      end    end    wait_for_one_character  end  #------------\nClick to expand...\nBut I can't figure out why. I dug around and found that when I comment out\nprocess_anim_character(c, pos)\n(line number 199-201) in the wiggly text script, the text displays how it's supposed to but the wiggly text stops working. I've tried shuffling the script load order but that didn't make a difference. I need the wiggly text script, but I'd like to use the fullscreen++ script too.If anyone can help, I would really appreciate it. I have attached a demo project that has the three (Zeus Module, Fullscreen++, Wiggly Text) scripts and a talking event all set up.\nThank you!"
+    },
+    {
+      "post_id": "js-post-1558023",
+      "author": "Roninator2",
+      "date": "2026-05-30T22:18:11+0900",
+      "body": "Lines 216 - 219 you can either remove them and it will work fine, or you can change the number in there.\nDefault is 0.6 for the old full screen script. works fine by my eye at 0.01"
+    },
+    {
+      "post_id": "js-post-1558035",
+      "author": "xxforgotten",
+      "date": "2026-05-31T00:30:22+0900",
+      "body": "You're amazing, thank you! It worked! Thread can be closed."
+    }
+  ]
+}

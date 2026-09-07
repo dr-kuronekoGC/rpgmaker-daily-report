@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/problem-with-some-scripts-in-rpg-maker-vx-ace.181669",
+  "title": "VXAce Problem with some scripts in RPG Maker VX Ace",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "RPG Maker VX Ace",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:49.412236+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1542304",
+      "author": "Psychoholic42",
+      "date": "2025-12-29T23:17:35+0900",
+      "body": "I'm having an issue with two scripts in my RPG Maker VX Ace project. I'm using Yami Battle Symphony and Victor's ATB script, among others. The problem is, in battle, when an ally's command window comes up, it hides the name of the character, like in this screenshot.\nI want it so that the names are visible when choosing commands."
+    },
+    {
+      "post_id": "js-post-1542340",
+      "author": "Timtrack",
+      "date": "2025-12-30T03:14:30+0900",
+      "body": "Hello, I wrote a small patch (I also fixed a bug I observed when pressing escape):\nRuby:\n#==============================================================================\n# Victor ATB + Yami Battle Symphony patch\n#------------------------------------------------------------------------------\n# Author: Timtrack\n# date: 29/12/2025\n# Requires: Victor ATB, Yami Symphony and their required scripts\n#==============================================================================\n# Description: fixes crash bug when pressing cancel on first turn\n# Allows to restore the size of the actor list to the default one even with\n# tp with option DEFAULT_BATTLE_STATUS_WIDTH\n#==============================================================================\n# Term of use: free for commercial and free games, credit is not required\n#==============================================================================\n\nmodule TIM\n  module VATB_YBS\n    #restores the width of the actors list to the vanilla one (can be useful if\n    #tp is activated and VE_MOVE_STATUS_WINDOW is true)\n    DEFAULT_BATTLE_STATUS_WIDTH = true\n  end\nend #TIM\n\n#==============================================================================\n# Game_Actor\n#==============================================================================\nclass Game_Actor\n  #--------------------------------------------------------------------------\n  # alias method: prior_command -> ensures input index exists to avoid crash\n  # (bug introduced because Victor's script skips the make_actions call)\n  #--------------------------------------------------------------------------\n  alias tim_vatb_ybs_prior_command prior_command\n  def prior_command\n    @action_input_index ||= 0\n    tim_vatb_ybs_prior_command\n  end\nend #Game_Actor\n\nif TIM::VATB_YBS::DEFAULT_BATTLE_STATUS_WIDTH\n#==============================================================================\n# Window_BattleStatus\n#==============================================================================\nclass Window_BattleStatus < Window_Selectable\n  #--------------------------------------------------------------------------\n  # overwrite method: window_width -> restore vanilla code\n  #--------------------------------------------------------------------------\n  def window_width\n    Graphics.width - 128\n  end\nend #Window_BattleStatus\n\n#==============================================================================\n# Scene_Battle\n#==============================================================================\nclass Scene_Battle\n  #--------------------------------------------------------------------------\n  # alias method: create_actor_command_window\n  #--------------------------------------------------------------------------\n  alias tim_vatb_ybs_create_actor_command_window create_actor_command_window\n  def create_actor_command_window\n    tim_vatb_ybs_create_actor_command_window\n    @actor_command_window.x = Graphics.width if VE_MOVE_STATUS_WINDOW\n  end\nend #Scene_Battle\nend #TIM::VATB_YBS::DEFAULT_BATTLE_STATUS_WIDTH"
+    }
+  ]
+}

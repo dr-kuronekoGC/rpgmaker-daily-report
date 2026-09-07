@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/do-i-need-a-plugin-to-edit-the-snow-weather-effect-that-is-built-into-vx-ace.180954",
+  "title": "Do I need a plugin to edit the Snow weather effect that is built into VX Ace ?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:54.941572+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1536489",
+      "author": "8BallGamer",
+      "date": "2025-11-11T00:28:55+0900",
+      "body": "Hello, I am looking to use the Snow weather effect that is included in RPG Maker VX Ace in an area, but I do not like the fact that it makes the screen darker. Is there an option to edit the included weather effect in the existing scripts? Or do I need an add-on script for this effect?\nIf I need a new effect, what is a good script for this effect?\nThanks,\n8BallGamer."
+    },
+    {
+      "post_id": "js-post-1536514",
+      "author": "EntangledPear",
+      "date": "2025-11-11T04:43:14+0900",
+      "body": "If you choose a lower number for \"power\" when you set the weather effects, is it still dark? Otherwise, these things seem to be set up in Script Editor -> Sprites -> Spriteset: Weather, but I'm not sure what you'd have to modify to decrease the darkening of the screen. Maybe someone else has an idea."
+    },
+    {
+      "post_id": "js-post-1536535",
+      "author": "Timtrack",
+      "date": "2025-11-11T07:51:31+0900",
+      "body": "8BallGamer said:\nthe fact that it makes the screen darker\nClick to expand...\nI did not even think of this change tone until now ahah.\nIn the Spriteset_Weather script, you will notice two methods,\nupdate_screen\nthat changes the screen tone and\ndimness\nthat represents the darkening value of the screen when a weather is here.\nIf you replace the code of dimness to return 0, then your weather won't change the screen tone. For instance this small script will remove this if you add it above main:\nRuby:\nclass Spriteset_Weather\n  #--------------------------------------------------------------------------\n  # overwrite method: dimness\n  #--------------------------------------------------------------------------\n  def dimness\n    0 #(@power * 6).to_i\n  end\nend"
+    }
+  ]
+}

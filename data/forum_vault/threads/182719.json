@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/switch-parties-back-and-forth.182719",
+  "title": "MZ Switch parties back and forth",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:14.498148+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1549644",
+      "author": "GreenOx97",
+      "date": "2026-03-04T14:56:09+0900",
+      "body": "Hi\nSo, I've got a bit of an unusual feature I'm trying to implement that sounds simple on paper, but has been really tricky for me to put in.\nWhat it is, it's this sort of 'side-game' feature players can access from save points. When they select to start the side-game, the current party members will all be swapped out, and a new actor will take over and be transported to another map. The player will play out the side-game with the new actor.\nOnce the side-game is over, that actor will be swapped out, main party swapped back in and teleported back to the save point, and the player will resume controlling the main party where they left off.\nSo I've worked out how to do the first half, but I'm struggling with the second part, where the main party comes back in. How can I make the game remember which actors were in the party when they started the side-game? I know there's a feature in Control Variables where you can store party members as a variable, but how do you actually do anything with it? I've seen the option under Other where you can store Party Members as a whole, and individually under Party with Actor IDs. I'm just not sure how to use that info to bring the party back."
+    },
+    {
+      "post_id": "js-post-1549645",
+      "author": "Andar",
+      "date": "2026-03-04T15:08:51+0900",
+      "body": "You don't want to use control variable for this.\nWhile it is possible to do so it will not be easy as you already have found out.\nIf it were for MV I would simply point you to Tsukihime's Party Manager for multiple parties and then switch between them.\nSince you're using MZ you can either try if Tsukihim's plugin is still compatible (the website is himeworks.com) or search for a different plugin to implement multiple parties with MZ.\nSorry, I haven't used MZ yet and can't point you to a direct link"
+    },
+    {
+      "post_id": "js-post-1549646",
+      "author": "Winshifter",
+      "date": "2026-03-04T15:25:06+0900",
+      "body": "I can think of this in two ways, there might be more even with plugins, but if you want to keep it vanilla, I can basically consider the following two options.\nFirst option:\nYou have one variable for each party member, lets name them partyMember1, partyMember2...and so on until all party members tha can be at any given time in your entire rooster of party. So, lets assume you will have in total 10 characters, you will need 10 variables or, if you just want to remember your main party, then in vanilla would be only 4 variables. When you go to switch to the other character, you save in each variable the id of the party member corresponding to each position in the party, so partyMember1 will save the id of the player on first position, partyMember2 of the one in second position and so on. So after you save, you do your thing with minigame, then after returning, you simply move each character into its position based on the value on variables on partyMember variables.\nSecond option:\nYou only use one variable but you basically have to initialize it as an array with the script command like this:\n$gameVariables.setValue(x, []);\n$gameVariables.getValue(x).push($gameParty.battleMembers());\nwhere x is the number of the variable you want to use, for example, variable number 8.\nA simplified version could simply be:\n$gameVariables.setValue(x, $gameParty.battleMembers());\nSo when you return from the mini game, all you have to do is revert making battleMembers what you saved, like this:\n$gameParty.battleMembers() = $gameVariables.getValue(x);\nSo those are the two ways using vanilla, not plugins. Note, this is just a throw away idea, not ready for copy/paste code, it's not meant to be a working code, just an example how to think to make the process to work, the specifics will be for you to iron it out."
+    },
+    {
+      "post_id": "js-post-1549647",
+      "author": "Solar_Flare",
+      "date": "2026-03-04T15:30:37+0900",
+      "body": "I second the recommendation of Hime's plugin! I took a quick look at it, and I think it'll probably work in MZ. (The associated Party Switching Scene plugin, however, is\nnot\nMZ compatible.)\nThe link is\nhere\n."
+    },
+    {
+      "post_id": "js-post-1549768",
+      "author": "Piyan Glupak",
+      "date": "2026-03-05T13:18:45+0900",
+      "body": "Himeworks Party Manager (suggested by Andar) does work in MZ:\nhttps://himeworks.com/2016/02/party-manager-mv/\nIt uses script calls rather than plugin commands, so there is a reasonable chance that it doesn't require FOSSIL. I had already added FOSSIL to my MZ project before I add Himeworks Party Manager.\nIf it does need FOSSIL, you would want one of the forks of FOSSIL. (I understand that the original author abandoned it before an update to MZ which caused it to need patching.)\nHere is a link to page 31 of the FOSSIL thread. I would look back from page 31 and try the first patched version that you come across. I have a feeling that it might be on page 30 of the thread.\nhttps://forums.rpgmakerweb.com/thre...s-in-mz-300-plugins-fossilized.135523/page-31\nI have come across at least a couple of plugins written for MZ that do the same job, but I haven't tried them. At least one of them has a thread on the board for completed MZ plugins."
+    },
+    {
+      "post_id": "js-post-1549962",
+      "author": "caethyril",
+      "date": "2026-03-07T23:16:52+0900",
+      "body": "Alternatively (no plugin needed), here are some\nScript\ncommands you could use:\nJavaScript:\n// Store current party member IDs in variable 1.\n$gameVariables.setValue(1,\n  $gameParty.members().map(function(actor) {\n    return actor.actorId();\n  })\n);\nJavaScript:\n// Clear all party members.\n$gameParty.members().forEach(function(actor) {\n  $gameParty.removeActor(actor.actorId());\n});\nJavaScript:\n// Restore saved party members from variable 1.\n$gameVariables.value(1).forEach(function(actorId) {\n  $gameParty.addActor(actorId);\n});\n(Click image to view full size.)\n​\nThis information was taken from the\nMV / MZ Script Call List\n."
+    }
+  ]
+}

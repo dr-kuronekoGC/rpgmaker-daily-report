@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/max-is-being-ignored-in-formula-all-of-a-sudden.181509",
+  "title": ".max is being ignored in formula all of a sudden",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:50.479767+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1541080",
+      "author": "MoltresRider",
+      "date": "2025-12-19T11:30:06+0900",
+      "body": "I am having an issue with one of my skills in RPG Maker VX Ace. This skill worked perfectly for a play time of 12 hours and now it seems to be ignoring the 500.max in the formula and dealing 302 HP to enemies.\nI Made no changes to the skill or formula since when it was working, but now all of a sudden it is under-performing.\nThe skill ignores defense and elements so there are not any defenses or resistances being applied, but all of a sudden, I am getting damage numbers as low as 302 HP\nDoes anybody know what the problem could be here?"
+    },
+    {
+      "post_id": "js-post-1541088",
+      "author": "Roninator2",
+      "date": "2025-12-19T12:19:17+0900",
+      "body": "MoltresRider said:\nDoes anybody know what the problem could be here?\nClick to expand...\nUnsure as the variance should have given you a value somewhere between 375 and 625.\nUnless the hp remaining on the enemy is 302 then that might make sense.\nYou will have to track back and think about what you have changed. Possibly a script that affects damage formulas. or an off chance could be your database is corrupt. In which case it will take you some time to resolve if you can. But if it is the possible issue then make changes to all your tabs and try again."
+    },
+    {
+      "post_id": "js-post-1541098",
+      "author": "kyonides",
+      "date": "2025-12-19T15:17:37+0900",
+      "body": "Let's assume you're using the default make_damage_value method.\nRuby:\nclass Game_Battler\n  # some code here\n  def make_damage_value(user, item)\n    value = item.damage.eval(user, self, $game_variables)\n    value *= item_element_rate(user, item)\n    value *= pdr if item.physical?\n    value *= mdr if item.magical?\n    value *= rec if item.damage.recover?\n    value = apply_critical(value) if @result.critical\n    value = apply_variance(value, item.damage.variance)\n    value = apply_guard(value)\n    @result.make_damage(value.to_i, item)\n  end\n  # some code here\nend\nAs you can see here, the damage value has been altered already and the guard can even make it decrease even more. Unless you've included a custom script that overwrites this somehow, that's what you should be that skill's usual outcome\nI haven't seen any code modifying apply_variance so far. Have you included any script that changes how it should be handled?"
+    }
+  ]
+}

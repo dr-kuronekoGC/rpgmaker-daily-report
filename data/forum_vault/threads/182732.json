@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/failed-to-initialize-graphics-only-with-a-plugin.182732",
+  "title": "MZ Failed To Initialize Graphics (only with a Plugin)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:42:16.282762+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1549718",
+      "author": "lordvalinar",
+      "date": "2026-03-05T05:31:41+0900",
+      "body": "I require the help of the community to understand what's going on and maybe how to fix this...\n1.) Backed up my RMMZ projects (Documents folder)\n2.) Built new PC\n3.) Installed Steam\n4.) Installed RPG Maker MZ\n5.) Put RMMZ projects back in Documents\n6.) Loaded up a project -> Working on plugin\nWhen I playtest I get \"Failed to initialize graphics\". When I disable the plugin, it works just fine. I am a bit confused by this as the console doesn't lead to anywhere near my plugin, nor mentions it, and nothing my plugin does touches the manager functions ... (Well DataManager.loadDatabase - but I commented that section out when I continued to test the error).\nAny ideas? I've tried copying over the \"img\" folder from \"newproject\" in the actual MZ folder to my project folder and still nothing. I have latest drivers on everything (chipset, gpu, etc). Definitely not a PC issue."
+    },
+    {
+      "post_id": "js-post-1549729",
+      "author": "ShadowDragon",
+      "date": "2026-03-05T06:55:36+0900",
+      "body": "it may be because your browser has unsupported WebGL or is disabled.\nif its disabled, turn it on, if its unsupported, this may be your issue.\ndepending the browser you use.\nso far I know, MZ heavily rely on PIXI v5 which can't render if something happens.\nso I would check your browser or security if its blocks something in order to render.\nbut thats all I can see from the rmmz manager."
+    },
+    {
+      "post_id": "js-post-1549753",
+      "author": "caethyril",
+      "date": "2026-03-05T10:22:00+0900",
+      "body": "With no plugins, that error means that\nGraphics.initialize\ndid not return truthy, i.e. the PIXI app,\nGraphics._app\n, was not created for some reason.\nA plugin could reliably cause your error trace by altering a relevant method of\nGraphics\n, e.g.\nJavaScript:\nGraphics._createPixiApp = function() { /** do nothing */ };"
+    },
+    {
+      "post_id": "js-post-1549859",
+      "author": "lordvalinar",
+      "date": "2026-03-06T11:15:49+0900",
+      "body": "UPDATE 02:\nOkay well I found the culprit. When I removed this code from my plugin, it works fine again... but am curious as to how this broke the initGraphics\nJavaScript:\nObject.prototype.matches = function(obj) {\n    return Object.keys(this).every(key => {\n        return (typeof this[key] === \"object\" && typeof obj[key] === \"object\")\n            ? this[key].matches(obj[key])\n            : this[key] === obj[key];\n    });\n};\n-- Adding this just for context that I have a check for arrays as well that mix-match with the Object version above:\nJavaScript:\nArray.prototype.matches = function(array) {\n    if (!Array.isArray(array) || this.length !== array.length) return false;\n    for (let i = 0; i < this.length; i++) {\n        const typeA = Object.prototype.toString.call(this[i]);\n        const typeB = Object.prototype.toString.call(array[i]);\n        if (typeA !== typeB) return false;\n        if (this[i] && this[i].matches) { // function must exist\n            if (!this[i].matches(array[i])) return false;\n        } else if (this[i] !== array[i]) {\n            return false;\n        }\n    }\n    return true;\n};"
+    },
+    {
+      "post_id": "js-post-1549881",
+      "author": "Aerosys",
+      "date": "2026-03-06T21:34:47+0900",
+      "body": "It could be that Object.prototype.matches is already in use. The question is, why do you add such a function anyway? Such a \"magic\" function that is made to solve everything usually only shifts problems, but doesn't solve them, from my experience."
+    },
+    {
+      "post_id": "js-post-1549885",
+      "author": "lordvalinar",
+      "date": "2026-03-07T01:20:00+0900",
+      "body": "Aerosys said:\nIt could be that Object.prototype.matches is already in use. The question is, why do you add such a function anyway? Such a \"magic\" function that is made to solve everything usually only shifts problems, but doesn't solve them, from my experience.\nClick to expand...\nWell I originally made it to compare the \"list\" array for events, since there are many types of values in there (numerical, arrays, objects, strings, etc) and I wanted a \"catch-all\" function to ensure the entire array matches another. RMMZ's default Array.prototype.equals isn't strong enough to do that sadly.\nAlso I tried changing the function name to \"Object.prototypie.matchObjects\" and it still errors out. So I don't think it's the method name *thinks*. Google search also found there is an \"Element.prototype.matches\" but no \"Object.prototype.matches\" by default, so I doubt RMMZ would have one."
+    },
+    {
+      "post_id": "js-post-1549888",
+      "author": "lordvalinar",
+      "date": "2026-03-07T01:36:03+0900",
+      "body": "--\nISSUE SOLVED\n--\nWelp.. I have no idea what exactly I did, but I changed the function to this, and it works now - so I guess we can resolve this issue\nJavaScript:\nfunction matchObjects(source, obj) {\n    return Object.keys(source).every(key => {\n        if (obj.hasOwnProperty(key)) {\n            return source[key] instanceof Array && obj[key] instanceof Array\n                ? source[key].matches(obj[key])\n                : obj[key] === source[key];\n        }\n        return false;\n    });\n};"
+    },
+    {
+      "post_id": "js-post-1549890",
+      "author": "caethyril",
+      "date": "2026-03-07T02:02:25+0900",
+      "body": "Object.keys\nreturns all enumerable keys, and you have added the\nmatches\nfunction as a new enumerable key.\nFunctions are of type\nobject\n, hence I believe this part of your original code would recurse until it errors out due to maximum call depth:\nlordvalinar said:\nJavaScript:\nreturn (typeof this[key] === \"object\" && typeof obj[key] === \"object\")\n            ? this[key].matches(obj[key])\n            : this[key] === obj[key];\nClick to expand...\n[Edit: as Solar_Flare points out, I misremembered:\ntypeof\nactually returns\nfunction\nfor functions. So the actual problem may well be something else.]\nObject.defineProperty\ndefaults to\nenumerable: false\n, so you could probably have used that instead. Like Aerosys said, though, I think I'd personally use a different approach."
+    },
+    {
+      "post_id": "js-post-1549911",
+      "author": "lordvalinar",
+      "date": "2026-03-07T05:02:46+0900",
+      "body": "caethyril said:\nObject.keys\nreturns all enumerable keys, and you have added the\nmatches\nfunction as a new enumerable key. Functions are of type\nobject\n, hence I believe this part of your original code would recurse until it errors out due to maximum call depth:\nObject.defineProperty\ndefaults to\nenumerable: false\n, so you could probably have used that instead. Like Aerosys said, though, I think I'd personally use a different approach.\nClick to expand...\nWell I have the Array.prototype.matches set to false, I don't know if that would have affected the Object.prototype.matches? (would it?)\nJavaScript:\nObject.defineProperty(Array.prototype, \"matches\", {\n    enumerable: false\n});"
+    },
+    {
+      "post_id": "js-post-1549948",
+      "author": "Aerosys",
+      "date": "2026-03-07T15:45:18+0900",
+      "body": "While it is possible to add functions to Array, you shouldn't do that IMO. It's just a matter of time until it clashes with another plugin or library.\nDo this instead\nCode:\nfunction areListsEqual(list1, list2) {\n  ...\n}"
+    },
+    {
+      "post_id": "js-post-1549961",
+      "author": "caethyril",
+      "date": "2026-03-07T22:56:24+0900",
+      "body": "lordvalinar said:\nWell I have the Array.prototype.matches set to false, I don't know if that would have affected the Object.prototype.matches?\nClick to expand...\nNo. I'm not sure why you would think that. You've defined the property on both prototypes, so they're mutually independent rather than one inheriting from the other. Even so,\nArray\ninherits from\nObject\n, not the other way around.\nI strongly recommend rearranging your code like Aerosys suggested!\nRegardless, I think it would be a good idea for you to (re)learn about inheritance in object-oriented programming, since it's a very important concept. E.g.\nInheritance and the prototype chain - JavaScript | MDN\nIn programming, inheritance refers to passing down characteristics from a parent to a child so that a new piece of code can reuse and build upon the features of an existing one. JavaScript implements inheritance by using objects. Each object has an internal link to another object called its...\ndeveloper.mozilla.org"
+    },
+    {
+      "post_id": "js-post-1549969",
+      "author": "Solar_Flare",
+      "date": "2026-03-08T00:30:41+0900",
+      "body": "lordvalinar said:\nWell I originally made it to compare the \"list\" array for events, since there are many types of values in there (numerical, arrays, objects, strings, etc) and I wanted a \"catch-all\" function to ensure the entire array matches another. RMMZ's default Array.prototype.equals isn't strong enough to do that sadly.\nClick to expand...\nThe way I handle comparing lists of event or move route commands is:\nJavaScript:\nif(JSON.stringify(left.list) == JSON.stringify(right.list))\nThough, I wouldn't recommend using this method if you're doing it every frame.\ncaethyril said:\nFunctions are of type\nobject\nClick to expand...\nHuh? What? No,\ntypeof(someFunction)\nreturns\n'function'\n. Though\nsomeFunction instanceof Object\nwould return\ntrue\n, but that's not what he was doing.\n-----\nGenerally speaking, I don't agree with Aerosys and caethyril that you shouldn't ever add functions to the\nArray\nprototype (or even the\nObject\nprototype), but you should definitely never add\nenumerable\nproperties to them (always use\ndefineProperty\nor\ndefineProperties\nwith\nenumerable: false\n). Still, since it was somehow causing problems in this case and you couldn't figure out how, just making it a standalone function is probably the best option."
+    },
+    {
+      "post_id": "js-post-1549973",
+      "author": "caethyril",
+      "date": "2026-03-08T00:54:10+0900",
+      "body": "Solar_Flare said:\nHuh? What? No,\ntypeof(someFunction)\nreturns\n'function'\n. Though\nsomeFunction instanceof Object\nwould return\ntrue\n, but that's not what he was doing.\nClick to expand...\nOh wow, I was so focused on the inheritance thing that I forgot\ntypeof\ndistinguishes functions as their own type. Not sure what the problem was, then.\n(Could perhaps refine the error message by temporarily overriding\n_createPixiApp\nto remove the try/catch.)"
+    },
+    {
+      "post_id": "js-post-1550025",
+      "author": "lordvalinar",
+      "date": "2026-03-08T16:01:44+0900",
+      "body": "Solar_Flare said:\nThe way I handle comparing lists of event or move route commands is:\nJavaScript:\nif(JSON.stringify(left.list) == JSON.stringify(right.list))\nThough, I wouldn't recommend using this method if you're doing it every frame.\nHuh? What? No,\ntypeof(someFunction)\nreturns\n'function'\n. Though\nsomeFunction instanceof Object\nwould return\ntrue\n, but that's not what he was doing.\n-----\nGenerally speaking, I don't agree with Aerosys and caethyril that you shouldn't ever add functions to the\nArray\nprototype (or even the\nObject\nprototype), but you should definitely never add\nenumerable\nproperties to them (always use\ndefineProperty\nor\ndefineProperties\nwith\nenumerable: false\n). Still, since it was somehow causing problems in this case and you couldn't figure out how, just making it a standalone function is probably the best option.\nClick to expand...\nI'm still not 100% understanding the enumerable thing (other than having it set to false on my Array.prototype.matches method (because I copied the format in rmmz_core.js and how they had those array functions.\nInstead of Object.keys(source).every(), would doing a for loop be better? Example:\nJavaScript:\nfunction objectsMatch(source, target) {\n    for (const key in target) {\n        if (!source[key]) return false;\n        const typeA = Object.prototype.toString.call(source[key]);\n        const typeB = Object.prototype.toString.call(target[key]);\n        if (typeA !== typeB) return false;\n        if (source[key] instanceof Array) {\n            // still using Array.prototype.matches in this case\n            if (!source[key].matches(target[key])) return false;\n        } else if (typeA === \"[object Object]\") {\n            if (!objectsMatch(source[key], target[key])) return false;\n        } else if (source[key] !== target[key]) {\n            return false;\n        }\n    }\n    return true;\n}\nOr -something- like this?"
+    },
+    {
+      "post_id": "js-post-1550028",
+      "author": "Aerosys",
+      "date": "2026-03-08T16:54:48+0900",
+      "body": "Don't try to reinvent the wheel. It's not a shame to copy-paste from StackOverflow\n(well, not always)\n.\nI think this one is a good candidate, it's not the top-voted answer, but it's much easier to read:\nhttps://stackoverflow.com/a/45683145\nAgain, especially for beginners, it's probably easier to compare by fixed attributes instead of \"everything\". Usually, you know what your objects and lists contain, e.g. it's a list of actors, then you can compare by IDs or names. This gives you more control than a magix function that still hasn't covered edge-cases (e.g. NaN == NaN actually returns false)."
+    },
+    {
+      "post_id": "js-post-1550108",
+      "author": "lordvalinar",
+      "date": "2026-03-09T07:38:03+0900",
+      "body": "Aerosys said:\nDon't try to reinvent the wheel. It's not a shame to copy-paste from StackOverflow\n(well, not always)\n.\nI think this one is a good candidate, it's not the top-voted answer, but it's much easier to read:\nhttps://stackoverflow.com/a/45683145\nAgain, especially for beginners, it's probably easier to compare by fixed attributes instead of \"everything\". Usually, you know what your objects and lists contain, e.g. it's a list of actors, then you can compare by IDs or names. This gives you more control than a magix function that still hasn't covered edge-cases (e.g. NaN == NaN actually returns false).\nClick to expand...\nI'm not exactly a beginner (have had 30+ years of coding experience from the C-based NWscript, ruby, python (modding Bethesda games), and with JS it's been about 10 years now. I just don't know -everything- about ever scripting language I work with. The \"enumerable\" property is new to me (I didn't understand its definition - I do now, googled it lol).\nAnd I don't think I'm reinventing the wheel - I couldn't find anything that I needed, so I made it myself\nThe logic worked when I tried testing it in the\nhttps://developer.mozilla.org/\nsite's \"Try It Yourself\" blocks, but I never launched it in RPG Maker so didn't notice the problem until recently.\n---\nThe problem is though you don't know what the list contains in this case (since it derives from the event's list which has different parameters based on what you are trying to do in the event editor. That's why I wanted this function mainly to compare event lists - to account for each property/value types.\n(( normally I'd agree with you, I'd tailor a function to match what I need. I don't usually do \"general\" functions like this, but it's why it's in my LvMZ_Core plugin because it could be a very useful function for me or anyone who wants to compare event lists - like a custom events plugin\n- or something."
+    }
+  ]
+}
