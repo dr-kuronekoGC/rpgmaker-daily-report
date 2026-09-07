@@ -1,0 +1,119 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/can-anyone-help-me-make-sense-of-why-my-visustella-plugins-are-suddenly-returning-this-fatal-error.181281",
+  "title": "MZ Can anyone help me make sense of why my VisuStella plugins are suddenly returning this fatal error?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:45:50.780263+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1538997",
+      "author": "coldtyrant",
+      "date": "2025-12-03T09:00:19+0900",
+      "body": "This screen occurs whenever I attempt to use the Random Dungeon Maps to generate the Map templates for an empty container.\nThe plugin worked perfectly all day, until suddenly it didn't.\nUsually the culprit would be - installing an incompatible plugin, removing a plugin, changing the plugin load order, etc., but I did none of these things.\nAdditionally, I did not delete any files from my Project folder.\nSuddenly - for a reason I cannot discern - the Random Dungeon Maps no longer works and returns a \"Cannot read property 'parentId' of null\".\nCompletely uninstalling and reinstalling the plugin did not work.\nDespite the fact it worked with all my other plugins previously, I uninstalled every plugin except VisuMZ Core Engine and Random Dungeon Maps, but the error still persisted.\nI created a New Project and then installed only VisuMZ Core Engine and Random Dungeon Maps, and the error DID NOT happen. However, starting my entire Project over from scratch is clearly not an option.\nSomething has somehow broken, and I'm hoping someone can help me figure this out. I'm unfortunately at a loss and may need to abandon the plugin.\n(Apologies if I posted this in the wrong forum section.)"
+    },
+    {
+      "post_id": "js-post-1539012",
+      "author": "bgillisp",
+      "date": "2025-12-03T10:12:45+0900",
+      "body": "Moved to Plugin Support"
+    },
+    {
+      "post_id": "js-post-1539013",
+      "author": "Andar",
+      "date": "2025-12-03T10:14:27+0900",
+      "body": "you need to understand what the error truly means - the causes you listed are not the only options that can have this effect.\n\"of null\" and \"of undefined\" always means that the engine tried to access a data object that does not exist.\nwhy it does not exist that can be a lot of reasons like a plugin configuration or incompatibility.\nbut it can be caused by other options as well, like simply deleting a database entry that is required by the plugin or something similar.\nsince it works with a new project, you'll have to compare that with your existing project to find out what the missing data object might be - a missing map, a missing entry in the database or even something as simple as a missing notetag or a notetag pointing nowhere."
+    },
+    {
+      "post_id": "js-post-1539015",
+      "author": "Solar_Flare",
+      "date": "2025-12-03T10:30:24+0900",
+      "body": "The only thing that has a\nparentId\nas far as I know is\n$dataMapInfos[n]\n… and, hey, your stack trace mentions map infos, so that's probably the cause. Did you recently delete a map? Try creating a new map (it doesn't matter what's in it) and see if that fixes it."
+    },
+    {
+      "post_id": "js-post-1539018",
+      "author": "transcendnature",
+      "date": "2025-12-03T10:38:35+0900",
+      "body": "I was having trouble with my Visustella plugins out of nowhere last night as well.  I narrowed it down to the visustella core, and \"fixed\" it by turning off the playtesting console or whatever."
+    },
+    {
+      "post_id": "js-post-1539020",
+      "author": "coldtyrant",
+      "date": "2025-12-03T10:43:35+0900",
+      "body": "You are supposed to add the MapID of the desired \"Cell Container Map\" into the value field for the Plugin Command, which will generate the dungeon for you when called by an Event.\nAs you can see, the Map ID (in the top left corner) matches the ID I gave to the Plugin Command. No Maps are missing that the Plugin should be looking for.\nIt looks like the error log says that - despite the Plugin being directed toward Map 59, it is trying to create Cells for Map 48. This is telling me something is catastrophically wrong, perhaps with the Map Infos you mentioned... though I cannot understand or figure out why the Map Infos would have become broken or corrupted. I did not delete any Maps that would be considered essential to any of my Plugins - for this Plugin, you choose which Map you want it to generate on top of. So even if it was erroneously choosing Map 48 instead of the correct Map 59 to generate on top of, it should be able to do it.\nI'm not sure what I should do or can do to fix the broken map info..."
+    },
+    {
+      "post_id": "js-post-1539022",
+      "author": "transcendnature",
+      "date": "2025-12-03T11:00:28+0900",
+      "body": "I don't know if this is of any use, but one of my main projects that I'm also using random dungeons with, I got things back on track by turning off the debug/playtesting console in vs core, and with other projects I tested with just the base vs plugins that seemed to be the consistent point of failure.\nNot saying all that stuff you just said has no bearing, but you might want to try that first."
+    },
+    {
+      "post_id": "js-post-1539023",
+      "author": "coldtyrant",
+      "date": "2025-12-03T11:03:56+0900",
+      "body": "transcendnature said:\nI don't know if this is of any use, but one of my main projects that I'm also using random dungeons with, I got things back on track by turning off the debug/playtesting console in vs core, and with other projects I tested with just the base vs plugins that seemed to be the consistent point of failure.\nNot saying all that stuff you just said has no bearing, but you might want to try that first.\nClick to expand...\nAre you talking about turning off \"Open Console on Boot\" under Quality of Life? I already have that disabled. The console appears in my case because the program is saying it cannot read \"the parentId of null\", which I have no idea what it means."
+    },
+    {
+      "post_id": "js-post-1539026",
+      "author": "transcendnature",
+      "date": "2025-12-03T11:41:21+0900",
+      "body": "Right, that.  Fair enough, but yeah my VS stuff started acting up out of nowhere yesterday too."
+    },
+    {
+      "post_id": "js-post-1539031",
+      "author": "coldtyrant",
+      "date": "2025-12-03T12:10:26+0900",
+      "body": "Some piece of data was deleted or removed for some reason, so I have to try and troubleshoot what that is. I'll find it soon and update here pending any further suggestions."
+    },
+    {
+      "post_id": "js-post-1539042",
+      "author": "coldtyrant",
+      "date": "2025-12-03T14:35:33+0900",
+      "body": "I figured out the problem. Thankfully, this was user error, and nothing was corrupted or broken.\nThis was my MapInfos.json:\nAs you can see, it's absolutely littered with null entries. These were from Maps I deleted.\nThe actual Maps have several fields, one of them being a parentId.\n\"Cannot read property parentId of null\", means the Plugin was trying to read one of the null entries which has no data, and no parentId field like a normal Map does.\nIt took some work, but I totally reset my MapInfos.json by deleting everything, but preserving the individual Map.json files to copy and paste them onto the fresh maps I made.\nMy new MapInfos.json no longer has any null entries and my VisuStella Random Dungeon Maps plugin is now working correctly.\nA word of advice to anyone that may stumble upon this thread in the future, please be careful when deleting Maps you may no longer want."
+    },
+    {
+      "post_id": "js-post-1539043",
+      "author": "Andar",
+      "date": "2025-12-03T14:39:44+0900",
+      "body": "In the plugin properties, the leading zero in front of the map ID - is that an automated format or did you enter it manually?\nIDs should NEVER be entered with leading zeroes, the true ID is 59 and not 059.\nA single zero should not cause problems unless something is programmed very wrong, but for example 0059 is an undefined number - because 00 causes all computers to read the number as octal, and there is no 9 in octal numbers...\nEDIT: OK, it was something else. But as I said further above - a missing data entry..."
+    },
+    {
+      "post_id": "js-post-1539048",
+      "author": "Solar_Flare",
+      "date": "2025-12-03T16:18:54+0900",
+      "body": "Andar said:\nbecause 00 causes all computers to read the number as octal\nClick to expand...\nThis is, in fact, false. It's true that numbers beginning with 0 are read as octal in some contexts, but JavaScript\ndoes not\ndo this."
+    },
+    {
+      "post_id": "js-post-1539067",
+      "author": "Dark_Ansem",
+      "date": "2025-12-03T19:31:23+0900",
+      "body": "Solar_Flare said:\nThis is, in fact, false.\nClick to expand...\nDidn't you mean \"incorrect\"?"
+    },
+    {
+      "post_id": "js-post-1539069",
+      "author": "caethyril",
+      "date": "2025-12-03T19:34:58+0900",
+      "body": "Also, you should generally test from New Game rather than an old save.\nSolar_Flare said:\nThis is, in fact, false. It's true that numbers beginning with 0 are read as octal in some contexts, but JavaScript\ndoes not\ndo this.\nClick to expand...\nNo, you are incorrect. Test cases:\n10\n- returned value is\n10\n(implicitly parsed as decimal);\n010\n- returned value is\n8\n(implicitly parsed as octal);\n(() => { \"use strict\"; return 010; })();\n-\nreturns an error\n.\n(() => { \"use strict\"; return 0o10; })();\n- returns\n8\n(explicitly parsed as octal).\nThese cases can be tested in the dev console:\nOpen the dev tools by pressing F12 in your browser or in RPG Maker MV/Z's playtest.\nSelect the Console tab.\nEnter a test case and press Enter to return the result."
+    },
+    {
+      "post_id": "js-post-1539070",
+      "author": "Dark_Ansem",
+      "date": "2025-12-03T19:35:54+0900",
+      "body": "Wow caethyril swooping in to say the day"
+    },
+    {
+      "post_id": "js-post-1539098",
+      "author": "Solar_Flare",
+      "date": "2025-12-03T23:50:46+0900",
+      "body": "caethyril said:\nNo, you are incorrect.\nClick to expand...\nOh, it's actually far worse than I thought. I made my previous comment after trying it in the console to make sure, but it turns out it\nsometimes\ninterprets 0-prefixed numbers as octal, and sometimes not.\nInstead of raising an error for\n059\n(because 9 is not a valid octal digit), it just parses it as decimal instead.\nIt parses\n010\nas 8, but\nNumber('010')\nor\nparseInt('010')\nor\n+'010'\nas 10. (Though, oddly, a StackOverflow I found said that\nparseInt\ndoes\nauto-detect octal? Maybe it depends on the version, but it does parse to 10 in MV.)\nBut, all things considered, the latter fact still means that you don't need to worry about this when putting values into note tags or numeric plugin parameters. It's something to worry about in formulas and script calls though.\nWith\n\"use strict\"\nit's a fair bit better – anything 0-prefixed is an error, no questions asked. That's only for literals – string to number conversion is the same. Though honestly I would've preferred if they were parsed as decimal instead."
+    },
+    {
+      "post_id": "js-post-1539103",
+      "author": "Dark_Ansem",
+      "date": "2025-12-04T00:04:35+0900",
+      "body": "Why would use strict make a difference?"
+    }
+  ]
+}

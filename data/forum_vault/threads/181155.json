@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/cant-open-developer-tools-or-additional-windows.181155",
+  "title": "MV Can't open developer tools or additional windows",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:45:56.332973+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1537851",
+      "author": "dysphoria",
+      "date": "2025-11-25T01:00:18+0900",
+      "body": "I recently changed to Linux Mint and installed RPGMMV Steam version. When I tried to playtest, I couldn't so I found out that I had to update the nw.js for Linux (nwjs-v0.105.0-linux-x64). After that, I can playtest, but everytime I want to open the developer tools by pressing F12 or external tools like SRD Manager, the game crashes.\nI noticed that in the package.json file, under \"window\":, there's \"\"toolbar\": false\". I toggled it to \"true\" but I still recieve the same error."
+    },
+    {
+      "post_id": "js-post-1537853",
+      "author": "TheAM-Dol",
+      "date": "2025-11-25T01:09:07+0900",
+      "body": "dysphoria said:\nWhen I tried to playtest, I couldn't so I found out that I had to update the nw.js for Linux (nwjs-v0.105.0-linux-x64)\nClick to expand...\nThis shouldn't be necessary.\nThough I use Pop_OS, the underlying structures are likely the same.\nSometimes - especially if you are switching from a Windows installation to a Linux installation - Steam will attempt to run RPG Maker with the Proton compatibility layer.\nEnsure that it is\nnot\nusing any compatibility layers, as there is a native Linux version of the software.\nAlso, for NWJS I would not update too high of a version. I\nthink\n105 far exceeds what MV can use. I believe I am using 49.2 and have no issues.\nAs I mentioned at the top, it should not be necessary to update your NWJS for it to have functionality. Updating nwjs is just to gain performance or, if you are a plugin developer, give you access to some new functionality.\nIf you are updating NWJS make sure you follow the instructions carefully, as messing up the install locations or not implementing it in both the play test and deployment locations can cause problems."
+    },
+    {
+      "post_id": "js-post-1537855",
+      "author": "SGHarlekin",
+      "date": "2025-11-25T01:22:38+0900",
+      "body": "If you've updated nw.js, I'm gonna take a blind shot here and assume you've replaced the one in your test folder with the regular nw.js instead of the SDK nw.js version, which is the one that has the dev tools enabled. Not entirely sure if this is causing the crash, as normally it just wouldn't open them. Otherwise it's probably a linux problem, like TheAM-Dol explained."
+    },
+    {
+      "post_id": "js-post-1537857",
+      "author": "szatkus",
+      "date": "2025-11-25T01:32:34+0900",
+      "body": "dysphoria said:\nI noticed that in the package.json file, under \"window\":, there's \"\"toolbar\": false\". I toggled it to \"true\" but I still recieve the same error.\nClick to expand...\nThe error says \"unexpected property\". You should remove it entirely. It's ignored even in the version of nw.js that is used by MV."
+    },
+    {
+      "post_id": "js-post-1537861",
+      "author": "dysphoria",
+      "date": "2025-11-25T01:48:55+0900",
+      "body": "I followed this\nguide\n.\nUnder my current settings (new nw.js), I don't have compatibility layers enabled. I'm trying to uninstall and reinstall RPGMMV to get the default files again,\nNow that I reinstalled it again, and unchecked the \"forced compatibility for Steam Play\", I opened my project and can't playtest as initially. I've created a new project and it can't playtest neither. When I hit the Playtest button or Ctrl+R, nothing happens."
+    },
+    {
+      "post_id": "js-post-1537863",
+      "author": "szatkus",
+      "date": "2025-11-25T02:03:56+0900",
+      "body": "dysphoria said:\nI followed this\nguide\n.\nClick to expand...\nThis guide missed one crucial thing. You need to rename the \"nw\" to \"Game\" in nwjs-lnx-test folder."
+    },
+    {
+      "post_id": "js-post-1537902",
+      "author": "dysphoria",
+      "date": "2025-11-25T06:31:38+0900",
+      "body": "TheAM-Dol said:\nAlso, for NWJS I would not update too high of a version. I\nthink\n105 far exceeds what MV can use. I believe I am using 49.2 and have no issues.\nClick to expand...\nOkay yeah, this was the problem. I changed to 49.2 and now I'm able to work with the dev tools. The only think I've noticed is that I can´t deploy the game, neither Windows or Linux build."
+    }
+  ]
+}

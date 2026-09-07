@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-check-when-im-selecting-an-ally-with-a-skill-or-item.181209",
+  "title": "MZ How to check when I'm selecting an ally with a skill or item",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:45:41.733652+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1538250",
+      "author": "jaamusa1996",
+      "date": "2025-11-28T22:16:18+0900",
+      "body": "We keep working on making our own combat UI and we are thrilled with the result. But we hit a wall. I’m using RPG Maker MZ with some Visustella plugins and HUD Maker Ultra for the HUD.\nWhen I target an ally to apply an effect (either a skill or an item), I need a line of code to know who I’m targeting so I can show the corresponding UI element.\nThe goal would be this:\nThe yellow outline indicates who is performing the action, and the blue outline shows who it’s directed at before confirming.\nSo far, I have tried:\nCode:\nreturn window._selectedAllyIndex >= 0;\nreturn _allyTargetMode === true;\nreturn _allyTargetMode;\nBut it only showed the UI element on all allies (even if it was an individual target)."
+    },
+    {
+      "post_id": "js-post-1538256",
+      "author": "rpgLord69",
+      "date": "2025-11-28T23:42:26+0900",
+      "body": "With the base code I think it should be like (returns the actor object):\n$gameParty.battleMembers()[SceneManager._scene._actorWindow.index()]"
+    },
+    {
+      "post_id": "js-post-1538265",
+      "author": "jaamusa1996",
+      "date": "2025-11-29T01:38:34+0900",
+      "body": "rpgLord69 said:\nWith the base code I think it should be like (returns the actor object):\n$gameParty.battleMembers()[SceneManager._scene._actorWindow.index()]\nClick to expand...\nIt pops this error:\nTypeError\nCannot read property 'index' of undefined"
+    },
+    {
+      "post_id": "js-post-1538266",
+      "author": "rpgLord69",
+      "date": "2025-11-29T01:48:19+0900",
+      "body": "Yeah but where / at what stage are you checking it? And that was for base code.\nDoes it work if you put a conditional to check that the _actorWindow exists\nif (SceneManager._scene._actorWindow)"
+    },
+    {
+      "post_id": "js-post-1538268",
+      "author": "jaamusa1996",
+      "date": "2025-11-29T02:07:25+0900",
+      "body": "rpgLord69 said:\nYeah but where / at what stage are you checking it? And that was for base code.\nDoes it work if you put a conditional to check that the _actorWindow exists\nif (SceneManager._scene._actorWindow)\nClick to expand...\nI'm putting it here:\nThe error pops up just when i start a battle. If i put the\nif\na before the\n[SceneManager._scene._actorWindow.index()]\nit shows the picture all the battle but the error doesn't pop up.\nSorry if i'm not being clear, i'm very new to coding. Thanks for the response."
+    },
+    {
+      "post_id": "js-post-1538272",
+      "author": "rpgLord69",
+      "date": "2025-11-29T02:22:09+0900",
+      "body": "If it comes from a plugin where you give fixed coordinates, shouldn't you make 4 different versions with different x-coordinate for the actors?\nAnd it seems like you can put multiple conditions, so first:\n$gameParty.inBattle()\nsecond:\nSceneManager._scene._actorWindow\nthird (change index for battlers, 0, 1, 2, 3)\nSceneManager._scene._actorWindow.index() === 0;\nEDIT: This is assuming the plugin follows the logic where it doesn't check the following conditions if the previous ones fail. I guess you can also combine 2nd and 3rd with\nSceneManager._scene?._actorWindow.index() === 0;\nEDIT2: Oh yeah, you also probably need to add a condition of\nSceneManager._scene._actorWindow.active"
+    },
+    {
+      "post_id": "js-post-1538288",
+      "author": "jaamusa1996",
+      "date": "2025-11-29T03:28:28+0900",
+      "body": "rpgLord69 said:\nIf it comes from a plugin where you give fixed coordinates, shouldn't you make 4 different versions with different x-coordinate for the actors?\nClick to expand...\nI set it up inside the HUD Maker ultra, so the x-coordinate is already fixed.\nrpgLord69 said:\nAnd it seems like you can put multiple conditions, so first:\n$gameParty.inBattle()\nsecond:\nSceneManager._scene._actorWindow\nthird (change index for battlers, 0, 1, 2, 3)\nSceneManager._scene._actorWindow.index() === 0;\nEDIT: This is assuming the plugin follows the logic where it doesn't check the following conditions if the previous ones fail. I guess you can also combine 2nd and 3rd with\nSceneManager._scene?._actorWindow.index() === 0;\nClick to expand...\nIf the first condition fails (with code) then the error pops.\nrpgLord69 said:\nEDIT2: Oh yeah, you also probably need to add a condition of\nSceneManager._scene._actorWindow.active\nClick to expand...\nI have tried all the ways but keeps appearing the same error."
+    },
+    {
+      "post_id": "js-post-1538311",
+      "author": "ATT_Turan",
+      "date": "2025-11-29T05:18:33+0900",
+      "body": "jaamusa1996 said:\nI have tried all the ways but keeps appearing the same error.\nClick to expand...\nThe easiest way to do this is to use the null chaining operator. This will only look at the property if it exists.\nNote that\n@rpgLord69\nis correct - HUDMaker doesn't know how to do anything with an actor object, you need to be checking for which specific actor is being targeted and turn the appropriate HUD element on/off with that information.\nSo you make your graphic that's highlighting the first party member's portion of the HUD, and give it the eval\nCode:\nreturn SceneManager._scene._actorWindow?.active && SceneManager._scene._actorWindow?.index() == 0;\nthen make another one highlighting the second party member using a 1 at the end, etc."
+    },
+    {
+      "post_id": "js-post-1538326",
+      "author": "jaamusa1996",
+      "date": "2025-11-29T07:05:34+0900",
+      "body": "ATT_Turan said:\nThe easiest way to do this is to use the null chaining operator. This will only look at the property if it exists.\nNote that\n@rpgLord69\nis correct - HUDMaker doesn't know how to do anything with an actor object, you need to be checking for which specific actor is being targeted and turn the appropriate HUD element on/off with that information.\nSo you make your graphic that's highlighting the first party member's portion of the HUD, and give it the eval\nCode:\nreturn SceneManager._scene?._actorWindow.active() && SceneManager._scene?._actorWindow.index() == 0;\nthen make another one highlighting the second party member using a 1 at the end, etc.\nClick to expand...\nI tried but gives me this error:\nTypeError\nCannot read property 'active' of undefined"
+    },
+    {
+      "post_id": "js-post-1538344",
+      "author": "ATT_Turan",
+      "date": "2025-11-29T08:48:48+0900",
+      "body": "jaamusa1996 said:\nI tried but gives me this error:\nTypeError\nCannot read property 'active' of undefined\nClick to expand...\nWhen you get JavaScript errors, you need to press F8, go to the Console tab, and post a screenshot of the full error trace.\nNote that I edited the code I had above for a typo - try the revised version."
+    },
+    {
+      "post_id": "js-post-1538410",
+      "author": "rpgLord69",
+      "date": "2025-11-29T19:21:29+0900",
+      "body": "I tested it just for \"fun\", and yeah, seems like you can't just chain the conditions to check if the first one isn't true. But putting it in one condition and using the optional chaining it seemed to work just fine for me. PS. You are adding it in the 'battle hud' side right?"
+    },
+    {
+      "post_id": "js-post-1538734",
+      "author": "jaamusa1996",
+      "date": "2025-12-01T18:26:29+0900",
+      "body": "ATT_Turan said:\nWhen you get JavaScript errors, you need to press F8, go to the Console tab, and post a screenshot of the full error trace.\nNote that I edited the code I had above for a typo - try the revised version.\nClick to expand...\nI put the code with the correction of the typo and now works perfectly. Thank you!"
+    }
+  ]
+}

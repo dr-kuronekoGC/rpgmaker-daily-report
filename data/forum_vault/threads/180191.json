@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/debuff-issue-in-formula.180191",
+  "title": "Debuff issue in formula",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:45:58.737452+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1530833",
+      "author": "MoltresRider",
+      "date": "2025-09-21T12:07:10+0900",
+      "body": "So, in my game, I have a Reshiram as a party member and at some point, she learns Draco Meteor in the story.\nNow in Pokémon, Draco Meteor attacks all enemies, and reduces the user's special attack.\nThe closest thing to special attack in RPG Maker VX Ace is Magic Attack, which Draco Meteor uses.\nSo, I want Reshiram's magic attack to be reduced whenever she used Draco Meteor.\nI have Draco Meteor's formula set up as:\na.add_debuff(4, 10); 130 + a.mat * 4.7 - b.mdf\nTo add the debuff to Reshiram when she uses Draco Meteor.\nHowever, if I have Reshiram use Draco Meteor when there are multiple enemies, the debuff stack multiplies per enemy.\nIs there a way to make it only apply one magic attack debuff per use rather than per enemy?\nI want debuffs to stack each time Reshiram uses it, not for each enemy on the board."
+    },
+    {
+      "post_id": "js-post-1530835",
+      "author": "kyonides",
+      "date": "2025-09-21T12:12:02+0900",
+      "body": "Ruby:\n(your formula here) / $game_troop.members.size"
+    },
+    {
+      "post_id": "js-post-1530891",
+      "author": "MoltresRider",
+      "date": "2025-09-21T20:34:13+0900",
+      "body": "That just splits the damage across all enemies and still creates multiple debuff stacks"
+    },
+    {
+      "post_id": "js-post-1530957",
+      "author": "EntangledPear",
+      "date": "2025-09-22T04:22:36+0900",
+      "body": "Could it work if you put the debuff addition in a common event linked to the skill? In that case it would probably only run once. Since from what you write, this skill is only usable by one character, it shouldn't be a problem to event, I think."
+    },
+    {
+      "post_id": "js-post-1530958",
+      "author": "kyonides",
+      "date": "2025-09-22T04:24:27+0900",
+      "body": "You'd need to keep track of how many enemies have been hit by the skill. I can think off 2 ways to do that: use a flag (a boolean value like true) to indicate that it's been cast or use a variable to store the actual number of enemies hit. If it exceeds the one enemy limit, don't apply the debuff.\nTaking a look at the default Game_Battler class script, I guess you'd need to use a wrapper method instead of directly calling add_debuff... Try this:\nEDIT: Fixed Line 3\nRuby:\nclass Game_Battler\n  def add_debuff_once(param_id, turns)\n    return if @result.added_debuffs.include?(param_id)\n    add_debuff(param_id, turns)\n  end\nend\nRuby:\na.add_debuff_once(4, 10)\nThat will work IF the list of added_debuffs gets cleared after every turn as expected."
+    }
+  ]
+}

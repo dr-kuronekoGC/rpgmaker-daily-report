@@ -1,0 +1,1211 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/burning-orca-shops.108895",
+  "title": "Burning Orca Shops",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:45:50.337167+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-968194",
+      "author": "BurningOrca",
+      "date": "2019-05-11T06:09:40+0900",
+      "body": "First of all I know Tsukihime has written a Shop Manager and propably other authors have done similar things\nand I didn't think I would be able to do the same, but it actually didn't take that long.\nTerms of Use:\nAs always totally free for commercial and non-commercial use and it doesn't need credits.\nFeatures:\n- Define entire shops in the plugin parameters (Yes that is the difference between my plugin and Tsukihimes ShopManager)\nThis may be more work, but I like it that way.\n- Limit the available items via javascript code within the plugin parameters.\n- Limit the amount of items in the shops stock, either by fix amount or variable.\n- Limit shops to only accept items from you, that they also offer to you.\n- Handle discounts via javascript code.\n- Possibility to define switch shops.\nYou can open a shop with the plugin parameter OpenShop <Name>.\nYou do not need to use the Shop Processing Command afterwards.\nYou can still open normal shops via the Shop Processing Command.\nThe Shop Number Window will display the number of items in stock:\nIf it is not infinite it will display the stock quantity minus the number you've selected to buy:\nYou can specify if and how the shops do refill their stock.\nYou can also trigger refilling the stock via the plugin command:\nRefillShopStock <Name>\nYou can also close the shop, via the plugin command:\nCloseShop <Name>\nIf it is reopened later it's stock will be refilled.\nI would really appreciate any feedback.\nCompatibility:\nPlease place this under any shop related plugins.\nIt is not compatible to Tsukihimes ShopManager.\nThe port to MZ is from XL, it is not fully compatible to VisuStella, but seems to cause at least no errors.\nEdit:\n- Found a bug and fixed it. Please download the new version.\n- Forgot to mention it requires MV Version 1.6.1 or higher\n- Forgot to mention if you define two or more items of same kind in the shop, they will be combined into a single one with the combined stock quantity and if you use custom prices, it will have the highest custom price.\nEdit 2:\n- Fixed some other issues.\n- The help window will now display the shops name instead whenever it would have displayed an empty text.\nEdit 3:\n- Shop names are now allowed to have white space.\n- Two new plugin parameters:\nSold out text\n: Will be displayed in the help window alongside the shops name, when it is completely sold out.\nDisplay sold out items in shop\n: Determines when the shop is opened via the plugin command whether sold out items should be visible in the buy window. If items get sold out while the shop is already open they are just greyed out.\nEdit 4:\n- Compatibility with mjshi NPCDialogueShop: My plugin removed the common event command. Now it will also add the common event command when mjshi's plugin is installed aswell.\nPlease place this plugin under mjshi's plugin.\nEdit 5:\nAdded functionality for granting discounts under certain conditions.\nShops keep track on #Total items sold, #Individual items sold, #Times visited.\nEdit 6:\nFixed very big bug. This plugin didn't pass the plugin command and it's arguments to other plugins.\nExamples for discount conditions:\nthis.getNumberBoughtOf(kind, id) >= 3\nMeans #individual items sold >= 3\nthis._nrOfVisits == 3\nthis._totalItemsBought == 100\nDiscount percentages stack by multiplying them, e.g. if the conditions for 10% and another 20% are fulfilled, this does not mean a discount of 30%, but rather only 28% as\ne.g. if the original price = 100:\n100 * (1 - 10 / 100) = 90​\n90 * (1 - 20 / 100) = 72​\n​\nEdit 7:\n- Fixed a bug, that make normal shops being opened endlessly.\n- Added custom selling prices. If not given half of the custom buying price is taken as selling price. If this is not given either half of the price from the database is taken as selling price just like the default behaviour.\nThe resulting price is rounded down, in case it is a floating point number.\nThe plugin now has version 1.5.\nEdit 8:\nSold out text was not displayed when using different currencies via YEP_X_MoreCurrencies.\nThe plugin has now version 1.6. The Sold Out Text will overrule the more currencies.\nEdit 9:\nSome fixes around custom selling prices.\nPlugin is now version 1.9.\nEdit 10:\nToday I had the idea of creating a switch shop without the need to buy an item first. Luckily it was possible.\nSo introducing the new plugin parameters:\nSwitch on text: Text to be displayed instead of the price for a switch that has already been bought and is set to on.\nSwitch off text: Text to be displayed instead of the price for a switch that has already been bought and is set to off.\nSwitches: The switches sold by the shop.\nA shop good of type switch cannot be sold, so it has no selling price and as the buying price cannot be defined\nelsewhere the UseCustomPrice flag is not needed. I hope I decribed the rest of the plugin parameters good enough\nwithin the plugin itself:\nThe final result looks like this when the switch has not been bought yet:\nOnce bought it is set to on and in case it is toggable you can set it to on/off just by pressing on the item:\nWith this it is now v2.0.\nI saw, that this could open up so much new potential (like e.g. Variable Shops, BGM Shops, etc.) in the future.\nIf I find the time I may implement further kinds of shop goods like the discounts did.\nI hope this doesn't break existing projects.\nEdit 11:\nv2.1: Extension to YEP_ItemCore. Allows to buy independent items.\nEdit 12:\nv2.1.1 Small fixes around empty shops and the default shop.\nEdit 13:\nv2.1.2\n- Updated help section. Plugin command is actually names \"RefillShopStock <name>\" instead of \"RefillStock <name>\"\n- Fixed a bug around independ shop goods and the stock refill. I deleted the independ items from the memory even the party already bought them. Now I don't do this anymore.\nEdit 14:\nv2.2.0\n-New plugin command Refill<Kind>Stock \"<Name>\" Id Quantity:\nRefills a single shop good of the given kind in the shop with the given name by the given quantity. It will not exceed the maximum quantity. It currently does only work if the plugin parameter GroupItemsWithLimitedStock is set to true (Yes). The shop name must be placed into quotes as it allowes single white spaces between parts of it's name.\nEdit 15:\nShould now be compatible with MV 1.5.1\nEdit 16:\nHad to rework this plugin in order to find other workarounds for compatibility issues with Yanfly plugins rather than copying the code that still needs to be called and leaving out the rest as it is prohibited by the terms of use of Yanfly plugins and I guess also by copyright. I just want to avoid making me to have to take this plugin down. Yet I still hope this is just a minor issue as my plugin is given away for free.\nWhile doing this and veryfying in a test project that everything is still working as intended by me I found out that the following parameter of YEP_ShopMenuCore is not working if NPCDialogueShop is installed aswell:\nOff course I cannot solve this issue. As NPCDialogueShop seems to only work in conjuction with YEP_ShopMenuCore if placed under it and it overwrites a bunch of functions without aliasing them, there would be no way to workaround this without copying the YEP code around this parameter, which I clearly do not want to do.\nSo I added a plugin parameter to my plugin to allow adding the equip command again to the shop menu (Default Value = On).\nAlso if YEP_ShopMenuCore + NPCDialogueShop + BO_Shops are all used within your project the custom commands will also be added and the commands are placed exactly in the order of this screenshot.\nEdit 17:\nRenamed downloadable plugin BO_Shops => BO_CustomShops. If you have it already in use, you can rename it back to BO_Shops after downloading in order to not loose all your plugin parameters.\nBO_CustomShopsXL is an extended version, because I've got ideas. Some of the ideas are not compatible to the old BO_CustomShops. That is why I've created it as a seperate plugin. The XL version is also not compatible with YEP_X_MoreCurrencies and YEP_X_CondShopPrices anymore. It is still compatible with any other plugin BO_Shops was also compatible with.\nI've also updated my shop category customization plugin found at\nhttps://forums.rpgmakerweb.com/index.php?threads/shop-category-customization.121309/#post-1065982\nto be compatible with the XL version of BO_CustomShops.\nIf you rename BO_CustomShops to BO_Shops after the download you need to replace the following line in the code\nBurningOrca.Shops.Parameters = PluginManager.parameters('BO_CustomShops'); with BurningOrca.Shops.Parameters = PluginManager.parameters('BO_Shops');\nEdit 18:\nCompatibility fix of switch shops with MKR_ShopItemMessage.\nFound bug in XL version: Item descriptions have not been displayed anymore.\nEdit 19:\nFixed a bug in XL to make it work without YEP_CoreEngine being used.\nEdit 20:\nUpdated XL, as it had some math errors. Obviously calling Math.log10 and passing a value of 0 is not a good idea.\nEdit 21:\nFixed a typo: $dataArmors instead of $dataArmor.\nEdit 22:\n- Small performance upgrade in BO_CustomShops. Call this.price() only once in Window_ShopBuy.prototype.drawBuyPrice extension.\n- Compatibility fix in BO_CustomShopsXL with ShadowDragon_EC (Easy Currency).\nEdit 23:\nFound bug in Plugin Command RefillItemStock.\nEdit 24:\nChanged my mind form yesterday and ported XL to MZ. However I cannot support this plugin as it my trial license will run out tomorrow. The upload is just experimental.\nFound a lot of bugs in XL. Severe ones. Shops weren't even working after loading a safe file.\nEdit 25:\nYet again introduced a small little bug with the fixes in XL yesterday.\nEdit 26:\nI've taken the MZ version down, after I've read through Tsukihimes Shop Inventory plugin thread. Not only can I not support BO_CustomShopMZ, because my trial run out, but also just from what I've read Tsukihimes plugin will become amazing. I normally don't like to compete with others on the same topic. Her Shop Manager for MV was already good, just not what I wanted and that is why the original BO_Shops was born. That is the only time I've started a competition.\nEdit 27:\nI've found two bugs in XL both only in Shops that have the stock refill type set to \"Add additional Stock\".\n1) Discounts where applied each time the shop has been opened unless a \"Stock Refil\"l happend.\n2) If a shop has been opened and no \"Stock Refill\" happened, then the previous stock got lost.\nI actually didn't really test if the bugs really exist, but assumed it by looking into my code.\nI've also reworked the code of XL slighly to be a little simpler, but still have the same functionality.\nIt is now Version 2.0.\nBecause of the rework it will remove a variable from the saved shops, when loading a save file which has been saved with the previous version from XL and cause a \"Stock Refill\" on all saved shops in order to be inline with the changes. Therefore I recommend you to not get the new version unless absolutely needed.\nEdit 28:\n- Enhanced limit for stock quantity from 99 to 5000. Maximum variables seems to be 5000.\n- XL didn't display the stats for equip items.\nEdit 29:\nFixed bugs around selling in BO_CustomShopsXL. It is now Version 2.1\nEdit 30:\nFound a bug in XL, that caused the game to crash when selling the last item in the specific category in the selling menu and afterwards pressing the ok button (e.g. Return-Key) on the now empty slot which is still highlighted by the game.\nFix this bug. However no new version number.\nEdit 31:\nBug fix in XL. The plugin parameter to not use the YEP Equip Command did not work as I intended. Also added plugin parameter to not use NPC Dialogue Shops Event command in custom shops if people wish to do so to XL. I will stop adding new features to XL. Only bug fixes anymore as it got confusing and too much work to have two versions of the same plugin.\nv2.4 for the non XL version:\n1. Selling prices have been moved from the shop good definition to it's own plugin parameters.\n2. Fixed the same bug and added the same plugin parameter as described above for the XL version.\n3. Added sellable- and non-sellable items/weapons/armors and removed plugin parameter SellOnlyGoodsThatCanBeBought.\nEveryone who will redownload this has to check all the plugin parameters and even double click through them or you might receive some \"cannot read of undefined\" error messages. You also need to start a new safe file or temporarely include the CloseShop Plugin command in your event configuration.\nEdit 32:\nFixed a bug, that only one additional currency is displayed, when my plugin is used together with YEP_X_MoreCurrencies.\nEdit 33:\nMade it possible for icons to be drawn on the buy window for shop goods of type switch, if \\i[iconIndex], e.g. \\i[24], is included in switch name in the database or in switch display text within my plugin parameters."
+    },
+    {
+      "post_id": "js-post-968227",
+      "author": "JtheDuelist",
+      "date": "2019-05-11T09:06:35+0900",
+      "body": "@BurningOrca\nYou, good sir, have done the work of the gods- a limited stock plugin AND a non-mobile use for those button graphics?! Bless you!"
+    },
+    {
+      "post_id": "js-post-968269",
+      "author": "BurningOrca",
+      "date": "2019-05-11T11:40:25+0900",
+      "body": "@JtheDuelist\nThank you, but the buttons are not my work."
+    },
+    {
+      "post_id": "js-post-968279",
+      "author": "JtheDuelist",
+      "date": "2019-05-11T12:47:56+0900",
+      "body": "@BurningOrca\nI know they are RTP- I am just glad someone created a use for them outside of launched RM mobile games."
+    },
+    {
+      "post_id": "js-post-968306",
+      "author": "BurningOrca",
+      "date": "2019-05-11T16:15:50+0900",
+      "body": "@JtheDuelist\nBut my plugin does not change anything in the ShopNumber Windows layout except adding the \"Available Items\" text.\nI deactivated every plugin except mine and buttons are still shown in this window, so they must be the default even in non mobile environments."
+    },
+    {
+      "post_id": "js-post-968343",
+      "author": "ShadowDragon",
+      "date": "2019-05-11T19:39:45+0900",
+      "body": "@BurningOrca\nThis shop Idea might work nicely, but i got 2 questions.\n1) if the stock is out of order, will it say \"Out of Stock\" or \"Sold Out\"? (or costumize it)\n2) is it possible to make only the buy option that only sells \"key items\" (not weapons, Armor, Items)\nif the possibility is there?\nremove the buttons can easely be done by editing the system window if not giving an error."
+    },
+    {
+      "post_id": "js-post-968347",
+      "author": "BurningOrca",
+      "date": "2019-05-11T20:01:22+0900",
+      "body": "@ShowDragon\n1) Currently not, it just disables the command slots for the sold out items.\n2) Just add only the key items you want to buy from the shop in the plugin parameters. Then change it to a buy only shop.\nDefinition of Key Item Shop (Buy Only):\nPlugin Command:\nActual shop layout with no other plugin installed:\nQuestion back\n:\nWhere should I put the \"Sold out\" if I would implement it?\nAlso while I was testing this I realized, that my shop names cannot have white space in them, because that doesn't work with the plugin command. I need to change this somehow."
+    },
+    {
+      "post_id": "js-post-968349",
+      "author": "ShadowDragon",
+      "date": "2019-05-11T20:09:47+0900",
+      "body": "@BurningOrca\nis it possible to implement out of stock instead grey out or remove from stock when item = 0?\nThe stock out can be on the spot where the price is normally displayed\nso for example:\nKey Item 1    -   500\nKey Item 2    -   Sold Out\nor a other way like \"Sold\" or other name,  not more than 8 characters.\nEDIT:  the shop plugin of mjshi \"\nfound here\n\" and this one, can give it a bust image as\nwell. and this is exacly very nice. specially because that one dont have a stock amount\nincluded,  so combined is 1 heck of a shop setup.\nNow I dont know if this is even possible for multiple layouts.  but the good thing\nis, I only need 1 ^^  and its working smoothly.\nKeep up the good work ^^  Probably the best shop plugin out there atm."
+    },
+    {
+      "post_id": "js-post-968355",
+      "author": "BurningOrca",
+      "date": "2019-05-11T20:48:46+0900",
+      "body": "@ShowDragon:\nI could implement the following compromise solution with 2 new plugin parameters:\nAs long as the shop is kept open the fields are only grayed out. The text (Sold Out: customizable via plugin parameter) will be added to the help window text when the whole stock is empty:\nThen if the other new plugin parameter is set, the next time the shop is opened, it is completely empty:\nI hope this compromise will be enough.\nEdit:\nInstead of the price is good idea. I will add this.\nEdit 2:\nI now implemented your suggestion to replace the price with sold out.\nI do not know if can limit this to only 8 characters, so I'll let it as it is for the time being."
+    },
+    {
+      "post_id": "js-post-968374",
+      "author": "ShadowDragon",
+      "date": "2019-05-11T22:16:29+0900",
+      "body": "@BurningOrca\n1, its not ShowDragon but ShadowDragon =)\nI tested it, but there is probably 1 error somewhere,  in your parameter, you can showsold out text\nto true or false,  but either one is the same and keep showing \"Sold Out\" even when false,  but other\nthan that,  Test (Sold Out)  is only visible if no description is given.  but sold out where the 0 is, works perfectly.\nThank you for this nice quick edit.  Im very Happy of the outcome. Keep it up.\n(dont forget to change version number)  its 1.0 and its still 1.0  (so make it 1.0.1 or whatever you like, so the\npeoples knows that its been edited (bug fixed, addings etc)"
+    },
+    {
+      "post_id": "js-post-968400",
+      "author": "BurningOrca",
+      "date": "2019-05-12T00:31:42+0900",
+      "body": "@ShadowDragon\nSorry for the typing errors, I really didn't mean to call you ShowDragon.\nThe text will always be shown. The Parameter set to 'No' will remove the items completely from the list, the next time you visit the shop.\nI will change the version number and add the history before I request to move this to the released plugins forum.\nEdit:\nI am not good with user interface layout. So I decided to use the help window for the shop name instead of creating an own window. The drawback is as you mentioned, that the item descriptions will overrule the shop name."
+    },
+    {
+      "post_id": "js-post-969974",
+      "author": "BurningOrca",
+      "date": "2019-05-18T14:00:55+0900",
+      "body": "Sorry for posting under myself, but everyone who already downloaded this, please get the new version!!!\nI had a very serious bug, that I just found today.\nThis plugin didn't pass the plugin command and it's parameters to other plugins, so all other plugin commands didn't work."
+    },
+    {
+      "post_id": "js-post-970054",
+      "author": "ShadowDragon",
+      "date": "2019-05-19T00:05:07+0900",
+      "body": "I didn't notice that one,  good job finding it,  also,  you can only post under yourself if its longer than 72 hours\nbut im going to download the new version. ^^."
+    },
+    {
+      "post_id": "js-post-972272",
+      "author": "ShadowDragon",
+      "date": "2019-05-27T04:01:33+0900",
+      "body": "i got a weird syntax error of unexpected token u in JSON at position 0\nSyntaxError: Unexpected token u in JSON at position 0\nat JSON.parse (<anonymous>)\nat Data_Shop.initialize (BO_Shops.js:486)\nat new Data_Shop (BO_Shops.js:438)\nat Data_Shops.initialize (BO_Shops.js:428)\nat new Data_Shops (BO_Shops.js:412)\nat Function.DataManager.isDatabaseLoaded (BO_Shops.js:375)\nat Function.DataManager.isDatabaseLoaded (SRD_MapSlipDamage.js:260)\nat Scene_Boot.isReady (rpg_scenes.js:374)\nat Function.SceneManager.updateScene (rpg_managers.js:2018)\nat Function.SceneManager.updateMain (rpg_managers.js:1983)\nI have no clue why its happening though"
+    },
+    {
+      "post_id": "js-post-973137",
+      "author": "BurningOrca",
+      "date": "2019-05-30T03:42:36+0900",
+      "body": "Sorry for the late answer:\nCould you make screenshots of the plugin parameters, or post the text form of one shop, please?\nMaybe this is due the discounts I added to the plugin parameters in a later version.\nIf so please try to click once at each shops discount option and press okay afterwards.\nIf this doesn't help and you do not have many shops, maybe redefining all the shops may help."
+    },
+    {
+      "post_id": "js-post-973284",
+      "author": "ShadowDragon",
+      "date": "2019-05-30T16:23:52+0900",
+      "body": "it happend when i aded a new plugin and when it has 1 item on it,  when I added 2 more items, it seems to\nsolved,  but when i go down to 1 item,  it get the error again,  idk why though, when i turn off the new plugin and retest it,\nit gives the same error with only 1 item in stock,  But i can make a screenshot later the day."
+    },
+    {
+      "post_id": "js-post-973310",
+      "author": "---ytruuytr",
+      "date": "2019-05-30T20:41:15+0900",
+      "body": "Can you define which items shop buys and it's price? for ex. can I sell quest items for a higher prices compared to other shops?"
+    },
+    {
+      "post_id": "js-post-973317",
+      "author": "BurningOrca",
+      "date": "2019-05-30T22:35:22+0900",
+      "body": "@ShadowDragon\nThat is strange. I use it too, with a shop that only has 1 item and it works just fine.\nCould you maybe also test if it works in a new project or if the same error will happen?\nEdit:\nI had a look at line 486 and that really is the discound like I tought.\nPlease try the following:\n1. Go to the plugin parameters.\n2. Open each Shop.\n3. Switch to the text form\n4. Check if the following text appears right infront of the last closing } bracket:\n,\"Discounts\":\"\"\n5. If not add it.\n@kako05\n: Sorry, not 100% like you want it to:\n- You can add items which you can buy from the shop and change their price\n- You can set a shop to Sell Only so you cannot buy items from it, but sell items to it\n- You can set the shop to only buy items from you which it also sells to you.\nSo if you have a SellOnly shop with all this criteria you can basically set up a shop that only accept certain items, but the custom buying price is currently not taken over to the selling price. This is the same as with normal shops and custom buying prices. Sorry I didn't know that.\nIf wished I can make it that somehow half of the custom buying price is set as selling price or add a new plugin parameter selling price to each item/weapon/armor.\nIf wished I could also change it to using the item/weapons/armors defined in the plugin parameters to be used as the items for sell only shops.\nEdit:\nI uploaded a new version that supports custom selling prices, but I kept it the way, that the shop accepts every single item from you if you do not set the appropriate plugin parameter, even the shop is set to sell only.\nI changed the default of the discounts plugin parameter.\nHopefully this fixes the bug with the discounts and does not introduce new problems."
+    },
+    {
+      "post_id": "js-post-973355",
+      "author": "---ytruuytr",
+      "date": "2019-05-31T02:26:11+0900",
+      "body": "Awesome! Great"
+    },
+    {
+      "post_id": "js-post-973423",
+      "author": "ShadowDragon",
+      "date": "2019-05-31T06:16:29+0900",
+      "body": "it was there, but placing the new updated version and it was gone.  but i will keep that in mind,  but im not sure what\nthe token u of position 0 means though. otherwise,  good job of the new plugin param, can be of good use. =)"
+    },
+    {
+      "post_id": "js-post-976065",
+      "author": "BurningOrca",
+      "date": "2019-06-10T19:07:10+0900",
+      "body": "The default value of discounts parameter was propably undefined in the previous version and the first letter of undefined is 'u'. As string position counter starts at 0, I guess calling the eval()-function on \"undefined\" brought up this weird message."
+    },
+    {
+      "post_id": "js-post-976231",
+      "author": "ShadowDragon",
+      "date": "2019-06-11T06:50:27+0900",
+      "body": "the final question, can you use items to get the item? and if so, what code can i use for it?\nLike, i have some quest and the reward is a ticket (to trade for its own item that than turn on a switch in a common event)\nidk if that is possible though. or i will figure a way around for that.\nAlso thank you for the explaination of \"0\" and \"u\""
+    },
+    {
+      "post_id": "js-post-976318",
+      "author": "BurningOrca",
+      "date": "2019-06-11T14:22:18+0900",
+      "body": "@ShadowDragon\n: Sorry, but this plugin does and will not support that option, because it goes beyond my knowlegde of the default engine and javascript.\nI use YEP_X_MoreCurrencies in my own project for having items as currency to other items, but this would require (YEP_CoreEngine and YEP_ShopMenuCore) and I am not sure if it would be compatible with NPCDialogueShop.\nIf you wouldn't mind I would suggest you to use other events for the ticket trade instead of a shop."
+    },
+    {
+      "post_id": "js-post-976331",
+      "author": "ShadowDragon",
+      "date": "2019-06-11T16:18:04+0900",
+      "body": "I figure a way around to deal with it, while you can use js in your shop as a condition\nI know you wont add it\nbecause it can break alot of things and harder to deal off.  was just a question and its break with the shop core of yanfly"
+    },
+    {
+      "post_id": "js-post-977872",
+      "author": "gambitben",
+      "date": "2019-06-17T21:51:00+0900",
+      "body": "Ok, I think I got it XD In line 802 you wrote\n$dataWe4apons instead of $dataWeapons\nclassic typo ^^\nI feel like  a pro even tho the fix was obvious\nAmazing plugin by the way, can't stress enough how good it is."
+    },
+    {
+      "post_id": "js-post-978105",
+      "author": "ShadowDragon",
+      "date": "2019-06-18T16:01:54+0900",
+      "body": "I never looked at the code and didn't try seling armor or weapons,  most errors becomes when its the plugin order\nto place it higher and lower ^^  but nice catch though =)"
+    },
+    {
+      "post_id": "js-post-978491",
+      "author": "BurningOrca",
+      "date": "2019-06-20T02:43:15+0900",
+      "body": "I've corrected the typo now also in my version and reuploaded it.\nThanks for finding the error.\nI must admit I haven't tested every feature added newly to the plugin in detail. Sorry."
+    },
+    {
+      "post_id": "js-post-978567",
+      "author": "ShadowDragon",
+      "date": "2019-06-20T07:11:26+0900",
+      "body": "i corrected the typo here so i dont download if there is nothing new in it\nbut usefull for new users trying it out"
+    },
+    {
+      "post_id": "js-post-978869",
+      "author": "NikkiKaji",
+      "date": "2019-06-21T04:21:16+0900",
+      "body": "Hello! When I create a new project and deploy it, the plugin works fine on a new save file. However, when a save file is loaded, I get this error:"
+    },
+    {
+      "post_id": "js-post-978915",
+      "author": "ShadowDragon",
+      "date": "2019-06-21T06:06:24+0900",
+      "body": "@NikkiKaji\ndo you use other plugins by any chance?  do you use other shop plugins?  did you setup the shop correctly?\ndid you try to move it up or down the list if you use more plugins or is this the only one?\nif so, its best to put the console logg as well (press F8 for the console log) so its better for him to fix it if there is a bug."
+    },
+    {
+      "post_id": "js-post-978927",
+      "author": "NikkiKaji",
+      "date": "2019-06-21T06:45:33+0900",
+      "body": "ShadowDragon said:\n@NikkiKaji\ndo you use other plugins by any chance?  do you use other shop plugins?  did you setup the shop correctly?\ndid you try to move it up or down the list if you use more plugins or is this the only one?\nif so, its best to put the console logg as well (press F8 for the console log) so its better for him to fix it if there is a bug.\nClick to expand...\nI had plugins in my original project, so I created a brand new one and only put this plugin in it, but still got the same error. Weirdly enough, it only happens after the game is deployed. I created a save file and loaded it through the playtest and it worked fine, but when I deployed it, created a new file, and then loaded it, it didn't work. Here's the console:"
+    },
+    {
+      "post_id": "js-post-979077",
+      "author": "ShadowDragon",
+      "date": "2019-06-21T17:39:59+0900",
+      "body": "@NikkiKaji\nDid you had any items for sell before deployment? Items, Weapons, Armor?\nand or only items or weapons or armor?  this can narrow down, but its weird that the error comes\nafter deployment, it looks like either a missing piece in the params of the items (if not for discount),\nor string missing which is not compleet.\nCan you explain exacly what you did before deploying? because this can narrow down the bug when he comes\nback and check it out. also tag (@)BurningOrca with it by than, so he will check it out for you and also try to find\nand fix the bug so he knows where to look at ^^"
+    },
+    {
+      "post_id": "js-post-979095",
+      "author": "NikkiKaji",
+      "date": "2019-06-21T18:43:59+0900",
+      "body": "@ShadowDragon\n@BurningOrca\nBefore deployment, I created three different shops: one that sold items, one that sold weapons, and one that sold armor. The first three images below is how I set them up in the parameters. However, this time around, when I did the playtest, the error actually occurred when I load a save file (I have no idea why it didn't the first time...). I deployed the game and started a new save file, and all three shops worked fine and I was able to open each shop and purchase the items from these shops successfully. I saved the game, exited, loaded the save file, and could no longer access the item, weapon, or armor shops, getting the same error message for all three. I deleted that save file, created another new one, and they worked again. Same happened in the playtest. Hopefully the picture explanation I gave at the bottom helps out a bit too"
+    },
+    {
+      "post_id": "js-post-979112",
+      "author": "ShadowDragon",
+      "date": "2019-06-21T19:33:37+0900",
+      "body": "@NikkiKaji\nI test it on everything, but it seems to working fine though, can you check this for me if its there or not (see image)\nItem params, double click on either item you made and on text, on the very end should be }  and see if its there.\nif it does, than I have no clue why it gives an error,  do you deploy with encrypted files and/or audio? or nothing checked?\nfor windows, mac, android?"
+    },
+    {
+      "post_id": "js-post-979114",
+      "author": "NikkiKaji",
+      "date": "2019-06-21T20:08:53+0900",
+      "body": "ShadowDragon said:\n@NikkiKaji\nI test it on everything, but it seems to working fine though, can you check this for me if its there or not (see image)\nView attachment 117943\nItem params, double click on either item you made and on text, on the very end should be }  and see if its there.\nif it does, than I have no clue why it gives an error,  do you deploy with encrypted files and/or audio? or nothing checked?\nfor windows, mac, android?\nClick to expand...\nYep, all of the items have the \"}\" at the end of them. The deployment has no encrypted files and is for windows. Is there any way you could maybe send me a file of your project, or I could send you a file of mine? At this point i'm lost as to what could be causing this ;-;\nEdit: Oh yeah and forgot to mention, I'm still getting the errors even when i don't deploy the game."
+    },
+    {
+      "post_id": "js-post-979118",
+      "author": "ShadowDragon",
+      "date": "2019-06-21T21:04:51+0900",
+      "body": "For all players new and reading this.\nwhen using the plugin command:  open shopname  (Do not use the command close shopname)\nwhich causes an error after loading a saved savefile\nRead the help file carefully."
+    },
+    {
+      "post_id": "js-post-979169",
+      "author": "BurningOrca",
+      "date": "2019-06-22T01:57:00+0900",
+      "body": "That's ackward, what did I do wrong that I cannot reproduce this issue?\nIf I use CloseShop shopname it works fine even after loading a save file.\nI use the version I uploaded 2 days ago to fix the typo.\nIf there is an issue with the CloseShop command I really like to fix it, but if I cannot reproduce this I cannot fix it."
+    },
+    {
+      "post_id": "js-post-979172",
+      "author": "ShadowDragon",
+      "date": "2019-06-22T02:10:05+0900",
+      "body": "@BurningOrca\nthere is no plugin issue, however, there a slightly type on the very bottom on the console logs saying: BO_shps\nbut its a win10 issue, which you cant do anything.  However, the event used was OpenShop \"shopname\"\nand directly below CloseShop \"shopname\"  which cause 1 issue,  the other issue on the save file worked fine here,\nbut not on her system,  she gave the download to a friend also using win10 and working there fine as well.\nI try if possible to find the cause for her sake why her win10 dont handle files correctly so i took her in private chat to avoid\na long list here\nSo its very hard for you to reproduce this issue. so dont worry ^^"
+    },
+    {
+      "post_id": "js-post-992835",
+      "author": "Guardinthena",
+      "date": "2019-08-13T15:06:06+0900",
+      "body": "BurningOrca said:\n@ShadowDragon\n: Sorry, but this plugin does and will not support that option, because it goes beyond my knowlegde of the default engine and javascript.\nI use YEP_X_MoreCurrencies in my own project for having items as currency to other items, but this would require (YEP_CoreEngine and YEP_ShopMenuCore) and I am not sure if it would be compatible with NPCDialogueShop.\nIf you wouldn't mind I would suggest you to use other events for the ticket trade instead of a shop.\nClick to expand...\nHello\n@BurningOrca\n!  I actually have some input about the above!  I am running Yanfly CoreEngine, Yanfly ShopMenuCore and YEP_X_MoreCurrencies, mjshi's NPCDialogueShop, Silva's Display Item Picture Addon to the NPCDialogueShop and your own plugin--and they DO work together!  There are only minor incompatibilities that I was hoping to have ironed out between mjshi and yourself with Yanfly's.\nSo, weird thing.  I ran into a compatibility issue with your plugin and YEP_X_MoreCurrencies.  It's minor, at least I believe it is, I'm no javascriptor in the slightest.  The 'sold out' text does not display but the gray out does.\nI tested this by moving your plugin around, turning all the shop plugins on and off until I narrowed this down, but the issue does seem to be with YEP_X_MoreCurrencies and this plugin.  With Yanfly's ShopMenuCore and MoreCurrencies both turned off, it works fine with NPCDialogueShop.  It also displays the 'sold out' text if I just have YEP_ShopMenuCore and the other shop plugins active but with YEP_X_MoreCurrencies turned off.\nAlso, I thought maybe I just had an outdated version of your Shops plugin so I downloaded what I presumed was the most recent link in this forum, and ran into some errors in the description of the plugin that make discerning this confusing.  It states in the short description box in the Plugin Manager tab ingame that I have version 1.4--but when I enter the plugin it states that it is version 1.5 in the description box.  Scrolling down further to the update history ends at version 1.4.  Was this just an oversight when the new plugin update was posted?"
+    },
+    {
+      "post_id": "js-post-992843",
+      "author": "BurningOrca",
+      "date": "2019-08-13T16:14:52+0900",
+      "body": "Yes, sorry, it was an oversight.\nI guess I see your problem. Yanfly's more currencies is drawing it's stuff over my 'sold out' texts. It worked fine for items\nthat do not use a different currency.\nAfter a further test I saw your real problem. When Yanfly does not draw the gold, because the item has no gold price\nthen my sold out is also not drawn.\nI will see what I can do about this."
+    },
+    {
+      "post_id": "js-post-992851",
+      "author": "Guardinthena",
+      "date": "2019-08-13T16:50:18+0900",
+      "body": "Oh!  Look at that!  I didn't know about the issue with the multiple currencies blotting out the 'sold out' text! XD  Wonderful catch there,\n@BurningOrca\n!\nAnd yes, the one I noticed dealt with when prices were at '0', though I didn't realize that was the issue at the time!  I've been testing out plugins and how they operate in my game so I didn't even assign prices to anything so I can just jump in the game and see how everything looks, then exit and tweak some more parameters.  So, yes!  After assigning price value's to my items the 'sold out' text does display."
+    },
+    {
+      "post_id": "js-post-992852",
+      "author": "BurningOrca",
+      "date": "2019-08-13T16:55:48+0900",
+      "body": "@Guardinthena\n:\nI updated the plugin to workaround the issue with YEP_X_MoreCurrencies.\nSold Out will now overrule the more currencies. If the only price of the item is gold I will still display the gold icon.\nIf it has any other currency assigned I will just display 'Sold out'. It didn't work any other way."
+    },
+    {
+      "post_id": "js-post-992858",
+      "author": "Guardinthena",
+      "date": "2019-08-13T17:20:42+0900",
+      "body": "Your resolution of the issue is perfectly fine with me,\n@BurningOrca\n!  Thank you so much for such a timely and speedy response and fix!  I didn't think it would be resolved so fast!"
+    },
+    {
+      "post_id": "js-post-992907",
+      "author": "ShadowDragon",
+      "date": "2019-08-13T22:12:16+0900",
+      "body": "When playing around, I also find a nice work around to make a switchshop of it ^^\nso can can use it in a nice way, but while i dont use gold, I replace gold to reward item.\nthan when you buy an item, you activate a switch ^^\nbut this can also make more possibilities in the way I set it up.\nSo many possibilities, and with this fix, you make lots of peoples happy that use this plugin."
+    },
+    {
+      "post_id": "js-post-993207",
+      "author": "BurningOrca",
+      "date": "2019-08-14T23:45:10+0900",
+      "body": "Actually I found some issues myself with just YEP_ShopMenuCore and YEP_X_MoreCurrencies even without my plugin, that I think are actually oversights by Yanfly and I also found out that I did oversee some of the same things in my plugin, too.\nIt's when you use custom selling prices.\nFirst: Yanfly has this notetag and I completely ignored it:\nor just <Sell Price: 15>\nWith v1.7 I changed my way to determine the selling price, so that:\n1. If UseCustomSellingPrice Plugin Parameter is true, take Selling Price from plugin parameters.\n2. If Selling Price from Yanfly Notetag is given, take this one.\n3. If Custom Buying Price is given in the plugin parameters, take half of this one.\n4. Take half of regular price\nSecond Issue: Can be reproduced with YEP_ShopMenuCore alone, but is also an issue with my plugin alone in case you use a Custom Selling Price for the shop good in my plugin parameters. If the buying price of an item is 0 - either because it is not meant to be ever bought or maybe it uses a different currency or whatever is the reason -\nit actually cannot be sold, even a custom selling price is provided either by Yanfly Notetag or my plugin parameters unless the Yanfly Notetag <Can Sell> is provided aswell:\nWith v1.8 I changed this to unless the Yanfly Notetag <Cannot Sell> is provided the item can be sold as long as a custom selling price is provided by either Yanfly Notetag or my plugin parameters. Any other way of providing custom selling prices is currently not supported by this fix.\nThe last issue which should better be fixed by Yanfly, but I do not know how to contact Yanfly, is again with YEP_X_MoreCurrencies and Custom Selling Prices. This time I have an item with a buying price of 0, a custom selling price and an item price:\nIf I now try to sell this, I don't see any total values a usual:\nThis is because Yanfly's check function whether gold should be displayed in the shop number window only checks the buying prices\nand does no distinction whether we are in the buying or selling mode as opposed to Yanfly's drawing functions for the shop\nnumber window.\nYou could actually work around this issue by setting up the normal item with a price > 0 and proxy buy item with the item/variable\nprice, but I found that inconvinient, so for the time being I actually fixed this with v1.9 of my plugin."
+    },
+    {
+      "post_id": "js-post-996039",
+      "author": "BurningOrca",
+      "date": "2019-08-25T21:21:31+0900",
+      "body": "Yanfly made his independent item generation the way, that any item bought from a shop does not get any random variance.\nBut today I got a new idea, that works because I have limited stock.\nSo I'll introduce the new plugin parameter, which is set to \"true\" by default in order to keep everything as it is.\nIf set to false, every item/weapon/armor, that can be independent and is not a proxy for another item and has limited stock in my shop,\nwill instead be splitted into the exact amount of independent items.\nAs my plugin already creates those independent items, the random variance will be applied.\nMy plugin calculates the new buying and selling price depending on the variance that has been applied,\ne.g. For a Sword that will normally give your Actors 10 ATK + 10 MP and normally costs 500 G\nA sword that gives you 12 ATK + 8 MP, will have a 20% ATK-Buff, but a 20% MP-Debuff, resulting in a 0% Buff entirely will still cost 500 G\nA sword that gives you 13 ATK + 8 MP, will have a 30% ATK-Buff, but a 20% MP-Debuff, resulting in a 10% Buff entirely will cost 550 G\nA sword that gives you 12 ATK + 12 MP, will have 20% ATK-Buff and a 20% MP-Buff, resulting in a 40% Buff entirely will cost 700 G.\nIt will also alter the more currencies in the same way.\nAny price changed by this functionality will not go down below 0.0."
+    },
+    {
+      "post_id": "js-post-996163",
+      "author": "ShadowDragon",
+      "date": "2019-08-26T06:20:24+0900",
+      "body": "with other words, if you refresh the shop, you get different variance to buy the best one?"
+    },
+    {
+      "post_id": "js-post-996259",
+      "author": "BurningOrca",
+      "date": "2019-08-26T12:34:47+0900",
+      "body": "If the stock refill condition is fulfilled, then yes you get a different variance, otherwise no you will get the same variance.\nI now think introducing this functionality maybe was not really a good idea, because it can quickly enhance the memory consumption for your game.\nEdit:\nI quickly made an edit, that removes non-bought independent items from the database.\nStill the $dataItems, $dataWeapons and $dataArmors Arrays might grow quickly in size with this option enabled. The stock refill condition should not be set to something that happens way to often when this is enabled."
+    },
+    {
+      "post_id": "js-post-996324",
+      "author": "ShadowDragon",
+      "date": "2019-08-26T16:44:21+0900",
+      "body": "maybe a nice idea to make it true or false, for the ppls that want to use it for true and ppls that dont want it to false\nespecially if this plugin extend or fix some bugs."
+    },
+    {
+      "post_id": "js-post-997426",
+      "author": "Summer夏",
+      "date": "2019-08-31T11:18:32+0900",
+      "body": "Hello, I found a small problem.An error occurs when the space bar is pressed when there is no item at the time of purchase or sale."
+    },
+    {
+      "post_id": "js-post-997456",
+      "author": "BurningOrca",
+      "date": "2019-08-31T14:57:27+0900",
+      "body": "@Summer夏\nThank you for the bug report.\nI have fixed this problem now."
+    },
+    {
+      "post_id": "js-post-997472",
+      "author": "ShadowDragon",
+      "date": "2019-08-31T16:40:14+0900",
+      "body": "I saw you added switch shop to it, If you think it could break, why not make an extended version to add it?\nAlso on the screen shot it says \"struktur\" which should be structure (my opinion though)\nBut Nice catch on summer.  if its updated, I should redownload it."
+    },
+    {
+      "post_id": "js-post-997479",
+      "author": "Summer夏",
+      "date": "2019-08-31T17:33:28+0900",
+      "body": "Thank you for your prompt reply! But a similar problem appeared in the sales window.\n//if( Imported.YEP_ShopMenuCore && item.cannotSell ) return enabled;\nI tried to delete the \"item.cannotSell\" in this code, it returned to normal, but I don't know what the consequences will be."
+    },
+    {
+      "post_id": "js-post-997481",
+      "author": "Summer夏",
+      "date": "2019-08-31T17:48:37+0900",
+      "body": "Summer夏 said:\nThank you for your prompt reply! But a similar problem appeared in the sales window.\n//if( Imported.YEP_ShopMenuCore && item.cannotSell ) return enabled;\nI tried to delete the \"item.cannotSell\" in this code, it returned to normal, but I don't know what the consequences will be.\nClick to expand...\nPlugin parameters: SellOnlyGoodsThatCanBeBought is true,Invalid for independent items, it is not possible to sell independent items purchased at the store."
+    },
+    {
+      "post_id": "js-post-997486",
+      "author": "BurningOrca",
+      "date": "2019-08-31T18:04:25+0900",
+      "body": "@ShadowDragon\nMy RPG Maker is german. I don't know how to change the language, so that the screenshots are more convenient for the audience at this forum.\n@Summer夏\nSorry for the inconvinience. I actually never tried it out with empty shops.\nWith my new update independent items can be sold if the base item is offered by the shop when SellOnlyGoodsThatCanBeBought is set to true.\n'With this line commented the consequence would be, that the item can be sold when it's selling price is > 0, even Yanfly's Notetag would say that it cannot be sold."
+    },
+    {
+      "post_id": "js-post-997488",
+      "author": "ShadowDragon",
+      "date": "2019-08-31T18:14:18+0900",
+      "body": "than that explain the text, it should be correct than.\nThis is another idea though.  \"If shop is open\" (just if)  and no items can be bought YET,\nwhy not a text param, similair \"we don'hae any items at this point\" so it wont open unless there ARE items?\nbut its only a suggestion, which might solve the break down part.\nBut than again, it would be a bit harder to implement if it need to be on some places to work correctly.\nI didn't download the newest version yet though."
+    },
+    {
+      "post_id": "js-post-997489",
+      "author": "Summer夏",
+      "date": "2019-08-31T18:20:19+0900",
+      "body": "BurningOrca said:\n@ShadowDragon\nMy RPG Maker is german. I don't know how to change the language, so that the screenshots are more convenient for the audience at this forum.\n@Summer夏\nSorry for the inconvinience. I actually never tried it out with empty shops.\nWith my new update independent items can be sold if the base item is offered by the shop when SellOnlyGoodsThatCanBeBought is set to true.\n'With this line commented the consequence would be, that the item can be sold when it's selling price is > 0, even Yanfly's Notetag would say that it cannot be sold.\nClick to expand...\nThank you for solving the problem so quickly!٩(๑•̀ω•́๑)۶\nBecause I don't know much about English, every function will try it again. If there is a bug, it is easy to find out.\nI have a small suggestion that the item store I sell to the store will be sold permanently or for a limited time, preventing me from accidentally selling something I don't want to sell."
+    },
+    {
+      "post_id": "js-post-997531",
+      "author": "BurningOrca",
+      "date": "2019-08-31T22:09:33+0900",
+      "body": "@Summer夏\nSorry I don't know how to implement items being sold only for a limited amount of time. I will keep it the way that it is sold permanently like in the default engine without my plugin."
+    },
+    {
+      "post_id": "js-post-997550",
+      "author": "Summer夏",
+      "date": "2019-08-31T23:17:23+0900",
+      "body": "I mean, the store sells what I sell to the store. In fact, I found another small problem. Opening the plugin will make the default store unable to sell items."
+    },
+    {
+      "post_id": "js-post-997560",
+      "author": "ShadowDragon",
+      "date": "2019-09-01T00:00:29+0900",
+      "body": "@Summer夏\nmaybe its possible to use a switch to open a shop,\nLike Switch Day 1 shop, you can open this on day 1, when day 2, turn off switch day 1, so switch day 2 is open\nif you need a limited time to use the shop. you can give the shop specific names though =)\nThis overwrite the default shop. But this is much better than the default though."
+    },
+    {
+      "post_id": "js-post-997581",
+      "author": "Summer夏",
+      "date": "2019-09-01T01:00:22+0900",
+      "body": "ShadowDragon said:\n@Summer夏\nmaybe its possible to use a switch to open a shop,\nLike Switch Day 1 shop, you can open this on day 1, when day 2, turn off switch day 1, so switch day 2 is open\nif you need a limited time to use the shop. you can give the shop specific names though =)\nThis overwrite the default shop. But this is much better than the default though.\nClick to expand...\nLet me think about how to make you understand what I mean...If you were the shopkeeper,I will sell you a silver scale breastplate.But I regret it, I hope to buy it back."
+    },
+    {
+      "post_id": "js-post-997587",
+      "author": "BurningOrca",
+      "date": "2019-09-01T01:51:26+0900",
+      "body": "@Summer夏\nHhmm could you please give me more details as the default store is working in my test project.\nWell if it is a normal item, the shop might sell it anyways. If it is a key item you should better make it unsellable.\nIf it is an independent item it is a little hard to implement keeping it in the shop in anyway, because once it is removed from your parties inventory Yanfly's plugin deletes it for good.\nEdit:\nI see it, I switched every other plugin off and now I can't sell to the default shop either.\nEdit 2:\nThis is also fixed now. Well it is a big plugin, that changes a lot. No wonder it has so many bugs."
+    },
+    {
+      "post_id": "js-post-997598",
+      "author": "Summer夏",
+      "date": "2019-09-01T02:23:56+0900",
+      "body": "I have an idea, that the items I sell to the store are not actually deleted, but are stored in the store, just like the warehouse plugin. Limited time or permanent,Buy back what I sold at the same or higher price. However, this involves YEP_X_MoreCurrencies, which seems to have many difficulties.\nIn addition, I found a problem with the sales switch clashing with YEP_X_CondShopPrices.\nyanfly.moe/plugins/en/YEP_X_CondShopPrices.js"
+    },
+    {
+      "post_id": "js-post-997610",
+      "author": "BurningOrca",
+      "date": "2019-09-01T03:20:03+0900",
+      "body": "Well that plugin was released after my plugin and I didn't care about it, because I had my discounts for price drops.\nI knew Yanfly can also give price increases with this plugin, but I just didn't care about this new plugin.\nAdding the switch shop really broke some compatibilities.\nUpdated the plugin again."
+    },
+    {
+      "post_id": "js-post-997611",
+      "author": "Summer夏",
+      "date": "2019-09-01T03:25:15+0900",
+      "body": "BurningOrca said:\nWell that plugin was released after my plugin and I didn't care about it, because I had my discounts for price drops.\nI knew Yanfly can also give price increases with this plugin, but I just didn't care about this new plugin.\nAdding the switch shop really broke some compatibilities.\nUpdated the plugin again.\nClick to expand...\nPlug-in discounts are for the entire store, not a single item. Thanks again for your patience, this is the best store plugin I have ever used. Originally I was just looking for an inventory plugin, unexpectedly perfect!"
+    },
+    {
+      "post_id": "js-post-1004286",
+      "author": "atoms",
+      "date": "2019-09-26T23:13:43+0900",
+      "body": "This is a really handy plugin. I don't know if I personally will have a use for it on my next/current game, but I can see it helping a lot of developers. Thanks for this!"
+    },
+    {
+      "post_id": "js-post-1004305",
+      "author": "BurningOrca",
+      "date": "2019-09-27T00:04:55+0900",
+      "body": "@atoms\nThank you for the compliment."
+    },
+    {
+      "post_id": "js-post-1009940",
+      "author": "Goole558",
+      "date": "2019-10-19T18:55:28+0900",
+      "body": "I have a suggestion: you can add the skill store function ?"
+    },
+    {
+      "post_id": "js-post-1009955",
+      "author": "BurningOrca",
+      "date": "2019-10-19T20:19:42+0900",
+      "body": "@Goole558\n: I realized this plugin is already feature bloat, which was not my original intention. My original intention was only to provide the limited stock. But then I got carried away and added a lot of features.\nI think there are already enough skill related plugins out their, that are way better then a skill shop could be (e.g. YEP Skill Learn System), but maybe I'll do that as an extension plugin someday and maybe also move the switch shop to an extension plugin! But I guess that will take a long time if ever done.\nBesides that it would require a new window for the actor selection to enable you to decide which actor should learn the skill."
+    },
+    {
+      "post_id": "js-post-1018315",
+      "author": "pasunna",
+      "date": "2019-11-20T18:14:01+0900",
+      "body": "--------"
+    },
+    {
+      "post_id": "js-post-1019066",
+      "author": "BurningOrca",
+      "date": "2019-11-24T04:47:10+0900",
+      "body": "@passuna What happened to your original message? I've still read it in my e-Mails.\nI know it's confusing, but it is intended, that it shows for 4 as it goes down to zero. 4 Means 5 available, but already 1 selected to buy. As 0 seem not be selectable it won't ever show to full five ones. So it is 4,3,2,1,0.\nI'm currently taking a break from developing, but I keep the suggested feature of renaming shop commands in mind."
+    },
+    {
+      "post_id": "js-post-1019140",
+      "author": "pasunna",
+      "date": "2019-11-24T10:33:42+0900",
+      "body": "well I delete it because it a little feature then I try to edit your code by my self\nWant it to show how many item left on default screen\nbut I'm not understood code or plugin by natural\njust the one that read and try to change this that\nso this is the thing I pull out\nI want it to be 5/5 - 4/5 etc\nbut I can't get it it go 5/5 - 4/4 so I use left instead\nother feature I want is changing the command name every shop by individual\nlike instead of buy to upgrade\nso I can use bladex1 and orex5 to buy blade +1\n(require more currency plugin by yanfly)\nthat open opportunity to make custom shop to do many thing just change its command name\nlike brew potion item junction, funny or immersive command name like swallow(monster trade shop)\nbut in other hand I think it's too much to ask for a little feature\nthat can just use choice so... I delete it\nand now I come up with other like\nI want ability to skip command choose page\nand go to show item buy or sell directly when open the shop\n(very annoy me when I play RPGM game I feel it too much step to do anything)\nnow you see my problem\nI want a little this a little that\nthat not everyone would want it\nso... I delete it and find a way to do it instead(but mostly not work haha...)\nthank you for your attention"
+    },
+    {
+      "post_id": "js-post-1035216",
+      "author": "BurningOrca",
+      "date": "2020-01-26T21:10:10+0900",
+      "body": "v2.1.2\n- Updated help section. Plugin command is actually names \"RefillShopStock <name>\" instead of \"RefillStock <name>\"\n- Fixed a bug around independ shop goods and the stock refill. I deleted the independ items from the memory even the party already bought them. Now I don't do this anymore."
+    },
+    {
+      "post_id": "js-post-1036930",
+      "author": "Guardinthena",
+      "date": "2020-02-03T01:16:45+0900",
+      "body": "I was hoping you could clarifiy what you mean by 'deleted independent items from memory... Don't do this anymore.'  Were you referring that this plugin is no longer compatible with Yanflys Independent Items as of version 2.1.2?"
+    },
+    {
+      "post_id": "js-post-1037120",
+      "author": "BurningOrca",
+      "date": "2020-02-03T14:49:37+0900",
+      "body": "No it is still compatible, I meant the bug was, that my plugin deleted the independend items which itself created from the game at the stock refresh. But items that have already been bought by the party had not to be deleted and this was the bug fix.\nI wrote a wrong version into the plugins description file, so don't wonder."
+    },
+    {
+      "post_id": "js-post-1040732",
+      "author": "NeoSoulGamer",
+      "date": "2020-02-18T01:44:52+0900",
+      "body": "@BurningOrca\nNot sure if you're still updating this or not, but I was wondering if it was possible to add a feature. The following plugin command would allow the player to refill shop stock of a specific item.\nRefillShopStock <Name> <Type> <ID> <Quantity>\nEx. RefillShopStock RareFinds Weapon 24 1\nSo where the name is \"RareFinds\"\nThe type of equipment is \"Weapon\"\nThe ID of the weapon is \"24\"\nAnd the refill amount is \"1\"\nThis way, we're not forced to refill an entire shop or create duplicate shops to have the same effect."
+    },
+    {
+      "post_id": "js-post-1040952",
+      "author": "BurningOrca",
+      "date": "2020-02-19T01:20:49+0900",
+      "body": "@Neo Soul Gamer\nJust a question.\nIf you call RefillShopStock RareFinds Weapon 24 1 and the stock for Weapon 24 is already at maximum (let's say 5), do you want the shop to exceed the stock limit and have 6 of this item?"
+    },
+    {
+      "post_id": "js-post-1041292",
+      "author": "NeoSoulGamer",
+      "date": "2020-02-20T07:38:08+0900",
+      "body": "No. I don't believe it should exceed the maximum."
+    },
+    {
+      "post_id": "js-post-1041537",
+      "author": "BurningOrca",
+      "date": "2020-02-21T04:27:33+0900",
+      "body": "v2.2.0 is now out.\n-New plugin command Refill<Kind>Stock \"<Name>\" <Id> <Quantity>:\nRefills a single shop good of the given kind in the shop with the given name by the given quantity. It will not exceed the maximum quantity. It currently does only work if the plugin parameter GroupItemsWithLimitedStock is set to true (Yes). The shop name must be placed into quotes as it allowes single white spaces between parts of it's name.\nIt obviously wont work for switches.\nIt is case sensitive. Examples RefillItemStock, RefillArmorStock, RefillWeaponStock"
+    },
+    {
+      "post_id": "js-post-1041599",
+      "author": "NeoSoulGamer",
+      "date": "2020-02-21T08:17:34+0900",
+      "body": "Amazing! Thank you!"
+    },
+    {
+      "post_id": "js-post-1042085",
+      "author": "ShadowDragon",
+      "date": "2020-02-23T08:14:27+0900",
+      "body": "not that I can use it, but helpfull for most users probably that want to use stock limit and day/night that have a random refill stock of 1-5 (depending what they have)."
+    },
+    {
+      "post_id": "js-post-1044627",
+      "author": "BurningOrca",
+      "date": "2020-03-05T02:35:39+0900",
+      "body": "Does anyone besides\n@Neo Soul Gamer\nhave MV1.5.1 and problems opening a shop of this plugin after loading a save file? If so, do you have the \"Yanfly Desktop Optimized Version Update\" of the rpg_(something).js files, e.g. rpg_core.js in your project js-folder?"
+    },
+    {
+      "post_id": "js-post-1044633",
+      "author": "ShadowDragon",
+      "date": "2020-03-05T03:01:58+0900",
+      "body": "I use MV 1.6.1 and dont use desktop optimization plugin. which is more if you use rpg 1.3 or 1.4 with updates\nto 1.5.x so everything behind 1.5.1 probably is desktop optimization kinda useless in my opinion.\nbut I got no problem with opening the shop on a saved file in 1.6.1 though."
+    },
+    {
+      "post_id": "js-post-1045412",
+      "author": "BurningOrca",
+      "date": "2020-03-08T14:57:21+0900",
+      "body": "Seems I've coded it in a way that is not allowed by MV 1.5.1 or ES5.\nI've updated my first post to say it requires 1.6.1 and above instead of 1.5.0 or above.\nI've received a version from another coder that actually works for 1.5.0.\nI will change all my plugins to support 1.5.1."
+    },
+    {
+      "post_id": "js-post-1051837",
+      "author": "thecourier",
+      "date": "2020-04-03T05:45:22+0900",
+      "body": "When I talk to NPC with the plugin command, I get this.\nedit: realized its because I kept the <> tags. Is it common practice to remove them in other plugins? If not, I would suggest indicating that for new users. Thanks for the plugin!"
+    },
+    {
+      "post_id": "js-post-1051933",
+      "author": "ShadowDragon",
+      "date": "2020-04-03T17:54:33+0900",
+      "body": "@thecourier\nmost common issue is YEP plugins or any other plugins not in the correct order,\nso you need to re-order it,  BO_Shop is best in the utilitiy section or below other shops if exist."
+    },
+    {
+      "post_id": "js-post-1052011",
+      "author": "BurningOrca",
+      "date": "2020-04-03T23:36:47+0900",
+      "body": "When I talk to NPC with the plugin command, I get this.\nedit: realized its because I kept the <> tags. Is it common practice to remove them in other plugins? If not, I would suggest indicating that for new users. Thanks for the plugin!\nClick to expand...\n@thecourier\nWhat do you mean with kept the tags. Which tags?\nDo you mean, because I wrote e.g. OpenShop <Name> in this forum and maybe in the help file?\nI just thought that as an indicator for that the name of the shop must be put in that position.\nThen sorry for the confusion."
+    },
+    {
+      "post_id": "js-post-1052087",
+      "author": "thecourier",
+      "date": "2020-04-04T03:50:15+0900",
+      "body": "BurningOrca said:\n@thecourier\nWhat do you mean with kept the tags. Which tags?\nDo you mean, because I wrote e.g. OpenShop <Name> in this forum and maybe in the help file?\nI just thought that as an indicator for that the name of the shop must be put in that position.\nThen sorry for the confusion.\nClick to expand...\nWhen writing the plugin command, I wrote OpenShop <FPshop1> instead of just OpenShop FPshop1. I thought that the \"< >\" was necessary to have in the plugin command. I thought this because other plugins will use \"<>\" in their commands like <cannot discard> in yanflys."
+    },
+    {
+      "post_id": "js-post-1052198",
+      "author": "BurningOrca",
+      "date": "2020-04-04T14:27:11+0900",
+      "body": "thecourier said:\nWhen writing the plugin command, I wrote OpenShop <FPshop1> instead of just OpenShop FPshop1. I thought that the \"< >\" was necessary to have in the plugin command. I thought this because other plugins will use \"<>\" in their commands like <cannot discard> in yanflys.\nClick to expand...\nThen again sorry for the confusion. The notetags in the note boxes of the database are used with <> by I guess everyone. I guess it is to split them apart from regular notes via XML Syntax. Plugin Command usually go without <>."
+    },
+    {
+      "post_id": "js-post-1052228",
+      "author": "BurningOrca",
+      "date": "2020-04-04T18:29:47+0900",
+      "body": "Had to rework this plugin in order to find other workarounds for compatibility issues with Yanfly plugins rather than copying the code that still needs to be called and leaving out the rest as it is prohibited by the terms of use of Yanfly plugins and I guess also by copyright. I just want to avoid making me to have to take this plugin down. Yet I still hope this is just a minor issue as my plugin is given away for free.\nI've tested it quite a bit and I am quite sure that it still works as intended. Just report any issue you find.\nThe new version just includes some other workarounds for YEP + NPCDialogueShop used at the same time as BO_Shops."
+    },
+    {
+      "post_id": "js-post-1082545",
+      "author": "BurningOrca",
+      "date": "2020-06-27T18:38:49+0900",
+      "body": "Things I am unsure about:\n- Whether I continue with my own project. There are times I really like working on it and times I don't work on it for weeks or even months, just because I don't feel the fun working on it.\n- Whether I stay around in this forum for long. If I discontinue my project I will definitely be gone from this forum, too.\n- Whether I get MZ. I'll definitely try out the trial version, but won't get the full version day one.\nBut now let's talk about this plugin and why I wrote this kind of introduction:\nIf there isn't any better default support for shops in MZ then MV had (limited stock by default would be amazing) and nobody wrote a similar shop plugin by the time I might get the full version of MZ I'll propably port it. This is not guaranteed. As this plugin has a bunch of code just dealing with compatability to existing MV plugins and everyone has to port their plugins over or write them from scratch, the first MZ version might not contain any of this compatability fixes. They will need to be written from scratch.\nIf I won't be around for the MZ era you just have to hope that someone writes a similar plugin, but I might just give someone the allowance to port BO_Shops, before I will be gone.\nEdit:\nAlso even this plugin is already feature bloat, you might give me some suggestions on what makes a good shop plugin and is maybe still missing. Suggestions on what could be added. Also are there things that are unnecessary and should be removed?\nI also wonder if this would have been better if it included an HTML Editor for the Shops similar to those of some SRD plugins? Still not sure if I can implement such an editor."
+    },
+    {
+      "post_id": "js-post-1082783",
+      "author": "ShadowDragon",
+      "date": "2020-06-28T05:29:05+0900",
+      "body": "so far, your plugin with NPC dialogue = a topshop, even without npc dialogue.\nyour shop have already amazing stuff, even a switch shop.  can make evals and dicounts.\nsometimes, that require 1-3 shop plugins to create the same effect.\nlimited stock is something everyone could use, even RL are limited stock and need\nitems to refill,  so let's say, shop have 5 potions, and run out.\nnow need teh owner stock for the potions and let you get it (maybe through a quest)\nyou give the owner 10 potions, so the stock fill = +10 (yay)\nlimited stock might be existed, but refill a stock, maybe not (not that I know off).\nIt would be sad if you left the community, but take your time on your project,\nyou can always check once a week or once per 2 weeks for suggestions.\nbut that is also totally up to you, I'm happy you created this plugin for free for others\nbut in case you really want to leave (which I hope you stay around)\nI wish you the best, also with your project. (which should take priority) over plugins\nto the public."
+    },
+    {
+      "post_id": "js-post-1082906",
+      "author": "Guardinthena",
+      "date": "2020-06-28T09:48:09+0900",
+      "body": "ShadowDragon has covered the base of my own sentiments but I will say anyway, it will be sad to see you go, should that become your choice, but I do understand.  Take time to work on your project and just know that this plugin is gold.  It is wonderdul that you have put so much into it and made it free for the community.  (And thank you for the shop organization add on!)"
+    },
+    {
+      "post_id": "js-post-1082974",
+      "author": "BurningOrca",
+      "date": "2020-06-28T14:09:11+0900",
+      "body": "ShadowDragon said:\nso far, your plugin with NPC dialogue = a topshop, even without npc dialogue.\nyour shop have already amazing stuff, even a switch shop.  can make evals and dicounts.\nsometimes, that require 1-3 shop plugins to create the same effect.\nlimited stock is something everyone could use, even RL are limited stock and need\nitems to refill,  so let's say, shop have 5 potions, and run out.\nnow need teh owner stock for the potions and let you get it (maybe through a quest)\nyou give the owner 10 potions, so the stock fill = +10 (yay)\nlimited stock might be existed, but refill a stock, maybe not (not that I know off).\nIt would be sad if you left the community, but take your time on your project,\nyou can always check once a week or once per 2 weeks for suggestions.\nbut that is also totally up to you, I'm happy you created this plugin for free for others\nbut in case you really want to leave (which I hope you stay around)\nI wish you the best, also with your project. (which should take priority) over plugins\nto the public.\nClick to expand...\nSo switch shops are actually useful? That was the one feature I was thinking about to remove in a possible MZ version. A switch shop is basically just like an unlockable options menu. I couldn't think about good use cases even at the time I added it into the plugin.\nGuardinthena said:\nShadowDragon has covered the base of my own sentiments but I will say anyway, it will be sad to see you go, should that become your choice, but I do understand.  Take time to work on your project and just know that this plugin is gold.  It is wonderdul that you have put so much into it and made it free for the community.  (And thank you for the shop organization add on!)\nClick to expand...\nThank you both for your support.\nIf I stay, which I still hope will happen, this plugin will have my #1 priority in being ported to MZ."
+    },
+    {
+      "post_id": "js-post-1083005",
+      "author": "ShadowDragon",
+      "date": "2020-06-28T16:37:55+0900",
+      "body": "switch shop in general maybe not that much,  but in my case, I use gold curency (become tickets)\nor some kinds, to buy stuff that unlocks.\nSRD has a switchshop,  but the purpose for switch shop can be used in many ways like\nthose fe examples:\nUnlock specific doors (can be town, dungeons, hidden entrances etc)\nUnlock new fonts (if used or bought to get +2 new fonts in option menu or more)\nUnlock window frames (if you add a bunch)\nUnlock background color slider (if you want green instead of black ir whatever the color default)\nUnlock new items for greater danger etc.\nand many many possibilies.  removing this one would be a shame, but if 1 make a switchshop\nwhy not include it directly?  It can be for much nice use though.\nwether they use it or not, I would not remove it though.  but in case you want to remove it,\nmake 2 versions, 1 with, 1 without,  so they can download 1 or another =)\nnot using it is simple ignore that part,  but it also depends on the game they create."
+    },
+    {
+      "post_id": "js-post-1083007",
+      "author": "BurningOrca",
+      "date": "2020-06-28T16:59:32+0900",
+      "body": "ShadowDragon said:\nswitch shop in general maybe not that much,  but in my case, I use gold curency (become tickets)\nor some kinds, to buy stuff that unlocks.\nSRD has a switchshop,  but the purpose for switch shop can be used in many ways like\nthose fe examples:\nUnlock specific doors (can be town, dungeons, hidden entrances etc)\nUnlock new fonts (if used or bought to get +2 new fonts in option menu or more)\nUnlock window frames (if you add a bunch)\nUnlock background color slider (if you want green instead of black ir whatever the color default)\nUnlock new items for greater danger etc.\nand many many possibilies.  removing this one would be a shame, but if 1 make a switchshop\nwhy not include it directly?  It can be for much nice use though.\nwether they use it or not, I would not remove it though.  but in case you want to remove it,\nmake 2 versions, 1 with, 1 without,  so they can download 1 or another =)\nnot using it is simple ignore that part,  but it also depends on the game they create.\nClick to expand...\nOkay then I'll keep it. It is funny, I only included it after seeing that SRD has a Switch Shop.\nIf I would have a variable shop too, then it would be almost like a Disgaea Cheat Shop, except that Disgaea Cheat Shops don't charge money for their options.\n@ShadowDragon\nAlso thank you for constantly doing advertisement for my plugin in other threads."
+    },
+    {
+      "post_id": "js-post-1083024",
+      "author": "ShadowDragon",
+      "date": "2020-06-28T18:52:38+0900",
+      "body": "it's the best out there with the most possibilities, most time its better than yanfly, unless\nmore currencies is needed,  it's the only shop that has most features so yea,\nyour's come up first in mind,  if they want many features and talking npc behind,\nI include yours and npc_dialogue plugin so they have the best shop they can create =).\nvariable shop can have some simplyfies, instead of 4 switches to unlock every font,\nyou can use variables instead, when variable x = 1, add, some, if 2, add more etc.\nI didn't know about the Disgaea Cheat Shop though,  but I dont like cheating though.\nbut I wont add any more features to it though, only bug fixes where needed.\nHave a wonderfull day\nI keep advertising yours if people looking for a great shop ^^"
+    },
+    {
+      "post_id": "js-post-1083065",
+      "author": "BurningOrca",
+      "date": "2020-06-28T23:25:24+0900",
+      "body": "Disgaea is a game series and it is called cheat shop, but basically consists only of options, like difficulty or getting upto 1000% of EXP, but 0% money and 0% mana from the battles and vice versa."
+    },
+    {
+      "post_id": "js-post-1088346",
+      "author": "Guardinthena",
+      "date": "2020-07-10T08:55:36+0900",
+      "body": "Err, BurningOrca?  I'm sorry to do this to you--I ran into two bugs in the plugin.  It seems that it will not allow me to scroll up or down with the arrow keys when purchasing armor or weapons, even if the stock is infinite.  But it will allow me to do that with items.  The second bug is that it is not correctly updating my armor or weapons in my possession when I purchase, but it will for items.\nI am not running Yanfly's ShopMenuCore plugin, but I am running mjshi's NPC Dialogue Shop.  I turned that off to see if it was the problem, and it seems it is partly to blame.  It did not fix the scroll issues with the arrow keys, but the possession count worked after that."
+    },
+    {
+      "post_id": "js-post-1088991",
+      "author": "BurningOrca",
+      "date": "2020-07-12T00:06:59+0900",
+      "body": "@Guardinthena\nAre you running YEP_ItemCore with the following parameters:\nor at least Max Weapons and Max Armors > 0. If so then this is not a bug in my plugin, but intended behaviour of YEP_ItemCore. Because items bought from the shop are still converted into independent items after being bought and you can have only 1 of each independent at a time, the maximum you can buy even without my plugin would be 1.\nThe second issue is within NPCDialogueShop not being fit for YEP_ItemCore's independent items.\nI cannot find any other reasons, cause with only NPCDialogueShop and my plugin it works. I can only reproduce the situation with YEP_ItemCore switched on and setting the parameters for Weapons and Armor > 0."
+    },
+    {
+      "post_id": "js-post-1088994",
+      "author": "Guardinthena",
+      "date": "2020-07-12T00:18:27+0900",
+      "body": "Oh!  Oh goodness!  Thank you!  Yes, I am running Yanfly's Item Core plus a number of its extensions!  I would not have considered that had an affect but it makes since now that you mention the independent items, which I have active.\nThank you for the speedy response BurningOrca and for taking the time to figure this out.  I'll contact mjshi about the bug and hope she can do something to fix it."
+    },
+    {
+      "post_id": "js-post-1089844",
+      "author": "BurningOrca",
+      "date": "2020-07-14T00:02:31+0900",
+      "body": "One minor issue I've found now is if two or more shops offer the exact same switch, you still have to buy it in the other shops again, if you already bought it from one of the shops. But I guess it is really okay and a minor issue. People should just not create shops that share switches. Fixing that would break existing save files, so that already bought switches must be bought again."
+    },
+    {
+      "post_id": "js-post-1091468",
+      "author": "SmashArtist",
+      "date": "2020-07-17T12:35:25+0900",
+      "body": "Hey there!\nDownloaded your plugin and am loving it! Unfortunately I ran into a strange bug where the amount of each item is displayed as -1 of the intended amount. (so an item with a stock of 1 is displayed as 0).\nThis occurs even in a completely blank new project.\nTo be clear you can still purchase the intended amount, it's just displayed as 1 less.\nMaybe I missed a parameter somewhere?"
+    },
+    {
+      "post_id": "js-post-1091848",
+      "author": "BurningOrca",
+      "date": "2020-07-18T15:15:02+0900",
+      "body": "It displayes one less, because I intended it to show the quantity tha will be in stock after you've bought the selected amount: If you buy 1 with a stock quantity of 5, it shows 4 and if you buy 2 it shows 3. However I'm pretty sure you are not the first one mentioning this, maybe I should change it or at least introduce a parameter to set the behaviour (show max vs. show max - current buy amount)?"
+    },
+    {
+      "post_id": "js-post-1091950",
+      "author": "ShadowDragon",
+      "date": "2020-07-19T00:11:25+0900",
+      "body": "show max - current is the one currently active?  if so, its good, but if the opinion is different,\nyou can also add that param (default: show max - current\n)  but that is totally up to you."
+    },
+    {
+      "post_id": "js-post-1091966",
+      "author": "BurningOrca",
+      "date": "2020-07-19T01:13:00+0900",
+      "body": "Oh man why did I write max? Instead of max I really did mean the current stock.\nSo functionality is currently (current stock - amount that is currently selected to be bought), so it shows the stock that would be left after the buy operation. So Parameter could be Show Current Stock? Yes: Shows always the current stock and doesn't decrease when the number to be bought increases. No: Shows the stock that would be left after the buy operation. Default: No (Current behaviour).\nBut I will await\n@SmashArtist\n's answer before doing anything.\nAlso I figured that at least for a possible MZ release I should rename this plugin. BO_Shops sound way to general. It sounds like it is adding shops to a engine, that already has shops. Better names would be BO_CustomShops or BO_ShopCustomizer or any suggestions? Otherwise keeping the name might be better, as so many people or already familiarized with the name.\nI would also like to take suggestions for a better name for the plugin parameter!"
+    },
+    {
+      "post_id": "js-post-1092001",
+      "author": "SmashArtist",
+      "date": "2020-07-19T03:04:51+0900",
+      "body": "BurningOrca said:\nIt displayes one less, because I intended it to show the quantity tha will be in stock after you've bought the selected amount\nClick to expand...\nAh ok, that makes sense. I think it confused me because I expected the current amount to only change once you've actually bought the item."
+    },
+    {
+      "post_id": "js-post-1092035",
+      "author": "ShadowDragon",
+      "date": "2020-07-19T04:25:58+0900",
+      "body": "BO_ShopCustomizer seems good and BO_CustomShops is a bit off.\nBO_ExtendShops might be a possibility too while it, it expend the shop.\nI dont mind if you change this plugin or not, it's your plugin and your choice.\nif you want to rename it, Please do what fits\nI dont mind it at all though."
+    },
+    {
+      "post_id": "js-post-1092040",
+      "author": "Guardinthena",
+      "date": "2020-07-19T04:40:32+0900",
+      "body": "BO_AwesomeShops or BO_AwesomeShopsofAwesomeness\nJust joking about the above, I do think the proposed names are all good, including ShadowDragons.\nBO_ShopCustomizer\nBO_CustomShops\nBO_ExtendShops\nBO_ShopExtension\nIn the end a name change to the plugin doesn't bother me in the slightest but I understand why you want to rename it.  My suggestion, try saying some of the names a couple times ans go with which one rolls off the tongue better."
+    },
+    {
+      "post_id": "js-post-1092250",
+      "author": "BurningOrca",
+      "date": "2020-07-19T20:50:59+0900",
+      "body": "Okay I've added that little option to customize how stock quantity is displayed now and renamed it to BO_CustomShops, but I kept the Imported-Statement to be Imported.BO_Shops so that any maybe existing Add-Ons that I don't know of and BO_ShopCategories don't need to be changed and reuploaded just due to the name change.\nSpoiler:\nMZ related stuff\nI just want to know, does anyone here plan to move to MZ or are you staying with MV? I just want to figur out important it might be to port this plugin early on. I guess the 27th of August might be possible, but I doubt the Vizustella Plugins will be ready by then, so I have to scrap functionality that relies on other author's plugins e.g. YEP_ItemCore. Currently I am planning just to get a trial version and familiarize myself with the improved engine. I didn't plan to develop or release a plugin until MZ is on sale. Even then I might not get it, because currently I don't feel the same joy working on a project that I had when I started with MV."
+    },
+    {
+      "post_id": "js-post-1092270",
+      "author": "ShadowDragon",
+      "date": "2020-07-19T22:54:55+0900",
+      "body": "I stick with MV though, while MZ have some really nice features.\neven if there where addons for your shops, as imported.BO_Shops, they can easely change\nthat inside the plugin to match yours and will be working again.\nI personally wont update/rewrite your plugin if you dont buy MZ, but if you ever consider it,\nand the shops is as crap as MV, than see if you want to port it, else let someone else do it,\nif you stick at MV as well =)\nwhoever that want to port it should credit you as well for this amazing plugin\nits the best out there for MV."
+    },
+    {
+      "post_id": "js-post-1092272",
+      "author": "Guardinthena",
+      "date": "2020-07-19T23:26:57+0900",
+      "body": "I'm sticking with MV.  So far, I am not impressed with what I've seen in MZ.  My feelings is that a lot of what I have seen should have been implemented in MV when they upgraded from Ace.  Considering I can do everything they are teasing with plugins, I am just not impressed.\nOnce already I have made a painful transition from VX Ace to MV with my current project and I can't bring myself to do it again."
+    },
+    {
+      "post_id": "js-post-1092302",
+      "author": "BurningOrca",
+      "date": "2020-07-20T01:19:19+0900",
+      "body": "Okay then I guess it can wait. Nice to year that someone think it is the best plugin out there. Thank you.\nI actually enjoy character generator the most. I hope MZ has some good generator parts to offer. I don't really care about the offset functionality and adding gradients. I just want good generator parts and a greater variety of specific parts."
+    },
+    {
+      "post_id": "js-post-1094726",
+      "author": "BurningOrca",
+      "date": "2020-07-25T17:12:08+0900",
+      "body": "ShadowDragon said:\nI wont add any more features to it though, only bug fixes where needed\nClick to expand...\nSorry, but I've go ideas and whenever I get ideas I want to fulfill them. Actually the ideas weren't compatible anymore with the existing BO_Shops. That is why I've uploaded an XL version with the same terms of use. The ideas where also not compatible with YEP_X_MoreCurrencies and YEP_ConditionalShopPrices. So XL version is not compatible to those two plugins anymore. I am currently to lazy to describe all it's features here. If you want to you can download it and read through the helpfile to see if it is worth using or whether it is even properly described. Existing projects that already have used BO_Shops and/or those two Yanfly plugins are not recommended to be upgraded to BO_CustomShopsXL.\nBO_CustomShopXL does implement the more currencies itself, but sadly inferior to Yanfly's plugin. It is limited to a single currency per item/weapon/armor, because of drawing space. It also cannot use Weapons and Armor as a currency per default, because I simply don't see them as currencies."
+    },
+    {
+      "post_id": "js-post-1094735",
+      "author": "ShadowDragon",
+      "date": "2020-07-25T17:38:58+0900",
+      "body": "if it's has a more currency implented, it can be harder to use it (in my opinion) if there is no\nmore currency available unless done with a variable.\nunless its implented to do so as well.\nAnyway, I will take a look to it.\nbut does the old one still have this feature for the other 2 plugins (not that I use it though).\nEDIT:\nI check the XL version, but need to play around with it, but I got one question,\nwhile in the description it say \"extension\", do you mean you need to use both?\nor can XL only be used if customshops is NOT used?\nis credit you optional? because I like to credit you when used though."
+    },
+    {
+      "post_id": "js-post-1094746",
+      "author": "BurningOrca",
+      "date": "2020-07-25T18:32:32+0900",
+      "body": "I've forgot to mention things in the helpfile of XL, e.g. the plugin commands and had to take it down again. Will upload it again later this day.\n@ShadowDragon\nThe old one is compatible with the two YEP plugins.\nXL and the old one are not compatible. Using both at the same time does not work. I need to change the plugin description of XL then.\nCredit is optional. I don't require it, but if you want to, go and credit me.\nEdit:\nAlso had to take down and replace BO_CustomShops, because after rename it didn't read the plugin parameters correctly anymore. If you rename it back to BO_Shops after download you'll need to replace the line BurningOrca.Shops.Parameters = PluginManager.parameters('BO_CustomShops'); with BurningOrca.Shops.Parameters = PluginManager.parameters('BO_Shops');"
+    },
+    {
+      "post_id": "js-post-1094748",
+      "author": "ShadowDragon",
+      "date": "2020-07-25T18:46:16+0900",
+      "body": "I did not use it yet, but those are easely fix if an error pops up.\nwhen the new version is available with the correct helpfile, I test out\ncustomshopsXL,  because I use tickets instead of gold, maybe a different currency as while.\nwhich can be done with items.\nyou do a really nice job though."
+    },
+    {
+      "post_id": "js-post-1094753",
+      "author": "BurningOrca",
+      "date": "2020-07-25T19:06:00+0900",
+      "body": "I've reuploaded it now. Not only did I need to fix the help file, it actually also had some bugs I've found now. It is already tested a lot, but still not tested enough. In a test project it's okay to use. I wouldn't recommend using it in a actual project for now, also it is allowed.\nI'll appreciate any feedback you can give me on the XL version.\nAnd you are right, with the more currencies implemented into it, the plugin parameters are actually harder to setup. You can also tell me, whether I should add some of the minor QoL improvements from XL to the normal one."
+    },
+    {
+      "post_id": "js-post-1094806",
+      "author": "ShadowDragon",
+      "date": "2020-07-25T21:33:33+0900",
+      "body": "I wont peronally add features added to XL to the normal one, because XL\nextend the normal one already, else you have just a duplicate plugin, with 1-3 features less.\nI would recommend (but your choice) to keep BO_CustomShop how it is (alot of features already)\nif people strafe for more features, they can use XL version.\nI play a bit around on the XL version and see if I can get it to work properly.\nreport back when need too or feedback after testing.\nEDIT:\nfrom the current testing on custom currency (item, variable) works smoothly,\nno idea yet of the \"none\" amd \"currency\" (need to read the helpfile on those 2).\nhowever,\nMKR_ShopItemMessage\nwhich worked before, it does not work on the\nnewer version of BO_CustomShops! <- this one give an error when on a switch\nand than crash, else it works for regular items normally.\nBO_CustomShopsXL <- this one doesn't even open the shop when the MKR is ON.\nbut works normally when MKR is OFF.\nit works on items only without switches in CustomShop, not the XL entirely nor the items.\nI might not using it while I use tickets which I can do with items.\nalso got some other idea's because of the custom currencies for different switches.\nso I cant use the MKR anyway.\nI do not know ES6 JS unfortnuately to test the js part. But I hope ES5 still works?\nif not, it doesn't mind, if I need something specific, there are people that can help out.\nfor the rest, it works as exspected, just need to get used of ID and amount to get it correctly.\nthat's all for now\ndont fix the MKR inside your plugin, but rather, edit that plugin for compability\nI dont have use for it in my current game, so all good"
+    },
+    {
+      "post_id": "js-post-1095346",
+      "author": "BurningOrca",
+      "date": "2020-07-27T01:00:35+0900",
+      "body": "Sorry I don't have the old version of BO_CustomShops anymore, so I don't know how MKR_ShopItemMessage ever worked together with it and using switches.\nThanks to your report I found another bug in XL: Normal Item descriptions where never displayed in it.\nIt was actually easier to add the two required fields meta and description to class Game_ShopGood of my plugin instead of altering the other plugin.\nI am pretty sure the way XL is written it will be incompatible to a lot more shop plugins than it's non XL counterpart. I'd still recommend using BO_CustomShops instead of XL if maximum compatiblity is required.\nCustom Price Type \"None\" means using regular price from database.\nEdit:\nThe only feature from XL I'd every myself consider to add to the normal version if possible would be this:\nDisplaying stock quantity already in the numbers window. Off course fully customizable like in the XL vesion."
+    },
+    {
+      "post_id": "js-post-1095613",
+      "author": "ShadowDragon",
+      "date": "2020-07-27T15:36:48+0900",
+      "body": "MKR worked before (still have the older version) and it gave a meta error, might be\nbecause of it, not sure why, but I asked if they can make it compatable, because\nit can become very handy.\nbut I never tested it on switches before, I think because switches doesn't have\na meta notetag field, so it would be probabl impossible to get that to work.\nbut its an amazing plugin.\nfor my use, the XL version does it's job on my end, so it doesn't give much of a problem.\nexcept for the JS part what I can do with it in ES6 which I dont know.\nI know a little of ES5 only."
+    },
+    {
+      "post_id": "js-post-1095649",
+      "author": "BurningOrca",
+      "date": "2020-07-27T18:25:07+0900",
+      "body": "Well XL didn't work, because my class Game_ShopGood which I used instead of the regular array, that normally presents shop goods, didn't have a meta property either. But now I added an empty meta object to Game_ShopGoods of type Switch and copied over the meta object of item/weapons/armor to Game_ShopGood, so it should work now. It was my fault, that it didn't work, so I had to fix it.\nI don't understand the question about ES6. My classes in the XL version are written in ES6, but if you need to use any javascript with my plugin using ES5 is still fine."
+    },
+    {
+      "post_id": "js-post-1095694",
+      "author": "ShadowDragon",
+      "date": "2020-07-27T21:09:56+0900",
+      "body": "will test out and see if its working.\nEDIT:\nMKR plugin is working smoothly again and doesn't crash on switch.\nwhile the switch otherwise show the shopname, but no idea if switch can have\nmeta's in general though.\nI might need to see a work around on this one,  item -> use -> switch activate.\nbut thank you to make it work again\nbecause it can be really usefull for custom\nshop message.\ninstead of \"potion description: this heal for 500HP\", with MKR ON and set the notetag\nyou can see:  \"this potion can be found everywhere\" or another text.\nI wonder how to do this with switches though. because switches doesn't have notetags."
+    },
+    {
+      "post_id": "js-post-1095746",
+      "author": "BurningOrca",
+      "date": "2020-07-27T22:59:08+0900",
+      "body": "It can't be done with switches. They don't have notetags. I would have to add a note parameter it in the plugin parameters. However I am not sure if I will to that. I'm currently not planning to add more features, just bug fixes."
+    },
+    {
+      "post_id": "js-post-1096937",
+      "author": "TheGameAfter",
+      "date": "2020-07-30T05:43:57+0900",
+      "body": "Edit:\nGreat plugin, thanks for the time you put for it, by the way, I create a small resource post for shop system, I put your new version and your old version as in my resources post, you can see\nit here\n(at the top). thanks again for an amazing plugin."
+    },
+    {
+      "post_id": "js-post-1107620",
+      "author": "BurningOrca",
+      "date": "2020-08-23T17:41:33+0900",
+      "body": "Found some math errors in XL and removed them.\nEdit:\nI now also found a bug in XL for the refill of a single item/armor/weapon."
+    },
+    {
+      "post_id": "js-post-1110872",
+      "author": "SmashArtist",
+      "date": "2020-08-28T03:25:51+0900",
+      "body": "Hey there!\nI'm using your plugin and decided to put in some conditional discounts, but when the condition is met it throws a \"$dataArmor is not defined\" error.\nI've disabled all my plugins and I still get this error. It also gives this error in an empty new project.\nThis seems to only happen when you have armor being sold in the shop.\nThis is how I have the condition set up:\nCondition: $gameVariables.value(45) === 1; (changing the condition doesn't seem to stop the error)\nPercentage: 25 (though changing this doesn't effect the error at all)\nLet me know if you need any other information."
+    },
+    {
+      "post_id": "js-post-1110903",
+      "author": "BurningOrca",
+      "date": "2020-08-28T04:24:08+0900",
+      "body": "@SmashArtist\n: Sorry, that was a typo. Should have been $dataArmors.\nOther quick update: I would have a version ready that seems to work in MZ, but cannot upload it, because I would only be able to support it for another 13 days until trial license expires."
+    },
+    {
+      "post_id": "js-post-1110941",
+      "author": "SmashArtist",
+      "date": "2020-08-28T05:03:52+0900",
+      "body": "Ah alright, easy fix."
+    },
+    {
+      "post_id": "js-post-1115863",
+      "author": "BurningOrca",
+      "date": "2020-09-06T23:55:18+0900",
+      "body": "Found a bug in RefillItemStock of the normal BO_CustomShops.\nEdit:\nI've now changed my mind and thus the terms of use regarding MZ. Sorry, I won't allow anyone to port it over to MZ. I've tried porting XL during my MZ trial period and it seems to work fine standalone, but is completely incompatible to VisuStella and that is my fault for changing how shop goods are defined in XL from an array of arrays to an array of my new class Game_ShopGood. This simply can't work well with other shop plugins without major workarounds. Next up I've tried to port the normal one, yet again seeming to work fine standalone and I also seem to have achieved a version that is logical compatible to VisuStella, which means it seems to cause no errors. It is still not fully functional compatible to VS, because my Switch Shops won't work with VS installed and the currency unit will be displayed next to the Sold Out Text. I don't really need to get compatible to VS, but I really wished to get compatible. I guess contaticting someone from the VS Team wouldn't change anything, because I've added new functionality, which is just incompatible by nature. You can clearly see that on how many compatibility fixes to YEP plugins where needed for the MV versions, just because of the way I've wrote them.\nI came to the conclusion that it might be an option to write an own Item & Shop based plugin library if I ever get a full version of MZ."
+    },
+    {
+      "post_id": "js-post-1116621",
+      "author": "BurningOrca",
+      "date": "2020-09-08T04:34:48+0900",
+      "body": "Sorry for posting under myself. I just don't know if otherwise the users who watch this thread would get notifications.\nI've found serious bugs in XL. Shops weren't even working after loading a safe file.\nAlso I've changed my mind from yesterday and actually uploaded a MZ Version based on XL and I actually had an idea to make it at least partially compatible to Visustella: Some drawing functions and UI Styles don't work exactly correct, but I need to go to bed now.\nAlso my trial license of MZ runs out tomorrow, which is why I won't be able to support this plugin for a while. It is just experimental.\nEdit:\nYet again introduced a small little bug with the fixes in XL yesterday."
+    },
+    {
+      "post_id": "js-post-1116965",
+      "author": "TheGameAfter",
+      "date": "2020-09-08T22:50:28+0900",
+      "body": "BurningOrca said:\nSorry for posting under myself. I just don't know if otherwise the users who watch this thread would get notifications.\nI've found serious bugs in XL. Shops weren't even working after loading a safe file.\nAlso I've changed my mind from yesterday and actually uploaded a MZ Version based on XL and I actually had an idea to make it at least partially compatible to Visustella: Some drawing functions and UI Styles don't work exactly correct, but I need to go to bed now.\nAlso my trial license of MZ runs out tomorrow, which is why I won't be able to support this plugin for a while. It is just experimental.\nEdit:\nYet again introduced a small little bug with the fixes in XL yesterday.\nClick to expand...\nHey\nBurningOrca\n,\nyour shop plugin is the top of the line, I don't think you should be worried about MZ right now, there is still a lot they need o work on to make it stable, and many MV users like me the buy MZ still prefer using MV, for now, so you could just continue to support the plugin with the MZ version, I'm sure many people like me would love to use your shop system in their MV games, I really don't think there is a better shop system for mv, and I found many as you know\nplease continue to support the plugin in the MV version, we all love your shop plugin!"
+    },
+    {
+      "post_id": "js-post-1116972",
+      "author": "BurningOrca",
+      "date": "2020-09-08T23:04:29+0900",
+      "body": "@TheGameAfter\n: Yes I will continue to support the plugin in MV version.\nI ment I cannot support it in MZ version, because trial did run out.\nMaybe I shouldn't have uploaded it at all. Also I didn't open a new thread in MZ plugin releases because of this. I guess nobody that is actively using MZ will search for it in the MV threads.\nEdit:\nI've taken the MZ version down. Read more about that in the first post of this thread."
+    },
+    {
+      "post_id": "js-post-1135444",
+      "author": "BurningOrca",
+      "date": "2020-11-08T02:36:51+0900",
+      "body": "To tell the truth while I was writing XL I've got a idea for a 3rd version, a lunatic version, that allows a lot of Javascript to be entered in the plugin parameters, but I've never really written it.\nNow I don't think it's necessary anymore.\nJust a question: Do you still recognize it, if I change the original post in this thread, without me writing the exact same thing into a new post.\nIf not I've added Edit 27 and uploaded a new version of XL. The new version will be required for a little extension plugin I am currently writing."
+    },
+    {
+      "post_id": "js-post-1135471",
+      "author": "ShadowDragon",
+      "date": "2020-11-08T05:14:57+0900",
+      "body": "totally lunatic version is probably only for the very advanced javascript coders to setup.\nwhich I cannot do yet.\nbut the extension can be possible if you want too,  but I cant use that\nbut the question is also, how man people can and will use it?\nit's totally up to you =)"
+    },
+    {
+      "post_id": "js-post-1135476",
+      "author": "TheGameAfter",
+      "date": "2020-11-08T05:38:57+0900",
+      "body": "BurningOrca said:\nTo tell the truth while I was writing XL I've got a idea for a 3rd version, a lunatic version, that allows a lot of Javascript to be entered in the plugin parameters, but I've never really written it.\nNow I don't think it's necessary anymore.\nClick to expand...\nIt will only works if you add something like '.json' file the is optional to use to edit/create the shop, but should be only optional if so, I think is better to improve the easy interface of the plugin and the shop set up, maybe add more control on the sence size/look or adding icons/images...\nBurningOrca said:\nJust a question: Do you still recognize it, if I change the original post in this thread, without me writing the exact same thing into a new post.\nClick to expand...\nIt will be recognize it if you add a note on start of this post tell people there is a new post + a link."
+    },
+    {
+      "post_id": "js-post-1135577",
+      "author": "BurningOrca",
+      "date": "2020-11-08T14:54:46+0900",
+      "body": "I had to update it again. It was still not working exactly as I've intended.\nEdit:\nAnd guess what, I've found another bug in my reworked stock refill."
+    },
+    {
+      "post_id": "js-post-1150273",
+      "author": "BurningOrca",
+      "date": "2020-12-31T00:20:30+0900",
+      "body": "About .json files:\nIf they should be a option to create the shops, then I have to say no, this would make the plugin to complex. It is already feature bload.\nMaking them mandatory, replacing the plugin parameters, but only in an entirely new plugin, that is ment for MZ, but would also work in MV, is actually an option to consider.\nAdvantages:\n- The plugin could be split into more plugins, each covering a single functionality (like seperate plugin for Switch Shops, Discounts, Sellable Item Restrictions), making everything more modular.\n- Easier to extend, e.g. adding Skill Shops (don't know why I have this idea, cause you actually could sell items that teach skills already). Other people could write extensions aswell.\nDisadvantages:\n- .json files are harder to setup than the plugin parameters.\nI would have to write a Graphical User Interface which allows to create and edit shops and which creates the .json files for the users. The best option for this would actually be a HTML based editor like those shipped with SRD Plugins, but I don't know how to do this. I am also pretty sure it would be against SRD's terms of use to just copy it from his plugins. The other option would be a Windows Forms Application, but then it would be Windows only.\nThe only other option I have to make a new version more modular would be to make the users repeat the shop name and each plugin's parameters and match the parameters together by the shop name.\nBut my users are satified with this version, so there is no need to write a new one. Also with a new one the compatibility to other plugins might not be given anymore. But don't worry, I won't just write a new one and discontinue supporting this one. If I'd ever release a new shop plugin or shop plugin library, I would still continue to support this one."
+    },
+    {
+      "post_id": "js-post-1150278",
+      "author": "TheGameAfter",
+      "date": "2020-12-31T00:48:03+0900",
+      "body": "BurningOrca said:\nAbout .json files:\nIf they should be a option to create the shops, then I have to say no, this would make the plugin to complex. It is already feature bload.\nMaking them mandatory, replacing the plugin parameters, but only in an entirely new plugin, that is ment for MZ, but would also work in MV, is actually an option to consider.\nAdvantages:\n- The plugin could be split into more plugins, each covering a single functionality (like seperate plugin for Switch Shops, Discounts, Sellable Item Restrictions), making everything more modular.\n- Easier to extend, e.g. adding Skill Shops (don't know why I have this idea, cause you actually could sell items that teach skills already). Other people could write extensions aswell.\nDisadvantages:\n- .json files are harder to setup than the plugin parameters.\nI would have to write a Graphical User Interface which allows to create and edit shops and which creates the .json files for the users. The best option for this would actually be a HTML based editor like those shipped with SRD Plugins, but I don't know how to do this. I am also pretty sure it would be against SRD's terms of use to just copy it from his plugins. The other option would be a Windows Forms Application, but then it would be Windows only.\nThe only other option I have to make a new version more modular would be to make the users repeat the shop name and each plugin's parameters and match the parameters together by the shop name.\nBut my users are satified with this version, so there is no need to write a new one. Also with a new one the compatibility to other plugins might not be given anymore. But don't worry, I won't just write a new one and discontinue supporting this one. If I'd ever release a new shop plugin or shop plugin library, I would still continue to support this one.\nClick to expand...\nI think your shop plugin are just fine, there is no need for remake, and I agree is easier to setup the setting from the plugin parmeter rather then from .json file, your plugin is 'complete' and unless you really want to create another type/way for shops you done a great job with this one, and I will probebly use thsi one anyway.\nAbout the idea for the plugin to wokr mv and mz, to be honest some of those 'both engnie' plugins will not work with mv when you use some complex plugins (abs, pixel movement), not all the time is dapends on the plugin of course, however what I'm trying to say is, better to create a seperate one for mz and keep this one for mv, I'm sure is a way to fix it and make them work with complex plugins but not sure how easy that will be, is not always will be an 'error, in my case I have mv-mz plugins the didn't show error, but nothing happend in the engnie when using the scripts (for the spcific engnie), but maybe with shop plugin it will not be a probelm since it dosen't use the same part of the engnie as those complex plugins.\nIn short, I think is better to create a seperate plugin for MZ, and your mv plugin are fine as it's and if anyone have bug or not work with somthing that will be the time to add 'x' y' to fix it but there is no need for you to change the way it's now.\nEdit:\nJust a new idea for the shop will be to add an option for extra space where you can add an image of the shop owner, either just the face or a full body image (unless I miss this feature?)."
+    },
+    {
+      "post_id": "js-post-1150291",
+      "author": "BurningOrca",
+      "date": "2020-12-31T01:25:27+0900",
+      "body": "NPCDialogueShop has this feature as far as I know. I don't use this plugin, but the first users of my plugin really liked it, so I made mine as compatible as possible."
+    },
+    {
+      "post_id": "js-post-1150570",
+      "author": "ShadowDragon",
+      "date": "2020-12-31T20:26:11+0900",
+      "body": "while NPC dialogue and this plugin works together, you dont need a npc image =)\nas for the skill shop, you can also buy an item and upon using it, learn the skill =)\nso that is already covert as well.\nseperate plugins are usefull, 1 main with compability, others like discount, switch, skill,\netc, etc, etc when the main shop is installed,  but doing this alrequire much more work.\nwhile others can create extensions (if allowed), or edit to make the main feature better,\nand on the otherisde also userfriendly while they dont have to choose all of them,\nif they only want 2 instead of full features (while most can be skipped).\nthe idea is nice, but I wont recommended it for MV though which can basicly do anything,\nif anything is missing, like npc image (use NPC Dialogue plugin), if something else is missing,\nthere is another shop plugin that can cover it up and add that feature =) so you dont have\nto cover everything that others can do, but small extension are possible.\nbut to many shops for MV is something I wont do as well, (that is my opinion).\nso keep up the nice work, and dont overdo it"
+    },
+    {
+      "post_id": "js-post-1150973",
+      "author": "Rakon",
+      "date": "2021-01-02T04:40:24+0900",
+      "body": "Hey Orca!\nIf you set the Type of stock quantity to Variable, the max stock quantity to set is 99.\nVariable above 99 can´t be used.\nlove your plugin and keep up the nice work!^^"
+    },
+    {
+      "post_id": "js-post-1151481",
+      "author": "BurningOrca",
+      "date": "2021-01-03T20:00:16+0900",
+      "body": "Thanks for the report. It seems I've limited the stock quantity field to 99. Unfortunately I cannot set a limit depending on the type chosen. Should I remove the max limit or set it to 5000 (maximum amount of variables)?"
+    },
+    {
+      "post_id": "js-post-1151548",
+      "author": "ShadowDragon",
+      "date": "2021-01-04T03:59:10+0900",
+      "body": "idk if you set it to 5000 (I think max variables is 2000), but idk if you set a limit\nto 99 than it also have this issue, it would best to try that out.\nbut it would be a weird issue if you set a max value and you cant go over those variables."
+    },
+    {
+      "post_id": "js-post-1151828",
+      "author": "Rakon",
+      "date": "2021-01-05T00:05:17+0900",
+      "body": "Hey Orca! Is there a way to show the stat comparison window like in one of your screenshots?\nMine is looking like this:\nMaybe I overlooked something....\nOr its because of other plugins..."
+    },
+    {
+      "post_id": "js-post-1152115",
+      "author": "BurningOrca",
+      "date": "2021-01-05T20:31:55+0900",
+      "body": "@Rakon\nMy screenshots are from BO_CustomShops. To be honest I've never tested really tested equip items with BO_CustomShopsXL or didn't pay a close look onto the window. XL didn't display the stat comparison, because of how I've setup the shop goods in XL.\nI've fixed that now and also set the limit for the stock quantity to 5000."
+    },
+    {
+      "post_id": "js-post-1205450",
+      "author": "Bestboy",
+      "date": "2021-07-31T22:14:33+0900",
+      "body": "May I have a walkthrough if how to use this plugin please? Im new to RPGMV, I haven't found a way to learn how to use plugin commands. I love your features but really struggling to use it thank you!"
+    },
+    {
+      "post_id": "js-post-1205458",
+      "author": "BurningOrca",
+      "date": "2021-07-31T23:30:02+0900",
+      "body": "Which one, the normal one or XL. I would suggest using the normal one, as it is easier to set up.\nHere is a little walkthrough. I don't know if it will help, but I guess you will find tutorials on how to use plugins either in RPG Maker itself or here on the forum:\nSpoiler\n1. Open Plugin Manager: Double Click on the highlighted line or on XL in case you'll use XL.\n2. After that you see the helpfile and all the available plugin parameters:\n3. From here it is just double clicks on the parameters to open further settings and pop-up windows on which you can alter their values. The Shops have quite a lot sub options, so it might be confusing at the beginning. Double click on a empty line while being in the sub options of the \"Shops\"-Parameter will create an entirely new shop.\n4. In one of your events put down the following plugin command: \"OpenShop YourShopName\", e.g.\nand don't use the \"CloseShop\"-Plugin Parameter unless you want the shop to be entirely deleted from your game, because otherwise the next time you'll open the shop again it will be newly generated from the plugin parameters and thus will have all it's stock refilled.\nAnd for plugin commands. Double click on an empty line in the event contents grid. On the pop-up window switch to the 3rd tab and select the very last option, then on the next pop-up window type it in as text:"
+    },
+    {
+      "post_id": "js-post-1266625",
+      "author": "C64_Mat",
+      "date": "2022-04-09T06:17:04+0900",
+      "body": "EDIT:\nI've found the issue! It's not compatible with YEP_X_HideShowShopItems, which I forgot I still had switched on during testing. Not that it matters, as your plugin does everything I need it to. Removed that and we're golden\nHi\n@BurningOrca\n! Great plugin that does exactly what I need, as I have certain shops which only buy, not sell, and then only certain items can be sold to them.\nI am having a bit of a weird issue though - I use the XL in conjunction with the YEP ShopCore plugin, for reference.\nWhen I set stock limits, they appear to work initially - for example, it will say (5) next to an item and I can only buy 5 of that item at once. But after making the purchase, the shop still says 5 of that item are available! Sure enough, I can buy another 5, ad-infinitum.\nThis happens regardless of price, item, and amount for sale.\nAny clues? Also, what's the difference between regular and XL? I couldn't find that anywhere\nCheers!\nMat"
+    },
+    {
+      "post_id": "js-post-1266666",
+      "author": "BurningOrca",
+      "date": "2022-04-09T12:48:39+0900",
+      "body": "XL has a little bit more features and the regular version is compatible with a lot more plugins. Trying to implement some features myself in  XL in my own way broke compatibility to some plugins e.g. Yanfly's More Currencies etc."
+    },
+    {
+      "post_id": "js-post-1291206",
+      "author": "NikkiKaji",
+      "date": "2022-07-31T05:14:17+0900",
+      "body": "Hello there! I'm using your plugin alongside YEP Shop Core and an edited version of NPC Dialogue shop that removes the event dialogue command (because I had no use for it in my game) and I can't seem to remove the equip menu from the shop, even with the plugin command disabled to remove it. Any idea why? Thanks for the help!\nEDIT: Actually, it causes a few problems after more testing. Like, sometimes the equip tab appears twice, but the second equip tab is actually the dialogue tab which I don't want. If I have a shop set to buy and sell, the cancel tab will disappear completely. Also tried removing the edit command from shop core using the plugin parameters but that didn't work either."
+    },
+    {
+      "post_id": "js-post-1291643",
+      "author": "ShadowDragon",
+      "date": "2022-08-02T05:32:23+0900",
+      "body": "@NikkiKaji\nis BO below YEP_ShopCore or above?  if above, place it below,\nwhat other shop plugins do you use more?\nto see what it cause and what could be overwritten/conflict."
+    },
+    {
+      "post_id": "js-post-1291661",
+      "author": "NikkiKaji",
+      "date": "2022-08-02T07:03:41+0900",
+      "body": "ShadowDragon said:\n@NikkiKaji\nis BO below YEP_ShopCore or above?  if above, place it below,\nwhat other shop plugins do you use more?\nto see what it cause and what could be overwritten/conflict.\nClick to expand...\nIt's under both the shop core and the npc dialogue plugins, and along with those I use the YEP more currencies as well."
+    },
+    {
+      "post_id": "js-post-1291760",
+      "author": "ShadowDragon",
+      "date": "2022-08-02T17:34:02+0900",
+      "body": "can you screenshot your database, and ingame screenshot how it's\nlooking at the moment, maybe a mockup of end result you aiming for?"
+    },
+    {
+      "post_id": "js-post-1291796",
+      "author": "BurningOrca",
+      "date": "2022-08-02T21:26:07+0900",
+      "body": "NikkiKaji said:\nHello there! I'm using your plugin alongside YEP Shop Core and an edited version of NPC Dialogue shop that removes the event dialogue command (because I had no use for it in my game) and I can't seem to remove the equip menu from the shop, even with the plugin command disabled to remove it. Any idea why? Thanks for the help!\nEDIT: Actually, it causes a few problems after more testing. Like, sometimes the equip tab appears twice, but the second equip tab is actually the dialogue tab which I don't want. If I have a shop set to buy and sell, the cancel tab will disappear completely. Also tried removing the edit command from shop core using the plugin parameters but that didn't work either.\nClick to expand...\nSorry I've just seen your message today!\nHow did you change NPCDialogueShop?\nDid you remove the overwrite to Window_ShopCommand.prototype.makeCommandList?\nIf so could you please try out to modify my plugin as well by removing the overwrites to\n- Window_ShopCommand.prototype.makeCommandList\n- Window_ShopCommand.prototype.addCustomCommands\nand see if it works afterwards?"
+    },
+    {
+      "post_id": "js-post-1292319",
+      "author": "NikkiKaji",
+      "date": "2022-08-05T01:18:59+0900",
+      "body": "Hi, apologies for the late reply. In the NPC Dialogue plugin, I altered:\nWindow_ShopCommand.prototype.maxItems = function() {\nreturn 3; (previously it was 4)\n};\nand I added slashes before these commands:\n//this._commandWindow.setHandler('event',   this.commandCommonEvent.bind(this));\n//this.addCommand(commonEventName,   'event');\nI wasn't exactly sure what to change in your plugin to make things work though.\nBurningOrca said:\nSorry I've just seen your message today!\nHow did you change NPCDialogueShop?\nDid you remove the overwrite to Window_ShopCommand.prototype.makeCommandList?\nIf so could you please try out to modify my plugin as well by removing the overwrites to\n- Window_ShopCommand.prototype.makeCommandList\n- Window_ShopCommand.prototype.addCustomCommands\nand see if it works afterwards?\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1292443",
+      "author": "BurningOrca",
+      "date": "2022-08-05T15:36:37+0900",
+      "body": "I would suggest that you completely comment out the code around Window_ShopCommand in NPCDialogueShop.js with /**/, if you don't need the event command at all like this:\nJavaScript:\n/*//-----------------------------------------------------------------------------\n// Window_ShopCommand\n//\nWindow_ShopCommand.prototype.maxCols = function() {\n    return 4;\n};\n\nWindow_ShopCommand.prototype.makeCommandList = function() {\n    this.addCommand(TextManager.buy,    'buy');\n    this.addCommand(TextManager.sell,   'sell',   !this._purchaseOnly);\n    this.addCommand(commonEventName,   'event');\n    this.addCommand(TextManager.cancel, 'cancel');\n};*/\nI don't know if this makes a difference if NPCDialogueShop is put above YEP_ShopMenuCore, but if put below commenting out these functions will ensure better compatibility.\nAfterwards comment out the whole code of\nWindow_ShopCommand.prototype.makeCommandList and Window_ShopCommand.prototype.addCustomCommands in my plugin the same way.\nThese functions just contain compatibility fixes, that I had to add to my plugin to make it work for users that use both YEP and NPCDialogueShop together with my plugin, as the later two are actually not really compatible unless mjshi changed that in the meantime.\nI've now tested it in a test project of mine with the modified versions of NPCDialogueShop and my plugin. My suggestion works.\nYou could also PM me and I can give you the already modified version of my plugin, but if you do so, please tell me whether you use the normal or the XL version!"
+    },
+    {
+      "post_id": "js-post-1295904",
+      "author": "Spocker",
+      "date": "2022-08-20T21:24:22+0900",
+      "body": "Hi!\nI'm working on my menus those days and I just love this great plugin. I had a question though, but I think it's probably me who just missed something.\nI wanted an item to be only sellable in one particuliar shop.\nBut this shop is otherwise a Sell&Buy shop. So I check 'false' on 'Sell only goods that can be bought' in the plugin parameters. But I realized that this won't prevent the player for selling this good in others shops, because there will be several main shops (like general stores) where this function will also be checked as 'false'.\nSo, I have this sell&buy shop working well, but I want one item to be only sellable there. Then, I tried to go around by checking 'true' on 'Sell only goods that can be bought', by telling myself that I'll just make it so this item is never displayed in the shop. But when I configure my shop, it seems that it's mandatory to enter the list of items sold by the shop and an amount (where 0 means 'infinite' and not 'nothing'). So something will always appear in the shop.\nPlus, the item-I-want-only-to-sell-there is very peculiar and can't just be 'sold out' and greyed in the shop. As I want the 'sold out' option to stay visible in other shops, I can't make either an 'immediately sold out item' that would disappear instantly from the shop because the 'display sold out items' would be 'false'.\nI just... don't find a way ^^\nDo you have any little hints? I'm on MV, not using the XL. I'm not a fan of MZ.\nAgain, thanks a lot for this amazing plugin and your help!"
+    },
+    {
+      "post_id": "js-post-1295909",
+      "author": "ShadowDragon",
+      "date": "2022-08-20T21:51:12+0900",
+      "body": "@Spocker\nyou can allow a specific to only \"sell\" item by plugin command\nof \"goods_Shop\" or run that shop by a common event.\nand make a more general shops that doesn't have that item.\nanother way (didn't test it) is to use Javascript part for shopts, to see\nif the player has that shop open with the specific name that sell that item,\notherwise, it's not there.\nwhile that is a bit advanced to use in XL, it might work in the other plugin as well.\nbut I dont know how exactly to put that part up.\nif you have JS knowledge or some, you can set it up nicely."
+    },
+    {
+      "post_id": "js-post-1295943",
+      "author": "Spocker",
+      "date": "2022-08-21T02:01:01+0900",
+      "body": "So sorry for the delay, I don't think I understood your answer. As I said just above, I doesn't use XL as I'm on MV ^^.\nI don't want the shop to only sell me items. On the contrary, I would like my Player to be able to buy&sell with the shop, as per usual. But there is one item that the player collects that should only be sold to\nthat specific shop,\nand that the shop can't possess before that.\nFor instance, let's say that a shop is a flower shop. And that the player find a very very rare species. He can only sell it to that flower shop, not to any other. And the shop can't have it beforehand, because of how rare it is (and lucrative I hope).\nBut it's not a sell-only shop, as the player can buy&sell a lot of other flowers and else.\nSo, how do I do with BO_CustomShops to have one item that can only be sold to one shop? I hope it's clearer.\nIf you answered me and I just didn't understand it, I'm really sorry, could you explain it differently?"
+    },
+    {
+      "post_id": "js-post-1296922",
+      "author": "BurningOrca",
+      "date": "2022-08-26T03:06:21+0900",
+      "body": "Spocker said:\nHi!\nI'm working on my menus those days and I just love this great plugin. I had a question though, but I think it's probably me who just missed something.\nI wanted an item to be only sellable in one particuliar shop.\nBut this shop is otherwise a Sell&Buy shop. So I check 'false' on 'Sell only goods that can be bought' in the plugin parameters. But I realized that this won't prevent the player for selling this good in others shops, because there will be several main shops (like general stores) where this function will also be checked as 'false'.\nSo, I have this sell&buy shop working well, but I want one item to be only sellable there. Then, I tried to go around by checking 'true' on 'Sell only goods that can be bought', by telling myself that I'll just make it so this item is never displayed in the shop. But when I configure my shop, it seems that it's mandatory to enter the list of items sold by the shop and an amount (where 0 means 'infinite' and not 'nothing'). So something will always appear in the shop.\nPlus, the item-I-want-only-to-sell-there is very peculiar and can't just be 'sold out' and greyed in the shop. As I want the 'sold out' option to stay visible in other shops, I can't make either an 'immediately sold out item' that would disappear instantly from the shop because the 'display sold out items' would be 'false'.\nI just... don't find a way ^^\nDo you have any little hints? I'm on MV, not using the XL. I'm not a fan of MZ.\nAgain, thanks a lot for this amazing plugin and your help!\nClick to expand...\nSorry, I was offline for a long a time.\nI'm pretty sure this is currently not possible with either the normal or the XL version.\nI can see if I can implement a functionality that will work for you, but this might take more time. Sorry for the late answer.\nAlso XL is for MV too. These plugins are not for MZ at all. Maybe the wrong understanding came from me talking about MZ in the original post after trying them out with it and failed miserably. It's still better to use the normal version, because it is more likely to be compatible with other plugins.\nEdit:\nI've got an idea on how to this and then saw I was wrong and XL could alreaydy do this. I will just add this functionality to the normal version then. This will not take much time.\nEdit 2:\nI was wrong again. XL could only setup sellable goods, but not non-sellable goods. I will add non-sellable goods to both versions. It might be ready tomorrow evening."
+    },
+    {
+      "post_id": "js-post-1296929",
+      "author": "Spocker",
+      "date": "2022-08-26T03:24:33+0900",
+      "body": "Amazing thank you a lot! I'm currently on leave so I don't have my computer with me, but next week I'll make sure to check this new option!\nSorry to have you work on a specific parameter just for me ><\nMay I ask what is the difference between the normal version and the XL. I really didn't understand it, I thought XL indeed was for MZ! ^^"
+    },
+    {
+      "post_id": "js-post-1296932",
+      "author": "ShadowDragon",
+      "date": "2022-08-26T03:40:30+0900",
+      "body": "so far I know, XL has more features, but also some experimental features\nhe added to see how it works out.\nas XL can have an own currency required (to use items for other items)\nwhile the normal one doesn't.\nit has some more parts, I believe buy switches in XL and not in the normal version.\nyou can compare the 2 and see what you need.\nLike buy something or pay for something to flip a switch (this can than flip the\nswitch ON and OFF."
+    },
+    {
+      "post_id": "js-post-1297011",
+      "author": "BurningOrca",
+      "date": "2022-08-26T11:38:28+0900",
+      "body": "Writing a second version of the same plugin was the most stupid idea I had so far.\nNot only does it confuse a lot of people here on the forum, it gives me twice the work when a new feature is required. I should have never created XL.\nTo keep it simple\n@ShadowDragon\nis correct in this regard, it contains experimental features that can actually be better implemented into games via plugins from other creators.\nWhile the normal version extends on the default implementation of the shop goods, the XL version uses a entirely new implementation of the shop goods and therefore might already cause compatibility issues with other creator's plugins."
+    },
+    {
+      "post_id": "js-post-1297109",
+      "author": "BurningOrca",
+      "date": "2022-08-26T23:31:48+0900",
+      "body": "I was not able to implement my suggested new feature of having sellable and non-sellable items definable in the plugin parameters yet, but I've uploaded a new version of the regular not XL version, where the following setup should work in case the only purpose of that item is to be sold to the shop:\nPrice set to 0 in database usually makes the item non-sellable to every shop (visible but greyed out in the sell window), unless some other plugins change that default behaviour.\nThen in the plugin parameters add the item to the goods which the shop can potentially sell and set \"Use custom selling price\" to true, Selling Price to any value you want unequal 0 and Availability condition to false, so it will never appear in the buy window.\nI've testet this yesterday and it didn't work, so I had to change the plugin a little bit and now this would work. It was not the best idea from past me to add custom selling price definition to the shop goods which can be bought from the shop. If I have more time I might rework this."
+    },
+    {
+      "post_id": "js-post-1297275",
+      "author": "BurningOrca",
+      "date": "2022-08-27T20:28:49+0900",
+      "body": "Uploaded new versions now again.\nI will drop feature support for XL version. It got confusing for my users and a lot work for me to maintain it. Only bug fixes may be added to XL in the future.\nNikkiKaji said:\nHello there! I'm using your plugin alongside YEP Shop Core and an edited version of NPC Dialogue shop that removes the event dialogue command (because I had no use for it in my game) and I can't seem to remove the equip menu from the shop, even with the plugin command disabled to remove it. Any idea why? Thanks for the help!\nEDIT: Actually, it causes a few problems after more testing. Like, sometimes the equip tab appears twice, but the second equip tab is actually the dialogue tab which I don't want. If I have a shop set to buy and sell, the cancel tab will disappear completely. Also tried removing the edit command from shop core using the plugin parameters but that didn't work either.\nClick to expand...\nIf realized that I had a plugin parameter to set whether the custom shops should use the equip command, but it seems it was buggy and not working as I intended. I fixed this in XL version now and added another parameter wether the custom shops should use NPCDialogueShops's event command.\nI fixed this bug and added this parameter also to the normal version.\nSpocker said:\nAmazing thank you a lot! I'm currently on leave so I don't have my computer with me, but next week I'll make sure to check this new option!\nSorry to have you work on a specific parameter just for me ><\nMay I ask what is the difference between the normal version and the XL. I really didn't understand it, I thought XL indeed was for MZ! ^^\nClick to expand...\nAlso additional fixes/features for the normal version:\nv2.3 Selling prices have been removed from the shop good definition and became there own plugin parameters.\nv2.4 Added sellable and non-sellable items/weapons/armors.\nTo everyone who will redownload these, please check all the plugin parameters of the new version afterwards and double click once into all of them to make sure they are correctly defaulted or you might get a lot of \"cannot read of undefined\" errors.\nAlso please start a new save file for playtesting, these drastic changes don't work with existing save files where the custom shops already appear in the save file with the old fields or temporarely include the \"CloseShop\" plugin command in your event configuration."
+    },
+    {
+      "post_id": "js-post-1297397",
+      "author": "ShadowDragon",
+      "date": "2022-08-28T17:53:44+0900",
+      "body": "as it works nicely with the other one, I keep those, might switch out as\nit still need to set it up nicely.\nI also understand you stop adding features to the XL.\nI dont know if own currency for the item is experimental or not.\nbut keep up the good work."
+    },
+    {
+      "post_id": "js-post-1297646",
+      "author": "Spocker",
+      "date": "2022-08-29T20:25:20+0900",
+      "body": "BurningOrca said:\nUploaded new versions now again.\nI will drop feature support for XL version. It got confusing for my users and a lot work for me to maintain it. Only bug fixes may be added to XL in the future.\nIf realized that I had a plugin parameter to set whether the custom shops should use the equip command, but it seems it was buggy and not working as I intended. I fixed this in XL version now and added another parameter wether the custom shops should use NPCDialogueShops's event command.\nI fixed this bug and added this parameter also to the normal version.\nAlso additional fixes/features for the normal version:\nv2.3 Selling prices have been removed from the shop good definition and became there own plugin parameters.\nv2.4 Added sellable and non-sellable items/weapons/armors.\nTo everyone who will redownload these, please check all the plugin parameters of the new version afterwards and double click once into all of them to make sure they are correctly defaulted or you might get a lot of \"cannot read of undefined\" errors.\nAlso please start a new save file for playtesting, these drastic changes don't work with existing save files where the custom shops already appear in the save file with the old fields or temporarely include the \"CloseShop\" plugin command in your event configuration.\nClick to expand...\nHi there!\nI tested it this morning, the changes you made are just perfect for my use and work wonderfully! Thank you a lot for answering so quickly.\nAlso, even if I'm using your plugin since a few weeks only, I do believe that you don't have to force yourself to work on the XL version, more so if it is for you, as you called it, \"the most stupid idea you had\". You're entitled to stop updating your own plugin.\nKeep up on what you like, and thank you to\n@ShadowDragon\nfor answering me again!"
+    },
+    {
+      "post_id": "js-post-1314202",
+      "author": "BurningOrca",
+      "date": "2022-12-04T18:26:47+0900",
+      "body": "v2.4.1 Fixed a bug, that only one additional currency is displayed, when BO_CustomShops was used together with YEP_X_MoreCurrencies."
+    },
+    {
+      "post_id": "js-post-1317146",
+      "author": "Seedspreaderent",
+      "date": "2022-12-22T03:37:58+0900",
+      "body": "BurningOrca said:\nFirst of all I know Tsukihime has written a Shop Manager and propably other authors have done similar things\nand I didn't think I would be able to do the same, but it actually didn't take that long.\nTerms of Use:\nAs always totally free for commercial and non-commercial use and it doesn't need credits.\nFeatures:\n- Define entire shops in the plugin parameters (Yes that is the difference between my plugin and Tsukihimes ShopManager)\nThis may be more work, but I like it that way.\n- Limit the available items via javascript code within the plugin parameters.\n- Limit the amount of items in the shops stock, either by fix amount or variable.\n- Limit shops to only accept items from you, that they also offer to you.\n- Handle discounts via javascript code.\n- Possibility to define switch shops.\nView attachment 115387\nYou can open a shop with the plugin parameter OpenShop <Name>.\nYou do not need to use the Shop Processing Command afterwards.\nYou can still open normal shops via the Shop Processing Command.\nThe Shop Number Window will display the number of items in stock:\nView attachment 115388\nIf it is not infinite it will display the stock quantity minus the number you've selected to buy:\nView attachment 115389\nYou can specify if and how the shops do refill their stock.\nYou can also trigger refilling the stock via the plugin command:\nRefillShopStock <Name>\nYou can also close the shop, via the plugin command:\nCloseShop <Name>\nIf it is reopened later it's stock will be refilled.\nI would really appreciate any feedback.\nCompatibility:\nPlease place this under any shop related plugins.\nIt is not compatible to Tsukihimes ShopManager.\nThe port to MZ is from XL, it is not fully compatible to VisuStella, but seems to cause at least no errors.\nEdit:\n- Found a bug and fixed it. Please download the new version.\n- Forgot to mention it requires MV Version 1.6.1 or higher\n- Forgot to mention if you define two or more items of same kind in the shop, they will be combined into a single one with the combined stock quantity and if you use custom prices, it will have the highest custom price.\nEdit 2:\n- Fixed some other issues.\n- The help window will now display the shops name instead whenever it would have displayed an empty text.\nEdit 3:\n- Shop names are now allowed to have white space.\n- Two new plugin parameters:\nSold out text\n: Will be displayed in the help window alongside the shops name, when it is completely sold out.\nDisplay sold out items in shop\n: Determines when the shop is opened via the plugin command whether sold out items should be visible in the buy window. If items get sold out while the shop is already open they are just greyed out.\nEdit 4:\n- Compatibility with mjshi NPCDialogueShop: My plugin removed the common event command. Now it will also add the common event command when mjshi's plugin is installed aswell.\nPlease place this plugin under mjshi's plugin.\nEdit 5:\nAdded functionality for granting discounts under certain conditions.\nShops keep track on #Total items sold, #Individual items sold, #Times visited.\nEdit 6:\nFixed very big bug. This plugin didn't pass the plugin command and it's arguments to other plugins.\nExamples for discount conditions:\nthis.getNumberBoughtOf(kind, id) >= 3\nMeans #individual items sold >= 3\nthis._nrOfVisits == 3\nthis._totalItemsBought == 100\nDiscount percentages stack by multiplying them, e.g. if the conditions for 10% and another 20% are fulfilled, this does not mean a discount of 30%, but rather only 28% as\ne.g. if the original price = 100:\n100 * (1 - 10 / 100) = 90​\n90 * (1 - 20 / 100) = 72​\n​\nEdit 7:\n- Fixed a bug, that make normal shops being opened endlessly.\n- Added custom selling prices. If not given half of the custom buying price is taken as selling price. If this is not given either half of the price from the database is taken as selling price just like the default behaviour.\nThe resulting price is rounded down, in case it is a floating point number.\nThe plugin now has version 1.5.\nEdit 8:\nSold out text was not displayed when using different currencies via YEP_X_MoreCurrencies.\nThe plugin has now version 1.6. The Sold Out Text will overrule the more currencies.\nEdit 9:\nSome fixes around custom selling prices.\nPlugin is now version 1.9.\nEdit 10:\nToday I had the idea of creating a switch shop without the need to buy an item first. Luckily it was possible.\nSo introducing the new plugin parameters:\nSwitch on text: Text to be displayed instead of the price for a switch that has already been bought and is set to on.\nSwitch off text: Text to be displayed instead of the price for a switch that has already been bought and is set to off.\nSwitches: The switches sold by the shop.\nView attachment 121254\nA shop good of type switch cannot be sold, so it has no selling price and as the buying price cannot be defined\nelsewhere the UseCustomPrice flag is not needed. I hope I decribed the rest of the plugin parameters good enough\nwithin the plugin itself:\nView attachment 121253\nThe final result looks like this when the switch has not been bought yet:\nView attachment 121252\nOnce bought it is set to on and in case it is toggable you can set it to on/off just by pressing on the item:\nView attachment 121251\nWith this it is now v2.0.\nI saw, that this could open up so much new potential (like e.g. Variable Shops, BGM Shops, etc.) in the future.\nIf I find the time I may implement further kinds of shop goods like the discounts did.\nI hope this doesn't break existing projects.\nEdit 11:\nv2.1: Extension to YEP_ItemCore. Allows to buy independent items.\nEdit 12:\nv2.1.1 Small fixes around empty shops and the default shop.\nEdit 13:\nv2.1.2\n- Updated help section. Plugin command is actually names \"RefillShopStock <name>\" instead of \"RefillStock <name>\"\n- Fixed a bug around independ shop goods and the stock refill. I deleted the independ items from the memory even the party already bought them. Now I don't do this anymore.\nEdit 14:\nv2.2.0\n-New plugin command Refill<Kind>Stock \"<Name>\" Id Quantity:\nRefills a single shop good of the given kind in the shop with the given name by the given quantity. It will not exceed the maximum quantity. It currently does only work if the plugin parameter GroupItemsWithLimitedStock is set to true (Yes). The shop name must be placed into quotes as it allowes single white spaces between parts of it's name.\nEdit 15:\nShould now be compatible with MV 1.5.1\nEdit 16:\nHad to rework this plugin in order to find other workarounds for compatibility issues with Yanfly plugins rather than copying the code that still needs to be called and leaving out the rest as it is prohibited by the terms of use of Yanfly plugins and I guess also by copyright. I just want to avoid making me to have to take this plugin down. Yet I still hope this is just a minor issue as my plugin is given away for free.\nWhile doing this and veryfying in a test project that everything is still working as intended by me I found out that the following parameter of YEP_ShopMenuCore is not working if NPCDialogueShop is installed aswell:\nView attachment 138768\nOff course I cannot solve this issue. As NPCDialogueShop seems to only work in conjuction with YEP_ShopMenuCore if placed under it and it overwrites a bunch of functions without aliasing them, there would be no way to workaround this without copying the YEP code around this parameter, which I clearly do not want to do.\nSo I added a plugin parameter to my plugin to allow adding the equip command again to the shop menu (Default Value = On).\nAlso if YEP_ShopMenuCore + NPCDialogueShop + BO_Shops are all used within your project the custom commands will also be added and the commands are placed exactly in the order of this screenshot.\nEdit 17:\nRenamed downloadable plugin BO_Shops => BO_CustomShops. If you have it already in use, you can rename it back to BO_Shops after downloading in order to not loose all your plugin parameters.\nBO_CustomShopsXL is an extended version, because I've got ideas. Some of the ideas are not compatible to the old BO_CustomShops. That is why I've created it as a seperate plugin. The XL version is also not compatible with YEP_X_MoreCurrencies and YEP_X_CondShopPrices anymore. It is still compatible with any other plugin BO_Shops was also compatible with.\nI've also updated my shop category customization plugin found at\nhttps://forums.rpgmakerweb.com/index.php?threads/shop-category-customization.121309/#post-1065982\nto be compatible with the XL version of BO_CustomShops.\nIf you rename BO_CustomShops to BO_Shops after the download you need to replace the following line in the code\nBurningOrca.Shops.Parameters = PluginManager.parameters('BO_CustomShops'); with BurningOrca.Shops.Parameters = PluginManager.parameters('BO_Shops');\nEdit 18:\nCompatibility fix of switch shops with MKR_ShopItemMessage.\nFound bug in XL version: Item descriptions have not been displayed anymore.\nEdit 19:\nFixed a bug in XL to make it work without YEP_CoreEngine being used.\nEdit 20:\nUpdated XL, as it had some math errors. Obviously calling Math.log10 and passing a value of 0 is not a good idea.\nEdit 21:\nFixed a typo: $dataArmors instead of $dataArmor.\nEdit 22:\n- Small performance upgrade in BO_CustomShops. Call this.price() only once in Window_ShopBuy.prototype.drawBuyPrice extension.\n- Compatibility fix in BO_CustomShopsXL with ShadowDragon_EC (Easy Currency).\nEdit 23:\nFound bug in Plugin Command RefillItemStock.\nEdit 24:\nChanged my mind form yesterday and ported XL to MZ. However I cannot support this plugin as it my trial license will run out tomorrow. The upload is just experimental.\nFound a lot of bugs in XL. Severe ones. Shops weren't even working after loading a safe file.\nEdit 25:\nYet again introduced a small little bug with the fixes in XL yesterday.\nEdit 26:\nI've taken the MZ version down, after I've read through Tsukihimes Shop Inventory plugin thread. Not only can I not support BO_CustomShopMZ, because my trial run out, but also just from what I've read Tsukihimes plugin will become amazing. I normally don't like to compete with others on the same topic. Her Shop Manager for MV was already good, just not what I wanted and that is why the original BO_Shops was born. That is the only time I've started a competition.\nEdit 27:\nI've found two bugs in XL both only in Shops that have the stock refill type set to \"Add additional Stock\".\n1) Discounts where applied each time the shop has been opened unless a \"Stock Refil\"l happend.\n2) If a shop has been opened and no \"Stock Refill\" happened, then the previous stock got lost.\nI actually didn't really test if the bugs really exist, but assumed it by looking into my code.\nI've also reworked the code of XL slighly to be a little simpler, but still have the same functionality.\nIt is now Version 2.0.\nBecause of the rework it will remove a variable from the saved shops, when loading a save file which has been saved with the previous version from XL and cause a \"Stock Refill\" on all saved shops in order to be inline with the changes. Therefore I recommend you to not get the new version unless absolutely needed.\nEdit 28:\n- Enhanced limit for stock quantity from 99 to 5000. Maximum variables seems to be 5000.\n- XL didn't display the stats for equip items.\nEdit 29:\nFixed bugs around selling in BO_CustomShopsXL. It is now Version 2.1\nEdit 30:\nFound a bug in XL, that caused the game to crash when selling the last item in the specific category in the selling menu and afterwards pressing the ok button (e.g. Return-Key) on the now empty slot which is still highlighted by the game.\nFix this bug. However no new version number.\nEdit 31:\nBug fix in XL. The plugin parameter to not use the YEP Equip Command did not work as I intended. Also added plugin parameter to not use NPC Dialogue Shops Event command in custom shops if people wish to do so to XL. I will stop adding new features to XL. Only bug fixes anymore as it got confusing and too much work to have two versions of the same plugin.\nv2.4 for the non XL version:\n1. Selling prices have been moved from the shop good definition to it's own plugin parameters.\n2. Fixed the same bug and added the same plugin parameter as described above for the XL version.\n3. Added sellable- and non-sellable items/weapons/armors and removed plugin parameter SellOnlyGoodsThatCanBeBought.\nEveryone who will redownload this has to check all the plugin parameters and even double click through them or you might receive some \"cannot read of undefined\" error messages. You also need to start a new safe file or temporarely include the CloseShop Plugin command in your event configuration.\nEdit 32:\nFixed a bug, that only one additional currency is displayed, when my plugin is used together with YEP_X_MoreCurrencies.\nClick to expand...\nHey Orca! You are the best for this plugin! It is amazing. I am running into some issues that I anticipated since I am running the ShopXL on MZ with the FOSSIL plugin for backwards compatibility. One issue I am running into is that new items added the shops wont show up. I tried closing them and reopening, but no luck. Any ideas?"
+    },
+    {
+      "post_id": "js-post-1317150",
+      "author": "ShadowDragon",
+      "date": "2022-12-22T03:52:34+0900",
+      "body": "@Seedspreaderent\nI believe Buring Orca has his shop ported to MZ as experimental,\nbut not sure if it was taken down.\nbut while MV is a bit differently, can you show the setup you done with FOSSIL?"
+    },
+    {
+      "post_id": "js-post-1317165",
+      "author": "BurningOrca",
+      "date": "2022-12-22T04:44:51+0900",
+      "body": "ShadowDragon said:\n@Seedspreaderent\nI believe Buring Orca has his shop ported to MZ as experimental,\nbut not sure if it was taken down.\nbut while MV is a bit differently, can you show the setup you done with FOSSIL?\nClick to expand...\nI tried that at the time when MZ came out and I only had a triel license and yeah I took it down, because with only that trial license I couldn't support it and it was incompatible to the Visustella Core Plugins and that might be a big problem.\nSeedspreaderent said:\nHey Orca! You are the best for this plugin! It is amazing. I am running into some issues that I anticipated since I am running the ShopXL on MZ with the FOSSIL plugin for backwards compatibility. One issue I am running into is that new items added the shops wont show up. I tried closing them and reopening, but no luck. Any ideas?\nClick to expand...\nCould you please give a screen shot of your plugin list and one of the plugin parameter settings for the shop. However I don't know if I am even really able to help you when it comes to MZ and FOSSIL."
+    },
+    {
+      "post_id": "js-post-1329436",
+      "author": "SifDoge",
+      "date": "2023-02-19T15:49:13+0900",
+      "body": "Hi\n@BurningOrca\n, is there a way to show Stock Quantity next to Item Price, like this :"
+    },
+    {
+      "post_id": "js-post-1330025",
+      "author": "ShadowDragon",
+      "date": "2023-02-22T07:04:46+0900",
+      "body": "@SifDoge\nit's only possible to edit the code, but I dont know if you\nuse BO_CustomShops or BO_CustomShopXL.\nas it is aligned next to the items, it can be pushed to the right,\nbut it you use multi-currency plugin, it might mess up.\nbut I can check later for you which line you need to change or\nif Burning Orca response before that, but it's wise if we know which\nof the 2 plugin you use.\nin case you use multiple shop plugins (BO_CustomShops, YEP_ShopCore,\nand another) than it could be a bit trickier which line to alter though."
+    },
+    {
+      "post_id": "js-post-1330541",
+      "author": "SifDoge",
+      "date": "2023-02-24T20:05:00+0900",
+      "body": "ShadowDragon said:\n@SifDoge\nit's only possible to edit the code, but I dont know if you\nuse BO_CustomShops or BO_CustomShopXL.\nas it is aligned next to the items, it can be pushed to the right,\nbut it you use multi-currency plugin, it might mess up.\nbut I can check later for you which line you need to change or\nif Burning Orca response before that, but it's wise if we know which\nof the 2 plugin you use.\nin case you use multiple shop plugins (BO_CustomShops, YEP_ShopCore,\nand another) than it could be a bit trickier which line to alter though.\nClick to expand...\nI am using BO_CustomShops and YEP_ShopCore without multi-currency plugin, that screenshot is using\nNia_ShopStock\nbut only works on Hime shop manager."
+    },
+    {
+      "post_id": "js-post-1330551",
+      "author": "ShadowDragon",
+      "date": "2023-02-24T21:31:22+0900",
+      "body": "@SifDoge\nwhile BO has a stock limited, I'm also unsure which line,\nbut my guess is 2001 or 2003, but it can also mess up with the\nstock name \"out of stock\" if you name it like that.\nwhile I cannot test it, and if there need to be some more coding to\nmake it work correctly, I dont take the chance, so I think\n@BurningOrca\ncan tell you which one can be altered in the way you want it.\nmaybe its possible to do that in YEP_ShopCore, you can search for\nthe line \"drawText\" and see which one draws the item amount, so you\ncan set the \"x + yournumber, \" to push it to the left.\nbut I dont know how he exactly coded it."
+    },
+    {
+      "post_id": "js-post-1330760",
+      "author": "BurningOrca",
+      "date": "2023-02-25T16:38:17+0900",
+      "body": "SifDoge said:\nHi\n@BurningOrca\n, is there a way to show Stock Quantity next to Item Price, like this :\nView attachment 253675\nClick to expand...\nPreviously not, but now I've added a option in the plugin parameters to do that, but it seems to not look as clean as your screenshot from Nia_ShopStock."
+    },
+    {
+      "post_id": "js-post-1330851",
+      "author": "SifDoge",
+      "date": "2023-02-26T03:20:59+0900",
+      "body": "ShadowDragon said:\n@SifDoge\nwhile BO has a stock limited, I'm also unsure which line,\nbut my guess is 2001 or 2003, but it can also mess up with the\nstock name \"out of stock\" if you name it like that.\nwhile I cannot test it, and if there need to be some more coding to\nmake it work correctly, I dont take the chance, so I think\n@BurningOrca\ncan tell you which one can be altered in the way you want it.\nmaybe its possible to do that in YEP_ShopCore, you can search for\nthe line \"drawText\" and see which one draws the item amount, so you\ncan set the \"x + yournumber, \" to push it to the left.\nbut I dont know how he exactly coded it.\nClick to expand...\nBurningOrca said:\nPreviously not, but now I've added a option in the plugin parameters to do that, but it seems to not look as clean as your screenshot from Nia_ShopStock.\nClick to expand...\nThanks guys, now it shows up on menu"
+    },
+    {
+      "post_id": "js-post-1369395",
+      "author": "DorFenn",
+      "date": "2023-07-31T04:18:23+0900",
+      "body": "Hi Burning Orca!\nI have been trying to use your shop to replace an old engine.\nI'll explain how it worked:\nSpoiler:\nShop Process\nIn Variable [37] Type 2 of Purchases [Armour] is stored, it is selected from number [61] to [83] in the Armor Index, once the 6 Objects to be sold have been selected (That is why the Variable [INV = 6]) the store is processed, with those objects already chosen.\nThe problem with this is that RPG Maker itself doesn't let you limit purchases, so I found your Plugin, and when creating the store, the last option when adding an object is \"Availability Condition\".\nSo I tried to add a code where only show the object if it is registered in Variable 37, which is where the chosen objects are stored.\nvar show_item = false;\nvar array = $gameVariables.value(37);\nvar value = 61;\nif (!array.contains(value)) {\nvar show_item = true;\n}\nClick to expand...\nThe problem is that I haven't found a way to show the objects, since it hides them.\nI don't know what I'm doing wrong, if you could give me a hand, I'd appreciate it.\nHave a nice day."
+    },
+    {
+      "post_id": "js-post-1369581",
+      "author": "SifDoge",
+      "date": "2023-07-31T14:59:55+0900",
+      "body": "DorFenn said:\nHi Burning Orca!\nI have been trying to use your shop to replace an old engine.\nI'll explain how it worked:\nSpoiler:\nShop Process\nIn Variable [37] Type 2 of Purchases [Armour] is stored, it is selected from number [61] to [83] in the Armor Index, once the 6 Objects to be sold have been selected (That is why the Variable [INV = 6]) the store is processed, with those objects already chosen.\nView attachment 271599\nThe problem with this is that RPG Maker itself doesn't let you limit purchases, so I found your Plugin, and when creating the store, the last option when adding an object is \"Availability Condition\".\nSo I tried to add a code where only show the object if it is registered in Variable 37, which is where the chosen objects are stored.\nThe problem is that I haven't found a way to show the objects, since it hides them.\nI don't know what I'm doing wrong, if you could give me a hand, I'd appreciate it.\nHave a nice day.\nClick to expand...\nwhy not just use switch condition, something like this\nedited: this for variable"
+    },
+    {
+      "post_id": "js-post-1369582",
+      "author": "ShadowDragon",
+      "date": "2023-07-31T15:30:29+0900",
+      "body": "@SifDoge\nvariable.value == 61 checks the number is equal to 37,\nif it's the \"item ID\", that wont work.\n@DorFenn\nyou check if it is NOT in the array and make it true, if you want it to be\nvisible when inside the array, you need to remove the \" ! \" in !array.contains\nto array.contains to make it true, else false.\nBut I also agree with SifDoge about using a switch to be ON to make it\navailable as it is easier to control what you add and when/where"
+    },
+    {
+      "post_id": "js-post-1369585",
+      "author": "DorFenn",
+      "date": "2023-07-31T15:35:56+0900",
+      "body": "Hey Sif! Good night.\nWell, in the end I ended up solving it as follows:\nSince I haven't the foggiest idea if just calling \"$gameVariables.value(37) == 61\" was going to return True or False, I decided to add the \"includes\" as a conditional, since the same variable 37 is going to be housed within 6 different variables, I preferred to do it that way, so I only make sure I have 6 objects in the store (Something like a Rogue like!)\nThen, at the beginning of each map, the \"Reset Shop\" event is executed, where it attributes the objects to be sold in the shop in 6 variables.Once they have been chosen, variable 37 \"adopts\" them and the selection is finished.\nSo when the store is executed, it will only receive those values.\nIs it unorthodox? Totally, but at least I can say \"Hey! the miniscript I was doing for 6 hours helped something\"\nHaha, good night and thanks for the help, I will implement it in the future\nEdit:\nHello Shadow Dragon! Yes, I corrected it at the time of posting it, but I forgot to upload the correction in an edit.\nThanks for commenting"
+    },
+    {
+      "post_id": "js-post-1369622",
+      "author": "BurningOrca",
+      "date": "2023-07-31T19:51:35+0900",
+      "body": "Oh I've answered the wrong post. Sorry ignore this:\nSifDoge said:\nwhy not just use switch condition, something like this\nView attachment 271645\nedited: this for variable\nView attachment 271646\nClick to expand...\nAs far as I can see from your script in the spoilers section, your variable 37 stores an array of arrays and not a simple number. I assume this was due to the old system that you've tried to replace with my plugin.\nThis is why the condition \"$gameVariables.value(37)==61\" is never true.\nArray is unequal to number.\nYou should change the variable first into an array of just numbers, so just use your temp variable and then change the condition in the plugin parameters to \"$gameVariables.value(37).contains(61)\" and see if that works.\nAlso just a question:\nI assume you want a randomized shop selling exactly the chosen armors stores in the variable. If that is correct than I have to unfortunately tell you, that my plugin won't work for this at least not\nwith a lot of effort put into the parameters. You would have to create one plugin parameter per armor from 61 to 83, because the above screen shot will put Item 24 into the shop if the variable\ncontains armor 61."
+    },
+    {
+      "post_id": "js-post-1379983",
+      "author": "Mozumin",
+      "date": "2023-09-11T04:53:44+0900",
+      "body": "Hello! I'd like to report an issue I'm running into with BO_CustomShops v2.5. Dunno if it has been addressed already.\nI'm on version 1.6.2 of RPG Maker MV, and I'm not using any other plugins that interact with shops.\nI tried setting up a very simple shop, the text code for the whole shop is the following:\n{\"Name\":\"test\",\"ShopType\":\"SellAndBuy\",\"Items\":\"[\\\"{\\\\\\\"Item\\\\\\\":\\\\\\\"22\\\\\\\",\\\\\\\"UseCustomPrice\\\\\\\":\\\\\\\"false\\\\\\\",\\\\\\\"Price\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"StockQuantityType\\\\\\\":\\\\\\\"Amount\\\\\\\",\\\\\\\"StockQuantity\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AvailabilityCond\\\\\\\":\\\\\\\"true\\\\\\\"}\\\",\\\"{\\\\\\\"Item\\\\\\\":\\\\\\\"23\\\\\\\",\\\\\\\"UseCustomPrice\\\\\\\":\\\\\\\"false\\\\\\\",\\\\\\\"Price\\\\\\\":\\\\\\\"0\\\\\\\",\\\\\\\"StockQuantityType\\\\\\\":\\\\\\\"Amount\\\\\\\",\\\\\\\"StockQuantity\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AvailabilityCond\\\\\\\":\\\\\\\"true\\\\\\\"}\\\"]\",\"Weapons\":\"[]\",\"Armor\":\"[]\",\"Switches\":\"[]\",\"itemSellingPrices\":\"[]\",\"weaponSellingPrices\":\"[]\",\"armorSellingPrices\":\"[]\",\"sellableItems\":\"[]\",\"sellableWeapons\":\"[]\",\"sellableArmors\":\"[]\",\"nonSellableItems\":\"[]\",\"nonSellableWeapons\":\"[]\",\"nonSellableArmors\":\"[]\",\"StockRefillOption\":\"Never\",\"StockRefillSeconds\":\"7200\",\"RefillStockCond\":\"false\",\"Discounts\":\"[]\"}\nClick to expand...\nI didn't touch much, it's supposed to be a very simple shop named \"test\" that sells 1 of item 22 and 1 of item 23.\nI created a test event that only has the plugin command to call the \"test\" shop:\nOpenShop <test>\nClick to expand...\nHowever, when I activate the event, this message shows up.\nSpoiler:\nError message\nI have no idea what any of this means and I don't know what I might've gotten wrong. I appreciate any and all help!"
+    },
+    {
+      "post_id": "js-post-1380096",
+      "author": "ShadowDragon",
+      "date": "2023-09-11T17:17:31+0900",
+      "body": "@Mozumin\nto open the shop, you just had to do:  OpenShop test\nwithout \"<\" and \">\" as most time, this is just a reference for the variable to use.\nsome use <name> <id> <stock>  so those are 3 variables to use for plugin commands.\nif memory reserve, it should say so in the helpfile how to call it."
+    },
+    {
+      "post_id": "js-post-1380118",
+      "author": "Mozumin",
+      "date": "2023-09-11T20:37:43+0900",
+      "body": "ShadowDragon said:\n@Mozumin\nto open the shop, you just had to do:  OpenShop test\nwith \"<\" and \">\" as most time, this is just a reference for the variable to use.\nsome use <name> <id> <stock>  so those are 3 variables to use for plugin commands.\nif memory reserve, it should say so in the helpfile how to call it.\nClick to expand...\nOh, pfft, that explains it. I feel dumb.\nThanks tho!"
+    },
+    {
+      "post_id": "js-post-1404500",
+      "author": "Zion",
+      "date": "2023-12-10T00:40:23+0900",
+      "body": "Just found this plugin and wanted to say thank you\nIt's exactly what I need."
+    },
+    {
+      "post_id": "js-post-1462410",
+      "author": "ahjhj",
+      "date": "2024-08-09T03:28:36+0900",
+      "body": "Hello! Your plugin is absolutely fantastic! It’s incredibly well done.\nI just wanted to ask if it’s possible to remove the shop name displayed on the Window Help?"
+    },
+    {
+      "post_id": "js-post-1462474",
+      "author": "BurningOrca",
+      "date": "2024-08-09T14:00:37+0900",
+      "body": "ahjhj said:\nHello! Your plugin is absolutely fantastic! It’s incredibly well done.\nI just wanted to ask if it’s possible to remove the shop name displayed on the Window Help?\nClick to expand...\nThank you so much for your feedback!\nI really don't want to do that generally for all users of the plugin, but it might already help you to open the plugin in a text editor and search for\nGame_Shop.prototype.GetHelpDisplayString = function() and replace everything between the curly braces with just return \"\";.\nAlternatively you can remove every piece of code that includes 'GetHelpDisplayString'."
+    },
+    {
+      "post_id": "js-post-1462484",
+      "author": "ahjhj",
+      "date": "2024-08-09T16:43:53+0900",
+      "body": "BurningOrca said:\nThank you so much for your feedback!\nI really don't want to do that generally for all users of the plugin, but it might already help you to open the plugin in a text editor and search for\nGame_Shop.prototype.GetHelpDisplayString = function() and replace everything between the curly braces with just return \"\";.\nAlternatively you can remove every piece of code that includes 'GetHelpDisplayString'.\nClick to expand...\nThank you for your quick response! It's working perfectly now."
+    },
+    {
+      "post_id": "js-post-1539464",
+      "author": "PixelPastiche",
+      "date": "2025-12-06T05:04:39+0900",
+      "body": "I’m trying to use this plugin because it has exactly what I need: a shop that contains an item which is single purchase. The thing is I’m making changes to an older RMMV game and I’m not sure if that is messing with the compatibility because I cannot get the shop to open. I read the file and tried using the normal and XL versions but the call through the Plugin Command just gets entirely skipped, not even an error is thrown.\nI’m using the RMMV from steam and it is as up to date as I’ve seen. Is there anything more I can do?"
+    },
+    {
+      "post_id": "js-post-1539581",
+      "author": "ShadowDragon",
+      "date": "2025-12-07T04:22:00+0900",
+      "body": "PixelPastiche said:\nI’m trying to use this plugin because it has exactly what I need: a shop that contains an item which is single purchase. The thing is I’m making changes to an older RMMV game and I’m not sure if that is messing with the compatibility because I cannot get the shop to open. I read the file and tried using the normal and XL versions but the call through the Plugin Command just gets entirely skipped, not even an error is thrown.\nI’m using the RMMV from steam and it is as up to date as I’ve seen. Is there anything more I can do?\nClick to expand...\nis your RPG MV version equal as your core version and not different?\nif it's different, than it may not work as they should be equal (maker and core file of your project).\nif it still persist after that, I try to help you."
+    },
+    {
+      "post_id": "js-post-1539605",
+      "author": "PixelPastiche",
+      "date": "2025-12-07T09:11:13+0900",
+      "body": "ShadowDragon said:\nis your RPG MV version equal as your core version and not different?\nif it's different, than it may not work as they should be equal (maker and core file of your project).\nif it still persist after that, I try to help you.\nClick to expand...\nThat has me a little confused as I am new to RMMV. I see that the latest version of mv is 1.6.1, but the rpg_core.js file in my project says 1.6.2, and the file for the addon says that it should be compatible for anything above 1.5.0 or higher.\nHow could I go about making sure that my version and the core are the same?"
+    },
+    {
+      "post_id": "js-post-1539650",
+      "author": "ShadowDragon",
+      "date": "2025-12-07T19:28:38+0900",
+      "body": "PixelPastiche said:\nThat has me a little confused as I am new to RMMV. I see that the latest version of mv is 1.6.1, but the rpg_core.js file in my project says 1.6.2, and the file for the addon says that it should be compatible for anything above 1.5.0 or higher.\nHow could I go about making sure that my version and the core are the same?\nClick to expand...\nif your core is 1.6.1 and maker 1.6.2 it should be fine there, as there isn't much changed besides the number.\nso your good at that aspect.\nto see why it skips, check plugin database => make sure the pluginName is exactly given and unchanged.\nchanging the plugin name ignore any code or plugin commands/scriptcalls to errors if names are incorrect\nthat is targetted to parameters.\nif name is equal, show database, event page setup so we can narrow down the issue."
+    },
+    {
+      "post_id": "js-post-1541063",
+      "author": "PixelPastiche",
+      "date": "2025-12-19T09:22:13+0900",
+      "body": "Sorry for taking so long to reply, Work gets in the way.\nSo I haven’t changed the name of the plugin\nI made a basic show and changed none of the parameters outside of giving it a name and adding one item for sale\nThen I made a plain event with an actor and did the plugin command as I thought it should be."
+    },
+    {
+      "post_id": "js-post-1541104",
+      "author": "ShadowDragon",
+      "date": "2025-12-19T17:55:51+0900",
+      "body": "PixelPastiche said:\nSorry for taking so long to reply, Work gets in the way.\nClick to expand...\nits okay, but the plugin latest version is 2.1 and you use 2.0.\nI don't know what changed between the 2, but it may be some bugs and probably one you use?\ndownload the latest, replace it, and refresh plugin to see \"2.1\" and retry."
+    },
+    {
+      "post_id": "js-post-1541875",
+      "author": "BurningOrca",
+      "date": "2025-12-25T17:31:20+0900",
+      "body": "ShadowDragon said:\nits okay, but the plugin latest version is 2.1 and you use 2.0.\nI don't know what changed between the 2, but it may be some bugs and probably one you use?\ndownload the latest, replace it, and refresh plugin to see \"2.1\" and retry.\nClick to expand...\nActually I have forgotten to update the text here. 2.1 still shows 2.0:\nI have tried to download my own plugin again aswell as all the other plugins from the screenshot and tried to reproduce, but first was not able to find ChangeResolution and it seems I got some unofficial english translations of those japanese plugins and I changed nothing in their parameters. Maybe that is why I was not able to reproduce the issue yet. Sorry, that I cannot be of any help, yet!\nEdit:\nIs this also reproducible for you from a clean new game also with just my plugin and maybe CommunityBasic + MadeWithMv?"
+    },
+    {
+      "post_id": "js-post-1553589",
+      "author": "Devil_Beam",
+      "date": "2026-04-13T14:12:12+0900",
+      "body": "Is there any way to give switches descriptions and icon (if you're using the yep core) with the plug-in ?"
+    },
+    {
+      "post_id": "js-post-1553598",
+      "author": "ShadowDragon",
+      "date": "2026-04-13T18:17:01+0900",
+      "body": "Devil_Beam said:\nIs there any way to give switches descriptions and icon (if you're using the yep core) with the plug-in ?\nClick to expand...\nno, there is no way, but require coding for it.\nswitches and variables doesn't have notetags, and has to be implemented."
+    },
+    {
+      "post_id": "js-post-1553631",
+      "author": "BurningOrca",
+      "date": "2026-04-14T02:18:27+0900",
+      "body": "Devil_Beam said:\nIs there any way to give switches descriptions and icon (if you're using the yep core) with the plug-in ?\nClick to expand...\nI've updated the plugins now. Now it is possible. Just include \\i[iconIndex], e.g. \\i[24] in the switch name in the database or in the display text for switch within my plugin parameters and the icon should be displayed. Tested with and without YEP Core Engine & Shop Menu Core active."
+    }
+  ]
+}

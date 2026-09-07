@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/error-reading-from-list.181064",
+  "title": "MV Error reading from list?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:45:55.040548+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1537241",
+      "author": "Khali",
+      "date": "2025-11-18T06:56:47+0900",
+      "body": "Hey guys, other achievement systems that were available didn't suit my needs so I started making my own.  I've run into an issue with one of my Window's lists though.\nLong short, I am reading from an external JSON, everything works correctly, and I can pull information using \"Khali.achievements.x\", x replaced with .name, .id, etc.  The menu opens, I can switch between selections, but I have 3 different games in one package.  They load and are populated fine, but I need to update the achievement title, description, and icon which is above the selection window.\nHere is the code:\nCode:\nWindow_Achievements_Info.prototype.makeAchievementList = function () {\n    this._list = [];\n    for (var i = 1; i < Khali.achievements.length; i++) {\n        if (Khali.achievements[i].game === game) {\n            this.addAchievement(Khali.achievements[i]);\n        }\n    }\n    console.log(this._list);\n};\nWhat it does:  Checks for the game title to see if it matches, adds it to a separate list as an object.\nWhen it works:  Drawing the list of all of the achievement icons (it's setup like the old Xbox 360 achievement menu)\nWhere it doesn't work:\nCode:\nthis.drawText(this._list[currentSelection - 1].game, x + this.iconPadding, y, this.contents.width, 'left');\nIf I add console.log(this._list), it will populate the array and show the appropriate information.\nIf I add console.log(this._list[0].game) immediately under this line, it will crash with error \"Cannot read property 'game' of undefined.\nI can understand it's trying to read a property that isn't defined.  I don't understand how this._list populates the array with\nCode:\n0:\n  game: \"Game 1\"\nWhy is it both defined, and undefined at the same time?  How is that possible?\n[edit]\nIt does exclusively work correctly when called from drawItem though.\nCode:\nWindow_Achievements_Info.prototype.drawItem = function (index) {\n    var rect = this.itemRect(index);\n    this.drawFace(this._list[index].icon, 2, rect.x + this.textPadding(), rect.y + this.textPadding(), iconSizeMini, iconSizeMini);\n};\nI can enter this.drawText(this._list[index].name here and it will populate, but as soon as I try to call that from refresh(), or anywhere else for that matter, it claims it's undefined.\n[edit2]\nGot it."
+    },
+    {
+      "post_id": "js-post-1538068",
+      "author": "ShadowDragon",
+      "date": "2025-11-27T02:14:51+0900",
+      "body": "you try to load add list with \"i\" = 1 ,  so 0 is undefined, so if you make that 0, it should work.\nor remove \"-1\" from current selection.  either way should work."
+    },
+    {
+      "post_id": "js-post-1538072",
+      "author": "Khali",
+      "date": "2025-11-27T02:47:37+0900",
+      "body": "ShadowDragon said:\nyou try to load add list with \"i\" = 1 ,  so 0 is undefined, so if you make that 0, it should work.\nor remove \"-1\" from current selection.  either way should work.\nClick to expand...\nI did end up getting this to work.  I skipped the 0 integer on purpose because I wanted it to count 1 and up.\nI did run into another problem though and decided to sidebar it.  I was going to make a new topic, but if this one still bumps then I'll ask here.\nI tried using ImageManager to load from a custom folder:\nCode:\nImageManager.loadAchievement = function (filename, hue) {\n    return this.loadBitmap('img/achievements/', filename, hue, true);\n};\n\nWindow_Base.prototype.drawAchievementIcon = function (_filename, iconIndex, x, y) {\n    var bitmap = ImageManager.loadAchievement(_filename);\n    var pw = iconSize;\n    var ph = iconSize;\n    var sx = iconIndex % 16 * pw;\n    var sy = Math.floor(iconIndex / 16) * ph;\n    this.contents.blt(bitmap, sx, sy, pw, ph, x, y);\n};\n\nWindow_Base.prototype.drawAchievementMiniIcon = function (_filename, iconIndex, x, y) {\n    var bitmap = ImageManager.loadAchievement(_filename);\n    var pw = iconSizeMini;\n    var ph = iconSizeMini;\n    var sx = iconIndex % 16 * pw;\n    var sy = Math.floor(iconIndex / 16) * ph;\n    this.contents.blt(bitmap, sx, sy, pw, ph, x, y);\n};\nIt does work, but not consistently at all.  I did some googling and if I understand correctly there's an issue with preloading images in RPG Maker MV, I'm wondering if there's a simple solution to this?  It does load the images, but it comes with a few bugs:\n• Inconsistent.  Sometimes it doesn't load any images at all, I close and open the menu and everything loads correctly.\n• I'm using global variables to turn achievements on and off.  When achievements are off, they are black and white for now (using a separate grayscale image of the achievement icons) and when they are on they use a colored image.  This is the function for that:\nCode:\nWindow_Achievements_Info.prototype.drawItem = function (index) {\n    var rect = this.itemRect(index);\n    if ($gameVariables.value(201)[this.id] === 1) {\n        this.drawAchievementMiniIcon('achievementsMini', this._list[index].icon, rect.x + this.textPadding(), rect.y + this.textPadding());\n    }\n    else {\n        this.drawAchievementMiniIcon('achievementsMini-Locked', this._list[index].icon, rect.x + this.textPadding(), rect.y + this.textPadding());\n    }\n};\nIt draws the list, but my expectation was that it would check this variable for each one and choose the correct image accordingly.  What it does is, if an achievement is unlocked and I highlight the unlocked one, it changes all of them to the colored ones, then if I highlight a locked one, it changes them all to the locked image.  Game Variable 201 is an array, so I'm expecting it to check variable 201[1] for example, and if that is set to 1, draw the colored one, and check each individually.  It just checks for the first one and stops there.  I haven't actually found the DrawAllItems function yet though, I just assumed it was handled like a for loop.  I haven't gone back to it yet, but perhaps I should just use a for loop instead.\n[edit]\nAh, this is what it already does:\nCode:\nWindow_Selectable.prototype.drawAllItems = function() {\n    var topIndex = this.topIndex();\n    for (var i = 0; i < this.maxPageItems(); i++) {\n        var index = topIndex + i;\n        if (index < this.maxItems()) {\n            this.drawItem(index);\n        }\n    }\n};\nI feel like this should have worked."
+    },
+    {
+      "post_id": "js-post-1538075",
+      "author": "ShadowDragon",
+      "date": "2025-11-27T03:03:30+0900",
+      "body": "you may need to loop that like:\nJavaScript:\nlet icons = $gameVariables.value(201); // array\n\nfor (let i = 0; i < icons.length; i++) {\n       let icon = icons[i];\n       //other code for icons[i] (this.id)\n}\nbut to make your code, you also can do something like this:\nJavaScript:\nWindow_Achievements_Info.prototype.drawItem = function (index) {\n    let rect = this.itemRect(index);\n    let icon = $gameVariables.value(201)[this.id]\n    this.drawAchievementMiniIcon((icon === 1 ? 'achievementsMini':'achievementsMini-Locked') , this._list[index].icon, rect.x + this.textPadding(), rect.y + this.textPadding());\n};\njust make sure that \"this.id\" is grabbed correctly so you have to loop over it first or safe-guard it.\nthere are some methods, but it depends on how your entire code it build and look like in game.\nthe drawAchiementIcon can also be one if you check for locked or unlocked so you have 2 in 1,\nif your comfortable separately for control is that fine too, its just some tips. ^^"
+    },
+    {
+      "post_id": "js-post-1538078",
+      "author": "Solar_Flare",
+      "date": "2025-11-27T03:20:18+0900",
+      "body": "I think the solution is to use your function like this:\nJavaScript:\nvar bitmap = ImageManager.loadAchievement(...);\nbitmap.addLoadListener(() => this.refresh());\nOr something along those lines – basically, make it force a refresh of your window once the image has finished loading.\nThe other alternative might be to use the\nImageManager.reserveBitmap\nfunction. I don't know exactly how that's meant to be used though. I\nthink\nyou'd call it in your scene setup function for every image you need to load, but I'm not sure if you need to do some cleanup when the scene ends or what you should choose as a reservation ID."
+    },
+    {
+      "post_id": "js-post-1538080",
+      "author": "Khali",
+      "date": "2025-11-27T04:01:54+0900",
+      "body": "ShadowDragon said:\nyou may need to loop that like:\nJavaScript:\nlet icons = $gameVariables.value(201); // array\n\nfor (let i = 0; i < icons.length; i++) {\n       let icon = icons[i];\n       //other code for icons[i] (this.id)\n}\nClick to expand...\nI did figure this out, I'm not sure where I went wrong here, but using this.id was drawing the last value.  I added a drawtext component to test this and discovered it would always draw the final value no matter what I changed it to.  I reomved this.id and changed it to index, and now it displays the icons correctly.\nI still can not for the life of me figure out how to preload the bitmaps though.I attempted Solar_Flare's suggestion and it just caused a crash stating it can't find the id of the image.  Going to research reserve.\n[edit]\nI don't know, maybe I need to start over.  This thing is just starting to annoy the hell out of me.  If I were writing this in C# or C++, or even PHP, or whatever, it would work fine.  I'm having the hardest time wrapping my head around why JS in this engine is so strict.\nI can draw my info window from initialize and it works maybe 50% of the time.  Sometimes it will draw all the information, sometimes it doesn't.  Why?  I don't know.\nIf I call this.refresh() from initialize, it crashes because of some definition that isn't defined, but it works just fine otherwise.  If I try to define it where I think the issue is, nah.  Still just crashes.  I can not grasp how sometimes JS will agree that something exists, then just suddenly decide \"You know what?  In this instance, it doesn't.\""
+    },
+    {
+      "post_id": "js-post-1538081",
+      "author": "Solar_Flare",
+      "date": "2025-11-27T04:16:39+0900",
+      "body": "Khali said:\nI attempted Solar_Flare's suggestion\nClick to expand...\nWhat was your exact code, and the exact error in the dev console?"
+    },
+    {
+      "post_id": "js-post-1538082",
+      "author": "Khali",
+      "date": "2025-11-27T04:26:52+0900",
+      "body": "Solar_Flare said:\nWhat was your exact code, and the exact error in the dev console?\nClick to expand...\nExactly what you wrote, but it isn't the bitmap refresh causing the crash.  It's calling refresh() that's crashing.\nI'm pulling information from a json:\nCode:\nvar Khali = Khali || {};\nKhali.achievements = {};\nKhali.achievements.version = \"1.0\";\nCode:\nKhali.loadDataFile = async (fileName, prop) => {\n    const response = await fetch(`data/${fileName}.json`);\n    const data = await response.json();\n    Khali[prop] = data;\n    console.log(Khali[prop]);\n    console.log(Khali.achievements[1].name);\n}\nKhali.loadDataFile('Achievements', 'achievements');\nI have this function to create the list:\nCode:\nWindow_Achievements_Info.prototype.makeAchievementList = function () {\n    this._list = [];\n    for (var i = 1; i < Khali.achievements.length; i++) {\n        if (Khali.achievements[i].game === game) {\n            this.addAchievement(Khali.achievements[i]);\n        }\n    }\n};\nThen anytime I call information from this I just run this._list.\nvalue\n, whether that be .id, .name, .icon, etc.  I call this.makeAchievementList() when the window is initialized, and it works as long as I open the window.  If I call this.refresh(), or this._infoWindow.refresh() in initialize however, it's like it doesn't ever exist and crashes.  Refresh is called anytime the cursor moves though, and works fine.  It doesn't make any sense to me.\n[edit]\nBetter yet, where the load listener expected to go?"
+    },
+    {
+      "post_id": "js-post-1538084",
+      "author": "ShadowDragon",
+      "date": "2025-11-27T04:44:21+0900",
+      "body": "I never use file listener, you can just preload with using Galv_ImageChange or load it on boot.\nI have a preload function in my base, so you can see how I done that, so you can do the same.\non Scene_Boot works better than listener if you ask me.\nalso, instead of using JSON which I did on ULS (UniversalLevelSystem that draws backgrounds,\nso it may work on your achievement way.\nanother way to avoid json is using a struct based, add the icon there, use the description,\nand other things.\nI use a automatic parser to make struct recursive, this way, you can control it easier.\nso you can try through that, or create an achievement object inside the plugin.\nMOG_FastTravelSystem (for MV) or MrTS backgrounds I believe or Nodes has the same thing.\neven MUSH_Achievement has a similar build of XBOX version that also require to alter plugin\nfor achievement, but it doesn't update nicely, so you can see how they done it."
+    },
+    {
+      "post_id": "js-post-1538107",
+      "author": "Khali",
+      "date": "2025-11-27T07:07:02+0900",
+      "body": "ShadowDragon said:\nI never use file listener, you can just preload with using Galv_ImageChange or load it on boot.\nClick to expand...\nI was hoping this would be my solution, but no success.  It still has the same effect.  Just broken.  It will always fail to load the first time, and load the second time the scene opens.  After awhile it seems like it just stops loading the JSON file too.  I wanted to use the JSON to have all my stuff programmed in a nice clean easy list.  It all works, it just works sometimes.  This engine is the worst.\nWhat I don't understand is, the files I'm trying to load are so extremely light weight.  Can I just load them into memory permanently and never remove them or something?"
+    },
+    {
+      "post_id": "js-post-1538110",
+      "author": "Solar_Flare",
+      "date": "2025-11-27T08:24:34+0900",
+      "body": "Khali said:\nExactly what you wrote, but it isn't the bitmap refresh causing the crash. It's calling refresh() that's crashing.\nClick to expand...\nThat's not really enough information for me to guess what's going on. The code I wrote isn't even valid code (you have to substitute the\n...\nwith the correct parameters, which it sounds like you did).\nMy code was written under the assumption that you are in a function on some Window_XXX class. So, the full code would be something like this (but the below code uses non-existent names as an example, so it's not copy-pastable):\nJavaScript:\nWindow_Achievement.prototype.something = function() {\n    var bitmap = ImageManager.loadAchievement(...);\n    bitmap.addLoadListener(() => this.refresh());\n    // do other stuff with bitmap, like drawing it or whatever\n};\nIf you pasted it into a different function, it's not guaranteed to work as-is. If you pasted it into a Scene_XXX.prototype.xyz function, replacing\nthis.refresh()\nwith\nthis._someWindow.refresh()\nprobably gets the same effect.\nKhali said:\nWhat I don't understand is, the files I'm trying to load are so extremely light weight. Can I just load them into memory permanently and never remove them or something?\nClick to expand...\nI think there\nmight\nbe something for that…? Maybe check how the window skin is loaded and kept in memory? I bet it uses the reserve system."
+    },
+    {
+      "post_id": "js-post-1538180",
+      "author": "Khali",
+      "date": "2025-11-28T04:59:16+0900",
+      "body": "I tried it in the info window initialization but it returns \"cannot read property of 'id'\" first, but this is because of issues I'm having with it reading from the JSON file.\nIf I move it to other locations it's a maximum call stack size exceeded error.\nSo I have a new question, because a lot of problems I seem to be having are stemming from reading from the JSON file in a timely manner, can I not create a global variable for this list?  IE:\nCode:\nlet achievementList = [];\nBut in JS, how do I create a function to read from the JSON immediately, and store this for anytime I need to refer to it?  Without using a Window_X.prototype function?\n[edit]\nI did get the image preloader to work for the game list, I'm just struggling to get it to work for my achievement list now because of the timing it draws the list.  I'm kind of rewriting a lot of it.  I understand the timing in other programming languages, but I'm not understanding why JS will read one function before or simultaneously with another.\nIs there a way to use addLoadListener with more than 1 image?\n[edit2]\nI got it!  Everything works as intended now."
+    },
+    {
+      "post_id": "js-post-1538194",
+      "author": "Solar_Flare",
+      "date": "2025-11-28T08:00:31+0900",
+      "body": "Khali said:\nBut in JS, how do I create a function to read from the JSON immediately, and store this for anytime I need to refer to it? Without using a Window_X.prototype function?\nClick to expand...\nYou can load a JSON file into a global variable like this:\nJavaScript:\nDataManager.loadDataFile('$dataAchievements', 'data/Achievements.json');\nNormally you'd probably do this by aliasing loadDatabase:\nJavaScript:\n(function(old) {\n    DataManager.loadDatabase = function() {\n        old.call(this);\n        this.loadDataFile('$dataAchievements', 'data/Achievements.json');\n    };\n})(DataManager.loadDatabase);\nThat'll load your achievements file into a global variable called\n$dataAchievements\n."
+    },
+    {
+      "post_id": "js-post-1538900",
+      "author": "Khali",
+      "date": "2025-12-02T17:20:26+0900",
+      "body": "Solar_Flare said:\nThat'll load your achievements file into a global variable called\n$dataAchievements\n.\nClick to expand...\nSorry, I actually already was doing this right from the start.  That did work, it was the nature of having to create separate lists for separate titles that had mixed me up.  It all works now, I just discovered that reading from a global variable...will work...but might not be the most ideal thing.\nI haven't looked into it yet, but is it possible for me to read and write variables to a save file?  I really just need a list of bools for each achievement, but I'm wondering if it's possible to do this using the save interpreter in some way.  I realize I could write to a JSON as well, but I feel like that will require me to read and overwrite constantly.  I'm not sure that would be the best way to go about it?"
+    },
+    {
+      "post_id": "js-post-1538933",
+      "author": "Solar_Flare",
+      "date": "2025-12-02T23:32:51+0900",
+      "body": "The quickest way to add something to the save file is to put it in the\n$gameSystem\nvariable. You could also override\nDataManager.makeSaveContents\nand\nDataManager.extractSaveContents\n."
+    }
+  ]
+}

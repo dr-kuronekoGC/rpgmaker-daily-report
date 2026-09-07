@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/extra-descriptions-in-bestiary.181325",
+  "title": "MV Extra descriptions in Bestiary",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:45:46.602515+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1539615",
+      "author": "NickTheBrick",
+      "date": "2025-12-07T11:49:59+0900",
+      "body": "I am currently making fun little rpg where you need to fill out a bestiary, much like the hunters journal in Hollow Knight. What I like about the hunters journal is how when you kill a certain number of a specific enemy, you get an extra description of that enemy.\nThe plugin I am using is the CGMV Encyclopedia, version 1.8\nI know that the encyclopedia plugin allows you to add a description of an enemy once you defeat it once. What I want to know is if it is possible that I can show an extra description after the player defeats a certain number of a specific enemy, much like the hunters journal, and if so, how would I go about doing it?"
+    },
+    {
+      "post_id": "js-post-1539635",
+      "author": "JamesRyan",
+      "date": "2025-12-07T16:52:14+0900",
+      "body": "I used to ask for help like this, but people are also busy with their own projects or work, so it's quite hard to find someone to do this, especially when it involves editing others' plugins. For some simple QoL improvement, I think you can try to get some help from the AI. Just provide it with enough information, and it should be fine. That's what I have been doing."
+    },
+    {
+      "post_id": "js-post-1539645",
+      "author": "rpgLord69",
+      "date": "2025-12-07T19:02:59+0900",
+      "body": "If you do it like the above poster suggested, many of the users here will s*** on your game. So here's an alternative suggestion:\nDidn't test it, but can you modify the text you feed it in the below function. Let's say you have a game variable made into an array where you store your kill counts per enemyId [5, 2, 0, 4, ...]. Then another variable array where you store texts per enemy id. Then you can check:\nif ($gameVariables.value(X)[enemy.id] > Y)\nchange the drawEncyclopediaMeta function to draw\nenemy.meta.cgmvdesc + $gameVariables.value(Z)[enemy.id]\nCGMV_Window_EncyclopediaDisplay.prototype.drawBestiary = function() {\nvar enemy = $dataEnemies[this._data._id];\nthis.drawEncyclopediaName(enemy.name);\nthis.drawEncyclopediaStats(enemy.params, this.lineHeight());\nthis.drawEncyclopediaCenteredText(CGMV.Encyclopedia.DropsText, this.lineHeight()*5, true);\nthis.drawEncyclopediaBestiaryRewards(enemy.exp, enemy.gold);\nvar y = this.drawEncyclopediaBestiaryDrops(enemy.dropItems);\ny = this.drawEncyclopediaMeta(enemy.meta.cgmvdesc, y);\ny = this.drawEncyclopediaBestiarySketch(enemy.battlerHue, enemy.battlerName, y);\nthis._neededHeight = y;\n};"
+    },
+    {
+      "post_id": "js-post-1539661",
+      "author": "JamesRyan",
+      "date": "2025-12-07T23:08:05+0900",
+      "body": "rpgLord69 said:\nIf you do it like the above poster suggested, many of the users here will s*** on your game.\nClick to expand...\nPeople do hate the use of AI, and I know it\nBut when you don't have a choice, that's a good way to consider. Just make sure not to rely on it too much. I have been using it only to correct grammar and do some simple QoL improvements if needed, which are hardly known from the player's perspective and usually harmless (but I still state clearly what is supported by AI). I don't recommend using AI for most of the things that heavily affect your game and your creativity, such as art, music, script, lore, etc. AI should be a supporter to us, not something that should replace our work."
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/disable-skill-until-hp-is-below-a-certain-threshold-script.180137",
+  "title": "Disable skill until HP is below a certain threshold script?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:45:59.460026+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1530467",
+      "author": "MoltresRider",
+      "date": "2025-09-19T02:02:39+0900",
+      "body": "I am looking for an RPG Maker VX Ace script that prohibits the user from using certain skills until that character's HP is below a certain percentage of their maximum.\nIdeally, I would put in the skill's notebox something like\n<Available Below: 30> meaning the skill becomes available when the character's HP is below 30%\nI would like this to prevent spamming of clutch HP draining moves unless the character actually needs it.\nCould I please get someone to make me something like this? Please and thank you."
+    },
+    {
+      "post_id": "js-post-1530474",
+      "author": "Roninator2",
+      "date": "2025-09-19T02:55:18+0900",
+      "body": "Yanfly skill restrictions\n<restrict eval>\na.hp < (a.mhp * 30)\n</restrict eval>\nNot tested.\nMight be 'self' and not 'a' like Trihan says below.\n<restrict eval>\nself.hp < (self.mhp * 30)\n</restrict eval>"
+    },
+    {
+      "post_id": "js-post-1530749",
+      "author": "MoltresRider",
+      "date": "2025-09-20T23:12:05+0900",
+      "body": "That method always crashes the game with\nCode:\nYanfly cooldown:760:in `eval': undefined local variable or method `a' for #<Game_Actor:0xcaf15e8>, NameError\n    from Yanfly cooldown:760:in `eval'\n    from Yanfly cooldown:760:in `restrict_eval?'\n    from Yanfly cooldown:576:in `skill_restriction?'\n    from Yanfly cooldown:919:in `skill_restriction?'\n    from Yanfly cooldown:906:in `draw_item'\n    from Window_Selectable:409:in `block in draw_all_items'\n    from Window_Selectable:409:in `times'\n    from Window_Selectable:409:in `draw_all_items'\n    from Window_SkillList:119:in `refresh'\n    from Window_SkillList:32:in `stype_id='\n    from Scene_Battle:346:in `command_skill'\n    from Window_Selectable:212:in `call'\n    from Window_Selectable:212:in `call_handler'\n    from Window_Command:136:in `call_ok_handler'\n    from Window_Selectable:322:in `process_ok'\n    from Window_Selectable:297:in `process_handling'\n    from Window_Selectable:276:in `update'\n    from Scene_Base:95:in `block in update_all_windows'\n    from Scene_Base:93:in `each'\n    from Scene_Base:93:in `update_all_windows'\n    from Scene_Base:49:in `update_basic'\n    from Screenshot Take:144:in `update_basic'\n    from Scene_Battle:56:in `update_basic'\n    from Scene_Base:41:in `update'\n    from Scene_Battle:45:in `update'\n    from Scene_Base:14:in `main'\n    from SceneManager:22:in `run'\n    from Mapshot:986:in `run'\n    from Screenshot Take:156:in `run'\n    from Backtrace:10:in `block in <main>'\nline 760 is the restrict eval line.\nAnd it crashes the moment I bring up the skill list before I even select anything"
+    },
+    {
+      "post_id": "js-post-1530751",
+      "author": "Trihan",
+      "date": "2025-09-20T23:21:41+0900",
+      "body": "MoltresRider said:\nThat method always crashes the game with\nCode:\nYanfly cooldown:760:in `eval': undefined local variable or method `a' for #<Game_Actor:0xcaf15e8>, NameError\n    from Yanfly cooldown:760:in `eval'\n    from Yanfly cooldown:760:in `restrict_eval?'\n    from Yanfly cooldown:576:in `skill_restriction?'\n    from Yanfly cooldown:919:in `skill_restriction?'\n    from Yanfly cooldown:906:in `draw_item'\n    from Window_Selectable:409:in `block in draw_all_items'\n    from Window_Selectable:409:in `times'\n    from Window_Selectable:409:in `draw_all_items'\n    from Window_SkillList:119:in `refresh'\n    from Window_SkillList:32:in `stype_id='\n    from Scene_Battle:346:in `command_skill'\n    from Window_Selectable:212:in `call'\n    from Window_Selectable:212:in `call_handler'\n    from Window_Command:136:in `call_ok_handler'\n    from Window_Selectable:322:in `process_ok'\n    from Window_Selectable:297:in `process_handling'\n    from Window_Selectable:276:in `update'\n    from Scene_Base:95:in `block in update_all_windows'\n    from Scene_Base:93:in `each'\n    from Scene_Base:93:in `update_all_windows'\n    from Scene_Base:49:in `update_basic'\n    from Screenshot Take:144:in `update_basic'\n    from Scene_Battle:56:in `update_basic'\n    from Scene_Base:41:in `update'\n    from Scene_Battle:45:in `update'\n    from Scene_Base:14:in `main'\n    from SceneManager:22:in `run'\n    from Mapshot:986:in `run'\n    from Screenshot Take:156:in `run'\n    from Backtrace:10:in `block in <main>'\nline 760 is the restrict eval line.\nAnd it crashes the moment I bring up the skill list before I even select anything\nClick to expand...\nReplace \"a\" with \"self\"."
+    },
+    {
+      "post_id": "js-post-1530752",
+      "author": "MoltresRider",
+      "date": "2025-09-20T23:25:31+0900",
+      "body": "Same error with \"user\"\nCode:\nYanfly cooldown:760:in `eval': undefined local variable or method `user' for #<Game_Actor:0xcb11e38>, NameError\n    from Yanfly cooldown:760:in `eval'\n    from Yanfly cooldown:760:in `restrict_eval?'\n    from Yanfly cooldown:576:in `skill_restriction?'\n    from Yanfly cooldown:919:in `skill_restriction?'\n    from Yanfly cooldown:906:in `draw_item'\n    from Window_Selectable:409:in `block in draw_all_items'\n    from Window_Selectable:409:in `times'\n    from Window_Selectable:409:in `draw_all_items'\n    from Window_SkillList:119:in `refresh'\n    from Window_SkillList:32:in `stype_id='\n    from Scene_Battle:346:in `command_skill'\n    from Window_Selectable:212:in `call'\n    from Window_Selectable:212:in `call_handler'\n    from Window_Command:136:in `call_ok_handler'\n    from Window_Selectable:322:in `process_ok'\n    from Window_Selectable:297:in `process_handling'\n    from Window_Selectable:276:in `update'\n    from Scene_Base:95:in `block in update_all_windows'\n    from Scene_Base:93:in `each'\n    from Scene_Base:93:in `update_all_windows'\n    from Scene_Base:49:in `update_basic'\n    from Screenshot Take:144:in `update_basic'\n    from Scene_Battle:56:in `update_basic'\n    from Scene_Base:41:in `update'\n    from Scene_Battle:45:in `update'\n    from Scene_Base:14:in `main'\n    from SceneManager:22:in `run'\n    from Mapshot:986:in `run'\n    from Screenshot Take:156:in `run'\n    from Backtrace:10:in `block in <main>'"
+    },
+    {
+      "post_id": "js-post-1530761",
+      "author": "Trihan",
+      "date": "2025-09-21T00:56:15+0900",
+      "body": "MoltresRider said:\nSame error with \"user\"\nCode:\nYanfly cooldown:760:in `eval': undefined local variable or method `user' for #<Game_Actor:0xcb11e38>, NameError\n    from Yanfly cooldown:760:in `eval'\n    from Yanfly cooldown:760:in `restrict_eval?'\n    from Yanfly cooldown:576:in `skill_restriction?'\n    from Yanfly cooldown:919:in `skill_restriction?'\n    from Yanfly cooldown:906:in `draw_item'\n    from Window_Selectable:409:in `block in draw_all_items'\n    from Window_Selectable:409:in `times'\n    from Window_Selectable:409:in `draw_all_items'\n    from Window_SkillList:119:in `refresh'\n    from Window_SkillList:32:in `stype_id='\n    from Scene_Battle:346:in `command_skill'\n    from Window_Selectable:212:in `call'\n    from Window_Selectable:212:in `call_handler'\n    from Window_Command:136:in `call_ok_handler'\n    from Window_Selectable:322:in `process_ok'\n    from Window_Selectable:297:in `process_handling'\n    from Window_Selectable:276:in `update'\n    from Scene_Base:95:in `block in update_all_windows'\n    from Scene_Base:93:in `each'\n    from Scene_Base:93:in `update_all_windows'\n    from Scene_Base:49:in `update_basic'\n    from Screenshot Take:144:in `update_basic'\n    from Scene_Battle:56:in `update_basic'\n    from Scene_Base:41:in `update'\n    from Scene_Battle:45:in `update'\n    from Scene_Base:14:in `main'\n    from SceneManager:22:in `run'\n    from Mapshot:986:in `run'\n    from Screenshot Take:156:in `run'\n    from Backtrace:10:in `block in <main>'\nClick to expand...\nYou missed my edit. Use \"self\"."
+    },
+    {
+      "post_id": "js-post-1530765",
+      "author": "MoltresRider",
+      "date": "2025-09-21T01:09:04+0900",
+      "body": "self works but the move was available even at 100% health.\nHowever, ChatGPT told me to make it\nRuby:\n<restrict eval>\nself.hp > (self.mhp * 0.30)\n</restrict eval>\nBecause it disables if true, not if false and this disables it unless HP is less than 30%\nNow is it possible to make an\nitem\nonly usable when the\nentire party\nis less than 30% with restrict eval?"
+    },
+    {
+      "post_id": "js-post-1530778",
+      "author": "Roninator2",
+      "date": "2025-09-21T02:14:27+0900",
+      "body": "MoltresRider said:\nBecause it disables if true\nClick to expand...\nYes forgot about that. restrict equals don't do it unless false.\n<restrict eval>\n$game_party.members.each { |a|  a.hp > (a.mhp * 0.30) }\n</restrict eval>\nNot sure if the curly bracket goes in front of the pipe or after. Trihan can correct me.\nAnd again not tested."
+    },
+    {
+      "post_id": "js-post-1530780",
+      "author": "Trihan",
+      "date": "2025-09-21T02:25:11+0900",
+      "body": "Roninator2 said:\nYes forgot about that. restrict equals don't do it unless false.\n<restrict eval>\n$game_party.members.each { |a|  a.hp > (a.mhp * 0.30) }\n</restrict eval>\nNot sure if the curly bracket goes in front of the pipe or after. Trihan can correct me.\nAnd again not tested.\nClick to expand...\nIt goes before, that should be correct."
+    },
+    {
+      "post_id": "js-post-1530781",
+      "author": "MoltresRider",
+      "date": "2025-09-21T02:38:02+0900",
+      "body": "Will this cause a crash\n{ |a|  a.hp > (a.mhp * 0.30) }\nLike it did with the other skill with the a variable?"
+    },
+    {
+      "post_id": "js-post-1530799",
+      "author": "kyonides",
+      "date": "2025-09-21T04:41:34+0900",
+      "body": "Ruby:\n$game_party.members.each { |a| a.hp > (a.mhp * 0.30) }\nHow weird, it should work as it is. Well, there the parentheses () are optional.\nWhat's the exact error message you're getting there?"
+    },
+    {
+      "post_id": "js-post-1530806",
+      "author": "MoltresRider",
+      "date": "2025-09-21T06:00:34+0900",
+      "body": "I am just asking because it crashed with the healing bird summon, which prompted you folks to tell me to change it to .self\nSo, under that same logic, wouldn't a.hp do the same error here?\nI do not want to get in a heated battle where I need to use this item and have it crash since it's supposed to be an expensive clutch save move that one will use when they are far into battle and are in a bind."
+    },
+    {
+      "post_id": "js-post-1530807",
+      "author": "kyonides",
+      "date": "2025-09-21T06:04:46+0900",
+      "body": "That piece of code uses a because it's a block variable as defined in |a| so the syntax is fine.\nTell me, does the game crash throw any error message? If not, that might complicate things a bit more than first expected."
+    },
+    {
+      "post_id": "js-post-1530826",
+      "author": "MoltresRider",
+      "date": "2025-09-21T09:40:12+0900",
+      "body": "The code is not working whatsoever.\nThe Emergency Medic is available even when everybody's health is at maximum\nEven:\n<restrict eval>\ntrue\n</restrict eval>\nDoes not work (used this to test)\nDoes Yanfly Skill Restrictions not work with items?"
+    },
+    {
+      "post_id": "js-post-1530828",
+      "author": "Roninator2",
+      "date": "2025-09-21T10:42:05+0900",
+      "body": "MoltresRider said:\nThe code is not working whatsoever.\nThe Emergency Medic is available even when everybody's health is at maximum\nEven:\n<restrict eval>\ntrue\n</restrict eval>\nDoes not work (used this to test)\nDoes Yanfly Skill Restrictions not work with items?\nClick to expand...\nYou know what, I didn't even clue into the fact that you said you were using the last option for items.\nThe <restrict eval> is not an option in the script for items. *read through the script header and you will see.\nMore code will have to be added if it is to be used."
+    }
+  ]
+}

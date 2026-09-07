@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/visustella-atb-plugin-how-to-check-if-a-target-is-in-a-casting-state.181148",
+  "title": "MZ Visustella ATB Plugin - How to check if a target is in a casting state?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:45:43.727891+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1537794",
+      "author": "Uzuki",
+      "date": "2025-11-24T04:28:04+0900",
+      "body": "Hey yall, just trying to see if there's a way to use a scriptcall in the conditional branch to check if the target of a skill/item is in the Casting stage of their action."
+    },
+    {
+      "post_id": "js-post-1537800",
+      "author": "rpgLord69",
+      "date": "2025-11-24T06:17:06+0900",
+      "body": "Yeah, they have\nbattler.isAtbCastingState()\n(change the battler reference). Don't know how it's different from checking\nbattler._tpbState === \"casting\""
+    },
+    {
+      "post_id": "js-post-1537810",
+      "author": "Uzuki",
+      "date": "2025-11-24T07:55:25+0900",
+      "body": "rpgLord69 said:\nYeah, they have\nbattler.isAtbCastingState()\n(change the battler reference). Don't know how it's different from checking\nbattler._tpbState === \"casting\"\nClick to expand...\nI tried changing to \"target.isAtbCastingState()\" but that doesn't seem to be recognized."
+    },
+    {
+      "post_id": "js-post-1537831",
+      "author": "rpgLord69",
+      "date": "2025-11-24T18:40:28+0900",
+      "body": "Where are you using the\nnotetag\n(edit: script)? It would be 'target' inside most VS notetags. If you're using it in a common event, if they're updated already, you can use Last Actor Enemy Id / Last Target Enemy Index. So I think it's like, actors/enemies:\n$gameActors.actor($gameTemp.lastActionData(4)).isAtbCastingState()\n$gameTroop.members()[$gameTemp.lastActionData(5)-1].isAtbCastingState()\nDepending on where used, you can also get the target with\nBattleManager._targets[0].isAtbCastingState()\nEDIT: fixed wrong syntax with $gameTroop.members()"
+    },
+    {
+      "post_id": "js-post-1537870",
+      "author": "Uzuki",
+      "date": "2025-11-25T02:48:41+0900",
+      "body": "rpgLord69 said:\nWhere are you using the\nnotetag\n(edit: script)? It would be 'target' inside most VS notetags. If you're using it in a common event, if they're updated already, you can use Last Actor Enemy Id / Last Target Enemy Index. So I think it's like, actors/enemies:\n$gameActors.actor($gameTemp.lastActionData(4)).isAtbCastingState()\n$gameTroop.members()[$gameTemp.lastActionData(5)-1].isAtbCastingState()\nDepending on where used, you can also get the target with\nBattleManager._targets[0].isAtbCastingState()\nEDIT: fixed wrong syntax with $gameTroop.members()\nClick to expand...\nLol should have realized that using a common event would have work differently then if it was in the battle event. But yes this worked perfectly! Thank you for the help!"
+    }
+  ]
+}
