@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/unable-to-make-a-custom-button-work-for-a-plugin.180776",
+  "title": "MZ Unable to make a custom button work for a plugin",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:54:01.545086+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1535170",
+      "author": "GR147",
+      "date": "2025-10-30T06:10:32+0900",
+      "body": "Hey, so I am working on a personal plugin that makes D20 dice rolls possible in RPG Maker MZ, currently under construction and largely unfinished, and I am coming across this issue.\nSo I want to build my own button for rolling the dice and picking a random number, and while it did work on the built-in sprites, I can't seem to get it work in the code. Whenever I click it, nothing happens and the event does not execute at all. What am I doing wrong and how can I fix this issue?\nThe code is right here:\ncreateRollButton() {\nconst W = 180;\nconst H = 60;\nconst Y_OFFSET = 120;\nconst bmp = new Bitmap(W, H);\nbmp.fillRect(0, 0, W, H, \"rgba(50,50,50,1.0)\");\nbmp.strokeRect(0, 0, W, H, \"rgba(255,255,255,1.0)\");\nbmp.fontSize = 30;\nbmp.textColor = \"#ffffff\";\nbmp.outlineColor = \"rgba(0,0,0,0.8)\";\nbmp.outlineWidth = 4;\nbmp.drawText(\"Roll\", 0, 0, W, H, \"center\");\nconst btn = new Sprite(bmp);\nbtn.x = (Graphics.width >> 1) - (W / 2);\nbtn.y = (Graphics.height >> 1) + Y_OFFSET;\nbtn.interactive = true;\nbtn.buttonMode = true;\nbtn.hitArea = new PIXI.Rectangle(0, 0, W, H);\nbtn.on(\"pointertap\", () => this.onRoll());\nbtn.on(\"pointerover\", () => (btn.alpha = 0.8));\nbtn.on(\"pointerout\", () => (btn.alpha = 1));\nthis.addChild(btn);\nthis.rollbutton = btn;\n}\nI appreciate any help for this!"
+    },
+    {
+      "post_id": "js-post-1535368",
+      "author": "fizzly",
+      "date": "2025-10-31T17:36:31+0900",
+      "body": "I think you should post this\nhere\n."
+    },
+    {
+      "post_id": "js-post-1535376",
+      "author": "Aerosys",
+      "date": "2025-10-31T19:20:59+0900",
+      "body": "Hey GR147,\nI don't know about your programming experiences, so don't take it personally when I'm explaining something that is way below your level.\nFirst of all, in your code snippet, you are defining a method. But are you actually calling it anywhere in your game?\nCode:\nthis.addChild(btn);\nthis.rollbutton = btn;\nThe \"this\" might not be correct here. You always need to know where \"this\" is referring to. In this context, I would say, you want to refer to the current scene. You can do that by writing this:\nCode:\nSceneManager._scene.addChild(btn);\nSceneManager._scene.rollbutton = btn;"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/enhancing-the-pause-menu-cursor-size.181343",
+  "title": "MZ Enhancing the pause menu cursor size",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:54:00.069814+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1539733",
+      "author": "DumGamesEN",
+      "date": "2025-12-08T11:47:01+0900",
+      "body": "Don't know much to say but is there anyway to make the pause menu cursor a little bit bigger? I looked at this post\nChanging the size of the pause sprite/text box arrow?\nand tried searching the lines but I think the code in the js for RPG Maker MZ changed since this was a year ago. I'm using GabeMZ Message Plus plugin if that helps."
+    },
+    {
+      "post_id": "js-post-1539746",
+      "author": "SeaPhoenix",
+      "date": "2025-12-08T15:52:47+0900",
+      "body": "How much bigger do you want it to be? By default it can be up to 24x24 pixels due to how the windowskin components are drawn (see this blog post\nhttps://www.rpgmakerweb.com/blog/what-makes-up-a-windowskin\n, under the section Message Pause Cursor, for more details).\nSo one easy way to make the cursor bigger without any plugins is to draw a bigger cursor, up to 24x24 pixels for each frame, in the windowskin image. This image can be found in your project folder > img > system > window.png."
+    },
+    {
+      "post_id": "js-post-1539749",
+      "author": "DumGamesEN",
+      "date": "2025-12-08T16:03:39+0900",
+      "body": "SeaPhoenix said:\nHow much bigger do you want it to be?\nClick to expand...\nI want it to be double or triple the size.\n(PS: I technically know how the sizing works for the menu pause cursor, but this doesn't really help with enhancing the size of the cursor)"
+    },
+    {
+      "post_id": "js-post-1539756",
+      "author": "rpgLord69",
+      "date": "2025-12-08T18:26:40+0900",
+      "body": "If you don't want to change it in the img file, you can try and put in the method that (+ maybe change position too):\nthis._pauseSignSprite.scale.set(2,2);"
+    },
+    {
+      "post_id": "js-post-1539779",
+      "author": "DumGamesEN",
+      "date": "2025-12-08T21:45:45+0900",
+      "body": "rpgLord69 said:\nIf you don't want to change it in the img file, you can try and put in the method that (+ maybe change position too):\nthis._pauseSignSprite.scale.set(2,2);\nClick to expand...\nWould I just save this as a js or search for this and edit it?"
+    },
+    {
+      "post_id": "js-post-1539785",
+      "author": "rpgLord69",
+      "date": "2025-12-08T22:46:25+0900",
+      "body": "Try putting it in the method in the link you posted (you can alias it if you want). Then save it as a .js file and add in your plugin manager."
+    },
+    {
+      "post_id": "js-post-1540289",
+      "author": "DumGamesEN",
+      "date": "2025-12-13T02:05:01+0900",
+      "body": "rpgLord69 said:\nTry putting it in the method in the link you posted (you can alias it if you want). Then save it as a .js file and add in your plugin manager.\nClick to expand...\nSorry for the late reply, but it didn't do nothing. This is what I put:\nWindow.prototype._refreshPauseSign = function() {\nconst sx = 144;\nconst sy = 96;\nconst p = 24;\nthis._pauseSignSprite.bitmap = this._windowskin;\nthis._pauseSignSprite.scale.set(4,4);\nthis._pauseSignSprite.anchor.x = 0.5;\nthis._pauseSignSprite.anchor.y = 1;\nthis._pauseSignSprite.move(this._width / 2, this._height);\nthis._pauseSignSprite.setFrame(sx, sy, p, p);\nthis._pauseSignSprite.alpha = 0;\n};"
+    },
+    {
+      "post_id": "js-post-1540728",
+      "author": "DumGamesEN",
+      "date": "2025-12-16T13:21:01+0900",
+      "body": "bump"
+    },
+    {
+      "post_id": "js-post-1540756",
+      "author": "Aerosys",
+      "date": "2025-12-16T19:40:04+0900",
+      "body": "The code looks correct, so I can only guess right now.\nMaaaaaybe it's\nJavaScript:\nthis._pauseSignSprite.scale.x = 4;\nthis._pauseSignSprite.scale.y = 4;\ninstead of\nJavaScript:\nthis._pauseSignSprite.scale.set(4, 4);"
+    },
+    {
+      "post_id": "js-post-1541312",
+      "author": "DumGamesEN",
+      "date": "2025-12-21T07:17:19+0900",
+      "body": "Aerosys said:\nThe code looks correct\nClick to expand...\nI took a look at everything in the js, and nothing worked. But I disabled the GabeMZ_MessagePlus plugin that I used for the certain message width/height I wanted and found out that was the cause the js wasn't working. Is there a different plugin I can use, or any script that I can combine with that plugin for it to work?"
+    }
+  ]
+}

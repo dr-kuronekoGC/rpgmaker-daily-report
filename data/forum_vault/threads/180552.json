@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-have-keys-correspond-to-battle-options.180552",
+  "title": "How to have keys correspond to battle options?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:54:03.697585+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1533417",
+      "author": "RPGMakerUser4001",
+      "date": "2025-10-14T20:57:41+0900",
+      "body": "Is there any way to have keyboard/button inputs select actor commands in battle, eg 'A' key selects the physical attack option, 'S' key opens the skill select menu?\nOpen to scripting ideas too. Thanks!"
+    },
+    {
+      "post_id": "js-post-1533422",
+      "author": "ZombieKidzRule",
+      "date": "2025-10-14T21:22:55+0900",
+      "body": "I just used the following prompt in Google AI Mode and it gave me a very nice description of options and explained it much better than I could.\n\"In RPG Maker MZ, how would I make it so a key press selects an option in combat, like press the A key to select Attack?\"\nThe response covered possible existing plugins as well as how to make your own simple plugin which is similar to a key mapping plugin tutorial that I have on my YouTube channel.\nThe response might not be perfect, but it should give you some direction options to experiment with and further research.\nAlso, others might be able to provide better specific assistance without using an AI search at all, which is even better.\nGood luck with your project!"
+    },
+    {
+      "post_id": "js-post-1533439",
+      "author": "RPGMakerUser4001",
+      "date": "2025-10-15T01:05:57+0900",
+      "body": "bump..."
+    },
+    {
+      "post_id": "js-post-1533440",
+      "author": "rpgLord69",
+      "date": "2025-10-15T01:20:07+0900",
+      "body": "Add your custom keys to the Input.keyMapper (or get a plugin for custom keys).\nI always like to access everything by using the \"forceSelect\" and \"processOk\". If your commands are fixed (like 0 attack, 1 skills, 2 guard, 3 items), I think you can just do something like below to check the keyboard presses in processHandling (like the base keys). If the commands vary, you'll need additional code to get the correct index. (I only wrote two keys there, continue the list.)\nconst _MyEdit1_actorCommand_processHandling = Window_ActorCommand.prototype.processHandling;\nWindow_ActorCommand.prototype.processHandling = function() {\nif (this.isOpenAndActive()) {\nif (Input.isTriggered(\"a\")) {\nthis.forceSelect(0);\nreturn this.processOk();\n}\nif (Input.isTriggered(\"s\")) {\nthis.forceSelect(1);\nreturn this.processOk();\n}\n}\n_MyEdit1_actorCommand_processHandling.call(this);\n}\nEDIT:\nMight add the\nif (this.isOpenAndActive())\nat the beginning of your custom check list too (just to be sure?)\nEDIT2: Added the above conditional into the code and also added the return statements in the triggers."
+    },
+    {
+      "post_id": "js-post-1533443",
+      "author": "Robro33",
+      "date": "2025-10-15T01:54:49+0900",
+      "body": "@RPGMakerUser4001\n, please do not bump your topic unless it has been 24 hours later since your last post. You can review our forum rules\nhere\n. Thank you."
+    },
+    {
+      "post_id": "js-post-1533478",
+      "author": "ATT_Turan",
+      "date": "2025-10-15T10:10:00+0900",
+      "body": "RPGMakerUser4001 said:\nIs there any way to have keyboard/button inputs select actor commands in battle\nClick to expand...\nIt doesn't support going to a menu (such as skill selection), as I recall. But I have a plugin for assigning keys to activate skills.\nTuran's Christmas Calendar - Day 7\nMerry Christmas, everyone!  I've been particularly inspired by the multitude of Advent calendars this year, so I decided at the last minute to try to produce some seasonal community contributions of my own.  For those whose Christmas knowledge is primarily secular, a touch of background...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1533562",
+      "author": "RPGMakerUser4001",
+      "date": "2025-10-16T03:10:13+0900",
+      "body": "rpgLord69 said:\nAdd your custom keys to the Input.keyMapper (or get a plugin for custom keys).\nI always like to access everything by using the \"forceSelect\" and \"processOk\". If your commands are fixed (like 0 attack, 1 skills, 2 guard, 3 items), I think you can just do something like below to check the keyboard presses in processHandling (like the base keys). If the commands vary, you'll need additional code to get the correct index. (I only wrote two keys there, continue the list.)\nconst _MyEdit1_actorCommand_processHandling = Window_ActorCommand.prototype.processHandling;\nWindow_ActorCommand.prototype.processHandling = function() {\nif (this.isOpenAndActive()) {\nif (Input.isTriggered(\"a\")) {\nthis.forceSelect(0);\nreturn this.processOk();\n}\nif (Input.isTriggered(\"s\")) {\nthis.forceSelect(1);\nreturn this.processOk();\n}\n}\n_MyEdit1_actorCommand_processHandling.call(this);\n}\nEDIT:\nMight add the\nif (this.isOpenAndActive())\nat the beginning of your custom check list too (just to be sure?)\nEDIT2: Added the above conditional into the code and also added the return statements in the triggers.\nClick to expand...\nThis seems to do it. Thanks so much!"
+    },
+    {
+      "post_id": "js-post-1533564",
+      "author": "RPGMakerUser4001",
+      "date": "2025-10-16T03:14:08+0900",
+      "body": "ATT_Turan said:\nIt doesn't support going to a menu (such as skill selection), as I recall. But I have a plugin for assigning keys to activate skills.\nTuran's Christmas Calendar - Day 7\nMerry Christmas, everyone!  I've been particularly inspired by the multitude of Advent calendars this year, so I decided at the last minute to try to produce some seasonal community contributions of my own.  For those whose Christmas knowledge is primarily secular, a touch of background...\nforums.rpgmakerweb.com\nClick to expand...\nrpglord69's method seems to work for skill selection, too."
+    },
+    {
+      "post_id": "js-post-1535762",
+      "author": "RPGMakerUser4001",
+      "date": "2025-11-04T17:15:30+0900",
+      "body": "rpgLord69 said:\nAdd your custom keys to the Input.keyMapper (or get a plugin for custom keys).\nI always like to access everything by using the \"forceSelect\" and \"processOk\". If your commands are fixed (like 0 attack, 1 skills, 2 guard, 3 items), I think you can just do something like below to check the keyboard presses in processHandling (like the base keys). If the commands vary, you'll need additional code to get the correct index. (I only wrote two keys there, continue the list.)\nconst _MyEdit1_actorCommand_processHandling = Window_ActorCommand.prototype.processHandling;\nWindow_ActorCommand.prototype.processHandling = function() {\nif (this.isOpenAndActive()) {\nif (Input.isTriggered(\"a\")) {\nthis.forceSelect(0);\nreturn this.processOk();\n}\nif (Input.isTriggered(\"s\")) {\nthis.forceSelect(1);\nreturn this.processOk();\n}\n}\n_MyEdit1_actorCommand_processHandling.call(this);\n}\nEDIT:\nMight add the\nif (this.isOpenAndActive())\nat the beginning of your custom check list too (just to be sure?)\nEDIT2: Added the above conditional into the code and also added the return statements in the triggers.\nClick to expand...\nI know it's been a little while, but might you also know how to disable the moving of the cursor with the arrow keys during this, while still allowing the inputs to select the commands?"
+    },
+    {
+      "post_id": "js-post-1535787",
+      "author": "rpgLord69",
+      "date": "2025-11-04T20:00:29+0900",
+      "body": "Yeah, I guess you can set\nWindow_ActorCommand.prototype.isCursorMovable\nmethod to return false. Or change the .processCursorMove . Or .cursorDown and other direction methods to empty."
+    }
+  ]
+}

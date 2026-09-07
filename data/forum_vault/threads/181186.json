@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/issue-with-characters-adjacent-to-star-tiles.181186",
+  "title": "MV Issue with characters adjacent to star tiles",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:54:00.697895+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1538101",
+      "author": "Solar_Flare",
+      "date": "2025-11-27T06:31:20+0900",
+      "body": "I'm having issues where a star tile cuts off the top of the event just below it. I tried the CP_Large_Sprite_Fix plugin that's distributed in the dlc folder, but it doesn't seem to work properly (or I can't get it to work).\nThe plugin seems to be very poorly documented, so I could be doing something wrong. Alternatively, are there any other plugins that do a similar thing? I think I do recall seeing one that requires the star passability tile to have the DOWN direction set to block, but I don't remember what it was called or how I could search for it.\nWhat I did:\nEnable the plugin\nSet terrain tag 7 on the specific star tiles that were cutting off tops (mainly the backs of chairs)\nOn one especially large event, I added the <large sprite> tag\nWhat works:\nNormal-sized (chibi) sprites are no longer cut off by a star tile placed above them. Thus, people sitting in chairs no longer have the top few pixels cut off.\nWhat doesn't work:\nNormal-sized sprites (including the player) are still cut off by star tile placed above them\nwhen the tile they are on is also a star tile\n.\nThe extra-large sprite is still cut off.\nThis image illustrates both issues:\nProof that those have terrain tag 7 set:\nI've also attached a shot of the statue event, in case that's helpful (see below).\nI am less worried about the large sprite, as I found I could work around it by setting it to display \"above characters\"."
+    },
+    {
+      "post_id": "js-post-1538102",
+      "author": "SGHarlekin",
+      "date": "2025-11-27T06:45:19+0900",
+      "body": "I recommend using\nhttps://forums.rpgmakerweb.com/inde...edmap-js-you-can-walk-around-the-tile.103416/\ninstead. Been using it for years and it's amazing."
+    },
+    {
+      "post_id": "js-post-1538106",
+      "author": "ShadowDragon",
+      "date": "2025-11-27T06:57:10+0900",
+      "body": "this\none is a good by hudell/cyclone or ocrams_starPassability.\nif you like simplicity."
+    },
+    {
+      "post_id": "js-post-1538109",
+      "author": "Solar_Flare",
+      "date": "2025-11-27T08:17:40+0900",
+      "body": "Okay, looks like there are a bunch of options to try!\nI think TF_LayeredMaps is the one I remembered seeing. It seems a bit too \"rich\" for my case here, mainly because the game is 90% finished. I might consider using it in another project though.\nHudell's sounds pretty nice, though it's a bit unfortunate that it effectively reserves all the terrain tags for a single plugin. (Although, I guess it only reserves them for star tiles, so that's slightly less bad.)\nI found Ocram's plugin\nhere\n. I'll probably try that one first and use Hudell's if I have problems with Ocram's."
+    },
+    {
+      "post_id": "js-post-1538111",
+      "author": "SGHarlekin",
+      "date": "2025-11-27T08:28:36+0900",
+      "body": "Solar_Flare said:\nI think TF_LayeredMaps is the one I remembered seeing. It seems a bit too \"rich\" for my case here, mainly because the game is 90% finished. I might consider using it in another project though.\nClick to expand...\nI wouldn't worry too much about it. You simply set the directional passability on your star tiles as described in the plugin file and that's it. No need to worry about anything else. Works clean and also works with certain camera zoom plugins I had previously trouble with when using other star tile fixes... But the choice is yours!"
+    },
+    {
+      "post_id": "js-post-1538112",
+      "author": "Solar_Flare",
+      "date": "2025-11-27T08:36:02+0900",
+      "body": "It's more the worry of whether it might affect other tiles that just happen to have settings that the plugin treats as special. In a new project I could easily be careful and set up everything to fit what the plugin expects; but when everything is already set up without any concern for this plugin, I don't feel like going through and re-checking all the settings.\nI'm also not using camera zooms in this project, so that's not a concern for me either!"
+    },
+    {
+      "post_id": "js-post-1538124",
+      "author": "Piyan Glupak",
+      "date": "2025-11-27T13:09:05+0900",
+      "body": "If you try OcRam's, I would have it very low down the plugin list, preferably the very bottom."
+    },
+    {
+      "post_id": "js-post-1538170",
+      "author": "Solar_Flare",
+      "date": "2025-11-28T02:21:59+0900",
+      "body": "Okay, I tried OcRam's. It work pretty well, but has a bit of a conflict with some of my other customizations. I think it did handle both of the cases in the original post. I don't remember if I tested it on extra-tall towers from Outside_C (by extra-tall I mean reduplicating those tiles to make a tower taller than 5 tiles). But then I realized that it's not free for commercial use, so I decided not to use it.\nThus, I'm now using Hudell's plugin. It works really well in general, but it's an extremely poor fit for those extra-tall towers – using the terrain tag to determine the height means that you need to duplicate the entire tower on your tilesheet with different tags. Since I only use the towers in a couple places, I just went ahead and did that, but… I think I wouldn't recommend Hudell's plugin for more complicated work. It's great for simpler stuff, although needing to set all the star tiles to terrain tag 1 (or occasionally more) was a bit of a pain.\nI'll definitely give TF_LayeredMap a try later and see if it's a better fit for my next project, but for now I'm (barely) satisfied with Hudell's plugin.\nThanks for the help in finding these."
+    },
+    {
+      "post_id": "js-post-1538171",
+      "author": "emogal",
+      "date": "2025-11-28T02:30:17+0900",
+      "body": "Would\nVE Tile Priority\nhelp? You can set the height of tiles in the database using counter and terrain tags rather than having to change actor sprite settings. It works with triacontane's HalfMove as well."
+    },
+    {
+      "post_id": "js-post-1538173",
+      "author": "Solar_Flare",
+      "date": "2025-11-28T02:36:04+0900",
+      "body": "It sounds like that would have the same issue as Hudell's plugin? I'm also slightly averse to Victor's plugins due to the need for a \"core\" (which is a bit hypocritical, I know)."
+    },
+    {
+      "post_id": "js-post-1538174",
+      "author": "emogal",
+      "date": "2025-11-28T03:09:25+0900",
+      "body": "What do you mean duplicate? You only need to have the tower on the sheet once, and then each tile it spans will have terrain tags equating to height. For example, the base of the tower (which I believe does not appear above the actor) would be marked as 0, then the next highest segment would be 1, and so on. If your tower is just the same \"mid section\" piece stacked multiple times, just use star tags for those pieces, since the player will never have occasion to be in front of them anyway...unless they can fly or something.\nWhat I do in my game for tall trees is 0 for the roots, counter+1 for the trunk, counter+2 for the beginning of the leaves/branches that should hang over the player's head, and then everything else above that is a star tile without any counter or terrain tags. I believe the level of terrain tag is there to account for your character's sprite height and whether it exceeds the tile height to determine its appearance in front of or behind the counter+terrain tag tile.\nAs for not using cores, I've never understood why people have such arbitrary aversions to things set in place to help them. Some people on here refuse to use plugins at all, which seems absurd unless explicitly done to challenge oneself for fun. I'm certainly not going to sacrifice the potential of my project just because a great plugin requires a core to work."
+    },
+    {
+      "post_id": "js-post-1538175",
+      "author": "Solar_Flare",
+      "date": "2025-11-28T03:16:25+0900",
+      "body": "What you say is indeed true if there is in fact no way for the player to end up behind the tower. In a very simple setup, that might be a reasonable assumption. Perhaps there are only walls and roof behind the tower, and there's no way to climb up onto the roof.\nBut if you\ncan\nclimb up onto the roof, or if the tower is free-standing rather than part of a larger building, then that won't work. The tiles\nabsolutely must\nhave their height flag go up by 1 as y decreases, or it won't work.\nI think it's likely your way also wouldn't work if you have an event whose sprite is larger than about 96x96, but I haven't tested, so I could be wrong.\nMy aversion to cores is not absolute. If the only plugin I could find required a core, and it was a big plugin that would be a pain to do myself, and I felt like I really needed that plugin, I would probably install the core and just use it. But having a core does apply a slight negative score for me when selecting between multiple similar plugins."
+    },
+    {
+      "post_id": "js-post-1538181",
+      "author": "emogal",
+      "date": "2025-11-28T05:14:26+0900",
+      "body": "If the player is able to climb via ladder or something with a restricted entry/exit point, Kadokawa's OverpassTile seems like it could turn the tower into a kind of vertical bridge. I don't use that one because it's incompatible with HalfMove, so I'm not sure about any other compatibility issues it's known to have.\nNone of my overworld sprites exceed 48x48, at least not ones that could interact with things like the tree I mentioned. I'm aware it won't work for every scenario, but it's very useful when it does.\nIs it just due to plugin list clutter? Or is there some other reason cores detract from the value of a plugin?"
+    },
+    {
+      "post_id": "js-post-1538192",
+      "author": "Solar_Flare",
+      "date": "2025-11-28T07:26:39+0900",
+      "body": "So, just for the record, I found a bug in Hudell's plugin that causes it to\nnot\nignore the terrain height settings for non-star tiles.\nThe solution is to just add an extra pair of parentheses, replacing this:\nJavaScript:\nif (flag & 0x10 === 0)\nwith this:\nJavaScript:\nif ((flag & 0x10) === 0)\nemogal said:\nIs it just due to plugin list clutter? Or is there some other reason cores detract from the value of a plugin?\nClick to expand...\nI'd say plugin list clutter is at least half of it. I guess the other half would be that cores are typically \"internal\" and mostly-undocumented, so you sort of wonder whether it has some random extra feature that you actually don't want."
+    },
+    {
+      "post_id": "js-post-1538239",
+      "author": "slimmmeiske2",
+      "date": "2025-11-28T18:18:01+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}
