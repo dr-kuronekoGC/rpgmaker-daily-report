@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/pixel-madness.183943",
+  "title": "\"Pixel Madness\"",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:47:13.857772+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1558664",
+      "author": "Sleeperr",
+      "date": "2026-06-08T00:25:22+0900",
+      "body": "I salute you.\nLet me start with a premise, that \"yes, I have seen many posts trying to resolve exact same issue\", and yet I'd like a minute of your time. I genuinely ask for your patience and understanding, because I've spent weeks trying to solve this problem and feel like I'm going in circles. Thank you.\nI am desperately trying to achieve a seemingly unachievable goal and that is to get the retro pixel perfect look for my game in RPGMakerMZ.\nSo far, I've tried every resolution and plugin I could find (and in some cases afford). But let's review some of the most prominent solutions I've already tried:\n+\nVisustella\n- with nearest-neighbor rendering enabled to avoid blurriness - result: uneven, wonky pixels.\n+\nHakuen Studio\n- (integer scaling) + his\nPixel Perfect\nplugin - the issue remains the same.\n+\nTDDP Pixel Perfect\n- same effect.\n+\nSan Hendrix\n- Game Resolution - with integer scaling and pixel-perfect options enabled - same issue.\nThis led me to wonder if the problem was my monitor resolution rather than RPG Maker itself. So I tested multiple screen resolutions (my screen + different resolutions in the project system settings), but nothing helped.\nSo far the best results I was able to achieve is by setting the base resolution of the game to 640 x 360 and scale all the graphics and assets by 200% in Aseprite. By effectively doubling the pixel size, I eliminated most of the visual inconsistencies. The downside is that the game now appears less detailed because all of the graphics were originally designed with a\n320×180\nresolution in mind. Which is acceptable for a retro looking game. Also, this only looks decent in fullscreen or maximised window.\nWin mode no scaling (2px wide blacklines):\nFullscreen automatic scaling (2px wide lines):\nThe results were stunning in my opinion, yet introducing 1px lines would cause problems.\nHowever, the text remained a problem. Naturally I've tried to replace the font with bitmaps, after experimenting with several free solutions, I got\nHakuen Studio\nBitmap Font Pro. It worked alright until I ran into the issue shown below:\nThe pixels are clearly uneven because I wasn't able to apply \"the double pixel rule\" I invented as text would appear too large.\nSo my question to the community, is there a way to get the true pixel perfect look, or is it just a fantasy, a unattainable feature that was never intended by the developers of RPGMakerMZ?\nIf anyone has experience with this, or can explain what I'm missing, I would greatly appreciate the help xxx"
+    },
+    {
+      "post_id": "js-post-1558666",
+      "author": "♥SOURCE♥",
+      "date": "2026-06-08T01:42:09+0900",
+      "body": "Yes, this is solvable.\nYou want the pixels to conserve their shape no matter what. I'll extract the fix from my other stuff and see if I can publish it soonish."
+    },
+    {
+      "post_id": "js-post-1558671",
+      "author": "Kenen",
+      "date": "2026-06-08T03:28:02+0900",
+      "body": "This is not particularly difficult to do.\nThe correct way is to start with your base pixel grid and upscale your materials by 2-3x. 3x generally maps more directly to the 48px tilesets and is what you will often see done with 8- or 16-bit style resource packs.\nThe font is something I see overlooked a lot. You need to find a pixel font whose dimensions match your upscaling value. This means a font intended for 8px use being used at 24px, or 10px to 30px (if you are using a 3x scale).\nYour selected font should have the same pixel ratio as your tiles and other assets. If your letters are 1px wide at their thinnest point while your tilesets are at 200% size, the font is wrong.\nYou also can’t put a 1px outline around your font if your base pixel scale is 2px.\nDepending on how great your attention to detail is, you should also be clamping the x and y coordinates of any UI elements to multiples of your scale factor (e.g. 2 or 3). Window and gauge sizes should be clamped similarly."
+    },
+    {
+      "post_id": "js-post-1558673",
+      "author": "KaijuuKimi",
+      "date": "2026-06-08T04:02:33+0900",
+      "body": "Instead of resizing the sprite you can use zoom plugin,\nthis\none is pretty amazing. TDDP with stretching off should eliminate uneven pixel but you will get black border if your window size is not multiplication of x2,x3 etc of the default window size.\nWhat SOURCE is showing looks amazing tho because the scale retain even when zoomed and rotated."
+    },
+    {
+      "post_id": "js-post-1558719",
+      "author": "Sleeperr",
+      "date": "2026-06-08T20:23:42+0900",
+      "body": "Kenen said:\nThis is not particularly difficult to do.\nThe correct way is to start with your base pixel grid and upscale your materials by 2-3x. 3x generally maps more directly to the 48px tilesets and is what you will often see done with 8- or 16-bit style resource packs.\nThe font is something I see overlooked a lot. You need to find a pixel font whose dimensions match your upscaling value. This means a font intended for 8px use being used at 24px, or 10px to 30px (if you are using a 3x scale).\nYour selected font should have the same pixel ratio as your tiles and other assets. If your letters are 1px wide at their thinnest point while your tilesets are at 200% size, the font is wrong.\nYou also can’t put a 1px outline around your font if your base pixel scale is 2px.\nDepending on how great your attention to detail is, you should also be clamping the x and y coordinates of any UI elements to multiples of your scale factor (e.g. 2 or 3). Window and gauge sizes should be clamped similarly.\nClick to expand...\nFisrt off thank you for your reply, I appreciate that. I like your idea about upscaling materials to 3 I haven't thought of that. After testing it out I can kinda see pixels being displayed in all their glory. But not quite, depending on the scene, what I mean when there's contrast things start to get more difficult:\nexample - upscaled x3 graphics to fit\n960x540\ngame's window\n('320x180' x 3)\n(bottom part is a 48px tile, top a parallax)\nIt's basically the \"chunkier\" graphics are the less problems it will cause. Surely there's a better way. something more predictable? Unless I'm doing something very wrong..\nI'm guessing the font will work just fine if I'll edit all the letters and give them proper scaling + strip off the outlining. Thank you for reminding about the UI elements as well. I feel like I'm getting somewhere. Yet, I still don't really understand why the pixels displayed in uneven manner despite correct scaling whilst in window mode (they only became unified when the window is maximised), I thought the window by default equals the size I set in system setting of the project? I guess my problem is, when I get to play or let others they will see the messy pixels whilst games like\nOmori\neven in window mode (x1 scaling) the pixels remain intact.\n♥SOURCE♥ said:\nYes, this is solvable.\nView attachment 367696\nYou want the pixels to conserve their shape no matter what. I'll extract the fix from my other stuff and see if I can publish it soonish.\nClick to expand...\nThis looks fire, I will be waiting for your solution I'm very curious. Thanks a lot.\nKaijuuKimi said:\nInstead of resizing the sprite you can use zoom plugin,\nthis\none is pretty amazing. TDDP with stretching off should eliminate uneven pixel but you will get black border if your window size is not multiplication of x2,x3 etc of the default window size.\nWhat SOURCE is showing looks amazing tho because the scale retain even when zoomed and rotated.\nClick to expand...\nThank you for your reply. This plugin looks fire. I was thinking about zooming too, and even tried it once but something went wrong. Would you mind sharing what your workflow looks like when using zoom? With scaling, the process feels much more straightforward, so I'm curious how you would do it."
+    },
+    {
+      "post_id": "js-post-1558854",
+      "author": "KaijuuKimi",
+      "date": "2026-06-10T00:42:00+0900",
+      "body": "The previous plugin might be to hard to use because it is in jp\nI'll provide this instead\n1. insert\nDP MapZoom\nand TDDP pixel perfect\n2. open system 2 and set your screen and ui to 960x540 (x3 of your 320x180)\n3 set DP Magnification to 3 (or 2 if you like. Other option you can decide yorself)\n4.set TDDP enable ingame option to true. open game and set the perfect pixel to on and stretching to off and quit to title screen (it is bugged by default in mz so need to do this)\n5. the map will be x3 without resizing and game should look pixel perfect"
+    },
+    {
+      "post_id": "js-post-1560339",
+      "author": "♥SOURCE♥",
+      "date": "2026-06-17T08:23:59+0900",
+      "body": "Sleeperr said:\nThis looks fire, I will be waiting for your solution I'm very curious. Thanks a lot.\nClick to expand...\nAlmost\nready\n. Do you have any test images around?"
+    },
+    {
+      "post_id": "js-post-1560405",
+      "author": "Eliaquim",
+      "date": "2026-06-17T15:48:52+0900",
+      "body": "Hi there!\nWell, I'm curious of how my Pixel Perfect plugin + integer scaling did not work properly. It should.\nWhen you mentioned integer scaling, did you use my Screen Manager plugin for that?\nHakuen Studio Screen Manager for RPG Maker MZ by Hakuen Studio\nManage screen resolutions, screen scales and fullscreen on your game!\nhakuenstudio.itch.io\nAbout the bitmap font, it will work fine if you do like\n@Kenen\nsaid. But I guess I can also add a new feature that let you choose different fonts for different resolutions.\nI manage to replicate Shining Force 1 from Sega Genesis perfectly a while ago, meaning the graphics, with a resolution of\n320x224.\nEverything looking crispier and pixel perfect, including the font.\nSo, if you want any additional help, send me a friend request on discord, since the forums will be read only soon.\ndiscord: hakuenstudio"
+    }
+  ]
+}
