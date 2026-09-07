@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/custom-mp-bar.181961",
+  "title": "MZ Custom MP Bar",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:52:07.823604+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1544438",
+      "author": "NinjaPikachu",
+      "date": "2026-01-15T08:34:08+0900",
+      "body": "Hi everyone, I'm looking for an RPG Maker MZ plugin that allows me to change the MP bar's name and color per actor. I know I can change the general name in the Database, but I want one character to have a 'Mana' bar and another to have a 'Stamina' bar. I found a plugin like this for MV, but I specifically need one for MZ. Can anyone help?"
+    },
+    {
+      "post_id": "js-post-1544539",
+      "author": "rpgLord69",
+      "date": "2026-01-16T02:41:19+0900",
+      "body": "VisuStella Skill and States Core you can replace your actor gauges with different gauges using notetags."
+    },
+    {
+      "post_id": "js-post-1544571",
+      "author": "dewolf",
+      "date": "2026-01-16T05:50:43+0900",
+      "body": "NinjaPikachu said:\nHi everyone, I'm looking for an RPG Maker MZ plugin that allows me to change the MP bar's name and color per actor. I know I can change the general name in the Database, but I want one character to have a 'Mana' bar and another to have a 'Stamina' bar. I found a plugin like this for MV, but I specifically need one for MZ. Can anyone help?\nClick to expand...\nI achieved basically the same thing through a combo of VS Core, VS Skills/States Core, and\nHakuen Custom Parameters\n. Are you already using any other plugins that might conflict with any of those?\nEDIT: OMGosh,\n@rpgLord69\nis more spot on than I am. If the character(s) you're replacing MP for won't need to use MP for anything whatsoever, you can actually just use Skill/States Core to alias the MP bar entirely. Derp. My way will totally overcomplicate it lol but I can show you how to do the aliasing part"
+    },
+    {
+      "post_id": "js-post-1544834",
+      "author": "NinjaPikachu",
+      "date": "2026-01-18T08:41:09+0900",
+      "body": "rpgLord69 said:\nVisuStella Skill and States Core you can replace your actor gauges with different gauges using notetags.\nClick to expand...\nI tested the command to rename the gauge, but it had no effect. The best I could do was make the bar disappear."
+    },
+    {
+      "post_id": "js-post-1544835",
+      "author": "NinjaPikachu",
+      "date": "2026-01-18T08:41:39+0900",
+      "body": "dewolf said:\nI achieved basically the same thing through a combo of VS Core, VS Skills/States Core, and\nHakuen Custom Parameters\n. Are you already using any other plugins that might conflict with any of those?\nEDIT: OMGosh,\n@rpgLord69\nis more spot on than I am. If the character(s) you're replacing MP for won't need to use MP for anything whatsoever, you can actually just use Skill/States Core to alias the MP bar entirely. Derp. My way will totally overcomplicate it lol but I can show you how to do the aliasing part\nClick to expand...\noh yeah, show me please"
+    },
+    {
+      "post_id": "js-post-1544838",
+      "author": "dewolf",
+      "date": "2026-01-18T08:59:18+0900",
+      "body": "NinjaPikachu said:\noh yeah, show me please\nClick to expand...\nSure thing!\nSo go into the plugin parameters of\nSkill States Core\n, click\nSkill Cost Types\n, and copy the existing entry for MP and paste it at the bottom of the list. Click into it and rename it whatever you want (I'll assume Stamina).\nIn JS: Draw Gauge, I'd make the following changes:\nSpoiler:\nJS: Draw Gauge\nCode:\n// Declare Settings\nconst color1 = ColorManager.textColor(x);\nconst color2 = ColorManager.textColor(y);\nconst label = \"SP\";\n\n// Declare Variables\nconst sprite = this;\nconst settings = sprite._costSettings;\nconst bitmap = sprite.bitmap;\nconst user = sprite._battler;\nconst currentValue = sprite.currentDisplayedValue();\nconst bitmapWidth = sprite.bitmapWidth();\nconst bitmapHeight = sprite.textHeight ? sprite.textHeight() : sprite.bitmapHeight();\nconst gaugeHeight = sprite.gaugeHeight();\n\n// Draw Gauge\nconst gx = 0;\nconst gy = bitmapHeight - gaugeHeight;\nconst gw = bitmapWidth - gx;\nconst gh = gaugeHeight;\nthis.drawFullGauge(color1, color2, gx, gy, gw, gh);\n\n// Draw Label\nconst lx = 4;\nconst ly = 0;\nconst lw = bitmapWidth;\nconst lh = bitmapHeight;\nsprite.setupLabelFont();\nbitmap.paintOpacity = 255;\nbitmap.drawText(label, lx, ly, lw, lh, \"left\");\n\n// Draw Value\nconst vw = bitmapWidth - 2;\nconst vh = bitmapHeight;\nsprite.setupValueFont();\nbitmap.textColor = ColorManager.mpColor(user);\nbitmap.drawText(currentValue, 0, 0, vw, vh, \"right\");\nAgain, I assumed you'd want to call it SP for Stamina Points, but you can make the label anything you want. X and Y at the top can either by colors from your window system image, or hex codes -- these determine what color your aliased gauge is going to be.\nNow, in the class or actor page for the character, insert this notetag:\n<Replace MP Gauge: Stamina> (or whatever you named it to)\nNow, your character should I BELIEVE still use skills with MP costs as normal, but to your player it's going to look like his skills cost a different resource. If you want to change how his \"SP\" cost looks vs MP costs in the menu, like a different color vs MP, you can edit that in the plugin as well. LMK if you need help with that, too."
+    },
+    {
+      "post_id": "js-post-1544855",
+      "author": "NinjaPikachu",
+      "date": "2026-01-18T11:28:42+0900",
+      "body": "dewolf said:\nSure thing!\nSo go into the plugin parameters of\nSkill States Core\n, click\nSkill Cost Types\n, and copy the existing entry for MP and paste it at the bottom of the list. Click into it and rename it whatever you want (I'll assume Stamina).\nIn JS: Draw Gauge, I'd make the following changes:\nSpoiler:\nJS: Draw Gauge\nCode:\n// Declare Settings\nconst color1 = ColorManager.textColor(x);\nconst color2 = ColorManager.textColor(y);\nconst label = \"SP\";\n\n// Declare Variables\nconst sprite = this;\nconst settings = sprite._costSettings;\nconst bitmap = sprite.bitmap;\nconst user = sprite._battler;\nconst currentValue = sprite.currentDisplayedValue();\nconst bitmapWidth = sprite.bitmapWidth();\nconst bitmapHeight = sprite.textHeight ? sprite.textHeight() : sprite.bitmapHeight();\nconst gaugeHeight = sprite.gaugeHeight();\n\n// Draw Gauge\nconst gx = 0;\nconst gy = bitmapHeight - gaugeHeight;\nconst gw = bitmapWidth - gx;\nconst gh = gaugeHeight;\nthis.drawFullGauge(color1, color2, gx, gy, gw, gh);\n\n// Draw Label\nconst lx = 4;\nconst ly = 0;\nconst lw = bitmapWidth;\nconst lh = bitmapHeight;\nsprite.setupLabelFont();\nbitmap.paintOpacity = 255;\nbitmap.drawText(label, lx, ly, lw, lh, \"left\");\n\n// Draw Value\nconst vw = bitmapWidth - 2;\nconst vh = bitmapHeight;\nsprite.setupValueFont();\nbitmap.textColor = ColorManager.mpColor(user);\nbitmap.drawText(currentValue, 0, 0, vw, vh, \"right\");\nAgain, I assumed you'd want to call it SP for Stamina Points, but you can make the label anything you want. X and Y at the top can either by colors from your window system image, or hex codes -- these determine what color your aliased gauge is going to be.\nNow, in the class or actor page for the character, insert this notetag:\n<Replace MP Gauge: Stamina> (or whatever you named it to)\nNow, your character should I BELIEVE still use skills with MP costs as normal, but to your player it's going to look like his skills cost a different resource. If you want to change how his \"SP\" cost looks vs MP costs in the menu, like a different color vs MP, you can edit that in the plugin as well. LMK if you need help with that, too.\nClick to expand...\nIt worked! I DID IT!!!\nThank you so much!\nI still need to adjust somethings about the text color, but is still working! I'll get it soon.\nEDIT: okay okay, can you make me a exemple how to let the font green? I already tried, but or some error appears or font just turn white"
+    },
+    {
+      "post_id": "js-post-1544867",
+      "author": "dewolf",
+      "date": "2026-01-18T13:31:18+0900",
+      "body": "NinjaPikachu said:\nIt worked! I DID IT!!!\nThank you so much!\nI still need to adjust somethings about the text color, but is still working! I'll get it soon.\nEDIT: okay okay, can you make me a exemple how to let the font green? I already tried, but or some error appears or font just turn white\nClick to expand...\nI was thinking earlier, and instead of fiddling with the plugin parameters for your cost color (i think that’s the color you wanna change!)it may be easier to use the <Custom Cost Text> note tag.\nSo say you want an ability to cost 14 Stamina, put 14 in the MP cost in the editor, and within the notetags I think you’d put\n<Custom Cost Text>\n\\C[x]14\n</Custom Cost Text>\nwhere x is the number of the color in your window system img (but i think you may can use hex codes too?)"
+    }
+  ]
+}

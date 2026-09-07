@@ -1,0 +1,131 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/forcing-a-message-box-to-close-using-a-script-call.181972",
+  "title": "MV Forcing a Message Box to close using a Script Call?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:52:07.440461+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1544470",
+      "author": "firestalker",
+      "date": "2026-01-15T16:44:22+0900",
+      "body": "I'm try to event a \"Skip Cutscene\" Event and I need to know if there is a way to forcibly close a Message Box that is open and running using a Script Call.\nI'm using YEP_MessageCore if that helps."
+    },
+    {
+      "post_id": "js-post-1544481",
+      "author": "ShadowDragon",
+      "date": "2026-01-15T18:08:26+0900",
+      "body": "I do have a function in my base and altMessageWindow \"walk away\"\nwhich you can walk away when the message is open.\nonce a scene is busy, you can't just call a scriptcall unless bound\nto a common event I think and target the message window?\nhow is the cutscene triggered?\nwill it turn off the switch... or skip to the end to stop it?\nreason for this is if you terminate the message (which is easy to add) won't\nskip to the end of the message, which should than be added, only I'm not\nsure how to do this part."
+    },
+    {
+      "post_id": "js-post-1544521",
+      "author": "doller554",
+      "date": "2026-01-16T00:36:21+0900",
+      "body": "firestalker said:\nI'm try to event a \"Skip Cutscene\" Event and I need to know if there is a way to forcibly close a Message Box that is open and running using a Script Call.\nI'm using YEP_MessageCore if that helps.\nClick to expand...\nNot 100% sure what you are looking to do here, but adding \\^ to the end of the message forces it to close. But make sure to add a bunch of \\.\\.\\.\\.\\.\\. to make sure it doesn't close up instantly. You can time the whole thing out and then it will just close on it's own."
+    },
+    {
+      "post_id": "js-post-1544536",
+      "author": "ShadowDragon",
+      "date": "2026-01-16T02:37:31+0900",
+      "body": "doller554 said:\nNot 100% sure what you are looking to do here, but adding \\^ to the end of the message forces it to close. But make sure to add a bunch of \\.\\.\\.\\.\\.\\. to make sure it doesn't close up instantly. You can time the whole thing out and then it will just close on it's own.\nClick to expand...\n\\^\njust show the text in 1x and not animated.\n\\.\nis more silence for some time\nwhat he seek is to terminate the message during cut scene\nlike a whole\nbunch if ....... <press button>\nexit message\nwithout showing the rest of the text like skip to end, similar to this plugin [\nSkip Cutscene\n].\nand probably more simplified than that one.\nI don't know if there are more like that though, but if its similar, than a plugin\nis required which I think it should anyway for this request."
+    },
+    {
+      "post_id": "js-post-1544557",
+      "author": "firestalker",
+      "date": "2026-01-16T04:11:06+0900",
+      "body": "So, this is the Common Event I have for the Skip Cutscene:\nCode:\n◆If：Script：Input.isTriggered(\"escape\")\n  ◆Fadeout Screen\n  ◆Plugin Command：ResetAllEventLocations\n  ◆Script：$gameMessage.clear();\n  ◆Script：$gameMap.eraseEvent($gameVariables.value(639));\n  ◆Erase Picture：#1\n  ◆Erase Picture：#2\n  ◆Erase Picture：#3\n  ◆Transfer Player：Volume Teleport (7,5) (Direction: Down, Fade: None)\n  ◆\n：End\nThe Erase Event Call works great - WHEN no dialogue is going. I read somewhere that gameMessage.clear would stop the dialogue box and erase it... That's not the case. But maybe I'm just doing it wrong or something.\nI would rather not pay for a plugin if I can help it... I'll see what I can find unless someone can figure out a solution."
+    },
+    {
+      "post_id": "js-post-1544559",
+      "author": "Solar_Flare",
+      "date": "2026-01-16T04:19:17+0900",
+      "body": "What you need is probably something in Window_Message, not Game_Message… which makes things slightly tricky, because there's no simple way to get the Window_Message.\nMaybe this will work?\nJavaScript:\nlet win = Scene_Manager._scene._windowLayer.children.find(win => win instanceof Window_Message);\nif(win) win.pause = false;\nI haven't tested it though. Also, even if it works, you'll probably need additional logic to deal with choice windows, pick item, or input number."
+    },
+    {
+      "post_id": "js-post-1544562",
+      "author": "caethyril",
+      "date": "2026-01-16T04:37:32+0900",
+      "body": "From the\nMV / MZ Script Call List\n(click image to view full size):\nJavaScript:\nSceneManager._scene._messageWindow.terminateMessage();\nIf you actually want to close the choice/number input/select item window, you should use the script call for the relevant window instead. E.g. for choices:"
+    },
+    {
+      "post_id": "js-post-1544565",
+      "author": "firestalker",
+      "date": "2026-01-16T05:10:54+0900",
+      "body": "caethyril said:\nFrom the\nMV / MZ Script Call List\n(click image to view full size):\nView attachment 358050\nJavaScript:\nSceneManager._scene._messageWindow.terminateMessage();\nIf you actually want to close the choice/number input/select item window, you should use the script call for the relevant window instead. E.g. for choices:\nView attachment 358049\nClick to expand...\nI didn't see that when I was looking through Script Call List... But it doesn't work - or at least not the way I want. The Message box continues to remain unclosed when i hit the key needed. It even opens the next box after the first one closes and continues the entire conversation before skipping the CS.\nThis is what I did:\nCode:\n◆If：Script：Input.isTriggered(\"escape\")\n  ◆Fadeout Screen\n  ◆Plugin Command：ResetAllEventLocations\n  ◆Script：SceneManager._scene._messageWindow.terminateMessage();\n  ◆Script：$gameMap.eraseEvent($gameVariables.value(639));\n  ◆Erase Picture：#1\n  ◆Erase Picture：#2\n  ◆Erase Picture：#3\n  ◆Transfer Player：Volume Teleport (7,5) (Direction: Down, Fade: None)\n  ◆\n：End\nSolar_Flare said:\nWhat you need is probably something in Window_Message, not Game_Message… which makes things slightly tricky, because there's no simple way to get the Window_Message.\nMaybe this will work?\nJavaScript:\nlet win = Scene_Manager._scene._windowLayer.children.find(win => win instanceof Window_Message);\nif(win) win.pause = false;\nI haven't tested it though. Also, even if it works, you'll probably need additional logic to deal with choice windows, pick item, or input number.\nClick to expand...\nUnfortunately, this doesn't work either...\nI wonder if it has something to do with YEP_MessageCore. I'm using the Wait(\\w[]) and the automatic close escape code for this cutscene and I'm wondering if that might have something to do with it."
+    },
+    {
+      "post_id": "js-post-1544568",
+      "author": "caethyril",
+      "date": "2026-01-16T05:43:01+0900",
+      "body": "Ah, right. That's because closing the message window doesn't end your cutscene event. Try this?\nJavaScript:\n$gameMap._interpreter.command115();  // Exit Event Processing on main interpreter\nSceneManager._scene._messageWindow.terminateMessage();\nNote that this will skip any other stuff left in the cutscene: move routes, switch/variable changes, etc."
+    },
+    {
+      "post_id": "js-post-1544591",
+      "author": "doller554",
+      "date": "2026-01-16T08:19:03+0900",
+      "body": "firestalker said:\nSo, this is the Common Event I have for the Skip Cutscene:\nCode:\n◆If：Script：Input.isTriggered(\"escape\")\n  ◆Fadeout Screen\n  ◆Plugin Command：ResetAllEventLocations\n  ◆Script：$gameMessage.clear();\n  ◆Script：$gameMap.eraseEvent($gameVariables.value(639));\n  ◆Erase Picture：#1\n  ◆Erase Picture：#2\n  ◆Erase Picture：#3\n  ◆Transfer Player：Volume Teleport (7,5) (Direction: Down, Fade: None)\n  ◆\n：End\nThe Erase Event Call works great - WHEN no dialogue is going. I read somewhere that gameMessage.clear would stop the dialogue box and erase it... That's not the case. But maybe I'm just doing it wrong or something.\nI would rather not pay for a plugin if I can help it... I'll see what I can find unless someone can figure out a solution.\nClick to expand...\nWhat if you made your own dialog box, like mimic 100% the dialog box RPG Maker uses, then then use that as an image only for this that can be removed in this same fashion you have setup already?"
+    },
+    {
+      "post_id": "js-post-1544603",
+      "author": "Solar_Flare",
+      "date": "2026-01-16T09:34:00+0900",
+      "body": "That sounds extremely inefficient and I really wouldn't recommend it…"
+    },
+    {
+      "post_id": "js-post-1544630",
+      "author": "firestalker",
+      "date": "2026-01-16T15:12:44+0900",
+      "body": "Sorry, Everyone....  nothing is working so far. I've decided to put this on the backburner for now since I've been obsessing about it for a few days and there's progress to be made. If you think of anything else that might work, feel free to place it here and I'll try it out.\nI have every intention of figuring this out... but I getting burned out at the moment. Need to step back and do something else for a little while."
+    },
+    {
+      "post_id": "js-post-1544787",
+      "author": "ShadowDragon",
+      "date": "2026-01-17T23:21:17+0900",
+      "body": "maybe try this in scriptcall (I put it from my altMessageWindow\nCode:\nif ($gameMessage.isBusy()) {\n     $gameMessage.clear();\n     if (SceneManager._scene._messageWindow) {\n          SceneManager._scene._messageWindow.close();\n      }\nor maybe simplified:\nCode:\nif ($gameMessage.isBusy()) {\n     $gameMessage.clear();\n     SceneManager._scene?._messageWindow.close()\nbut it check if the game message is busy first, than close it when possible.\nonly my altMessageWindow check if the player is walking as well to close it."
+    },
+    {
+      "post_id": "js-post-1544789",
+      "author": "Solar_Flare",
+      "date": "2026-01-18T00:03:44+0900",
+      "body": "Note: the simplified version only works in MZ. (Unless you manually upgrade your nwjs version on MV.)"
+    },
+    {
+      "post_id": "js-post-1544808",
+      "author": "firestalker",
+      "date": "2026-01-18T04:22:23+0900",
+      "body": "ShadowDragon said:\nmaybe try this in scriptcall (I put it from my altMessageWindow\nCode:\nif ($gameMessage.isBusy()) {\n     $gameMessage.clear();\n     if (SceneManager._scene._messageWindow) {\n          SceneManager._scene._messageWindow.close();\n      }\nor maybe simplified:\nCode:\nif ($gameMessage.isBusy()) {\n     $gameMessage.clear();\n     SceneManager._scene?._messageWindow.close()\nbut it check if the game message is busy first, than close it when possible.\nonly my altMessageWindow check if the player is walking as well to close it.\nClick to expand...\nUnfortunately, neither one of those worked for me. Thank you for trying... I might have to just be content with what I have right now.\nSolar_Flare said:\nNote: the simplified version only works in MZ. (Unless you manually upgrade your nwjs version on MV.)\nClick to expand...\nI have updated my NWJS to the most recent stable version for MV, but the shortened version still doesn't work... Maybe it'll only work on MZ."
+    },
+    {
+      "post_id": "js-post-1544815",
+      "author": "ShadowDragon",
+      "date": "2026-01-18T06:13:07+0900",
+      "body": "Solar_Flare said:\nNote: the simplified version only works in MZ. (Unless you manually upgrade your nwjs version on MV.)\nClick to expand...\nit works for me though, only I use the first version for the plugin.\nmy other use the short-hands for them, and I got no problem.\nthe code I gave is from my altMessageWindow where you can simply walk\naway if a game message is busy.\nfirestalker said:\nUnfortunately, neither one of those worked for me. Thank you for trying... I might have to just be content with what I have right now.\nClick to expand...\ncan you try the\naltMesasgeWindow\nand see if walk away works?\nif that one works, I may be able to make a small plugin for you where it works.\nas it may require the map update in order to close it.\nif that one works, than I could make a scriptcall with a scriptcall\nusing \"closeMsgWindow()\" through the comment event and it should\nclose.\nthe rest of the common event could still be used the way you have.\nonly this bit is running by the map update, unsure if that works, but worth a shot?"
+    },
+    {
+      "post_id": "js-post-1544952",
+      "author": "firestalker",
+      "date": "2026-01-19T03:17:22+0900",
+      "body": "ShadowDragon said:\nit works for me though, only I use the first version for the plugin.\nmy other use the short-hands for them, and I got no problem.\nthe code I gave is from my altMessageWindow where you can simply walk\naway if a game message is busy.\ncan you try the\naltMesasgeWindow\nand see if walk away works?\nif that one works, I may be able to make a small plugin for you where it works.\nas it may require the map update in order to close it.\nif that one works, than I could make a scriptcall with a scriptcall\nusing \"closeMsgWindow()\" through the comment event and it should\nclose.\nthe rest of the common event could still be used the way you have.\nonly this bit is running by the map update, unsure if that works, but worth a shot?\nClick to expand...\nSaga Game\nThe altMessageWindow plugin didn't work, but I'm wondering if I maybe did it wrong. I also have the issue I had with\nTHIS\npost.\nI included my Game Project Folder....  It's large because I haven't done any optimizing yet, but I thought you might need it to troubleshoot any issues.\nTo get to what you need:\nResume Game - Most Recent File\nOpen Menu\nGo to Books\nOpen Volumes\nVolume 2 is the fastest one to dialogue\nHit ESC when dialogue starts\nThe Common Event is at the bottom: 195-202"
+    },
+    {
+      "post_id": "js-post-1544956",
+      "author": "ShadowDragon",
+      "date": "2026-01-19T03:30:58+0900",
+      "body": "its downloading, I try to get to fix what you need and see what I can do for you.\nas I love challenge and try to solve it ^^\nwhile it works on my end, as I do have some YEP plugins but not all\nof them in use, just what I need, so I try to figure out what the issue is,\nand let you know.\nso I see what I can do for you\n(download is received)."
+    },
+    {
+      "post_id": "js-post-1545811",
+      "author": "firestalker",
+      "date": "2026-01-27T17:07:54+0900",
+      "body": "Thanks to ShadowDragon and the others that helped...  This is solved.\nThe Solution, for those that want it, is simple:\nYou need two events [One of them Common]\nYou need at least one Variable\nThe first event has to be on the map [and each map that Cutscene uses] and it has to be Parallel Process by itself [This cannot be included in the event controlling the Cutscene].\nIt should be set up like this:\n◆If：Script：Input.isTriggered(\"escape\")\n◆Script：$gameMap._interpreter.clear();\n：      ：$gameMessage.clear();\n◆Script：$gameMap.eraseEvent($gameVariables.value(1));\n◆Common Event：Cutscene Skip\n◆\n：End\nClick to expand...\nThe Variable should be the first line of the Controlling Event, and it should be set to the EventID [Controlling Event = 1; Variable 1 = 1]. You will have to add this Variable to all the controlling events in the Cutscene on each map. Make sure you set up the variable with the right number.\nNow set up a Common Event. This event should have all the Self switches, Variables, and Switches that the Cutscene uses in it. Now I had it setup so that I can repeat the Cutscene over and over again, but if you want to setup for a one-time thing then you need to make sure that everything that happens in the Cutscene is controlled by something that can be flipped [Self Switch, Switch, Variable, Etc.]. The Common Event will be where you flip all these switches and such so that the cutscene thinks it's finished. You will also want to give the player any items or skills or whatever that they might get during the Cutscene as well. You might have to figure out a way to avoid giving the player double the items though if the player closes the cutscene after receiving the item...\nI think I've held your hand some... DM me if you have any questions."
+    },
+    {
+      "post_id": "js-post-1545861",
+      "author": "hiddenone",
+      "date": "2026-01-28T02:34:14+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

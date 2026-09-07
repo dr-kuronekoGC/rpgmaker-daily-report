@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/font-scaling-and-preserving-quality.181983",
+  "title": "Font scaling and preserving quality",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:52:08.199361+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1544523",
+      "author": "jacklemon77",
+      "date": "2026-01-16T01:14:05+0900",
+      "body": "Hi, I'm pretty new to RPG maker MZ, and coming from other engines like Unity and Godot I was pretty baffled when I encountered this issue. (I'm mainly an artist)\nWhen I was tinkering around I landed on a 640x480 as an okay resolution for what I needed. The window was way too small though, so I tweaked the Screen Scale to 2. UI and everything else work fine, but the\ntext was in way lower quality than I expected.\nThis is clearly because the engine just grabs the entire window output and scale it up to twice its size, scaling up already rendered font with it. Weird, considering most engines treat UI as a separate element. I didn't expect RPG maker to consider font size as something absolute rather than relative.\nTo fix this, I thought that I could use a simple script to zoom in 2x on the game\n(I used SCSwinter's plugin)\nand simply double the Screen Width and Height (1280 x 960).\nThis, however, had a different result than what I expected.\nUI still gets rendered based on the internal resolution, so it's a lot smaller than before. This is far from optimal.\nI've tinkered around and so far I've tried:\n-\nMessing with the UI Area\n=Results don't vary, with 2x Screen Res it still outputs way too small, it just moves it\n-\nDisabling the plugin I'm using to have sharp pixels (aka changing the filtering from Bilinear to Nearest Neighbour)\n=Everything gets blurry, including the text. This is not an acceptable solution as it doesn't up the quality, it merely makes the font murkier. Furthermore, it makes every single pixel art asset muddier.\n-\nDoubling the Font size\n= text becomes comically large in text boxes and not only it becomes barely readable, this process goes against the original intent, which was to have three-lines textboxs like modern RPGs. And to do so I had to change the font size.\n-\nLeaving the font size to standard and setting manually each text box to have three lines\n= the text is too small, there's either way too much blank space or too much line spacing\n-\nLooking up in the forums\n=The only thing that pops up are people discussing how to remove the antialiasing. This only works on pixelated fonts. Using it on my project makes the text unreadable. Yes, I could change the font. No, it wouldn't matter as I wouldn't choose a pixelated font since it doesn't fit what I'm going for. This is not a matter of discussion. I'm looking for a way to have nice looking text, telling me to just throw essentially 99.9% fonts out of the window is not a solution nor a way to help me.\nSorry if I'm too blunt but I don't want to waste anyone's time.\n-\nLooking for plugins\n=the ones that talk about upping resolution are mostly pay walled and don't mention text in any way. I could try one, but I'd rather ask for help here before paying for something that may not fix my issue.\nWhat I'm essentially looking for is either something that makes\nthe font render at a size relative the window of the executable or some way to double the size of the UI without compromising other menus."
+    },
+    {
+      "post_id": "js-post-1544531",
+      "author": "Archeia",
+      "date": "2026-01-16T02:11:28+0900",
+      "body": "Try using this to help with font issue. Make UI Area as big as screen reso\nhttps://forums.rpgmakerweb.com/index.php?threads/opentype-pixel-font-renderer-mv-mz.171027/"
+    },
+    {
+      "post_id": "js-post-1544577",
+      "author": "jacklemon77",
+      "date": "2026-01-16T06:24:12+0900",
+      "body": "Archeia said:\nTry using this to help with font issue. Make UI Area as big as screen reso\nhttps://forums.rpgmakerweb.com/index.php?threads/opentype-pixel-font-renderer-mv-mz.171027/\nClick to expand...\nSorry I didn't mention it, but UI Area is already as big as the screen res in the 2nd pic.\nHere's something more detailed, showing the settings I have on to replicate that screenshot:\nFurthermore, I tried using the plugin you suggested, but unfortunately it seems to target pixel font specifically and spits out funky results when working with fonts with antialiasing.\nI've documented my testings:\nIt doesn't seem to really scale up the text, rather\nit snaps it to a pixel grid\n. There's also some\npretty heavy artifacting\naround some letters\n(like w, for example)\n.\nPS. I have yet to find a way to double the size of the UI when working in 1280x960 as you can see."
+    },
+    {
+      "post_id": "js-post-1544599",
+      "author": "jacklemon77",
+      "date": "2026-01-16T09:16:40+0900",
+      "body": "One quick solution may be to just resize the Graphics.boxHeight with a script but seems like It doesn't work with VisuMZ_1_MessageCore enabled.\nI don't know how to work around this since I do need that plugin."
+    },
+    {
+      "post_id": "js-post-1544651",
+      "author": "Archeia",
+      "date": "2026-01-16T20:35:22+0900",
+      "body": "Have you tried the other one where you can manually adjust the parameters? There's two types of plugins with opentype font.\nDo other fonts have the same issue or just this one with the plugin?"
+    },
+    {
+      "post_id": "js-post-1544687",
+      "author": "jacklemon77",
+      "date": "2026-01-17T02:00:03+0900",
+      "body": "Archeia said:\nHave you tried the other one where you can manually adjust the parameters? There's two types of plugins with opentype font.\nDo other fonts have the same issue or just this one with the plugin?\nClick to expand...\nYes, I've tried them both, but the issues are the same.\nThe one in the screenshots is the one with the parameters.\nOnly pixelated fonts work fine (and I'm not planning on using those)\n, but the text box\n(Message Window)\nis still rather small.\nI need to\nmake it bigger in Height.\nIt's weird,\nVisuMZ_1_MessageCore\ndoesn't have an option for the\nMessage Window Height, but it does have one for its Width and one for the rows.\nAdding rows does indeed change its Height, but it creates another issue.\nI\nonly want 3 rows of text\nand while I could just never exceed that number of rows while having\nmore than 3 set, there would be a huge blank gap and the font would be exceedingly small.\nChanging font size doesn't fix the blank gap, and it's even buggier, with some letters getting cut off.\nEX:\n(the blue and red areas are the same in both of the testings)\nI can't understand why I can't simply\nset the height\n, since it's able to modify it when changing rows.\nI've looked at the\nVisuMZ_1_MessageCore's\nofficial documentation\nand find out that there's a\n\"hard-coded text command\"\nwhich is\n<Dimensions: width, height>\n. I've tried using it, but to no avail. I can't seem to understand\nwhere I'm supposed to write this command\n. Writing it in the text box just prints it as part of the text, adding it as a script call does nothing...\nI'm confused."
+    },
+    {
+      "post_id": "js-post-1544727",
+      "author": "Archeia",
+      "date": "2026-01-17T07:23:16+0900",
+      "body": "Use plugin command parameters (like the one in events) there is also called lineheight or max lines or something."
+    },
+    {
+      "post_id": "js-post-1544942",
+      "author": "jacklemon77",
+      "date": "2026-01-19T02:15:42+0900",
+      "body": "Archeia said:\nUse plugin command parameters (like the one in events) there is also called lineheight or max lines or something.\nClick to expand...\nI've already tried that and documented my results in the previous posts.\nI've listed my reasoning as to why lineheight/max lines isn't the way to go."
+    },
+    {
+      "post_id": "js-post-1544945",
+      "author": "jacklemon77",
+      "date": "2026-01-19T02:37:02+0900",
+      "body": "In the end, I've reached a satisfying result with\nthis plugin\n.\nMy settings:\n-Resolution and Ui Area=1280x960\n-Font size 70\n-Messed a bit with line height in\nVisuMZ_1_Messagecore\n-Changed\nWindowHeight\nto 240 in\nNRP_MessageWindow\nNow onwards on how to make portraits bigger lol."
+    }
+  ]
+}
