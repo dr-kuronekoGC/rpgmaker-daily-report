@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-mv-software-rendering-tackling-memory-leaks.183911",
+  "title": "MV RPG Maker MV Software Rendering - Tackling Memory Leaks",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:18:23.105519+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1558425",
+      "author": "EnergySpike",
+      "date": "2026-06-04T23:35:20+0900",
+      "body": "I wasn't sure where to put this, but I wanted to release this for\nanyone who are encountering memory leak issues with their RPG Maker MV editor.\nTo put it simply, this is a launcher workaround that disables GPU/OpenGL acceleration for RPG Maker MV editor sessions to avoid editor memory climb/crashes.\nI've been using it for a bit now, and my memory usage hasn't peaked above 500 MB for very large projects (testing with 40+ scripts, 200+ maps with many having 100 x 100+ tiles).\nTo use this, all you have to do is drop the cmd file into the folder where your RPGMV.exe lives. For Steam Users, the original Launch Options edit has been retired for recommendation, as it proved to be woefully unreliable. The only reliable option is to directly launch the cmd file in the attached zip folder after placing it in your folder with the RPGMV.exe file (RPG Maker MV Editor).\n=========================================================\nImportant: You'll need to launch the CMD file as Administrator, as well. Without Administrator privileges, you'll still rack up an unbearably high memory usage, even if Task Manager can't see it.\nImportant #2: If you save your project around 20-40 times in 1 session, RESTART YOUR RPG MAKER MV EDITOR! I spotted a separate memory leak that my CMD file can't cover. It's tiny, but can easily add up, especially if you haven't used the 4GB Patch.\nNote: I've included another CMD file (V2) that might help with curbing the Save-induced memory leak issue. I'm still testing this, so it's still my experimental version, but figured I'd share it, anyway. It'll also launch with an admin-privilege request to give it a little more QoL improvement.\n=========================================================\nThere are a few notes and caveats:\n- This is a launcher workaround, not a patch.\n- It does not modify RPGMV.exe or project files.\n- It may also affect playtest windows launched by the editor.\n- CPU usage may increase on some systems.\n- GPU-heavy plugins, WebGL/3D effects, lighting systems, or video playback should be tested separately.\n- If your editor was already stable, this may not be necessary.\n- This was testing for MV only. I don't have MZ, so I have no idea if this will work for that or anything else.\n- This was also only tested with an NVidia GPU, as that's all I have. I have no idea what will happen if you have any other GPU.\nAs long as you have a decent computer, though, you shouldn't really notice any real impact on editor performance, or editor-launched play test performance.\nThis may not be an all-round fix, but for those who are struggling with frequent crashes from memory leaks, like me, this may be useful.\nI also don't know if this was already made prior, so if it was, let me know. I did look for fixes, but nothing really addressed the memory leak, itself. I hope this helps."
+    },
+    {
+      "post_id": "js-post-1558437",
+      "author": "ShadowDragon",
+      "date": "2026-06-05T01:26:26+0900",
+      "body": "it does not leak on my end, but the checking that code, you can even\nadd the lines in the package.json if required to have probably the same effect."
+    },
+    {
+      "post_id": "js-post-1558451",
+      "author": "EnergySpike",
+      "date": "2026-06-05T03:40:48+0900",
+      "body": "ShadowDragon said:\nit does not leak on my end, but the checking that code, you can even\nadd the lines in the package.json if required to have probably the same effect.\nClick to expand...\nIt may be possible. I just wanted to provide an easy-to-use method that didn't involve making any hard changes to the Editor or Game Files, just so folks who may not be super technical can use it with ease. Last thing I'd want is to provide something that folks might be worried about using (I used to be like this).\nHaving confidence always helps with development!"
+    },
+    {
+      "post_id": "js-post-1558455",
+      "author": "ShadowDragon",
+      "date": "2026-06-05T03:55:09+0900",
+      "body": "it can also be browser based if its blocking or leaking something.\nit can be handy, but useful or during deployment? I don't know.\nit may or may not help others, but if it works, it may work for others,\nbut if plugins rely on gpu, this one blocks it.\nbut who knows this help some people"
+    },
+    {
+      "post_id": "js-post-1558463",
+      "author": "EnergySpike",
+      "date": "2026-06-05T04:36:09+0900",
+      "body": "I should note, this fix is primarily for the RPGMV editor. I didn't intend, or test, for use with an actual deployed game.\nWorking as is, this plugin should not drastically affect Test-Launched games from the Editor, itself, either. There might be a few things that you may notice, but for the most part, it doesn't disable GPU usage for the actual play-test for most plugins that rely on the GPU."
+    },
+    {
+      "post_id": "js-post-1558464",
+      "author": "EnergySpike",
+      "date": "2026-06-05T04:41:28+0900",
+      "body": "EnergySpike said:\nI should note, this fix is primarily for the RPGMV editor. I didn't intend, or test, for use with an actual deployed game.\nWorking as is, this plugin should not drastically affect Test-Launched games from the Editor, itself, either. There might be a few things that you may notice, but for the most part, it doesn't disable GPU usage for the actual play-test for most plugins that rely on the GPU.\nClick to expand...\nTo add onto this, I'm testing with my own plugin that primarily puts the workload onto the GPU. I'm not encountering any severe issues, or anything truly noticeable. With that being said, however, there may be some performance loss for the Editor-Launched-Playtest for lower end CPU's. Any performance loss encountered will not affect the actual deployed game, though.\nThe only purpose for making this fix was strictly to stop the Editor from eating up all your Ram until it explodes."
+    },
+    {
+      "post_id": "js-post-1558468",
+      "author": "EnergySpike",
+      "date": "2026-06-05T05:03:55+0900",
+      "body": "ShadowDragon said:\nit does not leak on my end, but the checking that code, you can even\nadd the lines in the package.json if required to have probably the same effect.\nClick to expand...\nThere's something I forgot to note on this, specifically:\nAs far as I'm aware, if you add this to the package.json file, your deployed game will inherit these changes, which may not be desired. It's probably better to keep this as in the form that I've provided to avoid publishing a potentially unneeded package.json edit in the published project."
+    },
+    {
+      "post_id": "js-post-1558481",
+      "author": "TheAM-Dol",
+      "date": "2026-06-05T07:23:38+0900",
+      "body": "I don't have the thread(s) handy, but there's been some ongoing discussion that maybe a recent(ish) update to Windows introduced this memory leak into RMMV. I believe MZ is not affected (maybe?)\nThis little work around is pretty handy and maybe we would want to link back to this post on those discussions.\n@SGHarlekin"
+    },
+    {
+      "post_id": "js-post-1558490",
+      "author": "SGHarlekin",
+      "date": "2026-06-05T09:39:00+0900",
+      "body": "TheAM-Dol said:\nI don't have the thread(s) handy, but there's been some ongoing discussion that maybe a recent(ish) update to Windows introduced this memory leak into RMMV. I believe MZ is not affected (maybe?)\nThis little work around is pretty handy and maybe we would want to link back to this post on those discussions.\n@SGHarlekin\nClick to expand...\nWay ahead of ya-"
+    },
+    {
+      "post_id": "js-post-1558492",
+      "author": "Solar_Flare",
+      "date": "2026-06-05T10:15:32+0900",
+      "body": "I have no idea whether this leak affects Mac/Linux, but it looks like this could easily be rewritten for them if it does.\nAny Mac/Linux users around have any comments? (The only other Mac user I know of offhand is\n@MDR\n…)\nI haven't really noticed anything myself, but I also haven't really been looking; plus, my computer is pretty high-spec, so even if there was something, there's a pretty good chance it'd fly right under my radar."
+    },
+    {
+      "post_id": "js-post-1558496",
+      "author": "EnergySpike",
+      "date": "2026-06-05T11:37:28+0900",
+      "body": "I have to make an important note. I'm trying to push the limits of RPGMV right now so I can close up all of the little holes, and I found another source for the memory leak. The current workaround doesn't address these specific memory leaks, so crashes can still occur. Opening and closing menus repeatedly stores up memory usage and the editor refuses to dump them. Virtual memory can spike, even if RAM usage in Task Manager is low.\nI'll update my post once I get a fix for it."
+    },
+    {
+      "post_id": "js-post-1558497",
+      "author": "EnergySpike",
+      "date": "2026-06-05T11:49:12+0900",
+      "body": "Speedy Update: The Steam Launch Option is unreliable.\nOnly launch the workaround using the cmd file provided.\nA little extra context: The Steam Launch Option that was originally recommended for Steam Users (noted in the original Read Me file) was unable to cover what the cmd file could. The Steam Launch Options allowed for Events to rack up virtual memory horrifyingly fast just by opening and closing an Event menu.\nThe attached cmd file did not have this issue and is, so far, proving to be the most reliable for me, and that's saying something because I love to abuse RPGMV. Nothing really gets my blood pumping like having to restore a corrupted, once-heavily-modified json file for the 500th time in a single week. /s\nAnother Edit:\nLaunch the CMD file as Administrator.\nAnother another edit: I often chew before I take a bite of food. If you still have the original zip file, and are dead-set on using Steam, you'll need to verify that you're ABSOLUTELY launching RPGMV from Steam with Administrator Privileges. I haven't been able to get steam to launch anything reliably in Administrator, even if Steam itself was launched with Admin rights.\nI won't provide the Launch Options for steam again, due to it's unreliability. Last thing I want is to give someone hope and have their dreams crumble as their Animations.json file that they spent 6 months on without backing up gets corrupted from RPGMV crashing mid-save. Again.\nAnother another another edit: I made a second Important Note in my main post in this thread. Saving within the editor still adds a tiny memory hike that doesn't seem to go away. My CMD file cannot cover it. The memory leak is tiny, thankfully, but it can easily sneak up on you if you aren't aware of it.\nIf you save your project around 20-40 times, save again and restart your RPG Maker MV Editor.\nI did add a new cmd launcher (V2) that might help with curbing the memory leak for saving the project multiple times. I'm still testing, so its better to treat it as experimental. That being said, so far, this experimental version is proving to be my most reliable one with all the abuse I'm trying to cause."
+    },
+    {
+      "post_id": "js-post-1558537",
+      "author": "EnergySpike",
+      "date": "2026-06-06T04:31:09+0900",
+      "body": "A quick update:\nThe V2 version of the CMD file I've provided does seem to work, however, while frequent saving no longer consumes as much memory over time, everything (changing maps, frequent saving, opening/closing events/database) does add a tiny bit to the overall memory usage, with the biggest consumer of memory usage happening when you open another project from the one that you launched with. Creating new, large maps also seems to spike the memory usage.\nThankfully, it's not NEARLY as bad as default MV, so you'll have a ton more breathing room than even just using the 4GB Patch alone. That being said, using the 4GB Patch alongside this workaround launcher should dramatically help if you suffer from frequent crashes due to memory issues.\nIf you use the V2 version, if you load another project, I would advise you restart your MV Editor so that the project you want to work on is first to load. I would also advise you save and restart if you \"Create\" a new, large map.\nI'll work on making some more QoL improvements to the workaround launcher.\nSorry, some additional information: While I do note that there is a very tiny memory leak, the scale is dramatically reduced. For some context on this, I'm loading between two large projects, one that uses 40+ plugins, several different tilesets, has several large maps, and tons of events that I'm sifting through, and another project that has maxed out map sizes (256x256) and actively working on with frequent event creations and saves, all in the same session. So far, my memory usage has been around 1.3GB after all of that, all within the same session. It's still within working boundaries, even if the 4GB patch wasn't applied (although I might get nervous if the 4GB Patch wasn't added, for my specific case)."
+    }
+  ]
+}
