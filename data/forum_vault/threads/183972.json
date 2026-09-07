@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-action-sequences-pack-mutiple-hits-with-different-damage-values.183972",
+  "title": "MV Yanfly Action Sequences Pack - Mutiple hits with different damage values?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:31:03.329277+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1558894",
+      "author": "VinegarDude",
+      "date": "2026-06-10T11:35:49+0900",
+      "body": "i got a skill that involves multiple small slashes before a finishing blow, i know you can achieve multiple hits by repeating \"action effect: target\" but is there a way to change the damage formula or add a different one mid sequence so the last hit deals signifficantly more damage?\nthe sequence itself goes something akin to this, although i removed some elements like fading backgrounds to make it more simple:\nCode:\n<whole action>\nimmortal: targets, true\nse: Skill3, 65, 90, 0\nanimation 23: target\nwait: 8\nshake screen: 6, 24, 64\naction effect: target\nwait: 8\naction effect: target\nwait: 8\naction effect: target\nwait: 8\naction effect: target\nwait: 8\naction effect: target\nwait: 8\naction effect: target\nwait: 8\naction effect: target\nwait: 8\naction effect: target\nwait: 32\n(here is where the big hit would land)\nzoom: 120%, 5\nshake screen: 24, 24, 32\nwait for animation\nimmortal: targets, false\nreset camera: 5\nreset zoom: 5\nend\n</whole action>"
+    },
+    {
+      "post_id": "js-post-1558896",
+      "author": "SGHarlekin",
+      "date": "2026-06-10T11:45:50+0900",
+      "body": "If I'm not having a brainfart right now, you should be able to use\nCode:\neval: target.gainHp(-(user.atk * 4 - target.def * 2));\nand just put whatever formula you want. This is outside of the action effect tho, so keep that in mind when it's a skill that also has other effects like applying a state. (In which case you could use add state x: target)\nYou may also want to use:\nCode:\neval: target.startDamagePopup();\nRight after, because dealing damage with an eval like that will not automatically produce a popup."
+    },
+    {
+      "post_id": "js-post-1558897",
+      "author": "Robro33",
+      "date": "2026-06-10T12:07:13+0900",
+      "body": "i use variables for that personally. I set a variable to whatever multiplier i need it to before the action effect and then use the variable in the formula."
+    },
+    {
+      "post_id": "js-post-1558898",
+      "author": "VinegarDude",
+      "date": "2026-06-10T12:15:16+0900",
+      "body": "SGHarlekin said:\nIf I'm not having a brainfart right now, you should be able to use\nCode:\neval: target.gainHp(-(user.atk * 4 - target.def * 2));\nand just put whatever formula you want. This is outside of the action effect tho, so keep that in mind when it's a skill that also has other effects like applying a state. (In which case you could use add state x: target)\nYou may also want to use:\nCode:\neval: target.startDamagePopup();\nRight after, because dealing damage with an eval like that will not automatically produce a popup.\nClick to expand...\nthat worked thanks!,  though now i have a different problem, i use AS in conjunction with the animated SV battlers, the eval seems to skip the hurt animation, is there another eval to trigger it?"
+    },
+    {
+      "post_id": "js-post-1558899",
+      "author": "SGHarlekin",
+      "date": "2026-06-10T12:21:20+0900",
+      "body": "VinegarDude said:\nthat worked thanks!,  though now i have a different problem, i use AS in conjunction with the animated SV battlers, the eval seems to skip the hurt animation, is there another eval to trigger it?\nClick to expand...\nYou just use the regular action sequence command.\nmotion damage: target\nRobro's approach works just as well tho and would avoid all the extra shenanigans my approach needs. (Tho I have no idea how you'd set that dmg formula up.)"
+    },
+    {
+      "post_id": "js-post-1558900",
+      "author": "VinegarDude",
+      "date": "2026-06-10T12:31:48+0900",
+      "body": "SGHarlekin said:\nYou just use the regular action sequence command.\nmotion damage: target\nRobro's approach works just as well tho and would avoid all the extra shenanigans my approach needs. (Tho I have no idea how you'd set that dmg formula up.)\nClick to expand...\nnoted, will try the variable method in other skills as well, thanks for all the help!"
+    },
+    {
+      "post_id": "js-post-1558908",
+      "author": "Robro33",
+      "date": "2026-06-10T14:26:47+0900",
+      "body": "SGHarlekin said:\n(Tho I have no idea how you'd set that dmg formula up.)\nClick to expand...\npretty much as i said\nCode:\n(formula) * $gameVariables.value(x)\nyes, you can also use v[x]...\nSo for one of my multihit skills where the hits use different multipliers, the formula is\nCode:\nthis.PDmg(a, b, a.atk, b.def) * $gameVariables.value(212)\nwhere i multiply the formula by the variable, and then the damage section of the AS uses\nCode:\n<target action>\neval: $gameVariables.setValue(212, .2)\naction animation\naction effect\nwait: 8\naction animation\naction effect\nwait: 20\neval: $gameVariables.setValue(212, 1.1)\naction animation\naction effect\n</target action>\nso that the first 2 hits use a 20% mult and the last uses a 110%.\nI altered $gameVariable.setValue to allow for decimals in my project, but all it does is save having to multiply the variable's value by some power of 10 when setting it and dividing it by the same in the formula when using it\nThen, if you wanted an entirely different formula between hits and not just a multiplier change, storing the formula as a string in a variable and eval()'ing the variable works. I havent used a similar setup like it ever since initial testing, but having the formula just be like\nCode:\neval($gameVariables.value(212))\nand the AS be\nCode:\n<target>\neval: $gameVariables.setValue(212, \"a.atk-b.def\")\naction animation\naction effect\nwait for animation\neval: $gameVariables.setValue(212, \"a.mat*3-b.agi\")\naction animation\naction effect\n</target>\ndoes let you actively change what the effective formula is"
+    },
+    {
+      "post_id": "js-post-1558910",
+      "author": "SGHarlekin",
+      "date": "2026-06-10T14:30:55+0900",
+      "body": "Robro33 said:\npretty much as i said\nCode:\n(formula) * $gameVariables.value(x)\nyes, you can also use v[x]...\nSo for one of my multihit skills where the hits use different multipliers, the formula is\nCode:\nthis.PDmg(a, b, a.atk, b.def) * $gameVariables.value(212)\nwhere i multiply the formula by the variable, and then the damage section of the AS uses\nCode:\n<target action>\neval: $gameVariables.setValue(212, .2)\naction animation\naction effect\nwait: 8\naction animation\naction effect\nwait: 20\neval: $gameVariables.setValue(212, 1.1)\naction animation\naction effect\n</target action>\nso that the first 2 hits use a 20% mult and the last uses a 110%.\nI altered $gameVariable.setValue to allow for decimals in my project, but all it does is save having to multiply the variable's value by some power of 10 when setting it and dividing it by the same in the formula when using it\nThen, if you wanted an entirely different formula between hits and not just a multiplier change, storing the formula as a string in a variable and eval()'ing the variable works. I havent used a similar setup like it ever since initial testing, but having the formula just be\nCode:\neval($gameVariables.value(212))\nand the AS be\nCode:\n<target>\neval: $gameVariables.setValue(212, \"a.atk-b.def\")\naction animation\naction effect\nwait for animation\neval: $gameVariables.setValue(212, \"a.mat*3-b.agi\")\naction animation\naction effect\n</target>\ndoes let you actively change what the effective formula is\nClick to expand...\nOh I see, you have the variable in there by default... So you'd set it to 0 if you don't actually want a multiplier. Yeah that works too."
+    }
+  ]
+}

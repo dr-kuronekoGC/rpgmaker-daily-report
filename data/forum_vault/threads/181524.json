@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/damage-popups-appearing-behind-actor-stats-in-battle.181524",
+  "title": "Damage Popups appearing behind actor stats in battle",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:31:06.519227+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1541204",
+      "author": "beetlesheII",
+      "date": "2025-12-20T08:57:14+0900",
+      "body": "Hello,\nI enjoy RPGMaker XP but this has always bothered me. Is there any way to make it so that the damage popups appear in front of the actor's stats when taking damage in battle? Or any way to customize the damage popups in general? I looked all throughout the script database, but I couldn't really find anything referencing it in there.\nThanks"
+    },
+    {
+      "post_id": "js-post-1541213",
+      "author": "Another Fen",
+      "date": "2025-12-20T12:00:11+0900",
+      "body": "Don't have that Maker installed right now to test stuff myself. I don't remember if this was always the default?\nEither way, the damage pop-ups should be handled in the RPG::Sprite class, which is one of the few classes that are loaded before the scripts in the script editor and not visible there.\nHowever, you can find the implementation code in the makers help file (F1). (I also found it\nonline\n)\nWithout having tested it, you could try removing the viewport of the created damage sprite by replacing the method in a new script:\nSpoiler\nRuby:\nclass RPG::Sprite\n \n  def damage(value, critical)\n    dispose_damage\n    if value.is_a?(Numeric)\n      damage_string = value.abs.to_s\n    else\n      damage_string = value.to_s\n    end\n    bitmap = Bitmap.new(160, 48)\n    bitmap.font.name = \"Arial Black\"\n    bitmap.font.size = 32\n    bitmap.font.color.set(0, 0, 0)\n    bitmap.draw_text(-1, 12-1, 160, 36, damage_string, 1)\n    bitmap.draw_text(+1, 12-1, 160, 36, damage_string, 1)\n    bitmap.draw_text(-1, 12+1, 160, 36, damage_string, 1)\n    bitmap.draw_text(+1, 12+1, 160, 36, damage_string, 1)\n    if value.is_a?(Numeric) and value < 0\n      bitmap.font.color.set(176, 255, 144)\n    else\n      bitmap.font.color.set(255, 255, 255)\n    end\n    bitmap.draw_text(0, 12, 160, 36, damage_string, 1)\n    if critical\n      bitmap.font.size = 20\n      bitmap.font.color.set(0, 0, 0)\n      bitmap.draw_text(-1, -1, 160, 20, \"CRITICAL\", 1)\n      bitmap.draw_text(+1, -1, 160, 20, \"CRITICAL\", 1)\n      bitmap.draw_text(-1, +1, 160, 20, \"CRITICAL\", 1)\n      bitmap.draw_text(+1, +1, 160, 20, \"CRITICAL\", 1)\n      bitmap.font.color.set(255, 255, 255)\n      bitmap.draw_text(0, 0, 160, 20, \"CRITICAL\", 1)\n    end\n    @_damage_sprite = Sprite.new  # <- Edit: Removed the Viewport\n    @_damage_sprite.bitmap = bitmap\n    @_damage_sprite.ox = 80\n    @_damage_sprite.oy = 20\n    @_damage_sprite.x = self.x\n    @_damage_sprite.y = self.y - self.oy / 2\n    if self.viewport  # Edit: Adjust coordinates for viewport (not needed by default)\n      @_damage_sprite.x += self.viewport.rect.x - self.viewport.ox\n      @_damage_sprite.y += self.viewport.rect.y - self.viewport.oy\n    end\n    @_damage_sprite.z = 3000\n    @_damage_duration = 40\n  end\nend"
+    }
+  ]
+}
