@@ -1,0 +1,161 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/mv-steam-achievements-you-and-also-how-to-update-nw-js.175280",
+  "title": "MV, Steam achievements & You (And also how to update nw.js!)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:47:01.550085+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1497992",
+      "author": "SGHarlekin",
+      "date": "2025-02-09T09:40:20+0900",
+      "body": "I've seen a bunch of people still struggling with the easy task of getting steam achievements to work, so I'm going to attempt to write somewhat of a guide here.\nI've currently got 2 games on steam, both with working achievements.\nSo let's begin.\nhttps://github.com/greenheartgames/greenworks/releases\nThis is the greenworks.js. Put that into your game's main directory, not plugins.\nThe build releases say for which nw.js and steamworks sdk they are.\nIf you can't find your nw.js version here, it's time to update your nw.js. Essentially navigate to\nhttps://nwjs.io/\n, hit downloads>previous releases, scroll down to the version you want. (in my case v94.)\nDownload both of the links which are purple in this screenshot. The \"sdk\" version goes into your nwjs-win-test folder, the regular version goes into your nwjs-win folder within your rpg maker files (Not your project folder!). \"Sdk\" has the dev console enabled, the regular doesn't.\nWhen updating, delete the contents of your nwjs-win/nwjs-win-test folders, but keep the package.json in nwjs-win and keep the www folders in both locations. Unpack the freshly downloaded nw.js version into their respective folders, rename the \"nw\" file to \"Game\" and done.\nA little extra tip: With newer nw.js, it is possible that the game will tell you something about a \"name\" missing. To fix that, go into your project folder, open the package.json with something like notepad++ and enter anything under \"name\".\nPro tip: Using the x64 files makes your rpg maker game be able to use more than 4gig of ram!\nNow back to the achievements!\nhttps://github.com/Hudell/mv-plugins\nThis is the actual plugin by Hudell. Put into your projects plugin folder, activate in plugin manager. It's missing the help file, that's why there's this shifty looking google drive link that contains this help file in the form of an html document:\nOrangeGreenworks Documentation.rar\nNow we need the actual steamworks SDK files:\nSteamworks - Build & Distribute Your Games on Steam\nSteamworks is a set of tools and services that help game developers and publishers build their games and get the most out of distributing on Steam.\npartner.steamgames.com\nthis is only accessible if you got a steamworks account as far as I'm aware, but you should be having one of those already if you plan on releasing anything on steam.\nDownload the version that's matching the greenworks files you downloaded with the first link of this guide (In my case 1.6).\nin this archive, you'll find all the necessary lib files. Navigate to steamworks_sdk_160.zip\\sdk\\public\\steam\\lib and you'll find these folders:\nNavigate to your project and create a folder named lib in your main directory, then navigate into each of these folders on the screenshot and copy the files inside into your projects lib folder. Be aware that you'll have to rename the linux x64 file to libsdkencryptedappticket64, otherwise it's going to overwrite the regular linux file.\nNext, navigate to steamworks_sdk_162.zip\\sdk\\redistributable_bin\\win64 and put those 2 files into your project's lib folder as well. (If you're trying to develop for another OS, you can add those in the other folders too.)\nIf you don't plan on making a linux / mac release, you can skip all of them except for the windows ones. (guide on how to release on linux/mac not included)\nIf you have not yet created an appid (meaning you haven't shilled out the 100 bucks yet), you can create a text document named steam_appid and place it where your greenworks.js is located. Inside that text document put the number 480, which is used as a placeholder appid for games not yet submitted to steam.\nNote: Do remove said .txt file once you actually deploy your game.\n(Thanks to\n@emogal\nfor finding out this detail.)\nOnce you got all that done, open rpg maker, make sure your orangegreenworks plugin is activated, start your playtest and open the dev console (F8). If it says Steam user: \"YourSteamUsername\" it's good to go.\nBonus tip:\nNavigate to the steamworks setting of your game, installation>general installation and add this as an argument:\nThis will enable the steam overlay for your game.\nAnd that should be it. If you're still not able to have it working, let me know."
+    },
+    {
+      "post_id": "js-post-1509400",
+      "author": "Sussuri",
+      "date": "2025-04-15T23:30:52+0900",
+      "body": "Hello\n@SGHarlekin\nFirst of all, thank you for your guide.\nI found something that bothers me, so I came here for advice. I have trouble with launching my application. I can't playtest either. When I try to launch .exe file of deployed app, the error will popup:\n\"Error loading resolution\nFailed to load extension from source [path to the project]\nRequired value \"name\" is missing or invalid.\"\nAny tips how to solve this?\n(If you have some extra time, I'd really appreciate a call with you as well, since this is my 3rd attempt and it's driving me crazy.)\nThanks."
+    },
+    {
+      "post_id": "js-post-1509405",
+      "author": "SGHarlekin",
+      "date": "2025-04-15T23:53:42+0900",
+      "body": "Sussuri said:\nHello\n@SGHarlekin\nFirst of all, thank you for your guide.\nI found something that bothers me, so I came here for advice. I have trouble with launching my application. I can't playtest either. When I try to launch .exe file of deployed app, the error will popup:\n\"Error loading resolution\nFailed to load extension from source [path to the project]\nRequired value \"name\" is missing or invalid.\"\nAny tips how to solve this?\n(If you have some extra time, I'd really appreciate a call with you as well, since this is my 3rd attempt and it's driving me crazy.)\nThanks.\nClick to expand...\nAh yes. Navigate to your project folder, open the package.json with something like notepad++ and enter a name.\nAny name will do."
+    },
+    {
+      "post_id": "js-post-1509407",
+      "author": "Sussuri",
+      "date": "2025-04-16T00:00:27+0900",
+      "body": "Thank you for fast reply! It helped, the deployed project is now playable! (I can't open the console, but I believe everything is as it should be) Just to be sure - is it okay if the project launched wihout steam_appid.txt file?\nAs for the playtesting, I'm still not able to playtest. When I click on \"Playtest\" button, nothing happens. When I change the name in package.json in the project (not deployed one), it's not helping. Any tips?"
+    },
+    {
+      "post_id": "js-post-1509410",
+      "author": "SGHarlekin",
+      "date": "2025-04-16T00:21:00+0900",
+      "body": "The console is not supposed to open on a deployed project indeed. You could change that by using the SDK version of nw.js in your win folder (same as the win test folder) if you need it for testing purposes, but you generally don't want the player to be able to open it.\nI'm not quite sure of what steam_appid.txt you're talking about. Neither the steam sdk nor nw.js have that and it's not in the guide either, sooo... Not sure? You can open it and it probably just has a number in it if I'm not mistaken, which if anything just has the app id of your game. Shouldn't affect anything. I checked my released games and neither one is having it.\nAs for the playtest not working, I can only imagine you having messed up somewhere.\nAssuming you're operating on windows, your nwjs-win-test folder should look something like this:\nTaking a shot in the dark, have you renamed the \"nw\" file into Game? I realized it's not actually in the guide... I included that detail."
+    },
+    {
+      "post_id": "js-post-1509419",
+      "author": "Sussuri",
+      "date": "2025-04-16T01:05:37+0900",
+      "body": "Understandable.\nThe steam_appid.txt was, according to other forum threads I've read, for testing purposes of deployed app with Greenworks. Main goal is to put your steam app ID to txt file and save it to simulate connection with Steam I guess and this file should not be distributed to build that will be released on Steam, so it's just for testing. Apparanetly the deployed app should not work without this txt file, mine did, so that's why I was asking. Thanks for checking your apps.\nYep, it was that. I renamed nw into Game and it's working just fine, thank you.\nProbably my last question for now - How can I be sure the script calls I'm making are correct? After pressing F8 I can see \"Steam user: [MySteamUsername]\", so the setup should be fine. But if I want to test for example an event that will popup achievement - is there a way to test this during playtest?\nThank you for your time and patience, I'm nearly at the point of releasing my game and before submiting first build to Steam I want to be \"close to perfection\", so I'm kinda nervous since this is the first time for me."
+    },
+    {
+      "post_id": "js-post-1509436",
+      "author": "SGHarlekin",
+      "date": "2025-04-16T02:58:23+0900",
+      "body": "Sussuri said:\nUnderstandable.\nThe steam_appid.txt was, according to other forum threads I've read, for testing purposes of deployed app with Greenworks. Main goal is to put your steam app ID to txt file and save it to simulate connection with Steam I guess and this file should not be distributed to build that will be released on Steam, so it's just for testing. Apparanetly the deployed app should not work without this txt file, mine did, so that's why I was asking. Thanks for checking your apps.\nYep, it was that. I renamed nw into Game and it's working just fine, thank you.\nProbably my last question for now - How can I be sure the script calls I'm making are correct? After pressing F8 I can see \"Steam user: [MySteamUsername]\", so the setup should be fine. But if I want to test for example an event that will popup achievement - is there a way to test this during playtest?\nThank you for your time and patience, I'm nearly at the point of releasing my game and before submiting first build to Steam I want to be \"close to perfection\", so I'm kinda nervous since this is the first time for me.\nClick to expand...\nWell, you are able to start your game on steam whether you released it or not. So one thing you can do is just start it and get an achievement to see if it works. In general tho, if your steam user pops up it should already work, unless you're getting like an error in the console.\nPerhaps the steam appid file was necessary for the older versions? I vaguely remember reading that somewhere too. But as I said, both my released games work fine without it for me and other players. And worst case scenario, just leave it in as it's just a txt file and is not likely to break anything.\nGlad the guide seems to have been useful for you. I tried to make it less convoluted than the other available guides and only focus on what you need to do without doing long explanations why and how everything works and providing links that still work, haha."
+    },
+    {
+      "post_id": "js-post-1509521",
+      "author": "Sussuri",
+      "date": "2025-04-16T17:17:09+0900",
+      "body": "You are right, I tried it out and it's working!\nSpoiler:\nAchievement pop-up\nMake sense, since it was needed when I was following some older tutorial. (which did not work for me in the end) Just wanted to be sure\nIt was, thanks to your communication it was the best one so far. I'm glad you've made it, thank you!\nYou just have a confirmation from other dev, that it's really useful\nBtw while we are at it, are you using\nSteamAPI_Init\n? I've heard it's good practice, but have no experience with where to put it (in game/in plugin folder as a script) or if it's really needed."
+    },
+    {
+      "post_id": "js-post-1509546",
+      "author": "SGHarlekin",
+      "date": "2025-04-16T22:28:55+0900",
+      "body": "Sussuri said:\nYou are right, I tried it out and it's working!\nSpoiler:\nAchievement pop-up\nView attachment 337762\nMake sense, since it was needed when I was following some older tutorial. (which did not work for me in the end) Just wanted to be sure\nIt was, thanks to your communication it was the best one so far. I'm glad you've made it, thank you!\nYou just have a confirmation from other dev, that it's really useful\nBtw while we are at it, are you using\nSteamAPI_Init\n? I've heard it's good practice, but have no experience with where to put it (in game/in plugin folder as a script) or if it's really needed.\nClick to expand...\nI'm not a programmer, so I wouldn't know either. But I assume the greenworks plugin is what handles the api calls and gives your the script calls to make it do the communication with the api.\nIt's not necessary for your achievements to work, as you've just proven to yourself, haha."
+    },
+    {
+      "post_id": "js-post-1511266",
+      "author": "ElvenNeko",
+      "date": "2025-04-28T06:06:15+0900",
+      "body": "I have a problem. When i rename nw to game in deployment version, it automaticly changes the picture to mv and works. But when i do the same in sdk version, it stays with the dark icon, and when i try to launch i am getting - error, file not found. What that could be?"
+    },
+    {
+      "post_id": "js-post-1511280",
+      "author": "SGHarlekin",
+      "date": "2025-04-28T07:31:23+0900",
+      "body": "ElvenNeko said:\nI have a problem. When i rename nw to game in deployment version, it automaticly changes the picture to mv and works. But when i do the same in sdk version, it stays with the dark icon, and when i try to launch i am getting - error, file not found. What that could be?\nClick to expand...\nWhen you say \"launch\", what exactly do you mean by that? Are you trying to launch the Game file?"
+    },
+    {
+      "post_id": "js-post-1511328",
+      "author": "ElvenNeko",
+      "date": "2025-04-28T19:47:14+0900",
+      "body": "SGHarlekin said:\nWhen you say \"launch\", what exactly do you mean by that? Are you trying to launch the Game file?\nClick to expand...\nTest launch in editor.\nEDIT - nvm, fullu reinstalling everything, including mv itself fixed the problem."
+    },
+    {
+      "post_id": "js-post-1511440",
+      "author": "JegueAvapor",
+      "date": "2025-04-29T08:50:10+0900",
+      "body": "I changed the name in the package.json and still got this error"
+    },
+    {
+      "post_id": "js-post-1511444",
+      "author": "SGHarlekin",
+      "date": "2025-04-29T09:26:05+0900",
+      "body": "JegueAvapor said:\nI changed the name in the package.json and still got this error\nView attachment 338912\nView attachment 338913\nClick to expand...\nProbably changed the wrong one then (or forgot to save). For playtesting, you want to make this change in the package.json within your project folder. For deployed games, you need to make this change in your nwjs-win folder."
+    },
+    {
+      "post_id": "js-post-1526036",
+      "author": "Harven",
+      "date": "2025-08-11T21:25:11+0900",
+      "body": "After updating the nw.js file just like in the tutorial the star tiles stopped working. Now they behave just like regular passable (circle) tiles.\nThe characters should appear below them but appear above. Is there any fix for this problem?"
+    },
+    {
+      "post_id": "js-post-1526043",
+      "author": "SGHarlekin",
+      "date": "2025-08-11T22:56:11+0900",
+      "body": "Harven said:\nAfter updating the nw.js file just like in the tutorial the star tiles stopped working. Now they behave just like regular passable (circle) tiles.\nView attachment 347163\nThe characters should appear below them but appear above. Is there any fix for this problem?\nClick to expand...\nThat depends on what plugin you're using and whether or not it's compatible with the newer nw.js version, I'd say. Personally I'm using Tonbi's TF_LayeredMap plugin, and that works just fine."
+    },
+    {
+      "post_id": "js-post-1526084",
+      "author": "Harven",
+      "date": "2025-08-12T08:10:44+0900",
+      "body": "SGHarlekin said:\nThat depends on what plugin you're using and whether or not it's compatible with the newer nw.js version, I'd say. Personally I'm using Tonbi's TF_LayeredMap plugin, and that works just fine.\nClick to expand...\nI'm not using any plugins for map layering just the base RPG Maker MV options from the tileset menu"
+    },
+    {
+      "post_id": "js-post-1526105",
+      "author": "SGHarlekin",
+      "date": "2025-08-12T13:27:45+0900",
+      "body": "Harven said:\nI'm not using any plugins for map layering just the base RPG Maker MV options from the tileset menu\nClick to expand...\nThat seems like an odd occurrence that doesn't really happen. NW.js doesn't alter the way tiles behave as far as I'm aware.\nWhat I can recommend is making sure your passabilities are actually set up on the right tileset used on the map in question. (Wouldn't be the first time I had something set up on a duplicate tileset, wondering why it's not working on the map...)\nAlternatively, show us some screenshots of:\nThe map properties window\nThe tileset tab of the tileset in question showing the passability\nMaybe we can figure out something there, but as I said, I've never heard of a case where updating NW.js influences the way rpg maker works in any way."
+    },
+    {
+      "post_id": "js-post-1526307",
+      "author": "Harven",
+      "date": "2025-08-13T19:53:34+0900",
+      "body": "Everything seems to be fine. The problem never occured before updating the file and it stopped occuring after I switched back to the old version so it must be something with the NW.js file. I saw some comments under a tutorial on how to update it reporting the same issue but they have no responses so it was seen before but never resolved."
+    },
+    {
+      "post_id": "js-post-1526313",
+      "author": "SGHarlekin",
+      "date": "2025-08-13T20:31:08+0900",
+      "body": "Harven said:\nView attachment 347312\nView attachment 347310\nEverything seems to be fine. The problem never occured before updating the file and it stopped occuring after I switched back to the old version so it must be something with the NW.js file. I saw some comments under a tutorial on how to update it reporting the same issue but they have no responses so it was seen before but never resolved.\nClick to expand...\nWell, that is interesting. I can't say I'm having this issue whatsoever, but I'm also using a star-tile fix plugin, as mentioned before, since you kind of need that when using 2 tile high characters, otherwise there will be problems with clipping.\nSadly I am no coder, I just wrote this guide to help people who don't know how to do it, so I don't have a solution for you I'm afraid.\nBut you could always try a lower version and see if that works. v94 is just the one I chose."
+    },
+    {
+      "post_id": "js-post-1527158",
+      "author": "Arcaines",
+      "date": "2025-08-21T00:16:45+0900",
+      "body": "Hey Harlekin,\nSo I followed the guide, the best I could, (Kids distracting me)\nI've got the game to play but when I press f8 I get this on the console log. No mention of my steam name.\nIt mentions it's missing something but it's in the right folder?"
+    },
+    {
+      "post_id": "js-post-1527163",
+      "author": "SGHarlekin",
+      "date": "2025-08-21T01:33:16+0900",
+      "body": "Martin_Arcainess said:\nHey Harlekin,\nSo I followed the guide, the best I could, (Kids distracting me)\nI've got the game to play but when I press f8 I get this on the console log. No mention of my steam name.\nView attachment 347841\nIt mentions it's missing something but it's in the right folder?\nView attachment 347842\nClick to expand...\nIf it can't \"find\" the file, the problem is usually the wrong combination of the plugin/nw.js/greenworks. Did you make sure to use the same versions I linked?"
+    },
+    {
+      "post_id": "js-post-1527272",
+      "author": "Arcaines",
+      "date": "2025-08-22T01:27:37+0900",
+      "body": "SGHarlekin said:\nIf it can't \"find\" the file, the problem is usually the wrong combination of the plugin/nw.js/greenworks. Did you make sure to use the same versions I linked?\nClick to expand...\nI'm currently using Greenworks v0.21.0 for NW.js v0.100.1 and downloaded NW.js Normal and SDK.\nCopied/pasted the Steam SKD 1.62 folders over and I'm still getting this error.\nAt this point the only thing I can think of trying is a older version."
+    },
+    {
+      "post_id": "js-post-1527273",
+      "author": "SGHarlekin",
+      "date": "2025-08-22T01:37:05+0900",
+      "body": "Well yeah, as outlined in the guide, you need to use the correct versions. If you don't I can't really help you."
+    },
+    {
+      "post_id": "js-post-1527293",
+      "author": "Arcaines",
+      "date": "2025-08-22T03:04:51+0900",
+      "body": "So I tried an older version 0.940 to match yours and playtest ain't even working now. Really am not sure what's up with this.\nEDIT:\nThe only I can seem to get working for the play test is the latest version. All other versions won't even boot up play test.\nEdit:\nAll good and happy now ^^"
+    }
+  ]
+}

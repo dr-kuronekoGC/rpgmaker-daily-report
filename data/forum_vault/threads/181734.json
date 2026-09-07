@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-add-a-chance-to-parry-when-an-ennemy-attacks.181734",
+  "title": "How to add a chance to parry when an ennemy attacks",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:46:54.605821+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1542711",
+      "author": "Angelface",
+      "date": "2026-01-02T22:43:24+0900",
+      "body": "Hi everyone !\nFor my game, I want one of my character to have a chance to parry and counter every time an ennemy attacks her.\nIt's for the basic turn by turn combat system in RPG Maker MZ.\nI think that the best way is to add a troop event where I can set up variables :\nIf ennemy attacks character, then character is not affected by attack and attacks the \"ID latest ennemy who acted\"\nBut I can't find a variable that says \"if ennemy attacks\". I can only find if character HP is below x\nBut I want my character to have, let's say, 50% of chance of stopping the attack before it touches her. So this variable can't work.\nDoes anyone know how to set up variable is ON if ennemy attacks character ?\nThanks !"
+    },
+    {
+      "post_id": "js-post-1542719",
+      "author": "rpgLord69",
+      "date": "2026-01-02T23:11:20+0900",
+      "body": "Use VS Battle Core action sequences. Put in enemy skills to check target and to roll the parry chance before you use MECH: Action effect. Then if the parry is a success you call a common event that's the parry sequence (and don't use action effect). In the parry sequence you can use motion on the actor and play a \"cling\" SE and damage the attacking enemy.\nEDIT: Oh and in the parry sequence also add MECH: Text Popup (or whatever it was) that says \"Parry\""
+    },
+    {
+      "post_id": "js-post-1542821",
+      "author": "Angelface",
+      "date": "2026-01-04T01:55:43+0900",
+      "body": "rpgLord69 said:\nUse VS Battle Core action sequences. Put in enemy skills to check target and to roll the parry chance before you use MECH: Action effect. Then if the parry is a success you call a common event that's the parry sequence (and don't use action effect). In the parry sequence you can use motion on the actor and play a \"cling\" SE and damage the attacking enemy.\nEDIT: Oh and in the parry sequence also add MECH: Text Popup (or whatever it was) that says \"Parry\"\nClick to expand...\nThank you. I will try that"
+    },
+    {
+      "post_id": "js-post-1548215",
+      "author": "Angelface",
+      "date": "2026-02-19T23:21:52+0900",
+      "body": "rpgLord69 said:\nUse VS Battle Core action sequences. Put in enemy skills to check target and to roll the parry chance before you use MECH: Action effect. Then if the parry is a success you call a common event that's the parry sequence (and don't use action effect). In the parry sequence you can use motion on the actor and play a \"cling\" SE and damage the attacking enemy.\nEDIT: Oh and in the parry sequence also add MECH: Text Popup (or whatever it was) that says \"Parry\"\nClick to expand...\nHello !\nI tried to implement your advice and I am still stuck but I think that it's because I don't understand how to translate it into RPG MAKER with Visu Stella battle core\nSo I made this common event for the parry:\n\"◆If：Bloc has equipped Cube Hache\n◆Control Variables：#0001 Est attaqué = Random 1..2\n◆If：Est attaqué = 1\n◆Plugin Command：VisuMZ_1_BattleCore, ACSET: Setup Action Set\n：Plugin Command：Display Action = true\n：Plugin Command：Immortal: On = true\n：Plugin Command：Battle Step = true\n：Plugin Command：Wait For Movement = true\n：Plugin Command：Cast Animation = true\n：Plugin Command：Wait For Animation = true\n◆Plugin Command：VisuMZ_1_BattleCore, MECH: Emulate Guard Effect\n：Plugin Command：User(s) = [\"user\"]\n：Plugin Command：Targets = [\"user\"]\n◆Plugin Command：VisuMZ_1_BattleCore, MOTION: Motion Type\n：Plugin Command：Targets = [\"user\"]\n：Plugin Command：Motion Type = guard\n：Plugin Command：Show Weapon? = true\n◆Plugin Command：VisuMZ_1_BattleCore, MECH: Text Popup\n：Plugin Command：Targets = [\"target\"]\n：Plugin Command：Text = Parade !\n：Plugin Command：Text Color = #ffffff\n：Plugin Command：Flash Color = [255, 0, 0, 160]\n：Plugin Command：Flash Duration = 60\n◆Plugin Command：VisuMZ_1_BattleCore, ACSET: Finish Action\n：Plugin Command：Immortal: Off = true\n：Plugin Command：Wait For New Line = true\n：Plugin Command：Wait For Effects = true\n：Plugin Command：Clear Battle Log = true\n：Plugin Command：Home Reset = true\n：Plugin Command：Wait For Movement = true\n◆Wait：5 frames\n◆\n：End\n◆\n：End\"\nAnd then In the troop event, I tried to say for each turn, if Bloc (the character) is targetted then launch the Parry event so I did this, but this doesn't sound right.\nWould you be ok with explaining to me the step by step on how to set the\n\"If Bloc is targetted by ennemy then Common Event : Parry\" ?\nThanks,"
+    },
+    {
+      "post_id": "js-post-1548230",
+      "author": "rpgLord69",
+      "date": "2026-02-20T01:41:38+0900",
+      "body": "If it's just a basic attack counter, you could just give the actor 50% counter attack trait. When I wrote my earlier post I was thinking more complicated sequences. If you wanna do it with action sequences, the idea is for enemy skills that target one dude:\n\"action sequence stuff\"\n.\n.\n.\nIF (BattleManger._targets[0].actorId() === 1 && Math.random() < 0.5)\n-> Call Common Even (that has parry sequence motions + where you can deal damage to BattleManager._subject)\nELSE\n-> MECH: Action effect\n.\n.\n."
+    },
+    {
+      "post_id": "js-post-1548235",
+      "author": "Angelface",
+      "date": "2026-02-20T02:02:12+0900",
+      "body": "rpgLord69 said:\nIf it's just a basic attack counter, you could just give the actor 50% counter attack trait. When I wrote my earlier post I was thinking more complicated sequences. If you wanna do it with action sequences, the idea is for enemy skills that target one dude:\n\"action sequence stuff\"\n.\n.\n.\nIF (BattleManger._targets[0].actorId() === 1 && Math.random() < 0.5)\n-> Call Common Even (that has parry sequence motions + where you can deal damage to BattleManager._subject)\nELSE\n-> MECH: Action effect\n.\n.\n.\nClick to expand...\nI see. Sorry for the misunderstanding. I want my character to have a chance to parry and counter when attacked, but with the turn by turn mechanics.\nI will try to change their animation and add a MECH event where she says \"Parry!\" and \"Counter!\" when it happens.\nSo for Counter, I will use the counter attack trait and for parry, I will use the dodge stats and change the \"Miss\" pop up by \"Parry\" I think.\nThanks for your answer !"
+    }
+  ]
+}

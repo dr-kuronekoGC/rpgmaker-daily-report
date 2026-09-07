@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/galvs-layer-plugin-help.179384",
+  "title": "MZ galvs layer plugin help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:47:01.912597+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1525336",
+      "author": "Not_Chris",
+      "date": "2025-08-05T14:42:36+0900",
+      "body": "hello, ive been practising with paralax mapping using galvs layer plugin for MZ and i cant figure out how to implement this wall (see below). i want it so that when the player stands in the bedroom it apears infront of them buy when theyre in the main room it apears behind them. if anyone knows how to do this with Galvs or any other pluging please let me know.\nThank you"
+    },
+    {
+      "post_id": "js-post-1525467",
+      "author": "rpgLord69",
+      "date": "2025-08-06T16:21:06+0900",
+      "body": "Why are you using a parallel event (without conditionals) to change the z level? Now you're constantly changing it between 0 and 5. Put a player touch event on the doorway (that has conditional for player direction), or put a conditional in your parallel event that checks player y-coordinate. You might also have to use the refresh plugin command if you create new layers in an event. I think you can also change the properties with the script from the plugin instructions.\nEDIT: Ok, noticed they're different ids, I thought you were changing the z of that wall segment. But anyway, my point stands.\nEDIT 2: Like you can put the layers in the map notetags. And then use an event to only control the z level of that one segment."
+    },
+    {
+      "post_id": "js-post-1526038",
+      "author": "Not_Chris",
+      "date": "2025-08-11T21:30:51+0900",
+      "body": "rpgLord69 said:\nWhy are you using a parallel event (without conditionals) to change the z level? Now you're constantly changing it between 0 and 5. Put a player touch event on the doorway (that has conditional for player direction), or put a conditional in your parallel event that checks player y-coordinate. You might also have to use the refresh plugin command if you create new layers in an event. I think you can also change the properties with the script from the plugin instructions.\nEDIT: Ok, noticed they're different ids, I thought you were changing the z of that wall segment. But anyway, my point stands.\nEDIT 2: Like you can put the layers in the map notetags. And then use an event to only control the z level of that one segment.\nClick to expand...\nThanks a bunch, im super new to RPG maker so I dont know the best prectises for events. I use events for the layers instead of putting them in the notetags because i find it easier to edit and find/read the commands.\nI have all the base layers events run parallel without conditions so all the base layers apear above the collision tileset automatically, if there is a reason/way I should do it differently im open to feedback.\nFor the wall tho I found using conditionall events you suggested worked very well, what ended up working was to make the walls a seperate layer and create a conditional event that changes the layers Z level based on the players Y level.\nI made a seperate parrallel event that sets a variable to the players Y coordinate so that the wall layer events conditions can read that variable. Is there a better way to do that?\nThanks again!"
+    },
+    {
+      "post_id": "js-post-1526041",
+      "author": "rpgLord69",
+      "date": "2025-08-11T21:47:13+0900",
+      "body": "Ok cool that it's working.\nBut when you set the layers you aren't going to change, (if you don't want to use map notetags) put them all in one autorun event and then at the end the 'erase event' command. You don't need to run the code all the time for the layers that don't change. Parallels are used in constantly running stuff in the background.\nFor the wall you want to change the z-index of, it works like that, but you can also put everything in one parallel event with just one page. At the beginning check the y-coordinate, then put the conditional you have in your screenshots + put an else branch on the conditional, where you change the z layer to the other value."
+    },
+    {
+      "post_id": "js-post-1526526",
+      "author": "Not_Chris",
+      "date": "2025-08-15T15:05:57+0900",
+      "body": "rpgLord69 said:\nOk cool that it's working.\nBut when you set the layers you aren't going to change, (if you don't want to use map notetags) put them all in one autorun event and then at the end the 'erase event' command. You don't need to run the code all the time for the layers that don't change. Parallels are used in constantly running stuff in the background.\nFor the wall you want to change the z-index of, it works like that, but you can also put everything in one parallel event with just one page. At the beginning check the y-coordinate, then put the conditional you have in your screenshots + put an else branch on the conditional, where you change the z layer to the other value.\nClick to expand...\nThanks for the help Ive implementended these changes and everythings working great. thanks again youve been a great help"
+    }
+  ]
+}
