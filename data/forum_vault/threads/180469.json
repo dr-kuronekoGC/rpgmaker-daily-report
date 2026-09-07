@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-getting-victoryaftermath-to-update-xp-values-based-on-expbylevel.180469",
+  "title": "MZ Help getting VictoryAftermath to update XP values based on ExpByLevel",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:50:47.633768+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532834",
+      "author": "james5272",
+      "date": "2025-10-09T01:28:58+0900",
+      "body": "Hello,\nI used VictoryAftermath in my first game, and wanted to use it in my second, but ran into a problem.\nI am using this plugin to have the XP enemies give reduce when you outlevel them:\nhttps://hakuenstudio.itch.io/eli-exp-by-level-for-rpg-maker\nI have it set to 50% reduction when an enemy is outleveled.\nWhen I kill a troop that the party outlevels, the displayed XP in VictoryAftermath still shows the full amount.\nI have resorted to using the default rewards text, since that will update the XP gains appropriately. And then using a different post-battle levelup plugin for nicer indicator of what stats have gone up. The problem is, this doesn't show how much to next level after every battle, so I'd like if I could still use VictoryAftermath with the XP reduction plugin.\nIs this possible? Or, due to the obfuscated VisuStella code, can it just not be updated properly?"
+    },
+    {
+      "post_id": "js-post-1532837",
+      "author": "Eliaquim",
+      "date": "2025-10-09T01:58:50+0900",
+      "body": "Hi there!\nI can say nothing about the Visu plugin. But I can say how my plugin works, and maybe you can find a way in the Visu plugin to fix that.\nSince the experience for each actor can be different due to the level difference between each one and the enemy, I cannot rely on the BattleManager._rewards.exp, since he gets a single value from the\n$gameTroop.expTotal().\nBut you can get the individual experience value from each actor by using the following script call:\nEli.ExpByLevel.getActorLastExp(ActorId)\nReplace the ActorId with the id of the actor you want to know how many experience he gained after battle."
+    },
+    {
+      "post_id": "js-post-1532838",
+      "author": "james5272",
+      "date": "2025-10-09T02:08:39+0900",
+      "body": "Thanks! With that, it seems I got it figured out. Just to have a quick tutorial for anyone who stumbles on this in the future (or for myself if/when I forget down the line):\nOpen VictoryAftermath plugin in RPG Maker MZ\nGo to Reward Strips\nI copied the EXP line and pasted it at the bottom, to have a backup of default behavior, then doubleclick the line to open it, doubleclicked the JS: Show line, and changed it from \"return true\" to \"return false\" (so this line doesn't show up ingame)\nThen I went to the copy-pasted EXP line that will be edited, double clicked to open it, then doubleclicked the JS: Data line\nNow enter here:\nreturn Eli.ExpByLevel.getActorLastExp(ActorId);\nWhere as stated by Eliaquim, replace ActorId with the # of the party member. I set it to 1 (this game only has 1 playable character).\nNow it will correctly show an EXP line in game that updates based on the XP reduction value.\nIf you have multiple party members, I think you would want to have multiple EXP lines, each with their own ActorId value, and instead of it being named EXP (edited under Label after doubleclicking an EXP line), you would want it to be PartyMemberName EXP for Label. I have another game with 5 party membres I plan on using this XP reduction for, so I can test this out there shortly and update if it works this way.\nEDIT: And just wanted to say, thanks so much for making this plugin! It really is helping set my 2nd game apart from the 1st, and I like to discourage too much grinding, this helps with that. I am *planning* on using it in my 3rd game as well, but I'll see, I might decide to let that one be an easier game (it's supposed to be a parody game) by letting people outlevel bosses so they aren't as difficult as I have them in first (released) and second (work in progress) games. EDIT3: Hmm okay for this one, I can make it show different EXP values based on ActorId, so in my 5 party member game it has 5 entries. But I don't know how to make it so instead of saying EXP for each line, to instead say PartyMemberName EXP instead. Anyone able to help with this? The line in VictoryAftermath for where it's getting the text from, is:\n\"return TextManager.exp;\"\nEDIT2: Another small issue, but I have found a workaround in case something else can't be figured out. At the bottom of VictoryAftermath, where it has the party member XP gauge, it will update according to how much the monsters would give without the reduction first, and after that is shown, it then updates to show the value post-reduction. For now I've worked around this by making the update time take 0 frames instead of any value - that makes it just show ie. 0 increase on the gauge if a monster gave 0 xp post reduction. But this gets rid of showing the gauge grow from the XP gained. Ideally I could have the gauge still grow when needed, and when a monster gives less XP, have the gauge immediately grow according to that, as opposed to right now where when growth is shown, it will grow ie. 2 xp and then after it shows that adjust to show less/no growth. I don't see anything under VictoryAftermath general settings (where the update duration for the gauge is) for where the gauge pulls the value from, so maybe this can't be adjusted."
+    }
+  ]
+}

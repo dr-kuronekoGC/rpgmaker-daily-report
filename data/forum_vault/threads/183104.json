@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/player-asked-for-help-with-an-empty-save-file.183104",
+  "title": "Player asked for help with an empty save file",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:50:43.035844+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1552627",
+      "author": "DukeLeto7",
+      "date": "2026-04-02T14:58:48+0900",
+      "body": "OK, this is bizarre.  A player was having trouble opening our game and it appeared to be because of a corrupted save file.  I verified that it was the save file that was causing the problem and asked to look at it.\nShort version.  I opened it in a Hex Editor.  There was nothing.  Not just corrupt data, NO data.  A legitimately named Save10.rvdata2 file, 538.97 KB in size, every single bit of which was 0.\nI don't think our game does anything interesting with the save/load system in terms of scripting other than using far too many switches and variables, so I assume this is the RPG Maker VX Ace engine misbehaving somehow...  But has anyone seen anything like this before?\nAs long as it doesn't happen again, I guess we can write it off to a freak photon maliciously slamming into a bit of RAM at just the wrong time, but it's so weird I had to ask.\nThanks."
+    },
+    {
+      "post_id": "js-post-1552643",
+      "author": "Arcaines",
+      "date": "2026-04-02T20:01:15+0900",
+      "body": "Switches/variables wont affect the state of a save file.\nThe only thing I can think of that might affect save files is when you're trying to load it after installing a new piece of script. That might cause errors.\nAs long as the error isn't repeating itself, you should be ok. But if it does, try to detect a pattern and see what might be causing it."
+    },
+    {
+      "post_id": "js-post-1552751",
+      "author": "caethyril",
+      "date": "2026-04-03T19:54:28+0900",
+      "body": "Like Arcaines says, if it's a one-off then I wouldn't be super concerned about it.\nIf it happens fairly reliably, maybe the game is failing to serialise the save data. E.g. this might happen due to an unhandled circular reference due to a script module or script call. (It's possible to serialise circular references, but I don't know if VXA does that.)\nIf it's less common or limited only to certain players then it might be related to file access permissions? E.g. security apps might prevent the game from writing to files in a certain location, or a real-time process like a backup or anti-malware scan might cause an unhandled interruption."
+    },
+    {
+      "post_id": "js-post-1552752",
+      "author": "DukeLeto7",
+      "date": "2026-04-03T19:58:09+0900",
+      "body": "Never seen it before...\nSo we'll just keep an eye out to see if it happens again."
+    },
+    {
+      "post_id": "js-post-1553855",
+      "author": "DukeLeto7",
+      "date": "2026-04-17T03:45:44+0900",
+      "body": "It happened again.  To the same player.  This time the totally blank save was 885 kb, so that suggests to me that the game succeeds in writing the save file, then something comes and overwrites it all with binary 0s.  If it was a case of the blank file originating from RPG Maker VX Ace, it seems like the outputs would be the same size.\nFor now I've asked the player to do a clean install of the game.  I'll check to see if they have anything interesting in terms of Internet Security, etc., since it's just them.\nI've checked the changes to scripts in our version history going back to Julyish and nothing that's been added or changed seems like it ought to impact DataManager in any way.  We use an AutoSave script but that's been in place for practically forever."
+    },
+    {
+      "post_id": "js-post-1553892",
+      "author": "Andar",
+      "date": "2026-04-17T18:28:40+0900",
+      "body": "No, this sounds suspiciously like the player has some malware or misconfigured antivirus on his computer that overwrites the files after they were saved - especially if it is only one person who has this effect and all other players can save normally.\nIn fact, that would have been one of my first ideas from the first description, because overwriting with zeroes usually only happens from a secure file deleter - not even Windows does that by default."
+    },
+    {
+      "post_id": "js-post-1553992",
+      "author": "DukeLeto7",
+      "date": "2026-04-19T02:50:17+0900",
+      "body": "We have some insight.  The overwriting of the files seems to be associated with a failure of Steam Cloud Sync updating the player's save files to cloud.\nBest guess is that it's the AV/Security software picking a fight with Steam.  I've asked the player to report the issue to Steam Cloud Support, so we're waiting on that now."
+    },
+    {
+      "post_id": "js-post-1554949",
+      "author": "DukeLeto7",
+      "date": "2026-04-30T07:20:07+0900",
+      "body": "The bug is more or less in abeyance because the one person who reported it hasn't had a recurrence.\nWe've prepared a patch to the script that raised an RPG Maker error by trying to read the corrupted save file so it will handle it gracefully if it recurs, but no one seems inclined to harass Steam support for more information on the root cause.\nThe game has been on Steam for six years and the script that errored out in the game for two.  Quite a lot of people have played a Steam version of the game in that time but no one else has reported the error.  It seems safe to assume it must be a very exotic interaction of Steam Cloud Sync and this user's system, and neither are really something we can provide support for.\nThanks to those who responded for the assistance."
+    },
+    {
+      "post_id": "js-post-1554956",
+      "author": "DevRPG2k",
+      "date": "2026-04-30T08:46:21+0900",
+      "body": "DukeLeto7 said:\nWe have some insight. The overwriting of the files seems to be associated with a failure of Steam Cloud Sync updating the player's save files to cloud.\nClick to expand...\nI also think it's related to that; I had problems syncing data and constant screen freezes at one point, but the problem was related to my internet provider. When I switched, it was resolved.\nSure, it might not be related to that, but it's just a possibility."
+    }
+  ]
+}

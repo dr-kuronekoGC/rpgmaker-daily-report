@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/question-about-class-change.180473",
+  "title": "MZ Question about class change",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:50:47.313939+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532876",
+      "author": "james5272",
+      "date": "2025-10-09T10:47:11+0900",
+      "body": "Hey all,\nI am interested in having an event trigger a class change for a character maybe halfway through the game. I want it to give them different equipped gear as soon as the change happens, as well as revert them to level one. I also want their character art to change. Is the best way to handle this to remove them from the party, then initialize a new actor that is the same name but the changes applied? I might have it happen during combat, to make it more seamless (as far as the art changes go). Any advice on how to accomplish this is appreciated."
+    },
+    {
+      "post_id": "js-post-1532878",
+      "author": "Eternidade_1",
+      "date": "2025-10-09T11:29:51+0900",
+      "body": "You can try using mz codes.\nto remove equipment and then equip it. As for reverting the character's level, I've never tried it.\nYou'll need to know exactly what equipment the actor has, or check the equipment slot, such as a one-handed weapon or shield. Check the player's current class, as well as the change to the new class.\nPerhaps a mid-combat switch, calling the system via a common event, would solve the problem.\nBy default, the maker maintains the skills or forgets the old ones, but regarding the issue of changing equipment mid-combat, like a standard side-by-side combat, I don't know if the engine updates the graphics.\nTherefore, a plugin should address these details."
+    },
+    {
+      "post_id": "js-post-1532881",
+      "author": "DrFreeman",
+      "date": "2025-10-09T13:15:10+0900",
+      "body": "If I were in your position, I would create a new character altogether with a different level development arc. Copy the original character, then substitute as needed. But then again, it might bother players if they lost old powers and exchanged them for new ones. Dragon Quest did it, Final Fantasy did it, and Tactics Ogre did it.\nI know there are a few other ways it can be done, but I can't think about them right now."
+    },
+    {
+      "post_id": "js-post-1532882",
+      "author": "Robro33",
+      "date": "2025-10-09T13:45:27+0900",
+      "body": "you could make a separate actor, but changing the actor's class, resetting their level, forcing equipment on them, and changing their sprites are all easily done with troop events. you dont need plugins for it unless you already have plugins complicating the process"
+    },
+    {
+      "post_id": "js-post-1532929",
+      "author": "james5272",
+      "date": "2025-10-10T01:12:46+0900",
+      "body": "Okay, thanks for the replies. Sometimes I don't know when I'll get back to working on any of my games, so it's easier to ask and get pointed in the right direction than look and maybe find out I have to do something I don't understand and then ask anyway. So from what I've read here, I can do this with built-in RPG Maker commands. I haven't tested it in battle yet, but I tested it on the field. There is Change Class event, where you can make them retain XP, I set that to false. There is Change Skill to forget skills. I also found the Change Equipment, so I can make them wear the starter equipment of the gear that will be specific to the new class. There is also Change XP, I haven't checked if going down far enough will reduce level, I will have to test that when I have more time. But it doesn't seem to set it to a negative value at least, so hopefully I can just do like -99999 XP and then no matter how much grinding a person has done, this character becomes level 1. Then there is Change Actor Images for changing the look. All of this happening on the field is pretty seamless. And if I need to make it look a bit more clean - I don't like screen flash, because I know what it's like when a game has something that makes me nauseous (like low FoV in first person games), and I know screen flash affects some people. So I could fade out, have the class change stuff happen with some dialogue maybe, then fade in.\nAnd yeah, this game is supposed to be kind of taking inspiration from Final Fantasy IV, hence doing the class change pretty much the same way it was for Cecil there.\nThanks all!"
+    },
+    {
+      "post_id": "js-post-1532947",
+      "author": "Robro33",
+      "date": "2025-10-10T04:18:43+0900",
+      "body": "james5272 said:\nSo I could fade out, have the class change stuff happen with some dialogue maybe, then fade in.\nClick to expand...\nif you go back to wanting it in battle, you can use an event command to play an animation or just flash the actor. no need for a screen flash if you dont want it."
+    },
+    {
+      "post_id": "js-post-1532951",
+      "author": "DevRPG2k",
+      "date": "2025-10-10T05:00:48+0900",
+      "body": "james5272 said:\nIs the best way to handle this to remove them from the party, then initialize a new actor that is the same name but the changes applied?\nClick to expand...\nYes, it's the best way, considering the character will return to level 1 based on the player's perception.\nThe problem is keeping them in the same order in the battle formation if the player has the option to choose from the menu. So, you'd need to memorize the order of the characters and remove them all and add them in the same order. This can be done with events using minimal Javascript through the RPG Maker API.\nIf you can't do it, let me know and I'll do it by tomorrow."
+    }
+  ]
+}
