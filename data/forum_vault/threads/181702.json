@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/nw-js-issues-with-mac.181702",
+  "title": "NW.js issues with mac",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:32.773618+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1542532",
+      "author": "MDR",
+      "date": "2026-01-01T05:18:40+0900",
+      "body": "Hi Everyone\nI'm hoping someone else runs RMMZ on a Mac. I bought the newest macbook air a month ago and restarted an old RPG project on RMMZ. From what I read, RMMZ can run on a macbook, but the NW.js framework can have performance issues with newer macs. I'm not sure if that's the case here, but sometimes when I run a playtest, I'll get an error message. After a few playtests with this error message, I start to notice serious lag that can only be resolved by restarting my macbook.\nAny help is greatly appreciated. I saved the detailed report if that helps."
+    },
+    {
+      "post_id": "js-post-1542534",
+      "author": "MDR",
+      "date": "2026-01-01T05:30:44+0900",
+      "body": "Here's the second error message"
+    },
+    {
+      "post_id": "js-post-1542535",
+      "author": "Solar_Flare",
+      "date": "2026-01-01T05:52:11+0900",
+      "body": "I'm not sure if this is related to your lag issues, but I've noticed that a playtest sometimes doesn't shut down properly and continues running in the background, eating up more and more memory over time. This is with RPGMaker MV, but MZ also uses nwjs, so perhaps the same thing could happen. So, I'd recommend opening up Activity Monitor to check if there are any nwjs processes running. You can just type \"nwjs\" into the filter field, and force quit them if there are any. Of course, don't do this when you have a playtest (or even a deployed build of your game) running.\nIf you do want to track down the actual cause of the crash, there might be something in the Console app that can provide a clue. There could be a crash report or some nwjs logs that you can post here. There might be a chance that such information could help solve the issue. (EDIT: And the detailed report you mentioned may also be helpful, as you guessed.)\nI've also had issues with nwjs quitting abruptly when I launch a playtest, though for some reason I don't get the \"quit unexpectedly\" prompt, so it might not be the same thing that you're seeing. I've also had issues with sudden \"loss of WebGL context\" or something; though in that case it didn't quit, I've speculated that the abrupt quits might be the same root cause. For me, since it only happens occasionally and pretty much only when the playtest is first starting up, I've just decided to live with it. I don't know if your case is similar, though.\nIn any case, regarding the two error messages you screenshotted, I think it's fine to just click \"Ignore\" and \"Don't Reopen\", respectively."
+    },
+    {
+      "post_id": "js-post-1542539",
+      "author": "bass2yang",
+      "date": "2026-01-01T06:51:48+0900",
+      "body": "MDR said:\nAny help is greatly appreciated. I saved the detailed report if that helps.\nClick to expand...\nDouble check and make sure you are using the arm64 version (assuming you are not on an Intel Mac) of nwjs which should be at least v0.77:\nNW.js v0.77.0 Released with Chromium 114 and ARM64 Support\nnwjs\nnwjs.io\nSome info to setup if needed - should be similar for MZ I believe but you are welcome to search the forums - be sure to use arm64 for mac and not macos64 or whatever the version is for intel:\nHow to Update NW.js to Dramatically improve Game Performance!\nWARNING:  This is a step by step guide for MV users to update their NW.JS to dramatically increase the performance of their game.  (Updating NW.js for Mac may make RPG Maker MV compatible with OSX Catalina and Big Sur! OMG!)  MZ users can use the ideas presented in this guide to update their...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1542605",
+      "author": "Welleran",
+      "date": "2026-01-01T23:56:35+0900",
+      "body": "MDR said:\nHi Everyone\nI'm hoping someone else runs RMMZ on a Mac. I bought the newest macbook air a month ago and restarted an old RPG project on RMMZ. From what I read, RMMZ can run on a macbook, but the NW.js framework can have performance issues with newer macs. I'm not sure if that's the case here, but sometimes when I run a playtest, I'll get an error message. After a few playtests with this error message, I start to notice serious lag that can only be resolved by restarting my macbook.\nAny help is greatly appreciated. I saved the detailed report if that helps.\nView attachment 356539\nClick to expand...\nI had the same issue after updating to Tahoe. I solved it by downloading the most recent stable nw.js from\nhere\n(normal, at present it's the 0.106.1 version).\nThen, if you have the Steam version of RPG Maker MZ, you \"Browse local files\" from the library and from there you right click RPGMZ.app and choose \"Show Package Contents\". When you have done this you move to\nContents -> Resources -> nwjs-mac folder. The file you have to replace is contained here: nwjs.app.\nBefore doing anything though make sure to backup the nwjs-mac folder, so you can roll back the old version if problems arise!"
+    },
+    {
+      "post_id": "js-post-1542662",
+      "author": "MDR",
+      "date": "2026-01-02T12:01:20+0900",
+      "body": "Thanks for the replies\nbass2yang said:\nDouble check and make sure you are using the arm64 version (assuming you are not on an Intel Mac) of nwjs which should be at least v0.77:\nClick to expand...\nI ran the command uname -m in the Terminal and the output was arm64.\nWelleran said:\nI had the same issue after updating to Tahoe.\nClick to expand...\nI just updated to Tahoe, but was having this problem before that.\nWelleran said:\nsolved it by downloading the most recent stable nw.js from\nhere\n(normal, at present it's the 0.106.1 version).\nThen, if you have the Steam version of RPG Maker MZ, you \"Browse local files\" from the library and from there you right click RPGMZ.app and choose \"Show Package Contents\". When you have done this you move to\nContents -> Resources -> nwjs-mac folder. The file you have to replace is contained here: nwjs.app.\nBefore doing anything though make sure to backup the nwjs-mac folder, so you can roll back the old version if problems arise!\nClick to expand...\nI'll follow these instructions and report back.\nThanks again everyone."
+    },
+    {
+      "post_id": "js-post-1542665",
+      "author": "MDR",
+      "date": "2026-01-02T12:11:53+0900",
+      "body": "Update -\nI ran several test plays and it loads quickly without any error messages. I bookmarked your link, as I imagine this is something we have to do after every major update on the mac."
+    },
+    {
+      "post_id": "js-post-1542671",
+      "author": "Welleran",
+      "date": "2026-01-02T13:18:52+0900",
+      "body": "MDR said:\nUpdate -\nI ran several test plays and it loads quickly without any error messages. I bookmarked your link, as I imagine this is something we have to do after every major update on the mac.\nClick to expand...\nI am happy to hear that.\nI think I did it twice in the 3 years I am using RPG Maker MZ, I update it when I start encountering problems.\nHappy developing!"
+    },
+    {
+      "post_id": "js-post-1542672",
+      "author": "MDR",
+      "date": "2026-01-02T13:27:19+0900",
+      "body": "Thanks\nNow I'm getting back to my plugin compatibility issues in another thread"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-yep-party-system-help.181810",
+  "title": "MV [SOLVED] YEP Party System Help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:49.448811+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1543297",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-01-07T07:09:38+0900",
+      "body": "So basically I want it to that when it's an Actor's Turn and the Formation Command is used in Battle, that Actor's Turn is then skipped afterwards.\nThe reason is because im using STB and if the Actor who's Turn it is, is swapped out for a different Actor that happens to have a lower Agility Stat, that swapped in Actor get to Act right away as if they had the Agility of the previous Actor that just got swapped out\nSo is there a way to make it use up that Turn if the Formation command is used at all?"
+    },
+    {
+      "post_id": "js-post-1543515",
+      "author": "rpgLord69",
+      "date": "2026-01-08T23:20:16+0900",
+      "body": "There's a method called reconstructActions that gets called when you leave the party menu. Did you check if it causes problems if you don't use that (here I commented it out)?\nScene_Party.prototype.commandFinish = function() {\nif ($gameParty.inBattle()) {\n// $gameParty.reconstructActions();\nif (BattleManager._savedActor) {\nBattleManager._actorIndex = BattleManager._savedActor.index();\n}\n}\nthis.popScene();\n};"
+    },
+    {
+      "post_id": "js-post-1543540",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-01-09T04:10:54+0900",
+      "body": "rpgLord69 said:\nThere's a method called reconstructActions that gets called when you leave the party menu. Did you check if it causes problems if you don't use that (here I commented it out)?\nScene_Party.prototype.commandFinish = function() {\nif ($gameParty.inBattle()) {\n// $gameParty.reconstructActions();\nif (BattleManager._savedActor) {\nBattleManager._actorIndex = BattleManager._savedActor.index();\n}\n}\nthis.popScene();\n};\nClick to expand...\nI removed all of that and it crashed the game when I attempted to use the Formation command so either I misinterpreted what im supposed to do to those lines of code or it just doesnt work?"
+    },
+    {
+      "post_id": "js-post-1543541",
+      "author": "rpgLord69",
+      "date": "2026-01-09T04:46:14+0900",
+      "body": "You mean you removed the whole method? I meant that comment out the one reconstructActions() line like I've done, inside with the //\nBut yeah, like I said, I haven't tested it."
+    },
+    {
+      "post_id": "js-post-1543543",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-01-09T04:58:00+0900",
+      "body": "rpgLord69 said:\nYou mean you removed the whole method? I meant that comment out the one reconstructActions() line like I've done, inside with the //\nBut yeah, like I said, I haven't tested it.\nClick to expand...\nOH, sorry im not the brightest\nBut I tried these two and the plugin worked the same as it does normally? I might still be doing this wrong tho as I said im not the brightest..."
+    },
+    {
+      "post_id": "js-post-1543599",
+      "author": "rpgLord69",
+      "date": "2026-01-09T17:36:26+0900",
+      "body": "Yeah, then my suggestion doesn't work, it was more of a guess anyway. I hope someone manages to help you, I've no motivation to try and change that at the moment."
+    },
+    {
+      "post_id": "js-post-1543656",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-01-10T02:55:43+0900",
+      "body": "rpgLord69 said:\nYeah, then my suggestion doesn't work, it was more of a guess anyway. I hope someone manages to help you, I've no motivation to try and change that at the moment.\nClick to expand...\nAll good! Thanks for trying tho!!"
+    },
+    {
+      "post_id": "js-post-1543670",
+      "author": "TheGameMaker",
+      "date": "2026-01-10T05:07:05+0900",
+      "body": "Twig_the_Blue_Pikmin said:\nSo basically I want it to that when it's an Actor's Turn and the Formation Command is used in Battle, that Actor's Turn is then skipped afterwards.\nThe reason is because im using STB and if the Actor who's Turn it is, is swapped out for a different Actor that happens to have a lower Agility Stat, that swapped in Actor get to Act right away as if they had the Agility of the previous Actor that just got swapped out\nSo is there a way to make it use up that Turn if the Formation command is used at all?\nClick to expand...\nThis is one thing that I found. It can probably done by something like this adding a \"Cannot Move\" state (like Paralyze) temporarily or using a plugin for custom logic with plugins like Yanfly's YEP Party System, often by triggering a Script Call or adding a state that consumes the turn before the swap. For a standard setup, adding a state with \"Cannot Move\" and \"Turn Skip\" enabled to the actor's skill/item works, while for complex systems (like Yanfly's ATB/ST\n, you'll need a plugin command or script to ensure the turn is used up before the new actor acts. Mess around with something like this and hopefully it works so good luck!\nMethod 1: Using a \"Cannot Move\" State (Standard/Basic)\nCreate a State:\nIn the Database, go to States and create a new State (e.g., \"Formation Turn Used\").\nSet State Effects:\nIn the \"Effects\" tab, add an \"Add State\" effect for the actor to apply the \"Formation Turn Used\" state to themselves.\nConfigure the State:\nIn the State's settings, under \"Restrictions,\" check \"Cannot Move\" and potentially \"Turn Skip\" if available/needed for your system.\nApply via Skill/Item:\nMake the Formation command a Skill or Item. In its effects, use \"Add State\" to apply the \"Formation Turn Used\" state to the\nUser\n.\nAdd Plugin Command (If Using Yanfly):\nIf using Yanfly's Engine, you might need a plugin command to\nremove\nthe \"Cannot Move\" state immediately after the swap but\nafter\nthe turn is consumed, or add a specific state that does this."
+    },
+    {
+      "post_id": "js-post-1543980",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-01-12T03:41:47+0900",
+      "body": "TheGameMaker said:\nThis is one thing that I found. It can probably done by something like this adding a \"Cannot Move\" state (like Paralyze) temporarily or using a plugin for custom logic with plugins like Yanfly's YEP Party System, often by triggering a Script Call or adding a state that consumes the turn before the swap. For a standard setup, adding a state with \"Cannot Move\" and \"Turn Skip\" enabled to the actor's skill/item works, while for complex systems (like Yanfly's ATB/ST\n, you'll need a plugin command or script to ensure the turn is used up before the new actor acts. Mess around with something like this and hopefully it works so good luck!\nMethod 1: Using a \"Cannot Move\" State (Standard/Basic)\nCreate a State:\nIn the Database, go to States and create a new State (e.g., \"Formation Turn Used\").\nSet State Effects:\nIn the \"Effects\" tab, add an \"Add State\" effect for the actor to apply the \"Formation Turn Used\" state to themselves.\nConfigure the State:\nIn the State's settings, under \"Restrictions,\" check \"Cannot Move\" and potentially \"Turn Skip\" if available/needed for your system.\nApply via Skill/Item:\nMake the Formation command a Skill or Item. In its effects, use \"Add State\" to apply the \"Formation Turn Used\" state to the\nUser\n.\nAdd Plugin Command (If Using Yanfly):\nIf using Yanfly's Engine, you might need a plugin command to\nremove\nthe \"Cannot Move\" state immediately after the swap but\nafter\nthe turn is consumed, or add a specific state that does this.\nClick to expand...\nThis sounds like it would work but I have a problem, I dont know how to make the Formation command into a Skill? I tried making a Skill that runs a Common Event that would then run the Plugin Command that would open the Party Menu like the Formation command but when used in Battle it doesnt work...\nIt only seems to work correctly when in the Party Command Window like with Fight and Escape pictured below, like how the Plugin normally allows, but maybe there's some code or something that can be added to the Plugin that would run something similar to what you suggested after the command is finished?"
+    },
+    {
+      "post_id": "js-post-1543991",
+      "author": "Robro33",
+      "date": "2026-01-12T04:45:10+0900",
+      "body": "TheGameMaker said:\nMethod 1\nClick to expand...\nWhere's the second?\nTheGameMaker said:\nSet State Effects:\nIn the \"Effects\" tab, add an \"Add State\" effect for the actor to apply the \"Formation Turn Used\" state to themselves.\nClick to expand...\nStates dont have effects and are incapable of triggering an add state effect\nTheGameMaker said:\nApply via Skill/Item:\nMake the Formation command a Skill or Item. In its effects, use \"Add State\" to apply the \"Formation Turn Used\" state to the\nUser\n.\nClick to expand...\nthe formation is in the party window. making it into a skill would require knowing JS, and at that point the question wouldnt have been asked.\n@Twig_the_Blue_Pikmin\ntry this as a plugin below the party system one and should consume the actor's turn.\nCode:\n(() => {\nScene_Party.prototype.commandFinish = function() {\n    if ($gameParty.inBattle()) {\n      $gameParty.reconstructActions();\n      if (BattleManager._savedActor) {\n        BattleManager._actorIndex = BattleManager._savedActor.index();\n        BattleManager.startATBAction(BattleManager._savedActor);\n      }\n    }\n    this.popScene();\n};\n})();"
+    },
+    {
+      "post_id": "js-post-1544001",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-01-12T05:17:53+0900",
+      "body": "Robro33 said:\nWhere's the second?\nStates dont have effects and are incapable of triggering an add state effect\nthe formation is in the party window. making it into a skill would require knowing JS, and at that point the question wouldnt have been asked.\n@Twig_the_Blue_Pikmin\ntry this as a plugin below the party system one and should consume the actor's turn.\nCode:\n(() => {\nScene_Party.prototype.commandFinish = function() {\n    if ($gameParty.inBattle()) {\n      $gameParty.reconstructActions();\n      if (BattleManager._savedActor) {\n        BattleManager._actorIndex = BattleManager._savedActor.index();\n        BattleManager.startATBAction(BattleManager._savedActor);\n      }\n    }\n    this.popScene();\n};\n})();\nClick to expand...\nI tried this but it didnt work, I think it's because this was meant for the ATB Battle System while im using the STB Battle System? I did just try changing it to \"startSTBAction\" but that didnt change anything so um..."
+    },
+    {
+      "post_id": "js-post-1544003",
+      "author": "TheGameMaker",
+      "date": "2026-01-12T05:27:58+0900",
+      "body": "Check out these pictures. In the first pic you make a\nState\nand call it whatever you want. Here I called it\nFormation Turn Used\n, In the part that says\nRestriction:\nyou set it to\ncannot move\n. The area that says\nRemoval Conditions\n... that's on you how you want the State to be removed after you use the skill. The second pic you go to your\nSkills\ntab and make your skill. Here I called it\nFormation\n, set the\nScope:\nto\nThe User\n. In the part that says\nEffects:\njust double click in there and you'll see a\nState\ntab. Click on that and you will see\nAdd State\n. click on that and from that list find the new state you added earlier\nFormation Turn Used\nfrom pic 1. Far as effects, animations and all that stuff for the skill... it's up to you on that. This is about close as i can get so hopefully this helps."
+    },
+    {
+      "post_id": "js-post-1544005",
+      "author": "Robro33",
+      "date": "2026-01-12T05:32:17+0900",
+      "body": "Twig_the_Blue_Pikmin said:\nI think it's because this was meant for the ATB Battle System\nClick to expand...\nah, my bad. yeah, i didnt read the first post and thought you were using an ATB system\nprobably should have confirmed before setting up an ATB project and testing...\ntry this:\nCode:\n(() => {\nScene_Party.prototype.commandFinish = function() {\n    if ($gameParty.inBattle()) {\n      $gameParty.reconstructActions();\n      if (BattleManager._savedActor) {\n        BattleManager._actorIndex = BattleManager._savedActor.index();\n      }\n    }\n    this.popScene();\n    BattleManager.endSTBAction()\n};\n})();"
+    },
+    {
+      "post_id": "js-post-1544006",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-01-12T05:36:54+0900",
+      "body": "Robro33 said:\nah, my bad. yeah, i didnt read the first post and thought you were using an ATB system\nprobably should have confirmed before setting up an ATB project and testing...\ntry this:\nCode:\n(() => {\nScene_Party.prototype.commandFinish = function() {\n    if ($gameParty.inBattle()) {\n      $gameParty.reconstructActions();\n      if (BattleManager._savedActor) {\n        BattleManager._actorIndex = BattleManager._savedActor.index();\n      }\n    }\n    this.popScene();\n    BattleManager.endSTBAction()\n};\n})();\nClick to expand...\nUr all good!\nAnd thank you so much! This works exactly how I wanted it to now!!"
+    },
+    {
+      "post_id": "js-post-1544008",
+      "author": "Robro33",
+      "date": "2026-01-12T05:42:42+0900",
+      "body": "Twig_the_Blue_Pikmin said:\nAnd thank you so much! This works exactly how I wanted it to now!!\nClick to expand...\n*slight* correction. what i gave would crash the game if you were to use the formation command from the regular menu as opposed to from combat.\nCode:\n(() => {\nScene_Party.prototype.commandFinish = function() {\n    if ($gameParty.inBattle()) {\n      $gameParty.reconstructActions();\n      if (BattleManager._savedActor) {\n        BattleManager._actorIndex = BattleManager._savedActor.index();\n      }\n    }\n    this.popScene();\n    if ($gameParty.inBattle())\n        BattleManager.endSTBAction();\n};\n})();"
+    },
+    {
+      "post_id": "js-post-1544011",
+      "author": "Twig_the_Blue_Pikmin",
+      "date": "2026-01-12T05:45:01+0900",
+      "body": "Robro33 said:\n*slight* correction. what i gave would crash the game if you were to use the formation command from the regular menu as opposed to from combat.\nCode:\n(() => {\nScene_Party.prototype.commandFinish = function() {\n    if ($gameParty.inBattle()) {\n      $gameParty.reconstructActions();\n      if (BattleManager._savedActor) {\n        BattleManager._actorIndex = BattleManager._savedActor.index();\n      }\n    }\n    this.popScene();\n    if ($gameParty.inBattle())\n        BattleManager.endSTBAction();\n};\n})();\nClick to expand...\nOh oop, well that's good you caught that! Thanks again!"
+    }
+  ]
+}

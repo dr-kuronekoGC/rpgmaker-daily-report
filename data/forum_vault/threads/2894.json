@@ -1,0 +1,317 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/map-screenshot.2894",
+  "title": "Map Screenshot",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:03:10.821815+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-31649",
+      "author": "Tsukihime",
+      "date": "2012-06-30T08:14:16+0900",
+      "body": "This script allows you to take a full picture of any map of your choice.\nYou can also toggle what should appear on the map (sprites, events, vehicles, player).\nDownload\nGet it at Hime Works\nAdd-ons:\nRegion Overlay\n- draw map regions\nPassage Overlay\n- draw tile passage settings\nScreenshots\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-59373",
+      "author": "ze1",
+      "date": "2012-10-20T11:48:07+0900",
+      "body": "Any chance of the dll being updated so that the script would be able to take a mapshot of a big map? I wanted to take one of my world map, so that I can make it visible to the player, but I always get a memory error. =(\nI'm trying to reduce the map scale to see if it'd help decreasing the map size. I'm using the Mapshot_Scale constant. However, the effect is always weird. It seems that instead of changing the map scale, it takes a mapshot of part of the map (usually only floor or water). But I've just reread your post and I realized it probably wouldn't work since Ruby doesn't like big images. =("
+    },
+    {
+      "post_id": "js-post-59390",
+      "author": "Tsukihime",
+      "date": "2012-10-20T13:41:51+0900",
+      "body": "Unfortunately I didn't write the dll and the author mentioned some issues with it so you will probably have to use the slow ruby exporter if the nice fast dll code doesn't work.\nLooking at how map scaling is implemented...it's actually kind of pointless cause it first generates the original map and then scales it down. And ruby's complaining about not being able to create the original map in the first place."
+    },
+    {
+      "post_id": "js-post-114975",
+      "author": "Tsukihime",
+      "date": "2013-04-03T00:56:04+0900",
+      "body": "I have looked at this script again and have found why the thing crashes on large maps\n1: the entire image is created first and stored in memory.\n2: The PNG writer currently writes out one chunk.\nConsider a 500x500 map.\nEach tile is 32 pixels in width and height, so the size of your image is 16000x16000. That's 256 million pixels. At 4Bpp, that requires a gig of memory.\nSo from (1), we're storing a gig of data in memory. Not a problem for modern computers these days, but still an issue.\nFrom (2), since it's writing it out as a single chunk, it's trying to allocate a gig of memory as a byte-string of null bytes. Ruby does not seem to like this and crashes as a result.\nI am not sure how to best address this issue.\nA good solution would be to draw the map one chunk at a time (for example, 20 rows at a time) and write it out. This allows me to control the amount of memory required to store the image, and since PNG natively support multiple IDAT chunks, that would work fine.\nHowever, that means I would have to integrate the PNG writer with the map saver, rather than sending an image to the PNG writer. I'll probably go with just writing out chunks, so it doesn't crash.\nIf anyone would like to update the PNG writer that would be great, since I'd have to first look up how to deal with the pointer to the data section so that I can start at the correct segment of data..."
+    },
+    {
+      "post_id": "js-post-120471",
+      "author": "Tsukihime",
+      "date": "2013-04-15T23:51:09+0900",
+      "body": "Script has been updated to use the GDI+ interface.\nIt is faster than manually building a PNG file and supports more image formats.\nMost windows machines should have that library so there is no need to download additional dll's anymore.\nIt still does not work for very large maps, however..."
+    },
+    {
+      "post_id": "js-post-120483",
+      "author": "seita",
+      "date": "2013-04-16T00:32:18+0900",
+      "body": "I'm getting an error and my map isn't exactly huge. The dimensions are 60 x 50.\nThis is the error I get when I try F6 screenshot:"
+    },
+    {
+      "post_id": "js-post-120490",
+      "author": "Tsukihime",
+      "date": "2013-04-16T01:01:57+0900",
+      "body": "Might be a script conflict verify that it works stand-alone."
+    },
+    {
+      "post_id": "js-post-120493",
+      "author": "seita",
+      "date": "2013-04-16T01:10:43+0900",
+      "body": "wow very interesting. I have many scripts that seem like they would conflict with yours, but it was Victors diagonal movement script:\nhttp://victorscripts.wordpress.com/rpg-maker-vx-ace/utility-scripts/diagonal-movement/\nSpoiler\n#==============================================================================\n# ** Victor Engine - Diagonal Movement\n#------------------------------------------------------------------------------\n# Author : Victor Sant\n#\n# Version History:\n# v 1.00 - 2011.12.23 > First release\n# v 1.01 - 2011.12.30 > Fixed sync with vehicle\n# v 1.02 - 2012.01.01 > New comment tags\n# v 1.03 - 2012.01.04 > Compatibility with Character Control\n# v 1.04 - 2012.01.04 > Compatibility with Follower Control\n# v 1.05 - 2012.05.29 > Compatibility with Pixel Movement\n# v 1.06 - 2012.07.25 > Fixed Compatibility with Visual Equip and\n# > Character Control\n# v 1.07 - 2012.07.30 > Fixed diagonal movement speed\n# v 1.08 - 2012.08.04 > Added option for fixing blocked movement\n# v 1.09 - 2013.01.24 > Fixed issue with pixel movement and VE_DIAGONAL_FIX\n#------------------------------------------------------------------------------\n# This script allows to set diagonal movement for the player and events.\n# This feature is opitional for events. It's possible to have different\n# graphic for the diagonal movement\n#------------------------------------------------------------------------------\n# Compatibility\n# Requires the script 'Victor Engine - Basic Module' v 1.16 or higher\n# If used with 'Victor Engine - Multi Frames' place this bellow it.\n# If used with 'Victor Engine - Pixel Movement' place this bellow it.\n# If used with 'Victor Engine - Visual Equip' place this bellow it.\n#\n# * Alias methods (Default)\n# class Game_CharacterBase\n# def init_public_members\n# def move_straight(d, turn_ok = true)\n# def move_diagonal(horz, vert)\n#\n# class Game_Character < Game_CharacterBase\n# def move_random\n# def move_toward_character(character)\n# def move_away_from_character(character)\n# def turn_toward_character(character)\n# def turn_away_from_character(character)\n# def move_forward\n#\n# class Game_Event < Game_Character\n# def clear_page_settings\n# def setup_page_settings\n#\n# class Game_Player < Game_Character\n# def initialize\n# def move_by_input\n#\n# class Game_Vehicle < Game_Character\n# def sync_with_player\n#\n# class Sprite_Character < Sprite_Base\n# def graphic_changed?\n# def update_src_rect\n#\n# * Alias methods (Basic Module)\n# class Game_Character < Game_CharacterBase\n# def move_toward_position(x, y)\n#\n# class Game_Interpreter\n# def comment_call\n#\n#------------------------------------------------------------------------------\n# Instructions:\n# To instal the script, open you script editor and paste this script on\n# a new section bellow the Materials section. This script must also\n# be bellow the scripts 'Victor Engine - Basic' and\n# 'Victor Engine - Multi Frames'.\n#\n#------------------------------------------------------------------------------\n# Comment calls note tags:\n# Tags to be used in events comment box, works like a script call.\n#\n#\n#\n# These tags allows to turn the diagonal on or off for the player.\n#\n#\n#\n# These tags allows to turn the diagonal on or off for events.\n# i : event ID\n#\n#------------------------------------------------------------------------------\n# Comment boxes note tags:\n# Tags to be used on events Comment boxes. They're different from the\n# comment call, they're called always the even refresh.\n#\n#\n# This tag allows the diagonal move for events if VE_DIAGONAL_EVENTS = false\n# It enables the diagonal move only for the page where the comment\n# is located\n#\n#\n# This tag disable the diagonal move for events if VE_DIAGONAL_EVENTS = true\n# It disable the diagonal move only for the page where the comment\n# is located\n#\n#------------------------------------------------------------------------------\n# Additional instructions:\n#\n# To add custom graphic for diagonal movement, you must have a graphic\n# with the sufix set on VE_DIAGONAL_SUFIX added to it's name, by default\n# this sufix is \"[diag]\", so you must have a file named \"CharName[diag]\"\n# for a chaset named \"CharName\". If the diagonal file doesn't exist, it\n# will use the normal graphic.\n#\n#==============================================================================\n#==============================================================================\n# ** Victor Engine\n#------------------------------------------------------------------------------\n# Setting module for the Victor Engine\n#==============================================================================\nmodule Victor_Engine\n#--------------------------------------------------------------------------\n# * Diagonal graphic sufix\n# Sufix added to the names of diagonal movement graphics.\n#--------------------------------------------------------------------------\nVE_DIAGONAL_SUFIX = \"[diag]\"\n#--------------------------------------------------------------------------\n# * Set diagonal movement for events\n# If true, automatically all events will have diagonal movement\n# If false, you must add the diagonal movement manually by adding the\n# comment tag for diagonal move on it.\n#--------------------------------------------------------------------------\nVE_DIAGONAL_EVENTS = false\n#--------------------------------------------------------------------------\n# * Fix blocked diagonal movement\n# If true, when the diagonal movement is blocked, then the character\n# moves straight to the direction not blocked.\n#--------------------------------------------------------------------------\nVE_DIAGONAL_FIX = false\n#--------------------------------------------------------------------------\n# * required\n# This method checks for the existance of the basic module and other\n# VE scripts required for this script to work, don't edit this\n#--------------------------------------------------------------------------\ndef self.required(name, req, version, type = nil)\nif !$imported[:ve_basic_module]\nmsg = \"The script '%s' requires the script\\n\"\nmsg += \"'VE - Basic Module' v%s or higher above it to work properly\\n\"\nmsg += \"Go to\nhttp://victorscripts.wordpress.com/\nto download this script.\"\nmsgbox(sprintf(msg, self.script_name(name), version))\nexit\nelse\nself.required_script(name, req, version, type)\nend\nend\n#--------------------------------------------------------------------------\n# * script_name\n# Get the script name base on the imported value, don't edit this\n#--------------------------------------------------------------------------\ndef self.script_name(name, ext = \"VE\")\nname = name.to_s.gsub(\"_\", \" \").upcase.split\nname.collect! {|char| char == ext ? \"#{char} -\" : char.capitalize }\nname.join(\" \")\nend\nend\n$imported ||= {}\n$imported[:ve_diagonal_move] = 1.09\nVictor_Engine.required\nve_diagonal_move, :ve_basic_module, 1.16, :above)\nVictor_Engine.required\nve_diagonal_move, :ve_character_control, 1.10, :bellow)\n#==============================================================================\n# ** Game_CharacterBase\n#------------------------------------------------------------------------------\n# This class deals with characters. Common to all characters, stores basic\n# data, such as coordinates and graphics. It's used as a superclass of the\n# Game_Character class.\n#==============================================================================\nclass Game_CharacterBase\n#--------------------------------------------------------------------------\n# * Public Instance Variables\n#--------------------------------------------------------------------------\nattr_reader :diagonal\n#--------------------------------------------------------------------------\n# * Alias method: init_public_members\n#--------------------------------------------------------------------------\nalias :init_public_members_ve_diagonal_move :init_public_members\ndef init_public_members\ninit_public_members_ve_diagonal_move\n@diagonal = 0\nend\n#--------------------------------------------------------------------------\n# * Alias method: move_straight\n#--------------------------------------------------------------------------\nalias :move_straight_ve_diagonal_move :move_straight\ndef move_straight(d, turn_ok = true)\n@diagonal = 0\nmove_straight_ve_diagonal_move(d, turn_ok)\nend\n#--------------------------------------------------------------------------\n# * Alias method: move_diagonal\n#--------------------------------------------------------------------------\nalias :move_diagonal_ve_diagonal_move :move_diagonal\ndef move_diagonal(horz, vert)\n@diagonal = 1 if diagonal_enabled? && horz == 4 && vert == 2\n@diagonal = 3 if diagonal_enabled? && horz == 6 && vert == 2\n@diagonal = 7 if diagonal_enabled? && horz == 4 && vert == 8\n@diagonal = 9 if diagonal_enabled? && horz == 6 && vert == 8\nmove_diagonal_ve_diagonal_move(horz, vert)\ndiagonal_direction if diagonal_enabled?\nend\n#--------------------------------------------------------------------------\n# * Alias method: distance_per_frame\n#--------------------------------------------------------------------------\nalias :distance_per_frame_ve_diagonal_move :distance_per_frame\ndef distance_per_frame\ndistance = distance_per_frame_ve_diagonal_move\ndiagonal? ? distance / Math.sqrt(2) : distance\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_enabled?\n#--------------------------------------------------------------------------\ndef diagonal_enabled?\n@diagonal_enabled\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal?\n#--------------------------------------------------------------------------\ndef diagonal?\n@diagonal && @diagonal != 0\nend\nend\n#==============================================================================\n# ** Game_Character\n#------------------------------------------------------------------------------\n# This class deals with characters. It's used as a superclass of the\n# Game_Player and Game_Event classes.\n#==============================================================================\nclass Game_Character < Game_CharacterBase\n#--------------------------------------------------------------------------\n# * Alias method: move_random\n#--------------------------------------------------------------------------\nalias :move_random_ve_diagonal_move :move_random\ndef move_random\nif diagonal_enabled? && rand(2) == 0\nhorz = [4, 6].random\nvert = [2, 8].random\nmove_diagonal(horz, vert)\nelse\nmove_random_ve_diagonal_move\nend\nend\n#--------------------------------------------------------------------------\n# * Alias method: move_toward_character\n#--------------------------------------------------------------------------\nalias :move_toward_character_ve_diagonal_move :move_toward_character\ndef move_toward_character(character)\nsx = distance_x_from(character.x)\nsy = distance_y_from(character.y)\nhorz = sx > 0 ? 4 : 6\nvert = sy > 0 ? 8 : 2\nif diagonal_enabled? && sx != 0 && sy != 0 &&\ndiagonal_passable?(x, y, horz, vert)\nmove_diagonal(horz, vert)\nelse\nmove_toward_character_ve_diagonal_move(character)\nend\nend\n#--------------------------------------------------------------------------\n# * New method: move_toward_position\n#--------------------------------------------------------------------------\nalias :move_toward_position_ve_diagonal_move :move_toward_position\ndef move_toward_position(x, y)\nsx = distance_x_from(x)\nsy = distance_y_from(y)\nhorz = sx > 0 ? 4 : 6\nvert = sy > 0 ? 8 : 2\nif diagonal_enabled? && sx != 0 && sy != 0 &&\ndiagonal_passable?(x, y, horz, vert)\nmove_diagonal(horz, vert)\nelse\nmove_toward_position_ve_diagonal_move(x, y)\nend\nend\n#--------------------------------------------------------------------------\n# * Alias method: move_away_from_character\n#--------------------------------------------------------------------------\nalias :move_away_from_character_ve_diagonal_move :move_away_from_character\ndef move_away_from_character(character)\nsx = distance_x_from(character.x)\nsy = distance_y_from(character.y)\nhorz = sx > 0 ? 6 : 4\nvert = sy > 0 ? 2 : 8\nif diagonal_enabled? && sx != 0 && sy != 0 &&\ndiagonal_passable?(x, y, horz, vert)\nmove_diagonal(horz, vert)\nelse\nmove_away_from_character_ve_diagonal_move(character)\nend\nend\n#--------------------------------------------------------------------------\n# * Alias method: turn_toward_character\n#--------------------------------------------------------------------------\nalias :turn_toward_character_ve_diagonal_move :turn_toward_character\ndef turn_toward_character(character)\nsx = distance_x_from(character.x)\nsy = distance_y_from(character.y)\nif diagonal_enabled? && sx != 0 && sy != 0\n@diagonal = 1 if sx > 0 && sy < 0\n@diagonal = 3 if sx < 0 && sy < 0\n@diagonal = 7 if sx > 0 && sy > 0\n@diagonal = 9 if sx < 0 && sy > 0\ndiagonal_direction\nelse\n@diagonal = 0\nturn_toward_character_ve_diagonal_move(character)\nend\nend\n#--------------------------------------------------------------------------\n# * Alias method: turn_away_from_character\n#--------------------------------------------------------------------------\nalias :turn_away_from_character_ve_diagonal_move :turn_away_from_character\ndef turn_away_from_character(character)\nsx = distance_x_from(character.x)\nsy = distance_y_from(character.y)\nif diagonal_enabled? && sx != 0 && sy != 0\n@diagonal = 1 if sx < 0 && sy > 0\n@diagonal = 3 if sx > 0 && sy > 0\n@diagonal = 7 if sx < 0 && sy < 0\n@diagonal = 9 if sx > 0 && sy < 0\ndiagonal_direction\nelse\n@diagonal = 0\nturn_away_from_character_ve_diagonal_move(character)\nend\nend\n#--------------------------------------------------------------------------\n# * Alias method: update_move_straight\n#--------------------------------------------------------------------------\nalias :update_move_straight_ve_diagonal_move :update_move_straight if $imported[:ve_pixel_movement]\ndef update_move_straight\nupdate_move_straight_ve_diagonal_move\ndiagonal_move_fix_pixel(@move_value[\n].first) if player? && @move_value\nend\n#--------------------------------------------------------------------------\n# * Alias method: update_move_diagonal\n#--------------------------------------------------------------------------\nalias :update_move_diagonal_ve_diagonal_move :update_move_diagonal if $imported[:ve_pixel_movement]\ndef update_move_diagonal\nupdate_move_diagonal_ve_diagonal_move\nif player? && @move_value\nd = 1 if @move_value[\n] == [4, 2]\nd = 3 if @move_value[\n] == [6, 2]\nd = 7 if @move_value[\n] == [4, 8]\nd = 9 if @move_value[\n] == [6, 8]\ndiagonal_move_fix_pixel(d)\nend\nend\n#--------------------------------------------------------------------------\n# * Alias method: move_forward\n#--------------------------------------------------------------------------\nalias :move_forward_ve_diagonal_move :move_forward\ndef move_forward\nif diagonal?\ndiagonal_movement(@diagonal)\ndiagonal_move_fix(@diagonal) if need_fix?\nelse\nmove_forward_ve_diagonal_move\nend\nend\n#--------------------------------------------------------------------------\n# * New method: need_fix?\n#--------------------------------------------------------------------------\ndef need_fix?\n(!moving? && !$imported[:ve_pixel_movement]) && VE_DIAGONAL_FIX\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_movement\n#--------------------------------------------------------------------------\ndef diagonal_movement(d)\ncase d\nwhen 1 then move_diagonal(4, 2)\nwhen 3 then move_diagonal(6, 2)\nwhen 7 then move_diagonal(4, 8)\nwhen 9 then move_diagonal(6, 8)\nend\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_move_fix\n#--------------------------------------------------------------------------\ndef diagonal_move_fix(d)\n@diagonal = nil\ncase d\nwhen 1 then move_straight(4); move_straight(2) if !moving?\nwhen 3 then move_straight(6); move_straight(2) if !moving?\nwhen 7 then move_straight(4); move_straight(8) if !moving?\nwhen 9 then move_straight(6); move_straight(8) if !moving?\nend\nend\n#--------------------------------------------------------------------------\n# * New method: set_diagonal_direction\n#--------------------------------------------------------------------------\ndef diagonal_direction\nset_direction(2) if @diagonal == 1\nset_direction(4) if @diagonal == 7\nset_direction(6) if @diagonal == 3\nset_direction(8) if @diagonal == 9\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_move_fix\n#--------------------------------------------------------------------------\ndef diagonal_move_fix_pixel(d)\ncase d\nwhen 1 then perform_move_fix_pixel(4, 2)\nwhen 3 then perform_move_fix_pixel(6, 2)\nwhen 7 then perform_move_fix_pixel(4, 8)\nwhen 9 then perform_move_fix_pixel(6, 8)\nend\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_move_fix\n#--------------------------------------------------------------------------\ndef perform_move_fix_pixel(horz, vert)\nreturn if @moved || moving?\n@move_value = nil\n@diagonal = nil\nset_direction(horz) if passable?(@x, @y, horz) && !@moved\nmove_straight_pixel(horz) if passable?(@x, @y, horz) && !@moved\nset_direction(vert) if passable?(@x, @y, vert) && !@moved\nmove_straight_pixel(vert) if passable?(@x, @y, vert) && !@moved\nend\nend\n#==============================================================================\n# ** Game_Event\n#------------------------------------------------------------------------------\n# This class deals with events. It handles functions including event page\n# switching via condition determinants, and running parallel process events.\n# It's used within the Game_Map class.\n#==============================================================================\nclass Game_Event < Game_Character\n#--------------------------------------------------------------------------\n# * Alias method: clear_page_settings\n#--------------------------------------------------------------------------\nalias :clear_page_settings_ve_diagonal_move :clear_page_settings\ndef clear_page_settings\nclear_page_settings_ve_diagonal_move\n@diagonal_enabled = false\nend\n#--------------------------------------------------------------------------\n# * Alias method: setup_page_settings\n#--------------------------------------------------------------------------\nalias :setup_page_settings_ve_diagonal_move :setup_page_settings\ndef setup_page_settings\nsetup_page_settings_ve_diagonal_move\n@diagonal_enabled = VE_DIAGONAL_EVENTS || note =~ //i\n@diagonal_enabled = false if note =~ //i\nend\nend\n#==============================================================================\n# ** Game_Player\n#------------------------------------------------------------------------------\n# This class handles maps. It includes event starting determinants and map\n# scrolling functions. The instance of this class is referenced by $game_map.\n#==============================================================================\nclass Game_Player < Game_Character\n#--------------------------------------------------------------------------\n# * Alias method: initialize\n#--------------------------------------------------------------------------\nalias :initialize_ve_diagonal_move :initialize\ndef initialize\ninitialize_ve_diagonal_move\ndiagonal_on\nend\n#--------------------------------------------------------------------------\n# * Alias method: move_by_input\n#--------------------------------------------------------------------------\nalias :move_by_input_ve_diagonal_move :move_by_input\ndef move_by_input\nreturn if !movable? || $game_map.interpreter.running?\nif diagonal_enabled? && Input.dir8 > 0 && Input.dir8 % 2 != 0\ndiagonal_movement(Input.dir8)\ndiagonal_move_fix(Input.dir8) if need_fix?\nelse\nmove_by_input_ve_diagonal_move\nend\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_on\n#--------------------------------------------------------------------------\ndef diagonal_on\n@diagonal_enabled = true\n@followers.diagonal_on\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_off\n#--------------------------------------------------------------------------\ndef diagonal_off\n@diagonal_enabled = false\n@followers.diagonal_off\nend\nend\n#==============================================================================\n# ** Game_Follower\n#------------------------------------------------------------------------------\n# This class handles the followers. Followers are the actors of the party\n# that follows the leader in a line. It's used within the Game_Followers class.\n#==============================================================================\nclass Game_Follower < Game_Character\n#--------------------------------------------------------------------------\n# * Alias method: distance_per_frame\n#--------------------------------------------------------------------------\nalias :distance_per_frame_ve_diagonal_move :distance_per_frame\ndef distance_per_frame\ndistance = 2 ** real_move_speed / 256.0\n$game_player.diagonal? ? distance / Math.sqrt(2) : distance\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_on\n#--------------------------------------------------------------------------\ndef diagonal_on\n@diagonal_enabled = true\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_off\n#--------------------------------------------------------------------------\ndef diagonal_off\n@diagonal_enabled = false\nend\nend\n#==============================================================================\n# ** Game_Followers\n#------------------------------------------------------------------------------\n# This class handles the followers. It's a wrapper for the built-in class\n# \"Array.\" It's used within the Game_Player class.\n#==============================================================================\nclass Game_Followers\n#--------------------------------------------------------------------------\n# * New method: diagonal_on\n#--------------------------------------------------------------------------\ndef diagonal_on\neach {|follower| follower.diagonal_on }\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_off\n#--------------------------------------------------------------------------\ndef diagonal_off\neach {|follower| follower.diagonal_off }\nend\nend\n#==============================================================================\n# ** Game_Vehicle\n#------------------------------------------------------------------------------\n# Esta classe gerencia veículos. Se não houver veículos no mapa atual, a\n# coordenada é definida como (-1,-1).\n# Esta classe é usada internamente pela classe Game_Map.\n#==============================================================================\nclass Game_Vehicle < Game_Character\n#--------------------------------------------------------------------------\n# * Alias method: sync_with_player\n#--------------------------------------------------------------------------\nalias :sync_with_player_ve_diagonal_move :sync_with_player\ndef sync_with_player\nsync_with_player_ve_diagonal_move\n@diagonal = $game_player.diagonal\ndiagonal_direction\nend\nend\n#==============================================================================\n# ** Sprite_Character\n#------------------------------------------------------------------------------\n# This sprite is used to display characters. It observes a instance of the\n# Game_Character class and automatically changes sprite conditions.\n#==============================================================================\nclass Sprite_Character < Sprite_Base\n#--------------------------------------------------------------------------\n# * Alias method: graphic_changed?\n#--------------------------------------------------------------------------\nalias :graphic_changed_ve_diagonal_move :graphic_changed?\ndef graphic_changed?\ngraphic_changed_ve_diagonal_move ||\n@diagonal != @character.diagonal\nend\n#--------------------------------------------------------------------------\n# * New method: update_character_info\n#--------------------------------------------------------------------------\nalias :update_character_info_ve_diagonal_move :update_character_info\ndef update_character_info\nupdate_character_info_ve_diagonal_move\n@diagonal = @character.diagonal\nend\n#--------------------------------------------------------------------------\n# * Alias method: update_src_rect\n#--------------------------------------------------------------------------\nalias :update_src_rect_ve_diagonal_move :update_src_rect\ndef update_src_rect\nif @tile_id == 0 && @character.diagonal?\nupdate_diagonal_src_rect\nelse\nupdate_src_rect_ve_diagonal_move\nend\nend\n#--------------------------------------------------------------------------\n# * Overwrite method: set_character_diagonal_bitmap\n#--------------------------------------------------------------------------\nalias :set_bitmap_name_ve_diagonal_move :set_bitmap_name\ndef set_bitmap_name\nname = @character_name + ($imported[:ve_visual_equip] ? \"\" : diagonal_sufix)\ncharacter_exist?(name) ? name : set_bitmap_name_ve_diagonal_move\nend\n#--------------------------------------------------------------------------\n# * New method: diagonal_sufix\n#--------------------------------------------------------------------------\ndef diagonal_sufix\n@character.diagonal? ? VE_DIAGONAL_SUFIX : \"\"\nend\n#--------------------------------------------------------------------------\n# * New method: update_diagonal_src_rect\n#--------------------------------------------------------------------------\ndef update_diagonal_src_rect\ndir = 0 if @diagonal == 1\ndir = 1 if @diagonal == 7\ndir = 2 if @diagonal == 3\ndir = 3 if @diagonal == 9\nindex = @character.character_index\nif $imported[:ve_multi_frames] && @character_name[/\\[F(\\d+)\\]/i]\npattern = @character.pattern\nelse\npattern = @character.pattern < 3 ? @character.pattern : 1\nend\nsx = (index % 4 * @character.frames + pattern) * @cw\nsy = (index / 4 * 4 + dir) * @ch\nself.src_rect.set(sx, sy, @cw, @ch)\nend\nend\n#==============================================================================\n# ** Game_Interpreter\n#------------------------------------------------------------------------------\n# An interpreter for executing event commands. This class is used within the\n# Game_Map, Game_Troop, and Game_Event classes.\n#==============================================================================\nclass Game_Interpreter\n#--------------------------------------------------------------------------\n# * Alias method: comment_call\n#--------------------------------------------------------------------------\nalias :comment_call_ve_diagonal_move :comment_call\ndef comment_call\ncall_change_actor_diagonal\ncall_change_event_diagonal\ncomment_call_ve_diagonal_move\nend\n#--------------------------------------------------------------------------\n# * New method: call_change_actor_diagonal\n#--------------------------------------------------------------------------\ndef call_change_actor_diagonal\nif note =~ //i\n$game_player.diagonal_off if $1.upcase == \"OFF\"\n$game_player.diagonal_on if $1.upcase == \"ON\"\nend\nend\n#--------------------------------------------------------------------------\n# * New method: call_change_event_diagonal\n#--------------------------------------------------------------------------\ndef call_change_event_diagonal\nif note =~ //i\n$game_map.events[$1.to_i].diagonal_off if $2.upcase == \"OFF\"\n$game_map.events[$1.to_i].diagonal_on if $2.upcase == \"ON\"\nend\nend\nend\nedit: just to clarify, I was deleting scripts three at a time. Once I found a batch, I started over with a fresh copy and deleted those one at a time, this is the only one I deleted for the F6 function to work."
+    },
+    {
+      "post_id": "js-post-120495",
+      "author": "Tsukihime",
+      "date": "2013-04-16T01:19:28+0900",
+      "body": "I have updated the script to support my\nregion overlay\nand my\npassage overlay\nHere's how it looks with both options enabled\nConfigure each overlay image separately in their own scripts.\nseita said:\nwow very interesting. I have many scripts that seem like they would conflict with yours, but it was Victors diagonal movement script:\nhttp://victorscripts.wordpress.com/rpg-maker-vx-ace/utility-scripts/diagonal-movement/\nedit: just to clarify, I was deleting scripts three at a time. Once I found a batch, I started over with a fresh copy and deleted those one at a time, this is the only one I deleted for the F6 function to work.\nClick to expand...\nEven with diagonal movement, I can take screenshots and mapshots just fine.\nMaybe there is another script that is reserving F6?"
+    },
+    {
+      "post_id": "js-post-126778",
+      "author": "Shaz",
+      "date": "2013-05-02T12:37:36+0900",
+      "body": "Found a bug. Not using any of the overlays, just the base Mapshot script.\nIf I do a script call like this when I'm on map 20:\n[1,2,3,4,5].each do |map|  ms = Map_Saver.new(map)  ms.mapshotendit gives me a single copy of map 20, not the ones I have listed. (Well, it gives me 5 copies, but each one overwrites the last)This is because Map_Saver.new(id) is what accepts the map id, but it doesn't save it or do anything with it.\nThe mapshot method calls redraw but doesn't pass any arguments, and redraw defaults the map id to $game_map.map_id.\nI fixed it by making the initialize method put id into @map_id, and making redraw default the map_id to @map_id.\nAlso, if I have two maps that have the same display name, it overwrites one with the other. I added in the map id to the file name to make sure that didn't happen.\nGreat script - MUCH faster than I remember the old XP map screenshot taker to be!\nEdit: the Passage Overlay and Region Overlay scripts also assume you're using the current map."
+    },
+    {
+      "post_id": "js-post-134382",
+      "author": "Kes",
+      "date": "2013-05-23T16:17:10+0900",
+      "body": "I'm having problems with the link for the main script.  Both here and on your site all I get is an endless \"connecting\", it never seems to actually get there. The links for the add-ons work fine.\nEDIT\nNow working.  Perhaps it was something to do with my browser."
+    },
+    {
+      "post_id": "js-post-141731",
+      "author": "Kes",
+      "date": "2013-06-13T22:46:48+0900",
+      "body": "I finally got round to trying out this script, and the first couple were just what I'd hope they'd be.  However, when I do a mapshot of an area with terrain damage, this is what comes up, instead of the usual green smear:\n\">http://\nIs there anything to be done so that it shows up more like in-game?\nThanks."
+    },
+    {
+      "post_id": "js-post-141757",
+      "author": "Tsukihime",
+      "date": "2013-06-14T00:48:57+0900",
+      "body": "What green smear?"
+    },
+    {
+      "post_id": "js-post-141769",
+      "author": "Kes",
+      "date": "2013-06-14T01:08:23+0900",
+      "body": "Like in many games, I used the green smear from the A2 tab to indicate which were the 'poisoned' bits of floor.  They show up as the brown area.  The red shows the tile which has terrain damage."
+    },
+    {
+      "post_id": "js-post-141780",
+      "author": "Tsukihime",
+      "date": "2013-06-14T01:23:39+0900",
+      "body": "In the configuration there is an option called \"Highlight_Damage = true\"\nSet that to false. The highlight is drawn over the tile and is half-transparent so it blends in with the tile, creating the brown color."
+    },
+    {
+      "post_id": "js-post-141783",
+      "author": "Kes",
+      "date": "2013-06-14T01:27:06+0900",
+      "body": "Thanks very much"
+    },
+    {
+      "post_id": "js-post-187759",
+      "author": "HeroUltraOmega",
+      "date": "2013-11-04T03:58:57+0900",
+      "body": "This is supposed to go under Materials in scripts, am I correct? Because I can't get this to work for some reason. Also this is the first script I'm ever using and don't have any others installed.\nEDIt: I'm a dumb dumb, realized I need to actually be in game to use it."
+    },
+    {
+      "post_id": "js-post-187765",
+      "author": "Tsukihime",
+      "date": "2013-11-04T04:43:58+0900",
+      "body": "The script allows you to take pictures of your map when you playtest and hit F6 or F7.\nHow are you using it and what do you expect it to do?"
+    },
+    {
+      "post_id": "js-post-187772",
+      "author": "HeroUltraOmega",
+      "date": "2013-11-04T04:59:02+0900",
+      "body": "I was being dumb and didn't realize that I had to be in-game to be able to take the mapshots, I eventually found out how to work it."
+    },
+    {
+      "post_id": "js-post-187776",
+      "author": "Tsukihime",
+      "date": "2013-11-04T05:13:48+0900",
+      "body": "Looking at the description above, I actually didn't specify that you should be in the game. That might be causing some confusion."
+    },
+    {
+      "post_id": "js-post-187796",
+      "author": "HeroUltraOmega",
+      "date": "2013-11-04T07:07:20+0900",
+      "body": "Then again, I am a noob to all this. Anyways, interesting error I received:\nSpoiler\n[IMG]http://i1263.photobucket.com/albums/ii634/HeroUltraOmega/Screenshot2013-11-03155653.png[/IMG]\nEDIT: I believe I found the potential problem.\nSpoiler\n[IMG]http://i1263.photobucket.com/albums/ii634/HeroUltraOmega/grasslandsofbymoorroute2screenshotthingy.png[/IMG]\nIn the picture above in the second spoiler, I have the Display Name as \"Grasslands of Bymoor: Route 2\". The problem happens on that map. However, when I remove the colon from the name (Grasslands of Bymoor Route 2) then the problem is gone. I think it may have to do with any of the characters which cannot be used in a file name ( \\, /, :, *, ?, \", <, >, and |)\n[IMG]http://i1263.photobucket.com/albums/ii634/HeroUltraOmega/Screenshot2013-11-03161947.png[/IMG]"
+    },
+    {
+      "post_id": "js-post-194522",
+      "author": "Tuomo L",
+      "date": "2013-11-29T00:59:02+0900",
+      "body": "All right, seeing as this script is still being updated and supported I may as well report a bug I have found.\nWhenever I take a screenshot with doors showing, the doors are misaligned and appear completely wrong unlike in the actual game and editor."
+    },
+    {
+      "post_id": "js-post-194528",
+      "author": "Tsukihime",
+      "date": "2013-11-29T01:04:30+0900",
+      "body": "How do I reproduce that? I have seen bug reports about that bug however whenever I create an event with a door graphic it appears properly for me."
+    },
+    {
+      "post_id": "js-post-194531",
+      "author": "Tuomo L",
+      "date": "2013-11-29T01:11:35+0900",
+      "body": "Tsukihime said:\nHow do I reproduce that? I have seen bug reports about that bug however whenever I create an event with a door graphic it appears properly for me.\nClick to expand...\nI can't speak for others but I create the door using the right click and quick event creation. My doors are also an entire set of 8 different doors in a normal charaset with opening and closing animations."
+    },
+    {
+      "post_id": "js-post-194537",
+      "author": "Tsukihime",
+      "date": "2013-11-29T01:19:54+0900",
+      "body": "Can you upload a demo, the door still appears correctly for me. I'm using one of the !Door3 sprites."
+    },
+    {
+      "post_id": "js-post-194655",
+      "author": "Tuomo L",
+      "date": "2013-11-29T08:02:03+0900",
+      "body": "Tsukihime said:\nCan you upload a demo, the door still appears correctly for me. I'm using one of the !Door3 sprites.\nClick to expand...\nMy door does not have exclamination point to it. I'm using Celianna's tileset and the doors that come with it.\nIs this the problem?"
+    },
+    {
+      "post_id": "js-post-194677",
+      "author": "Tsukihime",
+      "date": "2013-11-29T09:10:38+0900",
+      "body": "The exclamation just moves it up by 4 pixels or 8 pixels or something. Your door is more than 8 pixels off from its expected location.\nIs the door an event or a tile?\nDoes this happen with any other door?\nDoes this only occur with the particular tileset?\nIf you replace celianna's door with an RTP door does it still cause the problem?"
+    },
+    {
+      "post_id": "js-post-194687",
+      "author": "Engr. Adiktuzmiko",
+      "date": "2013-11-29T09:29:46+0900",
+      "body": "If it's the door from the screenshot in the MS4 page, then it's like 2 tiles high"
+    },
+    {
+      "post_id": "js-post-215498",
+      "author": "Napoleon",
+      "date": "2014-01-21T00:57:09+0900",
+      "body": "No memory error occured.\nfailed to allocate memory\n\"data = Zlib:\neflate.deflate(data, 8)\" line 902\nHappens after a while. The map is only 250x250. Is there anything that can be done about it without having to copy the map and split it into 4 maps? Or maybe some option that produces several 100x100 tiled screenshots instead?\nIt works on some other 250 maps though."
+    },
+    {
+      "post_id": "js-post-215567",
+      "author": "Tsukihime",
+      "date": "2014-01-21T04:09:02+0900",
+      "body": "The most latest script should not be trying to create a PNG file in Ruby. I use the GDI+ interface to do it.\nYou may have an outdated version, or you have another script that is trying to do Zlib compression manually.\nUnfortunately, I don't know how to have the PNG exporter process the image in chunks (which is kind of what the purpose of chunks is for when you have extremely large image data)\nIf someone can write something like that I can update the script to process arbitrarily large images."
+    },
+    {
+      "post_id": "js-post-215581",
+      "author": "Napoleon",
+      "date": "2014-01-21T04:49:53+0900",
+      "body": "Thanks the new version fixed the problem. Mine was outdated. My excuses for not checking if there was a newer version first."
+    },
+    {
+      "post_id": "js-post-215585",
+      "author": "Tsukihime",
+      "date": "2014-01-21T04:58:56+0900",
+      "body": "There needs to be a standard way for devs to do update checks :/\nI don't expect EB to provide anything like it so it's up to the scripters to come up with some standards."
+    },
+    {
+      "post_id": "js-post-288327",
+      "author": "seita",
+      "date": "2014-07-18T03:01:48+0900",
+      "body": "Quick bug report on how the script renders tables for the\nmapshot\n. I've already reported another bug via PM awhile back. Don't mind the resized screenshot from the editor, my comp scales everything up."
+    },
+    {
+      "post_id": "js-post-288832",
+      "author": "Tsukihime",
+      "date": "2014-07-19T01:27:13+0900",
+      "body": "Ok this is a bit strange.\nThe tables are longer than 32x32...\nThe code that I use to generate the tiles do not have anything like this."
+    },
+    {
+      "post_id": "js-post-324803",
+      "author": "fizzly",
+      "date": "2014-10-22T04:20:39+0900",
+      "body": "Tsukihime, I've posted on your blog, but I think I do it here too.\n\"\nHime, can I have request please? I would like to display mapshot as a picture, so I need to change path for saved mapshots for Graphics/Pictures. Tried to change it, but it creates catalog in main game called “GraphicsPictures” insted of\n\""
+    },
+    {
+      "post_id": "js-post-324808",
+      "author": "Tsukihime",
+      "date": "2014-10-22T04:35:04+0900",
+      "body": "Mapshot_Directory = \"Graphics/Pictures\"\nThis works for me."
+    },
+    {
+      "post_id": "js-post-385916",
+      "author": "Nataxinus",
+      "date": "2015-04-14T03:54:53+0900",
+      "body": "Hey Tsukihime can I use your script in a game I'm working on? I will credit you of couse. I'm using it with Galv's map position script so Galv's script takes a mapshot using your script and shows it to the screen marking the players position, I also modified your script a bit so it updates event pages. And bam instant self-updating local maps for all areas in the game\nAlso can you please fix that bug with the tables being shorter?"
+    },
+    {
+      "post_id": "js-post-402262",
+      "author": "TheWhiteRose000",
+      "date": "2015-05-30T02:03:06+0900",
+      "body": "I am trying to get it to capture my screen as it is, but it isn't capturing my parallax shadows and light,.\nActually I take that back, it is but only as if it were on a low setting when I have opacity set to max."
+    },
+    {
+      "post_id": "js-post-403139",
+      "author": "Kai Monkey",
+      "date": "2015-06-01T06:18:29+0900",
+      "body": "I had high-hopes that this would work for dynamically modified maps (Such as those in my Random Dungeons script), but alas, it only screenshots the original, unmodified version\nGreat script, nonetheless!"
+    },
+    {
+      "post_id": "js-post-403593",
+      "author": "Tsukihime",
+      "date": "2015-06-02T08:13:35+0900",
+      "body": "kaimonkey said:\nI had high-hopes that this would work for dynamically modified maps (Such as those in my Random Dungeons script), but alas, it only screenshots the original, unmodified version\nGreat script, nonetheless!\nClick to expand...\nThe script loads from the raw Map### file, but I guess I could just read it from $game_map"
+    },
+    {
+      "post_id": "js-post-404051",
+      "author": "Kai Monkey",
+      "date": "2015-06-03T07:46:10+0900",
+      "body": "You were right! All it took was adding in one light to use\n$game_map\ninstead of\nGame_Map.new.setup(map_id)\nand it worked wonderfully!\nSpoiler\nLook at that procedural generated goodness!\nThank you so much for creating what I think is the only way to be able to look at the entirety of one of my randomly generated maps!\n(And shameless plug, the link is in my signature for those who want to try out my random dungeons)"
+    },
+    {
+      "post_id": "js-post-417132",
+      "author": "BCj",
+      "date": "2015-07-11T00:31:14+0900",
+      "body": "Hime, when I try to download this script from your site it won't load the script, it asks me to save redirect.php instead.. So something is weird with the url."
+    },
+    {
+      "post_id": "js-post-417260",
+      "author": "Halrawk",
+      "date": "2015-07-11T06:40:39+0900",
+      "body": "I just gave it a shot, the script loaded fine on the site. Make sure you're just clicking the link and not doing right click and save as."
+    },
+    {
+      "post_id": "js-post-425836",
+      "author": "C Frost",
+      "date": "2015-08-03T14:56:25+0900",
+      "body": "I just found this - it's a godsend for taking screens of whole maps with events visible. However, there is one serious issue: some events get moved when the screenshot is taken. I skimmed this thread and saw reference to basically this issue way back on page 2 (this post:\nhttp://forums.rpgmakerweb.com/index.php?/topic/2894-map-screenshot/?p=194522\n). There, Mister Big T mentions a door being misaligned in the map screenshot.\nThis is exactly what's been happening to me. Big events with $ in the filename are not in the correct place in the screenshots that get saved (this is true using either \"mapshots\" by pressing F7, or \"screenshots\" by pressing F6). It seems to only affect, specifically, certain characters that are both large in size and have the $ in their name. I opened a fresh, unaltered VX Ace project, changing absolutely nothing other than pasting this script in, and made a little dinky map to test on. The problem is present there, so it seems like it must be something IN this script. Screenshots demonstrating the problem follow.\nFirst is a screen taken simply using Windows PrintScreen of the game window while it's running. You can see the position that all of the events are supposed to have.\nThen, the map screenshot that results from pressing F7. You can clearly see how the chimera and demon, both of which are large $ characters, are way out of place. However, the boat, scarecrow, and both doors are all exactly where they should be. The big door is interesting, because it's large and has a $ so it would seem to fit the criteria, yet it's fine. It also has a ! in the name, is this somehow saving it?"
+    },
+    {
+      "post_id": "js-post-447825",
+      "author": "Tsukihime",
+      "date": "2015-09-26T03:03:40+0900",
+      "body": "This is a late update but large sprites are drawn correctly now."
+    },
+    {
+      "post_id": "js-post-683929",
+      "author": "paradoxum",
+      "date": "2016-12-17T04:46:54+0900",
+      "body": "any way to have this take a screenshot using the lighting effects on the map?"
+    },
+    {
+      "post_id": "js-post-683990",
+      "author": "Shaz",
+      "date": "2016-12-17T08:20:47+0900",
+      "body": "You would need to modify it to include whatever layers/sprites/bitmaps are used by the lighting effects script."
+    },
+    {
+      "post_id": "js-post-686130",
+      "author": "Ixfuru",
+      "date": "2016-12-25T01:46:29+0900",
+      "body": "Hello Tsukihime!   I love this script.  I've been using it in my Ace Project.  However, I have a request.  Can this be modified to work for VX?  I've tried a number of times to do it myself and I can't seem to get it to work.  It throws a syntax error at line 826 as a new copy.  Works fine for Ace.  I assume that means that it's something in the Ruby language upgrade from RGSS2 to RGSS3."
+    },
+    {
+      "post_id": "js-post-1531760",
+      "author": "Faxot",
+      "date": "2025-09-28T04:51:14+0900",
+      "body": "Hello. I'm writing to you 10 years later because I'm having a problem with the script.\nIt's not the script itself, because it's really good. But it's reaching its limits with the size of the maps.\nI'll explain my problem: I'm making what are called \"Maps Guides\" for an RPG Maker VX Ace, and everything works fine with the script, but I've reached a point where some maps are 200x200, and I can't take screenshots of these areas because of this insane size.\nDoes anyone here have any solutions or recommendations for me?\nI've already installed the 4GB patch, if you're planning on recommending me."
+    },
+    {
+      "post_id": "js-post-1533047",
+      "author": "Ebanyle",
+      "date": "2025-10-11T06:22:45+0900",
+      "body": "Faxot said:\nHello. I'm writing to you 10 years later because I'm having a problem with the script.\nIt's not the script itself, because it's really good. But it's reaching its limits with the size of the maps.\nI'll explain my problem: I'm making what are called \"Maps Guides\" for an RPG Maker VX Ace, and everything works fine with the script, but I've reached a point where some maps are 200x200, and I can't take screenshots of these areas because of this insane size.\nDoes anyone here have any solutions or recommendations for me?\nI've already installed the 4GB patch, if you're planning on recommending me.\nClick to expand...\nThis one\nseems to work on 200x200"
+    },
+    {
+      "post_id": "js-post-1538040",
+      "author": "Timtrack",
+      "date": "2025-11-26T20:57:52+0900",
+      "body": "Hello, I noticed a small issue with the mapshot script, it did mess a bit the events by displaying them above tiles with priority 2 (star passability), here is a fix that can be put below Hime's script:\nRuby:\n#==============================================================================\n# Hime Map Screenshot events fix\n#------------------------------------------------------------------------------\n# Author: Timtrack\n# date: 26/11/2025\n# Requires: Map Screenshot by Hime\n#==============================================================================\n# Description: events, players and vehicles were drawn above some tiles before,\n# leading to weird map screenshots, now they should be drawn as expected:\n# an event with priority 0 or 1 (below or above player) will be drawn below\n# tiles with star priority (2), events with prioity 2 will be drawn above.\n#==============================================================================\n# Installation: put it below the required script\n#==============================================================================\n# Term of use: free for any project, credit is not necessary\n#==============================================================================\n\n$imported = {} if $imported.nil?\n$imported[\"TIM-TH_MapSaver-event-fix\"] = true\n\n#============================================================================\n# Map_Saver\n#============================================================================\nclass Map_Saver\n  #--------------------------------------------------------------------------\n  # alias method: draw_layer -> layer 2 (tiles B...E) is now drawn above\n  # events with priority 0 and 1.\n  #--------------------------------------------------------------------------\n  alias tim_draw_layer draw_layer\n  def draw_layer(layer)\n    return tim_draw_layer(layer) if layer != 2\n    #for tiles B...E, deal with under/same/above priority types to handle\n    #events too\n    0.upto(2) do |i|\n      draw_layer2_priority(i)\n      draw_layer2_sprites(i)\n    end\n  end\n \n \n  #--------------------------------------------------------------------------\n  # new method: tile_priority -> return 0 if under player, 1 if same and 2\n  # if above player\n  #--------------------------------------------------------------------------\n  def tile_priority(tile_id)\n    bit = 0x0f #got from airship\n    flag = tileset.flags[tile_id]\n    return 2 if flag & 0x10 != 0\n    return 0 if flag & bit == 0\n    return 1\n  end\n \n  #--------------------------------------------------------------------------\n  # new method: draw_layer2_priority\n  #--------------------------------------------------------------------------\n  def draw_layer2_priority(priority_type)\n    for x in @start_x ... @end_x\n      for y in @start_y ... @end_y\n        _x, _y = x*@tilesize, y*@tilesize\n        tile_id = @map.data[x, y, 2]\n        next if tile_id == 0 || tile_priority(tile_id) != priority_type\n        get_bitmap(tile_id)\n        draw_tile(x, y, @tile, @tile_rect)\n      end\n    end\n  end\n \n  #--------------------------------------------------------------------------\n  # new method: draw_layer2_sprites -> draw characters based on correct layer\n  #--------------------------------------------------------------------------\n  def draw_layer2_sprites(priority_type)\n    case priority_type\n    when 1\n      draw_vehicles if @draw_vehicles\n      draw_player if @draw_player\n      draw_followers if @draw_followers\n      draw_events_priority(0)\n      draw_events_priority(1)\n    when 2\n      draw_events_priority(2)\n    end\n  end\n \n  #--------------------------------------------------------------------------\n  # new method: draw_events_priority (priority_type is 0,1,2 for o x *)\n  #--------------------------------------------------------------------------\n  def draw_events_priority(priority_type)\n    layer_events = @map.events.values.select do |event|\n      event.pages[0].priority_type == priority_type\n    end\n    #same code as draw_events:\n    layer_events.each do |event|\n      canDraw = event.pages[0].list.any? do |cmd|\n        cmd.code == 108 && cmd.parameters[0] =~ /<screenshot:\\s*tile\\s*>/i\n      end\n      next unless @draw_events || canDraw\n      id = event.pages[0].graphic.tile_id\n      char_name = event.pages[0].graphic.character_name\n      if id > 0\n        normal_tile(id)\n        draw_tile(event.x, event.y, @tilemap, @src_rect)\n      elsif char_name != \"\"\n        set_character_bitmap(event.pages[0].graphic, event.x, event.y)\n      end\n    end\n  end\n \n  #--------------------------------------------------------------------------\n  # overwrite method: draw_sprites, sprites are handled by layers\n  #--------------------------------------------------------------------------\n  def draw_sprites; end\nend #Map_Saver"
+    }
+  ]
+}

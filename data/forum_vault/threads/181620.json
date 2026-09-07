@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/enemy-chase-system-distance-check-works-but-touch-trigger-fails.181620",
+  "title": "Enemy chase system: Distance check works, but touch trigger fails",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:35.158829+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1541990",
+      "author": "Sedzimir",
+      "date": "2025-12-27T01:58:16+0900",
+      "body": "Hi everyone,\nI'm struggling with a custom chase/escape system in RPG Maker MZ. I'm using two pages, both set to\nParallel Process\n. While the detection and escape logic work perfectly, I cannot get the \"touch/collision\" to trigger using script calls.\nThe Setup:\nPage 1 (Patrol/Detection):\nTrigger: Parallel.This code works fine to detect the player within a 3-tile vision cone and turns on Self Switch A:\nJavaScript\nvar d = 3;\nvar e = this.character(0);\nvar p = $gamePlayer;\nMath.abs(e.x - p.x) + Math.abs(e.y - p.y) <= d && ((e.direction() == 2 && p.y > e.y) || (e.direction() == 8 && p.y < e.y) || (e.direction() == 4 && p.x < e.x) || (e.direction() == 6 && p.x > e.x))\nPage 2 (Chase/Escape):\nTrigger: Parallel. Condition: Self Switch A is ON.The escape logic (distance >= 10) works perfectly to turn off Self Switch A:\nJavaScript\n$gameMap.distance(this.character(0).x, this.character(0).y, $gamePlayer.x, $gamePlayer.y) >= 10\nThe Problem:\nOn\nPage 2\n, I have a second Conditional Branch (Script) to trigger a message/battle when the enemy touches the player. However, it never triggers, even when the event is right on top of the player.\nI have tried:\n$gameMap.distance(this.character(0).x, this.character(0).y, $gamePlayer.x, $gamePlayer.y) <= 0.5\nthis.character(0).pos($gamePlayer.x, $gamePlayer.y)\nthis.character(0).x === $gamePlayer.x && this.character(0).y === $gamePlayer.y"
+    },
+    {
+      "post_id": "js-post-1542010",
+      "author": "Solar_Flare",
+      "date": "2025-12-27T03:39:03+0900",
+      "body": "All three of your conditions are checking \"is the player on the same space as the event\", but if the event has collision, then that'll never be true. The condition you want is \"has the player collided with the event\".\nI\nthink\nthe following might do it, but I'm not quite sure:\nJavaScript:\n$gamePlayer.isCollided(this.character(0).x, this.character(0).y)\nThere are a few other collision functions but I'm not 100% sure how they're intended to work, so the above may be wrong; but the collision functions are probably what you need one way or another."
+    },
+    {
+      "post_id": "js-post-1542270",
+      "author": "Camden1970",
+      "date": "2025-12-29T11:31:25+0900",
+      "body": "Sedzimir said:\nView attachment 356064\nView attachment 356065\nHi everyone,\nI'm struggling with a custom chase/escape system in RPG Maker MZ. I'm using two pages, both set to\nParallel Process\n. While the detection and escape logic work perfectly, I cannot get the \"touch/collision\" to trigger using script calls.\nThe Setup:\nPage 1 (Patrol/Detection):\nTrigger: Parallel.This code works fine to detect the player within a 3-tile vision cone and turns on Self Switch A:\nJavaScript\nvar d = 3;\nvar e = this.character(0);\nvar p = $gamePlayer;\nMath.abs(e.x - p.x) + Math.abs(e.y - p.y) <= d && ((e.direction() == 2 && p.y > e.y) || (e.direction() == 8 && p.y < e.y) || (e.direction() == 4 && p.x < e.x) || (e.direction() == 6 && p.x > e.x))\nPage 2 (Chase/Escape):\nTrigger: Parallel. Condition: Self Switch A is ON.The escape logic (distance >= 10) works perfectly to turn off Self Switch A:\nJavaScript\n$gameMap.distance(this.character(0).x, this.character(0).y, $gamePlayer.x, $gamePlayer.y) >= 10\nThe Problem:\nOn\nPage 2\n, I have a second Conditional Branch (Script) to trigger a message/battle when the enemy touches the player. However, it never triggers, even when the event is right on top of the player.\nI have tried:\n$gameMap.distance(this.character(0).x, this.character(0).y, $gamePlayer.x, $gamePlayer.y) <= 0.5\nthis.character(0).pos($gamePlayer.x, $gamePlayer.y)\nthis.character(0).x === $gamePlayer.x && this.character(0).y === $gamePlayer.y\nClick to expand...\nYou could try something like this? This is what I have setup after the enemy catches me."
+    }
+  ]
+}

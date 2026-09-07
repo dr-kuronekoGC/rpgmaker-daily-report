@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/cynthia-tools-fix-for-troop-battle-events-triggering-in-wrong-troops-free-plugin.181619",
+  "title": "MZ [Cynthia Tools]Fix for Troop Battle Events Triggering in Wrong Troops (Free Plugin)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:43.102940+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1541984",
+      "author": "CynthiaTools",
+      "date": "2025-12-27T01:05:42+0900",
+      "body": "While working on system-heavy battle plugins, I ran into an undocumented issue in RPG Maker MZ where troop battle events are not strictly bound to their troop ID.\nAs a result, event pages defined in one troop can activate in other troops when conditions match (Turn / HP / Span), which can silently break boss logic and advanced battle systems.\nI’ve released\nCT_TroopEventIsolation\n, a free plugin that fixes this by enforcing troop ID isolation during event page evaluation.\n• No setup or parameters\n• Safe for existing projects\n• Engine-level fix (not an interpreter workaround)\nDownload and details here:\n[itch.io link]\nHope this helps others avoid some serious head-scratching."
+    },
+    {
+      "post_id": "js-post-1541986",
+      "author": "bgillisp",
+      "date": "2025-12-27T01:29:31+0900",
+      "body": "I hate to tell you but that's not a bug. Many plugins use troop ID 1 for events that run in ALL troop events. You set that in the settings of the plugin. So all this plugin does is kill a functionality of another plugin that users of the plugin should honestly be reading the documentation for first."
+    },
+    {
+      "post_id": "js-post-1541987",
+      "author": "CynthiaTools",
+      "date": "2025-12-27T01:37:47+0900",
+      "body": "bgillisp said:\nI hate to tell you but that's not a bug. Many plugins use troop ID 1 for events that run in ALL troop events. You set that in the settings of the plugin. So all this plugin does is kill a functionality of another plugin that users of the plugin should honestly be reading the documentation for first.\nClick to expand...\nThanks for the clarification.\nTo clarify, this plugin does not target plugin-defined behavior.\nIt addresses an\nundocumented engine behavior\nwhere troop event page\nselection does not verify troop identity.\nSome plugins intentionally rely on this side effect (often using Troop ID 1\nas a global hook), which is valid\nwithin those plugins\nif documented.\nHowever, in vanilla RPG Maker MZ, troop events are not documented as global,\nand this behavior can silently break advanced battle logic when not intended.\nCT_TroopEventIsolation is designed for developers who want strict troop\nisolation and predictable behavior. It is optional and may not be suitable\nfor projects that intentionally rely on global troop events."
+    },
+    {
+      "post_id": "js-post-1541988",
+      "author": "Robro33",
+      "date": "2025-12-27T01:38:55+0900",
+      "body": "CynthiaTools said:\nI ran into an undocumented issue in RPG Maker MZ where troop battle events are not strictly bound to their troop ID.\nClick to expand...\njust to be sure, you can replicate this without any plugins? right? and if so, do you have the steps to make it happen?\nI dont recall ever hearing about a bug where troop events from other troops activate, but if it can happen with just the base engine i would have thought there'd be more cases of people triggering it"
+    },
+    {
+      "post_id": "js-post-1541989",
+      "author": "CynthiaTools",
+      "date": "2025-12-27T01:42:39+0900",
+      "body": "Robro33 said:\njust to be sure, you can replicate this without any plugins? right? and if so, do you have the steps to make it happen?\nI dont recall ever hearing about a bug where troop events from other troops activate, but if it can happen with just the base engine i would have thought there'd be more cases of people triggering it\nClick to expand...\nGood question, and yes — this can be reproduced\nwithout any plugins\n.\nThe reason it’s rarely noticed is because it only becomes visible when multiple troops share similar battle event conditions.\nMinimal reproduction steps (vanilla MZ):\nCreate\nTroop 0001\nAdd a Battle Event\nCondition:\nTurn 1\nSpan:\nBattle\nCommand: Show Battle Message (“Troop 1 event”)\nCreate\nTroop 0002\nNo battle events at all\nStart a battle against\nTroop 0002\nObserved behavior:\nThe battle event from\nTroop 0001\ncan trigger during Troop 0002’s battle when the turn condition matches.\nExpected behavior (based on documentation / editor UI):\nBattle events defined in a troop should only apply to that troop.\nWhat’s happening internally is that troop event page selection does not verify the active troop ID before evaluating page conditions. Some plugins intentionally rely on this side effect (often using Troop ID 1 as a global hook), but this behavior is not documented as a vanilla engine feature.\nThe plugin I shared simply enforces strict troop isolation for developers who want predictable, troop-scoped behavior. It’s optional and may not be suitable for projects that intentionally rely on global troop events."
+    },
+    {
+      "post_id": "js-post-1541992",
+      "author": "Robro33",
+      "date": "2025-12-27T02:01:59+0900",
+      "body": "CynthiaTools said:\nCreate\nTroop 0001\nAdd a Battle Event\nCondition:\nTurn 1\nSpan:\nBattle\nCommand: Show Battle Message (“Troop 1 event”)\nCreate\nTroop 0002\nNo battle events at all\nStart a battle against\nTroop 0002\nClick to expand...\nthis is what i had thought you meant, but was i uncertain as it would be way too easy to run into for it to be underreported. are you sure that you havent altered your core scripts and that your core scripts are up to date to rule out the possibility of it being an old bug?\nCynthiaTools said:\nThe battle event from\nTroop 0001\ncan trigger during Troop 0002’s battle when the turn condition matches.\nClick to expand...\nperhaps make a new project and see if it happens for you on that new project. the issue doesnt happen on fresh copies of the 1.8.0 or 1.9.0 (current version) MZ core scripts. I dont think that section of the code has changed since MV, MV didnt have that problem, and the logic behind it comes from even older maker programs."
+    },
+    {
+      "post_id": "js-post-1542014",
+      "author": "ATT_Turan",
+      "date": "2025-12-27T04:26:19+0900",
+      "body": "You modify Game_Troop.meetsConditions(), and it's called in the core scripts in rmmz_objects.js:\nthis.troop().pages\nreturns the array of events\nread directly from the database entry\n.\nThere's no need to verify anything, the event pages are only ever stored as a property of the troop you put them on.\nThe steps you listed to reproduce the problem in a\nnew project with no plugins\ndo nothing."
+    },
+    {
+      "post_id": "js-post-1542099",
+      "author": "CynthiaTools",
+      "date": "2025-12-28T00:57:04+0900",
+      "body": "Thank you everyone for the advice and the knowledge , i have taken your advice and check all the plugin i install and start a new fresh project , yes new project does not have this issue and found the culprit is from a famous plugin battlecore system(won't be naming it here, don't want to finger pointing anyone) that made this issue, once that plugin were off it doesn't leak, but my game still need this battlecore system so i will be needing the plugin i created to work with it as well,\ni apologize if my post have wasted everyone's time or make anyone feel uncomfortable, it was never my intention to do that, i just thought i have made something useful and wanted to share it to anyone who are facing the same issue i have."
+    },
+    {
+      "post_id": "js-post-1542100",
+      "author": "♥SOURCE♥",
+      "date": "2025-12-28T01:17:52+0900",
+      "body": "CynthiaTools said:\nThank you everyone for the advice and the knowledge , i have taken your advice and check all the plugin i install and start a new fresh project , yes new project does not have this issue and found the culprit is from a famous plugin battlecore system(won't be naming it here, don't want to finger pointing anyone) that made this issue, once that plugin were off it doesn't leak, but my game still need this battlecore system so i will be needing the plugin i created to work with it as well,\ni apologize if my post have wasted everyone's time or make anyone feel uncomfortable, it was never my intention to do that, i just thought i have made something useful and wanted to share it to anyone who are facing the same issue i have.\nClick to expand...\nHold on, if you write like that now, and your previous posts are written like this:\nCynthiaTools said:\nThanks for the clarification.\nTo clarify, this plugin does not target plugin-defined behavior.\nIt addresses an\nundocumented engine behavior\nwhere troop event page\nselection does not verify troop identity.\nClick to expand...\n(Notice the unnecessarily limited width of the lines, as if pasted from a chat window.)\nAnd like this:\nCynthiaTools said:\nGood question, and yes — this can be reproduced\nwithout any plugins\n.\nThe reason it’s rarely noticed is because it only becomes visible when multiple troops share similar battle event conditions.\nMinimal reproduction steps (vanilla MZ):\nClick to expand...\nI\nhave\nto ask:\nWere you pasting responses that some AI generated, instead of writing the posts yourself?\nCould this place not turn into a troubleshooting center for the slop machines' hallucinations?"
+    },
+    {
+      "post_id": "js-post-1542101",
+      "author": "CynthiaTools",
+      "date": "2025-12-28T01:33:40+0900",
+      "body": "♥SOURCE♥ said:\nHold on, if you write like that now, and your previous posts are written like this:\n(Notice the unnecessarily limited width of the lines, as if pasted from a chat window.)\nAnd like this:\nI\nhave\nto ask:\nWere you pasting responses that some AI generated, instead of writing the posts yourself?\nCould this place not turn into a troubleshooting center for the slop machines' hallucinations?\nClick to expand...\nThank you everyone for the advice and shared knowledge. I took your suggestions seriously and went back to double-check all the plugins in my project, then tested everything again in a fresh project.\nThe new project doesn’t have this issue. After narrowing it down, I found the cause was a battle core system plugin (I won’t be naming it here—I’m not trying to point fingers). Once that plugin was disabled, the issue stopped occurring. However, my game does rely on that battle core system, so I’ll be working on making my own plugin compatible with it.\nI’d also like to apologize if my original post ended up wasting anyone’s time or made anyone uncomfortable—that was never my intention. I genuinely thought I had found something useful and wanted to share it in case others were running into the same problem.\nThanks again to everyone who took the time to help.\n\"the responses are mine, but i use chatgpt to polish it for me, just like the above version are the polish version of my last reply\"\nas you can see why i don't like using my raw writing, my english and grammar is bad coz english are not my main language and also i'm not a very educated person"
+    },
+    {
+      "post_id": "js-post-1542103",
+      "author": "Andar",
+      "date": "2025-12-28T01:54:09+0900",
+      "body": "CynthiaTools said:\nOnce that plugin was disabled, the issue stopped occurring.\nClick to expand...\nand most likely that was not a bug, but a misconfigured feature.\nIt's called \"base troop event\" and is implemented by battle plugins from several programmers (see \"feature\")\nbasically you designate one troop as the base troop that will NEVER be used in the game.\nAnd the plugin runs all troop events from that base troop in EVERY battle.\nThe intention is to have a place where you put those troop events that you will need in every battle (for skills or whatever), meaning they are only once in the engine and you have only one place to edit despite needing copies in every battle.\nand your problem sounds as if you have a regular troop with the ID of the base troop without knowing it, but you can change the ID for the base troop (or disable it) in the plugin options."
+    },
+    {
+      "post_id": "js-post-1542104",
+      "author": "Robro33",
+      "date": "2025-12-28T01:54:27+0900",
+      "body": "CynthiaTools said:\nthe culprit is from a famous plugin battlecore system(won't be naming it here, don't want to finger pointing anyone) that made this issue, once that plugin were off it doesn't leak, but my game still need this battlecore system so i will be needing the plugin i created to work with it as well,\nClick to expand...\nyou dont have to confirm if its true or not, but since youre using MZ i'll use Visustella's battle core as the assumption. if thats the case, it's an intended feature as\n@bgillisp\nalluded to.\nbgillisp said:\nthat's not a bug. Many plugins use troop ID 1 for events that run in ALL troop events.\nClick to expand...\nthe feature can be disabled within the plugin parameters. and by default, troop 1 is set up as the base troop. so\nwithout changing the parameter\n, troop 1's events play in every battle. If its not visustella's then i cant guarantee it to be the case, but id advise going through the help documentation to be sure"
+    },
+    {
+      "post_id": "js-post-1542118",
+      "author": "ATT_Turan",
+      "date": "2025-12-28T03:19:28+0900",
+      "body": "CynthiaTools said:\nenglish are not my main language\nClick to expand...\nThen you shouldn't say it is, and people won't expect you to be able to speak intelligibly without AI."
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/playing-a-sound-effect-disregarding-se-volume-in-settings.181807",
+  "title": "MZ Playing a sound effect disregarding se volume in settings",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:27.751222+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1543273",
+      "author": "Tloz",
+      "date": "2026-01-07T04:25:51+0900",
+      "body": "Hi guys.\nI'm trying to play a sound effect at a random volume (stored in variable 4) using a script call that looks like that:\nJavaScript:\nAudioManager.playSe({name: `$name`, pan: 0, pitch: 50, volume: $gameVariables.value(4)});\nMy issue is that this volume is then modified in regard to the SE Volume in the settings. How do I bypass that setting to make sure that my sound effect will be played at the same volume no matter what the setting is?\nThanks"
+    },
+    {
+      "post_id": "js-post-1543275",
+      "author": "Robro33",
+      "date": "2026-01-07T04:47:46+0900",
+      "body": "Tloz said:\nHow do I bypass that setting to make sure that my sound effect will be played at the same volume no matter what the setting is?\nClick to expand...\nWhile it is possible to change the values of the settings midgame within the ConfigManager to do that, i strongly suggest against it. Presumably, the player set their sound effect volume level, and between game settings, the operating system settings, and the actual physical setup, theres no knowing how loud youll be making those sounds"
+    },
+    {
+      "post_id": "js-post-1543279",
+      "author": "Tloz",
+      "date": "2026-01-07T05:22:01+0900",
+      "body": "It's not gonna be over the 100% of MV, so the OS settings and the physical setup won't be an issue if the rest of the game is not an issue when I don't change the setting, my SE won't be louder than the rest of the game."
+    },
+    {
+      "post_id": "js-post-1543291",
+      "author": "Eliaquim",
+      "date": "2026-01-07T06:29:00+0900",
+      "body": "Hi there!\nIf you want to preserve the previous settings of the player, you can do something like that:\nJavaScript:\nconst oldVolume = ConfigManager.seVolume\nConfigManager.seVolume = XX //(Replace with a number from 0 to 100)\nAudioManager.playSe({name: `$name`, pan: 0, pitch: 50, volume: $gameVariables.value(4)});\nConfigManager.seVolume = oldVolume\nI think this can work on a script call. I just not sure if when changing the volume back to the old value so quickly, the current SE that is playing will also change it's volume."
+    },
+    {
+      "post_id": "js-post-1543296",
+      "author": "Tloz",
+      "date": "2026-01-07T07:00:58+0900",
+      "body": "That's the workaround I've eventually found, except that instead of ConfingManager.seVolume, I used\nAudioManager._seVolume. Could you elaborate on the difference?\nI'd like to take moment to thank you for helping me, and I don't mean on this thread specifically. I've been using a lot of your work and you are really a tremendous person."
+    },
+    {
+      "post_id": "js-post-1543301",
+      "author": "Solar_Flare",
+      "date": "2026-01-07T07:34:08+0900",
+      "body": "You should not do this. The player turned their volume down for presumably a good reason. It's rude to mess with their settings."
+    },
+    {
+      "post_id": "js-post-1543308",
+      "author": "Eliaquim",
+      "date": "2026-01-07T08:06:19+0900",
+      "body": "Tloz said:\nThat's the workaround I've eventually found, except that instead of ConfingManager.seVolume, I used\nAudioManager._seVolume. Could you elaborate on the difference?\nI'd like to take moment to thank you for helping me, and I don't mean on this thread specifically. i've been using a lot of your work and you are really a tremendous person.\nClick to expand...\n- Thanks for the cumpliment! ^^\nThe difference is that one is the player preference that is saved. The other is the actual volume while the game is playing:\nConfigManager.seVolume is the player’s saved setting.\nit's on the options menu. Changing it updates the preference, but it doesn’t directly control the volume I think.\nAudioManager._seVolume is the actual volume used .\nThis is the value the RPG Maker uses when playing a sound effect. I think, changing it affects the volume right away. But it is not saved.\nNormally, RPG Maker copies the value from ConfigManager.seVolume into AudioManager._seVolume when the options change. So I guess is even best if you use the AudioManager._seVolume instead.\nSolar_Flare said:\nYou should not do this. The player turned their volume down for presumably a good reason. It's rude to mess with their settings.\nClick to expand...\n- Although I agree with this. In terms of game development, I don't think it is a good idea to change the volume without the player knowing this way. But also, I don't know all your game case scenarios. So, before, I sticked to just answer your question and don't give an opinion about if it is a good thing for your game or not. But I think since I'm providing an answer to you, I guess it is also good for me to reinforce what Solar Flare said."
+    },
+    {
+      "post_id": "js-post-1543317",
+      "author": "Tloz",
+      "date": "2026-01-07T08:57:02+0900",
+      "body": "Thanks for your help and opinion.\nFor clarification, it is not rude, but it's ok you assumed that, you don't have context. And if it is ok on your part to assume my player have reasons for setting the volume a certain way, it should also be ok to assume I have a good reason to do it my way. To actually\ndesign\nsomething with an intention behind it. Are you angry at a game that dims the light (let say because it's night) after it made you set your screen lighting at the beginning of the game? Is this rude?\nI know my player. I know what he will do and think. Yes, the game is made just for him. I will provide him the setup. And even if I don't, that's still ok.\nAnd to not leave you in the dark, I'll give you the context. I have a sound based bard character and I want to make sound based mechanics and gameplay. To solve one of my enigmas, my player will have to listen to a sound effect twice. The first time with the intended volume, and the second one with his current SE volume settings. He will have to solve a riddle to understand that he has to set SE volume to the same level than the first SE. When both of the effects will be played at the same volume, the door will unlock.\nYou're always welcome to ask clarifications before saying I do rude things.\nNo hard feelings now, but I have to say I got say at some point I felt attacked by some comments here. I'm well aware that is probably not what you wanted, but in this case, once again, always ask first if you don't know."
+    },
+    {
+      "post_id": "js-post-1543318",
+      "author": "TheAM-Dol",
+      "date": "2026-01-07T09:07:47+0900",
+      "body": "To clarify, I do not read anyone as attacking you, but instead suggesting that ignoring options that players set is really kind of a no-no that might infuriate your players. You were still provided an answer regardless, as we also understand it's your game.\nTloz said:\nAre you angry at a game that dims the light (let say because it's night) after it made you set your screen lighting at the beginning of the game?\nClick to expand...\nIt depends on the situation, this is sort of an apples-to-oranges comparison, but depending on how dark the night is; yes. But the truth is that it's not changing the option when it goes night. The gamma value is still the same. It's not ignoring the option that's been set, it's simply a different lighting situation.\nTloz said:\nI have a sound based bard character and I want to make sound based mechanics and gameplay.\nClick to expand...\nThen instead it might be better if you had a separate sound slider for just the bard. That way the player could turn down SE but leave the bard volume at a respectable level. That's a little bit more complicated, but not impossible. I think this option would be far more respectful of your players.\nThe problem is that you have no sense of what the player's system volume is at. Just because you don't exceed RM's 100% volume, doesn't mean it isn't loud.\nDepending on the type of content on my computer, Youtube I typically keep the system volume at around 32 for a comfortable listening volume. Games tend to have quite a large variance in their volume range. Some games I have to turn the system volume up to 70.\nNow imagine, I start your game, mix the volume sliders to be comfortable, and have my system volume up to 100. Suddenly your SE plays when I turn that down (or even off). It might either be upsetting, or even worse case could cause damage to my own hardware.\nI highly suggest you read my topic on loudness in RPG Maker games.\nWhy is RPG Maker so dang loud? Well, the results are inconclusive.\nPREAMBLE So this was sort of inspired by @caethyril and @bgillisp unintentionally. They aren't aware of the thoughts they planted in my head. It started when bg was showing a screenshot of Theme6 in Audacity and I was surprised to see that the wave form had quite a few peaks and valleys. For...\nforums.rpgmakerweb.com\nBecause the truth is loudness is not the same as volume. Just because the volume is low, doesn't mean we perceive it as quiet."
+    },
+    {
+      "post_id": "js-post-1543321",
+      "author": "Tloz",
+      "date": "2026-01-07T09:37:55+0900",
+      "body": "TheAM-Dol said:\nThe problem is that you have no sense of what the player's system volume is at. Just because you don't exceed RM's 100% volume, doesn't mean it isn't loud.\nDepending on the type of content on my computer, Youtube I typically keep the system volume at around 32 for a comfortable listening volume. Games tend to have quite a large variance in their volume range. Some games I have to turn the system volume up to 70.\nNow imagine, I start your game, mix the volume sliders to be comfortable, and have my system volume up to 100. Suddenly your SE plays when I turn that down (or even off). It might either be upsetting, or even worse case could cause damage to my own hardware.\nClick to expand...\nI realize I was still unclear, but he will play with me, at my home, on my computer with the volume I set. He will be allowed to change master volume (that is implemented in VisuStella's OptionsCore, as it doesn't exist in plain MZ) and my own speakers, but the balance between the others element is already set after thinking this through, for the design I want to make, for the experience I want him to live.\nI understand your concerns about messing with users settings, I've been developing for a long time now (mostly C), and I know about the damage it can do. But in this particular case, there's no concerns to have. I also understand, and know, the mutual respect that must be between a game designer that makes an experience, and a player that has to not be harmed by that experience.\nTheAM-Dol said:\nThe gamma value is still the same. It's not ignoring the option that's been set, it's simply a different lighting situation.\nClick to expand...\nYou have a point. Then could you tell me the equivalent of the different sound situation in this example? What would the dimming and brightening be in this case?\nTheAM-Dol said:\nI highly suggest you read my topic on loudness in RPG Maker games.\nWhy is RPG Maker so dang loud? Well, the results are inconclusive.\nPREAMBLE So this was sort of inspired by @caethyril and @bgillisp unintentionally. They aren't aware of the thoughts they planted in my head. It started when bg was showing a screenshot of Theme6 in Audacity and I was surprised to see that the wave form had quite a few peaks and valleys. For...\nforums.rpgmakerweb.com\nBecause the truth is loudness is not the same as volume. Just because the volume is low, doesn't mean we perceive it as quiet.\nClick to expand...\nMy next read, thanks for the suggestion."
+    },
+    {
+      "post_id": "js-post-1543332",
+      "author": "Solar_Flare",
+      "date": "2026-01-07T11:26:26+0900",
+      "body": "Eliaquim said:\nThe difference is that one is the player preference that is saved. The other is the actual volume while the game is playing:\nConfigManager.seVolume is the player’s saved setting.\nit's on the options menu. Changing it updates the preference, but it doesn’t directly control the volume I think.\nAudioManager._seVolume is the actual volume used .\nThis is the value the RPG Maker uses when playing a sound effect. I think, changing it affects the volume right away. But it is not saved.\nNormally, RPG Maker copies the value from ConfigManager.seVolume into AudioManager._seVolume when the options change. So I guess is even best if you use the AudioManager._seVolume instead.\nClick to expand...\nActually, while this explanation of their purpose is broadly correct, there is no difference between them. They are synonyms –\nConfigManager.seVolume\nis defined so that reading from it returns the value of\nAudioManager._seVolume\n, and writing to it updates the value of\nAudioManager._seVolume\n. There is also\nAudioManager.seVolume\nwhich is another synonym for the same thing."
+    },
+    {
+      "post_id": "js-post-1543336",
+      "author": "TheAM-Dol",
+      "date": "2026-01-07T11:50:10+0900",
+      "body": "Tloz said:\nI realize I was still unclear, but he will play with me, at my home, on my computer with the volume I set. He will be allowed to change master volume (that is implemented in VisuStella's OptionsCore, as it doesn't exist in plain MZ) and my own speakers, but the balance between the others element is already set after thinking this through, for the design I want to make, for the experience I want him to live.\nI understand your concerns about messing with users settings, I've been developing for a long time now (mostly C), and I know about the damage it can do. But in this particular case, there's no concerns to have. I also understand, and know, the mutual respect that must be between a game designer that makes an experience, and a player that has to not be harmed by that experience.\nYou have a point. Then could you tell me the equivalent of the different sound situation in this example? What would the dimming and brightening be in this case?\nMy next read, thanks for the suggestion.\nClick to expand...\nUnderstood! Then apologies for prodding.\nGood luck with your bard game!"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/downloading-a-website-hosted-game.183358",
+  "title": "MV Downloading a website hosted game?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:26.073005+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1554316",
+      "author": "ModderOfGames",
+      "date": "2026-04-23T11:07:48+0900",
+      "body": "I ask this primarily for the sake of preservation, as a preface.\nin 2016, the people behind Ao Oni released an updated version done in RPG Maker MV, only ever in Japanese and only ever hosted on a website\nThat website... no longer exists, and the only way you can play it is via an Internet Archive link. And even when you could, it was quite buggy and would fail to load assets all over the place.\nI want to download it in full so I can open it up in MV, patch up the holes, and (hopefully) eventually make it more accessible for people to play ten years on\nunfortunately, as I said, it was only ever hosted as a website, and I cannot for the life of me figure out how I'd go about downloading it... aside from playing through the whole game and downloading each asset one-by-one, as there's no way to force Chrome to cache every single asset at once (afaik anyways), and even then it wouldn't really matter, as some things simply do not work at all, meaning at best it'd end up being incomplete\nSo I come here asking: is there any way to download an entire game that is only hosted as a website?\nHere's the Internet Archive Link\nif you wish to either play it yourself, or want to see if there is any way to download it\nAny help would be soso much appreciated, thank you!!\n~ Mars"
+    },
+    {
+      "post_id": "js-post-1554319",
+      "author": "Solar_Flare",
+      "date": "2026-04-23T12:33:38+0900",
+      "body": "Speaking theoretically, it should, in fact, be totally possible. After all, every asset used in the game is referenced\nsomewhere\nin the data and script files, and the data files have fixed filenames. The script files\ndon't\nhave fixed filenames, but they're all referenced from one place, so you can easily gather a list of the filenames. So, in theory, if you download just the data files, you can compile a complete list of every other asset, and then you can download those one by one. It's far from easy (there are tons of different ways in which the assets can be referenced), but it should be possible in theory.\nHowever, I have a strong suspicion that this isn't going to work very well for you. You see, the way the Internet Archive works is that it follows links and uses that to determine what to cache. But those assets are not linked from anywhere in the game's main page. There's a high chance that some of the assets are missing from the Internet Archive… as it seems you've already noticed. Unless the missing assets are pure RTP, I'd say they're very likely lost forever, unless one of the original developers has them and is willing to share."
+    },
+    {
+      "post_id": "js-post-1554323",
+      "author": "ModderOfGames",
+      "date": "2026-04-23T13:47:32+0900",
+      "body": "oh the missing assets I was mentioning seemed to be missing pre-internet archive, and even still, I was looking for a way to not have to download every asset one-by-one"
+    },
+    {
+      "post_id": "js-post-1554326",
+      "author": "Andar",
+      "date": "2026-04-23T14:55:03+0900",
+      "body": "Not possible with the HTML, you would need FTP for that.\nand I strongly doubt that the archive gives out FTP access..."
+    },
+    {
+      "post_id": "js-post-1554329",
+      "author": "ModderOfGames",
+      "date": "2026-04-23T15:41:37+0900",
+      "body": "hypothetically if it did, on the incredibly rare edgecase that it does, how would one find (and then actually USE) that?\nI've never really messed with games deployed for browser before, I'm not super well versed in it outside of knowing that it's based in HTML"
+    },
+    {
+      "post_id": "js-post-1554332",
+      "author": "JorgeMaker",
+      "date": "2026-04-23T16:18:41+0900",
+      "body": "I really appreciate initiatives to preserve games, especially when it comes to RPG Maker, so your post caught my attention and I decided to check out the game.\nI extracted all available files using the\nWayback Machine’s CDX Server API\nand performed a basic reconstruction so that the project can be opened correctly in RPG Maker MV.\nI tested only the first minute of the game, which seems to work fine. However, I noticed that at least some maps were not archived, and this could potentially extend to other data.\nYou can download the extracted project\nhere\n. Good luck!"
+    },
+    {
+      "post_id": "js-post-1554355",
+      "author": "Solar_Flare",
+      "date": "2026-04-23T22:04:28+0900",
+      "body": "Ah, yes – maps are another thing that could easily be missed. You can trivially construct a list of all maps that exist if you have the MapInfos.json (which is loaded by default even though nothing in the engine uses it, so you probably do), but there are no direct HTML references to them, so they might not have been archived."
+    },
+    {
+      "post_id": "js-post-1554369",
+      "author": "ModderOfGames",
+      "date": "2026-04-24T01:03:36+0900",
+      "body": "JorgeMaker said:\nI really appreciate initiatives to preserve games, especially when it comes to RPG Maker, so your post caught my attention and I decided to check out the game.\nI extracted all available files using the\nWayback Machine’s CDX Server API\nand performed a basic reconstruction so that the project can be opened correctly in RPG Maker MV.\nI tested only the first minute of the game, which seems to work fine. However, I noticed that at least some maps were not archived, and this could potentially extend to other data.\nYou can download the extracted project\nhere\n. Good luck!\nClick to expand...\nyo thank you so much!! this actually makes for an incredibly good starting point if nothing else\ncheers, dude!"
+    },
+    {
+      "post_id": "js-post-1554370",
+      "author": "ModderOfGames",
+      "date": "2026-04-24T01:04:19+0900",
+      "body": "Solar_Flare said:\nAh, yes – maps are another thing that could easily be missed. You can trivially construct a list of all maps that exist if you have the MapInfos.json (which is loaded by default even though nothing in the engine uses it, so you probably do), but there are no direct HTML references to them, so they might not have been archived.\nClick to expand...\nif they're never referenced by the HTML, wouldn't that just mean I'm losing maps that were already unused? or am I mistaken"
+    },
+    {
+      "post_id": "js-post-1554376",
+      "author": "Solar_Flare",
+      "date": "2026-04-24T01:37:42+0900",
+      "body": "Yes, maps that are completely unused would probably be lost; but it's not limited to that. Honestly, probably any map could be lost. None of the maps are referenced by the HTML, after all. In theory, it might even be possible to lose the starting map.\nI don't know exactly how the Internet Archive works though. The fact that it has any of this data suggests that it does more than just follow links, and that might be enough to at least guarantee the starting map exists, if nothing else."
+    },
+    {
+      "post_id": "js-post-1554390",
+      "author": "ModderOfGames",
+      "date": "2026-04-24T03:52:08+0900",
+      "body": "from what I've found while digging, both before and after the archive, anything that is strictly *required* to be loaded, gets loaded (though given some delay, especially with the archive)\nI can view all cached files with inspect element, and even download images and audio files, but I'm limited to what has been loaded while I've had the site open, I can't find a way to force my browser to cache the whole thing at once, which makes sense\nand something I've noticed with both versions too, occasionally it will \"fail to find files\", but only because it took too long to load them, rather than them not existing. it happens with plugins on launch sometimes and that's all I've ever noticed it, but I'd assume this is another thing that extends to more files\nEDIT:\nBeen messing around with the files that Jorge posted and playing through it to see what is all there, and so far all I've noticed that is missing from the main game has been certain audio files, thankfully being ones either present in base RPG Maker XP, or are just from the original version of Ao Oni.\nI haven't actually tinkered in the database too much quite yet, but I have noticed a staggering number of empty maps, but am still unsure of... at what point the maps start being completely blank\nEDIT 2:\nAlright, final edit for now I think, but it seems that (at the very least when it comes to maps), the CDX Server API downloaded the first ~56 or so that got loaded? as those are the only ones that are in the folder\nthere's missing audio and graphics all over the place as well, some of which I've started to take note as being from original content new to this version, which is... unfortunate, to say the least"
+    },
+    {
+      "post_id": "js-post-1554416",
+      "author": "ModderOfGames",
+      "date": "2026-04-24T10:30:21+0900",
+      "body": "ModderOfGames said:\nI ask this primarily for the sake of preservation, as a preface.\nin 2016, the people behind Ao Oni released an updated version done in RPG Maker MV, only ever in Japanese and only ever hosted on a website\nThat website... no longer exists, and the only way you can play it is via an Internet Archive link. And even when you could, it was quite buggy and would fail to load assets all over the place.\nI want to download it in full so I can open it up in MV, patch up the holes, and (hopefully) eventually make it more accessible for people to play ten years on\nunfortunately, as I said, it was only ever hosted as a website, and I cannot for the life of me figure out how I'd go about downloading it... aside from playing through the whole game and downloading each asset one-by-one, as there's no way to force Chrome to cache every single asset at once (afaik anyways), and even then it wouldn't really matter, as some things simply do not work at all, meaning at best it'd end up being incomplete\nSo I come here asking: is there any way to download an entire game that is only hosted as a website?\nHere's the Internet Archive Link\nif you wish to either play it yourself, or want to see if there is any way to download it\nAny help would be soso much appreciated, thank you!!\n~ Mars\nClick to expand...\napologies for the double post but I feel this is worthwhile as an amendment given how large of a development this is\nafter a bit more digging I discovered the Internet Archive link I provided was for somebody's reupload, as this game had seemingly become lost around 2020 or so\nwell I found the original link, and it has... MANY Wayback Machine snapshots ranging from late 2016 to early 2020\nI have... really no idea if this will help with this at all but I still think it's something to note regardless\nHere's the link\nif you're curious and/or want to do some digging of your own"
+    },
+    {
+      "post_id": "js-post-1554437",
+      "author": "Showsni",
+      "date": "2026-04-24T21:07:47+0900",
+      "body": "ModderOfGames said:\napologies for the double post but I feel this is worthwhile as an amendment given how large of a development this is\nafter a bit more digging I discovered the Internet Archive link I provided was for somebody's reupload, as this game had seemingly become lost around 2020 or so\nwell I found the original link, and it has... MANY Wayback Machine snapshots ranging from late 2016 to early 2020\nI have... really no idea if this will help with this at all but I still think it's something to note regardless\nHere's the link\nif you're curious and/or want to do some digging of your own\nClick to expand...\nThis link:\nhttps://github.com/Aooni2016/Aooni2016.github.io\nseems to still be live and have all the files for download."
+    },
+    {
+      "post_id": "js-post-1554457",
+      "author": "ModderOfGames",
+      "date": "2026-04-25T03:39:52+0900",
+      "body": "I'd like to make one final update saying that, prior to seeing the above reply, I'd found someone who already made an archive, though only on their profile page on a fandom wiki, which is likely how I'd missed it.\nSo I went and posted it to\nitch.io\nfor anyone to experience.\nI'm gonna try to start translating it into English using the existing versions as reference, but I do not know Japanese in the slightest, so if anyone here does also speak Japanese please contact me, your help would be much appreciated!!"
+    }
+  ]
+}

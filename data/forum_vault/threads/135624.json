@@ -1,0 +1,371 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/eli-dynamic-parameters-change-parameter-values-dynamically-with-states-and-equipment-note-tags.135624",
+  "title": "Eli Dynamic Parameters - Change parameter values dynamically with states and equipment note tags!",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:14.629313+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1180889",
+      "author": "Eliaquim",
+      "date": "2021-04-19T13:41:22+0900",
+      "body": "Author: Hakuen Studio\n​\nIntroduction\nIf the actor has state id X he gains a +10 attack boost!\nEasy?\nBut if the actor has class id X and is equipped with weapon Id X and also has state id X, then he will have a +50 ATK boost!\nNot too complicated?\nIf an actor has a state id X, and his level is below 4, equipping a sword, using a class id X, and his name is Harold, then he will have an HP boost of 1000!!!\nGot it?!\nThis plugin lets you implement dynamic parameter values to battlers(actor or enemies) through the weapons, armors, or state note tags!\nYou can use fixed values or check for a condition to apply the bonus!\n*For the equipment feature, only work on enemies if you have the Eli_EnemyClass.js\nFeatures\nDynamically add values to battler parameters through note tags!\nSupport States, Weapons, Armor!\nSupport all types of parameters!\nHow to use\nSpoiler\n● Inside the plugin parameter, you can create note tag templates to be used on the weapons/armor/state note fields.\nSo instead of putting everything messy on the note tags, you now can use the plugin parameter to better organize your game.\n● First, choose a template name to be used later.\nThere, you can choose what type and the id of the parameter you want to insert a value.\nNormal parameters\nX Parameters\nS Parameters\nCustom parameters(If using\nEli Custom Parameters\n)\nThe value can be a number or a valid Javascript formula.\n● So, when you did, use the following note tags in the note field of Weapons, Armors, or States:\n<DynParams: TemplateName>\nThe template name must be the exactly same(case sensitive) set on the plugin parameter.\n♦ NOTE¹: You can use the \"this\" keyword to reference the battlers(actors and enemies).\n♦ NOTE²: Param names and note tags are case-sensitive!\nTerms of Use\nUpdate Log\nHakuen Studio Dynamic Parameters for RPG Maker MZ by Hakuen Studio\nAdd parameters dynamically to battlers through states or equipments note tags!\nhakuenstudio.itch.io"
+    },
+    {
+      "post_id": "js-post-1185375",
+      "author": "Eliaquim",
+      "date": "2021-05-06T05:14:31+0900",
+      "body": "Version 1.0.4 - 05/05/2021\n- Fixed an issue that the dynamic parameters not working to set Custom Parameter values with the El Custom Curves 1.1.1"
+    },
+    {
+      "post_id": "js-post-1187569",
+      "author": "Xeri",
+      "date": "2021-05-14T10:39:57+0900",
+      "body": "Does this plugin allow one to reduce parameters dynamically as well, as opposed to just increasing them?"
+    },
+    {
+      "post_id": "js-post-1187573",
+      "author": "Eliaquim",
+      "date": "2021-05-14T11:18:27+0900",
+      "body": "XVoid said:\nDoes this plugin allow one to reduce parameters dynamically as well, as opposed to just increasing them?\nClick to expand...\nHi there!\nYes, it does!\nExample:\nHarold has an attack and defense of 10.\nThen, he equips a sword with this note tags:\n[DynParams:\natk = 5;\ndef = -3;\nDynParams]\nNow Harold stats will look like this:\nATK 10 + 5(From the sword) = 15\nDEF 10 - 3(From the sword) = 7"
+    },
+    {
+      "post_id": "js-post-1187575",
+      "author": "Xeri",
+      "date": "2021-05-14T11:26:38+0900",
+      "body": "Eliaquim said:\nHi there!\nYes, it does!\nExample:\nHarold has an attack and defense of 10.\nThen, he equips a sword with this note tags:\n[DynParams:\natk = 5;\ndef = -3;\nDynParams]\nNow Harold stats will look like this:\nATK 10 + 5(From the sword) = 15\nDEF 10 - 3(From the sword) = 7\nClick to expand...\nIs there a way to change them multiplicatively instead of additively? Like say, a 30% decrease, as an example."
+    },
+    {
+      "post_id": "js-post-1187602",
+      "author": "Eliaquim",
+      "date": "2021-05-14T15:07:53+0900",
+      "body": "XVoid said:\nIs there a way to change them multiplicatively instead of additively? Like say, a 30% decrease, as an example.\nClick to expand...\nYes, you can. It is just a matter of use the correctly javascript formula.\nExample increasing atk by  30% and decreasing defense by 30%:\n[DynParams:\natk = this.paramBase(2) * 0.30;\ndef = -(this.paramBase(3) * 0.30);\nDynParams]"
+    },
+    {
+      "post_id": "js-post-1187790",
+      "author": "Xeri",
+      "date": "2021-05-15T11:54:47+0900",
+      "body": "Eliaquim said:\nYes, you can. It is just a matter of use the correctly javascript formula.\nExample increasing atk by  30% and decreasing defense by 30%:\n[DynParams:\natk = this.paramBase(2) * 0.30;\ndef = -(this.paramBase(3) * 0.30);\nDynParams]\nClick to expand...\nHow do I change the value of custom parameters? Using the parameter's short name in place of where atk or def would go in the example you provided (and using a simple = 50 for testing's sake) doesn't seem to actually change the value. I did a conditional branch script call to check if it was actually being changed or if the change just wasn't displaying in the VisuStella elements and status menu core, and it's not a display error, the value actually doesn't change."
+    },
+    {
+      "post_id": "js-post-1187818",
+      "author": "Eliaquim",
+      "date": "2021-05-15T14:52:16+0900",
+      "body": "XVoid said:\nHow do I change the value of custom parameters? Using the parameter's short name in place of where atk or def would go in the example you provided (and using a simple = 50 for testing's sake) doesn't seem to actually change the value. I did a conditional branch script call to check if it was actually being changed or if the change just wasn't displaying in the VisuStella elements and status menu core, and it's not a display error, the value actually doesn't change.\nClick to expand...\nHi!\nTo change a custom parameter value you can do the same thing as you do for the normal parameters.\nYou must insert the short name of the custom parameter:\n\"per\" is a custom parameter.\n[DynParams:\natk = this.paramBase(2) * 0.30;\ndef = -(this.paramBase(3) * 0.30);\nper = 50;\nDynParams]\nYou also need to use the right script call to check. The\n.cparamBase(cparamId)\nwill only show the base value(not including weapons, states, items etc.).\nYou need to use\n.cparam(cparamId)\nWhere are you setting this note tag?\nThey are made to work on equipments and states.\nYou also have to put the semi-colon (\nat the end of each line.\nCan you show me your note tag?"
+    },
+    {
+      "post_id": "js-post-1187831",
+      "author": "Xeri",
+      "date": "2021-05-15T15:29:15+0900",
+      "body": "Eliaquim said:\nHi!\nTo change a custom parameter value you can do the same thing as you do for the normal parameters.\nYou must insert the short name of the custom parameter:\n\"per\" is a custom parameter.\nView attachment 189347\n[DynParams:\natk = this.paramBase(2) * 0.30;\ndef = -(this.paramBase(3) * 0.30);\nper = 50;\nDynParams]\nYou also need to use the right script call to check. The\n.cparamBase(cparamId)\nwill only show the base value(not including weapons, states, items etc.).\nYou need to use\n.cparam(cparamId)\nWhere are you setting this note tag?\nThey are made to work on equipments and states.\nYou also have to put the semi-colon (\nat the end of each line.\nCan you show me your note tag?\nClick to expand...\nI've attached screenshots of the notebox and the script call. For reference, the notebox is for a state added as a passive through the VisuStella element status core's traitset system, and the script call was designed to check if the value changed at all from base (base being 10) rather than whether it was above a specific value. When I used the event to test, it indicated that it hadn't changed. The greater than or equal to sign in the script call is something I had to look up; the order the help file seemed to imply was correct just gave me errors which showed up in the console but didn't cause a crash."
+    },
+    {
+      "post_id": "js-post-1187849",
+      "author": "Eliaquim",
+      "date": "2021-05-15T17:50:34+0900",
+      "body": "@XVoid\ncan you confirm if trying with a normal state(not passive) or normal equipment (weapon or armor), works?\nNever mind, it was a compatibility issue. I fixed it on my side, it should work now!\nVersion 1.0.5 - 05/15/2021\n- Fixed compatibility with Visustela Skill States Core, regarding passive states."
+    },
+    {
+      "post_id": "js-post-1187923",
+      "author": "Xeri",
+      "date": "2021-05-16T02:18:04+0900",
+      "body": "Eliaquim said:\n@XVoid\ncan you confirm if trying with a normal state(not passive) or normal equipment (weapon or armor), works?\nNever mind, it was a compatibility issue. I fixed it on my side, it should work now!\nVersion 1.0.5 - 05/15/2021\n- Fixed compatibility with Visustela Skill States Core, regarding passive states.\nClick to expand...\nTried the update, it didn't work. I think there might also be a compatibility issue with VisuStella's elements and status menu core, since that's the plugin I added the passive through. I tried both with the passive version of the state and with an active test state and it didn't work. I then tried it with an equip, that also didn't work."
+    },
+    {
+      "post_id": "js-post-1187925",
+      "author": "Eliaquim",
+      "date": "2021-05-16T02:43:45+0900",
+      "body": "XVoid said:\nTried the update, it didn't work. I think there might also be a compatibility issue with VisuStella's elements and status menu core, since that's the plugin I added the passive through. I tried both with the passive version of the state and with an active test state and it didn't work. I then tried it with an equip, that also didn't work.\nClick to expand...\nOk, so I will ask you to provide a clean, sample project to me with these plugins together and the note tags already set.\nSo I can take a look and try to replicate the issue and find the problem.\nCan you do that for me? You can upload and send it to me here or through PM."
+    },
+    {
+      "post_id": "js-post-1187943",
+      "author": "Xeri",
+      "date": "2021-05-16T04:07:26+0900",
+      "body": "Eliaquim said:\nOk, so I will ask you to provide a clean, sample project to me with these plugins together and the note tags already set.\nSo I can take a look and try to replicate the issue and find the problem.\nCan you do that for me? You can upload and send it to me here or through PM.\nClick to expand...\nReplicated the issue in a sample project linked below with only the plugins of yours I'm using, VisuStella element status core, and VisuStella core engine, which is necessary for their other plugins to run. Thanks in advance.\nDropbox\nwww.dropbox.com"
+    },
+    {
+      "post_id": "js-post-1187987",
+      "author": "Elmo_Cosquillas",
+      "date": "2021-05-16T09:49:22+0900",
+      "body": "good luck if you find the way working with visutella's code. i opened a core plugin once and suffered a stroke. the entire plugin is writen in a single line, a loong long single line."
+    },
+    {
+      "post_id": "js-post-1188043",
+      "author": "Eliaquim",
+      "date": "2021-05-16T19:07:02+0900",
+      "body": "XVoid said:\nReplicated the issue in a sample project linked below with only the plugins of yours I'm using, VisuStella element status core, and VisuStella core engine, which is necessary for their other plugins to run. Thanks in advance.\nDropbox\nwww.dropbox.com\nClick to expand...\nHi\n@XVoid\n!\nI think I made it!\nVersion 1.0.6 - 05/16/2021\n- Fixed compatibility with VisuMZ_1_ElementStatusCore when using trait sets: Blessing, Gender, Variant, etc. Now, these traits will also trigger the Dynamic Parameters note tag when an actor is using them.\n@Elmo_Cosquillas\nYeah, that's because they obfuscate their plugins.\nBut I manage to discover how to add the compatibility through the console.log. Kinda tricky, but manage to do it ^^"
+    },
+    {
+      "post_id": "js-post-1188410",
+      "author": "Xeri",
+      "date": "2021-05-18T13:27:00+0900",
+      "body": "Okay so I encountered another issue, and after bugtesting it for two days straight I think I figured it out. For whatever reason, custom parameters you add manually can't be changed with dynamic parameters. I can get the plugin to work with the stock parameters the custom params plugin has in its default settings, but I can't get it to work with anything I add myself. Even if I delete and readd the same exact parameters, the newly added one won't be affected by dynamic parameters notetags. I wasn't really sure which thread to put this, but I went with this one. I've attached a link to a sample project where I've replicated the issue below.\nDropbox\nwww.dropbox.com"
+    },
+    {
+      "post_id": "js-post-1188421",
+      "author": "Eliaquim",
+      "date": "2021-05-18T15:43:35+0900",
+      "body": "Hi\n@XVoid\nI get your sample project, but I don't get it.\nYou are saying:\nFor whatever reason, custom parameters you add manually can't be changed with dynamic parameters.\nClick to expand...\nBut as I see in your plugin parameters, your custom parameter \"\nrep\n\" initial value is\n10\n(defined on the class curves)\nYour actor is with the note tags:\nAnd the\nstate Famous\nhas a dynamic parameter note tag to increase the\n\"rep\" by 50.\nI hit playtest, and your rep value is\n60 (10 + 50).\nThe Zodiac note tag, is suppose to mean something? I didn't find any actor, enemie or state with the name of \"Leo\"\nAnd what about that:\nI can get the plugin to work with the stock parameters the custom params plugin has in its default settings, but I can't get it to work with anything I add myself.\nClick to expand...\nWhat do you mean by \"anything I add myself\" ? Is new parameters besides the default ones?\nYou create the custom parameters inside the plugin parameters. Then you use them on the note tags, script call, etc. I'm testing here, and I can change every custom parameter just fine.\nLike I create a new one \"jmp\":\nNow I'm using it on the DynParams note tag(Famous state):\nAnd there is the result(all of them start with 10):\nEven if I delete and readd the same exact parameters, the newly added one won't be affected by dynamic parameters notetags.\nClick to expand...\n- You mean deleting from the plugin parameters and create them again? Do you are testing them within a game already saved? Like continue from a save file? Because if you add a new parameter then hit continue(and that save file does not have this parameter in the time you saved), it may not work.\nAnother problem is that your sample project was not clear enough for me to replicate the issue. I need you to replicate this issue, inside this sample project. So I can just open and see the problem happening.\nThis one you sent to me, has a lot of database items/weapons/armors/states/actors already set.\nSo I have to search all of them and see what object has a dynamic notetag, what actor is on the test, etc...\nSo please, try to send me a sample project with the problem happening, and without a lot of stuff already set on the database. Just the ones I need to test the problem."
+    },
+    {
+      "post_id": "js-post-1188423",
+      "author": "Xeri",
+      "date": "2021-05-18T16:06:19+0900",
+      "body": "Eliaquim said:\nHi\n@XVoid\nI get your sample project, but I don't get it.\nYou are saying:\nBut as I see in your plugin parameters, your custom parameter \"\nrep\n\" initial value is\n10\n(defined on the class curves)\nYour actor is with the note tags:\nView attachment 189616\nAnd the\nstate Famous\nhas a dynamic parameter note tag to increase the\n\"rep\" by 50.\nI hit playtest, and your rep value is\n60 (10 + 50).\nThe Zodiac note tag, is suppose to mean something? I didn't find any actor, enemie or state with the name of \"Leo\"\nAnd what about that:\nWhat do you mean by \"anything I add myself\" ? Is new parameters besides the default ones?\nYou create the custom parameters inside the plugin parameters. Then you use them on the note tags, script call, etc. I'm testing here, and I can change every custom parameter just fine.\nLike I create a new one \"jmp\":\nView attachment 189620\nNow I'm using it on the DynParams note tag(Famous state):\nView attachment 189618\nAnd there is the result(all of them start with 10):\nView attachment 189619\n- You mean deleting from the plugin parameters and create them again? Do you are testing them within a game already saved? Like continue from a save file? Because if you add a new parameter then hit continue(and that save file does not have this parameter in the time you saved), it may not work.\nAnother problem is that your sample project was not clear enough for me to replicate the issue. I need you to replicate this issue, inside this sample project. So I can just open and see the problem happening.\nThis one you sent to me, has a lot of database items/weapons/armors/states/actors already set.\nSo I have to search all of them and see what object has a dynamic notetag, what actor is on the test, etc...\nSo please, try to send me a sample project with the problem happening, and without a lot of stuff already set on the database. Just the ones I need to test the problem.\nClick to expand...\nTo clarify on the sample project, I deleted Charm from the plugin parameters of all the relevant plugins, then readded it again, and the value didn't change with the dynamic param notetag on state 37, which I added to actor 1 via the Leo trait from element status core. And I started a new save every time I tested.\nAs for having a lot of database items \"already set,\" those are just the stock things that are created every time you start a new project, the only things I even touched were the plugin parameters of the relevant plugins (VisuStella core engine, element status core, and your custom parameters, cap control, and class curves), the notetags on actor 1 and the two states (Famous and state 37) I was using to test the issue. The problem IS happening on the sample project I sent, I verified that multiple times before sending it and I verified it again just now. I can resend the sample project with everything else in the database deleted if need be, but I'm not sure how it would affect things once you know where to look.\nUnless I'm somehow configuring them wrong, I really don't know what else it could be. But I spent an entire day trying to look for differences between the working param (reputation) and and the deleted and readded charm and found nothing."
+    },
+    {
+      "post_id": "js-post-1188429",
+      "author": "Eliaquim",
+      "date": "2021-05-18T17:28:17+0900",
+      "body": "XVoid said:\nTo clarify on the sample project, I deleted Charm from the plugin parameters of all the relevant plugins, then readded it again, and the value didn't change with the dynamic param notetag on state 37, which I added to actor 1 via the Leo trait from element status core. And I started a new save every time I tested.\nAs for having a lot of database items \"already set,\" those are just the stock things that are created every time you start a new project, the only things I even touched were the plugin parameters of the relevant plugins (VisuStella core engine, element status core, and your custom parameters, cap control, and class curves), the notetags on actor 1 and the two states (Famous and state 37) I was using to test the issue. The problem IS happening on the sample project I sent, I verified that multiple times before sending it and I verified it again just now. I can resend the sample project with everything else in the database deleted if need be, but I'm not sure how it would affect things once you know where to look.\nUnless I'm somehow configuring them wrong, I really don't know what else it could be. But I spent an entire day trying to look for differences between the working param (reputation) and and the deleted and readded charm and found nothing.\nClick to expand...\nOk, no need to send me another project then, let's try to figure this out. I believe I have a clue of what is wrong.\nYou set theses note tags with two states: Famous and state 37.\nThe thing is, that on the Database, state 37 is named as \"Test2\" and not \"Leo\"\nSo the actor note tags are this ones:\n<Zodiac: Leo>\nWill do nothing, since doens't exist a state called \"\nLeo\n\".\nThat's why it is not working.\nI don't know exactly how Visustella plugins works. So maybe that is the part that I am missing.\nBut my plugin works this way:\nIt needs to have the note tag on a\nState\nor\nEquipment\n.\nHaving that, it will check if an actor have any note tags on his equipments or states applied to him(either normal or passive states).\nAnd also, compatiblity with VisuMZ_1_ElementStatusCore, it will search if the actor has any state set on the\nthis._traitSets\nobject which is the one created by Visu that adds the Blessing, Zodiac etc...\nSo in the console log, I can see in your sample project, the traits that the actor have:\nMy plugin checks every one of them and see if any name matches a state name. If yes, then it execute the note tag feature.\nAnd the \"Leo\", doens't match any state name.\nSo far I changed, excluded, add new ones and use them on the Famous state, and everything worked fine."
+    },
+    {
+      "post_id": "js-post-1188620",
+      "author": "Xeri",
+      "date": "2021-05-19T12:52:54+0900",
+      "body": "Eliaquim said:\nOk, no need to send me another project then, let's try to figure this out. I believe I have a clue of what is wrong.\nYou set theses note tags with two states: Famous and state 37.\nThe thing is, that on the Database, state 37 is named as \"Test2\" and not \"Leo\"\nView attachment 189622\nSo the actor note tags are this ones:\nView attachment 189623\n<Zodiac: Leo>\nWill do nothing, since doens't exist a state called \"\nLeo\n\".\nThat's why it is not working.\nI don't know exactly how Visustella plugins works. So maybe that is the part that I am missing.\nBut my plugin works this way:\nIt needs to have the note tag on a\nState\nor\nEquipment\n.\nHaving that, it will check if an actor have any note tags on his equipments or states applied to him(either normal or passive states).\nAnd also, compatiblity with VisuMZ_1_ElementStatusCore, it will search if the actor has any state set on the\nthis._traitSets\nobject which is the one created by Visu that adds the Blessing, Zodiac etc...\nSo in the console log, I can see in your sample project, the traits that the actor have:\nView attachment 189624\nMy plugin checks every one of them and see if any name matches a state name. If yes, then it execute the note tag feature.\nAnd the \"Leo\", doens't match any state name.\nSo far I changed, excluded, add new ones and use them on the Famous state, and everything worked fine.\nClick to expand...\nApologies on the response delay, I was asleep when you replied and I haven't had time to test things until just now. The error seems to have been caused by the state name mismatch, which I didn't even know mattered until you said it. I got my custom params to work in the sample project by making the state and trait names match."
+    },
+    {
+      "post_id": "js-post-1188625",
+      "author": "Eliaquim",
+      "date": "2021-05-19T13:04:23+0900",
+      "body": "XVoid said:\nApologies on the response delay, I was asleep when you replied and I haven't had time to test things until just now. The error seems to have been caused by the state name mismatch, which I didn't even know mattered until you said it. I got my custom params to work in the sample project by making the state and trait names match.\nClick to expand...\nThat's fine ^^\nGlad it's working now"
+    },
+    {
+      "post_id": "js-post-1188998",
+      "author": "Eliaquim",
+      "date": "2021-05-21T09:28:54+0900",
+      "body": "Version 2.0.0 - 05/20/2021\n- Revamped the way you set dynamic values to note tag. Now you set them via plugin parameters and just reference them in the note tags via the \"Name\" parameter.\nPlease, backup your older plugin first. This version will break the previous one since now the note tag is set through plugin parameters, and not on the note field."
+    },
+    {
+      "post_id": "js-post-1198508",
+      "author": "Eliaquim",
+      "date": "2021-07-03T15:43:31+0900",
+      "body": "Version 2.0.1 - 07/03/2021\n- Fixed a problem of, sometimes, not finding the parameters and custom parameters id"
+    },
+    {
+      "post_id": "js-post-1200761",
+      "author": "Eliaquim",
+      "date": "2021-07-12T10:01:04+0900",
+      "body": "Version 2.0.2 - 07/05/2021\n- Add a proper function to check the existence of dynamic parameters on a data object."
+    },
+    {
+      "post_id": "js-post-1210514",
+      "author": "Eliaquim",
+      "date": "2021-08-25T19:52:41+0900",
+      "body": "Version 3.0.0 - 08/19/2021\n- Need Eli Book 4.0.0 now."
+    },
+    {
+      "post_id": "js-post-1211409",
+      "author": "Eliaquim",
+      "date": "2021-08-29T21:11:43+0900",
+      "body": "Version 3.0.1 - 08/29/2021\n- Fixed the default value of the plugin parameters."
+    },
+    {
+      "post_id": "js-post-1220387",
+      "author": "Eliaquim",
+      "date": "2021-10-09T05:30:45+0900",
+      "body": "(MV and MZ versions)\nVersion 3.0.2 - 10/04/2021\n- Fixed a behavior that sometimes can cause a bug if different Dynamic Template names contain the same words, like sword_blue, sword_green.\nVersion 3.0.3 - 10/08/2021\n- Fixed a typo that was causing a crash in rare situations."
+    },
+    {
+      "post_id": "js-post-1230694",
+      "author": "sumcat",
+      "date": "2021-11-21T20:03:54+0900",
+      "body": "Excuse me how to realize to equip the weapon, the effect can be effective?\nI tried to enter the code on the weapon (I had already customized the parameters) , but when I opened the game, it had no effect.\n↑my parameters\n↑code not work\nAnd if I make a template,  it works.\n↑it work\nThis strange phenomenon bothered me all day, so I signed up for the website."
+    },
+    {
+      "post_id": "js-post-1230841",
+      "author": "ATT_Turan",
+      "date": "2021-11-22T07:03:27+0900",
+      "body": "sumcat said:\n↑code not work\nClick to expand...\nAre you using an older version? That code you're typing into the weapon note field doesn't exist in the plugin's instructions. Defining a template is the only way to use it."
+    },
+    {
+      "post_id": "js-post-1230881",
+      "author": "Eliaquim",
+      "date": "2021-11-22T10:53:00+0900",
+      "body": "sumcat said:\nExcuse me how to realize to equip the weapon, the effect can be effective?\nI tried to enter the code on the weapon (I had already customized the parameters) , but when I opened the game, it had no effect.\nView attachment 207286\n↑my parameters\nView attachment 207285\n↑code not work\nAnd if I make a template,  it works.\nView attachment 207284\nView attachment 207283\n↑it work\nThis strange phenomenon bothered me all day, so I signed up for the website.\nClick to expand...\nHi there!\nThe first option, using the note tag directly does not work anymore. Only for older versions.\nThe right way to use it is the template way."
+    },
+    {
+      "post_id": "js-post-1230919",
+      "author": "sumcat",
+      "date": "2021-11-22T13:01:23+0900",
+      "body": "Eliaquim said:\nHi there!\nThe first option, using the note tag directly does not work anymore. Only for older versions.\nThe right way to use it is the template way.\nClick to expand...\nthanks！"
+    },
+    {
+      "post_id": "js-post-1231945",
+      "author": "ShadowDragon",
+      "date": "2021-11-26T19:35:40+0900",
+      "body": "question on the dynamaic custom params.\nare those passive params once they met?\nbecause I want to increase element value, attack or def or whatever,\ndepending on 2 equiped items (on 3 and 4) which is a specific order.\nif item 1 in in slot 3 , and item 2 in slot 4, it does nothing, but if it's\nitem 1 in slot 4 and item 2 in slot 3 it gives an effect.\nwhat is the best approach to make this work in a custom param?\nwhich is an armor item I believe if using artifacts (equipement type),\nbecause I can save it for later\nbecause I need more combinations of\nweapon check and arifiact check for this approach that can boost\nthe param/xparam or sparam in a nice way."
+    },
+    {
+      "post_id": "js-post-1232082",
+      "author": "Eliaquim",
+      "date": "2021-11-27T04:21:52+0900",
+      "body": "ShadowDragon said:\nquestion on the dynamaic custom params.\nare those passive params once they met?\nbecause I want to increase element value, attack or def or whatever,\ndepending on 2 equiped items (on 3 and 4) which is a specific order.\nif item 1 in in slot 3 , and item 2 in slot 4, it does nothing, but if it's\nitem 1 in slot 4 and item 2 in slot 3 it gives an effect.\nwhat is the best approach to make this work in a custom param?\nwhich is an armor item I believe if using artifacts (equipement type),\nbecause I can save it for later\nbecause I need more combinations of\nweapon check and arifiact check for this approach that can boost\nthe param/xparam or sparam in a nice way.\nClick to expand...\nHi there!\nWell, you will have to play a little bit with javascript.\nBecause you will need to check what weapon/armor is on what slot.\nI believe you could do this:\nreplace \"$data\" with $dataWeapons or $dataArmors\nSLOT_ID always starts at 0.\nJavaScript:\nthis.equips()[SLOT_ID] === $data[ID] ? ValueY : ValueX\nif you have a lot of combinations to check, I would go using switch statements, it is like another way of doing IF ELSE:\nJavaScript:\nconst equipId = this.equips()[SLOT_ID]?.id\nswitch(equipId){\n\ncase 1: return ValueX // If the equip id is equal to 1, give value x\ncase 2: return ValueY // If the equip id is equal to 2, give value y\n\n... ETC.\n}\nTo use it with custom parameters is the same approach. You just need to have my custom parameter plugin installed."
+    },
+    {
+      "post_id": "js-post-1232087",
+      "author": "ShadowDragon",
+      "date": "2021-11-27T04:44:23+0900",
+      "body": "I think I need an && because it needs 2 items for 1 effect, or in rare\ncases, 3 items (1 armor or weapon + 2 artifacts, because artifact\nare going to be a role to gain stats, so I need to do around\n$gameActors.actor(1).equips()[3].id === 42 || $gameActors.actor(1).equips()[4].id === 42\nbut need instead of || using && so it matches.\nso return to case 1 and 2 would be harder if it needs 2 equips ID.\nbad combination result in bad side effect, because it can make intresting\ngame play, specially the combination required for some enemies, and especially\nbosses to make them easy or hard, but still do able\nso how to input 2 or more to gain effect and how to activate them if it's\nnot a passive state but on the item itself?\nor is it more that dynamic into the artifact that checks if the other is equiped?\nI still learn JS on my own to get better."
+    },
+    {
+      "post_id": "js-post-1232108",
+      "author": "Eliaquim",
+      "date": "2021-11-27T06:19:48+0900",
+      "body": "ShadowDragon said:\nI think I need an && because it needs 2 items for 1 effect, or in rare\ncases, 3 items (1 armor or weapon + 2 artifacts, because artifact\nare going to be a role to gain stats, so I need to do around\n$gameActors.actor(1).equips()[3].id === 42 || $gameActors.actor(1).equips()[4].id === 42\nbut need instead of || using && so it matches.\nso return to case 1 and 2 would be harder if it needs 2 equips ID.\nbad combination result in bad side effect, because it can make intresting\ngame play, specially the combination required for some enemies, and especially\nbosses to make them easy or hard, but still do able\nso how to input 2 or more to gain effect and how to activate them if it's\nnot a passive state but on the item itself?\nor is it more that dynamic into the artifact that checks if the other is equiped?\nI still learn JS on my own to get better.\nClick to expand...\nGet it. So maybe you can do something like that:\nIt will iterate through all the equipment the actor have and see if it contains the following equip ids(id1, id2, id3).\nIf the actor has all the 3 equips id you specify, it applies valueX else applies valueY\nJavaScript:\nconst equipList = this.equips()\nconst bonusEquips = equipList.filter(equip => equip && [id1, id2, id3].includes(equip.id))\nconst hasBonus = bonusEquips.length >= 3\nif(hasBonus){\n    valueX\n}else{\n    valueY\n}"
+    },
+    {
+      "post_id": "js-post-1232119",
+      "author": "ShadowDragon",
+      "date": "2021-11-27T07:13:29+0900",
+      "body": "so equips checks the IDs of all equips? or just armor (EquipmentType).\nif equipList = this.equips()\nhow exactly is equip array to work in which slots?\nthe has bonus can be 2 or 3, as for the array.\nif I can understand the array of equipID's in the slots, than I can copy\nthe code to modify the value X and Y for valueY = null or left empty,\nand valueX for   param.att = 3 (but need the correct one there),\nwhich I can find it later.  or DM me with some possibilities, because js\ncan be a pain for me, and I try to learn alot to understand (if its oke for you)."
+    },
+    {
+      "post_id": "js-post-1232223",
+      "author": "Eliaquim",
+      "date": "2021-11-27T17:43:02+0900",
+      "body": "ShadowDragon said:\nso equips checks the IDs of all equips? or just armor (EquipmentType).\nif equipment = this.equips()\nhow exactly is equip array to work in which slots?\nthe has bonus can be 2 or 3, as for the array.\nif I can understand the array of equipID's in the slots, then I can copy\nthe code to modify the value X and Y for value = null or left empty,\nand values for param.att = 3 (but need the correct one there),\nwhich I can find it later.  or DM me with some possibilities, because js\ncan be a pain for me, and I try to learn a lot to understand (if it's okay for you).\nClick to expand...\nThe function \"this.equips()\" will return an array(a list) of all equipment the actor has.\nSo:\nthis.equips()[0] = Slot 1\nthis.equips()[1] = Slot 2\nEtc...\nAnd, you can change the list of ids you want to check inside the [] just separate each number with a comma.\nDon't let value or X empty or null. If you don't want to use you can replace them with 0.\nThere is no way you could use the \"param.att = 3\".\nIf you want to apply 3 to the atk, you just need to set this formula on the atk field of the plugin parameter.\nSo, in that case, the valueX will be 3. And the valueY will be 0.\nBecause this formula is already setting a value for a specific parameter, depending on what parameter field you are writing in the plugin parameter."
+    },
+    {
+      "post_id": "js-post-1250750",
+      "author": "Eliaquim",
+      "date": "2022-02-09T11:15:34+0900",
+      "body": "Version 5.0.0 is not compatible with my plugins that are below the 5.0.0 versions.\nVersion 5.0.0 - 02/05/2022\nUpdated terms of use."
+    },
+    {
+      "post_id": "js-post-1280942",
+      "author": "raeson",
+      "date": "2022-06-14T23:46:00+0900",
+      "body": "Hello there, love your plugin! I do have an issue though and I've been trying to solve it for a while now, so I hope you can help me with it.\nSo my issue is that I have a custom parameter called \"Weapon Damage\" that is increased with Weapons. I'm trying to create a state that increases Weapon Damage by 25%, but it seems that I get a \"Maximum call stack size exceeded\" error."
+    },
+    {
+      "post_id": "js-post-1280980",
+      "author": "Eliaquim",
+      "date": "2022-06-15T02:54:37+0900",
+      "body": "raeson said:\nHello there, love your plugin! I do have an issue though and I've been trying to solve it for a while now, so I hope you can help me with it.\nSo my issue is that I have a custom parameter called \"Weapon Damage\" that is increased with Weapons. I'm trying to create a state that increases Weapon Damage by 25%, but it seems that I get a \"Maximum call stack size exceeded\" error.\nClick to expand...\nHi there!\nYeah, I tested it here, and it will cause an error indeed. If you try to add a value for a parameter, and use the function to get this same parameter value, it will trigger this error. It's like, you can't use the\natk\nvalue to raise the\natk\nvalue parameter. On the example below \"\nthis.param(2)\n\" is getting the\n.atk\nvalue parameter. And it is used on the Attack Dynamic Parameter field. So an error will trigger.\nThe same is valid for custom parameters.\nYou could raise the Attack value relative to other parameter, like Defense:\nthis.param(3) * 1.25\nThe right thing to do, to achieve what you want, is that the plugin can add a Trait that raises that parameter value, just like the default engine do for other params:\nLike this trait will increase the Max HP value by 25%.\nBut we need something like that for Custom Parameters!\nSo, hold on a bit, that I will add this feature into the plugin(Custom Parameters, not the Dynamic Parameters)\nHonestly I don't know why I didn't made it before ^^''!"
+    },
+    {
+      "post_id": "js-post-1280982",
+      "author": "raeson",
+      "date": "2022-06-15T02:57:29+0900",
+      "body": "Eliaquim said:\nHi there!\nYeah, I tested it here, and it will cause an error indeed. If you try to add a value for a parameter, and use the function to get this same parameter value, it will trigger this error. It's like, you can't use the\natk\nvalue to raise the\natk\nvalue parameter. On the example below \"\nthis.param(2)\n\" is getting the\n.atk\nvalue parameter. And it is used on the Attack Dynamic Parameter field. So an error will trigger.\nView attachment 229336\nThe same is valid for custom parameters.\nYou could raise the Attack value relative to other parameter, like Defense:\nthis.param(3) * 1.25\nThe right thing to do, to achieve what you want, is that the plugin can add a Trait that raises that parameter value, just like the default engine do for other params:\nView attachment 229331\nLike this trait will increase the Max HP value by 25%.\nBut we need something like that for Custom Parameters!\nSo, hold on a bit, that I will add this feature into the plugin(Custom Parameters, not the Dynamic Parameters)\nHonestly I don't know why I didn't made it before ^^''!\nClick to expand...\nOh thank you so much! Yeah I figured it had something to do with the fact that it was basically going on an infinite loop with itself but I barely know how to code xD, so I'm glad to hear this is being added in!"
+    },
+    {
+      "post_id": "js-post-1307171",
+      "author": "Oddball",
+      "date": "2022-10-22T13:17:57+0900",
+      "body": "So this can increase stats additivly rather than multiplicitivly?"
+    },
+    {
+      "post_id": "js-post-1307176",
+      "author": "Eliaquim",
+      "date": "2022-10-22T13:52:55+0900",
+      "body": "Oddball said:\nSo this can increase stats additivly rather than multiplicitivly?\nClick to expand...\nIt can increase any way you want since it can use formulas.\nBut if you just insert a number, it will raise or decrease the parameter."
+    },
+    {
+      "post_id": "js-post-1307229",
+      "author": "Oddball",
+      "date": "2022-10-22T22:34:42+0900",
+      "body": "Eliaquim said:\nIt can increase any way you want since it can use formulas.\nBut if you just insert a number, it will raise or decrease the parameter.\nClick to expand...\nOh it can increase it based on variables and/or switches then?"
+    },
+    {
+      "post_id": "js-post-1307267",
+      "author": "Eliaquim",
+      "date": "2022-10-23T03:49:27+0900",
+      "body": "Oddball said:\nOh it can increase it based on variables and/or switches then?\nClick to expand...\nYes, for sure!"
+    },
+    {
+      "post_id": "js-post-1373523",
+      "author": "SweetFckNo",
+      "date": "2023-08-15T14:25:32+0900",
+      "body": "Hey there, sorry to rustle through old posts, but I just need a few questions answered about this plugin since it may hold the answers I seek.\nWhen applying positive and negative values to Base and Special Parameters with your plugin, an actor acquires a skill (using Passive States) that gives him a +20% bonus to Agility when using this type of weapon, thus his agility is now 120%. However a piece of equipment slaps on a -10% Agility (if possible), is the result now 110% Agility, meaning that your plugin applies these changes to the parameters additively?\nOne of my major gripes about RMMV's Parameters is that it handles every Parameter\nbut\nExtra Multiplicatively when I much prefer Ex-Param's method of Additively stacking traits, allowing you to tack on multiple buffs without a snowball effect of say 20% buff with another 20% buff magically turning into 44% rather than 40%, despite running the risk of hitting negatives and potentially causing some catastrophic issue, but I'll get there when I get there."
+    },
+    {
+      "post_id": "js-post-1373650",
+      "author": "Eliaquim",
+      "date": "2023-08-16T04:15:14+0900",
+      "body": "SweetFckNo said:\nHey there, sorry to rustle through old posts, but I just need a few questions answered about this plugin since it may hold the answers I seek.\nWhen applying positive and negative values to Base and Special Parameters with your plugin, an actor acquires a skill (using Passive States) that gives him a +20% bonus to Agility when using this type of weapon, thus his agility is now 120%. However a piece of equipment slaps on a -10% Agility (if possible), is the result now 110% Agility, meaning that your plugin applies these changes to the parameters additively?\nOne of my major gripes about RMMV's Parameters is that it handles every Parameter\nbut\nExtra Multiplicatively when I much prefer Ex-Param's method of Additively stacking traits, allowing you to tack on multiple buffs without a snowball effect of say 20% buff with another 20% buff magically turning into 44% rather than 40%, despite running the risk of hitting negatives and potentially causing some catastrophic issue, but I'll get there when I get there.\nClick to expand...\nHi there!\nThe behavior should be sum all of the bonus. What my plugin will do is, get all values added through the notegas/plugin parameters and apply them to the actor.\nSo, if you have any other thing that increases or decreases, it will be all sum up.\nLet's say you have a sword that gives you + 10 ATK using dynamic parameters.\nAnd let's say you have a default trait that increases the ATK + 10%\nThe actor ATK will be the sum of these two values."
+    },
+    {
+      "post_id": "js-post-1373656",
+      "author": "ATT_Turan",
+      "date": "2023-08-16T04:36:38+0900",
+      "body": "Eliaquim said:\nLet's say you have a sword that gives you + 10 ATK using dynamic parameters.\nAnd let's say you have a default trait that increases the ATK + 10%\nThe actor ATK will be the sum of these two values.\nClick to expand...\nSo the plugin will first evaluate all formulae using the base values?\ne.g. I have an ATK of 50.\nI have a sword with +10 from a dynamic parameter;\na helmet with +10%;\nand a shield with +15%.\nIt will be 50 + 10 + (50*.1) + (50*.15)?\nI think that's what the goal of the above question was."
+    },
+    {
+      "post_id": "js-post-1373686",
+      "author": "Eliaquim",
+      "date": "2023-08-16T06:44:39+0900",
+      "body": "ATT_Turan said:\nSo the plugin will first evaluate all formulae using the base values?\ne.g. I have an ATK of 50.\nI have a sword with +10 from a dynamic parameter;\na helmet with +10%;\nand a shield with +15%.\nIt will be 50 + 10 + (50*.1) + (50*.15)?\nI think that's what the goal of the above question was.\nClick to expand...\nOhh!\nNow I get it.\nFor X and S params, the plugin will get all the default ones from the engine first: States, Traits etc. Then add the dynamic parameters on top of it. Reference below:\nJavaScript:\nAlias.Game_Actor_xparam = Game_Actor.prototype.xparam\nGame_Actor.prototype.xparam = function(xparamId) {\n    const value = Alias.Game_Actor_xparam.call(this, xparamId)\n    const dynamicValue = this.getAllDynamicValues(\"xparam\", xparamId)\n\n    return value + dynamicValue\n}\n\nAlias.Game_Actor_sparam = Game_Actor.prototype.sparam\nGame_Actor.prototype.sparam = function(sparamId) {\n    const value = Alias.Game_Actor_sparam.call(this, sparamId)\n    const dynamicValue = this.getAllDynamicValues(\"sparam\", sparamId)\n\n    return value + dynamicValue\n}\nFor the regular parameters, it will add the Dynamic values on top of the param plus values. Meaning when the engine checks for the ATK of the battler, these dynamic values will be affected by the paramRate and Buff Rates. I guess on another words, for regular parameters, the dynamic values came before the rates.\nJavaScript:\n// On my plugin\nAlias.Game_Actor_paramPlus = Game_Actor.prototype.paramPlus\nGame_Actor.prototype.paramPlus = function(paramId) {\n    const value = Alias.Game_Actor_paramPlus.call(this, paramId)\n    const dynamicValue = this.getAllDynamicValues(\"param\", paramId)\n\n    return value + dynamicValue\n}\n\n// On the default code\nGame_BattlerBase.prototype.param = function(paramId) {\n    const value =\n        this.paramBasePlus(paramId) * // DYNAMIC value is inside this value\n        this.paramRate(paramId) *\n        this.paramBuffRate(paramId);\n    const maxValue = this.paramMax(paramId);\n    const minValue = this.paramMin(paramId);\n    return Math.round(value.clamp(minValue, maxValue));\n};\nGuess that is a kind of information that should b e on the help file! Will put that on later!"
+    },
+    {
+      "post_id": "js-post-1373747",
+      "author": "SweetFckNo",
+      "date": "2023-08-16T16:24:41+0900",
+      "body": "ATT_Turan said:\ne.g. I have an ATK of 50.\nI have a sword with +10 from a dynamic parameter;\na helmet with +10%;\nand a shield with +15%.\nIt will be 50 + 10 + (50*.1) + (50*.15)?\nI think that's what the goal of the above question was.\nClick to expand...\nThat would indeed be it, it just looks a bit wonky since my perspective was built as\n\"Base (big flat number) * Equipment (1.xx, prone to up and down) * De/Buffs (1.xx prone to up and down)\"\nThough an important aspect as while yes, those parameters now additively stack in the equation to 72.5 if punched through a calculator, can I apply a negative modifier to a parameter.\nSo applying the same equation from before, but instead the helmet reduces my atk by 10%, is the outcome going to be 62.5 as the total end modifier of my equipment is now \"1.05\" for atk, and if both are negative, meaning now my modifier is below 1, does that reflect and mean my ATK is below 60 due to the modifiers (should be 47.5\nif\nI did the calcs right using \"60 + (50*-.25)\" as I have no positive buffs).\nMost of my ideas in equipment, skills/passive states will revolve around this if I can apply negatives."
+    },
+    {
+      "post_id": "js-post-1373903",
+      "author": "Eliaquim",
+      "date": "2023-08-17T08:32:04+0900",
+      "body": "SweetFckNo said:\nThat would indeed be it, it just looks a bit wonky since my perspective was built as\n\"Base (big flat number) * Equipment (1.xx, prone to up and down) * De/Buffs (1.xx prone to up and down)\"\nThough an important aspect as while yes, those parameters now additively stack in the equation to 72.5 if punched through a calculator, can I apply a negative modifier to a parameter.\nSo applying the same equation from before, but instead the helmet reduces my atk by 10%, is the outcome going to be 62.5 as the total end modifier of my equipment is now \"1.05\" for atk, and if both are negative, meaning now my modifier is below 1, does that reflect and mean my ATK is below 60 due to the modifiers (should be 47.5\nif\nI did the calcs right using \"60 + (50*-.25)\" as I have no positive buffs).\nMost of my ideas in equipment, skills/passive states will revolve around this if I can apply negatives.\nClick to expand...\nDid you see that answer?\nEli Dynamic Parameters - Change parameter values dynamically with states and equipment note tags!\nHi there!  Yeah, I tested it here, and it will cause an error indeed. If you try to add a value for a parameter, and use the function to get this same parameter value, it will trigger this error. It's like, you can't use the atk value to raise the atk value parameter. On the example below...\nforums.rpgmakerweb.com\nThe dynamic values for regular parameters will work the same as the regular parameter values a piece of equipment have on the database.\nThey are also the same as the ones when you use an item with a growth effect.\nIf you are having trouble figuring this out, why don't you make a test on the engine?"
+    },
+    {
+      "post_id": "js-post-1374598",
+      "author": "dewolf",
+      "date": "2023-08-20T08:28:30+0900",
+      "body": "Eliaquim said:\nLike this trait will increase the Max HP value by 25%.\nBut we need something like that for Custom Parameters!\nSo, hold on a bit, that I will add this feature into the plugin(Custom Parameters, not the Dynamic Parameters)\nHonestly I don't know why I didn't made it before ^^''!\nClick to expand...\nWas this implemented? I don't see anything on the notes for custom parameters plugin on increasing custom params multiplicatively via states, and haven't managed to figure out how to do so with this plugin now that it does templates instead of note tags."
+    },
+    {
+      "post_id": "js-post-1402477",
+      "author": "Eliaquim",
+      "date": "2023-12-03T17:04:44+0900",
+      "body": "dewolf said:\nWas this implemented? I don't see anything on the notes for custom parameters plugin on increasing custom params multiplicatively via states, and haven't managed to figure out how to do so with this plugin now that it does templates instead of note tags.\nClick to expand...\nHi there!\nNot exactly, because is not an issue with the plugin itself, but rather how javascript works on rpg maker code. But there are another ways to achieve what the OP was trying to do. Is best if you try to explain to me what you are trying to do and I see how I can help you."
+    },
+    {
+      "post_id": "js-post-1402478",
+      "author": "dewolf",
+      "date": "2023-12-03T17:07:49+0900",
+      "body": "Eliaquim said:\nHi there!\nNot exactly, because is not an issue with the plugin itself, but rather how javascript works on rpg maker code. But there are another ways to achieve what the OP was trying to do. Is best if you try to explain to me what you are trying to do and I see how I can help you.\nClick to expand...\nI would like to increase/decrease a custom parameter by a given percentage. Example scenario, I would like the state “Broken Bone” to reduce Strength by 25%.\nEdit: I was able to get it to work with VS's On Add State/On Erase State notetags with the following:\nCode:\n<JS On Add State>\nthis._old = this._old || 0;\nthis._old += this.cparam(0);\nthis.addCParam(0, Math.round(this.cparam(0) * -0.25));\n</JS On Add State>\n\n<JS On Erase State>\nthis.addCParam(0, Math.round(this.cparam(0) * -1));\nthis.addCParam(0, this._old);\n</JS On Erase State>"
+    },
+    {
+      "post_id": "js-post-1402752",
+      "author": "Eliaquim",
+      "date": "2023-12-04T11:08:21+0900",
+      "body": "dewolf said:\nI would like to increase/decrease a custom parameter by a given percentage. Example scenario, I would like the state “Broken Bone” to reduce Strength by 25%.\nEdit: I was able to get it to work with VS's On Add State/On Erase State notetags with the following:\nCode:\n<JS On Add State>\nthis._old = this._old || 0;\nthis._old += this.cparam(0);\nthis.addCParam(0, Math.round(this.cparam(0) * -0.25));\n</JS On Add State>\n\n<JS On Erase State>\nthis.addCParam(0, Math.round(this.cparam(0) * -1));\nthis.addCParam(0, this._old);\n</JS On Erase State>\nClick to expand...\nSo you manage to make it work? Or still need help?\nI guess the right thing to do is that I need to add traits support for the custom parameter plugin on states, just like the default parameters have.\nI believe I have added to items and skills, but not for states. So the user will not have the need to go into the dynamic parameters for things like that.\nBoth plugins need a rewrite to fix those things. I plan to do that, but I want to merge the Custom Parameters with the Class Curves. Don't know when though."
+    },
+    {
+      "post_id": "js-post-1402760",
+      "author": "dewolf",
+      "date": "2023-12-04T11:44:02+0900",
+      "body": "Eliaquim said:\nSo you manage to make it work? Or still need help?\nI guess the right thing to do is that I need to add traits support for the custom parameter plugin on states, just like the default parameters have.\nI believe I have added to items and skills, but not for states. So the user will not have the need to go into the dynamic parameters for things like that.\nBoth plugins need a rewrite to fix those things. I plan to do that, but I want to merge the Custom Parameters with the Class Curves. Don't know when though.\nClick to expand...\nI believe it's working! I'm able to increase custom parameters by percentages, and restore them to normal when the state is removed. But I do think having trait support for states in the custom parameter plugin is the way to go in the future!"
+    },
+    {
+      "post_id": "js-post-1500987",
+      "author": "dabestorange",
+      "date": "2025-02-25T00:32:00+0900",
+      "body": "Eliaquim said:\nLike this trait will increase the Max HP value by 25%.\nBut we need something like that for Custom Parameters!\nSo, hold on a bit, that I will add this feature into the plugin(Custom Parameters, not the Dynamic Parameters)\nHonestly I don't know why I didn't made it before ^^''!\nClick to expand...\nHey, was this ever added? Or is there at least an easy way to get around this problem?\nI can't do the solution someone else did because I'm using the MV version, not the MZ one.\nThanks for the plugin, and sorry if this is a silly question."
+    },
+    {
+      "post_id": "js-post-1501383",
+      "author": "dewolf",
+      "date": "2025-02-27T00:38:43+0900",
+      "body": "dabestorange said:\nHey, was this ever added? Or is there at least an easy way to get around this problem?\nI can't do the solution someone else did because I'm using the MV version, not the MZ one.\nThanks for the plugin, and sorry if this is a silly question.\nClick to expand...\nHey friend! I don't have the code exactly like what I did for MZ, but I believe you can achieve the same workaround I did with\nYEP Buff and States Core\nfor MV. I think the\nCustom Apply Effect\nand\nCustom Remove Effect\nare what you'd want to use."
+    },
+    {
+      "post_id": "js-post-1502063",
+      "author": "Lionheart_84",
+      "date": "2025-03-02T03:33:58+0900",
+      "body": "Power attack/Defense power, both dictated by weapons or armor, as in Final fantasy 7 or as RPG maker XP?"
+    },
+    {
+      "post_id": "js-post-1557178",
+      "author": "Eliaquim",
+      "date": "2026-05-22T22:04:37+0900",
+      "body": "Lionheart_84 said:\nPower attack/Defense power, both dictated by weapons or armor, as in Final fantasy 7 or as RPG maker XP?\nClick to expand...\nSorry, I really do not understand as I don't played Final Fantasy 7 and didn't use RPG Maker XP. You need to give me more details about that"
+    }
+  ]
+}

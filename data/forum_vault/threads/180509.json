@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/steam-will-sometimes-just-exclude-a-dll-file-when-installing-the-game.180509",
+  "title": "Steam will sometimes just exclude a dll file when installing the game?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:03:09.480861+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1533095",
+      "author": "knuckles_the_chuckles",
+      "date": "2025-10-11T18:53:04+0900",
+      "body": "So I'm working on a game called Night of the Abattoir Man, available on steam for free.\nI made this game using rpg maker vx ace.\nRecently I sent the game link to a reviewer so her could play a game.\nTo my absolute horror, a couple of days later I recieve an email from him saying that he wasn't able to open the game cuz he got the following error:\nThis is the error message that pops up when a dll file is missing, in this case \"F1AltEnterF12.dll\"\nThis is odd because that file should most definitely be there?\nAlso, the reviewer said he tried validating files and re-installing the game but that didn't fix the issue.\nThe weirdest part is that I've only seen this error pop up one other time before.\nWhen my producer first installed the game, the main rpg maker dll file was missing for some reason.\nThen after that I've never seen this happen again until this reviewer sent me that screenshot.\nI even uninstalled the game, deleted the steam folder, reinstalled the game just to see if the error would pop up for me but no, the dll file is there.\nMy guess is that steam just sometimes doesn't install the dll files? But why?\nIs this a steam problem? Is there a way to prevent this from happening?\nI really don't want this to happen again in the future."
+    },
+    {
+      "post_id": "js-post-1533107",
+      "author": "kyonides",
+      "date": "2025-10-11T21:27:30+0900",
+      "body": "Did you install that file on Windows? Or did you copy it to the Windows System folder manually? If you did that, it'd obviously work on your PC but not on other people's.\nI mentioned that because it always matters whenever you are distributing an app. People might forget those little details at some point, and then they get surprised by the missing DLLs messages popping up.\nAnyway, in your case I'd have to install it to get an idea of why it's not being installed."
+    },
+    {
+      "post_id": "js-post-1533108",
+      "author": "knuckles_the_chuckles",
+      "date": "2025-10-11T21:35:33+0900",
+      "body": "kyonides said:\nDid you install that file on Windows? Or did you copy it to the Windows System folder manually? If you did that, it'd obviously work on your PC but not on other people's.\nI mentioned that because it always matters whenever you are distributing an app. People might forget those little details at some point, and then they get surprised by the missing DLLs messages popping up.\nAnyway, in your case I'd have to install it to get an idea of why it's not being installed.\nClick to expand...\nI copied the dll to the the system folder so it should be there?\nIm confused cuz I've seen other people play my game and they didn't have any issues so it's weird that it happened to this reviewer.\nIf you could have a quick look at it, it would be very helpful for me, thank you.\nhere's the link for the game"
+    },
+    {
+      "post_id": "js-post-1533115",
+      "author": "knuckles_the_chuckles",
+      "date": "2025-10-11T22:38:54+0900",
+      "body": "Roninator2 said:\nView attachment 351099\nClick to expand...\nOk so it is there!\nI don't understand what happened then?\ncould it be a steam side issue?\nI've read somewhere that it could have gotten corrupted during the install and steam just thought everything was fine and that's why the file verification didn't fix anything either.\nThank you so much for checking btw."
+    },
+    {
+      "post_id": "js-post-1533116",
+      "author": "Roninator2",
+      "date": "2025-10-11T22:47:46+0900",
+      "body": "Your GOBJ file is also still there and you have memory leaks."
+    },
+    {
+      "post_id": "js-post-1533117",
+      "author": "knuckles_the_chuckles",
+      "date": "2025-10-11T22:57:00+0900",
+      "body": "Roninator2 said:\nYour GOBJ file is also still there and you have memory leaks.\nClick to expand...\nReally? That's not good at all\nHow do I fix this?"
+    },
+    {
+      "post_id": "js-post-1533146",
+      "author": "Roninator2",
+      "date": "2025-10-12T02:43:05+0900",
+      "body": "knuckles_the_chuckles said:\nReally? That's not good at all\nHow do I fix this?\nClick to expand...\n@kyonides\ndo you want to look at it? Shows memory leaks and error between Window_SaveFile and Kursor Ace"
+    },
+    {
+      "post_id": "js-post-1533153",
+      "author": "knuckles_the_chuckles",
+      "date": "2025-10-12T03:13:57+0900",
+      "body": "I should probably paste that code here because I forget if I changed anything in it.\nSometimes I mess around with codes trying to get something the way I like it, and of course since I have no Idea what Im doing half of the time this could be my doing\nSpoiler:\nKursor Ace\n# * Kursor ACE * #\n#   Scripter : Kyonides Arkanthes\n#   v1.0.2 - 2023-12-12\n# * Distributed AS IS * #\n# This script allows you to use a custom weapon icon as a cursor on any default\n# menu script plus the save file windows.\n# It uses the CursorSet which is nothing but a modified version of the RTP's\n# IconSet file found at the Graphics/System directory.\n# * Optional Script Call * #\n#   Let us say you created a cursor and named it @cursor and you do not want to\n#   use the default menu icon. You would need to call this method:\n# @cursor.icon_index = Number\n#   Example:\n# @cursor.icon_index = 40\nmodule Kursor\nCURSOR_INDEX = 0\nCURSOR_OFFSET_X = -8\nCURSOR_OFFSET_Y = 9\nSTATUS_CURSOR_OFFSET_X = 112\nSTATUS_CURSOR_OFFSET_Y = 48\nSAVE_CURSOR_OFFSET_X = 8\nSAVE_CURSOR_OFFSET_Y = 16\nSAVE_CURSOR_RECT_BLINK = false\nCURSOR_HEIGHT = 24\nCURSOR_FILENAME = \"CursorSet\"\nmodule Methods\ndef setup_cursor\n@cursor = Kursor::Cursor.new(self)\nend\ndef x=(nx)\n@cursor.x = nx if @cursor\nsuper(nx)\nend\ndef y=(ny)\n@cursor.y = ny if @cursor\nsuper(ny)\nend\ndef visible=(state)\n@cursor.visible = (state and open? and\n@Index\n>= 0) if @cursor\nsuper(state)\nend\ndef viewport=(vp)\n@cursor.viewport = vp\nsuper vp\nend\ndef close\n@cursor.visible = false\nsuper\nend\ndef show\n@cursor.visible = true\nsuper\nend\ndef hide\n@cursor.visible = false\nsuper\nend\ndef update_open\nsuper\n@cursor.visible = (open? and\n@Index\n>= 0)\nend\nend\nclass Cursor < Sprite\ndef initialize(parent)\nsuper(parent.viewport)\n@parent = parent\n@offset_mode = parent.cursor_offset\n@icon_index = $game_system.cursor_index\nsetup_offset\nsetup_base_xy(parent.x, parent.y)\nself.z = parent.z + 200\nself.bitmap = Bitmap.new(CURSOR_HEIGHT, CURSOR_HEIGHT)\ncreate_contents\nend\ndef setup_offset\ncase @offset_mode\nwhen :default\n@offset_x = CURSOR_OFFSET_X\n@offset_y = CURSOR_OFFSET_Y\nwhen :save\n@offset_x = SAVE_CURSOR_OFFSET_X\n@offset_y = SAVE_CURSOR_OFFSET_Y\nwhen :status\n@offset_x = STATUS_CURSOR_OFFSET_X\n@offset_y = STATUS_CURSOR_OFFSET_Y\nend\nend\ndef setup_base_xy(bx=0, by=0)\n@base_x = @offset_x + bx\n@base_y = @offset_y + by\nself.x = @base_x\nself.y = @base_y\nend\ndef create_empty\nBitmap.new(384, CURSOR_HEIGHT * 3)\nend\ndef create_contents\nbit = Cache.system(CURSOR_FILENAME) rescue create_empty\ncw = bit.width / CURSOR_HEIGHT\ncx = @icon_index % cw * CURSOR_HEIGHT\ncy = @icon_index / cw * CURSOR_HEIGHT\nrect = Rect.new(cx, cy, CURSOR_HEIGHT, CURSOR_HEIGHT)\nself.bitmap.blt(0, 0, bit, rect)\nend\ndef recreate_contents\nself.bitmap.clear\ncreate_contents\nend\ndef x=(nx)\n@base_x = @offset_x + nx\nsuper @base_x\nend\ndef y=(ny)\n@base_y = @offset_y + ny\nsuper @base_y\nend\ndef dispose_all\nbitmap.dispose\ndispose\nend\nattr_accessor :icon_index\nend\nend\nclass Game_System\nalias :kyon_kursor_gm_sys_init :initialize\ndef initialize\nkyon_kursor_gm_sys_init\n@cursor_index = Kursor::CURSOR_INDEX\n@cursor_save_blink = Kursor::SAVE_CURSOR_RECT_BLINK\nend\nattr_accessor :cursor_index, :cursor_save_blink\nend\nclass Window_Selectable\ninclude Kursor::Methods\nalias :kyon_kursor_win_sel_init :initialize\nalias :kyon_kursor_win_sel_disp :dispose\nalias :kyon_kursor_win_sel_set_index :index=\ndef initialize(wx, wy, w, h)\nkyon_kursor_win_sel_init(wx, wy, w, h)\nsetup_cursor\ncheck_cursor_visibility\nend\ndef check_cursor_visibility(n=@index)\n@cursor.visible = (open? and n >= 0)\nend\ndef index=(n)\ncheck_cursor_visibility(n)\nkyon_kursor_win_sel_set_index(n)\nend\ndef update_cursor\nif @cursor_all\nself.top_row = 0\n@cursor.y = self.y - self.oy + rect.y\nelsif\n@Index\n>= 0\nensure_cursor_visible\nrect = item_rect(\n@Index\n)\n@cursor.x = self.x - self.ox + rect.x\n@cursor.y = self.y - self.oy + rect.y\nend\nend\ndef dispose\n@cursor.dispose_all\nkyon_kursor_win_sel_disp\nend\ndef cursor_offset\n:default\nend\nattr_reader :cursor_index\nend\nclass Window_MenuStatus\ndef cursor_offset\n:status\nend\nend\nclass Window_ChoiceList\nalias :kyon_kursor_win_chc_lst_init :initialize\ndef initialize(message_window)\nkyon_kursor_win_chc_lst_init(message_window)\ncheck_cursor_visibility\nend\ndef check_cursor_visibility(n=@index)\n@cursor.visible = (self.visible and open? and n >= 0)\nend\nend\nclass Window_SaveFile\ninclude Kursor::Methods\nalias :kyon_kursor_win_sv_file_init :initialize\nalias :kyon_kursor_win_sv_file_disp :dispose\nalias :kyon_kursor_win_sv_file_up_cursor :update_cursor\ndef initialize(height, index)\nkyon_kursor_win_sv_file_init(height, index)\nsetup_cursor\ncheck_cursor_visibility\nend\ndef check_cursor_visibility\n@cursor.visible = @selected\nend\ndef update_cursor\ncheck_cursor_visibility\nkyon_kursor_win_sv_file_up_cursor if $game_system.cursor_save_blink\nend\ndef dispose\n@cursor.dispose_all\nkyon_kursor_win_sv_file_disp\nend\ndef cursor_offset\n:save\nend\nend"
+    },
+    {
+      "post_id": "js-post-1533160",
+      "author": "kyonides",
+      "date": "2025-10-12T04:49:23+0900",
+      "body": "I won't check it out until OP posts his modified version of the script between \"[ code=ruby ]\" and \"[ /code ]\" tags without \"quotation marks\" and empty spaces inside the [brackets] for a very simple reason: it's a time consuming process to properly indent every single line to make it readable."
+    },
+    {
+      "post_id": "js-post-1533165",
+      "author": "Roninator2",
+      "date": "2025-10-12T05:22:52+0900",
+      "body": "kyonides said:\nI won't check it out until OP posts his modified version of the script\nClick to expand...\nI compared the one he just posted to the one that is in the game.\nIt is the same expect for the\n@Index\nis\n@Index\nin the script but his posted script above it is\n@Index\nand comparing it to your demo project the only difference is the constants\nchanged\nCURSOR_INDEX = 0\nCURSOR_OFFSET_X = -8\nCURSOR_OFFSET_Y = 9\noriginal\nCURSOR_INDEX = 5\nCURSOR_OFFSET_X = -4\nCURSOR_OFFSET_Y = 20"
+    },
+    {
+      "post_id": "js-post-1533170",
+      "author": "kyonides",
+      "date": "2025-10-12T05:35:55+0900",
+      "body": "Well, I just recently installed this game on Steam Linux via Proton 9.0 and it seems to be working normally. Yet, I noticed something there...\nOr should I say I DIDN'T find something there?\nI even got the \"A New Beginning\" achievement on Steam.\nEDIT 1\nYet, I think the real issue here isn't my script but the default script Scene_File. I even posted a\nnew thread\nregarding the way it disposes of the windows there.\nEDIT 2\nI had to edit the order of the disposal of those objects because I had inverted them for some weird reason. :S"
+    },
+    {
+      "post_id": "js-post-1533197",
+      "author": "knuckles_the_chuckles",
+      "date": "2025-10-12T10:05:49+0900",
+      "body": "kyonides said:\nWell, I just recently installed this game on Steam Linux via Proton 9.0 and it seems to be working normally. Yet, I noticed something there...\nView attachment 351147\nOr should I say I DIDN'T find something there?\nI even got the \"A New Beginning\" achievement on Steam.\nEDIT 1\nYet, I think the real issue here isn't my script but the default script Scene_File. I even posted a\nnew thread\nregarding the way it disposes of the windows there.\nEDIT 2\nI had to edit the order of the disposal of those objects because I had inverted them for some weird reason. :S\nClick to expand...\nYeah I ended up removing the f12 script, thinking about it I kinda realized it wasn't really fixing anything too worth while and, after what that game reviewer told me, there's a chance it was actually causing issues for some people, So I figured it was best to remove it.\nAs for the memory leaks problem, I'm assuming following that new thread should solve it?\nThank you so much by the way."
+    },
+    {
+      "post_id": "js-post-1533467",
+      "author": "Roninator2",
+      "date": "2025-10-15T08:30:05+0900",
+      "body": "knuckles_the_chuckles said:\nAs for the memory leaks problem, I'm assuming following that new thread should solve it?\nClick to expand...\nOne of them. there is still one more. Your CRT filter stuff. When entering the save screen with that it causes an entry in GOBJ.\nas soon as I start a game it comes up. whether or not it is an actual issue, I'm not sure. It's something that is created and never disposed so it shows as a memory leak.\nIf it was in every scene where it was created and disposed then it probably would not show as a memory leak.\nTime: 2025-10-14 19:27:41 -0400\nMemory Leak #<Sprite:0xebd7320>\nIn Scene NilClass\nCreation Stack::\nScript 0148 -- crt filter, Line: 2:in `<main>'\nruby:in `eval'\n-----\nTime: 2025-10-14 19:27:41 -0400\nMemory Leak #<Sprite:0xebd6d80>\nIn Scene NilClass\nCreation Stack::\nScript 0148 -- crt filter, Line: 3:in `<main>'\nruby:in `eval'\nAlso you still need to delete the gobj.txt file from the main directory. It does not need to be a part of your game.\nEven the GOBJ script could be removed when you are confident there are no more problems."
+    },
+    {
+      "post_id": "js-post-1533516",
+      "author": "knuckles_the_chuckles",
+      "date": "2025-10-15T17:20:59+0900",
+      "body": "Roninator2 said:\nOne of them. there is still one more. Your CRT filter stuff. When entering the save screen with that it causes an entry in GOBJ.\nas soon as I start a game it comes up. whether or not it is an actual issue, I'm not sure. It's something that is created and never disposed so it shows as a memory leak.\nIf it was in every scene where it was created and disposed then it probably would not show as a memory leak.\nTime: 2025-10-14 19:27:41 -0400\nMemory Leak #<Sprite:0xebd7320>\nIn Scene NilClass\nCreation Stack::\nScript 0148 -- crt filter, Line: 2:in `<main>'\nruby:in `eval'\n-----\nTime: 2025-10-14 19:27:41 -0400\nMemory Leak #<Sprite:0xebd6d80>\nIn Scene NilClass\nCreation Stack::\nScript 0148 -- crt filter, Line: 3:in `<main>'\nruby:in `eval'\nAlso you still need to delete the gobj.txt file from the main directory. It does not need to be a part of your game.\nEven the GOBJ script could be removed when you are confident there are no more problems.\nClick to expand...\nYeah I was reading through the text file and noticed it.\nI don't think the crt filter memory leak is causing any noticeable issues.\nI should probably look into to it though as see how to make so it doesn't cause any memory leaks\nThank you so much for your help"
+    }
+  ]
+}

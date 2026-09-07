@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/mp-gain-on-kills.181562",
+  "title": "MP gain on kills?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:59.652067+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1541501",
+      "author": "Gammatoad",
+      "date": "2025-12-22T23:16:12+0900",
+      "body": "Hello everyone,\nI've been trying to mess around with a game mechanic where a character can recover MP whenever they kill an enemy.\nI've tried using shared battle events for it, but I failed miserably. My issue stems from not being able to create an event that changes depending on who's killing the foe. Keep in mind that I don't mean a mechanic like life steal, I mean a static % gain when you kill a foe with any skill or attack.\nIs it even possible to create a plugin for this? I'm not sure how RPG Maker MV deals with on-kill effects. I've looked at Yanfly's Death Nova plugin but that's not exactly what I want.\nMy ideal plugin would work like this:\n<MP gain on kill: X%>\nA note tag on a state/item/actor.\nDoes anybody know of a plugin that could work like this? I own the Yanfly collection so maybe I'm sitting on the solution already."
+    },
+    {
+      "post_id": "js-post-1541543",
+      "author": "rpgLord69",
+      "date": "2025-12-23T04:40:40+0900",
+      "body": "Doesn't it work with just Yanfly Buffs & States notetag?\n<Custom Establish Effect>\nif (target.isDead())\nuser.gainMp(user.mmp*0.1);\n</Custom Establish Effect>\nIf you want it on an actor or equipment, you can put a passive state on it."
+    },
+    {
+      "post_id": "js-post-1541609",
+      "author": "Gammatoad",
+      "date": "2025-12-23T19:17:08+0900",
+      "body": "I just tested it with a passive state, my MP was at 40/100 when I killed a foe and it didn't increase. Perhaps because that kill ended the battle? I'm not sure what the issue could be."
+    },
+    {
+      "post_id": "js-post-1541614",
+      "author": "rpgLord69",
+      "date": "2025-12-23T21:21:52+0900",
+      "body": "Change the target.isDead() check to target.hp <= 0"
+    },
+    {
+      "post_id": "js-post-1541637",
+      "author": "Gammatoad",
+      "date": "2025-12-24T00:11:50+0900",
+      "body": "<Custom Establish Effect>\nif (target.hp <= 0())\nuser.gainMp(user.mmp*0.1);\n</Custom Establish Effect>\nI tried this, and it didn't work. Perhaps I skipped a character somewhere?\nOh, I forgot to mention that I'm using BattleSysSTB. Might that be what's causing this issue?"
+    },
+    {
+      "post_id": "js-post-1541640",
+      "author": "Robro33",
+      "date": "2025-12-24T00:30:33+0900",
+      "body": "Gammatoad said:\nI tried this, and it didn't work. Perhaps I skipped a character somewhere?\nClick to expand...\nGammatoad said:\nif (target.hp <= 0())\nClick to expand...\nyouve added some. the line should be:\nCode:\nif (target.hp <= 0)\nalso thing to note is that this'll go off any time the user hits a target and they end up with with 0 hp. if your game has multi hitting skills or regularly features enemies that resist KO, the player would get multiple activations from them. otherwise it should work fine.\nGammatoad said:\nOh, I forgot to mention that I'm using BattleSysSTB. Might that be what's causing this issue?\nClick to expand...\npartially, but just for the first one. having that means you have yanfly's battle core engine installed, and that one is the one that makes it so that by default battlers dont die immediately after fatal damage is taken."
+    },
+    {
+      "post_id": "js-post-1541642",
+      "author": "Gammatoad",
+      "date": "2025-12-24T00:49:18+0900",
+      "body": "Yeah, that was it! It works now, thank you!"
+    }
+  ]
+}

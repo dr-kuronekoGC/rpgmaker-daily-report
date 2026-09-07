@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-mz-how-to-hide-item-quantities.181681",
+  "title": "MZ RPG Maker MZ How to hide item quantities",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:34.373207+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1542406",
+      "author": "DiscoReunion",
+      "date": "2025-12-30T21:22:31+0900",
+      "body": "Hello !\nIs there a way to hide item quantities in menu in MZ ?\nI use both item and key item for my game, which are two separate catergories. The key item doesn't have quantities so that's perfect, but I didn't find a way to hide the item quantities (the only thing I found during my research was a plugin for MV)."
+    },
+    {
+      "post_id": "js-post-1542407",
+      "author": "rpgLord69",
+      "date": "2025-12-30T21:52:29+0900",
+      "body": "I think you can modify that method (save as .js file and add as a plugin) to always return false\nWindow_ItemList.prototype.needsNumber = function() {\nif (this._category === \"keyItem\") {\nreturn $dataSystem.optKeyItemsNumber;\n} else {\nreturn true;\n}\n};"
+    },
+    {
+      "post_id": "js-post-1542408",
+      "author": "Aerosys",
+      "date": "2025-12-30T21:52:36+0900",
+      "body": "Globally for every item?\nMake a new plugin file with any name and paste this:\nJavaScript:\n/*:\n * @target MZ\n */\n\nWindow_ItemList.prototype.needsNumber = function() {\n    return false;\n}"
+    },
+    {
+      "post_id": "js-post-1542487",
+      "author": "DiscoReunion",
+      "date": "2025-12-31T20:36:48+0900",
+      "body": "Ok, thanks a lot!!"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/but-can-it-run-doom.181785",
+  "title": "MV But... Can it run Doom?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:29.404054+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1543075",
+      "author": "mario135790_",
+      "date": "2026-01-05T17:09:43+0900",
+      "body": "Can It Run Doom?\nmario135790_, original port to WebAssembly made by\ndiekmann\nIntroduction\nCan your RPG Maker MV games run Doom? Apparently yes, they can.\nRPG Maker MV (and MZ) games use NW.js, which itself is based on the Chromium browser engine and the Node.js runtime, both of which provide native support for WebAssembly. I didn't find anything related to anyone trying this, so I figured I would try. Turns out it is possible.\nThis uses diekmann's WebAssembly port. I chose this over heavier ports like Dwasm because it's stripped down, and I figured it would be much easier to inject into the RPG Maker engine without breaking a lot of stuff. Now, to be fair, I didn't even begin to try to get Dwasm working, but... if it works, it works.\nI really need to emphasize this, I did pretty much none of the hard work, that was all diekmann. I just made the NW.js app start up the Doom engine and handle the inputs.\nFeatures\nFor rendering, it uses a dedicated canvas overlaid on the game window.\nThe port has no native sound driver, so the plugin plays a BGM of your choice instead. You can configure the song name in the Plugin Manager (default: DoomBGM).\nI also included a crash handler. If Doom crashes (which happens when trying to save/load or when exiting the game in the menu), it catches the error and returns you to the main game rather than killing the whole application.\nScreenshots\nHow to Use\nPretty much plug and play. Drop the data and js folders into your project's root directory. Make sure doom.js, doom.wasm, and doom1.wad are located inside YourProject/data/doom/.\nTo play a different WAD, replace doom1.wad with your own WAD file, but keep the filename as doom1.wad so the engine recognizes it.\nTo start the game, use the PlayDoom plugin command.\nI don't know if it requires updating NW.js, but I recommend doing it anyway.\nPlugin Commands\nPlayDoom: Starts Doom.\nTerms and Credits\nHonestly... doubt you would use this in your game but, there's no need for credit.\nMajor props to diekmann for his work back in 2021.\nDisclaimer about AI usage:\nAI was used for debugging and to polish the CSS to make the game canvas full screen. Everything else is hand made.\nDownload\nitch.io"
+    },
+    {
+      "post_id": "js-post-1543876",
+      "author": "mario135790_",
+      "date": "2026-01-11T13:23:16+0900",
+      "body": "Updated\nitch.io\n! Now using\nDwasm\n!\nTurns out using Dwasm was incredibly straightforward. I tried doing the same thing I did for diekmann's port. Didn't work.\nThen I thought: \"Wait... why not run it in a sandboxed iframe?\"\nDid that. It worked.\nSo yeah, if you REALLY REALLY want Doom running on your game with pretty much everything working and custom WAD support, there it is.\nNext thing I'd like to explore is getting Doom to communicate back to RPG Maker. Things like triggering common events, activating switches, or incrementing variables. That could open up some really cool possibilities, but it would require modifying the Doom source code itself, and... I don't know much about C, so I don't know if I could do that haha."
+    },
+    {
+      "post_id": "js-post-1543886",
+      "author": "TheAM-Dol",
+      "date": "2026-01-11T14:11:02+0900",
+      "body": "I didn't check the files, but since your description doesn't make it very clear: are you distributing DOOM or does it require the person to own DOOM in order to make this work?\nI'm also not up on the legal state of DOOM. While I am aware it's become a meme of \"can it run DOOM?\" (and usually the answer is yes\nI'd be more fascinated what\ncan't\nrun DOOM at this point.) most of that has been done as personal projects. I'm not aware if it has an open license at this point. I'd err on the side of it not, considering official versions are still listed and distributed by Bethesda - owner of the DOOM rights now.\nAnother thing I am not 100% sure on - since I am not a mod - but the forum cannot condone piracy and if you are distributing the DOOM files with this, that would be a form of it...so you may need to alter the distribution so that the player is required to have their own copy of DOOM (assuming you aren't already doing that.)\nVery funny though, I approve."
+    },
+    {
+      "post_id": "js-post-1543887",
+      "author": "mario135790_",
+      "date": "2026-01-11T14:23:36+0900",
+      "body": "TheAM-Dol said:\nI didn't check the files, but since your description doesn't make it very clear: are you distributing DOOM or does it require the person to own DOOM in order to make this work?\nClick to expand...\nDon't worry haha Doom Shareware is perfectly legal to distribute and is included with the plugin. It would be another story if I just included the full game in there.\nAlso, yes, there is a disclaimer stating that you need to own the games if you intend to use them with the plugin, and Freedoom is suggested as an alternative."
+    },
+    {
+      "post_id": "js-post-1543889",
+      "author": "DevRPG2k",
+      "date": "2026-01-11T14:35:28+0900",
+      "body": "This reminded me of a guy who was merging Rm2k3 with Wolf4SDL."
+    }
+  ]
+}

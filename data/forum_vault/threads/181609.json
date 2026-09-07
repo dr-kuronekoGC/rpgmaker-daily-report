@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/does-anyone-know-how-to-make-name-titles-like-this-game.181609",
+  "title": "Does anyone know how to make name titles like this game?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:02:58.143848+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1541894",
+      "author": "Jasanimation",
+      "date": "2025-12-26T00:46:46+0900",
+      "body": "Im a very big fan of the Project Moon games, and i really want to find a way to add name titles next to the names like this"
+    },
+    {
+      "post_id": "js-post-1541898",
+      "author": "rpgLord69",
+      "date": "2025-12-26T01:51:40+0900",
+      "body": "I guess you can use Yanfly Message Core for the name box and then something like Triacontane WindoBackImage to show a picture background. Then copy the functionality in Yanfly where it checks the name to also check for a title tag. Add the title draw line and change the coordinates where the name and title are drawn. Then I think you can set the name box rotation if you want, in initialize or refresh or whatever."
+    },
+    {
+      "post_id": "js-post-1541900",
+      "author": "ShadowDragon",
+      "date": "2025-12-26T02:04:15+0900",
+      "body": "if you want it dynamic, you need to have to rotate the text.\nso you can try to modify YEP_MessageCore as given above,\nanother way is to use picture with the id's,  so it will be drawn by that.\nbut other that that, I have no idea, I did change a title plugin to add pivot\nto rotate the text in an angle, which you need to create the same effect."
+    },
+    {
+      "post_id": "js-post-1541902",
+      "author": "Jasanimation",
+      "date": "2025-12-26T02:20:02+0900",
+      "body": "rpgLord69 said:\nI guess you can use Yanfly Message Core for the name box and then something like Triacontane WindoBackImage to show a picture background. Then copy the functionality in Yanfly where it checks the name to also check for a title tag. Add the title draw line and change the coordinates where the name and title are drawn. Then I think you can set the name box rotation if you want, in initialize or refresh or whatever.\nClick to expand...\nif this is not a big deal, would you mind making one to show me? Just the nametag and the title would be perfect"
+    },
+    {
+      "post_id": "js-post-1541903",
+      "author": "rpgLord69",
+      "date": "2025-12-26T03:08:08+0900",
+      "body": "I added a couple of lines to the refresh to draw the title.\nAnd I added to the windowHeight and set the windowWidth as fixed, since I assume it's used with picture background (from the Triacontane plugin).\nYou can set the title name before the message with a script box:\n$gameTemp._titleName = \"MASTER\";\nI'm not familiar with the codes checking for the tags inside the message window, so I made it like that. If you want a message box tag, ask someone else or AI LOL.\nCopy paste the below in notepad, save as .js file and add as a plugin (you can add lines to change the color or font size etc if you want):\nWindow_NameBox.prototype.windowHeight = function() {\nreturn 120;\n};\nWindow_NameBox.prototype.windowWidth = function() {\nreturn 200;\n};\nWindow_NameBox.prototype.refresh = function(text, position) {\nconst titleName = $gameTemp._titleName || \"\";\nthis.show();\nthis._lastNameText = text;\nthis._text = Yanfly.Param.MSGNameBoxText + text;\nthis._position = position;\nthis.width = this.windowWidth();\nthis.createContents();\nthis.contents.clear();\nthis.resetFontSettings();\nthis.changeTextColor(this.textColor(Yanfly.Param.MSGNameBoxColor));\nvar padding = eval(Yanfly.Param.MSGNameBoxPadding) / 2;\nthis.drawTextEx(titleName, padding, 0, this.contents.width);\nthis.drawTextEx(this._text, padding, 50, this.contents.width);\nthis._parentWindow.adjustWindowSettings();\nthis._parentWindow.updatePlacement();\nthis.adjustPositionX();\nthis.adjustPositionY();\nthis.open();\nthis.activate();\nthis._closeCounter = 4;\nreturn '';\n};"
+    }
+  ]
+}
