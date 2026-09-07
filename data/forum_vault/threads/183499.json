@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-change-npcs-events-offset.183499",
+  "title": "MV How to change NPC's/Event's offset",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:54.517077+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1555471",
+      "author": "Mandelic_Mark",
+      "date": "2026-05-05T21:52:52+0900",
+      "body": "For the past day I have been trying to figure out how do I change the character's offset, but I couldn't find any solution as the ones I found either weren't for MV, were unsovled or were locked behind a paywall\nI basically want to change the character's/event's hitbox to be located in the feet area, but due to how the RPG Maker MV hitboxes works, it forces it into the bottom of the character, which in this case is the head area\nI would gladly appreciate any help with this issue"
+    },
+    {
+      "post_id": "js-post-1555472",
+      "author": "bgillisp",
+      "date": "2026-05-05T21:59:23+0900",
+      "body": "You'll be needing a plugin as the hitboxes are coded into the engine. Yes that may require paying."
+    },
+    {
+      "post_id": "js-post-1555477",
+      "author": "I_LIKE_BREAD7",
+      "date": "2026-05-05T23:29:46+0900",
+      "body": "One simple way you can do this without a plugin is this:\nAdd this script call\nJavaScript:\n$gameMap.event(1).shiftY = () => -48\nto some autorun or parallel event to shift the character's sprite down. Replace \"48\" with your character's height (but keep the minus sign), and \"1\" with the character's event id. If it's supposed to be the player do\nJavaScript:\n$gamePlayer.shiftY = () => -48\ninstead. You can also adjust the \"48\" value to whatever fits the most for your game.\nThe event / player will be displayed one tile below it's actual position, making it effectively have a hitbox above itself. If you need something more sophisticated you might need a plugin, though."
+    },
+    {
+      "post_id": "js-post-1555479",
+      "author": "Synrec",
+      "date": "2026-05-05T23:35:48+0900",
+      "body": "EDIT: Removed non-functional"
+    },
+    {
+      "post_id": "js-post-1555490",
+      "author": "Andar",
+      "date": "2026-05-06T02:22:01+0900",
+      "body": "Actually there are no hitboxes in the default engine at all, the default works by coordinate comparison.\nand since the sprites are centered bottom by default, the lower end of the tall sprites is where the event is located as far as the engine assumes.\nwhich means you can either use a plugin that creates hitboxes, or one that allows you to change where the sprite is centered (what you call changing the offset).\n@Synrec\ntip above will not work, because blank space can only move the sprite up, not down - there is no negative space on a spritesheet that is centered bottom."
+    },
+    {
+      "post_id": "js-post-1555614",
+      "author": "ElvenNeko",
+      "date": "2026-05-06T21:27:33+0900",
+      "body": "This plugin is very good for percise offsetting:\nhttps://taaspider.itch.io/taa-eventoffset\nThe only problem that at the start of the map the imagies will move from starting position to their offset position. This can be avoided to having a screen fade out before entering the location, and fading in after wait of 30 frames on autorun (then switching off, and switching on again after player leaves). This way the movement will happen offscreen."
+    },
+    {
+      "post_id": "js-post-1555631",
+      "author": "Andar",
+      "date": "2026-05-07T00:40:21+0900",
+      "body": "ElvenNeko said:\n(then switching off, and switching on again after player leaves).\nClick to expand...\nbad idea - instead after the fade-in you use the erase event command.\nerased events are automatically reloaded on entering a map, so no need with any switches (or forgetting to reset them)"
+    },
+    {
+      "post_id": "js-post-1556479",
+      "author": "KaijuuKimi",
+      "date": "2026-05-16T18:22:15+0900",
+      "body": "Qmovement could change the event hitbox but that will require you to not use other walking system."
+    }
+  ]
+}

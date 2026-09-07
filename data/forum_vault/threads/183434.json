@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/disable-all-mouse-input-controls.183434",
+  "title": "Disable All Mouse Input Controls",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:55.621174+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1554963",
+      "author": "stutheman",
+      "date": "2026-04-30T09:57:15+0900",
+      "body": "A nice simple plugin that does exactly what it says on the tin.\nIt fully disables mouse input including :\nClicking\nWheel\nThe only thing the mouse works on is pressing the X button to close the game\nP.S this is my first rpg maker mv plugin any response is good responses thanks\nTerms of Use : can be used for any project so long as im credited in some way\nJavaScript:\n/*:\n * @plugindesc Fully disables all mouse and touch input. Keyboard and gamepad still work. v1.0\n * @author Stuart - BUZZ GAMES\n *\n * @help\n * This plugin disables:\n * - Left click\n * - Right click\n * - Middle click\n * - Touch/tap input\n * - Mouse movement input\n * - Mouse wheel input\n * - Map click movement\n * - Menu interaction by mouse\n *\n * Keyboard and gamepad remain functional.\n *\n * No plugin commands.\n */\n\n(function() {\n    \"use strict\";\n\n    // Disable touch/mouse trigger detection\n    TouchInput.isPressed = function() {\n        return false;\n    };\n\n    TouchInput.isTriggered = function() {\n        return false;\n    };\n\n    TouchInput.isRepeated = function() {\n        return false;\n    };\n\n    TouchInput.isLongPressed = function() {\n        return false;\n    };\n\n    TouchInput.isCancelled = function() {\n        return false;\n    };\n\n    TouchInput.isMoved = function() {\n        return false;\n    };\n\n    TouchInput.isReleased = function() {\n        return false;\n    };\n\n    // Prevent updating mouse/touch state entirely\n    TouchInput._onMouseDown = function() {};\n    TouchInput._onMouseMove = function() {};\n    TouchInput._onMouseUp = function() {};\n    TouchInput._onWheel = function() {};\n    TouchInput._onTouchStart = function() {};\n    TouchInput._onTouchMove = function() {};\n    TouchInput._onTouchEnd = function() {};\n    TouchInput._onTouchCancel = function() {};\n    TouchInput._onPointerDown = function() {};\n\n    // Prevent map clicking movement\n    Scene_Map.prototype.processMapTouch = function() {\n        // Disabled completely\n    };\n\n})();"
+    },
+    {
+      "post_id": "js-post-1555060",
+      "author": "DevRPG2k",
+      "date": "2026-05-01T15:42:25+0900",
+      "body": "You can replace the entire\nPrevent updating mouse/touch state entirely\nsection with this:\nCode:\nTouchInput._setupEventHandlers = function() {};"
+    },
+    {
+      "post_id": "js-post-1556331",
+      "author": "stutheman",
+      "date": "2026-05-15T05:07:30+0900",
+      "body": "thanks dev with coffee"
+    }
+  ]
+}

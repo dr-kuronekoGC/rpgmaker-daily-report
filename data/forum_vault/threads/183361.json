@@ -1,0 +1,155 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/disabling-anti-aliasing-for-everything-resolved.183361",
+  "title": "MV Disabling anti-aliasing for everything [RESOLVED]",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:40.900861+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1554336",
+      "author": "Dachimotsu",
+      "date": "2026-04-23T17:47:12+0900",
+      "body": "I'm making an 8-bit style RPG with a smaller native resolution than normal. After arguing with ChatGPT for a few hours, I've managed to get a plugin working that gives me a custom resolution that doesn't blur any of the graphics when stretched to full-screen. However, even after making and importing in a new, pixelated, 12-point font (using Yanfly Engine Core) and trying several different plugins (both AI- and human-made), the in-game text is still blurry.\nI'm not sure what else to do. I need all the graphics in the game to scale via Nearest-Neighbor in order to maintain the NES palette."
+    },
+    {
+      "post_id": "js-post-1554339",
+      "author": "caethyril",
+      "date": "2026-04-23T18:27:19+0900",
+      "body": "You may want to check out these plugins:\nPixel Perfect for RPG Maker MV/MZ by Galenmereth\nA free pay-if-you-want plugin for RPG Maker MV and MZ that enables pixel-perfect scaling mode\ngalenmereth.itch.io\nMZ - OpenType Pixel Font Renderer (MV & MZ)\nDownload link: https://utstudio.itch.io/otpfmvz  Introduction This plugin uses opentype.js - an OpenType/TTF font parser - to achieve precise text rendering in both browser and Node.js environments. The plugin is designed specifically for pixel-perfect font display, it modifies the core...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1554386",
+      "author": "Eliaquim",
+      "date": "2026-04-24T03:39:50+0900",
+      "body": "Hi!\nBesides you need pixel perfect plugin, you can also try my Bitmap Font plugin to render pixel perfect fonts/text. it's free:\nHakuen Studio MV Museum by Hakuen Studio\nAll Hakuen Studio MV Plugins! For free!\nhakuenstudio.itch.io"
+    },
+    {
+      "post_id": "js-post-1554423",
+      "author": "Dachimotsu",
+      "date": "2026-04-24T14:36:46+0900",
+      "body": "Eliaquim said:\nHi!\nBesides you need pixel perfect plugin, you can also try my Bitmap Font plugin to render pixel perfect fonts/text. it's free:\nHakuen Studio MV Museum by Hakuen Studio\nAll Hakuen Studio MV Plugins! For free!\nhakuenstudio.itch.io\nClick to expand...\nHi, Eli! I'm trying to use your Eli_BitmapFontPro plugin, but it's not recognizing the bitmap image. The image is crisp black pixels on transparent background, and sliced/gridded properly. Eli_Book is at the top of the load order, and all other font settings are disabled. Despite all that, the game just defaults to its regular Arial-looking font."
+    },
+    {
+      "post_id": "js-post-1554449",
+      "author": "Eliaquim",
+      "date": "2026-04-25T00:14:41+0900",
+      "body": "Dachimotsu said:\nHi, Eli! I'm trying to use your Eli_BitmapFontPro plugin, but it's not recognizing the bitmap image. The image is crisp black pixels on transparent background, and sliced/gridded properly. Eli_Book is at the top of the load order, and all other font settings are disabled. Despite all that, the game just defaults to its regular Arial-looking font.\nView attachment 364954\nClick to expand...\nHi!\nYou need to put something on the Font Face in the plugin parameter. It's like an ID.\nThe plugin parameter \"All Characters\" is empty. It should be filled according to the font bitmap file you created.\nThe bitmap font image is not properly configured. It must be an image with a single row. Your image has 6 rows.\nIn the same place you download the plugin, there is a sample project. Take a look at it regarding the bitmap font. See how the plugin parameters are configured and also how the bitmap font is created under the system folder."
+    },
+    {
+      "post_id": "js-post-1554512",
+      "author": "Dachimotsu",
+      "date": "2026-04-25T12:48:39+0900",
+      "body": "Eliaquim said:\nHi!\nYou need to put something on the Font Face in the plugin parameter. It's like an ID.\nThe plugin parameter \"All Characters\" is empty. It should be filled according to the font bitmap file you created.\nThe bitmap font image is not properly configured. It must be an image with a single row. Your image has 6 rows.\nIn the same place you download the plugin, there is a sample project. Take a look at it regarding the bitmap font. See how the plugin parameters are configured and also how the bitmap font is created under the system folder.\nClick to expand...\nOkay, I reformatted the bitmap font image to be all one row, ordered exactly the way it is in the parameters. I read over\nthis document\nmany times, and explored your sample project. However, MV doesn't seem to be recognizing the Eli-BitmapFont plugin. I've tried disabling all my plugins in different combinations, but nothing is making the bitmap font appear in-game."
+    },
+    {
+      "post_id": "js-post-1554514",
+      "author": "Eliaquim",
+      "date": "2026-04-25T13:58:10+0900",
+      "body": "Dachimotsu said:\nOkay, I reformatted the bitmap font image to be all one row, ordered exactly the way it is in the parameters. I read over\nthis document\nmany times, and explored your sample project. However, MV doesn't seem to be recognizing the Eli-BitmapFont plugin. I've tried disabling all my plugins in different combinations, but nothing is making the bitmap font appear in-game.\nView attachment 365012\nClick to expand...\nWell, that is really strange.\n1) No error pops up?\n2) The game just loads like the bitmap font does not exist? The game font is displayed the same way by default?\n3) You filled the AllCharacters parameter in the same order as the characters are on your bitmap font?\n4) If you put my plugins below Yanfly, or at the bottom of your list, it works?\n5) If you disable all plugins, and leave only Eli Book and Bitmap Font, it works?\nPress F8 or F12, a browser window will open. Go to the CONSOLE tab and send me a screenshot of what is in there."
+    },
+    {
+      "post_id": "js-post-1554515",
+      "author": "12yao",
+      "date": "2026-04-25T14:32:18+0900",
+      "body": "."
+    },
+    {
+      "post_id": "js-post-1554520",
+      "author": "Dachimotsu",
+      "date": "2026-04-25T16:39:23+0900",
+      "body": "Eliaquim said:\nWell, that is really strange.\n1) No error pops up?\n2) The game just loads like the bitmap font does not exist? The game font is displayed the same way by default?\n3) You filled the AllCharacters parameter in the same order as the characters are on your bitmap font?\n4) If you put my plugins below Yanfly, or at the bottom of your list, it works?\n5) If you disable all plugins, and leave only Eli Book and Bitmap Font, it works?\nPress F8 or F12, a browser window will open. Go to the CONSOLE tab and send me a screenshot of what is in there.\nClick to expand...\n1) None, but there is an error in the console tab (see below).\n2) Correct.\n3) Painstakingly. I've attached a screenshot of the whole bitmap image (white bg added for visibility).\n4)Yanfly is at the top. Eli Book and Bitmap Font don't work whether they're second or last in the list.\n5) Disabled all plugins except the two Eli's, and nothing.\nScreenshots:"
+    },
+    {
+      "post_id": "js-post-1554565",
+      "author": "Eliaquim",
+      "date": "2026-04-26T04:45:12+0900",
+      "body": "Dachimotsu said:\n1) None, but there is an error in the console tab (see below).\n2) Correct.\n3) Painstakingly. I've attached a screenshot of the whole bitmap image (white bg added for visibility).\nView attachment 365024\n4)Yanfly is at the top. Eli Book and Bitmap Font don't work whether they're second or last in the list.\n5) Disabled all plugins except the two Eli's, and nothing.\nScreenshots:\nView attachment 365025\nView attachment 365026\nClick to expand...\nThe plugin is really not working because there is an error happening on parsing the All Characters parameters. This usually points to something that is not setup right. But on your previous screenshots everything seems to be ok... i'm curious. Can you send me a sample project replicating this issue? Can send a link here or via PM here on the forums. I will take a look into it."
+    },
+    {
+      "post_id": "js-post-1554607",
+      "author": "Dachimotsu",
+      "date": "2026-04-26T12:07:50+0900",
+      "body": "Eliaquim said:\nThe plugin is really not working because there is an error happening on parsing the All Characters parameters. This usually points to something that is not setup right. But on your previous screenshots everything seems to be ok... i'm curious. Can you send me a sample project replicating this issue? Can send a link here or via PM here on the forums. I will take a look into it.\nClick to expand...\nHuh. Actually, starting a new project and reinstalling the same plugins... fixed it. It works now.\n... Computers, right? Anyway, thank you very much!\nEDIT: Actually, I am having one more problem with the font. There's far too much space above and below each line, and none of my edits to various Line Height settings are changing it."
+    },
+    {
+      "post_id": "js-post-1554609",
+      "author": "Eliaquim",
+      "date": "2026-04-26T13:50:13+0900",
+      "body": "Dachimotsu said:\nHuh. Actually, starting a new project and reinstalling the same plugins... fixed it. It works now.\n... Computers, right? Anyway, thank you very much!\nEDIT: Actually, I am having one more problem with the font. There's far too much space above and below each line, and none of my edits to various Line Height settings are changing it.\nView attachment 365118\nClick to expand...\nMaybe the problem could be that you are trying to load a previous save game where the Bitmap Font plugin was not present.\nThe height of the font is decided by the height value of the bitmap font file itself. It seems to me that you have a lot of empty space for the font:\nDachimotsu said:\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1554610",
+      "author": "Dachimotsu",
+      "date": "2026-04-26T13:55:09+0900",
+      "body": "Eliaquim said:\nMaybe the problem could be that you are trying to load a previous save game where the Bitmap Font plugin was not present.\nThe height of the font is decided by the height value of the bitmap font file itself. It seems to me that you have a lot of empty space for the font:\nClick to expand...\nI already deleted all the empty space in the font image. There's now no more than one pixel of space above and below the glyphs. And this is in a brand new project; there's no old save to load."
+    },
+    {
+      "post_id": "js-post-1554631",
+      "author": "Eliaquim",
+      "date": "2026-04-26T23:51:21+0900",
+      "body": "Dachimotsu said:\nI already deleted all the empty space in the font image. There's now no more than one pixel of space above and below the glyphs. And this is in a brand new project; there's no old save to load.\nClick to expand...\nAnd what is the height of the new bitmap font file?"
+    },
+    {
+      "post_id": "js-post-1554661",
+      "author": "Dachimotsu",
+      "date": "2026-04-27T11:36:20+0900",
+      "body": "It's exactly 1692x18.\n1692 / 94 glyphs, each one is 18 pixels wide.\nSo each glyph is 18x18."
+    },
+    {
+      "post_id": "js-post-1554673",
+      "author": "Eliaquim",
+      "date": "2026-04-27T18:30:15+0900",
+      "body": "Wow. That is strange. If the bitmap.png only have 18 pixel of height, it should fit just fine insise the window.\nI will have to investigate this. Send me a sample project replicating the issue so I can take a look and figure that out"
+    },
+    {
+      "post_id": "js-post-1554676",
+      "author": "Dachimotsu",
+      "date": "2026-04-27T19:24:48+0900",
+      "body": "Eliaquim said:\nWow. That is strange. If the bitmap.png only have 18 pixel of height, it should fit just fine insise the window.\nI will have to investigate this. Send me a sample project replicating the issue so I can take a look and figure that out\nClick to expand...\nI'm just gonna post a link to the Test Project here, so others can check it if they want. It contains nothing but the default assets (some adjusted settings), the plugins, and the font in question.\nhttps://www.mediafire.com/file/h3eum6sqyatk2ra/TestProject.rar/file"
+    },
+    {
+      "post_id": "js-post-1554682",
+      "author": "Eliaquim",
+      "date": "2026-04-27T20:29:54+0900",
+      "body": "Dachimotsu said:\nI'm just gonna post a link to the Test Project here, so others can check it if they want. It contains nothing but the default assets (some adjusted settings), the plugins, and the font in question.\nhttps://www.mediafire.com/file/h3eum6sqyatk2ra/TestProject.rar/file\nClick to expand...\nThanks! I will let you know when I manage to take a look!"
+    },
+    {
+      "post_id": "js-post-1554694",
+      "author": "Eliaquim",
+      "date": "2026-04-27T22:55:04+0900",
+      "body": "Dachimotsu said:\nI'm just gonna post a link to the Test Project here, so others can check it if they want. It contains nothing but the default assets (some adjusted settings), the plugins, and the font in question.\nhttps://www.mediafire.com/file/h3eum6sqyatk2ra/TestProject.rar/file\nClick to expand...\nThe problem is that you have changed your rpg_windows.js file. I got the original corescript files from the MV software folder, then I copy and pasted into your project, and everything worked fine.\nOn the left side is your rpg_windows.js file. And on the right side is the original rpg_windows.js file:\nThe line height, font size, standard padding and text padding are different.\nAfter I copy and pasted the original codes into your project, and set Yanfly and line width fix plugin to OFF the 4 lines show as usual.\nSo the problem was:\n- Your rpg_windows.js was not the same as the original, it had some changes on it.\n- Either yanfly core compatibility issue, or yanfly core changes some text/line settings that was causing to show only two lines.\n- Compatibility with the plugin line width fix"
+    },
+    {
+      "post_id": "js-post-1554777",
+      "author": "Dachimotsu",
+      "date": "2026-04-28T13:45:55+0900",
+      "body": "Eliaquim said:\nThe problem is that you have changed your rpg_windows.js file. I got the original corescript files from the MV software folder, then I copy and pasted into your project, and everything worked fine.\nOn the left side is your rpg_windows.js file. And on the right side is the original rpg_windows.js file:\nView attachment 365167\nThe line height, font size, standard padding and text padding are different.\nAfter I copy and pasted the original codes into your project, and set Yanfly and line width fix plugin to OFF the 4 lines show as usual.\nView attachment 365174\nSo the problem was:\n- Your rpg_windows.js was not the same as the original, it had some changes on it.\n- Either yanfly core compatibility issue, or yanfly core changes some text/line settings that was causing to show only two lines.\n- Compatibility with the plugin line width fix\nClick to expand...\nI appreciate the help, and I don't mean to sound ungrateful, but it still doesn't look completely fixed. The message box takes up almost the whole screen with those huge gaps between each line."
+    },
+    {
+      "post_id": "js-post-1554781",
+      "author": "Eliaquim",
+      "date": "2026-04-28T14:21:39+0900",
+      "body": "Dachimotsu said:\nI appreciate the help, and I don't mean to sound ungrateful, but it still doesn't look completely fixed. The message box takes up almost the whole screen with those huge gaps between each line.\nClick to expand...\nThe default line height of the message window, from the Window_Base is 36.\nYour font height is 18.\nThat difference is what is causing the huge gaps.\nLet's take a look from a 816x624 resoltion, just to be easier to see.\nThis is the default font, size 28, with the default line height of 36:\nThis is the bitmap font, with height of 18 and message window with line height 36:\n- The gaps are here, because of the difference between the font height and line height.\nNow, let's change the line height of the message window to 18, as you had changed with the yanfly plugin.\nThis is the default font, size 28, with the default line height of 18:\n- Changing the line height to 18, changes the message box size.\nThis is the bitmap font, with height of 18 and message window with line height 18:\nThe thing is, what made the gaps are the difference between line height and font height/size. Higher the difference, higher the gaps.\nHow to fix this? Reduce the difference. There is nothing wrong with the plugin, it is working as expected. The \"problem\" is a matter of configuration. From the line height and from the bitmap font height.\nOn your project, you had changed the line height from several points:\n- Yanfly plugin\n- rpg_windows\n- line width fix\nMy advise would change that only with yanfly.\ntake a look at a bitmap font height 18 and window line height of 22:\n- It's start to looking better!\nWith your own resolution:\nSo try tweak the line height size(or the bitmap font height) until you find a size where everything displays the way you like. Also, if you are aiming for a pixel perfect, your game resolution must also be pixel perfect. 426x240 is not. Because 426/48 = 8,875. But 240/48 = 5, so works fine."
+    },
+    {
+      "post_id": "js-post-1554870",
+      "author": "Dachimotsu",
+      "date": "2026-04-29T11:26:21+0900",
+      "body": "Eliaquim said:\nThe default line height of the message window, from the Window_Base is 36.\nYour font height is 18.\nThat difference is what is causing the huge gaps.\nLet's take a look from a 816x624 resoltion, just to be easier to see.\nThis is the default font, size 28, with the default line height of 36:\nView attachment 365215\nThis is the bitmap font, with height of 18 and message window with line height 36:\nView attachment 365216\n- The gaps are here, because of the difference between the font height and line height.\nNow, let's change the line height of the message window to 18, as you had changed with the yanfly plugin.\nThis is the default font, size 28, with the default line height of 18:\nView attachment 365218\n- Changing the line height to 18, changes the message box size.\nThis is the bitmap font, with height of 18 and message window with line height 18:\nView attachment 365219\nThe thing is, what made the gaps are the difference between line height and font height/size. Higher the difference, higher the gaps.\nHow to fix this? Reduce the difference. There is nothing wrong with the plugin, it is working as expected. The \"problem\" is a matter of configuration. From the line height and from the bitmap font height.\nOn your project, you had changed the line height from several points:\n- Yanfly plugin\n- rpg_windows\n- line width fix\nMy advise would change that only with yanfly.\ntake a look at a bitmap font height 18 and window line height of 22:\nView attachment 365220\n- It's start to looking better!\nWith your own resolution:\nView attachment 365221\nSo try tweak the line height size(or the bitmap font height) until you find a size where everything displays the way you like. Also, if you are aiming for a pixel perfect, your game resolution must also be pixel perfect. 426x240 is not. Because 426/48 = 8,875. But 240/48 = 5, so works fine.\nClick to expand...\nIt works! Now I can work on actually tweaking the way the font looks. Thank you very much for your patience.\nI can't use Paypal, but do you have a Cashtag I can use to tip you?"
+    },
+    {
+      "post_id": "js-post-1554872",
+      "author": "Eliaquim",
+      "date": "2026-04-29T11:56:39+0900",
+      "body": "Dachimotsu said:\nView attachment 365241\nIt works! Now I can work on actually tweaking the way the font looks. Thank you very much for your patience.\nI can't use Paypal, but do you have a Cashtag I can use to tip you?\nClick to expand...\nLooking good!\nGlad I manage to help you ^^\nYou can make a donation through ITCH IO if you want. Really appreciate ^^"
+    },
+    {
+      "post_id": "js-post-1554873",
+      "author": "Dachimotsu",
+      "date": "2026-04-29T12:11:09+0900",
+      "body": "Eliaquim said:\nLooking good!\nGlad I manage to help you ^^\nYou can make a donation through ITCH IO if you want. Really appreciate ^^\nClick to expand...\nSent ya $20"
+    }
+  ]
+}

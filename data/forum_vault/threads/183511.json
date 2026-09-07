@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/mv-plugin-for-instant-message-text-with-a-fade-in-animation.183511",
+  "title": "MV MV plugin for instant message text with a fade-in animation?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:54.202647+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1555587",
+      "author": "meatmanuel",
+      "date": "2026-05-06T18:34:47+0900",
+      "body": "Howdy,\nThis is an odd thing to start off with, but I'm trying to make a game in the engine that doesn't immediately look like it's made in the engine. One of the first things I'd like to tackle on that front is the typewriter text scroll, since I feel like that's pretty standard and characteristic of RPG Maker. Now, I'm aware of the \\> text code and various plugins that sort of do instant text, but all of those plugins are on the simpler side and include player-facing options. My game is extremely text-heavy (the entire focus of the game is walking around talking to people) so the thought of slapping in a text code for every line is super daunting. And on the plugin front, I'd rather not give players the ability to mess with how i want my text displayed!\nSpecifically, what I'm looking for is a plugin which displays all message text in one go with a snappy slide + fade in, sort of like how some games fade in busts, only instead of a bust it's a block of body text. Being able to fiddle with the speed of both the slide and the fade would be ideal, but not necessary so long as it's quick enough by default.\nCheers, and thanks!"
+    },
+    {
+      "post_id": "js-post-1555595",
+      "author": "SGHarlekin",
+      "date": "2026-05-06T19:08:33+0900",
+      "body": "meatmanuel said:\nI feel like that's pretty standard and characteristic of RPG Maker\nClick to expand...\nThat's pretty standard for just about any game that features any sort of dialogue.\nIn any case, with the feature you're requesting, you might as well just take the window skin, put it in gimp or similar, make a box big as you need it out of it, and just write your text in there.\nThen go and use the show/move picture commands instead of message. It can slide and fade. And since you just want all the text to immediately be there, this works perfectly."
+    },
+    {
+      "post_id": "js-post-1555618",
+      "author": "Solar_Flare",
+      "date": "2026-05-06T21:32:49+0900",
+      "body": "SGHarlekin said:\nThat's pretty standard for just about any game that features any sort of dialogue.\nIn any case, with the feature you're requesting, you might as well just take the window skin, put it in gimp or similar, make a box big as you need it out of it, and just write your text in there.\nThen go and use the show/move picture commands instead of message. It can slide and fade. And since you just want all the text to immediately be there, this works perfectly.\nClick to expand...\nWhat… no, that's a horrible suggestion. Converting your text to an image is about the worst thing you can do, for many reasons."
+    },
+    {
+      "post_id": "js-post-1555620",
+      "author": "rpgLord69",
+      "date": "2026-05-06T22:35:48+0900",
+      "body": "Hmmm, make the showfast always be true? Then when you start the message or go to new page make the message window _windowContentsSprite.opacity be 0 and then add a method to the message window update that increases that opacity by some number if it's less than 255.\nBut do you really want your text to slide in? Or you mean the whole window to slide in when you open/close it? Then I guess you can start the window x at minus game screen width and add to the window message open/close to slide it. And also change how fast the \"open/close\" slide happens. And if you also meant with the opacity the whole window opacity, you can make that change there too."
+    },
+    {
+      "post_id": "js-post-1555624",
+      "author": "meatmanuel",
+      "date": "2026-05-06T23:00:50+0900",
+      "body": "SGHarlekin said:\nThat's pretty standard for just about any game that features any sort of dialogue.\nIn any case, with the feature you're requesting, you might as well just take the window skin, put it in gimp or similar, make a box big as you need it out of it, and just write your text in there.\nThen go and use the show/move picture commands instead of message. It can slide and fade. And since you just want all the text to immediately be there, this works perfectly.\nClick to expand...\nwere the game smaller, i do think that would totally be feasible, but for my previously unspecified purposes, my game is entirely parallax mapped and contains a good deal of back-and-forth banter; so i'd rather not bloat the filesize more than is necessary.\nrpgLord69 said:\nHmmm, make the showfast always be true? Then when you start the message or go to new page make the message window _windowContentsSprite.opacity be 0 and then add a method to the message window update that increases that opacity by some number if it's less than 255.\nBut do you really want your text to slide in? Or you mean the whole window to slide in when you open/close it? Then I guess you can start the window x at minus game screen width and add to the window message open/close to slide it. And also change how fast the \"open/close\" slide happens. And if you also meant with the opacity the whole window opacity, you can make that change there too.\nClick to expand...\nthis sounds promising! i apologize, i'm more of an artist than a programmer--i follow you as far as making showfast true by default, but i wouldn't be sure how to implement the rest. that, i think i could look into, though.\ni'll edit in a moment with a video mockup of what i meant, since i'm realizing now it's difficult to explain exactly in text alone.\nEDIT: demonstration added.\nessentially what i'm after is pretty similar to what this very forum has to display posts, actually! only horizontal instead of vertical. truthfully, i wouldn't mind at all if the display animation applied to all text, but i'm not sure if that would be easier or more of a pain in the ass, lol."
+    },
+    {
+      "post_id": "js-post-1555634",
+      "author": "meatmanuel",
+      "date": "2026-05-07T01:12:24+0900",
+      "body": "oh, i should say--i'm using YEP message core, since i need character names. i imagine that might cause some compatibility differences from just the base message system?"
+    },
+    {
+      "post_id": "js-post-1555637",
+      "author": "rpgLord69",
+      "date": "2026-05-07T02:03:39+0900",
+      "body": "I was thinking about just something like below (copy paste to notepad, save as .js file and add as plugin). But it has the problem that the opacity affects the face too. If you don't want that (and if you want the text slide) you'd have to separate the face from the text, at least as far as I understand. Or then make it draw the elements every frame to new positions (with the changing opacity for the text).\nWindow_Message.prototype.updateShowFast = function() {\nthis._showFast = true;\n};\nconst _myEdit1_WindowMessage_update = Window_Message.prototype.update;\nWindow_Message.prototype.update = function() {\n_myEdit1_WindowMessage_update.call(this);\nif (this._windowContentsSprite && this._windowContentsSprite.opacity < 255) {\nthis._windowContentsSprite.opacity += 5;\n}\n};\nconst _myEdit1_WindowMessage_newPage = Window_Message.prototype.newPage;\nWindow_Message.prototype.newPage = function(textState) {\n_myEdit1_WindowMessage_newPage.call(this, textState);\nif (this._windowContentsSprite) {\nthis._windowContentsSprite.opacity = 0;\n}\n};"
+    },
+    {
+      "post_id": "js-post-1555640",
+      "author": "meatmanuel",
+      "date": "2026-05-07T02:20:56+0900",
+      "body": "oh snap! i actually really dig how it looks with the face fading in alongside. it would still be super nice to get the slide working, but just the fade alone does an absolute ton to give the text a different feel.\nthanks a heap!"
+    },
+    {
+      "post_id": "js-post-1555642",
+      "author": "Solar_Flare",
+      "date": "2026-05-07T02:37:04+0900",
+      "body": "I think you could get the slide working with logic that looks almost identical to what\n@rpgLord69\nposted. Instead of modifying\nthis._windowContentsSprite.opacity\nit would modify\nthis.x\n, placing it at\n-Graphics.boxWidth\ninitially (in newPage) and adding a fixed increment until it reaches 0.\nSide note: is it really necessary to use\nthis._windowContentsSprite.opacity\nfor the fade? I thought\nthis.opacity\nalso existed, which seems a bit simpler…"
+    },
+    {
+      "post_id": "js-post-1555644",
+      "author": "rpgLord69",
+      "date": "2026-05-07T02:46:52+0900",
+      "body": "@meatmanuel\nCool! But just to make sure, you are aware that the face fade in happens between every message? Like if the same dude is talking for two message boxes the fade in happens two times.\n@Solar_Flare\nYeah but like I said the problem is that the face would be sliding with the text. And even if they're okay with the face fade, I doubt they want to see the face slide between messages.\nAnd doesn't this.opacity target the whole window? Like it \"removes\" the whole thing. That _windowContentsSprite targets what's drawn inside."
+    },
+    {
+      "post_id": "js-post-1555645",
+      "author": "meatmanuel",
+      "date": "2026-05-07T02:53:05+0900",
+      "body": "i think, then, what i'll do is just call the face as an image when necessary instead of tying it to the message box in the event. the window isn't a problem at all, if i understand correctly, since all of the empty box elements are a single image that i'm just loading on top of all the parallax layers and they stay present as a frame even when not interacting with an event."
+    },
+    {
+      "post_id": "js-post-1555646",
+      "author": "meatmanuel",
+      "date": "2026-05-07T02:57:00+0900",
+      "body": "Solar_Flare said:\nI think you could get the slide working with logic that looks almost identical to what\n@rpgLord69\nposted. Instead of modifying\nthis._windowContentsSprite.opacity\nit would modify\nthis.x\n, placing it at\n-Graphics.boxWidth\ninitially (in newPage) and adding a fixed increment until it reaches 0.\nSide note: is it really necessary to use\nthis._windowContentsSprite.opacity\nfor the fade? I thought\nthis.opacity\nalso existed, which seems a bit simpler…\nClick to expand...\nsorry, i'm a complete noob lol--i think i understand the general principle, but i'm just not familiar enough with the functions in rpgmaker. would Graphics.boxWidth be replacing this._windowContentsSprite.opacity? or am i wholly misunderstanding?"
+    },
+    {
+      "post_id": "js-post-1555647",
+      "author": "rpgLord69",
+      "date": "2026-05-07T03:09:33+0900",
+      "body": "Yeah, if you want it to be like in you example, you can modify the plugin a bit like below. But if you have large \"offset\" and you message box doesn't reach end of screen the text can appear outside the message box and you'd probably need some kind of masks then, not sure. But yeah I think this should work for something like in your video.\nWindow_Message.prototype.updateShowFast = function() {\nthis._showFast = true;\n};\nconst _myEdit1_WindowMessage_update = Window_Message.prototype.update;\nWindow_Message.prototype.update = function() {\n_myEdit1_WindowMessage_update.call(this);\nif (this._windowContentsSprite) {\nif (this._windowContentsSprite.opacity < 255) {\nthis._windowContentsSprite.opacity += 5;\n}\nif (this._windowContentsSprite.x > 0) {\nthis._windowContentsSprite.x -= 5;\nif (this._windowContentsSprite.x < 0)\nthis._windowContentsSprite.x = 0;\n}\n}\n};\nconst _myEdit1_WindowMessage_newPage = Window_Message.prototype.newPage;\nWindow_Message.prototype.newPage = function(textState) {\n_myEdit1_WindowMessage_newPage.call(this, textState);\nif (this._windowContentsSprite) {\nthis._windowContentsSprite.opacity = 0;\nthis._windowContentsSprite.x += 100;\n}\n};"
+    },
+    {
+      "post_id": "js-post-1555658",
+      "author": "meatmanuel",
+      "date": "2026-05-07T03:52:24+0900",
+      "body": "with just a bit of fiddling to get the right offset, this worked perfectly! thanks for the help!"
+    }
+  ]
+}

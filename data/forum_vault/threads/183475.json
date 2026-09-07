@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/fixed-yanfly-quest-journal-plugin-issue.183475",
+  "title": "MV (FIXED) Yanfly Quest Journal Plugin Issue",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:54.992529+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1555285",
+      "author": "Solarae",
+      "date": "2026-05-03T22:39:17+0900",
+      "body": "I was using the Yanfly Quest Journal plugin in RPG Maker MV and everything was working normally at first. The quest menu showed up, and the system was functioning.\nThen I tried to edit the quest objectives directly inside the plugin parameters to add multiple visible objectives.\nI entered something like this:\n\"\\c[4]10 Large Stones\\c[0] found by a man in Meranlona's PUB.\",\n\"\\c[4]10 Large Pieces of Wood\\c[0] found at Mahavale by a man at the INN.\",\n\"\\c[4]Find Bread\\c[0] at any grocery store.\"\nAfter saving and testing the game, the first error appeared saying there was a problem at position 2.\nI tried adjusting the format, but after changing it again I got a new error saying there was a problem at position 0.\nAfter this, the quest system completely stopped working and the Quest Journal menu option disappeared entirely from the in-game menu.\nAt this point:\nThe Quest Journal menu no longer appears at all\nThe game shows parsing errors related to the plugin data (position 2 and position 0 depending on the attempt)\nReverting the text does not immediately restore the menu unless the plugin settings are properly reset or restored to default\nI am completely new to all of this, so I am looking for help. Once I understand the basic formatting issues, I believe that will be enough for me to continue on my own. I watched the video introducing this plugin, but I still didn’t fully understand it.\nI also made sure the plugins are in the correct order in the plugin list. The instructions say to report it if there is a bug, and I followed everything correctly at first. Everything worked fine until I changed the quest objectives from the default setup.\nAfter that, the quest system stopped working and the Quest Journal menu disappeared entirely, depending on the changes I made to the objectives."
+    },
+    {
+      "post_id": "js-post-1555287",
+      "author": "SGHarlekin",
+      "date": "2026-05-03T23:37:40+0900",
+      "body": "Just at a glance make sure you actually start a new game after making plugin changes. Changes made to parameters of a plugin do not work with a save game. Same goes for the plugin order. (By the way also make sure your yanfly plugins are in the exact correct order as outlined here to avoid bugs. I know you said you have the correct order, but you didn't share a screenshot of your plugin manager, so I'm noting it again:\nhttps://www.yanfly.moe/wiki/Category:Yanfly_Engine_Plugins\n)\nP.S. You might also wanna share a screenshot of your actual plugin parameters, more importantly the ones you're trying to edit so we can see what's actually being put in there."
+    },
+    {
+      "post_id": "js-post-1555291",
+      "author": "Solarae",
+      "date": "2026-05-04T00:08:01+0900",
+      "body": "SGHarlekin said:\nJust at a glance make sure you actually start a new game after making plugin changes. Changes made to parameters of a plugin do not work with a save game. Same goes for the plugin order. (By the way also make sure your yanfly plugins are in the exact correct order as outlined here to avoid bugs. I know you said you have the correct order, but you didn't share a screenshot of your plugin manager, so I'm noting it again:\nhttps://www.yanfly.moe/wiki/Category:Yanfly_Engine_Plugins\n)\nP.S. You might also wanna share a screenshot of your actual plugin parameters, more importantly the ones you're trying to edit so we can see what's actually being put in there.\nClick to expand...\nThis is what I have so far. I tried organizing it based on the link you provided. I feel like the Quest plugin might belong somewhere else, but according to the guide, this is where it should go (if I’m understanding it correctly).\nEverything works fine until I reach the Quest Objectives section. When I set the Visible Objectives to 3 and enter this in the Objective List:\n\"\\c[4]10 Large Stones\\c[0] found by a man in Meranlona's PUB.\",\n\"\\c[4]10 Large Pieces of Wood\\c[0] found at Mahavale by a man at the INN.\",\n\"\\c[4]Find Bread\\c[0] at any grocery store.\"\n…nothing works anymore, and I get an error (shown in the second image).\nI tried using square brackets as well, and also tried it without formatting like above, but it still doesn’t work.\nIn the end, the error always appears when I input the quest objectives, even if I leave everything else blank and only set Visible Objectives to 3. Since all three objectives are visible from the start, I assumed this setup should work, but it still breaks. The 3rd Screenshot is some info changed. I didn't mess with the rewards, description, visible rewards, and Subtext."
+    },
+    {
+      "post_id": "js-post-1555295",
+      "author": "SGHarlekin",
+      "date": "2026-05-04T00:39:18+0900",
+      "body": "Oh, that's not how that works. You do this:"
+    },
+    {
+      "post_id": "js-post-1555296",
+      "author": "ShadowDragon",
+      "date": "2026-05-04T00:40:12+0900",
+      "body": "from what I see, object list is incorrect in parsing.\nthe error is when you press Text => alter => go back to note => corrupt state\nas long there is a \"\"text field filled.\nempty this one, and note should work again.\ndoing so, you lose everything in the setup what you yet.\nso far I see, color  \"\\c\" when parsed should be visible as \"\\\\\\\\c[4]\" with extra\nbackslashes, I only see one in your screenshot (a possible incorrectly been parsed.)"
+    },
+    {
+      "post_id": "js-post-1555308",
+      "author": "Solarae",
+      "date": "2026-05-04T02:21:48+0900",
+      "body": "I seem not to understand something... I made a video\nhere on YouTube\nof what is happening. (Will delete it once the issue is fixed.) (There is no audio btw. Just showing)"
+    },
+    {
+      "post_id": "js-post-1555322",
+      "author": "ShadowDragon",
+      "date": "2026-05-04T03:32:41+0900",
+      "body": "I see the issue as you add \"Quest add 2\", but your quest ID = 1.\nso change that in your event plugin command should fix it, if the ID start at 1\nand not at 0.\nsee if that fix it."
+    },
+    {
+      "post_id": "js-post-1555325",
+      "author": "Solarae",
+      "date": "2026-05-04T04:36:41+0900",
+      "body": "ShadowDragon said:\nI see the issue as you add \"Quest add 2\", but your quest ID = 1.\nso change that in your event plugin command should fix it, if the ID start at 1\nand not at 0.\nsee if that fix it.\nClick to expand...\nI took out the Quest add 2, and it still does it."
+    },
+    {
+      "post_id": "js-post-1555368",
+      "author": "Solarae",
+      "date": "2026-05-04T19:24:33+0900",
+      "body": "I got it fixed, I believe! This info from the replies helped me learn more. Thank you!"
+    },
+    {
+      "post_id": "js-post-1555373",
+      "author": "ShadowDragon",
+      "date": "2026-05-04T20:12:09+0900",
+      "body": "what was exactly the issue and how did you fixed it (useful if someone has\nthe same issue as you.)"
+    },
+    {
+      "post_id": "js-post-1555378",
+      "author": "Solarae",
+      "date": "2026-05-04T20:45:28+0900",
+      "body": "I fixed the quest issue by correcting how the quest data was formatted for the plugin. The problem was that the description, objectives, and rewards were not structured in a way the Quest Journal plugin could properly read, so the quest wasn’t displaying or updating correctly in-game.\nI reorganized everything properly, finally.\nExample I used (multiple objectives):\n​\nDescription:\n[\"\\\"Kamma has requested materials to begin rebuilding the Goblin Village. Help gather the necessary supplies to restore what was lost.\\\"\"]\nObjectives:\n[\n\"\\\"\\\\\\\\c[4]10 Large Pieces of Wood\\\\\\\\c[0] from a man at the INN in Mahavale.\\\",\n\\\"\\\\\\\\c[4]10 Large Stones\\\\\\\\c[0] from a man at the PUB in Meranlona.\\\"\n,\n\\\"\\\\\\\\c[4]10 Pieces of Bread\\\\\\\\c[0] from any grocery store.\\\"\"\n]\nRewards:\n[\"\\\"\\\\\\\\i[314]50000 Gold\\\"\"]\nExample (single objective version):\n​\nDescription:\n[\"\\\"A villager has requested help clearing out nearby goblins.\\\"\"]\nObjectives:\n[\"\\\"\\\\\\\\c[4]Defeat 10 Goblin Mages\\\\\\\\c[0] in the forest.\\\"\"]\nRewards:\n[\"\\\"\\\\\\\\i[314]1000 Gold\\\"\"]\nOnce I fixed the formatting to match what the plugin expects then everything started working properly. The quest showed up correctly, and the objectives displayed in-game without issues or crashes. The main problem came down to small mistakes, missing commas, misplaced brackets [ ], and incorrectly placed escape slashes \\\\, which were breaking it. It was a good learning experience having never really used this stuff before.\nAlso: title, quest type, difficulty, quest giver name, location acquired, didn't need to be formatted. I just typed it normally.\n(I hope I explained all this right.)"
+    }
+  ]
+}

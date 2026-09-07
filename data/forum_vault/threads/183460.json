@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/skill-evolution-plugin-recommendations-for-mz.183460",
+  "title": "Skill Evolution Plugin Recommendations for MZ",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:32.738343+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1555142",
+      "author": "K-apple",
+      "date": "2026-05-02T17:08:17+0900",
+      "body": "I currently working with RPG Maker MZ. My goal is to have it so the player's skill can \"evolve,\" as the level up. Something akin to Shin Megami Tensei, rather than Final Fantasy where players keep high and low tier spells. Because I want the player to have a limited pool of skills for each character and have to decided which to keep and which to get rid of allowing for character specific builds.\nEffectively, I want to find a plugin where its possible for a character to learn a skill at a particular level (or have it from the start) and have that skill potentially \"evolve,\" or change into another skill. (Example in the image.)\nFor example: Say you have Fire I at level 5 but at level 10 the skill can change to either Fire II or Ice I. I wanted to see if it's possible to either randomize the change by having a pool of skills that it can change to and give the player the option to opt out of the skill evolution. If not a plugin, I want to know if its possible to code with events."
+    },
+    {
+      "post_id": "js-post-1555155",
+      "author": "Arcaines",
+      "date": "2026-05-02T21:07:33+0900",
+      "body": "You could always use common events to set this up.\nSo if Actor 1 is LV1, they have fire.\nEach time a battle is cleared, you could trigger a switch, which would then trigger the common event or have a common event trigger after each battle, and what that common event would do is check each actor's level, and depending on their level, the event would play out as removing one skill and adding the other.\nSo battle won, common event runs, checks if Actor 1 is LV10, if yes, then remove Fire and add Fire II.\n(or just have it remove Fire and learn Fire II normally at LV10.)\nI think there is a few plugins out there that will automaticly play common events afer each battle is won."
+    },
+    {
+      "post_id": "js-post-1555169",
+      "author": "rpgLord69",
+      "date": "2026-05-03T00:55:51+0900",
+      "body": "Yeah if you don't find plugin you can event it. VS has common event after battle. Check levels, roll a random variable and select from your lists and then ask if player wants to swap the skill."
+    },
+    {
+      "post_id": "js-post-1555244",
+      "author": "K-apple",
+      "date": "2026-05-03T11:54:20+0900",
+      "body": "Arcaines said:\nYou could always use common events to set this up.\nSo if Actor 1 is LV1, they have fire.\nEach time a battle is cleared, you could trigger a switch, which would then trigger the common event or have a common event trigger after each battle, and what that common event would do is check each actor's level, and depending on their level, the event would play out as removing one skill and adding the other.\nSo battle won, common event runs, checks if Actor 1 is LV10, if yes, then remove Fire and add Fire II.\n(or just have it remove Fire and learn Fire II normally at LV10.)\nI think there is a few plugins out there that will automaticly play common events afer each battle is won.\nClick to expand...\nOkay but how would I go about randomizing it? Like if you reach level 5 Fire I could turn into Fire II or Ice I."
+    },
+    {
+      "post_id": "js-post-1555260",
+      "author": "Arcaines",
+      "date": "2026-05-03T17:21:48+0900",
+      "body": "K-apple said:\nOkay but how would I go about randomizing it? Like if you reach level 5 Fire I could turn into Fire II or Ice I.\nClick to expand...\nConditional branches and Variables!\nShow battle over, Com event runs.\nConditional branch:\nIf Actor LV10:\nRemove skill\nSet Variable \"Skill random\" by Random between 1-2.\nConditional branch: If variable \"Skill random\" = 1\nLearn \"Ice\"\nElse\nLearn \"Fire\"\nNow, if you're adding more skills to randomly learn, then add more conditional branches of and change the Random range of the variable \"skill random\" of 1-X (x being how many skills you want to have)\nIf Variable \"Skill random\" = 1\nThen learn \"Ice.\"\nIf Variable \"Skill random\" = 2\nThen learn \"Fire II.\"\nIf Variable \"Skill random\" = 3\nThen learn \"Bolt.\""
+    },
+    {
+      "post_id": "js-post-1555286",
+      "author": "K-apple",
+      "date": "2026-05-03T23:05:24+0900",
+      "body": "rpgLord69 said:\nYeah if you don't find plugin you can event it. VS has common event after battle. Check levels, roll a random variable and select from your lists and then ask if player wants to swap the skill.\nClick to expand...\nI know Visustella has a Skill Mastery system but I don't know if it allows you to change skills upon mastery of them."
+    },
+    {
+      "post_id": "js-post-1555293",
+      "author": "rpgLord69",
+      "date": "2026-05-04T00:29:55+0900",
+      "body": "You can make a post battle common event for that too (their plugin page has scripts to get skill mastery level of skills). Unless you want to try and modify their code."
+    }
+  ]
+}

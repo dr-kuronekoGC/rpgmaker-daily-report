@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/saving-over-an-save-with-js-call.183447",
+  "title": "MZ Saving over an save with js call",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:32.416751+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1555032",
+      "author": "LordLaxy",
+      "date": "2026-05-01T07:07:01+0900",
+      "body": "Hello There. For my games I use a self made menu thats mostly made of events with a lil more events. Anywho for my save \"system\" Im using a pretty simple script call to save the game. But this call doesnt support the saving over a save. If there is already a save the call just doesnt do anything. So can someone maybe help me motifi the call so that it CAN save over an already made save in that set save slot?"
+    },
+    {
+      "post_id": "js-post-1555041",
+      "author": "Robro33",
+      "date": "2026-05-01T08:51:24+0900",
+      "body": "are you certain that the save hasnt been saved? the function allows for overwriting normally if plugins arent involved. the promise returned on a successful save is the number\n0,\nso you would get your error message if you ran it as 0 is falsy but it still should have saved the file"
+    },
+    {
+      "post_id": "js-post-1555046",
+      "author": "LordLaxy",
+      "date": "2026-05-01T12:09:34+0900",
+      "body": "Robro33 said:\nare you certain that the save hasnt been saved? the function allows for overwriting normally if plugins arent involved. the promise returned on a successful save is the number\n0,\nso you would get your error message if you ran it as 0 is falsy but it still should have saved the file\nClick to expand...\nSo far I know yea. I save on save 2. do something that should be savable. save again over save 2. close the game. Open the game. Load save 2 and the thing I did before the second save didnt save. Ive tried this with alot of things but it for some reason just doesnt work"
+    },
+    {
+      "post_id": "js-post-1555062",
+      "author": "ShadowDragon",
+      "date": "2026-05-01T17:01:08+0900",
+      "body": "I would recommend to put this into a plugin, and call a function something\nlike:\nfuction SavingProgress() {/*your code*/}  and call that one.\nscriptcalls has a max 11 lines (unless changed in MZ, so opening it later will remove\neverything more than 11 lines.\na 1 liner can work too, but making it a function is 1 call and it runs that code.\nbut its only a feedback"
+    },
+    {
+      "post_id": "js-post-1555073",
+      "author": "Robro33",
+      "date": "2026-05-01T21:02:11+0900",
+      "body": "ShadowDragon said:\nscriptcalls has a max 11 lines (unless changed in MZ, so opening it later will remove\neverything more than 11 lines.\nClick to expand...\nthat was changed in MZ to my knowledge. it shouldnt have a limit\nLordLaxy said:\nSo far I know yea. I save on save 2. do something that should be savable. save again over save 2. close the game. Open the game. Load save 2 and the thing I did before the second save didnt save. Ive tried this with alot of things but it for some reason just doesnt work\nClick to expand...\nis that the full script? id like to try it later today"
+    },
+    {
+      "post_id": "js-post-1555078",
+      "author": "LordLaxy",
+      "date": "2026-05-01T22:37:19+0900",
+      "body": "Robro33 said:\nthat was changed in MZ to my knowledge. it shouldnt have a limit\nis that the full script? id like to try it later today\nClick to expand...\nYes thats what I use for it yea. I can copy it here so its easier for you to test?"
+    },
+    {
+      "post_id": "js-post-1555098",
+      "author": "Robro33",
+      "date": "2026-05-02T02:55:37+0900",
+      "body": "LordLaxy said:\nYes thats what I use for it yea. I can copy it here so its easier for you to test?\nClick to expand...\nYeah, post the text here and ill check it out when i can"
+    },
+    {
+      "post_id": "js-post-1555105",
+      "author": "LordLaxy",
+      "date": "2026-05-02T03:58:44+0900",
+      "body": "Robro33 said:\nYeah, post the text here and ill check it out when i can\nClick to expand...\nOkay nice. Here is the save script call I use\ntry {\n// Set saving flag\n$gameTemp.saving = true;\n// Ensure game state is prepared\n$gameSystem.onBeforeSave();\n// Introduce a short delay to ensure all processes are stable\nsetTimeout(() => {\n// Perform the save operation\nDataManager.saveGame(2).then(function (success) {\nif (success) {\nconsole.log(\"Game saved successfully in slot 2.\");\n} else {\nconsole.error(\"Failed to save game.\");\n}\n}).catch(function (error) {\nconsole.error(\"Error during save operation:\", error);\n}).finally(function () {\n// Clear saving flag\ndelete $gameTemp.saving;\n});\n}, 100); // 100ms delay\n} catch (error) {\nconsole.error(\"Unexpected error during save preparation:\", error);\n}"
+    },
+    {
+      "post_id": "js-post-1555123",
+      "author": "Robro33",
+      "date": "2026-05-02T06:44:05+0900",
+      "body": "LordLaxy said:\nHere is the save script call I use\nClick to expand...\nSo, ive taken it and ran it in a fresh project ant it doesnt seem to have any issues with saving or overwriting files. As mentioned, the failure message plays in the console cause you'd need to see if\nsuccess === 0\nrather than just if\nsuccess\nis truthy, but it still saves and i can exit, reopen the game, and load the save. Are you using any plugins, and if so, have you tried seeing if it works after you disable them?"
+    },
+    {
+      "post_id": "js-post-1555124",
+      "author": "LordLaxy",
+      "date": "2026-05-02T06:49:20+0900",
+      "body": "Robro33 said:\nSo, ive taken it and ran it in a fresh project ant it doesnt seem to have any issues with saving or overwriting files. As mentioned, the failure message plays in the console cause you'd need to see if\nsuccess === 0\nrather than just if\nsuccess\nis truthy, but it still saves and i can exit, reopen the game, and load the save. Are you using any plugins, and if so, have you tried seeing if it works after you disable them?\nClick to expand...\nThere wasnt an error message ever for me. It just didnt save over. Just nothing. To the question of plugins not that I know of. I dont use any plugins that interact with saves by any means"
+    },
+    {
+      "post_id": "js-post-1555126",
+      "author": "LordLaxy",
+      "date": "2026-05-02T07:14:46+0900",
+      "body": "Robro33 said:\nSo, ive taken it and ran it in a fresh project ant it doesnt seem to have any issues with saving or overwriting files. As mentioned, the failure message plays in the console cause you'd need to see if\nsuccess === 0\nrather than just if\nsuccess\nis truthy, but it still saves and i can exit, reopen the game, and load the save. Are you using any plugins, and if so, have you tried seeing if it works after you disable them?\nClick to expand...\nIs there maybe something wrong with the load script call then?"
+    },
+    {
+      "post_id": "js-post-1555129",
+      "author": "Robro33",
+      "date": "2026-05-02T08:51:19+0900",
+      "body": "LordLaxy said:\nIs there maybe something wrong with the load script call then?\nClick to expand...\nim assuming loadSuccess, loadFailure, and afterLoad are meant to be comments? cause without them it should load the save, and with them... it should crash as is."
+    },
+    {
+      "post_id": "js-post-1555131",
+      "author": "LordLaxy",
+      "date": "2026-05-02T09:14:28+0900",
+      "body": "Robro33 said:\nim assuming loadSuccess, loadFailure, and afterLoad are meant to be comments? cause without them it should load the save, and with them... it should crash as is.\nClick to expand...\nI think so then. I didnt write the call. I found it on a google doc list with alot of those calls on it hehe"
+    },
+    {
+      "post_id": "js-post-1555144",
+      "author": "caethyril",
+      "date": "2026-05-02T17:50:21+0900",
+      "body": "Looks like it's the\nContinue/Load\nentry from the MV / MZ Script Call List:\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nHere's a screenshot for quick reference (click to view full size):\nMake sure to read the\nNotes\ncolumn! See how\nloadSuccess\n,\nloadFailure\n, and\nafterLoad\nhave been replaced with actual code in the example?\nThis particular script call does have a few extra quirks, though. It can bug out in various situations (e.g. loading a save made on a map with fewer events than are on the current map?), since the core scripts are not designed to permit loading a save during a frame update on the map.\nYou could try out feature\nD21\n(synchronous save/load plugin commands) of my plugin Cae_Tweaks:\nMZ - Cae_Tweaks - lots of little features\nCae_Tweaks v19 updated 2026-06-16 (UTC+0)  Terms of Use MIT License: https://opensource.org/licenses/mit-license.html  Description The plugin file must be named Cae_Tweaks.js.  This plugin contains a bunch of different things. It's mostly just me slowly making a game and coding some more stuff...\nforums.rpgmakerweb.com\nIt now has a \"Safe Load\" parameter: when this is enabled, it performs the actual load on a separate scene, which based on my testing seems to eliminate all problems. All features of Cae_Tweaks are disabled by default, so if you want to try it out then you'll need to scroll down the parameter list and set\nD21: Save/Load Commands\nto\ntrue\n."
+    },
+    {
+      "post_id": "js-post-1555189",
+      "author": "LordLaxy",
+      "date": "2026-05-03T02:28:30+0900",
+      "body": "caethyril said:\nLooks like it's the\nContinue/Load\nentry from the MV / MZ Script Call List:\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nHere's a screenshot for quick reference (click to view full size):\nView attachment 365409\nMake sure to read the\nNotes\ncolumn! See how\nloadSuccess\n,\nloadFailure\n, and\nafterLoad\nhave been replaced with actual code in the example?\nThis particular script call does have a few extra quirks, though. It can bug out in various situations (e.g. loading a save made on a map with fewer events than are on the current map?), since the core scripts are not designed to permit loading a save during a frame update on the map.\nYou could try out feature\nD21\n(synchronous save/load plugin commands) of my plugin Cae_Tweaks:\nMZ - Cae_Tweaks - lots of little features\nCae_Tweaks v19 updated 2026-06-16 (UTC+0)  Terms of Use MIT License: https://opensource.org/licenses/mit-license.html  Description The plugin file must be named Cae_Tweaks.js.  This plugin contains a bunch of different things. It's mostly just me slowly making a game and coding some more stuff...\nforums.rpgmakerweb.com\nIt now has a \"Safe Load\" parameter: when this is enabled, it performs the actual load on a separate scene, which based on my testing seems to eliminate all problems. All features of Cae_Tweaks are disabled by default, so if you want to try it out then you'll need to scroll down the parameter list and set\nD21: Save/Load Commands\nto\ntrue\n.\nClick to expand...\nOh I see thanks. Ive done some testing and stuff and I dont really know what the problem was but it seems to be solved now. Thanks for the help :3"
+    }
+  ]
+}

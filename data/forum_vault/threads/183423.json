@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/visustella-victory-aftermath-level-up-bust-help.183423",
+  "title": "Visustella Victory Aftermath Level Up Bust Help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:34.361385+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1554871",
+      "author": "K-apple",
+      "date": "2026-04-29T11:37:59+0900",
+      "body": "I am currently using the Victory Aftermath Plugin from Visustella but I can't seem to get the Victory Bust to appear. I can get the image bust to appear for dialogue boxes but not the full image bust. Its supposed to look like the image below (taken from the guide on the website.)\nBut for some reason mine keeps coming out like this...\nHere are some of my settings in the plug in menu...\nIf anyone who knows how this plug in works, can help me that be appreciated."
+    },
+    {
+      "post_id": "js-post-1554886",
+      "author": "rpgLord69",
+      "date": "2026-04-29T17:11:38+0900",
+      "body": "I think it needs the Main Menu Core portrait setting. Do you have the busts appearing on your main menu?"
+    },
+    {
+      "post_id": "js-post-1554934",
+      "author": "K-apple",
+      "date": "2026-04-30T04:46:59+0900",
+      "body": "rpgLord69 said:\nI think it needs the Main Menu Core portrait setting. Do you have the busts appearing on your main menu?\nClick to expand...\nOkay thanks, it worked. One more question. Do you know if there is a way to move the stat level ups further to the right or left? I can't seem to find that parameter in the plugin itself."
+    },
+    {
+      "post_id": "js-post-1554982",
+      "author": "rpgLord69",
+      "date": "2026-04-30T19:05:18+0900",
+      "body": "Cool.\nFor your new question you have to edit the code. I checked it and it's annoying, because some of the elements seem to come from draw method of victory level up window and some come from window actor level up or whatever the names was. It's easy to change the window location but I don't have the motivation to try and change where it draws some of the stuff in the obfuscated code.  Because if you just try to move the other window the drawn elements don't reach the other side of the screen then. You can try to check it yourself if you want."
+    },
+    {
+      "post_id": "js-post-1555043",
+      "author": "K-apple",
+      "date": "2026-05-01T09:29:09+0900",
+      "body": "rpgLord69 said:\nCool.\nFor your new question you have to edit the code. I checked it and it's annoying, because some of the elements seem to come from draw method of victory level up window and some come from window actor level up or whatever the names was. It's easy to change the window location but I don't have the motivation to try and change where it draws some of the stuff in the obfuscated code.  Because if you just try to move the other window the drawn elements don't reach the other side of the screen then. You can try to check it yourself if you want.\nClick to expand...\nOkay thanks for the info."
+    },
+    {
+      "post_id": "js-post-1560041",
+      "author": "K-apple",
+      "date": "2026-06-15T19:04:31+0900",
+      "body": "I have another question regarding this plugin. While I found out how to make the portraits show up thanks to the main menu core, that core messes up the rest of my menus which I already have another plugin for. Do you know of a way to have the character portraits appear for the level up screen without the main menu core being active?\nIf not, then do you know any alternatives for this. I'm trying to get a victory aftermath screen that can both show character portraits, have victory/level up quotes, and show individual character stat increases. Something like Fire Emblem Awakening\nrpgLord69 said:\nCool.\nFor your new question you have to edit the code. I checked it and it's annoying, because some of the elements seem to come from draw method of victory level up window and some come from window actor level up or whatever the names was. It's easy to change the window location but I don't have the motivation to try and change where it draws some of the stuff in the obfuscated code.  Because if you just try to move the other window the drawn elements don't reach the other side of the screen then. You can try to check it yourself if you want.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1560086",
+      "author": "rpgLord69",
+      "date": "2026-06-15T23:22:11+0900",
+      "body": "Ok I checked it and it seems that it always does the actor sprites etc, but it just doesn't load a bitmap there without MenuCore. So add this plugin below VS, then put in your pictures folder images for the actors for each actor id. Like Portrait1, Portrait2, Portrait3 etc. I think you can move the portrait around just making the png larger and moving the dude in there.\nconst _myEdit1_WindowVictoryLevelUp_setActor = Window_VictoryLevelUp.prototype.setActor;\nWindow_VictoryLevelUp.prototype.setActor = function(actor) {\n_myEdit1_WindowVictoryLevelUp_setActor.call(this, actor);\nthis._actorSprite.bitmap = ImageManager.loadPicture(\"Portrait\" + actor.actorId().toString());\n};"
+    },
+    {
+      "post_id": "js-post-1560163",
+      "author": "K-apple",
+      "date": "2026-06-16T04:28:04+0900",
+      "body": "rpgLord69 said:\nOk I checked it and it seems that it always does the actor sprites etc, but it just doesn't load a bitmap there without MenuCore. So add this plugin below VS, then put in your pictures folder images for the actors for each actor id. Like Portrait1, Portrait2, Portrait3 etc. I think you can move the portrait around just making the png larger and moving the dude in there.\nconst _myEdit1_WindowVictoryLevelUp_setActor = Window_VictoryLevelUp.prototype.setActor;\nWindow_VictoryLevelUp.prototype.setActor = function(actor) {\n_myEdit1_WindowVictoryLevelUp_setActor.call(this, actor);\nthis._actorSprite.bitmap = ImageManager.loadPicture(\"Portrait\" + actor.actorId().toString());\n};\nClick to expand...\nI typed it like this\nconst _myEdit1_WindowVictoryLevelUp_setActor = Window_VictoryLevelUp.prototype.setActor;\nWindow_VictoryLevelUp.prototype.setActor = function(actor) {\n_myEdit1_WindowVictoryLevelUp_setActor.call(this, actor);\nthis._actorSprite.bitmap = ImageManager.loadPicture(\"Actor1_1_Battle\" + actor.actorId(0008).toString());\n};\nBut it didn't work. Did I do something wrong?"
+    },
+    {
+      "post_id": "js-post-1560164",
+      "author": "rpgLord69",
+      "date": "2026-06-16T04:29:38+0900",
+      "body": "Yeah, I meant the way it's written you need to put in picture folder files named Portrait1 etc.\nAnd leave the code like it is."
+    },
+    {
+      "post_id": "js-post-1560210",
+      "author": "K-apple",
+      "date": "2026-06-16T11:28:57+0900",
+      "body": "rpgLord69 said:\nYeah, I meant the way it's written you need to put in picture folder files named Portrait1 etc.\nAnd leave the code like it is.\nClick to expand...\nDoes this require I have the main menu core turned on? Because I'm still getting the issue of it not working."
+    },
+    {
+      "post_id": "js-post-1560229",
+      "author": "rpgLord69",
+      "date": "2026-06-16T16:53:13+0900",
+      "body": "No it doesn't require Main Menu Core.\nIt seemed to work for me. What do you mean by it's not working?\nDo you get an error, or nothing happening?\nDid you use the original code I posted, not your modified one?\nDid you name your pictures exactly \"Portrait1\" etc in img/pictures folder?\nIf you press F8 after starting game, do you see some error in console of the plugin not loading?"
+    },
+    {
+      "post_id": "js-post-1560441",
+      "author": "K-apple",
+      "date": "2026-06-17T19:31:09+0900",
+      "body": "rpgLord69 said:\nNo it doesn't require Main Menu Core.\nIt seemed to work for me. What do you mean by it's not working?\nDo you get an error, or nothing happening?\nDid you use the original code I posted, not your modified one?\nDid you name your pictures exactly \"Portrait1\" etc in img/pictures folder?\nIf you press F8 after starting game, do you see some error in console of the plugin not loading?\nClick to expand...\nIts the weirdest thing. I type in the code\nconst _myEdit1_WindowVictoryLevelUp_setActor = Window_VictoryLevelUp.prototype.setActor;\nWindow_VictoryLevelUp.prototype.setActor = function(actor) {\n_myEdit1_WindowVictoryLevelUp_setActor.call(this, actor);\nthis._actorSprite.bitmap = ImageManager.loadPicture(\"Portrait1\" + actor.actorId(0008).toString());\n};\nBut when I name the image Portrait1 it doesn't work but says I'm getting an error saying Portrait18 is missing. Then I go to rename it to Portrait18 and it works.\nHere is the error code"
+    },
+    {
+      "post_id": "js-post-1560442",
+      "author": "rpgLord69",
+      "date": "2026-06-17T19:35:18+0900",
+      "body": "But you're still using your edited plugin? I meant use the original. Don't change anything, don't write anything in the actor id, don't write 1 after 'Portrait' etc. Just put as plugin below VS the original code I gave you."
+    },
+    {
+      "post_id": "js-post-1560615",
+      "author": "K-apple",
+      "date": "2026-06-18T04:31:27+0900",
+      "body": "rpgLord69 said:\nBut you're still using your edited plugin? I meant use the original. Don't change anything, don't write anything in the actor id, don't write 1 after 'Portrait' etc. Just put as plugin below VS the original code I gave you.\nClick to expand...\nOh, my mistake."
+    },
+    {
+      "post_id": "js-post-1560710",
+      "author": "K-apple",
+      "date": "2026-06-18T09:27:03+0900",
+      "body": "rpgLord69 said:\nBut you're still using your edited plugin? I meant use the original. Don't change anything, don't write anything in the actor id, don't write 1 after 'Portrait' etc. Just put as plugin below VS the original code I gave you.\nClick to expand...\nI see what's happening now. The Portrait1 naming refers to where they are in the actor database. For Actor 1 I need to make a Portrait 11 image. And for Actor 10 I need a Portrait110 image. I thought I needed to alter the code to account for each individual actor, but the code already accounts for that, and I just need to make the appropriate images and name them properly to tie them together.\nThank you so much for this.\nI'm now working on the portrait boxes and already resized them to make sure they appear where I want them to when a character levels up.\nAgain thank you so much for this. Now I can easily design my menus without having worry about plugin conflict."
+    }
+  ]
+}

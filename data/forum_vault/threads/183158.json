@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/guard-breaker-ability.183158",
+  "title": "MV Guard Breaker ability",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:03:01.439843+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1553060",
+      "author": "Rethy",
+      "date": "2026-04-07T08:23:49+0900",
+      "body": "I'm working on a guard breaker ability for a boss where if a player character guards during the battle, they will immediately target that character and reduce their HP to 1. (\n(b.hp - 1) * 2\nin the damage formula)\nI am also using the Action Times + trait, but haven't decided whether I want the guard breaker to be a \"free\" action or use one of those actions. Either way I have not been able to implement and test the ability to see what works best yet.*\nFor most \"reaction\" abilities I've been using\nVE - Counter Actions\n, which does not overwrite the user's action the same way \"Force Action\" does. However, since Guard targets the user, I've had to look for a different solution.\nI was able to get the effect I wanted with the Force Action command, but I noticed it overwrites every action granted by the Action Times+ trait. This means one character can use guard, the boss uses the Guard Breaker skill, and then has no other attacks while the rest of the party pummels it to death from safety.\nI then tried to implement it in the Action Pattern with\nContinuum AI Eval\n, and\nUnreachable Targets\nbut it seems the eval happens at the start of the turn when the condition has not been met, so it selects a different pattern, and characters guard after that.\nIs there a way to add additional actions after Force Action is used? Can extra actions be granted in a common or troop event instead of using traits?\n*Including this because some solutions might work with either the \"free action\" approach or the Action Times + approach but not both, so I thought it was important context.\nMy current plan is to give the boss one \"free\" Guard Breaker per turn, to prevent the player from abusing the reaction and AOE healing to prevent the boss from ever hitting a killing blow, but reduce the chance of the player getting a TPK in a single round because multiple characters guarded."
+    },
+    {
+      "post_id": "js-post-1553092",
+      "author": "rpgLord69",
+      "date": "2026-04-07T18:00:03+0900",
+      "body": "You can put it in action sequences. Or were you the person who didn't use Yanfly plugins?\nIn the action sequence check that conditional that if someone is guarding and make the guard break hit. You don't even need to do anything else, since you said you wanted it to be a free action. If you want to limit it to 1/turn, you can just put an additional conditional there, like maybe make the guard break set a variable equal to turn count and then in the conditional to use it also check that the variable is smaller than turn count."
+    },
+    {
+      "post_id": "js-post-1553146",
+      "author": "Rethy",
+      "date": "2026-04-08T07:49:08+0900",
+      "body": "rpgLord69 said:\nYou can put it in action sequences. Or were you the person who didn't use Yanfly plugins?\nIn the action sequence check that conditional that if someone is guarding and make the guard break hit. You don't even need to do anything else, since you said you wanted it to be a free action.\nClick to expand...\nThere's a couple of Yanfly plugins I avoid, for example I'm using AI Eval instead of AI Core since the latter overwrites action patterns, but I am using Battle Core and have used action sequences a couple of times.\nThe issue I'm having with action sequences at the moment is I would like to have a line of dialog announce the skill,\nbut I use \":\" for name tags in dialog, and that seems to break the eval and \\ isn't working as an exit code.\nTo clarify though, is this using the action sequence for the guard skill?\nrpgLord69 said:\nIf you want to limit it to 1/turn, you can just put an additional conditional there, like maybe make the guard break set a variable equal to turn count and then in the conditional to use it also check that the variable is smaller than turn count.\nClick to expand...\nHow do you call the current turn? I haven't found it in the Script Call list.\nI've managed to get progress by using Force Action to make the guarding character target themselves with a Scope: The User version, since they've already used their guard action.\nIt is working mechanically so far, but the illusion isn't perfect and further testing might reveal conflicts with mechanics like Substitute or Counter.\nEither way, I still need to call the current turn somehow."
+    },
+    {
+      "post_id": "js-post-1553147",
+      "author": "ZimXero",
+      "date": "2026-04-08T08:18:55+0900",
+      "body": "Not what you're asking for, but if you created a custom guard skill that applies a state... it might give you a lot more flexibility.  You could just define which skills remove the guard state or give it a chance.  Guard itself could do more.  By applying tags, you could have multiple types or levels of guard states with an \"is guard\" tag, making it removable.\nYou could have a guard skill that reduces all elemental damage, another that lowers damage by a flat formulated amount, or one that applies a damage buff for one turn if it expires by time.\nIt might be possible to make a guard that nullifies all damage, but expires on hit, like sleep."
+    },
+    {
+      "post_id": "js-post-1553179",
+      "author": "rpgLord69",
+      "date": "2026-04-08T17:55:44+0900",
+      "body": "@Rethy\nI haven't really used MV action sequences, but if you can't make the eval show text to work, I think you can show the text though the common event in the action sequence. A bit clunky maybe but if it's just for a certain skill(s), it's not a big deal.\nYou can get the turn count with\n$gameTroop.turnCount();\nbut that was just an example, you can use switches and variables etc too."
+    },
+    {
+      "post_id": "js-post-1553320",
+      "author": "Rethy",
+      "date": "2026-04-10T15:53:18+0900",
+      "body": "rpgLord69 said:\n@Rethy\nI haven't really used MV action sequences, but if you can't make the eval show text to work, I think you can show the text though the common event in the action sequence. A bit clunky maybe but if it's just for a certain skill(s), it's not a big deal.\nYou can get the turn count with\n$gameTroop.turnCount();\nbut that was just an example, you can use switches and variables etc too.\nClick to expand...\nI'm going to need the call for turn count to implement some other behaviours anyway, so it made sense to go that route.\nFor the action sequence implementation, I was able to get the dialog to display and the effect to properly occur, but there's still some issues with how it looks. I'm thinking I'll take it to\nthe action sequence thread\nand see if anyone more familiar with MV can help iron out the kinks."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-make-ally-battlers-invisible-during-skills.183306",
+  "title": "How to make ally battlers invisible during skills",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:44.294134+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1553986",
+      "author": "Psychoholic42",
+      "date": "2026-04-19T00:40:28+0900",
+      "body": "I'm looking for a simple way to temporarily make a character invisible in battle. I have summon spells like in many Final Fantasy games, and I want my whole party to disappear while the animation plays. I also want an ability for my ninja character where she disappears and has full evasion from enemy attacks. The last thing I want in my game is a way for my allies to disappear when they teleport out of battle."
+    },
+    {
+      "post_id": "js-post-1553990",
+      "author": "rpgLord69",
+      "date": "2026-04-19T00:57:47+0900",
+      "body": "IIRC you didn't want to use VS Battle Core. I think ATT_Turan has plugins that have similar functionalities where you can run code at certain points. I think you can use them and then something like:\nHIDE\nSceneManager._scene._spriteset._actorSprites.forEach(sprite => sprite.opacity = 0);\nSHOW\nSceneManager._scene._spriteset._actorSprites.forEach(sprite => sprite.opacity = 255);\nFor the ninja you can use the same with on add state and on erase state. Then you can give them huge evasion on the state or maybe use those Turan notetags to make attacks miss against them.\nAnd for the teleport stuff maybe you can use the escape effect.\nEDIT: Or to be clear for the ninja skill target the specific actor sprite."
+    },
+    {
+      "post_id": "js-post-1554011",
+      "author": "Zevia",
+      "date": "2026-04-19T07:46:15+0900",
+      "body": "For the summon-style animation where the party disappears during the skill, perhaps you could use\n@rpgLord69\n's suggestion without any Plugins?\nAdd the hide script command as part of the damage formula of your skill, then make a common event that calls the show script. Fairly certain common events executed as part of skills are executed after animations and damage.\nEDIT: I think the ninja skill could\nmaybe\nbe done with troop events, where the damage formula for the skill (or a common event, if there is no damage formula) calls the script to set opacity to 0 and sets TGR to 0%, then each turn in each troop, check if the state has worn off and, if so, set the opacity back to 255, but it'd probably be cleaner to just have opacity change on application and removal of the state, which, to my knowledge, would require a Plugin."
+    }
+  ]
+}

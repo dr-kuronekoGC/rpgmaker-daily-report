@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-make-party-member-through-or-make-it-so-other-events-stop-colliding-with-party-member.182127",
+  "title": "How to make party member through or make it so other events stop colliding with party member",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:03:05.511764+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1545599",
+      "author": "knuckles_the_chuckles",
+      "date": "2026-01-25T02:15:37+0900",
+      "body": "So for my game I'm working on a level that have a character follow you around.\nI also set up these little traps on the level. For this level what the traps do is simply push the player back. For example theres this little skeleton animatronic that walks back and forward and if he collides with the player it causes the player to stumble backwards.\nWhat I'm finding however is that if the skeleton collides with the player and he stumbles backwards, my follower then gets in front of the player and begins blocking the skeleton, creating a barrier between him and the player.\nSo my idea was trying to either find a way to make events pass through the follower or make the follower through so the traps stop colliding with him.\nIs there any way of doing this?\nThank you"
+    },
+    {
+      "post_id": "js-post-1545602",
+      "author": "DevRPG2k",
+      "date": "2026-01-25T02:29:53+0900",
+      "body": "You can realign the followers as explained here:\nPlayer follower won't gather\nAfter a certain event, the third player character in the line-up will not gather. This is the part of the event that causes it:   This is what it ends up looking like:   The girl in pink (Kali) should be occupying the same square as the girl in blue (Katrina), which the second character in the...\nforums.rpgmakerweb.com\nOr you can hide the followers before they are pushed and show them after the movement.\nThere are also scripts that allow you to move followers. I haven't tested them, but the topic has some instructions:\n[VXA] Smarter Followers + Followers Move Route\nI'm using this script by Neon Black for better looking followers, however I also want to be able to control my followers but every script I've found that does that doesn't work with Smarter Followers. Smarter Followers seems to just not let any other script mess with followers.    For the...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1545605",
+      "author": "knuckles_the_chuckles",
+      "date": "2026-01-25T02:51:24+0900",
+      "body": "Dev_With_Coffee said:\nYou can realign the followers as explained here:\nPlayer follower won't gather\nAfter a certain event, the third player character in the line-up will not gather. This is the part of the event that causes it:   This is what it ends up looking like:   The girl in pink (Kali) should be occupying the same square as the girl in blue (Katrina), which the second character in the...\nforums.rpgmakerweb.com\nOr you can hide the followers before they are pushed and show them after the movement.\nThere are also scripts that allow you to move followers. I haven't tested them, but the topic has some instructions:\n[VXA] Smarter Followers + Followers Move Route\nI'm using this script by Neon Black for better looking followers, however I also want to be able to control my followers but every script I've found that does that doesn't work with Smarter Followers. Smarter Followers seems to just not let any other script mess with followers.    For the...\nforums.rpgmakerweb.com\nClick to expand...\nThat works for the traps but I ended up finding another problem.\nIn there's also a killer that chases you. I tested it out and the follower blocks the killer as well.\nSo the better solution would still be to find a way to make the follower through.\nEither that or just not have the follower physically there but I was looking to avoid doing that."
+    },
+    {
+      "post_id": "js-post-1545607",
+      "author": "DevRPG2k",
+      "date": "2026-01-25T03:09:49+0900",
+      "body": "Nelderson's script has route control as if followers were events, but it's really necessary to explore its functionalities to be sure.\nIf I can't figure it out, when I get home I'll analyze the standard scripts and see if it's possible to modify the priority of the followers.\nJust take a look at this script; I haven't analyzed the functions, but there might be something cool to add to your project:\nFollowers Options\nLast Update: 2013.02.13 Script Download This script adds new options for the followers display. It improves the movement, and allows to set the display of dead characters and reorder the members on…\nvictorenginescripts.wordpress.com"
+    },
+    {
+      "post_id": "js-post-1545608",
+      "author": "knuckles_the_chuckles",
+      "date": "2026-01-25T03:27:38+0900",
+      "body": "Dev_With_Coffee said:\nNelderson's script has route control as if followers were events, but it's really necessary to explore its functionalities to be sure.\nIf I can't figure it out, when I get home I'll analyze the standard scripts and see if it's possible to modify the priority of the followers.\nJust take a look at this script; I haven't analyzed the functions, but there might be something cool to add to your project:\nFollowers Options\nLast Update: 2013.02.13 Script Download This script adds new options for the followers display. It improves the movement, and allows to set the display of dead characters and reorder the members on…\nvictorenginescripts.wordpress.com\nClick to expand...\nYeah thats not gonna work.\nThe Victor Engine completely messes with my existent scripts.\nWhat I might do is whenever the chase happens I just use gather followers and disable the follower and then once it ends I just enable him again"
+    },
+    {
+      "post_id": "js-post-1545610",
+      "author": "DevRPG2k",
+      "date": "2026-01-25T03:47:48+0900",
+      "body": "This is what I suggested here:\nDev_With_Coffee said:\nYou can realign the followers as explained here:\nClick to expand...\nI haven't used VXAce in a few weeks, but from what I remember, activating \"Through\" while moving towards the player will also affect followers, In other words, the event that will cause the player to move could work like this:\nCode:\n>Through: ON\n>Change Speed: 5\n>Turn 180\n>1 Step Forward\n>1 Step Forward\n>1 Step Forward\n>Change Speed: 3\n>Through: OFF"
+    },
+    {
+      "post_id": "js-post-1545611",
+      "author": "knuckles_the_chuckles",
+      "date": "2026-01-25T03:56:07+0900",
+      "body": "Dev_With_Coffee said:\nThis is what I suggested here:\nI haven't used VXAce in a few weeks, but from what I remember, activating \"Through\" while moving towards the player will also affect followers, In other words, the event that will cause the player to move could work like this:\nCode:\n>Through: ON\n>Change Speed: 5\n>Turn 180\n>1 Step Forward\n>1 Step Forward\n>1 Step Forward\n>Change Speed: 3\n>Through: OFF\nClick to expand...\nActually that just reminded me, I have a script that blocks event with through to go through certain regions, I might use that and keep the killer through."
+    },
+    {
+      "post_id": "js-post-1545625",
+      "author": "Timtrack",
+      "date": "2026-01-25T08:19:07+0900",
+      "body": "Hello, I recall a similar question\nhere\n.\nIf you just want to disable collision with followers, you can put this scriptlet:\nRuby:\nclass Game_Followers\n  #--------------------------------------------------------------------------\n  # overwrite method: collide?\n  #--------------------------------------------------------------------------\n  def collide?(x, y)\n    false\n  end\nend #Game_Followers\nThat way your events will be able to reach the player."
+    },
+    {
+      "post_id": "js-post-1545630",
+      "author": "Zahawk",
+      "date": "2026-01-25T09:40:07+0900",
+      "body": "@Timtrack\nLol was just about to link your scriptlet before I saw it here."
+    },
+    {
+      "post_id": "js-post-1545652",
+      "author": "knuckles_the_chuckles",
+      "date": "2026-01-25T18:03:36+0900",
+      "body": "Timtrack said:\nHello, I recall a similar question\nhere\n.\nIf you just want to disable collision with followers, you can put this scriptlet:\nRuby:\nclass Game_Followers\n  #--------------------------------------------------------------------------\n  # overwrite method: collide?\n  #--------------------------------------------------------------------------\n  def collide?(x, y)\n    false\n  end\nend #Game_Followers\nThat way your events will be able to reach the player.\nClick to expand...\nOhhh, thank you so much!"
+    }
+  ]
+}

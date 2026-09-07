@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/adding-adjustable-plugin-parameters-solved.183352",
+  "title": "MZ Adding Adjustable Plugin Parameters (Solved)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:41.992718+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1554296",
+      "author": "Nirriti",
+      "date": "2026-04-23T03:35:41+0900",
+      "body": "Ive made a plugin to enhance the effect of luck differences when calculating if someone receive a status ailment or not. Ive realized it would be tedious, during playtesting, to constantly adjust the values on the .JS file directly, then go to Plugin > press refresh each time. I would like to add a\n\"Plugin Parameter\"\nso that the user\n(might put it on Itch later on)\ncan adjust the values with up and down arrows or simply enter their own numbers via the plugin menu.\nWhat would I need to add, and how should I do so, in this context? I would like its parts explained, if easily done. I've added the plugin's current content in the spoilers button below. Thanks in advance!\nSpoiler:\nLuck Effect Booster.js\nCode:\n//=============================================================================\n// Luck Effect Booster.js\n//=============================================================================\n/*:\n * @plugindesc [v1.O] Raises the intensity of Luck in Luck value differences.\n * @Target [MZ]\n * @author Nirriti\n * @url https://succubus-nirriti.itch.io\n * @help [ DESCRIPTION ]\n * Default Rate: For each point differences in Luck of 100, add +1O%/-1O%\n * chances to inflict or resist a status ailment during battle. This is too\n * low. This plugin enables a wider range of effective luck difference bonus.\n * The default values (RMMZ engine): O.OO1 : O.O. CURRENT: +2O%.\n *\n *\n *  [ VALUE CHANGES / DIFF BONUS ]     [IF DIFF:1OO] [IF DIFF:5O]\n *\n *      O.O1O:       + 1.O % Bonus        + 1OO %       + 5O %\n *      O.OO8:       + O.8 % Bonus        +  8O %       + 4O %\n *      O.OO5:       + O.5 % Bonus        +  5O %       + 25 %\n *      O.OO4:       + O.4 % Bonus        +  4O %       + 2O %\n *      O.OO3:       + O.3 % Bonus        +  3O %       + 15 %\n *      O.OO2:       + O.2 % Bonus        +  2O %       + 1O %\n *      O.OO1:       + O.1 % Bonus        +  1O %       +  5 %\n *\n *\n * [ COMPATIBILITY ]\n * Made for RPGMaker MZ as a standalone plugin.\n *\n */\n \n\n(function() {\n\nGame_Action.prototype.lukEffectRate = function(target) {\n    return Math.max(1.0 + (this.subject().luk - target.luk) * 0.002, 0.0);\n\n};"
+    },
+    {
+      "post_id": "js-post-1554298",
+      "author": "Robro33",
+      "date": "2026-04-23T04:10:07+0900",
+      "body": "Nirriti said:\nIve realized it would be tedious, during playtesting, to constantly adjust the values on the .JS file directly, then go to Plugin > press refresh each time\nClick to expand...\nFWIW, if the change youre making is to the js file you dont need to refresh the plugin list between changes. you just need to press f5 ingame to reload the game (or overwrite your functions directly within the console).\nNirriti said:\nI would like to add a\n\"Plugin Parameter\"\nso that the user\n(might put it on Itch later on)\ncan adjust the values with up and down arrows or simply enter their own numbers via the plugin menu.\nClick to expand...\nyou can use this page to see how to set them up and use them. I cant think of anything there thatd work differently between mv and mz\nIntroduction to the new Plugin Manager in RPG Maker MV 1.5.0+\nRPG Maker MV just get updated with the new Plugin Manager. You can create powerful plugins like the following one now!    An example plugin is available in the attachment and also on GitHub. This plugin is intended to demonstrate the new Plugin Manager in RPG Maker MV v1.5.0 only so it doesn't...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1554299",
+      "author": "Aerosys",
+      "date": "2026-04-23T04:43:55+0900",
+      "body": "Robro33 said:\nI cant think of anything there thatd work differently between mv and mz\nClick to expand...\nMZ has the following additional \"types\" (unfortunately, I don't have the source)\n- color\n- icon\n- map\n- location"
+    },
+    {
+      "post_id": "js-post-1554307",
+      "author": "Solar_Flare",
+      "date": "2026-04-23T07:13:06+0900",
+      "body": "It also has dependency directives and a dedicated URL directive:\nJavaScript:\n/*:\n@target MV MZ\n@base <pluginID>\n@orderAfter <pluginID>\n@orderBefore <pluginID>\n@url <webURL>\n*/\nOther than that, there's the fact that\n@require\nand\n@noteRequire\naren't needed in MZ (but I'd include them anyway!) and the method of defining plugin commands. (Speaking of\n@noteRequire\nand the related directives for defining note tags for Exclude Unused Files – that's not covered in Robro's link, but you can find it in the official documentation from the Help menu.)\nThe source I use is\nhere\n. It's in Japanese, but automatic translation should be mostly sufficient – just beware that it mangles the actual code.\nIt would definitely be helpful if someone were to gather all this information in one place though…"
+    },
+    {
+      "post_id": "js-post-1554308",
+      "author": "Nirriti",
+      "date": "2026-04-23T07:55:20+0900",
+      "body": "Managed to get it working after a lot of headaches, trials and errors\n(a friend also helped me understanding parts of the code through outside examples (like how RetroAchievement's system is coded!))\nLearned a lot... What helped the most was analyzing previous plugins I had from various source. Displaying them in Telegram\n(with monospace formatting)\nhas all the code looking much easier to parse through, like if using Notepad++.\nSo if you set two  @ help, the previous one is overwritten. You can also make an \"IF\"-like description for various languages.\nYou can name values differently inside the 'comment'\n(word?)\nsection of the .js via @ param and then make a call inside the (function(){\n(with the name specified name involved).\nThe engine has troubles with handing decimals when it comes to the UP and DOWN arrows. In my case, I set my @ max(arbitrarily) to 0.100 @ min to 0.001\n(default of the engine).\nSo pressing the arrows worked as a binary, only switching between the two values. Thats okay, I wrote a memo in the @ desc box below to type it manually. Works that way.\n@decimals 3 was needed or else it only displayed 0.\nThanks Robro33\n(and the rest)!\nHonestly, without looking up other plugins, Id have never guessed a large part of it all\n(lots of parts make no sense to the untrained)\n. Here's how the relevant part looks for those curious:\nSpoiler:\nPlugin's End.\nCode:\n* @param LuckValueBonus\n * @text Luck Value [% Bonus]\n * @desc Enter the bonus value per points of luck  differences.\n * The arrow buttons are broken: Type manually. Default values: O.OO1\n * @default 0.001\n * @type number\n * @decimals 3\n * @max 0.100\n * @min 0.001\n *\n */\n \n\n(function() {\n\"use strict\";\n\n    const name = 'Luck Effect Booster';\n    const parameters = PluginManager.parameters(name);\n    let luckValueBonus = Number(parameters['LuckValueBonus'] || 0.001);\n\n\n    Game_Action.prototype.lukEffectRate = function(target) {\n    return Math.max(1.0 + (this.subject().luk - target.luk) * luckValueBonus, 0.0);\n    };\n\n\n})();"
+    },
+    {
+      "post_id": "js-post-1554373",
+      "author": "hiddenone",
+      "date": "2026-04-24T01:35:36+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

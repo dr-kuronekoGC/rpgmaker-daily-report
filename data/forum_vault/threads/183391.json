@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/through-on-doesnt-work.183391",
+  "title": "MZ Through On Doesn't Work",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:02:38.878828+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1554577",
+      "author": "Apocalypticat",
+      "date": "2026-04-26T06:07:48+0900",
+      "body": "Hi all.\nSo, a pretty strange thing is happening. With an event, the player character should be able to climb (say, a wall). I am using regions for this. Although the wall tile from the tileset is marked as impassible, I am doing a region check to see if the player is standing on a specific region, and if so, it sets the movement route for the player as \"Through On\"...yet this isn't doing anything at all. The player is still blocked from traversing the wall. The region in question is painted at the foot of the climbable wall, and up the wall itself.\nAny advice is appreciated."
+    },
+    {
+      "post_id": "js-post-1554580",
+      "author": "SGHarlekin",
+      "date": "2026-04-26T06:19:50+0900",
+      "body": "To give any advice, we'll need to see what you actually did. A description alone isn't gonna do anything. We need to know how you're doing the check and how you're doing the moveroute and where.\nRefer to the support template to get the best results on these help requests:\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1554582",
+      "author": "Apocalypticat",
+      "date": "2026-04-26T06:25:21+0900",
+      "body": "My apologies - here is the common event to get the region ID:\nAnd here is page 1 and 2 of the event in question:\nEdit: and here is the map showing the impassible tiles and region:"
+    },
+    {
+      "post_id": "js-post-1554583",
+      "author": "Solar_Flare",
+      "date": "2026-04-26T06:28:52+0900",
+      "body": "There's nothing in there that actually makes the player move. Are you expecting it to be moved by keyboard/mouse?"
+    },
+    {
+      "post_id": "js-post-1554586",
+      "author": "Apocalypticat",
+      "date": "2026-04-26T06:33:04+0900",
+      "body": "Solar_Flare said:\nThere's nothing in there that actually makes the player move. Are you expecting it to be moved by keyboard/mouse?\nClick to expand...\nYes, via keyboard."
+    },
+    {
+      "post_id": "js-post-1554587",
+      "author": "SGHarlekin",
+      "date": "2026-04-26T06:42:41+0900",
+      "body": "Hmm. Any particular reason you're doing such a roundabout thing instead of just assigning a ladder tag to the roots or making them passable events? (Or even using transparent passable tiles would work IIRC)"
+    },
+    {
+      "post_id": "js-post-1554589",
+      "author": "Apocalypticat",
+      "date": "2026-04-26T06:48:40+0900",
+      "body": "SGHarlekin said:\nHmm. Any particular reason you're doing such a roundabout thing instead of just assigning a ladder tag to the roots or making them passable events? (Or even using transparent passable tiles would work IIRC)\nClick to expand...\nThat's the thing - I did assign a ladder tag to those roots...but the player still cannot climb it...hence this roundabout way of trying to resolve it."
+    },
+    {
+      "post_id": "js-post-1554590",
+      "author": "SGHarlekin",
+      "date": "2026-04-26T07:23:29+0900",
+      "body": "Apocalypticat said:\nThat's the thing - I did assign a ladder tag to those roots...but the player still cannot climb it...hence this roundabout way of trying to resolve it.\nView attachment 365080\nView attachment 365081\nView attachment 365082\nClick to expand...\nHuh, that seems strange. Did you have any plugins that might be interfering? I've just made a random closet into a ladder in the MZ RTP and that seemed to work fine so long as it's passable."
+    },
+    {
+      "post_id": "js-post-1554594",
+      "author": "bgillisp",
+      "date": "2026-04-26T07:54:46+0900",
+      "body": "I see you use MZ so: If you use plugins some of them block regions from ALL event access. And I mean ALL. So check your plugins carefully.\nA very common one that can do this is Event Move Core.\nOdds are high you got region 8 set to all can't cross in a plugin somewhere, which means literally ALL. Including the player. Even with Through ON."
+    },
+    {
+      "post_id": "js-post-1554636",
+      "author": "Apocalypticat",
+      "date": "2026-04-27T02:12:46+0900",
+      "body": "bgillisp said:\nI see you use MZ so: If you use plugins some of them block regions from ALL event access. And I mean ALL. So check your plugins carefully.\nA very common one that can do this is Event Move Core.\nOdds are high you got region 8 set to all can't cross in a plugin somewhere, which means literally ALL. Including the player. Even with Through ON.\nClick to expand...\nSGHarlekin said:\nHuh, that seems strange. Did you have any plugins that might be interfering? I've just made a random closet into a ladder in the MZ RTP and that seemed to work fine so long as it's passable.\nClick to expand...\nThank you - this seemed to be the problem!\nFor anyone else facing this issue - if you use the Hendrix Action Engine plugin there is a setting that is enabled by default that blocks all tiles from the A3 and A4 tileset so that Though On doesn't work etc."
+    },
+    {
+      "post_id": "js-post-1554637",
+      "author": "ShadowDragon",
+      "date": "2026-04-27T02:29:25+0900",
+      "body": "You can take a look at my dynamicRegion plugin, and give it a state.\nif it has a state, it can through the region, and not go outside which block it.\nthis upgrade was done from a request, so it may work out if you want to\navoid eventing it.\nit may safe your trouble, check my spoiler to find the plugin in the list."
+    },
+    {
+      "post_id": "js-post-1554800",
+      "author": "caethyril",
+      "date": "2026-04-28T18:42:11+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}
