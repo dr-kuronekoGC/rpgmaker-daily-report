@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/pixel-perfect-scaling.182018",
+  "title": "Pixel Perfect scaling",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:39.650118+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1544858",
+      "author": "jonathino001",
+      "date": "2026-01-18T12:20:08+0900",
+      "body": "I apologize in advance if this is a dumb question that gets asked all the time, but I've been all over the internet and can't find a clear answer. And I'm totally new to rpgmaker in general so I may be trying to do too much too soon, but here goes:\nI want to make it so that when I resize the window the display does not scale up, but just expands the view so that you can see further. And I want to add an option in the menu to scale up the display by fixed integer multipliers (ie 1x, 2x, 3x, ext) so that you retain the clean pixel look without creating black bars on the edge of the screen.\nBy default the pixels blur, but I've tried a few plugins:\nFixed Scale Fullscreen by Arthran + itaire. Advertises itself as rendering \"only exact multiples of the set resolution\", but in reality disables the ability to change window size or go fullscreen entirely.\nTDDP Pixel Perfect by Galemereth / TDD. Has a setting to enable/disable stretch scaling. When disabled creates black bars when resizing the window. When enabled causes some rows/columns of pixels to be doubled, which looks awful.\nTile Based Scaling by SirLegna. This one actually expands the view like I want, but only along one axis at a time depending on what you've set it to. it'll do the blurry default scaling anyway.\nAnd if I try to use those last two together it bugs out completely and gives me the worst of both worlds.\nI feel like this really shouldn't be so difficult. I'm literally trying to get the game to display in a simpler way. I cannot be the only person who wants to make a pixel game that looks like a pixel game in this pixel game making engine. This should be a default feature."
+    },
+    {
+      "post_id": "js-post-1544870",
+      "author": "Archeia",
+      "date": "2026-01-18T13:36:26+0900",
+      "body": "RPG Maker MV/MZ isn't advertised as a pixel game maker engine. It does support it but you have to do more work and it's not as easy as you think. It's technically:\nCode:\nwindow.moveBy(-xDelta / 2, -yDelta / 2);\nwindow.resizeBy(xDelta, yDelta);\nBut making it work properly like windows not showing scroll bars, etc. is painful.\nYou can try this one.\nJust remember that\nIf your monitor resolution is 1280×720 and your game uses the default 816×624 resolution, a ×2 scale would require a window size of 1648×1287. Since this exceeds your screen size, the plugin will limit the scale to ×1.\nYou might also want to add this to your package.json on release build\nCode:\n\"chromium-args\": \"--force-color-profile=srgb --force-device-scale-factor=1\",\nIf you want it to also work on test play you will want a watcher."
+    },
+    {
+      "post_id": "js-post-1544872",
+      "author": "jonathino001",
+      "date": "2026-01-18T14:06:16+0900",
+      "body": "Archeia said:\nRPG Maker MV/MZ isn't advertised as a pixel game maker engine. It does support it but you have to do more work and it's not as easy as you think. It's technically:\nCode:\nwindow.moveBy(-xDelta / 2, -yDelta / 2);\nwindow.resizeBy(xDelta, yDelta);\nBut making it work properly like windows not showing scroll bars, etc. is painful.\nYou can try this one.\nBut if your game's base resolution is, say, 816×624 (RPG Maker MZ default):\n×2 would need: 816×2 + 16 = 1648 width and 624×2 + 39 = 1287 height\nIf your monitor's available height (screen.availHeight) is less than 1287 pixels (common on 1080p monitors with taskbar taking space, or smaller displays), the function returns ×1 as the max.\nIt will not allow you to change the screen scale.\nYou will also want to add this to your package.json on release build\nCode:\n\"chromium-args\": \"--force-color-profile=srgb --force-device-scale-factor=1\",\nIf you want it to also work on test play you will want a watcher.\nClick to expand...\nChrist... yeah, this really is probably beyond me right now. I haven't even started to touch the code yet. Might have to bite the bullet and just accept I'll have to use fixed resolutions.\nI don't want to go to another engine because RPGmaker is actually really well suited to a bunch of other things I want from it.\nThanks for the in-depth response anyway."
+    },
+    {
+      "post_id": "js-post-1544873",
+      "author": "Archeia",
+      "date": "2026-01-18T14:07:22+0900",
+      "body": "jonathino001 said:\nChrist... yeah, this really is probably beyond me right now. I haven't even started to touch the code yet. Might have to bite the bullet and just accept I'll have to use fixed resolutions.\nI don't want to go to another engine because RPGmaker is actually really well suited to a bunch of other things I want from it.\nThanks for the in-depth response anyway.\nClick to expand...\nTry the plugin anyway and see if it does what you want."
+    }
+  ]
+}

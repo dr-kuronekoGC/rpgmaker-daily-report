@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/whats-the-point-of-plugins-if-i-cant-access-data.182138",
+  "title": "MZ What's the point of plugins if I can't access data?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:26.588542+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1545693",
+      "author": "Fringo",
+      "date": "2026-01-26T03:58:39+0900",
+      "body": "Hi.\nI'm trying to create a plugin. Part of it is an array that contains important data for the game. I cannot seem to create script calls in events that allow me to access that array. I'm aware that's because the data in the script is not global. I can do plugin commands to run specific functions - but I guess I just can't access any data in the script even using other scripts in events? Do I have to assign the array to a $gameVariable.value(), converting it to a useless string, then convert it back? What's the point?"
+    },
+    {
+      "post_id": "js-post-1545695",
+      "author": "Ludovinsky",
+      "date": "2026-01-26T04:18:01+0900",
+      "body": "Huh? In MZ, anything you declare inside a plugin is inside the plugin’s private scope, so event Script Calls can’t see it. To access plugin data from events, you have to put that data on a global object."
+    },
+    {
+      "post_id": "js-post-1545696",
+      "author": "Robro33",
+      "date": "2026-01-26T04:29:53+0900",
+      "body": "Ludovinsky said:\nIn MZ, anything you declare inside a plugin is inside the plugin’s private scope, so event Script Calls can’t see it. To access plugin data from events, you have to put that data on a global object.\nClick to expand...\njust to note, this is true if your plugin runs within an IIFE. without one, a variable declared outside of a function's scope would be global.\nFringo said:\nI cannot seem to create script calls in events that allow me to access that array.\nClick to expand...\nyou would have to show exactly what youve done for anyone to say much else.\nFringo said:\nDo I have to assign the array to a $gameVariable.value(), converting it to a useless string, then convert it back? What's the point?\nClick to expand...\nsetValue allows you to assign arrays without needing to stringify them, and the assignment is by reference. so anything you'd to to it would happen to the original array and there'd be no need to \"convert back\". but if the variable was already in global scope there's no need to outside of saving the value to the save file vs letting it reset with the session"
+    },
+    {
+      "post_id": "js-post-1545712",
+      "author": "Fringo",
+      "date": "2026-01-26T09:21:12+0900",
+      "body": "Robro33 said:\njust to note, this is true if your plugin runs within an IIFE. without one, a variable declared outside of a function scope's would be global.\nyou would have to show exactly what youve done for anyone to say much else.\nsetValue allows you to assign arrays without needing to stringify them, and the assignment is by reference. so anything you'd to to it would happen to the original array and there'd be no need to \"convert back\". but if the variable was already in global scope there's no need to outside of saving the value to the save file vs letting it reset with the session\nClick to expand...\nFor some reason it seems even if I save arrays into these variables -- I still cannot access objects by index nor their properties."
+    },
+    {
+      "post_id": "js-post-1545717",
+      "author": "Adriantwicg",
+      "date": "2026-01-26T10:38:52+0900",
+      "body": "Fringo said:\nFor some reason it seems even if I save arrays into these variables -- I still cannot access objects by index nor their properties.\nClick to expand...\nIf you set the array elements values  to game Variables, you still will be able to access only the game variables. Your messages are so vague at the moment that it is impossible to help you. You need to be more direct with what you're trying to do, and what you have done already."
+    },
+    {
+      "post_id": "js-post-1545741",
+      "author": "Fringo",
+      "date": "2026-01-26T17:57:30+0900",
+      "body": "Adriantwicg said:\nIf you set the array elements values  to game Variables, you still will be able to access only the game variables. Your messages are so vague at the moment that it is impossible to help you. You need to be more direct with what you're trying to do, and what you have done already.\nClick to expand...\nRight. So say I have a list of characters with stats. The best way to store that is in an array containing objects, yes? So - say I save that array into a $gameVariables(x) let's just call it \"x\". That \"x\" should contain the array, yes? Okay. Now say I want to access a property of one of the objects of the array. Say it's the \"name\". And let's say I want that to be determined by another $gameVariables(y). If I make a script that's meant to say set an event name like $gameMap.event(z).event().name = $gameVariables(x)[$gameVariables(y)].name;\nIt won't work.\nNor if I do JSON.stringify on it."
+    },
+    {
+      "post_id": "js-post-1545743",
+      "author": "Robro33",
+      "date": "2026-01-26T18:17:35+0900",
+      "body": "Fringo said:\nIt won't work.\nClick to expand...\nthis is exactly why I said:\nRobro33 said:\nyou would have to show exactly what youve done for anyone to say much else.\nClick to expand...\nbecause your script calls arent correct\nFringo said:\nsay I save that array into a $gameVariables(x) let's just call it \"x\". That \"x\" should contain the array, yes?\nClick to expand...\nvariable x should be your array, yes. when setting it, the script call to do so is\n$gameVariables.setValue(x, value)\nwhere value is your array. the script call to retrieve the value is\n$gameVariables.value(x)\n, not\n$gameVariables(x)\n. you should have gotten an error in the console when using that for it not being a function\nthis is a list of script calls you can use with the base engine thats pinned in the support sections. it has examples for using them.\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nadditionally...\nFringo said:\nThe best way to store that is in an array containing objects, yes?\nClick to expand...\n$gameActors is an object that already contains the information for all your actors, and $dataActors is an array has the database information for them. if the characters youre trying to draw from are actors, then theres no strict need to put them into a separate array. You could draw from either one of them depending on what you need.\nI've moved this thread to\nJavascript/Plugin Support\n. Thank you."
+    },
+    {
+      "post_id": "js-post-1545751",
+      "author": "Fringo",
+      "date": "2026-01-26T19:49:50+0900",
+      "body": "Robro33 said:\nthis is exactly why I said:\nbecause your script calls arent correct\nvariable x should be your array, yes. when setting it, the script call to do so is\n$gameVariables.setValue(x, value)\nwhere value is your array. the script call to retrieve the value is\n$gameVariables.value(x)\n, not\n$gameVariables(x)\n. you should have gotten an error in the console when using that for it not being a function\nthis is a list of script calls you can use with the base engine thats pinned in the support sections. it has examples for using them.\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nadditionally...\n$gameActors is an object that already contains the information for all your actors, and $dataActors is an array has the database information for them. if the characters youre trying to draw from are actors, then theres no strict need to put them into a separate array. You could draw from either one of them depending on what you need.\n[move]\nJavascript/Plugin Support\n[/move]\nClick to expand...\nI already know literally everything you just said. I was explaining using an example. Either way - it started working now. I don't know exactly what it is but that's how it goes with RPG Maker."
+    },
+    {
+      "post_id": "js-post-1545759",
+      "author": "Aerosys",
+      "date": "2026-01-26T21:59:22+0900",
+      "body": "Fringo said:\nI already know literally everything you just said. I was explaining using an example. Either way - it started working now. I don't know exactly what it is but that's how it goes with RPG Maker.\nClick to expand...\nNo, it's not RPG Maker, that's programming.\nIn a game, you have more than a simple database where you can SQL-query everything. You have different kind of data:\n- Data that loads on game start and lives forever (e.g. BGM volume)\n- Data from your disk, e.g. maps, items, skills, classes, initial skills of actors, ...\n- Data that lives while on a map, e.g. where your player is, where the events are, how they look like right now...\n- Data that lives in your save game, and resets when starting a new game, or loading another save, e.g. switches, variables, selfswitches, members of your party, the levels of your actors...\n- ...probably some more\nFrom reading your posts, it looks like you're mixing them up. But it would help us a lot when you would provide a biiiit more information."
+    }
+  ]
+}

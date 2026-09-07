@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-can-i-recove-party-hp-and-mp-through-an-event.163528",
+  "title": "How Can I Recove Party HP and MP Through an Event?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:27.806345+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1402341",
+      "author": "Mikeits",
+      "date": "2023-12-03T05:32:57+0900",
+      "body": "Howdy guys, I'm new to RPG Maker. I already tried searching through old posts, but I've not been able to find a solution that works. I'm trying to figure out how to restore my party's HP and MP through meals in a restaurant. I've tried using the Change HP and Change MP commands. I've misunderstood how variables work and this is part of the issue. For example when I go to Change HP and set the actor to the entire party and for the operand variable I tried using \"b.mhp * 0.20\" to try and restore 20% of the parties HP. That didn't work. The only other thing I can think to try at this point are custom scripts, but I have no knowledge on coding. Does anyone have any recommendations or advice? At this point I'll take an introductory course for Java."
+    },
+    {
+      "post_id": "js-post-1402343",
+      "author": "AquaEcho",
+      "date": "2023-12-03T05:37:20+0900",
+      "body": "The script call versions are\nJavaScript:\n$gameParty.members().forEach(function(m){\n m.recoverAll();\n});\nor\nJavaScript:\n$gameParty.members().forEach(function(m){\n m.gainHp(Math.round(1*(m.mhp)));\n m.gainMp(Math.round(1*(m.mmp)));\n});\nIf you only want to recover a percentage of their HP or MP you would change the 1 to .25 for 25 percent or whatever"
+    },
+    {
+      "post_id": "js-post-1402345",
+      "author": "Mikeits",
+      "date": "2023-12-03T05:39:27+0900",
+      "body": "AquaEcho said:\nView attachment 286147\nClick to expand...\nCan you explain how I need to change that code to make it work for each occasion?"
+    },
+    {
+      "post_id": "js-post-1402352",
+      "author": "Jorel",
+      "date": "2023-12-03T06:00:12+0900",
+      "body": "Hey,\n@Mikeits\n, I've got a non-script solution for you. You will have to recover each party member's HP one at a time instead of using Recover All, but it accomplishes the same purpose as you wanted.\nTo recover 20% of each party member's HP, I get their Max HP, divide it by 5, then use Change HP, repeating for each actor in the party."
+    },
+    {
+      "post_id": "js-post-1402353",
+      "author": "AquaEcho",
+      "date": "2023-12-03T06:04:26+0900",
+      "body": "Mikeits said:\nCan you explain how I need to change that code to make it work for each occasion?\nClick to expand...\nYou put in a script call\n$gameParty.members().forEach(function(m){ m.gainHp(Math.round(1*(m.mhp))); m.gainMp(Math.round(1*(m.mmp))); });\nAnd change the 1 to the decimal of the percentage you want to recover (.25 for 25 percent). Delete the m.gainHP or m.gainMP line if you only want to recover one or the other."
+    },
+    {
+      "post_id": "js-post-1402355",
+      "author": "Mikeits",
+      "date": "2023-12-03T06:08:07+0900",
+      "body": "AquaEcho said:\nYou put in a script call\n$gameParty.members().forEach(function(m){ m.gainHp(Math.round(1*(m.mhp))); m.gainMp(Math.round(1*(m.mmp))); });\nAnd change the 1 to the decimal of the percentage you want to recover (.25 for 25 percent). Delete the m.gainHP or m.gainMP line if you only want to recover one or the other.\nClick to expand...\nYou're an angel. That worked.  Do you know of any good tutorials for Java Script so I can start writing my own code?\nJorel said:\nHey,\n@Mikeits\n, I've got a non-script solution for you. You will have to recover each party member's HP one at a time instead of using Recover All, but it accomplishes the same purpose as you wanted.\nTo recover 20% of each party member's HP, I get their Max HP, divide it by 5, then use Change HP, repeating for each actor in the party.\nView attachment 286149\nClick to expand...\nI'll also add this to me repertoire. Thank you."
+    },
+    {
+      "post_id": "js-post-1402357",
+      "author": "AquaEcho",
+      "date": "2023-12-03T06:14:15+0900",
+      "body": "Mikeits said:\nYou're an angel. That worked.  Do you know of any good tutorials for Java Script so I can start writing my own code?\nClick to expand...\nI just got the code version of the event command from\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nAs far as Javascript tutorials go, I used FreeCodeCamp and W3 Schools"
+    },
+    {
+      "post_id": "js-post-1545624",
+      "author": "Nirriti",
+      "date": "2026-01-25T08:11:32+0900",
+      "body": "AquaEcho said:\nI just got the code version of the event command from\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nAs far as Javascript tutorials go, I used FreeCodeCamp and W3 Schools\nClick to expand...\nThank you for the script call list,\nEcho\n(and Mikeits for the good question)\n. I thought doing the reverse\n(for a BOMB trap popping-up from a chest)\nwould be \"m.loseHp\"\n(which doesnt work)\n. ... I didnt think it was simply the same line except with a minus sign added instead... clever!\nEDIT: Where would I need to add \"false\" to prevent a GameOver? Tried various placements and none seemed to have worked. Ill try some more for a leader-only version too."
+    },
+    {
+      "post_id": "js-post-1545651",
+      "author": "rpgLord69",
+      "date": "2026-01-25T17:37:36+0900",
+      "body": "Nirriti said:\nEDIT: Where would I need to add \"false\" to prevent a GameOver? Tried various placements and none seemed to have worked. Ill try some more for a leader-only version too.\nClick to expand...\nI think you can use the ready made function that has the check to change the damage value if you've set allow death to false (change -100 to your damage value):\nconst actor = $gameParty.leader();\nGame_Interpreter.prototype.changeHp.call(actor, actor, -100, false);"
+    },
+    {
+      "post_id": "js-post-1545677",
+      "author": "Robro33",
+      "date": "2026-01-26T01:36:08+0900",
+      "body": "@Nirriti\n, please refrain from necro-posting in a thread. Necro-posting is posting in a thread that has not had posting activity in over 30 days. You can review our forum rules\nhere\n. Thank you."
+    }
+  ]
+}

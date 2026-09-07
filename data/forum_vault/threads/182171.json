@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-it-possible-to-run-a-custom-unarmed-script-like-this-with-visustellas-skill-core.182171",
+  "title": "MZ Is it possible to run a custom unarmed script like this with Visustella's skill Core?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:25.920175+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1545895",
+      "author": "Dollar_Store_Diogenes",
+      "date": "2026-01-28T12:55:23+0900",
+      "body": "From what I understand from poking around on here for a bit now is that Visustella's skills core makes it possible to run scripts like this:\n<JS Skill Enable>\nenabled = user.isStateAffected(42);\n</JS Skill Enable>\nAnd that with base RPG Maker MZ functionality(?) I can also run a script like this:\n$gameActors.actor(x).isWtypeEquipped(n);\nSo my idea is that I\nshould\nbe able to check to see if the player/party member is unarmed with something like, \"$gameActors.actor().isWtypeEquipped();\" and then do an \"If-then\" statement such that if the actor's weapon type is \"undefined\" then \"<JS Skill Enable>\" for, \"unarmed,\" skills that are only available to the player if the player doesn't have any weapons equipped, in the same way that MZ natively allows you to set weapon/equipment requirements for certain skills to be accessible. What do you guys think? Would something like this be possible? I'm not quite sure how to do \"If-Then's\" like this in MZ, nor am I quite sure I'm whether or not this would work?"
+    },
+    {
+      "post_id": "js-post-1545898",
+      "author": "Robro33",
+      "date": "2026-01-28T13:07:00+0900",
+      "body": "Dollar_Store_Diogenes said:\nSo my idea is that I\nshould\nbe able to check to see if the player/party member is unarmed with something like, \"$gameActors.actor().isWtypeEquipped();\" and then do an \"If-then\" statement such that if the actor's weapon type is \"undefined\" then \"<JS Skill Enable>\" for, \"unarmed,\" skills that are only available to the player if the player doesn't have any weapons equipped\nClick to expand...\nyou can (not exactly that way), but you dont need to. if your condition is that the battler has no weapons equipped, then you can call weapons() and check if its empty.\nCode:\n<JS Skill Enable>\nenabled = !user.weapons().length;\n</JS Skill Enable>"
+    },
+    {
+      "post_id": "js-post-1545899",
+      "author": "Dollar_Store_Diogenes",
+      "date": "2026-01-28T13:15:44+0900",
+      "body": "Robro33 said:\nyou can, but you dont need to. if your condition is that the battler has no weapons equipped, then you can call weapons() and check if its empty.\nCode:\n<JS Skill Enable>\nenabled = !user.weapons().length;\n</JS Skill Enable>\nClick to expand...\nOh damn, that\nis\na lot simpler, lol. Thanks!"
+    },
+    {
+      "post_id": "js-post-1545939",
+      "author": "Solar_Flare",
+      "date": "2026-01-28T23:23:31+0900",
+      "body": "You can go even simpler than that:\nJavaScript:\nenabled = user.hasNoWeapons()"
+    },
+    {
+      "post_id": "js-post-1546013",
+      "author": "Dollar_Store_Diogenes",
+      "date": "2026-01-29T16:26:18+0900",
+      "body": "Solar_Flare said:\nYou can go even simpler than that:\nJavaScript:\nenabled = user.hasNoWeapons()\nClick to expand...\nNgl, it's so simple that I genuinely feel a bit silly for not thinking of that now, lol.\nMuch\nsimpler than my original idea of how to achieve the same effect!"
+    }
+  ]
+}

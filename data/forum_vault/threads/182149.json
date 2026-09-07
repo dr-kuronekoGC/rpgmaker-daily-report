@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-mz-change-spawned-event-names.182149",
+  "title": "MZ RPG Maker MZ Change Spawned Event Names",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:26.886875+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1545742",
+      "author": "Fringo",
+      "date": "2026-01-26T18:05:45+0900",
+      "body": "Hi. I'm trying to change the name of events spawned by Galv's event spawner using the following code (where $gameVariables.value(50) contains what I want to set the name to - which is a number that goes up per event spawned so the first event is 0, 2nd is 1, 3rd is 2, etc -- so each event should be named the number it was generated). Whenever I do this, then try to access the name through the code below to test it in a script attached to each event based on the template event - EVERY event EVER spawned only has the latest event name (so if I spawned 4 events - EVERY event will be named (3)) -- How do I fix this?! It's driving me mad.\nJavaScript:\nvar lastEventId = $gameMap.events().length;\nvar newEvent = $gameMap.event(lastEventId);\n\nif (newEvent) {\n    newEvent.event().name = $gameVariables.value(50);\n    alert($gameVariables.value(50));\n    $gameMap.requestRefresh();\n}\nJavaScript:\nalert(this.character(0).event().name);\nalert($gameMap.event(this._eventId).event().name);"
+    },
+    {
+      "post_id": "js-post-1545747",
+      "author": "Aerosys",
+      "date": "2026-01-26T18:32:24+0900",
+      "body": "I have only dealt with my own event spawn system, not with Galv's, but I think they work quite similarly.\nIn RPG Maker, you usually have 2 levels:\nThe Game_Event level: data that the event has right now, e.g. current position, current page\nThe $data level: data that the event has \"on your disk\", e.g. initial position, all the pages\nBy calling event() on an event, you access its data-level, which you probably should not. As you can see, it usually leads to weird or unexpected states.\nSo my question back to you: Why do you even want to change their names? AFAIK the names are only for us game devs in the editor; they are not used anywhere in the exported game."
+    },
+    {
+      "post_id": "js-post-1545749",
+      "author": "rpgLord69",
+      "date": "2026-01-26T19:23:03+0900",
+      "body": "And since you wrote you just wanted to use the name to store a numerical value, you can use something like self variables (plugin) for that."
+    },
+    {
+      "post_id": "js-post-1545752",
+      "author": "Fringo",
+      "date": "2026-01-26T19:56:24+0900",
+      "body": "Aerosys said:\nI have only dealt with my own event spawn system, not with Galv's, but I think they work quite similarly.\nIn RPG Maker, you usually have 2 levels:\nThe Game_Event level: data that the event has right now, e.g. current position, current page\nThe $data level: data that the event has \"on your disk\", e.g. initial position, all the pages\nBy calling event() on an event, you access its data-level, which you probably should not. As you can see, it usually leads to weird or unexpected states.\nSo my question back to you: Why do you even want to change their names? AFAIK the names are only for us game devs in the editor; they are not used anywhere in the exported game.\nClick to expand...\nI was testing storing a number there but it turns out it does the same thing for literally any property I try to assign them ever. I tried to make a unique property called \".stats\" (so it read \"$gameMap.event($gameMap.events().length).event().stats = *object I want to assign*\" but it still does this across all of them. It worked when I ran it to assign the object in the event scripting every time the player interacts using the ID but that isn't a solution I can use since I was literally manually using the ID numbers within the event for it. Is there another way to do this that I'm missing?"
+    },
+    {
+      "post_id": "js-post-1545754",
+      "author": "Aerosys",
+      "date": "2026-01-26T20:36:09+0900",
+      "body": "As I said, writing to the data level is more critical and often leads to unexpected situations. Furthermore, when the player goes to title screen, loads another save, etc. it will break with a 99% change.\nFor example, you can temporarily change an event's graphic to something else. The game logic will put this information into the game level, not the data level. You can put information to an event, like this:\nCode:\n$gameMap.event(1).myProperty = \"asdf\"\nHowever, as we all know, all events are reset when changing the map, and so are your overrides. So I doubt that this is what you need.\nA common way to store information is to bind it to $gameSystem. Information in $gameSystem is not removed on map changes, and the engine will also manage it when the player reloads or starts a new game. It is by far the easiest method.\nCode:\n$gameSystem.myProperty = \"asdf\"\n\n\n// anywhere else in the game:\nalert (\"This is my property: \" + $gameSystem.myProperty)\nAs your collection of information is more complex, you need to plan how to structure it. I bet it's structured like this? Map ID -> Event ID\nIn this case, you should maps instead of arrays.\nCode:\n// initialize your container, or skip if already done\n$gameSystem.customEventData = $gameSystem.customEventData || { };\n\n// write info\nconst key = \"\" + $gameMap.mapId() + \"_\" + eventId // <-- replace eventId\n$gameSystem.customEventData[key] = \"asdf\"\n\n// read info\nconst key = \"\" + $gameMap.mapId() + \"_\" + eventId // <-- replace eventId\nconst data = $gameSystem.customEventData[key];\nalert(data);"
+    }
+  ]
+}

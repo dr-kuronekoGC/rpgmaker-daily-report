@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/what-is-a-good-ratio-of-image-resolution-for-pictures-in-regards-to-quality-and-performance.182040",
+  "title": "What is a good ratio of image resolution for pictures in regards to quality and performance?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:39.330181+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1544978",
+      "author": "Pikablue",
+      "date": "2026-01-19T05:45:22+0900",
+      "body": "I will deal with multiple pictures at the same time for the purposes of making a visual novel kind of scenes while talking with specific characters.\nThe format would be something similar to this while talking to the character(s) in question:\nRed: character(s)\nBlue: text box\nGreen: background (separate for the map)\nYellow: interface element\nAll but the text box would be pictures.\nI'm asking mostly out of the fact that is easy to see that this would lead into multiple images being used, and with being able to resize images in a perceptual level on rpg maker mv would allow so any resolution could technically be used, this leaves me with the question, as its easy to see how the performance could be affected by this approach.\nSo i would like to know to what sizes could i try going for so that the image quality doesn't get impacted, while not making the game lose performance."
+    },
+    {
+      "post_id": "js-post-1545003",
+      "author": "TheAM-Dol",
+      "date": "2026-01-19T11:34:49+0900",
+      "body": "In my game, which uses a 720p resolution I generally aim for a height of roughly 590px for character sprites. I adjust this value a little bit to create height separation between characters, but broadly: 590 is the goal.\nThe reason for this is that it leaves about 1/4 to 1/3 of the top empty, which is enough space to let the scene breathe and not so tight that it feels like the camera is about to chop of the actors head. (Look into the photography concept of \"The rule of thirds\" if you aren't already familiar with it)\nIt's worth noting that I ask my artist to always render the art at the maximum resolution her software allows (which I believe is a max canvas size of 4000x4000). I then shrink it down myself. This is because it is much easier to take away detail when shrinking than it is to add detail when expanding.\nThis also allows you to use the art for promotional purposes outside of the game.\nSo my advice is to illustrate the art at a high resolution and then shrink it down to be about 2/3 or 3/4 the height of your frame.\nedit:\nMissed the performance concerns, but rafael pretty much answered them.\nCompress your images., I'd also index the colors.\nRegular image compression is going to load just as much data in ram so theoretically might still cause some blips in loading (which is why you would preload)\nIndexing will reduce the colors, meaning there's less data to decompress in ram. Depending on the level of indexing this may be incredibly minor to a lot - of course the higher level of indexing, the more scuffed colors get. Reegardless, it's free performance, so I'd still apply 256 color indexing, even if the performance gain is minor.\nPreloading is going to be the most impactful thing you can do. How you achieve it depends on the plugin that enables it. Regardless, preloading is moving things into RAM, so make sure you have a way to clear the stuff out of RAM when the cutscene is done. If the plugin doesn't do it automatically and you don't manually clear it, then it just sits in RAM forever and that's how memory leaks happen."
+    },
+    {
+      "post_id": "js-post-1545005",
+      "author": "rafaeljbi",
+      "date": "2026-01-19T12:05:24+0900",
+      "body": "Not answering the exact ratio part, but regardless of the image dimensions you choose, it’s best to match them to your game’s screen resolution.\nFrom a performance perspective, one of the most important optimizations is to reuse images as much as possible instead of constantly loading many unique ones. Preloading frequently used images also helps reduce stuttering during gameplay.\nThere are plugins that help you preload some images, consider that if you start having performance issues.\nAdditionally, compressing your images is one of the\nbest ways\nto keep good visual quality while improving performance and reducing memory usage in RPG Maker.\nThis tool is very helpful for that (it is the one I use. Free and online:\nhttps://tinypng.com/"
+    }
+  ]
+}

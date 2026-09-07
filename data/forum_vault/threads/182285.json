@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/message-window-inside-the-conditional-branch-disappears-before-the-choice-list.182285",
+  "title": "MZ Message window inside the conditional branch disappears before the choice list",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:19.868266+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1546662",
+      "author": "Jobhob",
+      "date": "2026-02-05T04:44:52+0900",
+      "body": "Does anyone know plugin or workaround for messages inside the conditional brances before the choice list? The message disappears in this case, which is annoying, because the only way to make it stay is to leave it as is before the choice list. I searched, and it seems there are no plugins or solutions to that, which I hardly believe. If anyone knows how to solve this, please let me know."
+    },
+    {
+      "post_id": "js-post-1546673",
+      "author": "Another Fen",
+      "date": "2026-02-05T09:02:09+0900",
+      "body": "Late Edit\n: Good catch by Solar_Flare, see answers below.\nDepending on how complex your text is, one work around could be to put the text difference in one or multiple variables/unused actor names, and reference that in your \"Message Text\" command (you cannot put special text commands in variables, so you would have to splice around those if your text contains some).\nYou could also replace the \"Message Text\" and \"Show Choices\" with script commands (see\nMV/MZ script call list\n).\nYou can prevent the interpreter from stopping after the first Message Text by only putting the\nthis.setWaitMode('message')\nline in the last command:\nSpoiler\nCode:\n[...]\n  ♦If : ChoiceCount = 2\n    ♦Script : $gameMessage.setFaceImage(\"UI/Inspect\", 0);\n    :       : $gameMessage.setBackground(0);\n    :       : $gameMessage.setPositionType(2);\n    :       : $gameMessage.setSpeakerName(\"\");\n    :       : $gameMessage.add(\"<Position: 210, 445, 450, 110>\\\\TextDelay[3]\\\\LSPI[100]<i>There is a drink ins...\");\n    ♦\n  : End\n  ♦Script : let choices = [\n  :       :   \"<Hide Switch: 615><Choice Width: 350><Choice Common Event: 718>\\\\I[567] Bottled ...\",\n  :       :   \"...\"\n  :       : ];\n  :       : $gameMessage.setChoices(choices, 0, -1);\n  :       : $gameMessage.setChoiceBackground(0);\n  :       : $gameMessage.setChoicePositionType(2);\n  :       : $gameMessage.setChoiceCallback(n => {\n  :       :   $gameVariables.setValue(1509, n);\n  :       : });\n  :       :\n  :       : this.setWaitMode(\"message\");\n  ♦If : ChoiceSelection#1509 = 0\n    [...]\nIf you do want a plugin for this specific case, you could maybe try something like this:\nSpoiler\nJavaScript:\n/*:\n * @plugindesc\n * \"Message Text\" will search past the end of conditional branches.\n */\n\nGame_Interpreter.prototype.command101 = (alias => function(params) {\n    let result = alias.call(params);\n    if (result && [101, 401].contains(this.currentCommand().code) && !this.command412) {\n        while (this._list[this._index + 1] && [0, 412].contains(this.nextEventCode())) {\n            this._index++;\n        }\n        switch (this.nextEventCode()) {\n            case 102: // Show Choices\n                this._index++;\n                this.setupChoices(this.currentCommand().parameters);\n                break;\n            case 103: // Input Number\n                this._index++;\n                this.setupNumInput(this.currentCommand().parameters);\n                break;\n            case 104: // Select Item\n                this._index++;\n                this.setupItemChoice(this.currentCommand().parameters);\n                break;\n        }\n    }\n    return result;\n})(Game_Interpreter.prototype.command101);"
+    },
+    {
+      "post_id": "js-post-1546677",
+      "author": "Solar_Flare",
+      "date": "2026-02-05T10:54:02+0900",
+      "body": "Another Fen said:\nyou cannot put special text commands in variables, so you would have to splice around those if your text contains some\nClick to expand...\n…what are you talking about? Why would you be unable to put special text commands in variables?\nEDIT: I gave it a try and figured out why you'd think that. It's because of the backslash substitution. You can still use them, but there's a bit of extra syntax:\nCode:\n◆Control Variables：#0001 = \"This is a test of \\x1bN[1].\\x1b..\\x1b..\"\n◆Text：None, None, Window, Bottom\n：    ：\\V[1]\nAll those\n1b\nare there to make the text codes work.\nEDIT2: That plugin looks great, but it won't directly solve the original poster's problem, since they have multiple If statements to skip over. Perhaps it could work out with a bit of enhancement to the plugin if the statements are rephrased as an if-else chain though? On the other hand, I have a feeling that their specific problem is better solved with a plural substitution plugin…"
+    },
+    {
+      "post_id": "js-post-1546705",
+      "author": "Krimer",
+      "date": "2026-02-05T19:04:17+0900",
+      "body": "I would suggest solving it using the \"Label\" and \"Jump To Label\" features along with a plugin. Basically, add this plugin to your project (or at the end of existing plugin) and start using labels. Place a \"Jump To Label\" command right after the text, and put a \"Label\" command just before the choice you want to jump to.\nThe plugin will check whether there's a \"Jump To Label\" after the text, verify that a choice command follows that label, and then merge the commands automatically.\nSpoiler:\nusage example\nSpoiler:\nplugin\nJavaScript:\n(function() {\n \n    Game_Interpreter.prototype.command101 = function(params) {\n        if ($gameMessage.isBusy()) {\n            return false;\n        }\n        \n        $gameMessage.setFaceImage(params[0], params[1]);\n        $gameMessage.setBackground(params[2]);\n        $gameMessage.setPositionType(params[3]);\n        $gameMessage.setSpeakerName(params[4]);\n        \n        while (this.nextEventCode() === 401) {\n            this._index++;\n            $gameMessage.add(this.currentCommand().parameters[0]);\n        }\n        \n        switch (this.nextEventCode()) {\n            case 102:\n                this._index++;\n                this.setupChoices(this.currentCommand().parameters);\n                break;\n            case 103:\n                this._index++;\n                this.setupNumInput(this.currentCommand().parameters);\n                break;\n            case 104:\n                this._index++;\n                this.setupItemChoice(this.currentCommand().parameters);\n                break;\n            case 119:\n                this.setupInputFromLabel();\n                break;\n        }\n        \n        this.setWaitMode(\"message\");\n        return true;\n    };\n    \n    Game_Interpreter.prototype.setupInputFromLabel = function() {\n        const labelName = this._list[this._index + 1].parameters[0];\n        \n        for (let i = 0; i < this._list.length; i++) {\n            const cmd = this._list[i];\n            if (cmd.code === 118 && cmd.parameters[0] === labelName) {\n                const nextCmd = this._list[i + 1];\n                if (nextCmd && [102, 103, 104].includes(nextCmd.code)) {\n                    this._index++;\n                    this.jumpTo(i + 1);\n                    \n                    switch (this.currentCommand().code) {\n                        case 102:\n                            this.setupChoices(this.currentCommand().parameters);\n                            break;\n                        case 103:\n                            this.setupNumInput(this.currentCommand().parameters);\n                            break;\n                        case 104:\n                            this.setupItemChoice(this.currentCommand().parameters);\n                            break;\n                    }\n                }\n                break;\n            }\n        }\n    };\n        \n})();"
+    },
+    {
+      "post_id": "js-post-1547351",
+      "author": "Jobhob",
+      "date": "2026-02-11T18:24:31+0900",
+      "body": "Late reply, but I just tried the plugin, and based on position in plugin list it either doesn't work, or breaks the choice function entirely (by not reacting to the commands that should happen when you pick the choice option). It also displays me the message that this plugin may not support RPG Maker MZ, so it seems like there's some issues with this."
+    },
+    {
+      "post_id": "js-post-1547352",
+      "author": "ShadowDragon",
+      "date": "2026-02-11T18:53:39+0900",
+      "body": "Jobhob said:\nLate reply, but I just tried the plugin, and based on position in plugin list it either doesn't work, or breaks the choice function entirely (by not reacting to the commands that should happen when you pick the choice option). It also displays me the message that this plugin may not support RPG Maker MZ, so it seems like there's some issues with this.\nClick to expand...\nI don't own MZ, but the message can be safely ignored if it does work.\nit mostly require\n@target MZ\non top to make the message disappear.\nif you did follow the above with the jump to label it may work, but I can't test it unfortunately."
+    },
+    {
+      "post_id": "js-post-1547355",
+      "author": "Krimer",
+      "date": "2026-02-11T19:27:38+0900",
+      "body": "Jobhob said:\nLate reply, but I just tried the plugin, and based on position in plugin list it either doesn't work, or breaks the choice function entirely (by not reacting to the commands that should happen when you pick the choice option). It also displays me the message that this plugin may not support RPG Maker MZ, so it seems like there's some issues with this.\nClick to expand...\nNot sure which code you're referring to. My code is definitely working, but the issue might be a conflict between plugins. From your screenshot, it's clear you're using some choice plugins, and they can cause problems if they override the text command as well.\nI’ve added an alias to the text command this should help resolve the conflict. Make sure this code is lower than any other choice/message plugins. If it still doesn't work, without knowing exactly which plugins you're using or what are doing I can't help.\nSpoiler:\ncode\nJavaScript:\n(function() {\n  \n    const _Game_Interpreter_command101 = Game_Interpreter.prototype.command101; \n    Game_Interpreter.prototype.command101 = function(params) {\n        const result = _Game_Interpreter_command101.call(this, params);\n \n        if (result && this.nextEventCode() === 119) {\n            this.setupInputFromLabel();\n        }\n      \n        return result;\n    };\n  \n    Game_Interpreter.prototype.setupInputFromLabel = function() {\n        const labelName = this._list[this._index + 1].parameters[0];\n      \n        for (let i = 0; i < this._list.length; i++) {\n            const cmd = this._list[i];\n            if (cmd.code === 118 && cmd.parameters[0] === labelName) {\n                const nextCmd = this._list[i + 1];\n                if (nextCmd && [102, 103, 104].includes(nextCmd.code)) {\n                    this._index++;\n                    this.jumpTo(i + 1);\n                    this._indent = this.currentCommand().indent;\n                    switch (this.currentCommand().code) {\n                        case 102:\n                            this.setupChoices(this.currentCommand().parameters);\n                            break;\n                        case 103:\n                            this.setupNumInput(this.currentCommand().parameters);\n                            break;\n                        case 104:\n                            this.setupItemChoice(this.currentCommand().parameters);\n                            break;\n                    }\n                }\n                break;\n            }\n        }\n    };\n  \n})();"
+    },
+    {
+      "post_id": "js-post-1547386",
+      "author": "Jobhob",
+      "date": "2026-02-12T02:27:19+0900",
+      "body": "I decided to try this out with a complete blank project, and the issue still remains. While the text indeed can change, it stops choices from working (so if I press either yes or no, it won't show me \"test 1/test 2\" messages). So it seems like the plugin is working, but it breaks the choice system. For context, it's MZ, with 10.0 CoreScript."
+    },
+    {
+      "post_id": "js-post-1547387",
+      "author": "Krimer",
+      "date": "2026-02-12T02:47:30+0900",
+      "body": "Oh yeah, I forgot about _indent.\nAdd this line right after this.jumpTo(i + 1):\nJavaScript:\nthis._indent = this.currentCommand().indent;\nOr just copy the code from my previous post I updated it there.\nShould fix it"
+    },
+    {
+      "post_id": "js-post-1547391",
+      "author": "Jobhob",
+      "date": "2026-02-12T03:02:36+0900",
+      "body": "Yup, it fully works now, both in test and actual project. Thanks for help!"
+    }
+  ]
+}

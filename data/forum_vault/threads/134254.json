@@ -1,0 +1,539 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/tsr_moveevent.134254",
+  "title": "TSR_MoveEvent",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:31.189111+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1169875",
+      "author": "TSR",
+      "date": "2021-03-09T23:54:59+0900",
+      "body": "Author:\nTSR, The Northern Frog\nDownload:\nTSR_MoveEvent\n​\nThis plugin allows to push, pull, pick up and throw events.\n​\nSpoiler:\nInstructions\nCode:\n* \n* =========================================================================================\n * == About this Plugin ====================================================================\n * =========================================================================================\n * Use the following comment tags to turn the event page into a movable event.\n * \n * Event Comment Tags:\n * ===================\n * \n *            <MOVABLE EVENT>\n *                  Event page having this comment tag can be pushed and \n *                  pulled by the player. \n * \n * \n *            <MOVABLE MYSTERY: X>\n *                  Event page having this comment tag can be pushed and \n *                  pulled by the player. In addition, these events will  \n *                  play the 'Mystery Sound' (set in parameters), and turn \n *                  ON the switch specified by X. \n * \n *                  This will happen only the first time the event is moved.\n *                  Those events will be considered as regular movable events\n *                  afterwards.\n * \n * \n *            <PICKUP EVENT>\n *                  Event page having this comment tags can be picked up and\n *                  thrown by the player. \n * \n * \n *            <MOVE EVENT OFFSET: X>\n *                  Use this tag if you need to adjust the distance the\n *                  player has to walk to get closer to the movable event.\n *                  Without the tag, the distance will be defined by the \n *                  'move event offset' parameter. \n * \n *                  This commment tag can also be used on pickup events to\n *                  set the distance between the player and the event it is\n *                  holding.\n * \n * \n * Map Note Tag:\n * =============\n * \n *      By default the thrown events respect the same passability as the player.\n *      You can throw events over some unpassable tiles by using the following\n *      tag in a map notebox.\n * \n *            <THROW REGION: x, x, x>\n *                  Use this map notetag to mark some region Id as passable\n *                  for throwing event through those regions.\n * \n * \n * \n * HOW TO USE:\n * ===========\n * \n *          TO PUSH: Hold the ARROW KEY in the direction toward the movable\n *                   event until it back off one tile.\n * \n *          TO PULL: Hold the OK BUTTON when standing next to a movable event\n *                   and facing it, and wait until it move one tile.\n * \n *              *There's a small delay when pushing or pulling. Keep holding\n *               the key and you'll see the player starting to 'run' against \n *               the movable event. Then you'll hear the 'Effort Sound' (set\n *               in parameters) and see the 'Effort Balloon' (also set in\n *               parameters). After a few more frames, the event will move\n *               and the player will move along with it.\n * \n *             **When pushing and pulling, the player will walk shortly to\n *               get closer to the movable event. The default distance is\n *               set in parameters. There's also an event comment tag to \n *               assign specific distance to some events. \n * \n *            ***The pushing and pulling event will move at the speed set in\n *               the event tab. Player will move at same speed when pushing\n *               or pulling the event.\n * \n * \n *         TO PICKUP: Stand in front of a pickable event and hold the OK\n *                    BUTTON to pick it up. Keep holding the key because\n *                    releasing it will drop the event. You can move and\n *                    dash while holding an event. \n * \n *          TO THROW: Release the OK BUTTON to drop the event the player is\n *                    holding. The event will be dropped on the tile in front\n *                    of the player. If you drop it while holding an ARROW\n *                    KEY, the event will be thrown one tile away in front\n *                    of the player. And if you drop while holding both the\n *                    DASH BUTTON and an ARROW KEY, the event will be thrown\n *                    2 tiles away in front of the player.\n * \n * \n * SCRIPT CALLS:\n * =============\n * \n *      In order to manage your movable events interaction on the map, you can \n *      use a few script calls to check events position on the map.\n * \n *       \n *      PUSH / PULL events\n *      ==================\n * \n *      Use the following default call to check an event position at any time:\n * \n *               $gameMap.event(eventId).pos(x, y) \n * \n *      It will return true or false wheter the event is at position x, y on\n *      the map. This can be checked in a parallel process event or in an\n *      autonomous movement script command.\n * \n * \n * \n *      PICK & THROW events\n *      ===================\n *  \n *      These events can be a bit trickier to manage for game mechanics \n *      purposes. The plugin provide additionnal script calls to check \n *      these events positions.\n * \n *               $gamePlayer.isHolding(eventId);\n * \n *      This call will return true if the map event specified by eventId is \n *      hold (carried) by the player.\n * \n * \n *               $gamePlayer.hasBroughtEvent(eventId, x, y, d)\n * \n *      This call will return true if the map event specified by eventId is \n *      hold by the player on tile x, y and turned in direction d.\n * \n * \n *               $gamePlayer.hasGaveEvent(eventId, targetEventId)\n * \n *      This call will return true if the map event specified by eventId is \n *      hold by the player on the tile in front of the map event specified\n *      by targetEventId The player must be facing the target event.\n * \n * \n *              $gamePlayer.hasThrownEvent(eventId, x, y)\n * \n *      This one will returm true if the player has actually thrown or\n *      drop the map event specified by evenId on that exact tile at \n *      position x, y.\n *     \n * \n * \n*\n​\nCode:\n===========================================================\n\nToU:\n\nUse in any independant RPG Maker MZ or MV projects, including commercials.\n\nCredit is required for using this Plugin. For crediting, use 'TSR' along with one of the following terms: 'The Northern Frog' or 'A frog from the north'\n\nDo not change the Header or the Terms of usage.\n\nDO NOT REDISTRIBUTE! If you want to share it, share the link to my itch.io account:  https://the-northern-frog.itch.io/\n\nSending me a copy of your completed game using my plugin would be appreciated,  but there's no obligation.\n\n===========================================================\nRegards!\nTSR"
+    },
+    {
+      "post_id": "js-post-1170094",
+      "author": "ReIris",
+      "date": "2021-03-10T22:08:15+0900",
+      "body": "This plugin is cool! thank you!"
+    },
+    {
+      "post_id": "js-post-1170298",
+      "author": "cabanas_ds",
+      "date": "2021-03-11T20:05:37+0900",
+      "body": "this is hot. cant wait to go home and try this."
+    },
+    {
+      "post_id": "js-post-1170905",
+      "author": "TSR",
+      "date": "2021-03-14T10:39:59+0900",
+      "body": "First update!\nPush / pull events\n:\nBetter transition for pushing and pulling, the player will walk shortly to get closer the the movable event. The default distance depends on a parameter, but can be set by an event comment tag to adjust to the event image size.\nPlayer and movable event will walk the same speed defined by the event speed tab so you can set a lower speed for heavier things.\nPick up events\n:\nPlayer walk on the tile of the event when picking it up, making a better transition.\nWhen throw/drop an event while facing an impassable tile, the event will drop on the tile behind (or one of the sides if behind isn't free).\n​\n​\nTSR_MoveEvent v1.0.7\n​\nRegards!"
+    },
+    {
+      "post_id": "js-post-1170986",
+      "author": "cabanas_ds",
+      "date": "2021-03-14T20:16:25+0900",
+      "body": "such a champ.  last version worked good for me.\nsuch a cool idea for puzzles or even just for a bit of fun."
+    },
+    {
+      "post_id": "js-post-1171097",
+      "author": "TSR",
+      "date": "2021-03-15T06:12:34+0900",
+      "body": "Thanks, glad you like it!"
+    },
+    {
+      "post_id": "js-post-1171108",
+      "author": "Gigadragon78",
+      "date": "2021-03-15T07:00:47+0900",
+      "body": "Thanks you very much friend."
+    },
+    {
+      "post_id": "js-post-1172707",
+      "author": "ReIris",
+      "date": "2021-03-21T14:52:08+0900",
+      "body": "Hello! I have question!\nif i used galv's camcontrolMZ,this plugin will in walk appear push action.\nSpoiler:\nGIF\nGalv's Cam Control MZ\nCam Control RPG Maker MZ Plugin Galv  Introduction Some control over the game's camera.      Features This plugin adds a sliding motion to the normal camera motion when the player moves and also allows you to change the camera focus to: – Player – Event – X,Y coordinates Camera will slide to...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1172782",
+      "author": "TSR",
+      "date": "2021-03-22T01:43:02+0900",
+      "body": "Hello all!\nNew update:\nTSR_MoveEvent v1.1.1\nsome minor fixes (should fix your problem\n@m03271996\n)\nRevamp of the comment tags for additional functionality\nSpoiler:\ncomment tags\nCode:\n* Event Comment Tags:\n * ===================\n *\n *            <MOVABLE EVENT>\n *                  Event page having this comment tag can be pushed and\n *                  pulled by the player.\n *\n *                  <MOVABLE EVENT: X>\n *                      You can add a switch (X) argument to the comment\n *                      tag. If so, the event will only be movable when\n *                      the game switch X is ON. While the switch is OFF,\n *                      the player will react as if he can push/pull the\n *                      event, but it won't budge unless the switch is\n *                      turned ON.\n *\n *\n *            <MOVABLE MYSTERY: X>\n *                  Event page having this comment tag can be pushed and\n *                  pulled by the player. In addition, these events will \n *                  play the 'Mystery Sound' (set in parameters), and turn\n *                  ON the switch specified by X.\n *\n *                  This will happen only the first time the event is moved.\n *                  Those events will be considered as regular movable events\n *                  afterwards.\n *\n *\n *            <PICKUP EVENT>\n *                  Event page having this comment tags can be picked up and\n *                  thrown by the player. You can use images from tiles sheets\n *                  or character sheets; in both case the event will be fixed\n *                  on the specified image, no matter the direction. The step\n *                  animation can be toggle ON when using a character sheet.\n *\n *              <PICKUP EVENT: X>\n *                  You can add a self switch X argument to the comment tag.\n *                  The event will turn ON the self switch specified by X\n *                  when it reach the ground after being dropped or thrown.\n * \n *\n *            <PICKUP CHARACTER>\n *                  This comment tag have the same effect than the previous\n *                  one. But event having this comment tag must be assigned\n *                  an image from a character sheet because they will turn\n *                  around according to the player direction when picked up.\n *\n *                  Example:\n *                      The event is turned down and player comes from down\n *                      side (playing is looking up) and pick up the event.\n *                      The event and player are facing each other, so that\n *                      will remain when player change direction. Hence, if\n *                      player turn left, the event will turn right.\n *                 \n *\n *            <MOVE EVENT OFFSET: X>\n *                  Use this tag if you need to adjust the distance the\n *                  player has to walk to get closer to the movable event.\n *                  Without the tag, the distance will be defined by the\n *                  'move event offset' parameter.\n *\n *                  This commment tag can also be used on pickup events to\n *                  set the distance between the player and the event it is\n *                  holding."
+    },
+    {
+      "post_id": "js-post-1173040",
+      "author": "ReIris",
+      "date": "2021-03-22T23:24:11+0900",
+      "body": "TSR said:\nHello all!\nNew update:\nTSR_MoveEvent v1.1.1\nsome minor fixes (should fix your problem\n@m03271996\n)\nRevamp of the comment tags for additional functionality\nSpoiler:\ncomment tags\nCode:\n* Event Comment Tags:\n* ===================\n*\n*            <MOVABLE EVENT>\n*                  Event page having this comment tag can be pushed and\n*                  pulled by the player.\n*\n*                  <MOVABLE EVENT: X>\n*                      You can add a switch (X) argument to the comment\n*                      tag. If so, the event will only be movable when\n*                      the game switch X is ON. While the switch is OFF,\n*                      the player will react as if he can push/pull the\n*                      event, but it won't budge unless the switch is\n*                      turned ON.\n*\n*\n*            <MOVABLE MYSTERY: X>\n*                  Event page having this comment tag can be pushed and\n*                  pulled by the player. In addition, these events will\n*                  play the 'Mystery Sound' (set in parameters), and turn\n*                  ON the switch specified by X.\n*\n*                  This will happen only the first time the event is moved.\n*                  Those events will be considered as regular movable events\n*                  afterwards.\n*\n*\n*            <PICKUP EVENT>\n*                  Event page having this comment tags can be picked up and\n*                  thrown by the player. You can use images from tiles sheets\n*                  or character sheets; in both case the event will be fixed\n*                  on the specified image, no matter the direction. The step\n*                  animation can be toggle ON when using a character sheet.\n*\n*              <PICKUP EVENT: X>\n*                  You can add a self switch X argument to the comment tag.\n*                  The event will turn ON the self switch specified by X\n*                  when it reach the ground after being dropped or thrown.\n*\n*\n*            <PICKUP CHARACTER>\n*                  This comment tag have the same effect than the previous\n*                  one. But event having this comment tag must be assigned\n*                  an image from a character sheet because they will turn\n*                  around according to the player direction when picked up.\n*\n*                  Example:\n*                      The event is turned down and player comes from down\n*                      side (playing is looking up) and pick up the event.\n*                      The event and player are facing each other, so that\n*                      will remain when player change direction. Hence, if\n*                      player turn left, the event will turn right.\n*                \n*\n*            <MOVE EVENT OFFSET: X>\n*                  Use this tag if you need to adjust the distance the\n*                  player has to walk to get closer to the movable event.\n*                  Without the tag, the distance will be defined by the\n*                  'move event offset' parameter.\n*\n*                  This commment tag can also be used on pickup events to\n*                  set the distance between the player and the event it is\n*                  holding.\nClick to expand...\nThank you! It's fine now!"
+    },
+    {
+      "post_id": "js-post-1178761",
+      "author": "TSR",
+      "date": "2021-04-10T22:55:14+0900",
+      "body": "New update!\nTSR_MoveEvent v1.1.2\nIt add a <prevent throw region: x, x, x> map notetag to mark some region where picked up events cannot land or pass through. This is mostly useful to prevent throwing event on roof top tiles."
+    },
+    {
+      "post_id": "js-post-1187021",
+      "author": "MasterTenchi",
+      "date": "2021-05-12T10:31:09+0900",
+      "body": "Is there a way to animate the item pushed? Say, a boulder. So it looks as if it is rolling?\nThe event doesn't know it's moving, so normal walking doesn't work.\nWas just wondering if I am being dense... lol."
+    },
+    {
+      "post_id": "js-post-1187057",
+      "author": "MasterTenchi",
+      "date": "2021-05-12T14:21:26+0900",
+      "body": "Got This Going On:\nIf You grab an event, you can carry it around - but as soon as you drop it or throw it you get this:\nTypeError\n_0xa259bf[_0x5e1a44(...)] is not a function\nGrrr.\nMore specifically:\nrmmz_managers.js:2030 TypeError: _0xa259bf[_0x5e1a44(...)] is not a function\nat Function.DataManager.<computed> [as isThrowRegion] (TSR_MoveEvent.js:295)\nat Game_Player.<computed>.<computed> [as throwPass] (TSR_MoveEvent.js:295)\nat Game_Player.throwPickup (TSR_MoveEvent.js:295)\nat Game_Player.<computed>.updatePickup (TSR_MoveEvent.js:295)\nat Game_Player.<computed>.<computed> [as moveEvent] (TSR_MoveEvent.js:295)\nat Game_Player.<computed> [as update] (TSR_MoveEvent.js:295)\nat Scene_Map.updateMain (rmmz_scenes.js:734)\nat Scene_Map.<computed> [as updateMain] (VisuMZ_4_Debugger.js:404)\nat Scene_Map.updateMainMultiply (rmmz_scenes.js:729)\nat Scene_Map.updateMainMultiply (VisuMZ_0_CoreEngine.js:6716)\nMoved it to a blank project - works well there. So it may have a problem with some other plugin. I'll research each one and find it and let ya know!\nFOUND IT\n:\nOcRam_Core\n.\nCan't Use ANY of OcRam's plugins with this one... somewhere his CORE and THIS plugin error each other out.\n*Sigh* You've encrypted your code section, so I can't help find the reasoning behind it, sorry - I'll have to leave that to you good sir."
+    },
+    {
+      "post_id": "js-post-1187188",
+      "author": "TSR",
+      "date": "2021-05-12T23:50:45+0900",
+      "body": "Hello, and thanks for reporting!\nMasterTenchi said:\nIs there a way to animate the item pushed? Say, a boulder. So it looks as if it is rolling?\nThe event doesn't know it's moving, so normal walking doesn't work.\nWas just wondering if I am being dense... lol.\nClick to expand...\nThe event actually 'know' it's moving, but the plugin prevent the step animation. In earlier version of the plugin, moving events did have the step animation, but I stopped it so fixed images from tiles sheet could be used as well.\nBut for rolling boulders, it would be cool, so I'll put the step aniamtion back as an option in the next version.\nMasterTenchi said:\nsomewhere his CORE and THIS plugin error each other out.\nClick to expand...\nBecause of the way his core plugin handle notetags... But it's an easy fix, just give me a few days before I upload a new version.\nThank you!"
+    },
+    {
+      "post_id": "js-post-1187242",
+      "author": "MasterTenchi",
+      "date": "2021-05-13T04:03:51+0900",
+      "body": "The amount of sexiness oozing from you right now is outstanding!\nI created an entire multi-level dungeon around puzzles using your outstanding plugin..\nWell, until I grabbed an object to chunk... hahahaha!"
+    },
+    {
+      "post_id": "js-post-1187639",
+      "author": "TSR",
+      "date": "2021-05-14T21:17:10+0900",
+      "body": "Hello!\nI've uploaded a new version:\nTSR_MoveEvent v1.1.5\n​\nIt add a new event comment tag: <movable character> It work the same as <movable event>, but movable characters will play the step animation and turn in the direction they're moving when pushed/pulled.\n@MasterTenchi\nAnd it should work with Ocram core plugin, now.\nRegards,\nTSR"
+    },
+    {
+      "post_id": "js-post-1188083",
+      "author": "TSR",
+      "date": "2021-05-16T23:44:49+0900",
+      "body": "Hello, all!\nYet another update:\nTSR_MoveEvent v1.1.6\nAdd a <prevent throw region: x, x, x> map notetag to assign some regions as impassable for thrown events.\nRegards"
+    },
+    {
+      "post_id": "js-post-1191583",
+      "author": "athosfranco",
+      "date": "2021-06-02T23:04:27+0900",
+      "body": "Really nice plugin. I tested and it works perfectly.\nIs there a way to change the player's sprite when he's pushing/pulling/throwing stuff?\nI have a character sheet with those poses and i wish to use it with this plugin."
+    },
+    {
+      "post_id": "js-post-1191587",
+      "author": "ShadowDragon",
+      "date": "2021-06-02T23:10:58+0900",
+      "body": "@athosfranco\nit's not using any poses at this point or will be though, I know MOG\ncan let you use poses (character poses), you can try to combine it, but not sure if it will\nwork in the way you want it. because the pushing/pulling/throwing use a complex code.\ncreating poses for it would be harder, but it's his call though.\nthere is also another plugin \"Push_NPC\" or around it that change your pull/push character\nwhich you can try too, I dont know the exact name of that one though.\nbut that one is also, try to see if it works."
+    },
+    {
+      "post_id": "js-post-1191590",
+      "author": "athosfranco",
+      "date": "2021-06-02T23:16:13+0900",
+      "body": "ShadowDragon said:\n@athosfranco\nit's not using any poses at this point or will be though, I know MOG\ncan let you use poses (character poses), you can try to combine it, but not sure if it will\nwork in the way you want it. because the pushing/pulling/throwing use a complex code.\ncreating poses for it would be harder, but it's his call though.\nthere is also another plugin \"Push_NPC\" or around it that change your pull/push character\nwhich you can try too, I dont know the exact name of that one though.\nbut that one is also, try to see if it works.\nClick to expand...\nWell, maybe some switch could be activated while the player is pushing/pulling, and this switch is connected to a common event that changes the player graphics by the standard 'change image' option on the editor? Im not sure how complex that would be."
+    },
+    {
+      "post_id": "js-post-1191598",
+      "author": "ShadowDragon",
+      "date": "2021-06-02T23:45:57+0900",
+      "body": "I dont know either, that's up to him if he add it or not through params,\nhard to tell, but I love the way how it is atm =)"
+    },
+    {
+      "post_id": "js-post-1191606",
+      "author": "TSR",
+      "date": "2021-06-03T00:15:27+0900",
+      "body": "Hello!\nathosfranco said:\nReally nice plugin. I tested and it works perfectly.\nClick to expand...\nThank you!\nathosfranco said:\nIs there a way to change the player's sprite when he's pushing/pulling/throwing stuff?\nClick to expand...\nNot at the moment, but possible.\nShadowDragon said:\ncreating poses for it would be harder, but it's his call though.\nClick to expand...\nIt's actually very easy to do. I didn't do it because I didn't have a sheet with poses, and I'm bad at making them, plus in my current game, you choose the player appearance out of several sheets, so that was too much work...\nathosfranco said:\nWell, maybe some switch could be activated while the player is pushing/pulling, and this switch is connected to a common eve\nClick to expand...\nForget that, I'll just make the plugin manage it...\nI've already made the change, actually (right after I read the post), but will need some more time to set the params and run a few tests. I have to go to work now, so allow me a couple days before I can upload the new version.\nThank you!\nregards."
+    },
+    {
+      "post_id": "js-post-1191607",
+      "author": "ShadowDragon",
+      "date": "2021-06-03T00:25:56+0900",
+      "body": "for you everything is easy\nbut you know your plugin ins and outs\nbut it can give a sweet dynamic look when done really nicely with poses.\nbut no rush"
+    },
+    {
+      "post_id": "js-post-1191621",
+      "author": "athosfranco",
+      "date": "2021-06-03T01:34:24+0900",
+      "body": "TSR said:\nHello!\nThank you!\nNot at the moment, but possible.\nIt's actually very easy to do. I didn't do it because I didn't have a sheet with poses, and I'm bad at making them, plus in my current game, you choose the player appearance out of several sheets, so that was too much work...\nForget that, I'll just make the plugin manage it...\nI've already made the change, actually (right after I read the post), but will need some more time to set the params and run a few tests. I have to go to work now, so allow me a couple days before I can upload the new version.\nThank you!\nregards.\nClick to expand...\nThank you very much, sir!!"
+    },
+    {
+      "post_id": "js-post-1192034",
+      "author": "TSR",
+      "date": "2021-06-04T23:26:25+0900",
+      "body": "Hello all!\nNew update:\nTSR_MoveEvent v1.2.6\nFollowing\n@athosfranco\nsuggestion, I added the option to change the player image while moving events. The image can be change for:\nPushing: image change when the player is pushing and revert back to the original player image when the pushing process is over.\nPulling: image change when the player is pulling and revert back to the original player image when the pulling process is over.\nPickup: image change while the player is holding an event. When the player throw the event, the image will change for the 'throwing' image, if any, or revert back to the original player image.\nThrow: image change when the player throw an event and revert back to normal when the event reach the ground. The throwing motion doesn't loop.\nSet each motion in the params by entering the sprite sheet name and index, separated by a comma.\nThere's also a new param to change the Move Frame Rate when pushing/pulling. When the player approach an event to push/pull, its motion is updated each 4 frames, so it look like it's 'running' against the event before it move. If you use a custom push/pull motion, this frame rate might not be optimal. Hence, it can be adjusted with the parameter.\n**Throwing motion always update each 12 frames, which is the default update pattern rate.\nRegards"
+    },
+    {
+      "post_id": "js-post-1192450",
+      "author": "athosfranco",
+      "date": "2021-06-06T21:48:44+0900",
+      "body": "Awesome!! Thank you very much for this update!"
+    },
+    {
+      "post_id": "js-post-1204197",
+      "author": "fizzly",
+      "date": "2021-07-26T21:06:46+0900",
+      "body": "Thanks! It's very useful for puzzles."
+    },
+    {
+      "post_id": "js-post-1204745",
+      "author": "TSR",
+      "date": "2021-07-29T00:37:44+0900",
+      "body": "Hello,\nnew update!\nAdd a <prevent move regions: x, x, x> map notetag to restrict movement of movable events no matter the tile passability.\nTSR_MoveEvent v1.2.7\n​\nRegards"
+    },
+    {
+      "post_id": "js-post-1204749",
+      "author": "ShadowDragon",
+      "date": "2021-07-29T01:51:32+0900",
+      "body": "I had a work around, but this makes things easier as well, nice update"
+    },
+    {
+      "post_id": "js-post-1211689",
+      "author": "Yuuzal",
+      "date": "2021-08-31T11:01:24+0900",
+      "body": "Great plugin!  Is it possible for you to add a parameter to set the pick up function to be either hold 'ok' or simply press 'ok' to grab and press again to release?  My current control set up makes it pretty difficult for the player to grab and also move around."
+    },
+    {
+      "post_id": "js-post-1212076",
+      "author": "TSR",
+      "date": "2021-09-02T05:27:18+0900",
+      "body": "Hello,\nYuuzal said:\nGreat plugin! Is it possible for you to add a parameter to set the pick up function to be either hold 'ok' or simply press 'ok' to grab and press again to release? My current control set up makes it pretty difficult for the player to grab and also move around.\nClick to expand...\nUnfortunately no. What you're asking is not like adding 2 lines of code. It would require a more severe edit. I worked hard to reproduce that classic hold and release mechanic, I won't be changing that, sorry. Yet, I could add a parameter to change the pickup key to something else than the OK button. Let me know if that something that could work for you.\nRegards.​"
+    },
+    {
+      "post_id": "js-post-1212082",
+      "author": "Yuuzal",
+      "date": "2021-09-02T06:00:20+0900",
+      "body": "Ah, I understand.  I might have to just find another key set-up.  That alternative you mentioned would also work, if it’s not too difficult an addition.  Someone else may find it useful as well.  Thank you for your time."
+    },
+    {
+      "post_id": "js-post-1212225",
+      "author": "TSR",
+      "date": "2021-09-02T22:49:19+0900",
+      "body": "Hello all!\nNew update:\nTSR_MoveEvent v1.3.7\n​\nAdd the option to change the key for pulling and picking up.\n​\nRegards"
+    },
+    {
+      "post_id": "js-post-1212371",
+      "author": "Yuuzal",
+      "date": "2021-09-03T10:18:36+0900",
+      "body": "Thank you for the update, I really appreciate you!"
+    },
+    {
+      "post_id": "js-post-1217116",
+      "author": "TSR",
+      "date": "2021-09-24T03:47:56+0900",
+      "body": "Hello all, new update:\nTSR_MoveEvent\n​\nSmall fixes for the key input process\n​\nRegards"
+    },
+    {
+      "post_id": "js-post-1224504",
+      "author": "KingGodzilla",
+      "date": "2021-10-28T14:10:27+0900",
+      "body": "Hi there, I'd really like to use this plugin, but it seems there's some error with VisuStella's button common events. If you have any key bound to a common event via that plugin, you will get error messages about that key:\n\"!! ERROR VisuMZ_4_ButtonCmnEvts ERROR !!\nKey C cannot be bound!\nIt is a forbidden keybased on\nyour Plugin Parameter settings!\"\nThis message only occurs when both TSR_MoveEvent and VisuMZ_4_ButtonCmnEvts are turned on, yet I have no clue what it could be talking about."
+    },
+    {
+      "post_id": "js-post-1224599",
+      "author": "TSR",
+      "date": "2021-10-28T23:43:27+0900",
+      "body": "Hello.\nKingGodzilla said:\nthere's some error with VisuStella's button common\nClick to expand...\nWell, I revamp a bit the key mapping in my plugin to reduce possible interference. It should work now. But if it still doesn't work,  I can't do much more...\nTSR_MoveEvent v1.4\n​\nThank you,\nregards"
+    },
+    {
+      "post_id": "js-post-1224642",
+      "author": "KingGodzilla",
+      "date": "2021-10-29T03:10:42+0900",
+      "body": "It seems everything is working now. Thank you so much!"
+    },
+    {
+      "post_id": "js-post-1236729",
+      "author": "Feraleth",
+      "date": "2021-12-16T21:07:41+0900",
+      "body": "@TSR\nReally great Plugin, thank u very much\nDo I have the possibility to deactivate the throwing completely? I have tried with the <PREVENT THROW REGION: 1>. When I use it to fill the space completely, the game freezes.\nI would like to virtually just pick up and drop an event. May one help me with this please?"
+    },
+    {
+      "post_id": "js-post-1236830",
+      "author": "MasterTenchi",
+      "date": "2021-12-17T07:19:07+0900",
+      "body": "I am rather good with the Throw part of the program, what are you attempting to do?"
+    },
+    {
+      "post_id": "js-post-1236852",
+      "author": "Feraleth",
+      "date": "2021-12-17T10:01:01+0900",
+      "body": "@MasterTenchi\nMasterTenchi said:\nI am rather good with the Throw part of the program, what are you attempting to do?\nClick to expand...\nI didn't say anything was bad. I just don't want the Character to throw the items he picks up.\nHowever, I also don't want to push these items back and forth. So quasi a normal pick up and put down."
+    },
+    {
+      "post_id": "js-post-1236904",
+      "author": "MasterTenchi",
+      "date": "2021-12-17T15:22:32+0900",
+      "body": "Like say: pick up an item and when you get somewhere specific with it, it auto drops?"
+    },
+    {
+      "post_id": "js-post-1236951",
+      "author": "ShadowDragon",
+      "date": "2021-12-17T19:18:28+0900",
+      "body": "while the player stands still and throw, it's 2 tiles, when dashing, 3 tiles.\nbut I believe,\n@TSR\nmight or could add (if he wants too), if the player\nis NOT moving, it place it in front of the player. while walking 2 tiles,\nand dashing 3 tiles (this cannot be specified yet I believe).\nanother way if you want it NOT be able to pickup at all, or move,\nyou could try with an conditonal branch,  but if it works with comments,\nit could be harder to setup.\nthere is however a plugin which is a bit more controle able with pickup\nwith require more comments with the required item, but does not have\nthe effect as this one while pushing or pickup and throw which is unique."
+    },
+    {
+      "post_id": "js-post-1236985",
+      "author": "TSR",
+      "date": "2021-12-17T23:57:43+0900",
+      "body": "Hello.\nFeraleth said:\nHowever, I also don't want to push these items back and forth. So quasi a normal pick up and put down.\nClick to expand...\nI can add an option that make the player always drop the item in front of it. But I'm currently busy with something else so you'll have to wait a bit.\nRegards."
+    },
+    {
+      "post_id": "js-post-1237347",
+      "author": "Feraleth",
+      "date": "2021-12-19T15:54:10+0900",
+      "body": "TSR said:\nI can add an option that make the player always drop the item in front of it. But I'm currently busy with something else so you'll have to wait a bit.\nRegards.\nClick to expand...\nSounds good\nI look forward to it!"
+    },
+    {
+      "post_id": "js-post-1271811",
+      "author": "Nikita",
+      "date": "2022-05-04T00:20:35+0900",
+      "body": "Hello! I found a bug, if you enter and exit the pause menu while riding a ship, then the speed of the ship becomes the same as during a normal walk, on a clean client without other plugins, the same thing, how to fix it?"
+    },
+    {
+      "post_id": "js-post-1271834",
+      "author": "TSR",
+      "date": "2022-05-04T02:00:53+0900",
+      "body": "Hello\n@Nikita\nNikita said:\nHello! I found a bug, if you enter and exit the pause menu while riding a ship, then the speed of the ship becomes the same as during a normal walk, on a clean client without other plugins, the same thing, how to fix it?\nClick to expand...\nThanks for reporting\nThis new version should fix that problem:\nTSR_MoveEvent v1.4.1\n​\nRegards"
+    },
+    {
+      "post_id": "js-post-1271838",
+      "author": "Nikita",
+      "date": "2022-05-04T02:20:55+0900",
+      "body": "TSR said:\nHello\n@Nikita\nThanks for reporting\nThis new version should fix that problem:\nTSR_MoveEvent v1.4.1\n​\nRegards\nClick to expand...\nThank you very much!"
+    },
+    {
+      "post_id": "js-post-1286250",
+      "author": "j4um",
+      "date": "2022-07-07T10:50:44+0900",
+      "body": "Is there any step by step tutorial? i cant understand anything here"
+    },
+    {
+      "post_id": "js-post-1286390",
+      "author": "TSR",
+      "date": "2022-07-08T00:08:59+0900",
+      "body": "j4um said:\nIs there any step by step tutorial? i cant understand anything here\nClick to expand...\n**solved on discord**"
+    },
+    {
+      "post_id": "js-post-1286419",
+      "author": "MasterTenchi",
+      "date": "2022-07-08T03:47:46+0900",
+      "body": "Ah good... I was just about to put an in-depth tutorial up... LOL"
+    },
+    {
+      "post_id": "js-post-1286441",
+      "author": "TSR",
+      "date": "2022-07-08T04:58:04+0900",
+      "body": "Hello\n@MasterTenchi\nMasterTenchi said:\nAh good... I was just about to put an in-depth tutorial up... LOL\nClick to expand...\nIf you did it, post it anyway, might help some peoples\nRegards."
+    },
+    {
+      "post_id": "js-post-1336441",
+      "author": "Okra",
+      "date": "2023-03-22T11:28:06+0900",
+      "body": "When I'm carrying an object, and then throw the object but go into a battle before the object lands, I get a crash saying the place it lands is null"
+    },
+    {
+      "post_id": "js-post-1336704",
+      "author": "TSR",
+      "date": "2023-03-23T11:23:28+0900",
+      "body": "Okralord said:\nWhen I'm carrying an object, and then throw the object but go into a battle before the object lands, I get a crash saying the place it lands is null\nClick to expand...\nThanks for reporting that.\nShouldn't happen anymore with this version:\nTSR_MoveEvent v1.4.2\n​\nRegards ,\nTSR"
+    },
+    {
+      "post_id": "js-post-1338323",
+      "author": "Kes",
+      "date": "2023-03-31T02:16:29+0900",
+      "body": "This is a great plugin, but I was wondering if you could fix an unfortunate visual glitch.  I am using version 1.4.2 which I believe is the latest.\nIf you have followers showing and pull an object, the party leader moves back, but the followers don't.  After a couple of pulls the party is a complete mess, with the party leader and the object all mixed in with them.\nWould it be possible to add something so that when the party leader steps back, so do the followers?\nThank you."
+    },
+    {
+      "post_id": "js-post-1338601",
+      "author": "TSR",
+      "date": "2023-04-01T05:05:12+0900",
+      "body": "New update!\nTSR_MoveEvent v1.4.3\n​\nFollowers will move backward when the player pull an event. *Followers will be forced to gather before pulling, though.\nShould do the trick,\n@Kes\nRegards,\nTSR"
+    },
+    {
+      "post_id": "js-post-1338609",
+      "author": "Kes",
+      "date": "2023-04-01T05:36:47+0900",
+      "body": "Thank you."
+    },
+    {
+      "post_id": "js-post-1338667",
+      "author": "Kes",
+      "date": "2023-04-01T13:05:00+0900",
+      "body": "Sadly there appears to be a problem.\nWhen the game automatically gathers followers, most obviously at map transfers, they stay gathered after the transfer and the player freezes - cannot move, turn or open the menu.  If I disable the new version of the plugin transfers happen without a hitch."
+    },
+    {
+      "post_id": "js-post-1338757",
+      "author": "TSR",
+      "date": "2023-04-02T00:56:41+0900",
+      "body": "Hello again\n@Kes\n,\nthanks for reporting. But I have hard time reproducing the bug. Can you provide more details? What do you mean by \"When the game automatically gathers followers\" ?\nThe game doesn't do that by itself, you have to use a gather followers command before the transfer command. Are you using some plugin that automatically gathers followers before transfer?\nOn my side, when I add a gather followers command before a transfer command, the followers gathers, then transfert to next map, and they can still move normally after that.\nI also tested to keep pulling an event until player walk on a transfer event. The transfer occurs when the pulling move is over and I can move normally on next map.\nAnd if I transfer right in front of a pulling event on the next map, still can move normally...\nI might be missing something, but I can't seem to be able to reproduce the bug out of the informations I have.\nRegards."
+    },
+    {
+      "post_id": "js-post-1338763",
+      "author": "Kes",
+      "date": "2023-04-02T01:37:21+0900",
+      "body": "This isn't where I have added a Gather Followers command.  Take this transfer, for example.\nPure vanilla.  What the engine does, and this was my experience with VX Ace as well, is that on transferring the player to the new map it has to gather followers so that they are all present on the edge of the new map.  This is what I was referring to when I said that the game automatically gathers followers.\nEDIT\nHere is a screen grab to show what I'm referring to.  The party has just transferred to a new map using a vanilla transfer event.\nAs you can see they are all bunched up together.  When you move the sprite (arrow keys, mouse) they unfurl into an ordinary caterpillar.  However, with the plugin enabled they are stuck."
+    },
+    {
+      "post_id": "js-post-1338769",
+      "author": "TSR",
+      "date": "2023-04-02T02:25:45+0900",
+      "body": "Kes said:\nHere is a screen grab to show what I'm referring to. The party has just transferred to a new map using a vanilla transfer event.\nClick to expand...\nOk, I see... Thanks for the details.\nYet, I cannot reproduce that in a blank project with only the moveEvent plugin.\nYou said you use a 'vanilla' transfer event, but did you test it in a vanilla project?\nI'd like to help, but I really need to be able to reproduce that bug in order to nail it. I'm also wondering how the slight changes added to the last version could freeze the game by itself...\nRegards."
+    },
+    {
+      "post_id": "js-post-1338793",
+      "author": "Kes",
+      "date": "2023-04-02T04:13:24+0900",
+      "body": "I've found the cause.  Basic error.  I was testing this using existing save files.  Once I started testing with a new game, adding all my plugins bit by bit, everything went without a hitch.\nI'm so sorry to have wasted your time with this."
+    },
+    {
+      "post_id": "js-post-1342333",
+      "author": "Okra",
+      "date": "2023-04-18T04:13:54+0900",
+      "body": "TSR said:\nThanks for reporting that.\nShouldn't happen anymore with this version:\nTSR_MoveEvent v1.4.2\n​\nRegards ,\nTSR\nClick to expand...\nI apologize, I failed to include the error report before.\nI'm still getting this error:"
+    },
+    {
+      "post_id": "js-post-1342602",
+      "author": "TSR",
+      "date": "2023-04-19T02:29:06+0900",
+      "body": "@Okralord\nOk, this is not very easy to reproduce since the thrown event only stay \"-mid-air\" a few frames, you need a very hight encounter rate or be very lucky/unlucky to get that bug...\nAnyway, I can think of 2 quick solutions:\n1) I disable the encounters while the player is holding/throwing an event.\n2) I disable the encounters only while the event are \"mid-air\" to avoid the bug. If you get an encounter while holding a pickup event, the player drops it before entering battle (last update).\nthe 2 options above are like a 15 sec edit, but this will only disable the random encounter. If you somewhat go into battle using a event 'batte process\" command, (before the event land, which is probably very unlikely), you'll still get the bug.\nIf you also want to disable the event battles while holding and/or throwing, that'll need a bit more modification, so it'll have to wait some more time since I'm kind of busy.\nRegards,\nTSR"
+    },
+    {
+      "post_id": "js-post-1342604",
+      "author": "Okra",
+      "date": "2023-04-19T02:35:25+0900",
+      "body": "TSR said:\n@Okralord\nOk, this is not very easy to reproduce since the thrown event only stay \"-mid-air\" a few frames, you need a very hight encounter rate or be very lucky/unlucky to get that bug...\nAnyway, I can think of 2 quick solutions:\n1) I disable the encounters while the player is holding/throwing an event.\n2) I disable the encounters only while the event are \"mid-air\" to avoid the bug. If you get an encounter while holding a pickup event, the player drops it before entering battle (last update).\nthe 2 options above are like a 15 sec edit, but this will only disable the random encounter. If you somewhat go into battle using a event 'batte process\" command, (before the event land, which is probably very unlikely), you'll still get the bug.\nIf you also want to disable the event battles while holding and/or throwing, that'll need a bit more modification, so it'll have to wait some more time since I'm kind of busy.\nRegards,\nTSR\nClick to expand...\nAh, yes. I have encounters triggered by events, not the default random encounter system. So players will often encounter the bug :-/\nI think for my purposes it would be best for the encounters to be disabled while the thrown event is in mid air.\nI'm happy to wait, I appreciate people like you making awesome plugins!"
+    },
+    {
+      "post_id": "js-post-1342652",
+      "author": "ShadowDragon",
+      "date": "2023-04-19T05:10:36+0900",
+      "body": "while I also have it as event, another work around it, when picked up the event,\nSwitch D is ON (of if you use YEP_selfSwVar, switch E-Z and the enemy cannot\ntrigger you into battle.\nthat is the event battle  encounter workaround (only for the one in the room)."
+    },
+    {
+      "post_id": "js-post-1342817",
+      "author": "TSR",
+      "date": "2023-04-19T22:54:07+0900",
+      "body": "Hello again\n@Okralord\nI made some additional tests cause there was something bothering me with that bug. The crash occurs after you get back from battle, the map is reloaded and we can see that the event has correctly landed...\nSo I check the code again and realize that I forgot to reset the player property _hasThrew in the last version. So when we come back from battle, this make the plugin think there's still some events flying around and is looking for the landing coordinates, which were reset before battle.\nTry this version (slight mod from the last version) which allow battles while holding and throwing. Shouldn't crash anymore.​\nTSR_MoveEvent v1.44\n​\nLet me know how it goes. If you still find some bug, or it doesn't suit you as it is, then I'll go for disabling the battles entirely (both random ones and events triggered) while pickup, whenever I'll have more time.​\nRegards,\nTSR"
+    },
+    {
+      "post_id": "js-post-1342824",
+      "author": "Okra",
+      "date": "2023-04-19T23:38:11+0900",
+      "body": "@TSR\nIt works! Thank you so much! Now to put throwable stuff everywhere in my project...lol"
+    },
+    {
+      "post_id": "js-post-1346607",
+      "author": "abdo97z",
+      "date": "2023-05-05T14:26:37+0900",
+      "body": "Hello TSR the frog from the north, Thanks for all your plugins. But I have a problem with this plugin, it is not working at all, I have even disabled all other plugins and it is still not working, I can't find where the problem is\nHere is the plugin parameters:\nSpoiler:\nparameters\nand here is the event I am trying to make movable\nSpoiler:\nevent\nI have even tried the other note codes and none of them worked, I don't know what i am doing wrong"
+    },
+    {
+      "post_id": "js-post-1346660",
+      "author": "TSR",
+      "date": "2023-05-05T21:12:08+0900",
+      "body": "Hello\n@abdo97z\nThe plugin use\n'comment\ntags\n', not notetags...\nThis way, the tag is specific to the current event page.\nRegards\nTSR"
+    },
+    {
+      "post_id": "js-post-1346701",
+      "author": "abdo97z",
+      "date": "2023-05-05T23:16:19+0900",
+      "body": "TSR said:\nHello\n@abdo97z\nThe plugin use\n'comment\ntags\n', not notetags...\nView attachment 260989\nThis way, the tag is specific to the current event page.\nRegards\nTSR\nClick to expand...\nOhh i didn't know that, thank you very much Now it is working perfectly!"
+    },
+    {
+      "post_id": "js-post-1395867",
+      "author": "wiffle88",
+      "date": "2023-11-11T04:04:29+0900",
+      "body": "Hello!  I just wanted to add that in version 1.4.4, the help section doesn't specify that you can add the <MOVABLE CHARACTER> tag to get the event stepping effect, e.g. an animated rolling boulder.\nLove the plugin!"
+    },
+    {
+      "post_id": "js-post-1395967",
+      "author": "TSR",
+      "date": "2023-11-11T09:42:11+0900",
+      "body": "wiffle88 said:\nHello! I just wanted to add that in version 1.4.4, the help section doesn't specify that you can add the <MOVABLE CHARACTER> tag to get the event stepping effect, e.g. an animated rolling boulder.\nLove the plugin!\nClick to expand...\nThank you! I will check that."
+    },
+    {
+      "post_id": "js-post-1423087",
+      "author": "GustoSerpe",
+      "date": "2024-02-16T14:56:39+0900",
+      "body": "TSR said:\nView attachment 182356\nAuthor:\nTSR, The Northern Frog\nDownload:\nTSR_MoveEvent\n​\nThis plugin allows to push, pull, pick up and throw events.\n​\nSpoiler:\nInstructions\nCode:\n*\n* =========================================================================================\n * == About this Plugin ====================================================================\n * =========================================================================================\n * Use the following comment tags to turn the event page into a movable event.\n *\n * Event Comment Tags:\n * ===================\n *\n *            <MOVABLE EVENT>\n *                  Event page having this comment tag can be pushed and\n *                  pulled by the player.\n *\n *\n *            <MOVABLE MYSTERY: X>\n *                  Event page having this comment tag can be pushed and\n *                  pulled by the player. In addition, these events will\n *                  play the 'Mystery Sound' (set in parameters), and turn\n *                  ON the switch specified by X.\n *\n *                  This will happen only the first time the event is moved.\n *                  Those events will be considered as regular movable events\n *                  afterwards.\n *\n *\n *            <PICKUP EVENT>\n *                  Event page having this comment tags can be picked up and\n *                  thrown by the player.\n *\n *\n *            <MOVE EVENT OFFSET: X>\n *                  Use this tag if you need to adjust the distance the\n *                  player has to walk to get closer to the movable event.\n *                  Without the tag, the distance will be defined by the\n *                  'move event offset' parameter.\n *\n *                  This commment tag can also be used on pickup events to\n *                  set the distance between the player and the event it is\n *                  holding.\n *\n *\n * Map Note Tag:\n * =============\n *\n *      By default the thrown events respect the same passability as the player.\n *      You can throw events over some unpassable tiles by using the following\n *      tag in a map notebox.\n *\n *            <THROW REGION: x, x, x>\n *                  Use this map notetag to mark some region Id as passable\n *                  for throwing event through those regions.\n *\n *\n *\n * HOW TO USE:\n * ===========\n *\n *          TO PUSH: Hold the ARROW KEY in the direction toward the movable\n *                   event until it back off one tile.\n *\n *          TO PULL: Hold the OK BUTTON when standing next to a movable event\n *                   and facing it, and wait until it move one tile.\n *\n *              *There's a small delay when pushing or pulling. Keep holding\n *               the key and you'll see the player starting to 'run' against\n *               the movable event. Then you'll hear the 'Effort Sound' (set\n *               in parameters) and see the 'Effort Balloon' (also set in\n *               parameters). After a few more frames, the event will move\n *               and the player will move along with it.\n *\n *             **When pushing and pulling, the player will walk shortly to\n *               get closer to the movable event. The default distance is\n *               set in parameters. There's also an event comment tag to\n *               assign specific distance to some events.\n *\n *            ***The pushing and pulling event will move at the speed set in\n *               the event tab. Player will move at same speed when pushing\n *               or pulling the event.\n *\n *\n *         TO PICKUP: Stand in front of a pickable event and hold the OK\n *                    BUTTON to pick it up. Keep holding the key because\n *                    releasing it will drop the event. You can move and\n *                    dash while holding an event.\n *\n *          TO THROW: Release the OK BUTTON to drop the event the player is\n *                    holding. The event will be dropped on the tile in front\n *                    of the player. If you drop it while holding an ARROW\n *                    KEY, the event will be thrown one tile away in front\n *                    of the player. And if you drop while holding both the\n *                    DASH BUTTON and an ARROW KEY, the event will be thrown\n *                    2 tiles away in front of the player.\n *\n *\n * SCRIPT CALLS:\n * =============\n *\n *      In order to manage your movable events interaction on the map, you can\n *      use a few script calls to check events position on the map.\n *\n *     \n *      PUSH / PULL events\n *      ==================\n *\n *      Use the following default call to check an event position at any time:\n *\n *               $gameMap.event(eventId).pos(x, y)\n *\n *      It will return true or false wheter the event is at position x, y on\n *      the map. This can be checked in a parallel process event or in an\n *      autonomous movement script command.\n *\n *\n *\n *      PICK & THROW events\n *      ===================\n *\n *      These events can be a bit trickier to manage for game mechanics\n *      purposes. The plugin provide additionnal script calls to check\n *      these events positions.\n *\n *               $gamePlayer.isHolding(eventId);\n *\n *      This call will return true if the map event specified by eventId is\n *      hold (carried) by the player.\n *\n *\n *               $gamePlayer.hasBroughtEvent(eventId, x, y, d)\n *\n *      This call will return true if the map event specified by eventId is\n *      hold by the player on tile x, y and turned in direction d.\n *\n *\n *               $gamePlayer.hasGaveEvent(eventId, targetEventId)\n *\n *      This call will return true if the map event specified by eventId is\n *      hold by the player on the tile in front of the map event specified\n *      by targetEventId The player must be facing the target event.\n *\n *\n *              $gamePlayer.hasThrownEvent(eventId, x, y)\n *\n *      This one will returm true if the player has actually thrown or\n *      drop the map event specified by evenId on that exact tile at\n *      position x, y.\n *   \n *\n *\n*\n​\nCode:\n===========================================================\n\nToU:\n\nUse in any independant RPG Maker MZ or MV projects, including commercials.\n\nCredit is required for using this Plugin. For crediting, use 'TSR' along with one of the following terms: 'The Northern Frog' or 'A frog from the north'\n\nDo not change the Header or the Terms of usage.\n\nDO NOT REDISTRIBUTE! If you want to share it, share the link to my itch.io account:  https://the-northern-frog.itch.io/\n\nSending me a copy of your completed game using my plugin would be appreciated,  but there's no obligation.\n\n===========================================================\nRegards!\nTSR\nClick to expand...\nHello there, Northen Frog!\nI loved this plugin and I'll probably use it in my game. Playing around with it a bit I found a few things I wanted to personalize but couldn't find a way to do it within the plugin manager, and unfortunately, I'm a total noob in javascrpt and couldn't make heads or tails of the code, so I thought I'd come to the expert who actually made the plugin and ask!\nFirst is the delay before pushing or pulling, I couldn’t find a way to control how long it takes.\nSecond is when picking up any object the player character moves forward to the spot of the thing they picked up, and I couldn’t make the pickup be a stationary action.\nThen is when picking up something that has the priority bellow or above the character, the picked object changes to same as character and stays on this priority after being put back down.\nThe last one is when trying to drop a picked item to an occupied or blocked space front of the player character, the dropped item jumps to the opposite direction, behind the player (or one of the sides if that is also blocked). Do you think I'd be possible to change this so that the dropped object lands on the same space the player is standing? I tested a bit and when there is no available place to drop it at all, that is what happens. Ideally If the forward option is blocked I’d like for this to be the immediate solution, not the last resort.\nAnyway, I was wondering if I missed something, or if you could instruct, or help me with these changes, if they are at all possible.\nHave a great day!"
+    },
+    {
+      "post_id": "js-post-1423212",
+      "author": "TSR",
+      "date": "2024-02-17T03:00:51+0900",
+      "body": "@GustoSerpe\nHello and thank you for your comments.\nThis sound more like a commission rather than a simple request. Everythings you ask is possible through modification of the code, but for obvious reasons, I'm not doing a personnal version for someone, just like that.\nYou can't make heads or tails of the code because it is encrypted. If you're interested in obtaining the editable version, it is something that can be discussed through PM on discord.\nRegards,\nTSR"
+    },
+    {
+      "post_id": "js-post-1423213",
+      "author": "GustoSerpe",
+      "date": "2024-02-17T03:04:39+0900",
+      "body": "TSR said:\n@GustoSerpe\nHello and thank you for your comments.\nThis sound more like a commission rather than a simple request. Everythings you ask is possible through modification of the code, but for obvious reasons, I'm not doing a personnal version for someone, just like that.\nYou can't make heads or tails of the code because it is encrypted. If you're interested in obtaining the editable version, it is something that can be discussed through PM on discord.\nRegards,\nTSR\nClick to expand...\nThanks for the response! I'll be sure contact you on Discord"
+    },
+    {
+      "post_id": "js-post-1470648",
+      "author": "jackass__",
+      "date": "2024-09-18T11:50:46+0900",
+      "body": "Hi\n@TSR\n!\nFirst off thanks for your work, I have an issue where the player speed gets broken (the player movement get slower) after interacting (pull or push) with and event, seems like it change player speed during interaction but doesn't reset (I'm using custom move speed), and I just saw a comment on your itch page from\nemogal\nhaving the same issue.\nIs there any way around it ?\nThanks again"
+    },
+    {
+      "post_id": "js-post-1470672",
+      "author": "ShadowDragon",
+      "date": "2024-09-18T16:38:57+0900",
+      "body": "@jackass__\nI need to test this as normal works.\nin case your speed is higher or lower then than default, the best works around is set the player speed\nback on the end of the event, or if it changes, inside a variable and set this back on the end of the event.\nthis has to be tested, but it's the best way I can come up with at the moment (best call a common event)\nso you can set it to all push/pull able object."
+    },
+    {
+      "post_id": "js-post-1470713",
+      "author": "TSR",
+      "date": "2024-09-19T00:51:36+0900",
+      "body": "Hello\n@jackass__\nThe plugin store the normal speed of the player (default 4) so it can be set back after interacting with movable events. You have this issue because you use a different normal speed, but the plugin set it back to 4 after moving an event. I added a parameter to set the normal speed of the player. The new version has been uploaded on my itch, you can download it and see if it does the job.\n**Emogal also use a different player speed, that why they had a similar issue. But they bought the unobfuscated version of the plugin so they can make the change themselves along with other stuff they needed to tweaks...\nTSR_MoveEvent v1.4.5\n​\nRegards.\nTSR"
+    },
+    {
+      "post_id": "js-post-1470758",
+      "author": "jackass__",
+      "date": "2024-09-19T04:57:53+0900",
+      "body": "TSR said:\nHello\n@jackass__\nThe plugin store the normal speed of the player (default 4) so it can be set back after interacting with movable events. You have this issue because you use a different normal speed, but the plugin set it back to 4 after moving an event. I added a parameter to set the normal speed of the player. The new version has been uploaded on my itch, you can download it and see if it does the job.\n**Emogal also use a different player speed, that why they had a similar issue. But they bought the unobfuscated version of the plugin so they can make the change themselves along with other stuff they needed to tweaks...\nTSR_MoveEvent v1.4.5\n​\nRegards.\nTSR\nClick to expand...\nThanks a lot for this, I just tried the new version but It doesn't change the issue, after using <MOVABLE EVENT> it break the player speed, but I'm using san analog move and half move plugins so maybe it clash with it.\nI store the player move speed in a variable $gamePlayer.setMoveSpeed($gameVariables.value(47)+1);"
+    },
+    {
+      "post_id": "js-post-1545341",
+      "author": "Sally_95",
+      "date": "2026-01-22T10:58:42+0900",
+      "body": "TSR said:\nView attachment 182356\nAutore:\nTSR, La rana del Nord\nScaricamento:\nTSR_MoveEvent\n​\nQuesto plugin consente di spingere, tirare, raccogliere e lanciare eventi.\n​\nSpoiler:\nIstruzioni\n[CODICE] *\n* =========================================================================================\n* == Informazioni su questo plugin =========================================================================\n* =========================================================================================\n* Utilizza i seguenti tag di commento per trasformare la pagina dell'evento in un evento mobile.\n*\n* Tag commento evento:\n* ===================\n*\n* <EVENTO MOBILE>\n* La pagina dell'evento con questo tag di commento può essere spinta e\n* tirato dal giocatore.\n*\n*\n* <MISTERO MOBILE: X>\n* La pagina dell'evento con questo tag di commento può essere spinta e\n* tirato dal giocatore. Inoltre, questi eventi saranno\n* riproduci il 'Mystery Sound' (impostato nei parametri) e gira\n* Accendere l'interruttore specificato da X.\n*\n* Questo accadrà solo la prima volta che l'evento verrà spostato.\n* Tali eventi saranno considerati eventi mobili regolari\n* dopo.\n*\n*\n* <EVENTO DI RITIRO>\n* La pagina dell'evento con questi tag di commento può essere selezionata e\n* lanciato dal giocatore.\n*\n*\n* <OFFSET EVENTO SPOSTAMENTO: X>\n* Usa questo tag se devi regolare la distanza\n* il giocatore deve camminare per avvicinarsi all'evento mobile.\n* Senza il tag, la distanza sarà definita dal\n* parametro 'sposta offset evento'.\n*\n* Questo tag di commento può essere utilizzato anche negli eventi di ritiro per\n* imposta la distanza tra il giocatore e l'evento a cui si riferisce\n* presa.\n*\n*\n* Tag nota mappa:\n* =============\n*\n* Per impostazione predefinita, gli eventi lanciati rispettano la stessa passabilità del giocatore.\n* Puoi lanciare eventi su alcune tessere invalicabili usando quanto segue\n* tag in una casella di note della mappa.\n*\n* <REGIONE DI LANCIO: x, x, x>\n* Usa questo tag di mappa per contrassegnare un ID di regione come percorribile\n* per lanciare l'evento attraverso quelle regioni.\n*\n*\n*\n* MODO D'USO:\n* ===========\n*\n* PER SPINGERE: Tenere premuto il tasto FRECCIA nella direzione verso il mobile\n* evento finché non si allontana di una tessera.\n*\n* PER TIRARE: tenere premuto il PULSANTE OK quando ci si trova accanto a un evento mobile\n* e di fronte ad esso, e aspetta che si muova di una tessera.\n*\n* *C'è un piccolo ritardo quando si spinge o si tira. Continua a tenere premuto\n* la chiave e vedrai il giocatore iniziare a 'correre' contro\n* l'evento mobile. Quindi sentirai il 'Suono di sforzo' (impostato\n* nei parametri) e vedere il 'Palloncino di sforzo' (impostato anche in\n* parametri). Dopo qualche altro fotogramma, l'evento si sposterà\n* e il giocatore si muoverà insieme ad esso.\n*\n* **Quando si spinge e si tira, il giocatore camminerà brevemente verso\n* avvicinarsi all'evento mobile. La distanza predefinita è\n* impostato nei parametri. C'è anche un tag di commento dell'evento per\n* assegnare una distanza specifica ad alcuni eventi.\n*\n* ***L'evento di spinta e trazione si muoverà alla velocità impostata in\n* la scheda evento. Il giocatore si muoverà alla stessa velocità quando spinge\n* o tirando l'evento.\n*\n*\n* PER IL RITIRO: Posizionarsi di fronte a un evento selezionabile e tenere premuto OK\n* PULSANTE per raccoglierlo. Continua a tenere premuto il tasto perché\n* rilasciandolo l'evento verrà eliminato. Puoi muoverti e\n* trattino mentre si tiene un evento.\n*\n* PER LANCIARE: Rilascia il PULSANTE OK per far cadere l'evento che il giocatore sta lanciando\n* in attesa. L'evento verrà rilasciato sulla tessera di fronte\n* del giocatore. Se lo lasci cadere mentre tieni una FRECCIA\n* CHIAVE, l'evento verrà lanciato una tessera più avanti\n* del giocatore. E se cadi mentre tieni entrambi i\n* PULSANTE DASH e un TASTO FRECCIA, l'evento verrà lanciato\n* 2 tessere di distanza davanti al giocatore.\n*\n*\n* CHIAMATE PER LA SCENEGGIATURA:\n* =============\n*\n* Per gestire l'interazione degli eventi mobili sulla mappa, puoi\n* utilizzare alcune chiamate di script per controllare la posizione degli eventi sulla mappa.\n*\n*\n* Eventi PUSH / PULL\n* ==================\n*\n* Utilizzare la seguente chiamata predefinita per controllare la posizione di un evento in qualsiasi momento:\n*\n* $gameMap.event(idevento).pos(x, y)\n*\n* Restituirà true o false indipendentemente dal fatto che l'evento si trovi nella posizione x, y su\n* la mappa. Questo può essere verificato in un evento di processo parallelo o in un\n* comando script di movimento autonomo.\n*\n*\n*\n* Eventi PICK & THROW\n* ===================\n*\n* Questi eventi possono essere un po' più complicati da gestire per le meccaniche di gioco\n* scopi. Il plugin fornisce chiamate di script aggiuntive per controllare\n* queste posizioni degli eventi.\n*\n* $gamePlayer.isHolding(eventId);\n*\n* Questa chiamata restituirà true se l'evento mappa specificato da eventId è\n* tenuto (portato) dal giocatore.\n*\n*\n* $gamePlayer.hasBroughtEvent(idevento, x, y, d)\n*\n* Questa chiamata restituirà true se l'evento mappa specificato da eventId è\n* tenuto dal giocatore sulla tessera x, y e girato nella direzione d.\n*\n*\n* $gamePlayer.hasGaveEvent(idevento, IDeventodestinazione)\n*\n* Questa chiamata restituirà true se l'evento mappa specificato da eventId è\n* tenuto dal giocatore sulla tessera di fronte all'evento mappa specificato\n* di targetEventId Il giocatore deve essere rivolto verso l'evento target.\n*\n*\n* $gamePlayer.hasThrownEvent(idevento, x, y)\n*\n* Questo restituirà vero se il giocatore ha effettivamente lanciato o\n* rilascia l'evento mappa specificato da evenId su quella tessera esatta in\n* posizione x, y.\n*\n*\n*\n* [/CODICE]\n​\n[CODICE]============================================================\nTermini d'uso:\nUtilizzabile in qualsiasi progetto RPG Maker MZ o MV indipendente, compresi gli spot pubblicitari.\nPer utilizzare questo plugin è necessario citare i crediti. Per citare i crediti, utilizzare \"TSR\" insieme a uno dei seguenti termini: \"The Northern Frog\" o \"A frog from the north\"\nNon modificare l'intestazione o i Termini di utilizzo.\nNON RIDISTRIBUIRE! Se vuoi condividerlo, condividi il link al mio account itch.io:\nhttps://the-northern-frog.itch.io/\nApprezzerei molto se mi inviassi una copia del tuo gioco completato utilizzando il mio plugin, ma non sono obbligato.\n=============================================================[/CODE]\nSaluti!\nTS\nClick to expand...\nHi! This plugin is truly phenomenal! I noticed that when the player approaches the event/object, it takes at least 2 seconds before it starts pushing. Is there any way to reduce this delay? Thank you so much! Kisses from Italy!"
+    },
+    {
+      "post_id": "js-post-1545379",
+      "author": "ShadowDragon",
+      "date": "2026-01-23T00:00:27+0900",
+      "body": "Sally_95 said:\nHi! This plugin is truly phenomenal! I noticed that when the player approaches the event/object, it takes at least 2 seconds before it starts pushing. Is there any way to reduce this delay? Thank you so much! Kisses from Italy!\nClick to expand...\nthere is only a work around, as it show some animation before it push or pull.\nif you want to speed it up.\nyou need to make a condition branch, check if OK is pressed down.\nincrease character speed to 6, (maybe higher) than push/pull.\nelse (when it released)\nrevert character speed as normal as it was.\nif you use update speed, you need to cache the currect speed, before changing,\nso when false, the speed = cached speed.\nbut this is a work around, I think this was requested before, can't remember."
+    },
+    {
+      "post_id": "js-post-1545385",
+      "author": "TSR",
+      "date": "2026-01-23T00:47:37+0900",
+      "body": "Hello!\nSally_95 said:\nHi! This plugin is truly phenomenal! I noticed that when the player approaches the event/object, it takes at least 2 seconds before it starts pushing. Is there any way to reduce this delay? Thank you so much! Kisses from Italy!\nClick to expand...\nThank you for your comments. I can add a parameter for the push/pull delay, but reducing it too much could desynchronize the effort sound and balloon. Still you could disable those by setting their params to 0.\nGive me some time, and I'll post a new version with a push/pull delay parameter.\n​\nShadowDragon said:\nthere is only a work around, as it show some animation before it push or pull.\nif you want to speed it up.\nyou need to make a condition branch, check if OK is pressed down.\nincrease character speed to 6, (maybe higher) than push/pull.\nelse (when it released)\nrevert character speed as normal as it was.\nif you use update speed, you need to cache the currect speed, before changing,\nso when false, the speed = cached speed.\nbut this is a work around, I think this was requested before, can't remember.\nClick to expand...\nThis won't change the hardcoded delay before pushing and pulling, it would only accelerate the push/pull move itself. Beside, if you want to change the moving speed while pushing and pulling, you just set the moving speed of the movable event to the value you want. The player will adjust his speed to the moving event and go back to his normal speed afterward. There's no need for conditionnals, or cache up the speed.\n​\nRegards!\nTSR"
+    },
+    {
+      "post_id": "js-post-1545391",
+      "author": "Sally_95",
+      "date": "2026-01-23T01:30:23+0900",
+      "body": "T\nTSR said:\nHello!\nThank you for your comments. I can add a parameter for the push/pull delay, but reducing it too much could desynchronize the effort sound and balloon. Still you could disable those by setting their params to 0.\nGive me some time, and I'll post a new version with a push/pull delay parameter.\nThis won't change the hardcoded delay before pushing and pulling, it would only accelerate the push/pull move itself. Beside, if you want to change the moving speed while pushing and pulling, you just set the moving speed of the movable event to the value you want. The player will adjust his speed to the moving event and go back to his normal speed afterward. There's no need for conditionnals, or cache up the speed.\n​\nRegards!\nTSR\nClick to expand...\nThank you for the replay and for the hard work! Looking forward to the next updates!"
+    },
+    {
+      "post_id": "js-post-1545494",
+      "author": "TSR",
+      "date": "2026-01-24T01:52:46+0900",
+      "body": "Hello!\nHere's the updated version with parameters for changing the delay before pushing and pulling.\nTSR_MoveEvent v1.4.6\n​\n@Sally_95\nRegards,\nTSR"
+    },
+    {
+      "post_id": "js-post-1545597",
+      "author": "Sally_95",
+      "date": "2026-01-25T02:05:34+0900",
+      "body": "TSR said:\nHello!\nHere's the updated version with parameters for changing the delay before pushing and pulling.\nTSR_MoveEvent v1.4.6\n​\n@Sally_95\nRegards,\nTSR\nClick to expand...\nI'm speechless! You literally fixed it right away! Thank you so much. <3"
+    },
+    {
+      "post_id": "js-post-1550050",
+      "author": "Zakarijazh",
+      "date": "2026-03-08T22:23:09+0900",
+      "body": "When I approach the event, it doesn't actually moe the event.\nThe player attempts to push it but it doesn't budge?\nDo I have something set wrong or is it simply just plugin placement? I'm on MV using a lot of the YEP series of plugins, if that helps?"
+    },
+    {
+      "post_id": "js-post-1550073",
+      "author": "TSR",
+      "date": "2026-03-09T02:56:43+0900",
+      "body": "Zakarijazh said:\nDo I have something set wrong or is it simply just plugin placement? I'm on MV using a lot of the YEP series of plugins, if that helps?\nClick to expand...\nHello! I cannot tell if there is some interference by other plugins.\nBut your setup seems alright. Beside, you said the player attempt to push so it does seems to work. There might be something preventing the event to move. Movable events follows all passability rules of the map and other events. You may want to check that first.\nRegards!"
+    }
+  ]
+}

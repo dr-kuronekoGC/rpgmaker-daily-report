@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-this-damage-formula.180798",
+  "title": "VXAce Help with this damage formula",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:43.689668+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1535407",
+      "author": "Nunzio Zizzania",
+      "date": "2025-11-01T04:01:11+0900",
+      "body": "Happy halloween to everyone! I had a custom formula for my game. I wanted to take inspiration from the ttrpg game manual that I brought through Amazon called Fabula Ultima.\nIn the section of the status page it says:\n\"A character (whether PC or NPC) can suffer from various status ailments during the game, which are often the direct consequence of attacks or spells.\nThe ailments are:\n-Poisoned: Temporarily reduces Might and Willpower dice by one size.\n-Confused: Temporarily reduces your Insight die by one size.\n-Weak: Temporarily reduces your Might die by one size.\n-Enraged: Temporarily reduces your Dexterity and Insight die by one size.\n-Slow: Temporarily reduces your Dexterity die by one size.\n-Shaken: Temporarily reduces your Willpower die by one size.\nDifferent statuses that affect the same ability are cumulative: for example, being confused and furious reduces the Insight die by two sizes.\nHowever, a characteristic can never be reduced below d6.\"\nSo I had first a script from this jappan site:\nhttps://tm.yumineko.com/viewtopic.php?t=5855\nit's a module that simulate the dice system.\nI tried with this one:\nI tried with this:\n`` def dex(a,b,power)\ncase power\nwhen power === 12\nif b.state?(2) || b.state?(4)\npower = 12 - 2\nelsif\nb.state?(2) && b.state?(4)\npower = 12 - 4\nelse\npower = 12\nend\nwhen power === 10\nif b.state?(2) || b.state?(4)\npower = 10 - 2\nelsif\nb.state?(2) && b.state?(4)\npower = 10 - 4\nelse\npower = 10\nend\nwhen power === 8\nif b.state?(2) || b.state?(4)\npower = 8 - 2\nelse\npower = 8\nend\nwhen power === 6\npower = 6\nend\nend``\nBut the damage is resulted 0 or they don't take damage.\nWhere did I get wrong?\nCan you help me out?"
+    },
+    {
+      "post_id": "js-post-1535413",
+      "author": "Andar",
+      "date": "2025-11-01T04:18:46+0900",
+      "body": "Please edit your post and place the code into code-tags, that will keep the correct indentions and make it readable - at the moment that is difficult to do.\nand what are the '' at the beginning and the end? They can't be part of the code because that would turn this code into a string...\nEDIT:\njust to add an explanation:\nIf the damage formula contains a code error (including a syntax typo), the damage result defaults to zero instead of creating the usual error messages."
+    },
+    {
+      "post_id": "js-post-1535420",
+      "author": "Nunzio Zizzania",
+      "date": "2025-11-01T05:20:23+0900",
+      "body": "Andar said:\nPlease edit your post and place the code into code-tags, that will keep the correct indentions and make it readable - at the moment that is difficult to do.\nand what are the '' at the beginning and the end? They can't be part of the code because that would turn this code into a string...\nEDIT:\njust to add an explanation:\nIf the damage formula contains a code error (including a syntax typo), the damage result defaults to zero instead of creating the usual error messages.\nClick to expand...\nFor now let's put aside this sub formula here: dice(1,y)\nand let's concetrate for the \"y\".\nI have a character with a dexterity of d12 as a characteristic\nBut when he's under the \"Enraged\" status, his Dexterity value drop to d10.\nAnd when is added the status \"Slow\" in this character, the dice value is dropped to d8.\nBut let's think of what will happen when this character had a Willpower of d8.\nOne of the status ailment can actually reduce the d8 to d6, but two of them can't cause the dice is on d6 and can't go any further.\nAndar said:\nPlease edit your post and place the code into code-tags, that will keep the correct indentions and make it readable - at the moment that is difficult to do.\nand what are the '' at the beginning and the end? They can't be part of the code because that would turn this code into a string...\nEDIT:\njust to add an explanation:\nIf the damage formula contains a code error (including a syntax typo), the damage result defaults to zero instead of creating the usual error messages.\nClick to expand...\nI added the tags too"
+    }
+  ]
+}

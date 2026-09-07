@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/any-way-to-track-the-total-level-of-all-a-characters-classes.182263",
+  "title": "Any Way to Track the Total Level of all a Character's Classes?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:49:21.106890+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1546557",
+      "author": "Technical-Developer",
+      "date": "2026-02-03T05:55:10+0900",
+      "body": "Trying to create a system where a character gains skills based on the combined level of all classes. The issue I'm having is finding a way to store that value internally. I've tried using a variable to track the levels, but it only tracks the current level and not the overall levels gained. Is there a way to track the levels of all classes and add them together internally?\nI'm currently using Yanfly Class Change Core for the different classes."
+    },
+    {
+      "post_id": "js-post-1546560",
+      "author": "Robro33",
+      "date": "2026-02-03T06:24:04+0900",
+      "body": "you'd have loop to get the levels for each using the actor's exp gained in each class. since youre already using yanfly's class change core though, it cuts most of the work. the script to check would be something like this\nCode:\nvar actor = $gameParty.members()[0];\nactor.unlockedClasses().reduce((a,b) => actor.classLevel(b) + a, 0)\nand from there you can store the value into a variable or whatever you need to do with it to make it usable"
+    },
+    {
+      "post_id": "js-post-1546573",
+      "author": "Technical-Developer",
+      "date": "2026-02-03T08:41:58+0900",
+      "body": "Robro33 said:\nyou'd have loop to get the levels for each using the actor's exp gained in each class. since youre already using yanfly's class change core though, it cuts most of the work. the script to check would be something like this\nCode:\nvar actor = $gameParty.members()[0];\nactor.unlockedClasses().reduce((a,b) => actor.classLevel(b) + a, 0)\nand from there you can store the value into a variable or whatever you need to do with it to make it usable\nClick to expand...\nCould you explain how I'm supposed to implement the code you gave? I've been using a parallel common event for getting the levels so far, so I've got no idea how to properly use that code."
+    },
+    {
+      "post_id": "js-post-1546582",
+      "author": "Robro33",
+      "date": "2026-02-03T11:17:07+0900",
+      "body": "Technical-Developer said:\nCould you explain how I'm supposed to implement the code you gave?\nClick to expand...\nyou could make it one line and put it into the script section of a control variables event command. then you'd just replace the 0 in $gameParty.members()[0]; with the index for the party member or use\nthe script call\nto get a particular actor. thatll put it into a variable to use\nTechnical-Developer said:\nI've been using a parallel common event for getting the levels so far, so I've got no idea how to properly use that code.\nClick to expand...\ni do not suggest this. id only set the variable when it needs to be used rather than all the time. If you only use the variable in a few places, itd be much more efficient updating within those places."
+    }
+  ]
+}
