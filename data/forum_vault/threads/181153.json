@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/making-randomized-maps.181153",
+  "title": "Making \"randomized\" maps",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T07:58:34.292517+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1537834",
+      "author": "Hereticsys",
+      "date": "2025-11-24T20:15:16+0900",
+      "body": "So, I am making an rpg roguelike. And I had an idea using conditional branches and variables to create a sort of pseudo random experience- Where whenever the player enters a new room it runs through randomizing a variable, then sending the player to a room according to what number is picked. For now I set it up with 10 rooms to make sure it's working, and for some reason it's just...not? I click \"i'm ready' as i've set up and nothing happens. Does anybody have any tips for maybe streamlining the randomization process to make it less spaghetti, or at the very least figuring out how to get this to work. screenshot of process:"
+    },
+    {
+      "post_id": "js-post-1537835",
+      "author": "caethyril",
+      "date": "2025-11-24T20:39:14+0900",
+      "body": "Note that nesting one branch inside another means \"if this AND that\". So your logic reads:\nIf rooms = 1\nTransfer to \"Room 1\"\nIf rooms = 2 (impossible because rooms = 1!)\n(Unreachable commands)\nInstead you would want the branches to be separate, or use Else branches. E.g.\nIf rooms = 1\nTransfer to \"Room 1\"\nIf rooms = 2\nTransfer to \"Room 2\"\n...\nEdit: also, if you're actually using RPG Maker MZ then I recommend updating to the latest version."
+    },
+    {
+      "post_id": "js-post-1537836",
+      "author": "ZombieKidzRule",
+      "date": "2025-11-24T20:51:45+0900",
+      "body": "I was ninja'd by\n@caethyril\nabove on a rare question that I actually knew the answer too!\nBut seriously, aside from the nesting issue, are you planning on allowing the player to go backwards or backtrack?\nAlso, have you thought about how you will make it so the same room doesn't come up again next time?\nRegardless, I have an old tutorial for doing Random Transfers. This covers the concept of setting up how to return to where you left and not having duplicates for transfers. Essentially, I took a map with paths exiting North, South, East, and West. When the player chooses a path, the transfer is randomly chosen. The player can then return to the starting map and that first path they chose is now set and locked in so they can go back and forth. As they chose paths, the random transfer options can't be repeated.\nI would probably do this differently today, but there might be something useful in it for what you are planning. Or maybe not. Just thought I would share it in case it helps.\nGood luck on your projects!"
+    },
+    {
+      "post_id": "js-post-1537837",
+      "author": "Hereticsys",
+      "date": "2025-11-24T21:01:01+0900",
+      "body": "ZombieKidzRule said:\nI was ninja'd by\n@caethyril\nabove on a rare question that I actually knew the answer too!\nBut seriously, aside from the nesting issue, are you planning on allowing the player to go backwards or backtrack?\nAlso, have you thought about how you will make it so the same room doesn't come up again next time?\nRegardless, I have an old tutorial for doing Random Transfers. This covers the concept of setting up how to return to where you left and not having duplicates for transfers. Essentially, I took a map with paths exiting North, South, East, and West. When the player chooses a path, the transfer is randomly chosen. The player can then return to the starting map and that first path they chose is now set and locked in so they can go back and forth. As they chose paths, the random transfer options can't be repeated.\nI would probably do this differently today, but there might be something useful in it for what you are planning. Or maybe not. Just thought I would share it in case it helps.\nGood luck on your projects!\nClick to expand...\nMy plan for when a map re-appears, is to use various variables and switches to make the items on the map and the things you interact with move / change so theres new interesting things to do. Thank you both for catching the nesting issue though, that's almost certainly my problem !! I will fix that at once and hopefully it'll be smooth sailing. if theres any other tips for this type of map making i'd appreciate it!\ncaethyril said:\nNote that nesting one branch inside another means \"if this AND that\". So your logic reads:\nIf rooms = 1\nTransfer to \"Room 1\"\nIf rooms = 2 (impossible because rooms = 1!)\n(Unreachable commands)\nInstead you would want the branches to be separate, or use Else branches. E.g.\nIf rooms = 1\nTransfer to \"Room 1\"\nIf rooms = 2\nTransfer to \"Room 2\"\n...\nEdit: also, if you're actually using RPG Maker MZ then I recommend updating to the latest version.\nClick to expand...\nthank you so much, this fixed it for me!~\nUnfortunately, I don't think I can update to the newest version...I am using an old cracked version of MZ. but I don't mind using an out of date version, as long as it works haha"
+    },
+    {
+      "post_id": "js-post-1537839",
+      "author": "ZombieKidzRule",
+      "date": "2025-11-24T21:52:12+0900",
+      "body": "I'm not an expert on the Forum Rules, but I think it might be against the rules to reference \"using an old cracked version of MZ.\"\nI'm not 100% certain, but I think it might be.\nHere is a link to the rules for reference, in case you haven't read them yet. They can be easily overlooked.\nRules - FORUM RULES\nWelcome to the official RPG Maker forums. We have a short list of simple to follow rules, so please read through them below. Individual subforums may have more specific rules or exceptions to these rules.  NOTE: This is the official forum for RPG Maker products and Visual Novel Maker. We do not...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1537841",
+      "author": "TheAM-Dol",
+      "date": "2025-11-24T22:19:31+0900",
+      "body": "Hereticsys said:\nI am using an old cracked version of MZ.\nClick to expand...\nngl, you have some balls to come to the official RM forums and admit you used a stolen copy of the software. Sorry bub, that's a straight bannable offense, no questions asked. It's pretty cheap, I highly recommend buying a legitimate copy. it's even on sale now (or if not, soon) for Black Friday."
+    },
+    {
+      "post_id": "js-post-1537844",
+      "author": "Eternidade_1",
+      "date": "2025-11-24T23:01:22+0900",
+      "body": "I also think the system has flaws; you prioritized the room variables, you should prioritize the global variable that controls access to the rooms and consequently their randomness. caethyril It is true"
+    },
+    {
+      "post_id": "js-post-1537845",
+      "author": "SGHarlekin",
+      "date": "2025-11-24T23:35:17+0900",
+      "body": "Hereticsys said:\nI am using an old cracked version of MZ.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1537847",
+      "author": "hiddenone",
+      "date": "2025-11-25T00:05:29+0900",
+      "body": "Given the evidence, we heavily suspect that you are using a pirated RPG Maker, which is not tolerated here and we have an instant-ban policy regarding this. You have now been banned. If you feel we were incorrect and you have been falsely accused, you can send us a support question with proof of your purchase of the RPG Maker to revert our decision."
+    }
+  ]
+}
