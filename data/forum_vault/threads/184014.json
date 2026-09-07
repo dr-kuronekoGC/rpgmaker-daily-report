@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/item-that-can-only-be-used-on-a-specific-enemy-once-that-triggers-an-event.184014",
+  "title": "Item that can only be used on a specific enemy once that triggers an event?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:40:40.409278+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1559725",
+      "author": "Race Hutson",
+      "date": "2026-06-13T15:27:32+0900",
+      "body": "Honestly what the title says. I want to have a usable item that can only be used on one specific enemy. Like if it's used on anything but that enemy it either isn't able to be consumed, or a text box comes up and says something like \"Not the right foe.\" and then that turn is used up but the item isn't. Though when it it used on the specific enemy it triggers some text, does a lot of damage, and then the item is consumed. Is this even possible without using any custom scripts? I want to avoid this if possible. Thanks!"
+    },
+    {
+      "post_id": "js-post-1559739",
+      "author": "Zahawk",
+      "date": "2026-06-13T17:25:52+0900",
+      "body": "Basically your Item should have,\n- 'Damage Type' set to 'HP Damage'\n- 'Damage Formula' set as \"b.enemy_id == 1 ? 1000, $game_variables[n]=true : 0\"\n(Replace '1' with the specific enemy ID, 'n' with a switch of your choice, and 1000 with the 'lot of dmg')\n- 'Effects' with a 'Common Event'\n- 'Consume' set to 'No'\n- 'Occasion' set to 'Only in Battle'\n- 'Scope' set to 'One Enemy'\nThe common event should have a conditional branch of,\n- if $game_variables[n] is true then 'Change Items' -1, 'ControlVariable' set $game_variables[n]=false\n- if not then 'Show Text' \"Not the right foe.\" (won't remove item and still passes turn)\nUntested but should work..."
+    },
+    {
+      "post_id": "js-post-1559745",
+      "author": "Timtrack",
+      "date": "2026-06-13T18:17:16+0900",
+      "body": "I would recommend using\n$game_switches\ninstead of\n$game_variables\nin the formula to use a switch instead of a variable and avoid using script calls in the common event.\nEdit: Also the formula would not return 1000 damage, use instead:\nb.enemy_id == 1 ? ($game_switches[1] = true; 1000) : 0"
+    },
+    {
+      "post_id": "js-post-1559748",
+      "author": "Zahawk",
+      "date": "2026-06-13T18:34:01+0900",
+      "body": "Timtrack said:\nI would recommend using\n$game_switches\ninstead of\n$game_variables\nClick to expand...\nAh, yep that would be right. Originally I had it set the variable as the targets ID so that was left over from that change."
+    },
+    {
+      "post_id": "js-post-1560010",
+      "author": "Race Hutson",
+      "date": "2026-06-15T10:03:10+0900",
+      "body": "I think I've gotten it in a respectable state. I've certainly have had to do a few different things in order for the conditional branch to even activate. But honestly I'm glad that it works, is able to only be used on one specific enemy, and that after figuring out a problem with my typing I've gotten errors to stop popping up. Will add anything if some unforeseen nonsense happens!"
+    }
+  ]
+}

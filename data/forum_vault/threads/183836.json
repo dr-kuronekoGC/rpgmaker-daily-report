@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/check-if-game-is-fullscreen.183836",
+  "title": "MZ Check if game is fullscreen?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:40:39.120574+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1557845",
+      "author": "myolden",
+      "date": "2026-05-28T11:30:10+0900",
+      "body": "Hey all,\nLooking for a way to check if the game is currently in full screen or windowed mode (to be saved in a switch where ON is full screen and OFF is windowed). Been digging for a while, but I can't seem to find anything to do this? It seems like a pretty simple thing, though, so I might just be missing something."
+    },
+    {
+      "post_id": "js-post-1557861",
+      "author": "Eliaquim",
+      "date": "2026-05-28T14:02:12+0900",
+      "body": "I think this script call should work:\nGraphics._isFullScreen()\nIf the game is fullscreen, it will return true.\n$gameSwitches.setValue(switchId, Graphics._isFullScreen())"
+    },
+    {
+      "post_id": "js-post-1557875",
+      "author": "myolden",
+      "date": "2026-05-28T22:13:15+0900",
+      "body": "Eliaquim said:\nI think this script call should work:\nGraphics._isFullScreen()\nIf the game is fullscreen, it will return true.\n$gameSwitches.setValue(switchId, Graphics._isFullScreen())\nClick to expand...\nThis works perfectly. Thanks!\nOn a related note, I'm using the following reference sheet for JS:\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nI notice that this specific script call isn't listed anywhere in this reference. Is there another place I can find a list of available script calls?"
+    },
+    {
+      "post_id": "js-post-1557876",
+      "author": "rpgLord69",
+      "date": "2026-05-28T22:22:56+0900",
+      "body": "Eliaquim said:\nI think this script call should work:\nGraphics._isFullScreen()\nIf the game is fullscreen, it will return true.\n$gameSwitches.setValue(switchId, Graphics._isFullScreen())\nClick to expand...\nHmmm I checked that in console just for fun and it seems to return some kind of object or element or whatever instead of true. I guess the switch checks will still work, but don't know if that can cause some kind of problems that instead of true in the gameSwitches there'll be some kind of long list of stuff.\nBut yeah, if it matters, you can just write it like:\nif (Graphics._isFullScreen()) {\n$gameSwitches.setValue(switchId, true);\n} else {\n$gameSwitches.setValue(switchId, false);\n}"
+    },
+    {
+      "post_id": "js-post-1557878",
+      "author": "Robro33",
+      "date": "2026-05-28T22:42:25+0900",
+      "body": "rpgLord69 said:\nBut yeah, if it matters, you can just write it like:\nClick to expand...\nif it returns something falsy when the game isnt fullscreen, you should be able to use\n!!Graphics._isFullScreen()\nand save the need for the condition\nCode:\n$gameSwitches.setValue(switchId, !!Graphics._isFullScreen());"
+    }
+  ]
+}
