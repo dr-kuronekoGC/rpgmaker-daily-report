@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/protect-state-has-stopped-working.181546",
+  "title": "Protect state has stopped working",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:10:45.483568+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1541362",
+      "author": "jshunter",
+      "date": "2025-12-21T17:30:50+0900",
+      "body": "My Protect state has stopped working. It was working happily for months, but now won't kick in for actor or enemy battlers. I've go no notetag modifiers on Protect.\nI am using VisuStella plugins. By trial and error removals of them I've narrowed the cause down to something in Battle Core, but I cannot remove it as it is integral to my game. I've got the latest version.\nAny general troubleshooting advice, or similar issues with Protect/Substitute?\nEDIT:\nI have offline backups every two weeks going back to July, but when I try all of them, they also don't work for Protect. The problem must have been going on longer than I thought.\nI tried updating RPG Maker MZ to the latest version, 1.9.0. I also went through all my VisuStella plugins and updated them to the latest versions. Nothing worked.\nSOLUTION: After exhaustive testing I have identified the cause. The Battle Core plugin has an <Target: Enemy or Ally> notetag which allows you to attack your own party. I applied this to the Attack skill so I could to slap the negative state off an ally. This was causing the problem. If I get rid of the <Target: Enemy or Ally> from the Attack skill the problem goes away. I'll report it to VisuStella.\nOUTCOME: VisuStella fixed the Core Engine and Battle Core plugins within hours and Protect now works again."
+    },
+    {
+      "post_id": "js-post-1541379",
+      "author": "Maliki79",
+      "date": "2025-12-21T22:51:52+0900",
+      "body": "Are you making backups of your project?\nIf so, do you have a backup where the protect was working?\nIt's very likely something small you changed and forgot you did.\nThe backup could probably help you narrow it down.\nMaybe a notetag on a state or something like that.\nIf you don't have a backup, make one, then go to town resetting the Battle core and see if that makes any difference.\nYou can then restore everything via the backup."
+    },
+    {
+      "post_id": "js-post-1541407",
+      "author": "jshunter",
+      "date": "2025-12-22T03:31:15+0900",
+      "body": "Maliki79 said:\nAre you making backups of your project?\nIf so, do you have a backup where the protect was working?\nIt's very likely something small you changed and forgot you did.\nThe backup could probably help you narrow it down.\nMaybe a notetag on a state or something like that.\nIf you don't have a backup, make one, then go to town resetting the Battle core and see if that makes any difference.\nYou can then restore everything via the backup.\nClick to expand...\nAll my backups have the same issue. I might have to compare each and every Battle Core setting against the VisuMZ_Sample_Game_Project, which does work."
+    },
+    {
+      "post_id": "js-post-1541488",
+      "author": "TG22",
+      "date": "2025-12-22T19:43:12+0900",
+      "body": "If you are talking about the substitute effect, I know that by default it is only triggered when an ally returns true to the \"isDying()\" method (and the hit is not \"certain hit\").\nThe \"isDying()\" threshold is 25% by default. Maybe something is changing it somewhere?\nCode:\nBattleManager.checkSubstitute = function(target) {\n    return target.isDying() && !this._action.isCertainHit();\n};\n\n[...]\n\nGame_BattlerBase.prototype.isDying = function() {\n    return this.isAlive() && this._hp < this.mhp / 4;\n};"
+    },
+    {
+      "post_id": "js-post-1541553",
+      "author": "jshunter",
+      "date": "2025-12-23T05:32:13+0900",
+      "body": "The actors are showing the isDying stance and I can't find any code which would affect that threshold."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/force-game-exe-to-use-dedicated-gpu.181566",
+  "title": "MV Force game.exe to use dedicated GPU",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:10:45.136310+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1541534",
+      "author": "Krosis",
+      "date": "2025-12-23T03:54:03+0900",
+      "body": "Hey! In my project (mv) I've added several plugins that increased the graphic demand of the game. The problem is that even though that happened, Windows 11 (laptop) still considers it low-demand program and runs it on iGPU and it never utilizes my RTX3070.\nSo I basically have a 40-80 fps game instead of 144 fps and it sometimes even crashes. Yes I can easily fix that by manualy changing the settings from the Control Panel and force it to run on dedicated GPU, but what about the players? Some of them may encounter the same problem but not everyone can fix it by themselves.\n1. So, is there a way to modify the .exe file of a deployed project in order to force it to run through the GPU instead of iGPU?\n2. Or a trick which will make the OS see it as heavier program and auto choose the GPU?\n2. Will that affect Canvas mode somehow or that is not something I should be concerned about?"
+    },
+    {
+      "post_id": "js-post-1541536",
+      "author": "Solar_Flare",
+      "date": "2025-12-23T04:01:59+0900",
+      "body": "I don't know if this'll make Windows detect it properly, but if you use the Community_Basic plugin, I'd set rendering mode to WebGL in its plugin parameters.\nIf that doesn't work, then I have no idea."
+    },
+    {
+      "post_id": "js-post-1541548",
+      "author": "caethyril",
+      "date": "2025-12-23T04:58:30+0900",
+      "body": "Standalone RMMV games run in a NWJS app, which is essentially a small Chromium-based browser.\nNWJS might support a command-line argument that affects which GPU is used to run the application? If so, you could add that to the\nchromium-args\nsection of your game's manifest file (\npackage.json\n). I just had a quick look here, though, and didn't see anything promising:\nCommand Line Options - NW.js Documentation\ndocs.nwjs.io\nA quick search online suggests that Electron (an alternative to NW) has a\n--force_high_performance_gpu\narg. I don't know whether that's from an updated version of Chromium, or something specific to Electron. Either way I tried that, as well as\n--in_process_gpu\n(to hit your 2nd point), but neither one seemed to change which GPU was used in playtest.\nCanvas/WebGL render mode is initialised via the core scripts, after the app has launched. The game tries to do some WebGL stuff, and if that fails, it uses Canvas (cf\nGraphics.hasWebGL\nin rpg_core.js)."
+    },
+    {
+      "post_id": "js-post-1541556",
+      "author": "bass2yang",
+      "date": "2025-12-23T06:04:41+0900",
+      "body": "To add to caethyril, here's a few other chromium args you can try:\nCode:\n\"chromium-args\" : \"--in-process-gpu ignore-gpu-blocklist --force-gpu-mem-available-mb=14000 --force-gpu-rasterization --enable-native-gpu-memory-buffers --enable-gpu-memory-buffer-compositor-resources\","
+    },
+    {
+      "post_id": "js-post-1541559",
+      "author": "Krosis",
+      "date": "2025-12-23T06:41:17+0900",
+      "body": "Solar_Flare said:\nbut if you use the Community_Basic plugin\nClick to expand...\nIt does run on webGL by default when it's set on auto, but laptops usually have 2 gpu, the dedicated one (nvidia) and integrated (the GPU build inside the CPU) so I do technically run the game on webGL but my GPU (the real one) never activates. The whole problem comes from the fact that win11 considers RPG Maker games as \"light\" programs and It runs them on the weaker iGPU.\ncaethyril said:\nStandalone RMMV games run in a NWJS app\nClick to expand...\nI'll look into that and research the topic, thanks\ncaethyril said:\nneither one seemed to change which GPU was used in playtest.\nClick to expand...\nPlaytest is not a problem I can just force it to use the right GPU on my laptop\nbass2yang said:\nTo add to caethyril, here's a few other chromium args you can try:\nClick to expand...\nI'll look into it\nThanks for the answers guys, cheers"
+    }
+  ]
+}

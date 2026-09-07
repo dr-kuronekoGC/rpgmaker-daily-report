@@ -1,0 +1,125 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/altaudio-swap-your-whole-games-bgm-se-etc-mid-game.179992",
+  "title": "MZ AltAudio - swap your whole game's bgm, se, etc mid-game!",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:10:47.539302+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1529291",
+      "author": "LyraVultur",
+      "date": "2025-09-08T14:40:34+0900",
+      "body": "What is this?\nIn some games you can use an item in-game to change the soundtrack on the fly. For instance, some Pokemon games let you find and use a \"GB Player\" item that changes the music to the same songs, but retro! This plugin seeks to replicate that ability, letting you apply audio swapping to BGMs, SEs, MEs, and BGSs as you wish.\nHow to Use\nAdd the .js file to your project's js/plugin folder, then open up the plugin manager in the editor and add the plugin.\nThere's general help in the description for each of the default settings.\nAs an example on how to setup alternate music, go to your game's audio/bgm folder. In it, make a new folder - for this example, let's call it Alternate1. But you can call it whatever! Then go to the plugin settings, open Alternate Music Subfolders, double-click a blank line to add a new one, and enter the name of the folder you made. The game will look in these folders for alternate music, and you can make as many as you wish. You can also make them with the same name in the audio/se, audio/me, and audio/bgs folders, and have the relevant Affect setting set to true to have alternate audio apply to those.\nIn the alternate folders you make, place audio files with the\nsame names\nas the ones in the main folder! They'll get played instead of the regular ones in the main folder when that folder is chosen. If a file is missing from an alternate folder, the game will try and play the regular audio file with the same name from the main folder first, to help prevent excess \"missing file\" crashes.\nOnce setup, in-game just use any of the plugin's commands to swap what folder audio is being pulled from! You could easily attach this functionality to a usable key item or a menu option (not included).\nPlugin Commands\nChange Subfolder (ID)\nSets the audio source folder to the ID you give it.\nNext Subfolder (ID)\nSets the audio source folder to the next ID in the list. Wraps around if it goes past the end.\nPrevious Subfolder (ID)\nSets the audio source folder to the previous ID in the list. Wraps around if it goes past the start.\nRandom Subfolder (ID)\nSets the audio source folder to a random one from the list!\nChange Subfolder (Name)\nSets the audio source folder to the one with the name you entered. Must still be defined in the plugin settings Alternate Music Subfolders list.\nChange Affected\nLets you change what audio types are affected by the plugin mid-game.\nSave Global Data\nIf global saving of the current subfolder is enabled in the plugin settings, will manually save the global data. Normally this gets saved automatically when the user saves the game.\nErase Global Data\nDeletes the global save data.\nDoes this work on a release build if I encrypt my audio?\nI've tested a build with encrypted audio and had no problems!\nI've found a bug/I think this feature would help!\nPlease reply and let me know! I've tested as many edge cases as I can, but there's always going to be some that get missed.\nTerms of Use\nYou can view the license\nhere\n. In short, it is free for commercial or non-commercial use. Credit is optional as long as you don't claim it as your own work.\nDownloads\nYou can download just the plugin\nhere\n. Press the 'Raw' button then Ctrl+S to save it."
+    },
+    {
+      "post_id": "js-post-1529328",
+      "author": "james5272",
+      "date": "2025-09-08T23:55:53+0900",
+      "body": "Hey there!\nThis is a great plugin! I have it working in my MZ project. I used Google to help me figure out how to add a toggleable option to VisuStella Options Core - hopefully this is OK! I can share the code here if it's deemed acceptable, and show screenshots of where to add it. I really like how you can enable a setting in the plugin so that when you change the desired OST through the added menu option, it updates to the correct OST right away!\nIs there any way to get it to update the OST when on the title screen? I have two OSTs, 8-bit and Instrumental. For some reason if I change from 8-bit to Instrumental it will update the music on the title screen, but when I change it back to 8-bit, it won't update."
+    },
+    {
+      "post_id": "js-post-1529387",
+      "author": "LyraVultur",
+      "date": "2025-09-09T08:44:12+0900",
+      "body": "Glad you like it! Feel free to share how to use Options Core to add a menu option, I'm sure others will find it useful. I've also updated the plugin to v1.1, with a new \"Auto Replay Title Music\" option that should help!"
+    },
+    {
+      "post_id": "js-post-1529404",
+      "author": "james5272",
+      "date": "2025-09-09T10:42:18+0900",
+      "body": "Thanks for the update! I gave this a quick spin. It is no longer changing the music when you are on the game map, it waits until combat, and it seems like when you go back to the map, if there was a soundtrack change, the combat will have the change, the map will still be playing the previous setting. Also, I am not sure if it is possible to improve this, but when you change the soundtrack setting on the title screen, it doesn't apply until you close the options. With 1.0 at least, when changing it on the map screen, it would change as you toggled back and forth between the settings. If it is possible to get it to work this way on the title screen, that would be awesome! But, if not, once map music changing according to the toggle is restored, this will be way better than the other method I had been trying."
+    },
+    {
+      "post_id": "js-post-1529413",
+      "author": "LyraVultur",
+      "date": "2025-09-09T13:02:44+0900",
+      "body": "I've uploaded a new version, 1.2! Hopefully it fixes the issues.\nThe problem was that Options is a scene of its own, so it got confused depending on if you came from the title screen or the regular menu mid-game."
+    },
+    {
+      "post_id": "js-post-1529451",
+      "author": "james5272",
+      "date": "2025-09-09T22:57:58+0900",
+      "body": "The music is now changing properly on the map again. And for the menu, it is updating when you do the toggle. However, when I relaunch the game, if it was set to Instrumental track last, the main menu is playing 8-bit. I think it is probably defaulting to playing what is in the database as the menu theme.\nAlso, I am having a new issue. At the start of the game, I have a dialogue option letting the player know there are 2 soundtracks, and letting them pick which one to use right there. To do so, I have a common event plugin common running, to use this plugin and run \"Change Subfolder (Name)\" for each option. In 1.0 and I believe 1.1, this was working. Now, when a choice is made in the dialogue menu, the game freezes."
+    },
+    {
+      "post_id": "js-post-1529513",
+      "author": "LyraVultur",
+      "date": "2025-09-10T10:47:58+0900",
+      "body": "I updated it to 1.21, which adds global save functionality. If global save is off, then it will only remember per save file what soundtrack was selected.\nI couldn't seem to replicate your bug, though? what does your event setup look like? it worked fine for me with something like this:"
+    },
+    {
+      "post_id": "js-post-1529514",
+      "author": "james5272",
+      "date": "2025-09-10T11:03:01+0900",
+      "body": "Thanks! That's working a lot better. The freezing bug was an issue with I am guessing an interaction with another plugin, Ignis Audio Synchronizer. I had it turning on in the event chain, to sync the first intro story dialogue box with the music starting. This made it freeze. When I deleted the synchronizer from turning on, there is a very slight delay where the dialogue begins to show up, and *then* the music starts. But, it doesn't freeze anymore.\nI should be able to do more testing tomorrow. Once I know it's all working, I'll be sure to come back and post how to get it as a toggleable option in the menu. Though, it will be for if someone is using VisuStella Options Core.\nEDIT: Okay, so to get this as a toggleable option in VisuStella Options core... and this is assuming you're using subfolder names through this audio swap plugin... Follow the order of screenshots to get to where you can make a new option (window 4). Copy and paste one of the existing ones in the list, I dragged it to the top after.\nNow doubleclick the option you just made, you will get the following window. Where it says \"symbol\" you just name it something for yourself to identify what it is. Where it says STR: Text is where you put what you want it to be called in the menu.\nNow in this option parameters, scroll down to Function where it says Draw Option. Open that and scroll down until you see this:\nconst off is for the left setting, const on is for the right setting. As you can see I named off as 8-bit and on as Instrumental, for my 2 different soundtracks.\nNow go back to the parameters list (where it had said Function before), and scroll down to JS: Cursor Right. Open that and scroll down to where it says // Perform Actions You need to update this section to look something like this:\n// Perform Actions\nthis.setConfigValue(symbol, true);\nthis.redrawItem(this.findSymbol(symbol));\nif (this.getConfigValue(symbol) !== lastValue) {\nthis.playCursorSound();\nPluginManager.callCommand(this, 'Lyra_AltAudio', 'ChangeSubByName', { name: 'instrumental' });\nthis.playCursorSound();\n}\nWhere it says instrumental, name it what you want the right setting in the option to be.\nNow go back to the parameter list (where it had said Function before) and go to JS: Cursor Left. Now add that same code to Perform Actions, but where it says name: 'instrumental', change instrumental to what you want the left option to be named.\nNow OK all the way out and you should have an option in the settings.\nYou can also let the player choose the soundtrack through an event command, ie. do a \"Show Choices\" event that does a plugin command for each choice to use Lyra_AltAudio to look at ie. SubFolder name to change to that soundtrack. This doesn't seem to update the choice in the option that I just showed how to add. But I have this option as a dialogue choice at the start of my game, to at least make the player aware that there are 2 soundtracks.\nLet me know if anything doesn't seem to make sense and I'll try to update/add more detail while the info is still fresh."
+    },
+    {
+      "post_id": "js-post-1529738",
+      "author": "LyraVultur",
+      "date": "2025-09-12T09:53:37+0900",
+      "body": "I've updated the plugin to 1.3, which adds:\nvery\nbasic menu option for those not using VisuMZ Options Core\nsimple VisuMZ Options Core support, but since their code is obfuscated you're much better off following james5272's lovely guide!\nmaking sure play random subfolder doesn't pick the one that is currently playing\nauto replay the map's BGS if the soundtrack changed (and BGS alteration is on)\na check for if Ignis Audio Synchronization is on, and disables some features to help avoid crashes. (seems like anytime the same sound gets played twice in quick succession it can cause the freeze, might need to ask the plugin author about it?)"
+    },
+    {
+      "post_id": "js-post-1530468",
+      "author": "james5272",
+      "date": "2025-09-19T02:07:05+0900",
+      "body": "Thanks for yet another update! Sorry for the delay in getting around to trying it, I had some other things I was occupied with. So the Ignis Audio Synchronization bug seems to be solved, I have it back to turning on when the soundtrack selection is made at the start of the game, and it works fine. I had looked, it seems the author of that plugin no longer works on plugins for RPG Maker, I see a post on itch.io from a while ago where they stated this was the case.\nI am noticing that when you make a different OST selection on the title screen, it doesn't apply until you close the options menu, whereas when you do this in gameplay while on the map, it changes right away. I don't remember if this was the case before or not. If you can't fix it, no biggie, this is already doing a lot of things I was hoping for.\nI also tested your VisuStella option. The only suggestion I can make there, is the other sound options have a music note icon in front of it, the option from yours has no icon (and maybe some people don't want icons at all with VisuStella options, since this is something they let you set yourself). And I don't know if it would be possible to move the soundtrack to the top of the list, instead of at the bottom. But I will prefer using your option in the menu going forward."
+    },
+    {
+      "post_id": "js-post-1530548",
+      "author": "LyraVultur",
+      "date": "2025-09-19T15:34:19+0900",
+      "body": "Thanks for your help in testing!\nOn my end it always changed the music on the options screen, whether it was from the main menu or mid game, so not sure what is causing that. At least it is using the default options menu addition that I added.\nUnfortunately since Visustella's code is obfuscated (I can't just open it up and see what it does) I can't do much more than what I've done. If you're using Visustella's Options Core than the best bet is to disable my menu option and add the option yourself in the Options Core settings.\nBuilding off your tutorial of adding it as an option in Options Core a few posts ago, I've found a few tweaks that might help:\nadd your option to the Audio category like normal and drag it wherever in the list you want it.\nThen open it up and set\nIcon\nand\nSTR: Text\nto whatever you want the option to appear as.\nThen open up\nJS: Draw\nOption, scroll to the bottom and look for the section //Draw Status Text. Replace that with:\n// Draw Status Text\nconst curost = LyraVultur.AltAudio.GetNameFromId(LyraVultur.AltAudio.curid - 1);\nthis.changePaintOpacity(true);\nthis.drawText(curost, rect.x + halfWidth, rect.y, quarterWidth, \"center\");\nNext open up\nJS: Process OK\nand erase everything under // Perform Actions.\nThen open up\nJS: Cursor Right\nand find the // Perform Actions section. Replace it with:\n// Perform Actions\nLyraVultur.AltAudio.SetAltNext();\nthis.redrawItem(this.findSymbol(symbol));\nthis.playCursorSound();\nThen do the same for\nJS: Cursor Left\n, but change the code to:\n// Perform Actions\nLyraVultur.AltAudio.SetAltPrev();\nthis.redrawItem(this.findSymbol(symbol));\nthis.playCursorSound();\nTry that out and it should work!"
+    },
+    {
+      "post_id": "js-post-1532629",
+      "author": "Dark_Ansem",
+      "date": "2025-10-07T15:52:43+0900",
+      "body": "This is something I didn't think it could happen, thanks!"
+    },
+    {
+      "post_id": "js-post-1532652",
+      "author": "avodango",
+      "date": "2025-10-07T18:55:06+0900",
+      "body": "This is so nice!\ni know myself and i know i would have run into this problem myself once i start on my game, thank you for this plugin!"
+    },
+    {
+      "post_id": "js-post-1532829",
+      "author": "james5272",
+      "date": "2025-10-09T00:39:44+0900",
+      "body": "Hey there,\nGot around to working on my game some more. So it seems it not updating the soundtrack right away on the title screen, is an issue when it's a VisuStella option instead of your builtin option. However, your builtin option doesn't seem to be working as expected (and this is from testing with only your plugin enabled).\nWhen I have your plugin set to have your option in the menu, it has three options for me: Default, 8-bit and instrumental (8-bit and instrumental are my other music folders). Default plays instrumental, 8-bit plays 8-bit, and instrumental plays 8-bit instead of instrumental. But, it is at least updating the music on the title screen when changed with your option, so I'd like to have it working. Is there any way to get rid of the \"Default\" selection, so it just shows the subfolder names I enter into the plugin, and then plays the appropriate subfolder?\nIt's also possible that your option menu feature won't work properly when VisuStella options is enabled either... I am not sure why it was working in a previous build but not now. I will double check that this is correct. But it may not be worth your time to pursue, especially since you are doing this for free.\nEDIT: Okay, just writing back to confirm that yes, using 1.21 of your plugin, the menu music changes when the VisuStella option is toggled.\nEDIT2: I should also point out, I did try your tweaks to the VisuStella Options code, and it unfortunately didn't help."
+    },
+    {
+      "post_id": "js-post-1532959",
+      "author": "LyraVultur",
+      "date": "2025-10-10T07:15:59+0900",
+      "body": "I've\nupdated the plugin\nto version 1.4.\nNow you can change what the default soundtrack is called, instead of just \"Default\". Hopefully with this you can make one of your soundtracks the default then change the name in the default plugin settings and have the other one stay in a folder like before.\nFor anyone updating the plugin in a project, make sure afterwards you right-click the plugin in the plugin manager and pick Refresh. This should make the version of it change to 1.4 and makes sure you have all the new options."
+    },
+    {
+      "post_id": "js-post-1533433",
+      "author": "james5272",
+      "date": "2025-10-15T00:11:16+0900",
+      "body": "It must be an issue with VisuStella Options, cuz when that's enabled, the soundtrack won't change in the options on the title until I back out of the options. I have a copy of 1.21 of your plugin that works fine for this (toggling the option on the title changes it right away), but it had the Ignis bug that 1.3 fixed. I might just stick to 1.21 and live with not using Ignis during my intro, so it doesn't hang after the player makes the soundtrack selection.\nAlso, let me know if you're interested in some kind of compensation for working on this. I have a RPG Maker game on Steam. It's free, but people can buy the OST and/or guide if they want to support me. If you're interested, I should be able to get you a key for both, just as a thank you for helping me get this soundtrack swap feature in my 2nd game, and maybe for future projects as well. Let me know if you're interested. I have to submit a request for the keys to Steam then I could PM them to you once I get them."
+    },
+    {
+      "post_id": "js-post-1540623",
+      "author": "LyraVultur",
+      "date": "2025-12-15T10:03:49+0900",
+      "body": "james5272 said:\nIt must be an issue with VisuStella Options, cuz when that's enabled, the soundtrack won't change in the options on the title until I back out of the options. I have a copy of 1.21 of your plugin that works fine for this (toggling the option on the title changes it right away), but it had the Ignis bug that 1.3 fixed. I might just stick to 1.21 and live with not using Ignis during my intro, so it doesn't hang after the player makes the soundtrack selection.\nAlso, let me know if you're interested in some kind of compensation for working on this. I have a RPG Maker game on Steam. It's free, but people can buy the OST and/or guide if they want to support me. If you're interested, I should be able to get you a key for both, just as a thank you for helping me get this soundtrack swap feature in my 2nd game, and maybe for future projects as well. Let me know if you're interested. I have to submit a request for the keys to Steam then I could PM them to you once I get them.\nClick to expand...\napologies for the belated reply, I've been busy moving house!\nno compensation required, I enjoy jumping into the RPG Maker forums and helping out when I can. tho if DM me the name of your game I'll gladly check it out!"
+    },
+    {
+      "post_id": "js-post-1547155",
+      "author": "james5272",
+      "date": "2026-02-09T23:55:20+0900",
+      "body": "Hey Lyra,\nI am trying to get back to working on my 2nd game (which has been mostly finished for a while) and am having some other issue with the plugin.\nBasically if the options on the title screen is set to say instrumental for OST, it will go to instrumental after closing the menu. Then I exit the playtest and relaunch the project. In the title options, it will still say instrumental is selected, but then it is playing the 8-bit music (and vice versa). It has to be toggled back and forth to get it to work again.\nLet me know if you're interested in me just sharing the project with you if it helps sort out these issues, and maybe lets you figure out what's going on with the soundtrack selection not happening immediately on title screen swap. Honestly if I could think of a way to do it, the best way to handle this problem might be to have the soundtrack swap option not be available on the title screen, and it just play what was remembered from last gameplay setting or something.\nAlso the problem I had mentioned before, where using your options menu setting toggle (instead of my custom one) has Default playing instrumental then 8-bit and instrumental playing 8-bit (instrumental not loading instrumental for some reason) is still occurring. I've just settled on using my custom entry in VisuStella Options Core plugin, but thought you might want to know.\nHopefully this isn't too much... I do really want this feature to work, but I don't want you to feel on the spot either since so far you've still been working on it for free. If you ever decide you want something let me know. I also have over 100 songs composed and released now... I know most people do streaming services these days, but I could get you some releases (most are just a few tracks per release, my first is a full length one and I have another that I think was 7 tracks, the rest are fewer songs per for more frequent releases) for free or something so you could have it in FLAC, kind of as a trade."
+    },
+    {
+      "post_id": "js-post-1548070",
+      "author": "LyraVultur",
+      "date": "2026-02-18T12:48:07+0900",
+      "body": "I've\nupdated the plugin\nto 1.41, mostly just cleaning up the code and some minor fixes."
+    }
+  ]
+}

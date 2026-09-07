@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpgmakermz-custom-skill-in-battle-that-makes-the-character-change-equipped-weapon.181494",
+  "title": "RPG MAKERMZ Custom skill in battle that makes the character change equipped weapon",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:10:46.134268+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1540982",
+      "author": "Angelface",
+      "date": "2025-12-18T23:36:55+0900",
+      "body": "Hello,\nI am working on a game in RPG MAKER MZ\nI have a character that can equip 4 different weapons, and I want her to have a skill where she can change weapons during any battle.\nI set up the skill with no damage, no costs, with target = user ; with a 100% success rate\nAnd I added an event that I called \"change weapon\" where it's a branching\nIf Linda has weapon 1 equipped then the player has to choose between the three other weapons as options.\nIf player select weapon 2 then it's supposed to change the equipped weapon from weapon 1 to weapon 2 and show a text \"Linda equipped weapon 2\". I used the event \"change equipment\" and selected the weapon 2 for my character (in the event editor I mean)\nWhen I test it, I do have the choices but when I select it, there is a text \"this had no effect on Linda\" and then \"Linda equipped weapon 2\".\nBut when I go into the skills, it kept the skills of weapon 1 so I think it didn't change the weapon equipped.\nDoes anyone know how to make a custom skill where you can switch weapons during a battle ?"
+    },
+    {
+      "post_id": "js-post-1541031",
+      "author": "B3N4ZC4L",
+      "date": "2025-12-19T05:43:09+0900",
+      "body": "I think the ChangeEquipOnBattleMZ plugin might be the solution to your problem,\nIt let's you change the Equipment during battle without the need of any skills that would potentially \"waste\" a turn.\ncheck your DLC folder of your RPG Maker MZ, you will find it inside the Basic Resources > plugins > launch folder."
+    },
+    {
+      "post_id": "js-post-1541103",
+      "author": "TG22",
+      "date": "2025-12-19T17:46:32+0900",
+      "body": "I remember adding this code to make sure that only weapons and offhands could be changed (not armors or accessories) - when using this plugin.\nCode:\n//We only want the party to be able to change weapons and offhands.\n  Window_BattleEquipSlot.prototype.isEnabled = function(index)\n  {\n     if (! this._actor)\n     {\n       return false;\n     }\n\n     if (index > 1) //0 = weap, 1 = offh.\n     {\n        return false;\n     }\n     return this._actor.isEquipChangeOk(index);\n  };"
+    },
+    {
+      "post_id": "js-post-1541106",
+      "author": "Angelface",
+      "date": "2025-12-19T18:50:43+0900",
+      "body": "B3N4ZC4L said:\nI think the ChangeEquipOnBattleMZ plugin might be the solution to your problem,\nIt let's you change the Equipment during battle without the need of any skills that would potentially \"waste\" a turn.\ncheck your DLC folder of your RPG Maker MZ, you will find it inside the Basic Resources > plugins > launch folder.\nClick to expand...\nIt's working ! Thank you so much"
+    },
+    {
+      "post_id": "js-post-1541110",
+      "author": "Angelface",
+      "date": "2025-12-19T19:07:43+0900",
+      "body": "TG22 said:\nI remember adding this code to make sure that only weapons and offhands could be changed (not armors or accessories) - when using this plugin.\nCode:\n//We only want the party to be able to change weapons and offhands.\n  Window_BattleEquipSlot.prototype.isEnabled = function(index)\n  {\n     if (! this._actor)\n     {\n       return false;\n     }\n\n     if (index > 1) //0 = weap, 1 = offh.\n     {\n        return false;\n     }\n     return this._actor.isEquipChangeOk(index);\n  };\nClick to expand...\nThank you, but I don't know how to add code... For now, I decided to only keep weapons in my game."
+    },
+    {
+      "post_id": "js-post-1542947",
+      "author": "Angelface",
+      "date": "2026-01-04T23:12:14+0900",
+      "body": "Hi everyone ! Little update on my project. I understand now how the VS battle core pluggin works so I managed to make my skill with the <Common Event: Change Weapon> notetag to summon the common event I made to change the weapon in battle.\nThe common event is\n'If Character has equipped weapon 1 then\nList of choices between Weapon 2, weapon 3 and weapon 4\nIf player selects weapon 2 then change equipment => weapon 2\nElse If character has equipped weapon 2 then\nList of choices between Weapon 2, weapon 3 and weapon 4'\netc, etc etc... (my character can choose between 4 weapons)"
+    }
+  ]
+}
