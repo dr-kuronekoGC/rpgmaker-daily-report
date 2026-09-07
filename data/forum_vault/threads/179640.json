@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/write-files-to-specified-path-outside-of-the-game-folder.179640",
+  "title": "Write files to specified path outside of the game folder",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:47:08.487277+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1526943",
+      "author": "tsuchi0",
+      "date": "2025-08-19T07:23:12+0900",
+      "body": "Is there any way to write or create files to a specified file path that isnt inside the game folder? I want to include a feature in my game that checks if you've beaten it and adds content to another game, but i don't know how to make RPG Maker XP games create the file that the other game is checking for, if that makes sense. Please let me know if and how i can make this work! (I don't know if this is exactly a script request but i'm imagining its going to have to deal with scripting so i stuck it here anyways)"
+    },
+    {
+      "post_id": "js-post-1526957",
+      "author": "DevRPG2k",
+      "date": "2025-08-19T09:01:59+0900",
+      "body": "Before anything, what I'm going to show is just to start understanding how writing and reading files works, I don't have deep experience with Ruby or RGSS10? (Native)\nWorks with RMXP too:\nHow can i Read/write a file to a variable? (VXAce)\nDo somebody know how can i put the content of a file to a varable? And if i can, how can i write that variable to a text box?  Do i use a \\v[id], or i need to use something else? Any code that may help is of a great help!\nforums.rpgmakerweb.com\nFile exist (Check):\nhttps://ruby-doc.org/core-2.7.2/File.html#method-c-exist-3F\nSample (Lines to Array):\nRuby:\nf = File.read(\"myfile.txt\")\nf = f.split(\"\\n\")\np f[0] # line 1\np f[1] # line 2\np f[2] # line 3\nDistribute the lines into variables:\nCreating non-editable files will require more knowledge, verification methods, for example, using an initial game variable that receives a random value and using it as a unique player TOKEN, so if you copy it from one player to another it would not work at the time of reading.\nSample (Write file):\nRuby:\nt=$game_variables[5000] # token\n$game_switches[1] ? s=1 : s=0\nv=$game_variables[1]\nf=File.open('myfile.txt','w')\nf.puts t\nf.puts s\nf.puts v\nf.close\nDue to the limitations of the RMXP text box for sending script commands and automatic encapsulation, I saved the variables and the switch in temporary variables.\nKeep in mind that using File.open will overwrite the file, so the best option is to use very small data, for example.\nRegarding the Switch, I had to define it as a numeric value to make it easier to return the data.\nSources:\nclass File - RDoc Documentation\nhttps://ruby-doc.org/3.4.1/Array.html#method-i-each"
+    },
+    {
+      "post_id": "js-post-1526967",
+      "author": "kyonides",
+      "date": "2025-08-19T11:43:30+0900",
+      "body": "A switch as a numeric value? Thst's too C or C++-centric indeed.\nWell, it depends on what you need to save in this new directory. Do you want the file to act like some initialization file a la Game.ini? Or do you need to store very specific data like specific variables and switches?\nIf it's the latter, then you'd just save them via File.open and then several calls to Marshal.dump before ending with file.close"
+    },
+    {
+      "post_id": "js-post-1526973",
+      "author": "DevRPG2k",
+      "date": "2025-08-19T12:19:07+0900",
+      "body": "I see, so every time I use the dump or load function it means it will move on to the next item without having to work with an Array.\nRuby:\nf = File.open(\"myfile.txt\",\"wb\")\nMarshal.dump($game_switches[1],f)\nMarshal.dump($game_variables[1],f)\nf.close\nRuby:\nf = File.open(\"myfile.txt\",\"rb\")\n$game_switches[1]=Marshal.load(f)\n$game_variables[1]=Marshal.load(f)\nf.close"
+    }
+  ]
+}

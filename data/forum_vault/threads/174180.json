@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/variables-and-priorities.174180",
+  "title": "Variables and priorities",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:47:23.799430+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1490048",
+      "author": "Eternidade_1",
+      "date": "2024-12-27T04:01:15+0900",
+      "body": "I can't think straight today.\nI have an event, in which 4 variables will be entered.\na = 0\nb=0\nc=0\nd=0\nThey all start with 0, and then each variable is given a condition.\nif a = 0, then a certain choice occurs. This is the ratio of the variables, if it is equal to 0, then it makes choices.\nHowever, in the game it starts reading from the first to the bottom, so it only identifies the variable a.\nI want to find a way to place the 4 variables, where there is a certain priority, starting with the variable a = 0.\nA little confusing, but it is something like having a variable (a, b, c, d) that shows different results, but the priority value is.\nD=4, C=3, B=2 and A=1\nThis priority would be, if D shows a certain number of options, which are greater than A.\nDo you understand me?"
+    },
+    {
+      "post_id": "js-post-1490059",
+      "author": "ATT_Turan",
+      "date": "2024-12-27T05:27:20+0900",
+      "body": "Eternidade_1 said:\nDo you understand?\nClick to expand...\nNo. Events execute their commands from top to bottom, in the order you've entered them.\nSo if you're having a problem with the logic within an event, the\nrules for this forum section\ngive you excellent advice: always provide screenshots of the full event."
+    },
+    {
+      "post_id": "js-post-1490068",
+      "author": "Eternidade_1",
+      "date": "2024-12-27T05:49:06+0900",
+      "body": "I added a photo of the event where I will put the choices, which are made in the common event.\nI'm thinking that perhaps there should be a type of variable called priority, to separate or give priorities in fact."
+    },
+    {
+      "post_id": "js-post-1490069",
+      "author": "Zia_",
+      "date": "2024-12-27T05:55:28+0900",
+      "body": "If you want only one of them to play, nest them in the ELSE cases correctly. If set up correctly, there shouldn't be an issue to clearly determine which condition will be active.\nBut I can't really follow your description of what you want to achieve."
+    },
+    {
+      "post_id": "js-post-1490070",
+      "author": "ATT_Turan",
+      "date": "2024-12-27T05:58:44+0900",
+      "body": "Yeah, it\nsounds\nlike you're talking about putting things inside those empty Else branches.\nMaybe you can give some examples of the variable values and what you want to happen - how it's different depending on what values the variables have.\nI just have no idea from your post what you think\nshould\nhappen.\nAlso, when you edited your post to include the screenshot, you somehow translated it out of English."
+    },
+    {
+      "post_id": "js-post-1490073",
+      "author": "Zia_",
+      "date": "2024-12-27T06:09:37+0900",
+      "body": "Just a wild guess, what I get out of the context of your screenshots.\nI think you try to set up your Antidote to ask which hero shall be healed, and you want to show up to 4 names in a choice command. Since your party can have 1 to 4 members, you try to set up a separate cases for 1 hero, 2 heroes, 3 heroes and 4 heroes.\nFirst of all, you want to check the condition of one variable, not 4. This variable will contain a value between 1 to 4 depending your amount of party members.\nThen you nest your conditions. This is MZ terminology, but maybe you adapt how it works:\nCode:\n◆If：variable #100 Heroes in Party = 1\n  ◆Text：None, None, Window, Bottom\n  ：    ：Who will be healed?\n  ◆Show Choices：Name1, Nobody (Window, Right, #1, #2)\n  ：When Name1\n    ◆\n  ：When Nobody\n    ◆\n  ：End\n  ◆\n：Else\n  ◆If：variable #100 Heroes in Party = 2\n    ◆Text：None, None, Window, Bottom\n    ：    ：Who will be healed?\n    ◆Show Choices：Name1, Name2, Nobody (Window, Right, #1, #3)\n    ：When Name1\n      ◆\n    ：When Name2\n      ◆\n    ：When Nobody\n      ◆\n    ：End\n    ◆\n  ：Else\n    ◆If：variable #100 Heroes in Party = 3\n      ◆Text：None, None, Window, Bottom\n      ：    ：Who will be healed?\n      ◆Show Choices：Name1, Name2, Name3, Nobody (Window, Right, #1, #4)\n      ：When Name1\n        ◆\n      ：When Name2\n        ◆\n      ：When Name3\n        ◆\n      ：When Nobody\n        ◆\n      ：End\n      ◆\n    ：Else\n      ◆If：variable #100 Heroes in Party = 4\n        ◆Text：None, None, Window, Bottom\n        ：    ：Who will be healed?\n        ◆Show Choices：Name1, Name2, Name3, Name4, Nobody (Window, Right, #1, #5)\n        ：When Name1\n          ◆\n        ：When Name2\n          ◆\n        ：When Name3\n          ◆\n        ：When Name4\n          ◆\n        ：When Nobody\n          ◆\n        ：End\n        ◆\n      ：End\n      ◆\n    ：End\n    ◆\n  ：End\n  ◆\n：End"
+    },
+    {
+      "post_id": "js-post-1490082",
+      "author": "ATT_Turan",
+      "date": "2024-12-27T06:40:50+0900",
+      "body": "Zia_ said:\nI think you try to set up your Antidote to ask which hero shall be healed, and you want to show up to 4 names in a choice command.\nClick to expand...\nThat's...wow. Does 2k3 not have items that can be used on a party member?"
+    },
+    {
+      "post_id": "js-post-1490083",
+      "author": "Zia_",
+      "date": "2024-12-27T06:43:10+0900",
+      "body": "ATT_Turan said:\nThat's...wow. Does 2k3 not have items that can be used on a party member?\nClick to expand...\nI saw them working on a custom menu and recreating features like this."
+    },
+    {
+      "post_id": "js-post-1490119",
+      "author": "Eternidade_1",
+      "date": "2024-12-27T08:42:58+0900",
+      "body": "It works! Thanks!"
+    },
+    {
+      "post_id": "js-post-1490211",
+      "author": "Cherry",
+      "date": "2024-12-27T19:35:39+0900",
+      "body": "Recommendation: Use my tool RMEventFactory to work around issues where you cannot specify a hero by variable, instead of having to create tons of branches for each possible hero. With the tool you can auto-create all those conditions at once based on a template.\nRMEventFactory (v1.06)\nRPG Maker tools and other projects (Archived version from Oct. 27, 2020)\ncherrytree.at"
+    },
+    {
+      "post_id": "js-post-1490251",
+      "author": "Eternidade_1",
+      "date": "2024-12-28T01:09:22+0900",
+      "body": "I need to create tons of specific branches for each hero, just to use \"check\". What works with the template, then changing the variables will be easier.\nFor example, when I'm done, I can write a list of variables to which you can assign a number, and the game will behave in a way for that selected number.\nI don't want to include additional programs for the \"Start Pack\", any incompatibility that I can't solve will be a problem.\nBugs like this post are simple to solve, especially if the logic presented is, \"How am I going to create the event again with optimization?\"\nBut there are future problems that I won't be able to specify with a simple ctrl C and ctrl V, and I'll have to produce specific branches that escape the general context, like classes where there is a change box for actors and classes, and another thing is skills but that's for the future."
+    },
+    {
+      "post_id": "js-post-1490268",
+      "author": "Cherry",
+      "date": "2024-12-28T02:50:18+0900",
+      "body": "It's not a patch, nothing you need to include, just a tool helping you to put large repetitive events into your clipboard so you can paste them into RM."
+    },
+    {
+      "post_id": "js-post-1490549",
+      "author": "DevRPG2k",
+      "date": "2024-12-29T05:06:06+0900",
+      "body": "A somewhat complex method, but one that greatly reduces the number of conditions, is the use of reference variables or pointers (I don't know the correct term).\nFor example, instead of creating several conditions, I store the ID of each party member in a separate variable. This must be done right after adding the member to the group, as it is impossible to capture this value directly.\nSo in this example I created a list with values that refer only to the group members:\nThe examples below are of the first 3 standard items in Rm2k3:\nSpoiler:\nPotion example\nCode:\n@> Comment: // GET HERO'S ID FROM MEMBER 1\n@> Control Variables: [0032:MenuPartyAct] = 40\n@> Control Variables: [0032:MenuPartyAct] += Variable [0031]\n@> Comment: // CHECKS IF THE MEMBER IS ALIVE\n@> Control Variables: [0033:HP_TEMP] = Variable [0032]\n@> Control Variables: [0033:HP_TEMP] += 4\n@> Conditional Branch: Variable [0033:HP_TMP] > 0\n  @> Change HP: Variable [0032], + 50\n  @> Change Items: [Potion], - 1\n  @> Call Event: [SE-Decision]\n  @>\n : Else\n  @> Call Event: [SE-Buzzer]\n  @>\n : Branch End\nSpoiler:\nHi-Potion example\nCode:\n@> Comment: // GET HERO'S ID FROM MEMBER 1\n@> Control Variables: [0032:MenuPartyAct] = 40\n@> Control Variables: [0032:MenuPartyAct] += Variable [0031]\n@> Comment: // CHECKS IF THE MEMBER IS ALIVE\n@> Control Variables: [0033:HP_TEMP] = Variable [0032]\n@> Control Variables: [0033:HP_TEMP] += 4\n@> Conditional Branch: Variable [0033:HP_TMP] > 0\n  @> Change HP: Variable [0032], + 250\n  @> Change Items: [Hi-Potion], - 1\n  @> Call Event: [SE-Decision]\n  @>\n : Else\n  @> Call Event: [SE-Buzzer]\n  @>\n : Branch End\nSpoiler:\nMagical Water (Recovery MP)\nCode:\n@> Comment: // GET HERO'S ID FROM MEMBER 1\n@> Control Variables: [0032:MenuPartyAct] = 40\n@> Control Variables: [0032:MenuPartyAct] += Variable [0031]\n@> Comment: // CHECKS IF THE MEMBER IS ALIVE\n@> Control Variables: [0033:HP_TEMP] = Variable [0032]\n@> Control Variables: [0033:HP_TEMP] += 4\n@> Conditional Branch: Variable [0033:HP_TEMP] > 0\n  @> Change MP: Variable [0032], + 1\n  @> Change Items: [Magic Water], + 80\n  @> Call Event: [SE-Decision]\n  @>\n : Else\n  @> Call Event: [SE-Buzzer]\n  @>\n : Branch End\nNote that the action variable itself will do all the reading needed to affect the correct member.\nBut remember, this is a very crude example of how this works, but if you understand it, this can actually be used to create menus in Rm2k3 dynamically, but only in Rm2k3 because of the function of taking a single image and splitting it, and this function can be used to create a single image with all the items as long as the names are all the same length.\nIn this case I made a list with 6 columns and each column has 12 items:\nI would make a tutorial, but I can't claim to have experience with all the parameters used or even combining them with variables, so this is what I can help with so far."
+    },
+    {
+      "post_id": "js-post-1490590",
+      "author": "Eternidade_1",
+      "date": "2024-12-29T08:29:23+0900",
+      "body": "I added the effects this way.\nI can increase or decrease the hp or mp variable related to the hero's id, but not linking the variable to the item, because this is linked to the database id.\nI will post another video of the menu."
+    }
+  ]
+}

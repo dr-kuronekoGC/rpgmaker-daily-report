@@ -1,0 +1,125 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/miss-and-fail-messages-it-can-be-done-but-how.176939",
+  "title": "MISS, and FAIL messages. It CAN be done. But how?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:47:11.429706+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1509129",
+      "author": "ZENWARECO",
+      "date": "2025-04-14T06:36:20+0900",
+      "body": "Alright.  Back to business. Now.  I know of a DLL that might be able to do this.  The game Everlong managed to do it.  But how??\nBoop.\nThat one.\nI see this MISS message, and a strange precariously put empty space next to it. Hmm! HMMM....\nNow in Everlong, there was a MISS and FAIL message when certain skills landed.\nSo how did the creator do it?  With a very mystical DLL.\nIt's like the strangeness of just saying EXP, EX, or even calling Wood Armor Wood Armor.  Well, what KIND of wood are we talking here? Oak? Timber? Pine? Blackwood?  Well?? And WRITE THE WORD EXPERIENCE.  My experience with Rm2k and Rm2k3 games have been somewhat ruined just because there isn't the word Experience.\nThanks, if anyone can help.  Though maybe after this game I'm switching over to a more modern maker.  But I also have to retire one day.  I'm an illustrator.  Though maintaining productivity with RPG Maker is still kinda fun.  And suffering is so much fun!! Yay!! (No it isn't.)"
+    },
+    {
+      "post_id": "js-post-1509226",
+      "author": "Cherry",
+      "date": "2025-04-14T19:14:29+0900",
+      "body": "The empty space is just there because the miss message field is not that wide as you can only use a short text within it anyway.\nThe game you posted probably used DynRPG, the DLL is likely a DynRPG plugin calling the\nRPG::Battler::damagePopup\nfunction with a custom text. Unfortunately you can't use that though because DynRPG is not compatible with the official English release!\nWhat is your current setup, are you using Maniac or not? If not, I might be able to help here in some way and provide a custom solution, if you tell me in what way/circumstances you'd like to show a custom popup text."
+    },
+    {
+      "post_id": "js-post-1509251",
+      "author": "ZENWARECO",
+      "date": "2025-04-14T22:35:58+0900",
+      "body": "I'm using Goliath.  Though I was doing other ones with Maniacs.  Looks like java which I know nothing of.  Not a thing.  Though I also recently installed Java because it was running slow.\nIf there is a DLL that would be cool.  Though in Rm2k3 you can't really \"add notes\" to a skill to make that happen, only in the newer ones. Everything runs on a DLL. :/  What other solutions are there?"
+    },
+    {
+      "post_id": "js-post-1509317",
+      "author": "Cherry",
+      "date": "2025-04-15T07:21:59+0900",
+      "body": "Goliath is not legal to use because it puts back the inofficial version, by the way.\n(But you can apply similar changes as Goliath did manually to the RPG2003.exe, that would be under the patch EULA. If you tell me what exactly you need from it, I can tell you where.)\nAnyway, if you are not using Maniacs, as I said I could provide another solution (in the form of a patch, that is), but for that I'd please need to know your exact needs."
+    },
+    {
+      "post_id": "js-post-1509384",
+      "author": "ZENWARECO",
+      "date": "2025-04-15T22:10:09+0900",
+      "body": "Wait WHAT.\nF.\nThat's not nice.\nWell, I wanna do a miss message, a fail message, and a resist message, maybe a couple others too, maybe an unaffected.  I just want more messages than just MISS. Kinda lame. 2k could do it kinda, though in the database it's:\n[__________ is missed!]\n[__________ is unaffected.]\n[__________ is unaffected.]\nI want multiple. There's not really \"a\" 2k3.5. :/ or 2000.5. Hahah. Though it can't do any of that, just one. It's not like you can stick it in a note tag in the skills, like in the newer ones. And the newer ones have Ruby, not Java.  And I don't really know how to Java, I don't know if I have any time for that.  I have HTML, CSS, and a lot of writing skill.  My art skill is outta the wazoo. I am very good at that.\nI think that's everything.  Though, who made the Goliath version?  How dare they...I don't like that."
+    },
+    {
+      "post_id": "js-post-1509475",
+      "author": "Cherry",
+      "date": "2025-04-16T06:30:37+0900",
+      "body": "Just to clarify: You would like the miss text to be dependent on the skill that is used, is that it?\n(By the way, Java is not related to anything here.)"
+    },
+    {
+      "post_id": "js-post-1509535",
+      "author": "ZENWARECO",
+      "date": "2025-04-16T21:26:17+0900",
+      "body": "Right.\nI was thinking for cures, unaffected, then statuses, no effect, then magic, resist.  Something like that."
+    },
+    {
+      "post_id": "js-post-1509540",
+      "author": "Cherry",
+      "date": "2025-04-16T21:49:32+0900",
+      "body": "I have an idea how I could make it very simple for me to patch, hopefully.\nDo you use the \"MP percentage cost\" option for any of your skills?\nIf not: My idea is to \"abuse\" this field so you can put a number there (even if the skill is otherwise configured to a fixed MP cost - because the value in the percentage field is still stored in the skill!) which is actually interpreted as the ID of an actor. Then, the name of the specified actor will be used instead of \"Miss\".\nSo for example, you would put there \"34\" and then name actor #34 \"Unaffected\".\n(Caveat: This will crash if an invalid actor ID is referenced, so make sure to set it to a meaningful ID in all your skills!)\nLet me know if that works for you. If yes, I'll proceed making a patch."
+    },
+    {
+      "post_id": "js-post-1509543",
+      "author": "ZENWARECO",
+      "date": "2025-04-16T21:56:32+0900",
+      "body": "That's cool.  How do you know how to do that?  I haven't used the MP percentage, no.\nSounds weird how that works.  So it uses an ID and changes the \"miss\" into unaffected? That's crazy.\nThough that's a lot of typing! Waahaha!! D:\nThese older RPG Makers are so restricted in what they can do.  You're a smart pup, barkour.  I like you.\nIt sounds really complicated how that's working though.  I have no idea how you'll do it but thanks! Cherry to the rescue! Bark bark!"
+    },
+    {
+      "post_id": "js-post-1509547",
+      "author": "Cherry",
+      "date": "2025-04-16T23:18:24+0900",
+      "body": "Here you go:\nhttps://cherryshare.at/f/G6ESg0/RPG_RT_DynamicMissMessage.ips\nUse a tool like \"Lunar IPS\" to apply. (Select \"All Files\" to find the RPG_RT.exe file.) Double-check you are using the official engine (not editor) version v1.12a and make a backup of your project first!\nVisual explanation of the feature:\n\"Sounds weird how that works\" - well, it may sound weird but it's the easiest way for me to do it because the change required was small enough to be able to fit into the space otherwise used by the instructions that looked up the \"Miss\" string. I was looking for an otherwise unused numerical field in the skill and that's how I landed at MP percentage. I knew there was no unused\ntext\nfield so I had to use some other text field indexable by a number, which is why I used actor names.\nOriginally I thought actor names would also be nice because they can be changed dynamically, but now I realized it was too complicated to allow those changed ones - instead, this patch will always look at the name the referenced actor has in the database, so even if you use \"Change Actor Name\" it won't be reflected here.\nPlease note that\nthe maximum string length is still 8\n, like it is in the field where you can set the original \"Miss!\" string, so \"Unaffected\" is too long, it will show as \"Unaffect\"! But \"Failed\" works for example.\nBy the way, one other thing you might want to take into account: There is a hidden variable that defines whether a skill is \"physical\" or not. The evasion sound will play only for physical skills when missed, and it also affects which formula is used to calculate the miss probability. (That this is hidden is a bug, but it will likely never be fixed.) You can use this tool here to see and change whether a skill is physical or not:\nhttps://forums.rpgmakerweb.com/index.php?threads/skill-as-physical-skill.172165/post-1472424"
+    },
+    {
+      "post_id": "js-post-1509551",
+      "author": "ZENWARECO",
+      "date": "2025-04-17T00:32:32+0900",
+      "body": "Hm. Got a \"Write\" bug.  Though I checked the versions and they were japanese.  And I bought 2003 a while ago.  1.0.8.0 Argh\nWell that is super handy! At least I have something now.  Did you go to school for editing DLL's? I'm not really sure how in the heck to do that.  That goes over my head. Though I'll have to check my versions, I don't know why they're \"that\" version...\nWell, btw, how would I make an RPG Maker kind of engine? Would I have to learn coding??  I know CSS and HTML though I don't know much of Ruby.  I was always curious of how that might work.  Though I'm an artist and a gamer."
+    },
+    {
+      "post_id": "js-post-1509577",
+      "author": "Cherry",
+      "date": "2025-04-17T04:44:21+0900",
+      "body": "Too complicated to explain in a sentence or two, both of them.\nWell 1.0.8.0 means you got the pirated old version, probably because of Goliath. You are missing out on a ton of features and bugfixes then too. Create a backup of your project and then open it in the official version's editor, it will offer to convert the project. You will probably have to update paths to RTP graphics if you used any, though."
+    },
+    {
+      "post_id": "js-post-1509680",
+      "author": "ZENWARECO",
+      "date": "2025-04-18T00:58:41+0900",
+      "body": "Not again!! Argh!!!  This project has gone through hell!!!!! D:\nI was using Goliath because of bigger numbers.  At least through stats.  Which now it'll drop.  Damnit.\nThis project has gone through a lot of backups.  It's so annoying.  At least 2 or 3 by now.\nWell I shall certainly reinstall the new one.\nIf I did want to sell the game, I would have to credit everything.  By no means. No questions asked."
+    },
+    {
+      "post_id": "js-post-1509765",
+      "author": "Cherry",
+      "date": "2025-04-18T16:50:35+0900",
+      "body": "Which bigger numbers? Let me know exactly and I can provide patches for them."
+    },
+    {
+      "post_id": "js-post-1509795",
+      "author": "ZENWARECO",
+      "date": "2025-04-18T21:27:56+0900",
+      "body": "For the monsters' stats, and then the actors' stats.  Goliath makes higher stats there. The enemies' ATK, DEF, and INT can go to 999 but AGL stops at 255, which is odd.  Their HP can go to 9999999 and their MP can go to 9999. Actors stats can go above 1000, like when I equip something that doubles (or is it 1.5?) ATK, DEF, INT, or AGL.  But, who made Goliath?  Just an anonymous person?"
+    },
+    {
+      "post_id": "js-post-1509895",
+      "author": "Cherry",
+      "date": "2025-04-19T06:18:24+0900",
+      "body": "A person who calls themselves Aten.\nAnyway, what of these things do you actually\nuse\n?"
+    },
+    {
+      "post_id": "js-post-1510042",
+      "author": "ZENWARECO",
+      "date": "2025-04-20T05:27:13+0900",
+      "body": "HP, definitely and MP.\nAnd ATK, DEF, INT, AGL. The whole shindig. And monsters can go up to 9999 in stats but AGL stays as a measly 255, I guess because the computer would go too fast? I don't know.  I guess actors are about the same.\nCome to think of it, both versions of RPG Maker have this strange bug for states, and conditions.  The equipment, when an item doubles a stat, people have observed that RPG Maker, not doing that, neither doubling.  It does it by 1.5.  Rather than 2...\n???\nRPG Maker!!\nWhat's up with that?"
+    },
+    {
+      "post_id": "js-post-1512039",
+      "author": "Cherry",
+      "date": "2025-05-03T16:37:41+0900",
+      "body": "Sorry, I've been too busy lately and this requires more changes."
+    },
+    {
+      "post_id": "js-post-1512106",
+      "author": "ZENWARECO",
+      "date": "2025-05-04T05:28:52+0900",
+      "body": "Same.  I've been busy too.\nFor a different reason though, the RPG_RT.exe is having weird issues.  I went to load a save and it just freezes up.  ????  Not sure why something like that would just stop working."
+    }
+  ]
+}
