@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-escaping-battles.182886",
+  "title": "MZ Help with escaping battles",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:39:07.312352+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1550770",
+      "author": "Psychoholic42",
+      "date": "2026-03-16T04:22:47+0900",
+      "body": "I'm using a plugin by Caethyril that takes away the party command in battle (Fight/Escape). I made a skill to escape with my party members, but it isn't working the way I want it. The problem is that when I use the skill and escape battle, the battle music continues outside of battle. I've tried everything in the skill setup and common events. I've also searched for plugins, but I can't get it to work."
+    },
+    {
+      "post_id": "js-post-1550777",
+      "author": "ShadowDragon",
+      "date": "2026-03-16T05:39:16+0900",
+      "body": "show us your setup, as ending the battle should return to the map BGM.\nif this isn't the case by your skill usage, it may how the plugin works.\neither double check the plugin description, or ask the author of the plugin.\ndid you test it with only that plugin or do you use more plugins?"
+    },
+    {
+      "post_id": "js-post-1550825",
+      "author": "caethyril",
+      "date": "2026-03-16T19:46:09+0900",
+      "body": "Answering this here~\nPsychoholic42 said:\nI'm using a plugin that has a problem. The plugin skips the party command. The problem is, it takes away the escape option. I'm trying to make a skill that lets players escape, but can't get it to work. The best I can get is where the battle music continues after I escape.\nHere is the plugin I'm using.\n/*:\n* @target MZ\n* @plugindesc No party command (Fight, Escape) for TPB system.\n*\n@Author\nCaethyril\n* @url\nhttps://forums.rpgmakerweb.com/threads/176490/\n*\n@Help\nFree to use and/or modify for any project, no credit required.\n*/\n// Patch - cycle actors, skipping party command.\nvoid (alias => {\nBattleManager.selectPreviousCommand = function() {\nalias.apply(this, arguments);\nif (this._inputting && !this.actor())\nthis.changeCurrentActor(true);\n};\n})(BattleManager.selectPreviousCommand);\n// Patch - reset flag to false to block turn-0 party command.\nvoid (alias => {\nBattleManager.initMembers = function() {\nalias.apply(this, arguments);\nthis._tpbNeedsPartyCommand = false;\n};\n})(BattleManager.initMembers);\n// Override - in TPB-Wait mode, allow multiple actors to be charged at once.\nGame_Actor.prototype.shouldDelayTpbCharge = function() { return false; };\nAs for other plugins that might conflict with the plugin, I have a good number of them that I'm using. I did try to run your plugin alone to see if I had the same problem, and a different problem came up. After the last party member left, it froze and only showed the character's face at the bottom.\nClick to expand...\n(In future, please use the\n</>\ncode formatting button when posting code! Otherwise the forum is prone to auto-formatting it and malforming/breaking it.)\nHere's a link to the post where I shared this code:\nSkip Party Command\nI'm looking for a way to disable the party command in the battles. I'm using a plugin by Zevia called  SkipPartyMenu. The problem is that when the party command would normally come the game crashes with this error.\nforums.rpgmakerweb.com\nMaybe I'm missing something, but I just tested again and it seems to work OK for me. I tried playing a BGM on the map, entering battle via Battle Processing, then making everyone run away using a skill with an Escape effect on it. The battle ended as expected and the map BGM was reinstated. This test was successful with core script versions 1.9.0 and 1.10.0.\nThis makes sense to me, because by default my code only impacts things affecting player input. So I suspect it's conflicting with either another plugin or a core script edit, or there's something else you're doing (e.g. an unusual script call, a Parallel event that plays BGM, etc) that you haven't mentioned. Ideas:\nWith all plugins turned off in the Plugin Manager,\nsave your project\nto apply Plugin Manager changes before testing. Otherwise the changes will not be respected, because the editor does not maintain a temporary \"test\" version of\nplugins.js\n.\nFrom the editor's menu bar, choose\nGame -> Update Corescript\n. Pick a version and click OK. This should ensure your project is running on a clean (i.e. no edits) version of the core scripts.\nAs can be seen in the linked thread, this plugin of mine was specifically written for MZ's TPB system. If you've changed which battle system you're using, via the editor and/or plugins, you may well need a different plugin.\nOtherwise, consider providing precise instructions on how to reproduce the problem, starting with \"create a new project\"."
+    }
+  ]
+}

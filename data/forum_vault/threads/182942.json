@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-efficiently-control-all-self-switches-on-a-map.182942",
+  "title": "MZ How to efficiently control all self-switches on a map ?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T08:39:05.862085+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1551213",
+      "author": "Nearby",
+      "date": "2026-03-20T01:55:43+0900",
+      "body": "So when I'm making my reusable events disappear, I use an empty page with self-switch D turned on. I can't use erase because I want to control when they come back (preventing the player from leaving a house and re-entering to reset an event for example).\nNow the problem is when I do want to make them reappear, I have no idea how to go about it. Is there some way to tell the game to turn all D self-switches off for a certain map (not necessarily the one the player is in)  ? Alternatively, is there some way to tell the game to turn all D self-switches off, period ? Like all of them no matter the map.\nI know there's a script to turn self-switch X of event Y on map Z,and I really don't want to copy-paste it hundreds of times for every future event\nCompletely unrelated question ; anyone knows why my mouse click doesn't work after a cutscene ? I assume it has to do with me using move event commands, but when my cutscenes stop and the player should regain control, clicking somewhere doesn't work, while using wasd keys allows the player to move again (it also re-enables clicking)."
+    },
+    {
+      "post_id": "js-post-1551227",
+      "author": "Arcaines",
+      "date": "2026-03-20T03:48:01+0900",
+      "body": "So you can use a plugin or a script call to do this.\nbut if you want to use events, can use a normal switch called \"Reset events 1\"\nnow for the events that want the self switches to turn off, make a page, set the conditions to :\n\"Reset events 1\" on\nThen  parallel,\nSelf Switch A-D Off,\nWait 10\nSwitch \"Reset events 1\" off"
+    },
+    {
+      "post_id": "js-post-1551240",
+      "author": "rpgLord69",
+      "date": "2026-03-20T04:40:21+0900",
+      "body": "If you wanna change the self-switches of the events on a map you're currently on, it's:\n$gameMap.events().forEach(event => $gameSelfSwitches.setValue([$gameMap.mapId(), event.eventId(), \"D\"], true))"
+    },
+    {
+      "post_id": "js-post-1551241",
+      "author": "Eliaquim",
+      "date": "2026-03-20T04:41:31+0900",
+      "body": "Hi there!\nYou can use this script call:\nJavaScript:\n$gameMap.events().forEach(event => $gameSelfSwitches.setValue([$gameMap.mapId(), event.eventId(), \"D\"], false))\nThis will reset all Self Switches D of the current map, for all events.\nYou can replace $gameMap.mapId() with any map id you want.\nCan replace \"D\" with the self switch you want.\nSet false for disable and true for enable the switch.\nIf you want to do that for only some specific event ids:\nJavaScript:\n[1, 2, 3, 6, 7].forEach(id => $gameSelfSwitches.setValue([$gameMap.mapId(), id, \"D\"], false))\n- Here, you can replace $gameMap.mapId() with any map id you want.\nOr you can use my plugin that let you handle this with plugin commands:\nHakuen Studio Self Switches for RPG Maker MZ by Hakuen Studio\nAdd more self switches to events!\nhakuenstudio.itch.io"
+    },
+    {
+      "post_id": "js-post-1551262",
+      "author": "Nearby",
+      "date": "2026-03-20T07:26:04+0900",
+      "body": "Arcaines said:\nSo you can use a plugin or a script call to do this.\nbut if you want to use events, can use a normal switch called \"Reset events 1\"\nnow for the events that want the self switches to turn off, make a page, set the conditions to :\n\"Reset events 1\" on\nThen  parallel,\nSelf Switch A-D Off,\nWait 10\nSwitch \"Reset events 1\" off\nClick to expand...\nIf I'm understanding this correctly, I would need to repeatedly turn the switch back on, no ?\nLet's say I have one event A in a map, and one event B in a submap (like a house). If I turn the reset switch on, event A will turn off its self-switches, then turn the normal switch off, then event B will never turn off its self-switches. Meaning I would need to turn the switch on when entering the house, and at that point the whole system would work exactly like the erase command with exactly the same issue of reappearing when reloading a map. Right ?\nrpgLord69 said:\nIf you wanna change the self-switches of the events on a map you're currently on, it's:\n$gameMap.events().forEach(event => $gameSelfSwitches.setValue([$gameMap.mapId(), event.eventId(), \"D\"], true))\nClick to expand...\nIdeally, I want to change the self-switches of a map I'm not currently on, because the command being run on the same map feels like it will mess with the logic once the events reach their self-switch D again. If I run this command on parallel, then the events will all reappear by themselves when I don't want them to, and if I do that on a touch event then the player is able to force the events to respawn. Basically I want to reset everything on map B, C, D, from an event or script in map A, that way I can reset everything, send the player to B/C/D, and they won't be able to respawn anything until they're back on A.\nI guess I could nest that command in an event that immediately turns itself to page 2 through a self-switch A, and have a copy of it on every map, and I could manually turn every copy's self-switch A off when needed, that's still one command per map and I don't like having one extra event on every single map just for this, but I guess it's better than nothing\nEliaquim said:\nHi there!\nYou can use this script call:\nJavaScript:\n$gameMap.events().forEach(event => $gameSelfSwitches.setValue([$gameMap.mapId(), event.eventId(), \"D\"], false))\nThis will reset all Self Switches D of the current map, for all events.\nYou can replace $gameMap.mapId() with any map id you want.\nCan replace \"D\" with the self switch you want.\nSet false for disable and true for enable the switch.\nIf you want to do that for only some specific event ids:\nJavaScript:\n[1, 2, 3, 6, 7].forEach(id => $gameSelfSwitches.setValue([$gameMap.mapId(), id, \"D\"], false))\n- Here, you can replace $gameMap.mapId() with any map id you want.\nOr you can use my plugin that let you handle this with plugin commands:\nHakuen Studio Self Switches for RPG Maker MZ by Hakuen Studio\nAdd more self switches to events!\nhakuenstudio.itch.io\nClick to expand...\nThis plugin might be the closest to what I'm looking for, I'll test it for a bit"
+    }
+  ]
+}
