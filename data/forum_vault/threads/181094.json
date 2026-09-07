@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/making-plugin-active-only-while-control-input-is-pressed.181094",
+  "title": "MZ Making Plugin active only while control input is pressed",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:49:49.602265+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1537416",
+      "author": "chris-cote",
+      "date": "2025-11-20T03:19:57+0900",
+      "body": "Hi folks,\nI am using Galv's \"Stationary Turn\" plugin (\nhttps://galvs-scripts.com/2016/07/01/mv-stationary-turn/\n) in my MZ project via fossil. While the plugin works perfectly, it is only a benefit in some scenarios and a detriment in others.\nI'd like to make it so that the \"turn in place\" effect only happens while the player is holding down the Ctrl key. The two issues I am having however are:\n1.) I am not sure which part of this plugin to \"wrap\" in a condition without breaking it. And,\n2.) I want to check for the keymapper input \"control\", not a specific keyboard key, so that it works with rebinding, gamepad (by binding a button to \"control\") and also with multiple control keys being present.\nThe plugin itself seems pretty basic, so hopefully this is not too hard to do.\nThanks!"
+    },
+    {
+      "post_id": "js-post-1537419",
+      "author": "ShadowDragon",
+      "date": "2025-11-20T03:29:59+0900",
+      "body": "I use this for testing to make direction possible (but work on it)\nso it will be smoother and not fully tested:\nJavaScript:\nconst _GamePlayer_executeMove = Game_Player.prototype.executeMove;\n        Game_Player.prototype.executeMove = function(direction) {\n            if (Input.isPressed(\"shift\")) {\n                if (direction === Input.dir4) {\n                    this.setDirection(direction);\n                }\n            } else {\n                _GamePlayer_executeMove.apply(this, arguments);\n            }\n        };\nI don't know if executeMove exist in MZ, so you need to try to see if it works\nor not. (change input if needed).\nthis is made for MV but I need to test it more, so see if it works in MZ."
+    },
+    {
+      "post_id": "js-post-1537423",
+      "author": "caethyril",
+      "date": "2025-11-20T04:36:23+0900",
+      "body": "Completely untested, but based on a quick look at Galv's plugin you could try one of these options:\nEdit line 64 of Galv's plugin:\nJavaScript:\nif (this._turnPause > 0) {\n...to read:\nJavaScript:\nif (Input.isPressed(\"control\") && this._turnPause > 0) {\nAdd the following as a new plugin, loaded after Galv's:\nSpoiler:\nplugin code\nJavaScript:\n/*:\n * @target MV MZ\n * @plugindesc Extends Galv_StationaryTurn - apply only while button is held.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/181094/\n * @base Galv_StationaryTurn\n * @orderAfter Galv_StationaryTurn\n * @help Free to use and/or modify for any project, no credit required.\n * Load this plugin after Galv_StationaryTurn.\n */\n;void (function() {\n\"use strict\";\n\n  if (!(Imported && Imported.Galv_StationaryTurn))\n    throw new Error(\"This plugin must be loaded after Galv_StationaryTurn!\");\n\n  const BUTTON = \"control\";  // hold to enable Galv_StationaryTurn\n\n  const alias = Game_Player.prototype.moveStraight;\n  Game_Player.prototype.moveStraight = function() {\n    const v = Galv.STURN.delay;\n    if (!Input.isPressed(BUTTON))\n      Galv.STURN.delay = 0;        // delay is zero if button not held\n    alias.apply(this, arguments);  // process as usual\n    Galv.STURN.delay = v;          // reinstate proper delay value\n  };\n\n})();"
+    },
+    {
+      "post_id": "js-post-1537426",
+      "author": "chris-cote",
+      "date": "2025-11-20T06:03:11+0900",
+      "body": "caethyril said:\nCompletely untested, but based on a quick look at Galv's plugin you could try one of these options:\nEdit line 64 of Galv's plugin:\nJavaScript:\nif (this._turnPause > 0) {\n...to read:\nJavaScript:\nif (Input.isPressed(\"control\") && this._turnPause > 0) {\nAdd the following as a new plugin, loaded after Galv's:\nSpoiler:\nplugin code\nJavaScript:\n/*:\n* @target MV MZ\n* @plugindesc Extends Galv_StationaryTurn - apply only while button is held.\n* @author Caethyril\n* @url https://forums.rpgmakerweb.com/threads/181094/\n* @base Galv_StationaryTurn\n* @orderAfter Galv_StationaryTurn\n* @help Free to use and/or modify for any project, no credit required.\n* Load this plugin after Galv_StationaryTurn.\n*/\n;void (function() {\n\"use strict\";\n\n  if (!(Imported && Imported.Galv_StationaryTurn))\n    throw new Error(\"This plugin must be loaded after Galv_StationaryTurn!\");\n\n  const BUTTON = \"control\";  // hold to enable Galv_StationaryTurn\n\n  const alias = Game_Player.prototype.moveStraight;\n  Game_Player.prototype.moveStraight = function() {\n    const v = Galv.STURN.delay;\n    if (!Input.isPressed(BUTTON))\n      Galv.STURN.delay = 0;        // delay is zero if button not held\n    alias.apply(this, arguments);  // process as usual\n    Galv.STURN.delay = v;          // reinstate proper delay value\n  };\n\n})();\nClick to expand...\nAmazing! This worked perfectly.\nOne new issue though - I am just now realizing that ctrl+S is the screenshot shortcut for rpg maker mz, and my game uses WASD for movement. Is there a way to disable that (or change the shortcut)? Maybe something in the corescript?"
+    },
+    {
+      "post_id": "js-post-1537431",
+      "author": "Solar_Flare",
+      "date": "2025-11-20T06:56:38+0900",
+      "body": "chris-cote said:\nmy game uses WASD for movement\nClick to expand...\nI just have to wonder why you would do this. What's wrong with the arrow keys?\nchris-cote said:\nI am just now realizing that ctrl+S is the screenshot shortcut for rpg maker mz\nClick to expand...\nUm… no? There's no such thing as a \"screenshot shortcut\" in RPGMaker as far as I know, and I even just checked in my MZ project to make sure. I'd assume you have some plugin that's adding that."
+    },
+    {
+      "post_id": "js-post-1537436",
+      "author": "caethyril",
+      "date": "2025-11-20T07:22:51+0900",
+      "body": "Yea, my guess would be either a plugin or another app on your system, like a snipping tool or the Steam overlay. If it works in a new project with no plugins, then it's almost certainly external.\n(I think the practical reasoning behind WASD as opposed to arrow keys is ergonomics. Something about hand placement, strain of vertical vs horizontal movements, etc? Left-/right-handedness can also be important, e.g. if players want to move with keyboard but use mouse for menus.)"
+    },
+    {
+      "post_id": "js-post-1537443",
+      "author": "Solar_Flare",
+      "date": "2025-11-20T08:04:01+0900",
+      "body": "I think that can make sense for a game that requires simultaneous keyboard and mouse movement (unless you're left-handed), but... I don't think it makes much sense for a typical RPGMaker game where you use\neither\nkeyboard\nor\nmouse but not both. Though, I have no idea how typical this particular game is."
+    },
+    {
+      "post_id": "js-post-1537446",
+      "author": "chris-cote",
+      "date": "2025-11-20T08:30:13+0900",
+      "body": "Solar_Flare said:\nI think that can make sense for a game that requires simultaneous keyboard and mouse movement (unless you're left-handed), but... I don't think it makes much sense for a typical RPGMaker game where you use\neither\nkeyboard\nor\nmouse but not both. Though, I have no idea how typical this particular game is.\nClick to expand...\nWASD is the industry standard, so for releasing a game on steam it is basically a must (as well as re-bindable controls), or else you'll get some negative reviews for it. When I had only directional keys (default), it was easily the #1 source of negative feedback. RPG Maker players are used to using arrow keys and Z/X, but most players don't like having to adjust to this control scheme. For this reason, my game uses both a WASD and arrow key layout by default. The game also has custom mouse support (which it is also hard to release to steam without), so WASD makes even more sense now. The game is a fairly standard farming/life sim in terms of controls.\nSolar_Flare said:\nUm… no? There's no such thing as a \"screenshot shortcut\" in RPGMaker as far as I know, and I even just checked in my MZ project to make sure. I'd assume you have some plugin that's adding that.\nClick to expand...\ncaethyril said:\nYea, my guess would be either a plugin or another app on your system, like a snipping tool or the Steam overlay. If it works in a new project with no plugins, then it's almost certainly external.\n(I think the practical reasoning behind WASD as opposed to arrow keys is ergonomics. Something about hand placement, strain of vertical vs horizontal movements, etc? Left-/right-handedness can also be important, e.g. if players want to move with keyboard but use mouse for menus.)\nClick to expand...\nAhh, I had figured it was a default function. I guess I'll go hunting! Hopefully it will be something I can disable (though I suppose I can just always use a different key for the stationary turn if it becomes an issue).\nUPDATE: It turned out to be SRD HUD Maker Ultra. Everything is working now that the screenshot parameter is disabled.\nThanks again for all the help!"
+    },
+    {
+      "post_id": "js-post-1537448",
+      "author": "Solar_Flare",
+      "date": "2025-11-20T08:59:53+0900",
+      "body": "chris-cote said:\nWASD is the industry standard, so for releasing a game on steam it is basically a must (as well as re-bindable controls)\nClick to expand...\nWell, it's totally fine as long as you also have rebindable controls, I guess. Which RPGMaker doesn't have by default… but there are some plugins adding that (I have one in my other project; should probably actually import that into my current project too)."
+    }
+  ]
+}

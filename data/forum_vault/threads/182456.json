@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-do-i-make-a-picture-based-title-screen.182456",
+  "title": "How do I make a picture-based title screen?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-07T09:49:41.479242+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1547728",
+      "author": "thatenbypan",
+      "date": "2026-02-15T09:41:41+0900",
+      "body": "Basically what the title says. I'm trying to recreate something similar to this, but I've never done a picture-based menu before."
+    },
+    {
+      "post_id": "js-post-1547860",
+      "author": "DevRPG2k",
+      "date": "2026-02-16T11:28:12+0900",
+      "body": "If you don't have the basic knowledge to create a custom title, first take a look at this:\nCustom Title Screen in Rm2k3\nI am the question. :o  I post a lot of questions.  And thoughts.z  Though something I want to implement in a game is a  custom Title Screen, with \"Begin\" and \"Continue\" as selections.  Though I know to do this, requires Loops, Labels, Conditional Branches, Enter Password, Teleporting the player...\nforums.rpgmakerweb.com\nNow let's create the same thing as the link, but with Pictures.\nCreate an empty map, define the panorama with the graphic that would be the Title.\nOn the map, create a simple event in the corner, on the first page create the commands that will call the Pictures from the menus and the cursor position on the screen:\nCode:\n@> Comment: ***************** MENU *****************\n@> Show Picture: 11, 'Title00-NewGame', (64,216), 100%, 0%, M6\n@> Conditional Branch: Savestate is available\n  @> Show Picture: 12, 'Title01-LoadGame', (160,216), 100%, 0%, M6\n  @>\n : Else\n  @> Show Picture: 12, 'Title01-LoadGame', (160,216), 100%, 50%, M6\n  @>\n : Branch End\n@> Show Picture: 13, 'Title02-ExitGame', (256,216), 100%, 0%, M6\n@> Comment: ***************** CURSOR *****************\n@> Conditional Branch: Variable [0012:Option-Selected] == 0\n  @> Show Picture: 14, 'Title_Cursor', (64,216), 100%, 0%, M6\n  @>\n : Branch End\n@> Conditional Branch: Variable [0012:Option-Selected] == 1\n  @> Show Picture: 14, 'Title_Cursor', (160,216), 100%, 0%, M6\n  @>\n : Branch End\n@> Conditional Branch: Variable [0012:Option-Selected] == 2\n  @> Show Picture: 14, 'Title_Cursor', (256,216), 100%, 0%, M6\n  @>\n : Branch End\nThe second page should show the effect of each condition when using the confirmation key.\nNote that each sound effect is specific to its context, including whether or not there are save files in the game folder:\nCode:\n@> Comment: ***************** CHOICES *****************\n@> Conditional Branch: Variable [0012:Option-Selected] == 0\n  @> Play SE: 'Decision1', 100, 100, 50\n  @> Hide Screen: Default\n  @> Transfer Player: [0002:HERO'S HOUSE] (016,009), Left\n  @> Change Party Member: Add [Zack]\n  @> Show Screen: Default\n  @>\n : Branch End\n@> Conditional Branch: Variable [0012:Option-Selected] == 1\n  @> Conditional Branch: Savestate is available\n    @> Play SE: 'Decision1', 100, 100, 50\n    @> Open Load Menu\n    @>\n   : Else\n    @> Play SE: 'Buzzer4', 100, 100, 50\n    @>\n   : Branch End\n  @>\n : Branch End\n@> Conditional Branch: Variable [0012:Option-Selected] == 2\n  @> Play SE: 'Decision1', 100, 100, 50\n  @> Hide Screen: Default\n  @> Exit Game\n  @>\n : Branch End\nNow create the third page; this will be triggered by Parallel Process mode. It will automatically call up the previous pages when necessary to update the positions of the Pictures and upon confirming a decision:\nCode:\n@> Call Event: This Event[1]\n@> Key Input Processing: [0011:Menu-Kboard], Wait\n@> Comment: ***************** LEFT *****************\n@> Conditional Branch: Variable [0011:Menu-Kboard] == 2\n  @> Play SE: 'Cursor1', 100, 100, 50\n  @> Control Variables: [0012:Option-Selected] -= 1\n  @>\n : Branch End\n@> Comment: ***************** RIGHT *****************\n@> Conditional Branch: Variable [0011:Menu-Kboard] == 3\n  @> Play SE: 'Cursor1', 100, 100, 50\n  @> Control Variables: [0012:Option-Selected] += 1\n  @>\n : Branch End\n@> Comment: ***************** CONFIRM *****************\n@> Conditional Branch: Variable [0011:Menu-Kboard] == 5\n  @> Call Event: This Event[2]\n  @>\n : Branch End\n@> Comment: ******* ***************** ***************\n@> Conditional Branch: Variable [0012:Option-Selected] < 0\n  @> Control Variables: [0012:Option-Selected] = 2\n  @>\n : Branch End\n@> Conditional Branch: Variable [0012:Option-Selected] > 2\n  @> Control Variables: [0012:Option-Selected] = 0\n  @>\n : Branch End\nThe positions of the pictures are based on a simulation of the image you posted, but you will need to change this yourself using image editing software to identify the correct values.\nAttached are the images I created to test the menu; they can also serve as a template for you to create your own."
+    },
+    {
+      "post_id": "js-post-1554313",
+      "author": "thatenbypan",
+      "date": "2026-04-23T10:22:08+0900",
+      "body": "thank you!!! this works!!! sorry for not replying!!!!"
+    },
+    {
+      "post_id": "js-post-1554375",
+      "author": "hiddenone",
+      "date": "2026-04-24T01:36:07+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}
