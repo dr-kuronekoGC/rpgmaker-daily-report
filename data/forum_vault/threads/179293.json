@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-edit-a-little-bit-synrecs-item-discard-plugin.179293",
+  "title": "MV/MZ [SOLVED] Edit a little bit Synrec's Item Discard Plugin ..",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:51:28.178422+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524827",
+      "author": "TheRamenGirl",
+      "date": "2025-08-01T19:33:35+0900",
+      "body": "Hello! how's everyone? i hope good!\nSo i need some help.. i want to use this plugin\n(Synrec's Item Discard)\nbut when i click on empty space i don't want the menu to pop up..\ncan someone fix this? thanks!"
+    },
+    {
+      "post_id": "js-post-1524828",
+      "author": "ShadowDragon",
+      "date": "2025-08-01T19:39:43+0900",
+      "body": "I kinda disable the entire selection on my own,\nbut you can try to alter the start here as it does check\nitem in possession.\nCode:\n//change in start\nthis._maxItemCount = $gameParty.numItems(item);\n\n//to\nthis._maxItemCount = $gameParty.numItems(item) > 0;\n\n//or\n\nthis._maxItemCount = $gameParty.numItems(item)>= 1;\nsee if that works."
+    },
+    {
+      "post_id": "js-post-1524829",
+      "author": "TheRamenGirl",
+      "date": "2025-08-01T19:52:27+0900",
+      "body": "Wow that was a fast reply!\npls forgive my slow brain, where do i place this code?\ni save it as seperate plugin or i edit the main plugin placing it somewhere?\nthanks!"
+    },
+    {
+      "post_id": "js-post-1524831",
+      "author": "Aerosys",
+      "date": "2025-08-01T20:24:28+0900",
+      "body": "In my opinion, the author did a mistake in this code section:\nCode:\nScene_Item.prototype.modifyItemWindow = function(){\n    this._itemWindow.isCurrentItemEnabled = function(){\n        return true;\n    }\n}\nThis code means that you can open the menu on every item (which is correct), but ALSO when the item that you are clicking is blank (which is not correct, obviously).\nTry replacing this section with this:\nCode:\nScene_Item.prototype.modifyItemWindow = function(){\n    this._itemWindow.isCurrentItemEnabled = function(){\n        return !!this.item();\n    }\n}"
+    },
+    {
+      "post_id": "js-post-1524832",
+      "author": "TheRamenGirl",
+      "date": "2025-08-01T20:32:11+0900",
+      "body": "Works like a charm! Thanks both of you!!"
+    },
+    {
+      "post_id": "js-post-1524834",
+      "author": "ShadowDragon",
+      "date": "2025-08-01T20:57:39+0900",
+      "body": "I didn't know that, but you might be able to change this one too.\nJavaScript:\nWindow_DiscardCount.prototype.isCancelEnabled = function() {\n    return true;\n}\n\n//to (if working\n\nWindow_DiscardCount.prototype.isCancelEnabled = function() {\n    if (this.item()?.meta[\"avoid\"]) return false\n    return true;\n})\nyou can change \"avoid\" to avoid being discard if the item has any.\nelse, return true as if doesn't has any.\nbut unsure if that one works though as I use my own section.\nif there is a code to lock selection of the category to even select\nnon-item, it would be even better and cleaner that way I have.\nno items in the category in my case give a buzzer sound.\nso if the above work, you can forbid player to discard certain items\noutside key items =)"
+    },
+    {
+      "post_id": "js-post-1529312",
+      "author": "TheRamenGirl",
+      "date": "2025-09-08T22:15:18+0900",
+      "body": "Hello, can i have another request? When i use the \"no discard tag\"\nit leaves an empty spot on the menu that i don't want to be visible..\nCan someone edit it so when the item has the \"no discard\" tag there will be no empty spot\non the selection menu? Thanks!!"
+    },
+    {
+      "post_id": "js-post-1529429",
+      "author": "Aerosys",
+      "date": "2025-09-09T17:30:17+0900",
+      "body": "Unfortunately, changing the window's height dynamically depending on the number of commands is a bit tricky. It's probably easier when \"Discard\" is always shown, but as a disabled command.\nI also corrected a few other issues that appeared incorrect to me."
+    },
+    {
+      "post_id": "js-post-1529434",
+      "author": "TheRamenGirl",
+      "date": "2025-09-09T18:59:00+0900",
+      "body": "It's awesome! Thank you!"
+    },
+    {
+      "post_id": "js-post-1529468",
+      "author": "slimmmeiske2",
+      "date": "2025-09-10T02:20:39+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

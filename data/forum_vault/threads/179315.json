@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-make-a-game-keyboard-only.179315",
+  "title": "MZ how to make a game keyboard only",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:51:27.577566+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524966",
+      "author": "BirdLord",
+      "date": "2025-08-02T20:20:16+0900",
+      "body": "I don't want my game to rely on mouse control so I want to remove that, and also the main menu & the rest of the game should be controlled using keyboard keys. Is there a plugin that can do that?"
+    },
+    {
+      "post_id": "js-post-1524967",
+      "author": "ShadowDragon",
+      "date": "2025-08-02T20:35:29+0900",
+      "body": "the most simple way I think for MZ is to use this way (so far I can check)\nCode:\n@target MZ\n@help Remove Mouse Control\n\n(()=>{\n   ConfigManager.touchUI = false;\n})();\nI wrapped it inside a function, you can turn it false, and remove\nthat option inside the options menu, so noone could enable it.\nthere are work arounds, but you  make additions to force it to false\nif it ever comes true as well."
+    },
+    {
+      "post_id": "js-post-1524983",
+      "author": "KermexRPG",
+      "date": "2025-08-02T23:48:55+0900",
+      "body": "If you are planning to release your game commercially, be prepared for a wave of criticism and negative reviews due to the lack of mouse support. Just saying..."
+    },
+    {
+      "post_id": "js-post-1524986",
+      "author": "ShadowDragon",
+      "date": "2025-08-02T23:59:41+0900",
+      "body": "there are games that mouse can be in the way, but for menu's only,\nit would be wise to use that.\nso the destination sprite to move is the best way, keep menu navigation.\nI need to check how to do that, for MV it was easy, for MZ, its slightly\ndifferent, but that would be the best way though."
+    },
+    {
+      "post_id": "js-post-1524987",
+      "author": "Myahalna",
+      "date": "2025-08-03T00:04:46+0900",
+      "body": "I would avoid changing the default way of doing this and instead do a plug-in that does the modification. That way its easy to turn on and off. I agree with you though on mouse being a pain. My biggest frustration is the mouse clicking"
+    },
+    {
+      "post_id": "js-post-1524993",
+      "author": "caethyril",
+      "date": "2025-08-03T01:06:18+0900",
+      "body": "I would consider something like this:\nSpoiler:\nplugin code\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Disable all standard touch/mouse input.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/posts/1524993/\n * @help Free to use and/or modify for any project, no credit required.\n */\n// Patch - prevent top-level touch input state changes.\n;void (alias => {\n  TouchInput._createNewState = function() {\n    return Object.freeze(alias.apply(this, arguments));\n  };\n})(TouchInput._createNewState);\n\n// Patch - remove in-game Touch UI option.\n;void (alias => {\n  Scene_Options.prototype.maxCommands = function() {\n    return alias.apply(this, arguments) - 1;\n  };\n})(Scene_Options.prototype.maxCommands);\nvoid (alias => {\n  Window_Options.prototype.addCommand = function(name, symbol) {\n    if (symbol !== \"touchUI\")\n      alias.apply(this, arguments);\n  };\n})(Window_Options.prototype.addCommand);\n\n// Patch - Touch UI option is always false.\n;void (alias => {\n  ConfigManager.applyData = function(config) {\n    alias.apply(this, arguments);\n    this.touchUI = false;  // Ignore value from file, always false.\n  };\n})(ConfigManager.applyData);\nThis:\nForbids any change in touch state, e.g. pressed, released, cancelled. So whenever the touch input is checked, it will look like it does on game boot, i.e. no input.\nRemoves the Touch UI option in-game.\nEnsures the Touch UI option is always set to\nfalse\n(OFF).\n(\n@ShadowDragon\n's suggestion would only change the default value of the in-game option to\nfalse\n: a less-thorough version of my point 3.)"
+    },
+    {
+      "post_id": "js-post-1525004",
+      "author": "ShadowDragon",
+      "date": "2025-08-03T04:20:53+0900",
+      "body": "caethyril said:\nThis:\nForbids any change in touch state, e.g. pressed, released, cancelled. So whenever the touch input is checked, it will look like it does on game boot, i.e. no input.\nRemoves the Touch UI option in-game.\nEnsures the Touch UI option is always set to\nfalse\n(OFF).\nClick to expand...\nI took the quickest way which could work, but your way is far cleaner, as it\ntake everything, so it would be harder to change, and much safer as well,\nas I would go for this version, cleanest patch."
+    },
+    {
+      "post_id": "js-post-1525216",
+      "author": "BirdLord",
+      "date": "2025-08-04T18:55:44+0900",
+      "body": "caethyril said:\nI would consider something like this:\nSpoiler:\nplugin code\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Disable all standard touch/mouse input.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/posts/1524993/\n * @help Free to use and/or modify for any project, no credit required.\n */\n// Patch - prevent top-level touch input state changes.\n;void (alias => {\n  TouchInput._createNewState = function() {\n    return Object.freeze(alias.apply(this, arguments));\n  };\n})(TouchInput._createNewState);\n\n// Patch - remove in-game Touch UI option.\n;void (alias => {\n  Scene_Options.prototype.maxCommands = function() {\n    return alias.apply(this, arguments) - 1;\n  };\n})(Scene_Options.prototype.maxCommands);\nvoid (alias => {\n  Window_Options.prototype.addCommand = function(name, symbol) {\n    if (symbol !== \"touchUI\")\n      alias.apply(this, arguments);\n  };\n})(Window_Options.prototype.addCommand);\n\n// Patch - Touch UI option is always false.\n;void (alias => {\n  ConfigManager.applyData = function(config) {\n    alias.apply(this, arguments);\n    this.touchUI = false;  // Ignore value from file, always false.\n  };\n})(ConfigManager.applyData);\nThis:\nForbids any change in touch state, e.g. pressed, released, cancelled. So whenever the touch input is checked, it will look like it does on game boot, i.e. no input.\nRemoves the Touch UI option in-game.\nEnsures the Touch UI option is always set to\nfalse\n(OFF).\n(\n@ShadowDragon\n's suggestion would only change the default value of the in-game option to\nfalse\n: a less-thorough version of my point 3.)\nClick to expand...\nI see that its a script call (I'm new to the engine so I had to google it what this is) but I don't know how to import this code in my project, does anyone know how?"
+    },
+    {
+      "post_id": "js-post-1525219",
+      "author": "caethyril",
+      "date": "2025-08-04T19:48:24+0900",
+      "body": "No, it's a plugin: an extra script file that you select in the Plugin Manager, which loads after the core scripts. Plugins modify the game engine in certain ways, like disabling touch input.\nTo convert plaintext to a plugin:\nCopy + paste the code into a text editor (e.g. Notepad).\nFile > Save As:\nFile Type: All Files\nFilename: whatever\n.js\n(This works because .js files are plaintext.)\nImport that file as a plugin:\nPlace the file in your project's\njs/plugins\nsubfolder.\nIn RPG Maker, open the Plugin Manager via the Tools menu (or by pressing F10).\nDouble-click an empty row to add a new plugin.\nSelect the plugin and click OK.\nSave your project to apply Plugin Manager changes.\nTest!\nI've attached the code as a plugin file so you can skip steps 1 & 2 this time~"
+    },
+    {
+      "post_id": "js-post-1525240",
+      "author": "BirdLord",
+      "date": "2025-08-04T23:44:08+0900",
+      "body": "caethyril said:\nNo, it's a plugin: an extra script file that you select in the Plugin Manager, which loads after the core scripts. Plugins modify the game engine in certain ways, like disabling touch input.\nTo convert plaintext to a plugin:\nCopy + paste the code into a text editor (e.g. Notepad).\nFile > Save As:\nFile Type: All Files\nFilename: whatever\n.js\n(This works because .js files are plaintext.)\nImport that file as a plugin:\nPlace the file in your project's\njs/plugins\nsubfolder.\nIn RPG Maker, open the Plugin Manager via the Tools menu (or by pressing F10).\nDouble-click an empty row to add a new plugin.\nSelect the plugin and click OK.\nSave your project to apply Plugin Manager changes.\nTest!\nI've attached the code as a plugin file so you can skip steps 1 & 2 this time~\nClick to expand...\nthx this helped with importing the plugin and it works!"
+    }
+  ]
+}

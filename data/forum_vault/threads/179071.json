@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-could-i-set-up-a-skill-so-that-it-drains-hp.179071",
+  "title": "How could I set up a skill so that it drains HP?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:51:36.984173+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1523406",
+      "author": "wyrmoffastring",
+      "date": "2025-07-22T07:27:03+0900",
+      "body": "Basically, I want the skill to drain MP normally, but if the character doesn't have enough MP, to drain HP instead. Is there a way to do this?"
+    },
+    {
+      "post_id": "js-post-1523456",
+      "author": "NoNameWithoutAName",
+      "date": "2025-07-22T15:31:15+0900",
+      "body": "Absolutely!\nYou could do this by having the skill trigger a common event that contains a conditional statement comparing the value you're draining to the current MP of the caster. You'll need to assign/update variables ahead of time, to represent the caster's actor ID and their current MP in the conditional statement.\nPlugins such as\nYanfly Skill Core\n, which lets you control a lot of this stuff through note tags in the skills/actor databases, will make this much more efficient.\nIf you do use Yanfly's skill core plugin, I think I've got a script you can drop in the skill's notebox to set it up without needing any common events... but I don't know where it's at in my notes, and I've been away from RMMV for much too long to write it from memory with any amount of accuracy XD so that'll have to wait"
+    },
+    {
+      "post_id": "js-post-1523799",
+      "author": "wyrmoffastring",
+      "date": "2025-07-24T20:07:32+0900",
+      "body": "NoNameWithoutAName said:\nAbsolutely!\nYou could do this by having the skill trigger a common event that contains a conditional statement comparing the value you're draining to the current MP of the caster. You'll need to assign/update variables ahead of time, to represent the caster's actor ID and their current MP in the conditional statement.\nPlugins such as\nYanfly Skill Core\n, which lets you control a lot of this stuff through note tags in the skills/actor databases, will make this much more efficient.\nIf you do use Yanfly's skill core plugin, I think I've got a script you can drop in the skill's notebox to set it up without needing any common events... but I don't know where it's at in my notes, and I've been away from RMMV for much too long to write it from memory with any amount of accuracy XD so that'll have to wait\nClick to expand...\nThis is an RPG Maker MZ question, but I am assuming VisuStella has something similar, I just cannot find how to make it work.\nI try and make a skill use a common event that then either subtracts HP or MP depending on if the character has enough MP, but the common event doesn't do anything at all. Not sure why.\nEither way, thank you, because you mentioning Yanfly Skill Core made me realize I was looking at the wrong plugin altogether (Battle Core) when I should be looking at Skill Core. ^^''\nI also noticed I didn't put MZ as my engine since i upgraded last year >.>' I am getting forgetful in my 40s, damn..."
+    },
+    {
+      "post_id": "js-post-1523800",
+      "author": "NoNameWithoutAName",
+      "date": "2025-07-24T20:15:50+0900",
+      "body": "scurvyDan said:\nThis is an RPG Maker MZ question, but I am assuming VisuStella has something similar, I just cannot find how to make it work.\nI try and make a skill use a common event that then either subtracts HP or MP depending on if the character has enough MP, but the common event doesn't do anything at all. Not sure why.\nEither way, thank you, because you mentioning Yanfly Skill Core made me realize I was looking at the wrong plugin altogether (Battle Core) when I should be looking at Skill Core. ^^''\nI also noticed I didn't put MZ as my engine since i upgraded last year >.>' I am getting forgetful in my 40s, damn...\nClick to expand...\nNo worries XD\nI don't have experience with MZ and may not be very useful troubleshooting it, but if the event itself doesn't seem to be working, perhaps it might help others to see the problem if you shared screenshots of the event you're trying to run, and maybe the skills database (if you have anything in note tags or the skill tries to do anything other than call on a common event)\n*Oh, and also include information about any plugins you're currently using. Since you mentioned VisuStella, perhaps there's someone with knowledge about their plugins who can inform you on how to use it for this purpose or why it might not be functioning properly!"
+    },
+    {
+      "post_id": "js-post-1523801",
+      "author": "Robro33",
+      "date": "2025-07-24T20:20:28+0900",
+      "body": "scurvyDan said:\nThis is an RPG Maker MZ question\nClick to expand...\nJust as a note, if MZ is going to be the engine for your main project, change your primary engine to it too. You did correctly put the thread in the MZ section, sometimes people will see the primary engine and go from there.\nJust refreshed the page. I see you edited it in\nscurvyDan said:\nI try and make a skill use a common event that then either subtracts HP or MP depending on if the character has enough MP, but the common event doesn't do anything at all. Not sure why.\nClick to expand...\nYou would have to show us your common event for us to know.\nscurvyDan said:\nI am assuming VisuStella has something similar, I just cannot find how to make it work.\nClick to expand...\nTry this in your skill's notebox. It should just need the battle core\nCode:\n<JS Pre-Damage>\ntarget._prevMp = target.mp;\n</JS Pre-Damage>\n\n<JS Post-Damage>\nif (target._prevMp < value){\n  target.gainHp(target._prevMp - value);\n  user.gainHp(value - target._prevMp);\n}\n</JS Post-Damage>"
+    },
+    {
+      "post_id": "js-post-1523812",
+      "author": "wyrmoffastring",
+      "date": "2025-07-24T21:26:44+0900",
+      "body": "Robro33 said:\nCode:\n<JS Pre-Damage>\ntarget._prevMp = target.mp;\n</JS Pre-Damage>\n\n<JS Post-Damage>\nif (target._prevMp < value){\ntarget.gainHp(target._prevMp - value);\nuser.gainHp(value - target._prevMp);\n}\n</JS Post-Damage>\nClick to expand...\nThis sadly did nothing. I did ofc edit the values etc.\nThe thing I want to do is that, basically, any skill can be used with its MP cost. If the user's MP is below the cost, it will instead drain that amount in HP.\nI am not good with code, I am trying to figure it out, but all the descriptions online seem to me to require I have good knowledge of javascript. Which I do not have."
+    },
+    {
+      "post_id": "js-post-1523815",
+      "author": "Robro33",
+      "date": "2025-07-24T21:46:11+0900",
+      "body": "scurvyDan said:\nThe thing I want to do is that, basically, any skill can be used with its MP cost. If the user's MP is below the\ncost\n, it will instead drain that amount in HP.\nClick to expand...\nAh, now that's a different mechanic. When you said it drains MP and should drain HP if there's not enough MP, I believed you were using an MP Drain skill and you wanted the skill to drain the target's HP if they didn't have enough MP.\nFor costs, you can use this:\nCode:\n<JS MP Cost>\ncost = user.mp >= skill.mpCost ? skill.mpCost : 0;\n</JS MP Cost>\n<JS HP Cost>\ncost = user.mp >= skill.mpCost ? 0 : 500;\n</JS HP Cost>\nIf the battler can pay the MP cost, it's their MP cost. If they can't, the MP cost is waived and it'll have an HP cost instead. Change the 500 in the bottom one for whatever that HP cost should be."
+    },
+    {
+      "post_id": "js-post-1523819",
+      "author": "wyrmoffastring",
+      "date": "2025-07-24T22:04:20+0900",
+      "body": "Robro33 said:\nAh, now that's a different mechanic. When you said it drains MP and should drain HP if there's not enough MP, I believed you were using an MP Drain skill and you wanted the skill to drain the target's HP if they didn't have enough MP.\nFor costs, you can use this:\nCode:\n<JS MP Cost>\ncost = user.mp >= skill.mpCost ? skill.mpCost : 0;\n</JS MP Cost>\n<JS HP Cost>\ncost = user.mp >= skill.mpCost ? 0 : 500;\n</JS HP Cost>\nIf the battler can pay the MP cost, it's their MP cost. If they can't, the MP cost is waived and it'll have an HP cost instead. Change the 500 in the bottom one for whatever that HP cost should be.\nClick to expand...\nThis worked perfectly, thank you!!"
+    },
+    {
+      "post_id": "js-post-1523822",
+      "author": "bass2yang",
+      "date": "2025-07-24T22:13:26+0900",
+      "body": "I'd like to offer a solution for non VS users as well - make changes as needed:\nJavaScript:\n(($) => {\n    // Alias skill cost to allow overage to drain hp if mp is 0\n    const alias = $.paySkillCost;\n    $.paySkillCost = function(skill) {\n        const cost = this.skillMpCost(skill);\n        if (cost > this._mp) {\n            this._hp -= cost - this._mp;\n            this._mp = 0;\n            this._tp -= this.skillTpCost(skill);\n        } else {\n            alias.call(this, skill);\n        }\n    }\n    // rewrite condition to allow payment for skill based on hp and mp\n    $.canPaySkillCost = function(skill) {\n        const mpCost    = this.skillMpCost(skill);\n        const condition = this._tp >= this.skillTpCost(skill) &&\n            (this._mp >= mpCost || this._hp + this._mp >= mpCost);\n        return condition;\n    }\n})(Game_BattlerBase.prototype);\nThanks for double checking\n@rpgLord69\n- updated!"
+    },
+    {
+      "post_id": "js-post-1523824",
+      "author": "wyrmoffastring",
+      "date": "2025-07-24T22:28:01+0900",
+      "body": "bass2yang said:\nI'd like to offer a solution for non VS users as well - make changes as needed:\nJavaScript:\n(($) => {\n    // Alias skill cost to allow overage to drain hp if mp is 0\n    const alias = $.paySkillCost;\n    $.paySkillCost = function(skill) {\n        const cost = this.skillMpCost(skill);\n        if (cost > this._mp) {\n            const overage = (cost - this._mp);\n            this._hp -= overage;\n            this._mp -= cost;\n            this._tp -= this.skillTpCost(skill);\n        } else {\n            alias.call(this, skill);\n        }\n    }\n    // rewrite condition to allow payment for skill based on hp and mp\n    $.canPaySkillCost = function(skill) {\n        const mpCost    = this.skillMpCost(skill);\n        const condition = this._tp >= this.skillTpCost(skill) &&\n            (this._mp >= mpCost || this._hp + this._mp >= mpCost);\n        return condition;\n    }\n})(Game_BattlerBase.prototype);\nClick to expand...\nWould this be put into a common event script call? Or can I just put it into note tags without VS?"
+    },
+    {
+      "post_id": "js-post-1523826",
+      "author": "bass2yang",
+      "date": "2025-07-24T22:34:35+0900",
+      "body": "scurvyDan said:\nWould this be put into a common event script call? Or can I just put it into note tags without VS?\nClick to expand...\nMy apologies, this would be a separate plugin for your project. Save the code as a .js file (using your text document editor) and load it into your plugin manager."
+    },
+    {
+      "post_id": "js-post-1523827",
+      "author": "wyrmoffastring",
+      "date": "2025-07-24T22:35:41+0900",
+      "body": "bass2yang said:\nMy apologies, this would be a separate plugin for your project. Save the code as a .js file (using your text document editor) and load it into your plugin manager.\nClick to expand...\namazing, thank you, if I get frustrated with VS this will be very useful"
+    },
+    {
+      "post_id": "js-post-1523828",
+      "author": "rpgLord69",
+      "date": "2025-07-24T22:42:18+0900",
+      "body": "Note that the VS tags you were given it's either MP or HP (if you can't pay all MP) cost. Your plugin it's HP cost for the part that your actor can't pay as MP.\nEDIT: I think you should also edit that mp reduction, because if it's like that, the value can show a negative for a moment, before it updates to 0."
+    },
+    {
+      "post_id": "js-post-1523835",
+      "author": "wyrmoffastring",
+      "date": "2025-07-24T23:59:28+0900",
+      "body": "rpgLord69 said:\nNote that the VS tags you were given it's either MP or HP (if you can't pay all MP) cost. Your plugin it's HP cost for the part that your actor can't pay as MP.\nEDIT: I think you should also edit that mp reduction, because if it's like that, the value can show a negative for a moment, before it updates to 0.\nClick to expand...\nIt does indeed do that, yeah. As mentioned, I'm not good at coding at all and while I can kind of understand what's going on in the code, I'm not sure how I'd get about editing it."
+    },
+    {
+      "post_id": "js-post-1523839",
+      "author": "rpgLord69",
+      "date": "2025-07-25T00:22:13+0900",
+      "body": "I think it's like:\nthis._mp -= Math.min(cost, this._mp);\nEDIT: Actually, it already checks\nif (cost > this._mp)\n, so you can just set\nthis._mp = 0;"
+    },
+    {
+      "post_id": "js-post-1523840",
+      "author": "wyrmoffastring",
+      "date": "2025-07-25T00:26:31+0900",
+      "body": "Yup, that fixed it! Thank you so much!"
+    }
+  ]
+}

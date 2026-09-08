@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/distributing-rpg-maker-xp-games-with-custom-fonts.70656",
+  "title": "Distributing RPG Maker XP games with custom fonts",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker XP",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:51:24.996312+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-669858",
+      "author": "Zeriab",
+      "date": "2016-11-06T23:17:31+0900",
+      "body": "Distributing RPG Maker XP games with custom fonts\n​\nInstalling fonts is such a bother and requires admin privileges, so let us not do that\n​\nWhen developing our games it is very possible we want to use another font. This information is already present elsewhere, but as a quick reminder it can look like this.\nFont.default_name = \"Roboto\"\nFont.default_name = [\"Roboto\", \"Arial\"] # Fall back to Arial if Roboto does not exist\nWhat happens if\nRoboto\ndoes not exists?\nNo fallback\n- No text is drawn\nFallback\n- Text drawn in Arial instead.\nNeither case is acceptable if we really want Roboto to be the font used.\nLuckily we can use the\nAddFontResource\nfunction from GDI32.dll to load font resources. Unfortunately, in RMXP we cannot use fonts loaded through that call until the game is started anew. Should we load fonts in one game, and then run another game, that other game can use the fonts resources. I have encapsulated this functionality into a tool.\nNote: AddFontResource requires the font to exist on the file system. I.e. it cannot load fonts from encrypted archives.\nTool\nDownload:\nhttp://www.mediafire.com/file/6l9s59bef58eadx/Font+Launcher.zip\nDemo:\nhttp://www.mediafire.com/file/j6dkhqkpa4yyllr/Demo.zip\nOnce you unpack the zip file you will see the following elements:\nCopy those files into your own game directory.\nCopy the fonts you want into the Fonts folder, and use Launcher.exe. That's it.\nNote: I have included the RGSS104E.dll just for good measure, just in case you use another DLL version. Feel free to change the Launcher.ini file if you prefer to another version.\nHave renamed your Game.exe files? Edit the Launcher.ini file:\nCode:\n[Game]\nLibrary=RGSS104E.dll\nScripts=Data\\Scripts.rxdata\nTitle=Launcher\n\n[Launcher]\nGame=Game\nSay the name is \"Hello Steven.exe\" then change the Launcher.ini file to be:\nCode:\n[Game]\nLibrary=RGSS104E.dll\nScripts=Data\\Scripts.rxdata\nTitle=Launcher\n\n[Launcher]\nGame=Hello Steven\nRead priority\nAs you sure have noticed. We have an encrypted archive called Launcher.rgssad. To explain why this is important because encrypted archives have higher read priority than file system files. I don't mind showing the code:\nhttp://pastebin.com/8aw6CFcY\nThe name of the executable have functional meaning. Let us look at the sample game directory again:\nNote we have two executables here.\nGame.exe\nLauncher.exe\nIn our example both\nGame.ini\nand\nLauncher.ini\nhas\nScripts=Data\\Scripts.rxdata\n, yet they do not load the same Scripts.rxdata\nThe RGSS Player executable looks first for a Configuration settings file with the same name as itself and ending with .ini, next it looks for an RGSS Encrypted Archive file with the same name as itself and ending with .rgssad.\nIn other words you can say\nLauncher.exe is associated with Launcher.ini and Launcher.rgssad\nGame.exe is associated with Game.ini\nNext it tries to load the resource located at Data\\Scripts.rxdata. If it has an encrypted archive associated it searched that before the file system. So we end up with this loading sequence.\nYou can also encrypt the game just fine. Then you'll Game.exe try to load resources from Game.rgssad before the file system.\nLicense\nSpoiler\nCopyright (c) 2016 Zeriab\nThis software is provided 'as-is', without any express or implied\nwarranty. In no event will the authors be held liable for any damages\narising from the use of this software.\nPermission is granted to anyone to use this software for any purpose,\nincluding commercial applications, and to alter it and redistribute it\nfreely, subject to the following restrictions:\n1. The origin of this software must not be misrepresented; you must not\nclaim that you wrote the original software. If you use this software\nin a product, an acknowledgement in the product documentation would be\nappreciated but is not required.\n2. Altered source versions must be plainly marked as such, and must not be\nmisrepresented as being the original software.\n3. This notice may not be removed or altered from any source distribution.\nFinal notes\nWachunga has made a script which tries to actually install the fonts:\nhttps://github.com/wachunga/rmxp-auto-font-install\nThat script requires administrative privileges, actually install the fonts and cause changes to registration database.\nUsing my tool does not install anything and it requires no administrative privileges. On the downside it does runs two executables.\nLet me extend some thanks to Laura Shigihara. She is using a custom font for her upcoming game, Rakuen, and her request for help eventually turned into the tool and this topic.\nThank you for reading my tutorial.\nAny comments are appreciated.\nAdditional data about whether it works for your or not is appreciated.\n*hugs*\n- Zeriab"
+    },
+    {
+      "post_id": "js-post-670589",
+      "author": "Marquise*",
+      "date": "2016-11-08T18:47:51+0900",
+      "body": "I never settled my fonts even in Ace.  I guess this tutorial makes me a place to look at starter.  (Ack... actually 2 or 3 peoples asked me for fonts...  I never made one for computers.  *sigh*  yeah, I know... if I can make big monsters... I can do typical fonts... I hope!)\nWoah... even coming with a program!  I dunno how you should be thanks... wait... *HUGE CYBERMENTAL BEAR HUGS*"
+    },
+    {
+      "post_id": "js-post-670622",
+      "author": "Zeriab",
+      "date": "2016-11-08T21:22:29+0900",
+      "body": "Thank you. I love hugs <3\nFor Ace I believe you can just add the custom fonts to a Fonts folder and have them read automatically.\n*hugs*"
+    },
+    {
+      "post_id": "js-post-670636",
+      "author": "Marquise*",
+      "date": "2016-11-08T22:20:30+0900",
+      "body": "Woahhh...  I wasn't there yet, but then I got stuck on... *sigh* spriting!  (Fortunately I had the time to play with the systems graphics.)\nOne day, I will do it all!  (as long as I don't have any requests to do big MV monsters I can't refuse!  LOL)"
+    },
+    {
+      "post_id": "js-post-674519",
+      "author": "Zeriab",
+      "date": "2016-11-19T22:39:10+0900",
+      "body": "I have updated the links to point to a new version of the tool.\nPreviously I checked for *.ttf in a case-sensitive manner. I.e.\nHello Kitty.ttf\nwould be picked up, but not\nI am Mister Roboto.TTF\n.\nNow searches for *.ttf in a case-insensitive manner."
+    },
+    {
+      "post_id": "js-post-674556",
+      "author": "Legacy",
+      "date": "2016-11-20T01:01:55+0900",
+      "body": "Nice script Zeriab, it's good to see you still working on RMXP :3"
+    },
+    {
+      "post_id": "js-post-674700",
+      "author": "Marquise*",
+      "date": "2016-11-20T09:33:33+0900",
+      "body": "Hello Kitty, Mr Roboto LOL  I like the toutch!"
+    },
+    {
+      "post_id": "js-post-675134",
+      "author": "Zeriab",
+      "date": "2016-11-21T17:04:23+0900",
+      "body": "Thank you :3\nI still enjoy working with RMXP from time to time."
+    },
+    {
+      "post_id": "js-post-675298",
+      "author": "Marquise*",
+      "date": "2016-11-22T06:12:54+0900",
+      "body": "I understand... I miss my Amiga!"
+    },
+    {
+      "post_id": "js-post-781082",
+      "author": "Snufkin",
+      "date": "2017-10-05T11:56:03+0900",
+      "body": "Thanks"
+    },
+    {
+      "post_id": "js-post-924240",
+      "author": "Samno911",
+      "date": "2018-12-14T14:52:24+0900",
+      "body": "Some of the images on the page are broken, but I should be able to figure out how it all runs with some experimentation. I tried following the directions on the page, but my fonts still aren't visible. I am using a message script, but it actually has a demo that is able to switch fonts, so I don't think that is an issue. I used the launcher to open the game, but my fonts are still invisible. I am using a .ttf and i installed it for good measure, is there a specific way I need to call the font inside the game?"
+    },
+    {
+      "post_id": "js-post-1539777",
+      "author": "Garryg",
+      "date": "2025-12-08T21:06:22+0900",
+      "body": "Zeriab said:\nDistributing RPG Maker XP games with custom fonts\nInstalling fonts is such a bother and requires admin privileges, so let us not do that\n​\nWhen developing our games it is very possible we want to use another font. This information is already present elsewhere, but as a quick reminder it can look like this.\nFont.default_name = \"Roboto\"\nFont.default_name = [\"Roboto\", \"Arial\"] # Fall back to Arial if Roboto does not exist\nWhat happens if\nRoboto\ndoes not exists?\nNo fallback\n- No text is drawn\nFallback\n- Text drawn in Arial instead.\nNeither case is acceptable if we really want Roboto to be the font used.\nLuckily we can use the\nAddFontResource\nfunction from GDI32.dll to load font resources. Unfortunately, in RMXP we cannot use fonts loaded through that call until the game is started anew. Should we load fonts in one game, and then run another game, that other game can use the fonts resources. I have encapsulated this functionality into a tool.\nNote: AddFontResource requires the font to exist on the file system. I.e. it cannot load fonts from encrypted archives.\nTool\nDownload:\nhttp://www.mediafire.com/file/6l9s59bef58eadx/Font+Launcher.zip\nDemo:\nhttp://www.mediafire.com/file/j6dkhqkpa4yyllr/Demo.zip\nOnce you unpack the zip file you will see the following elements:\nCopy those files into your own game directory.\nCopy the fonts you want into the Fonts folder, and use Launcher.exe. That's it.\nNote: I have included the RGSS104E.dll just for good measure, just in case you use another DLL version. Feel free to change the Launcher.ini file if you prefer to another version.\nHave renamed your Game.exe files? Edit the Launcher.ini file:\nCode:\n[Game]\nLibrary=RGSS104E.dll\nScripts=Data\\Scripts.rxdata\nTitle=Launcher\n\n[Launcher]\nGame=Game\nSay the name is \"Hello Steven.exe\" then change the Launcher.ini file to be:\nCode:\n[Game]\nLibrary=RGSS104E.dll\nScripts=Data\\Scripts.rxdata\nTitle=Launcher\n\n[Launcher]\nGame=Hello Steven\nRead priority\nAs you sure have noticed. We have an encrypted archive called Launcher.rgssad. To explain why this is important because encrypted archives have higher read priority than file system files. I don't mind showing the code:\nThe name of the executable have functional meaning. Let us look at the sample game directory again:\nNote we have two executables here.\nGame.exe\nLauncher.exe\nIn our example both\nGame.ini\nand\nLauncher.ini\nhas\nScripts=Data\\Scripts.rxdata\n, yet they do not load the same Scripts.rxdata\nThe RGSS Player executable looks first for a Configuration settings file with the same name as itself and ending with .ini, next it looks for an RGSS Encrypted Archive file with the same name as itself and ending with .rgssad.\nIn other words you can say\nLauncher.exe is associated with Launcher.ini and Launcher.rgssad\nGame.exe is associated with Game.ini\nNext it tries to load the resource located at Data\\Scripts.rxdata. If it has an encrypted archive associated it searched that before the file system. So we end up with this loading sequence.\nYou can also encrypt the game just fine. Then you'll Game.exe try to load resources from Game.rgssad before the file system.\nLicense\nSpoiler\nCopyright (c) 2016 Zeriab\nThis software is provided 'as-is', without any express or implied\nwarranty. In no event will the authors be held liable for any damages\narising from the use of this software.\nPermission is granted to anyone to use this software for any purpose,\nincluding commercial applications, and to alter it and redistribute it\nfreely, subject to the following restrictions:\n1. The origin of this software must not be misrepresented; you must not\nclaim that you wrote the original software. If you use this software\nin a product, an acknowledgement in the product documentation would be\nappreciated but is not required.\n2. Altered source versions must be plainly marked as such, and must not be\nmisrepresented as being the original software.\n3. This notice may not be removed or altered from any source distribution.\nFinal notes\nWachunga has made a script which tries to actually install the fonts:\nhttps://github.com/wachunga/rmxp-auto-font-install\nThat script requires administrative privileges, actually install the fonts and cause changes to registration database.\nUsing my tool does not install anything and it requires no administrative privileges. On the downside it does runs two executables.\nLet me extend some thanks to Laura Shigihara. She is using a custom font for her upcoming game, Rakuen, and her request for help eventually turned into the tool and this topic.\nThank you for reading my tutorial.\nAny comments are appreciated.\nAdditional data about whether it works for your or not is appreciated.\n*hugs*\n- Zeriab\nClick to expand...\nI made a new approach to doing this using an existing PowerShell script. I also made a tutorial for it and added it to this forum. And it doesn't require any admin privileges.\nIt makes this whole process a lot easier and the setup is entirely contained within the Ruby Code and a PowerShell script stored in a subdirectory of the game directory. The added Font is dropped automatically when the games session ends. With no bother to the user at all.\nIt's worked well with a couple of games I made. The only thing is that the PS script needs to be run asynchronously from the RMXP Ruby 'Main' script otherwise RMXP gets a bit confused!"
+    }
+  ]
+}

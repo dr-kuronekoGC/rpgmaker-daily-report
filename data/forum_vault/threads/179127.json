@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/conditional-state-application-based-on-skill-user-rpg-maker-mv.179127",
+  "title": "MV Conditional state application based on skill user ( RPG Maker MV)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:51:37.287826+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1523745",
+      "author": "guihguih27",
+      "date": "2025-07-24T09:04:57+0900",
+      "body": "I'm trying to create a system where a certain skill only applies a state if it's used by a specific character (let's call them Character X). If the same skill is used by any other character, it should not apply that state.\nThe reason is that I'm designing a \"DoT-based\" character (focused on damage over time), but in my game, all skills are shared — no character has exclusive skills in their arsenal.\nIs there a way to conditionally apply a state based on the user of the skill in RPG Maker MV? I’d really appreciate any help or ideas — plugin-based or otherwise.\nThanks in advance!"
+    },
+    {
+      "post_id": "js-post-1523749",
+      "author": "Solar_Flare",
+      "date": "2025-07-24T09:43:28+0900",
+      "body": "I think you could probably do this with\nEffect Conditions\nfrom Himeworks.\nIt does make me wonder why you actually\nneed\nit to be the same skill though? It might be easier to just make two different versions of the same skill and restrict one to the specific character, while other characters only learn the other."
+    },
+    {
+      "post_id": "js-post-1523763",
+      "author": "Maliki79",
+      "date": "2025-07-24T11:50:30+0900",
+      "body": "Simple way to do it via the damage formula:\n1. Make skill.  Have it recover HP and add a state.\nThe HP part is just to open the damage formula to us.\n2. Add the state in the effects field but make it ONLY have a 0% chance to be added.\nAs it won't ever add the state, it doesn't matter what state it is.\n3. Put the actor specific info in the formula field:\nif(a.actorId == z) {b.addState(x)} else {b.addState(y) ;0\n(where z is the number actor ID you need as shown in the database and x and y are the state IDs you want added. 0 is the amount of healing you want, so if healing is part of the skill, add the formula there INSTEAD of the 0 but note the semicolon [;] )\nNote that this COULD have adverse affects if you use any auto control battlers.\nAlso note that this can't be used if enemies will use the skills as they don't have \"actorId\" data."
+    },
+    {
+      "post_id": "js-post-1523768",
+      "author": "Solar_Flare",
+      "date": "2025-07-24T14:09:03+0900",
+      "body": "Just a note: it should be\nactorId()\nrather than\nactorId\nin that formula."
+    }
+  ]
+}
