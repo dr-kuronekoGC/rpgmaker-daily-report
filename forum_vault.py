@@ -1,3 +1,4 @@
+import hashlib
 import json
 import re
 from datetime import datetime, timedelta
@@ -940,9 +941,9 @@ def get_thread_archive_path(url):
         thread_id = match.group(1)
 
     else:
-        thread_id = str(
-            abs(hash(normalized))
-        )
+        thread_id = hashlib.sha256(
+            normalized.encode("utf-8")
+        ).hexdigest()[:16]
 
     return THREADS_DIR / f"{thread_id}.json"
 
