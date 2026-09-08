@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-pushing-a-cart-along-a-track.178037",
+  "title": "MZ [Solved] Pushing a cart along a track",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:15.172173+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1516398",
+      "author": "MegaGothmog",
+      "date": "2025-05-31T02:34:04+0900",
+      "body": "I want to push a cart along a track.\nBut this track has curves and corners in it, so I can't just have it be pushed forward 3 times and call it a day.\nI would like to push the cart, lets say, 3 tiles forward, but if the track goes left, the cart follows it.\nHow would I go about doing this?"
+    },
+    {
+      "post_id": "js-post-1516399",
+      "author": "fizzly",
+      "date": "2025-05-31T02:36:55+0900",
+      "body": "Just use the movement route and set is as trail goes?"
+    },
+    {
+      "post_id": "js-post-1516403",
+      "author": "MegaGothmog",
+      "date": "2025-05-31T03:34:33+0900",
+      "body": "fizzly said:\nJust use the movement route and set is as trail goes?\nClick to expand...\nThat can work, but only when the cart is in a predetermined location, but I'd like a bit more freedom.\nWhat I'm looking for is when I push the cart 3 tiles forward.. it goes 3 tiles forward.\nBut if there is a bend in the track.. it follows that. But there won't be a bend or curve in the track each time I push.\nOn the picture. I can push the cart along the track according to a Movement Route.. sure.\nBut I want to be able to push the cart 1,2 or 3 tiles forward.\nAfter pushing it forward, I'll have to push it again, and again, until it reaches the end of the track, by having it automatically follow the track as it goes left or right.\nThen the Movement Route-method won't work anymore... as far as I know... since that one relies on a fixed origin-location.\nPlus I'd like there to be triggers along the way that only get triggered when the cart stops on that location... but that I should be able to do...I hope\nSorry, I should have been more clear"
+    },
+    {
+      "post_id": "js-post-1516413",
+      "author": "ShadowDragon",
+      "date": "2025-05-31T05:24:20+0900",
+      "body": "you can use a stopper or set an event, so you cannot push forward.\nso you can change page (so it can go left only or right).\nbetter way is to use region on the corner, if the event is on region 4.\nyou can only push left, if 2, only down etc.\nthere are multiple ways to achieve it, but choose the way you like."
+    },
+    {
+      "post_id": "js-post-1516415",
+      "author": "rpgLord69",
+      "date": "2025-05-31T05:34:48+0900",
+      "body": "If it always moves 3, you can just make predefined move routes, like save the position in a variable or something. If you can choose to move it different amounts, you could use 'get location info: tile id' event command to check where the rail tile is and make it move in that direction.\nEDIT: And yeah you need like conditionals so it doesn't check the tile that's behind it\nEDIT2: Yeah or use regions to restrict it, like said above. I just always want reasons to use those odd commands."
+    },
+    {
+      "post_id": "js-post-1516421",
+      "author": "MegaGothmog",
+      "date": "2025-05-31T06:15:07+0900",
+      "body": "I was indeed thinking about using a region tile on the corner.\nIt seems like that is the way to go\nThanks for the suggestions!"
+    },
+    {
+      "post_id": "js-post-1516423",
+      "author": "Andar",
+      "date": "2025-05-31T06:50:43+0900",
+      "body": "if you want full freedom of movement, one way to do this needs three or for different region numbers.\nbasically place the region numbers along the track with the number telling a direction.\nthen have the cart event use get location info to read the region ID, check it with several conditional branches and set different move routes depending on the region.\nthat will allow the cart to steer along the track no matter how it turns around."
+    },
+    {
+      "post_id": "js-post-1516441",
+      "author": "pawsplay",
+      "date": "2025-05-31T10:14:30+0900",
+      "body": "I think I would do this with passability. You can set a variable to three and get the location of the event. Then order the event to move. If it now finds itself on a different tile, decrement it by 1. Otherwise, try moving to the left. If that doesn't work, try the right. Then start the routine over again, until the counter reaches 0."
+    },
+    {
+      "post_id": "js-post-1517157",
+      "author": "fizzly",
+      "date": "2025-06-06T18:31:16+0900",
+      "body": "Hey,\n@Axgin96\ncrated a easy solution for you I think\nMinecart Ride – Automatic minecart movement using Region ID\nMINECART RIDE v1.0 by axgin96   Hi everyone! I’m axgin96 — not a professional developer, just a passionate RPG Maker user who enjoys building little tools to make development easier and more fun. Minecart Ride (KartRide.js) is my first plugin for RPG Maker MZ, created to simplify minecart...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1517165",
+      "author": "Axgin96",
+      "date": "2025-06-06T19:27:33+0900",
+      "body": "Thanks\n@fizzly\nfor the mention!\nI’ve created a plugin that allows minecarts (or any other event) to move along a predefined route, drawn using\nRegion ID 7\n(which you can change via script if needed).\nHow it works:​\nJust use this in a\nScript Call\n:\nKartRide.toggle(eventId, [x1, y1], [x2, y2]);\neventId: the event ID of the cart. Only one event is needed—it disappears at the starting point and reappears at the destination.\n[x1, y1]: coordinates of the first endpoint\n[x2, y2]: coordinates of the second endpoint\nYou can download the plugin here:\nhttps://axgin96.itch.io/minecart-ride\nHow to use it:​\nDraw the route using\nRegion ID 7\nbetween the two points you want the cart to travel.\nThis event is designed so the\nplayer can ride the cart\nalong the defined path.\nTips:​\nSince the cart event is automatically\nmoved and hidden\nat departure, and then reappears at the destination, I recommend:\nActivating a\nSelf Switch\nwhen the player interacts with the cart.\nCreating a\nsecond event page\nwith no image, triggered by that Self Switch.\nOnce the ride ends,\nturn off the Self Switch\nso the cart reappears in the final position.\nIf you have\nfollowers enabled\n, it might be a good idea to\ntemporarily hide them\nduring the ride. Otherwise, they’ll try to follow the player on foot, which can break immersion.\nI’m not a pro developer, but I’m working to polish and optimize the plugin as much as I can.\nAny feedback or suggestions are always welcome!\nfizzly said:\nHey,\n@Axgin96\ncrated a easy solution for you I think\nMinecart Ride – Automatic minecart movement using Region ID\nMINECART RIDE v1.0 by axgin96   Hi everyone! I’m axgin96 — not a professional developer, just a passionate RPG Maker user who enjoys building little tools to make development easier and more fun. Minecart Ride (KartRide.js) is my first plugin for RPG Maker MZ, created to simplify minecart...\nforums.rpgmakerweb.com\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1517178",
+      "author": "MegaGothmog",
+      "date": "2025-06-06T22:48:15+0900",
+      "body": "Axgin96 said:\nThanks\n@fizzly\nfor the mention!\nI’ve created a plugin that allows minecarts (or any other event) to move along a predefined route, drawn using\nRegion ID 7\n(which you can change via script if needed).\nHow it works:​\nJust use this in a\nScript Call\n:\nKartRide.toggle(eventId, [x1, y1], [x2, y2]);\neventId: the event ID of the cart. Only one event is needed—it disappears at the starting point and reappears at the destination.\n[x1, y1]: coordinates of the first endpoint\n[x2, y2]: coordinates of the second endpoint\nYou can download the plugin here:\nhttps://axgin96.itch.io/minecart-ride\nHow to use it:​\nDraw the route using\nRegion ID 7\nbetween the two points you want the cart to travel.\nThis event is designed so the\nplayer can ride the cart\nalong the defined path.\nTips:​\nSince the cart event is automatically\nmoved and hidden\nat departure, and then reappears at the destination, I recommend:\nActivating a\nSelf Switch\nwhen the player interacts with the cart.\nCreating a\nsecond event page\nwith no image, triggered by that Self Switch.\nOnce the ride ends,\nturn off the Self Switch\nso the cart reappears in the final position.\nIf you have\nfollowers enabled\n, it might be a good idea to\ntemporarily hide them\nduring the ride. Otherwise, they’ll try to follow the player on foot, which can break immersion.\nI’m not a pro developer, but I’m working to polish and optimize the plugin as much as I can.\nAny feedback or suggestions are always welcome!\nClick to expand...\nThat is a really nice plugin that I am 100% sure will be useful.\nThank you very much for making it.\nFor now I already got it working with region IDs and parallel events, but I'll save this one for future reference."
+    },
+    {
+      "post_id": "js-post-1517184",
+      "author": "Axgin96",
+      "date": "2025-06-06T23:01:55+0900",
+      "body": "MegaGothmog said:\nThat is a really nice plugin that I am 100% sure will be useful.\nThank you very much for making it.\nFor now I already got it working with region IDs and parallel events, but I'll save this one for future reference.\nClick to expand...\nAwesome! I'm glad you got your carts working! Before I made the plugin, I was hoping it would be way easier to get them moving haha.\nHappy game dev!"
+    },
+    {
+      "post_id": "js-post-1517321",
+      "author": "Ms Littlefish",
+      "date": "2025-06-07T19:57:39+0900",
+      "body": "This thread is closed due to being marked solved. If you need it reopened, report it to let us know.\nThe report button can be found at the bottom of your posts and will put your thread directly in our queue to let us know you need assistance. Thank you!"
+    }
+  ]
+}

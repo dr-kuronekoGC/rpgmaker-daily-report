@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/moghunters-menu-plugin-moving-the-names-of-characters.178184",
+  "title": "MV Moghunter's Menu Plugin- moving the names of characters",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:32.292003+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1517445",
+      "author": "Glaiveworks",
+      "date": "2025-06-08T14:13:14+0900",
+      "body": "So at the moment, i really like my retro-esk menu that i made with Moghunter's menu plugin, although there's one small issue.\nI can't find where/what i need to change in the JS to move the names of the characters over so they are on top of the boxes in the picture bellow.\nAnd after i tried looking at the code, i believe the image below is the spot i'm looking for(As it's the only 1 of 2 lines that says \"ActorName\")-but i'm not entirely sure what to do here, i also tried to change some of the numbers but i haven't noticed any changes when i adjust them.\nAny help is appreciated!"
+    },
+    {
+      "post_id": "js-post-1517466",
+      "author": "Ms Littlefish",
+      "date": "2025-06-08T19:27:19+0900",
+      "body": "This thread was moved from RPG Maker MV Support to Javascript/Plugin Support."
+    },
+    {
+      "post_id": "js-post-1517486",
+      "author": "bass2yang",
+      "date": "2025-06-08T21:17:53+0900",
+      "body": "Heavensglaivedev said:\nSo at the moment, i really like my retro-esk menu that i made with Moghunter's menu plugin, although there's one small issue.\nI can't find where/what i need to change in the JS to move the names of the characters over so they are on top of the boxes in the picture bellow.\nView attachment 342425\nAnd after i tried looking at the code, i believe the image below is the spot i'm looking for(As it's the only 1 of 2 lines that says \"ActorName\")-but i'm not entirely sure what to do here, i also tried to change some of the numbers but i haven't noticed any changes when i adjust them.\nView attachment 342430\nAny help is appreciated!\nClick to expand...\nGo to your PluginManager and open up mog's plugin. On the right side, loo for the parameter named \"Com Name X-Axis\". Change that value to a lower number and it should fix its placement. The name is centered so find a value that fits the screen best."
+    },
+    {
+      "post_id": "js-post-1517539",
+      "author": "Glaiveworks",
+      "date": "2025-06-09T01:47:55+0900",
+      "body": "bass2yang said:\nGo to your PluginManager and open up mog's plugin. On the right side, loo for the parameter named \"Com Name X-Axis\". Change that value to a lower number and it should fix its placement. The name is centered so find a value that fits the screen best.\nClick to expand...\nthat parameter is for something else-\nThe command name adds a 2nd name for the option you are hovering in the menu, i had it disabled previously since i didn't want that little floating part.\nSome of the more specific things you want to change in this plugin, you have to do in the actual javascript file itself, like the menu options there on the left, by default they are horizontal."
+    },
+    {
+      "post_id": "js-post-1517545",
+      "author": "bass2yang",
+      "date": "2025-06-09T02:34:47+0900",
+      "body": "Heavensglaivedev said:\nthat parameter is for something else-\nView attachment 342457\nThe command name adds a 2nd name for the option you are hovering in the menu, i had it disabled previously since i didn't want that little floating part.\nSome of the more specific things you want to change in this plugin, you have to do in the actual javascript file itself, like the menu options there on the left, by default they are horizontal.\nClick to expand...\nIt must be this then? You are talking about the names being offset, correct?\nSorry - I was only going off of what you referenced which was the com name, not the actor name in the menu:\nJavaScript:\nMCharStatus.prototype.createName = function() {\n    this._name = new Sprite(new Bitmap(120,32));\n    this._name.x = this._layout.x + Moghunter.scMenu_NameX;\n    this._name.y = this._layout.y + Moghunter.scMenu_NameY;\n    this._name.bitmap.fontSize = Moghunter.scMenu_NameFontSize;\n    this._name.bitmap.drawText(this._actor.name(),0,0,120,32,\"center\");\n    this.addChild(this._name);\n \n};\nThere isn't a parameter for it so you can edit the values for this._name.x (around line 1067). I can test later when I get home and possibly add a few edits needed for it.\nEdit: you could start by changing line 216 - the optional value is 20, I changed it to -20 (set it to what you want):\nJavaScript:\nMoghunter.scMenu_NameX = Number(Moghunter.parameters['Name X-Axis'] || -20);\nEdit of Edit: I would use the devtools to see where it needs to be first before making a final decision. Here is an example:"
+    },
+    {
+      "post_id": "js-post-1517569",
+      "author": "Glaiveworks",
+      "date": "2025-06-09T06:24:10+0900",
+      "body": "bass2yang said:\nIt must be this then? You are talking about the names being offset, correct?\nSorry - I was only going off of what you referenced which was the com name, not the actor name in the menu:\nJavaScript:\nMCharStatus.prototype.createName = function() {\n    this._name = new Sprite(new Bitmap(120,32));\n    this._name.x = this._layout.x + Moghunter.scMenu_NameX;\n    this._name.y = this._layout.y + Moghunter.scMenu_NameY;\n    this._name.bitmap.fontSize = Moghunter.scMenu_NameFontSize;\n    this._name.bitmap.drawText(this._actor.name(),0,0,120,32,\"center\");\n    this.addChild(this._name);\n \n};\nThere isn't a parameter for it so you can edit the values for this._name.x (around line 1067). I can test later when I get home and possibly add a few edits needed for it.\nEdit: you could start by changing line 216 - the optional value is 20, I changed it to -20 (set it to what you want):\nJavaScript:\nMoghunter.scMenu_NameX = Number(Moghunter.parameters['Name X-Axis'] || -20);\nEdit of Edit: I would use the devtools to see where it needs to be first before making a final decision. Here is an example:\nClick to expand...\nPerfect, just what i needed thank you!\ni decided to change the value to -30 / 3 and it centered them really nicely!\nthank you again for the help, i would've been stuck on this for a week without it!"
+    },
+    {
+      "post_id": "js-post-1517652",
+      "author": "Ms Littlefish",
+      "date": "2025-06-09T21:38:38+0900",
+      "body": "This thread is closed due to being reported as solved. If you need it reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

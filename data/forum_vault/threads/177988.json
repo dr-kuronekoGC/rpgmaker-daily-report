@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/script-to-change-variable-when-user-has-skill-solved.177988",
+  "title": "MZ Script to change variable when user has skill *SOLVED*",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:20.651734+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1516133",
+      "author": "JoeBumpster",
+      "date": "2025-05-29T04:41:01+0900",
+      "body": "Hello!\nI've spent a lot of time trying to figure out how to execute this within the formula of an attack skill:\n\" (If user of skill has specific skill, set specific variable to specific number) (*insert attack formula*) \"\nI have checked this\nscript list\nand have gone through forum posts\nlike this one\n, and the best I've been able to come up with is:\nif ($gameActors.actor($gameParty._targetActorId).skills().contains($dataSkills[43,44]) then $gameVariables.setValue(13, 1); 5 - b.def * 2\nI understand the syntax is completely wrong with this, but I'm java illiterate (I pay for it every day I work on this lol).\nAny help with this would be greatly appreciated. I initially had a web of common events meant to solve this issue, but after testing it for a while, a couple holes cropped up that cannot be fixed by non-script means. Its unfortunate.\nThank you all."
+    },
+    {
+      "post_id": "js-post-1516135",
+      "author": "bass2yang",
+      "date": "2025-05-29T04:59:26+0900",
+      "body": "JavaScript:\n[43, 44].every(id => a.hasSkill(id)) ? (v[13] = 1, 5 - b.def * 2) : otherAttackFormula\nReplace otherAttackFormula with your own formula.\nExample:\nJavaScript:\n[43, 44].every(id => a.hasSkill(id)) ? (v[13] = 1, a.atk * 5 - b.def * 2) : a.atk - b.def\nAlso, your current attack formula doesn't factor in any attack value from the user so '5 minus double the defense of the enemy' might be too much, making it return 0 or something below that instead.\nChanges as needed to fit what you want."
+    },
+    {
+      "post_id": "js-post-1516136",
+      "author": "JoeBumpster",
+      "date": "2025-05-29T05:19:26+0900",
+      "body": "bass2yang said:\nJavaScript:\n[43, 44].every(id => a.hasSkill(id)) ? (v[13] = 1, 5 - b.def * 2) : otherAttackFormula\nReplace otherAttackFormula with your own formula.\nExample:\nJavaScript:\n[43, 44].every(id => a.hasSkill(id)) ? (v[13] = 1, a.atk * 5 - b.def * 2) : a.atk - b.def\nAlso, your current attack formula doesn't factor in any attack value from the user so '5 minus double the defense of the enemy' might be too much, making it return 0 or something below that instead.\nChanges as needed to fit what you want.\nClick to expand...\nah Thank you!\nI should've clarified in the original post; The variable I'm trying to change isn't related to damage. I'm using the variable to identify the skill used for a common event.\nWould the formula work if I used it like this?:\n[43, 44].every(id => a.hasSkill(id)) ? (v[13] = 1) : a.atk - b.def\nAlso, would I have to change 'id' with the specific id of an actor or would it work with any actor that uses the skill?\nSorry if that question is obvious, I don't really know what I'm doing with scripting.\nThank you, I appreciate your time with this!"
+    },
+    {
+      "post_id": "js-post-1516141",
+      "author": "bass2yang",
+      "date": "2025-05-29T05:58:39+0900",
+      "body": "The 'a' here refers to the user. In order to use a different actor, you will have to write it out with $gameActor.actor(2) or whatever number for the specific actor. The 'b' refers to the target.\nThe 'id' here is the parameter that refers to the ids you used for the skill (43 and 44).\n'v[#]' is the shorthand allowed inside the damage formula to refer to the data inside the game variable; in this case, we are referring to variable 13.\nIt can actually be this based on what you are saying:\nJavaScript:\nif ([43, 44].every(id => a.hasSkill(id))) v[13] = 1; a.atk - b.def"
+    },
+    {
+      "post_id": "js-post-1516147",
+      "author": "JoeBumpster",
+      "date": "2025-05-29T07:01:33+0900",
+      "body": "bass2yang said:\nThe 'a' here refers to the user. In order to use a different actor, you will have to write it out with $gameActor.actor(2) or whatever number for the specific actor. The 'b' refers to the target.\nThe 'id' here is the parameter that refers to the ids you used for the skill (43 and 44).\n'v[#]' is the shorthand allowed inside the damage formula to refer to the data inside the game variable; in this case, we are referring to variable 13.\nIt can actually be this based on what you are saying:\nJavaScript:\nif ([43, 44].every(id => a.hasSkill(id))) v[13] = 1; a.atk - b.def\nClick to expand...\nI see, thank you for the clarification.\nI plugged the new script into the attack and It nearly works how I need it! This is what I got now:\nif ([43, 44].every(id => a.hasSkill(44))) v[20] = 1; a.atk - b.def\nI changed the variable ID to a new one just to test. I have the attack running a common event which displays the variable set in the formula. With this formula, it will fully work if the actor has skill #44. However, I need it to where it works if the user has 44\nor\n43.\nI tried modifying it to this:\nif ([43, 44].every(id => a.hasSkill(43,44))) v[20] = 1; a.atk - b.def\nBut doing this ends up requiring both skills I believe. Is there a way to have the variable trigger whether they have 43 or 44? Also, did I place the variable number in the correct spot? that may be the problem.\nThank you!"
+    },
+    {
+      "post_id": "js-post-1516148",
+      "author": "Robro33",
+      "date": "2025-05-29T07:17:25+0900",
+      "body": "JoeBumpster said:\nIs there a way to have the variable trigger whether they have 43 or 44?\nClick to expand...\nuse Array.some() instead of Array.every()"
+    },
+    {
+      "post_id": "js-post-1516149",
+      "author": "JoeBumpster",
+      "date": "2025-05-29T07:33:57+0900",
+      "body": "Robro33 said:\nuse Array.some() instead of Array.every()\nClick to expand...\nif ([43, 44].some(id => a.hasSkill(id))) v[20] = 1; a.atk - b.def\nThank you! this worked"
+    },
+    {
+      "post_id": "js-post-1516150",
+      "author": "Robro33",
+      "date": "2025-05-29T07:48:08+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

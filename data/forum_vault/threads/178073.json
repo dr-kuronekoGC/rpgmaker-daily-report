@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/check-the-existence-of-image-file-solved.178073",
+  "title": "MZ Check the existence of image file [Solved]",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:18.567277+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1516666",
+      "author": "Herr_jaeger",
+      "date": "2025-06-02T07:45:54+0900",
+      "body": "Greetings, I tried to make a system where it will show a picture based on the current mapID and also don't show the picture if the there's no picture file based on a said mapID exist. Here's the code.\nJavaScript:\nvar MapDisplay = MapDisplay || {};\n\nMapDisplay.showMap = function() {\n\n    // Retrieve the current map's ID.\n    const mapId = $gameMap.mapId();\n    // Retrieve map images path\n    const imgPath = \"Maps/\";\n    //Combine the path and name file\n    const fullPath = imgPath + mapId;\n    const MapID_pngformat = mapId+\".png\";\n    \n\n    \n\n    // Set up the parameters for displaying the picture\n    const pictureId = 10;       \n    const origin = 1;         \n    const x = 512;             \n    const y = 256;             \n    const scaleX = 100;       \n    const scaleY = 100;       \n    const opacity = 255;       \n    const blendMode = 0;       \n\n    \n\n\npictureExists = function(MapID_pngformat) {\n    const fs = require (\"fs\");\n    return fs.existsSync(\"./img/pictures/Maps\" + MapID_pngformat);\n};\n\n\n\n\n    if(pictureExists){\n        //If the image file exist then show it.\n    $gameScreen.showPicture(pictureId, fullPath, origin, x, y, scaleX, scaleY, opacity, blendMode);\n    }else{\n        //Otherwise call a common event\n        $gameTemp.reserveCommonEvent(159);\n    }\n\n\n\n};\nMy biggest struggle is with how to actually detect the said image files. I've been scouring through the forum and so far, there's no good and consistent solution for RPG Maker MZ.\nThanks in advance!"
+    },
+    {
+      "post_id": "js-post-1516673",
+      "author": "LTN Games",
+      "date": "2025-06-02T08:41:40+0900",
+      "body": "Your\npictureExists\nfunction looks fine, although you should really add a\nconst, let or var\nkeyword when declaring it. However in your conditional statement you're not calling the function, it should have closing parenthesis after the name, like so.\nJavaScript:\nif(pictureExists(/*mapId*/)){\n     //If the image file exist then show it.\n}}\nanother thing to take not on is that this will only work for desktop builds of your game, this will not work for browser deployments."
+    },
+    {
+      "post_id": "js-post-1516680",
+      "author": "Herr_jaeger",
+      "date": "2025-06-02T11:04:03+0900",
+      "body": "LTN Games said:\nYour\npictureExists\nfunction looks fine, although you should really add a\nconst, let or var\nkeyword when declaring it. However in your conditional statement you're not calling the function, it should have closing parenthesis after the name, like so.\nJavaScript:\nif(pictureExists(/*mapId*/)){\n     //If the image file exist then show it.\n}}\nanother thing to take not on is that this will only work for desktop builds of your game, this will not work for browser deployments.\nClick to expand...\nAfter some tweaking based on your feedback, the code is working like a charm. Thank you so much.\nI'll just share the code in case anyone have encountered this issue.\nJavaScript:\nMapDisplay.showMap = function() {\n\n    let IsThereAMapPicture;\n\n    // Retrieve the current map's ID.\n    const mapId = $gameMap.mapId();\n    // Retrieve map images path\n    const imgPath = \"Maps/\";\n    //Combine the path and name file\n    const fullPath = imgPath + mapId;\n    const MapID_pngformat = mapId+\".png\";\n   \n\n   \n\n    // Set up the parameters for displaying the picture\n    const pictureId = 10;      \n    const origin = 1;        \n    const x = 512;            \n    const y = 256;            \n    const scaleX = 100;      \n    const scaleY = 100;      \n    const opacity = 255;      \n    const blendMode = 0;      \n\n   \n\n\nlet pictureExists = function(MapID_pngformat) {\n    const fs = require (\"fs\");\n    return fs.existsSync(\"./img/pictures/Maps/\" + MapID_pngformat);\n};\n\n    if(pictureExists(MapID_pngformat)){\n        //If the image file exist then show it.\n    $gameScreen.showPicture(pictureId, fullPath, origin, x, y, scaleX, scaleY, opacity, blendMode);\n    }else{\n        //Otherwise call a common event\n        $gameTemp.reserveCommonEvent(159);\n    }\n\n};\nanother thing to take not on is that this will only work for desktop builds of your game, this will not work for browser deployments.\nClick to expand...\nIf you don't mind. How one should approach it for browser build? And is this method works for like mobile build?\nOnce again, thanks."
+    },
+    {
+      "post_id": "js-post-1516683",
+      "author": "Solar_Flare",
+      "date": "2025-06-02T11:17:01+0900",
+      "body": "For browser builds, I think you'd need to use\nXMLHttpRequest\nand handle a 404 response. This also means you wouldn't be able to do the check synchronously like you're doing in your code."
+    },
+    {
+      "post_id": "js-post-1516699",
+      "author": "utunnels",
+      "date": "2025-06-02T12:51:00+0900",
+      "body": "JavaScript:\nfunction UrlExists(url) {\n  var http = new XMLHttpRequest();\n  try{\n    http.open('HEAD', url, false);\n    http.send();\n    return http.status!=404;\n  }catch(ex){return false;}\n}\nThis is the code I'm using. It just works but sync option for XMLHttpRequest may freeze the game if the server is slow in response.\nAnother method is building a complete file list after you deploy the game, and check if the file exists."
+    },
+    {
+      "post_id": "js-post-1516748",
+      "author": "Herr_jaeger",
+      "date": "2025-06-02T20:24:11+0900",
+      "body": "utunnels said:\nJavaScript:\nfunction UrlExists(url) {\n  var http = new XMLHttpRequest();\n  try{\n    http.open('HEAD', url, false);\n    http.send();\n    return http.status!=404;\n  }catch(ex){return false;}\n}\nThis is the code I'm using. It just works but sync option for XMLHttpRequest may freeze the game if the server is slow in response.\nAnother method is building a complete file list after you deploy the game, and check if the file exists.\nClick to expand...\nThanks for your reply. This might come in handy in the future."
+    }
+  ]
+}

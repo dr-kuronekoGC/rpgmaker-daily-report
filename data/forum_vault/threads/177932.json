@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-getting-to-appear-at-safe-place-after-game-over.177932",
+  "title": "MZ Help getting to appear at safe place after Game Over",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:25.072295+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1515659",
+      "author": "Gatamandra",
+      "date": "2025-05-26T22:38:22+0900",
+      "body": "Hi! I´m using McKathlin_GameOver\nhttps://www.tyruswoo.com/rpg-maker/mz/game-over-mz/\nso after a game over in a battle the player could re appear at the last safe place (a bar) in each different map you visit, like you do in Pokemon with pokemon centers. So I thought I could set a variable for the map, player to appear on the bar position and make the transfer there, however when I run the plugin with this set up, I appear on the top of the map, the text keeps repeating alongside the fade in and I can´t move the character, if I set this up wrong (which I most likely did) how could I fixed it?\nI put the event controlling the variables right in front of the bar but I don´t know if that´s how it works, I don´t see any input to put the numbers of the coordinates or the specific Map ID\nthanks a mil!"
+    },
+    {
+      "post_id": "js-post-1515709",
+      "author": "TheAM-Dol",
+      "date": "2025-05-27T03:57:33+0900",
+      "body": "Please don't crop your screen shots. The second screen shot has information cropped out.\n2 things worth checking.\n1) although I'm not familiar with this plugin, it appears party death and \"after game over\" common events are set to the same common event, which may be the cause of the repeating text, since I think it will call the event twice.\n2) the bar event getting player location should not be a parallel event without an end, so add an \"erase event\" command. There is no reason to constantly update that information as you are currently doing now."
+    },
+    {
+      "post_id": "js-post-1515714",
+      "author": "Gatamandra",
+      "date": "2025-05-27T04:43:48+0900",
+      "body": "TheAM-Dol said:\nPlease don't crop your screen shots. The second screen shot has information cropped out.\n2 things worth checking.\n1) although I'm not familiar with this plugin, it appears party death and \"after game over\" common events are set to the same common event, which may be the cause of the repeating text, since I think it will call the event twice.\n2) the bar event getting player location should not be a parallel event without an end, so add an \"erase event\" command. There is no reason to constantly update that information as you are currently doing now.\nClick to expand...\nHi! thanks a mil for your response!!\nI did what you told me and remove the party death option of the plugin and put also the end to the parallel process, and now it let´s you get control of the character again, though the even now repeats itself twice before letting yourself keep going (before it was infinitely so it´s an improvement!)"
+    },
+    {
+      "post_id": "js-post-1515819",
+      "author": "Gatamandra",
+      "date": "2025-05-27T20:24:25+0900",
+      "body": "(Oops sorry for double posting I thought I clicked edit)EDIT: I found out it´s conflicting with this other plugin I have, so I´ll close this thread and go to requests in case someone could make a compatibility thingy, thanks!\nCode:\n/*:\n * @target MZ\n * @plugindesc Party leader (map) is always actor 1.\n * @author Caethyril\n * @url https://steamcommunity.com/app/1096900/discussions/0/4333105935809404961/\n * @help Free to use and/or modify for any project, no credit required.\n */\n// Override - party leader is actor ID 1.\nGame_Party.prototype.leader = function() {\n  return $gameActors.actor(1);  // <- change this number if needed\n};\n\n// Patch - first party member is now first follower.\nvoid (alias => {\n  Game_Followers.prototype.setup = function() {\n    alias.apply(this, arguments);\n    // add party member index 0\n    const L = this._data.unshift(new Game_Follower(0));\n    // reapply max followers\n    if (L > $gameParty.maxBattleMembers())\n      this._data.pop();\n  };\n})(Game_Followers.prototype.setup);\nGatamandra said:\nHi! thanks a mil for your response!!\nI did what you told me and remove the party death option of the plugin and put also the end to the parallel process, and now it let´s you get control of the character again, though the even now repeats itself twice before letting yourself keep going (before it was infinitely so it´s an improvement!)\nView attachment 341561\nView attachment 341562\nView attachment 341563\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1515826",
+      "author": "Ms Littlefish",
+      "date": "2025-05-27T21:06:46+0900",
+      "body": "No worries about the double post. ‘Twas a pretty significant update, I’d say. You sure you wanna go ahead and close this one out? Or, do you wanna see if anyone knows how to fix it up real quick?\n@Gatamandra\nEDIT: Ope! I see your request now. A’ight. Either way works. XD\nI’ll nab this one. Let me know if you’d like it reopened, though!"
+    }
+  ]
+}

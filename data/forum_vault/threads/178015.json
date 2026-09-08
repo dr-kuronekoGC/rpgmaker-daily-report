@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/mog_eventindicators-and-spawned-events.178015",
+  "title": "MV MOG_EventIndicators and Spawned Events",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:37.972975+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1516258",
+      "author": "AquaEcho",
+      "date": "2025-05-30T03:39:49+0900",
+      "body": "MOG_EventIndicators creates all its indicators on map load, so indicators on spawned events don't get created until you open and close the menu or use SceneManager.goto(Scene_Map) since the spawned events weren't there on initial map load.\nAnyone have any idea on how to add the indicator for a spawned event without reloading the map?\nRpg Maker MV\nBattle Engine NameVersionUpdatedLinear Battle Systemv0.32b2021/05/01Chrono Enginev0.2b2021/05/01 Battle Plugins Name Version Updated Mog Aura Effect v3.0 2021/05/01 Mog ATB v0.3b 2021/05/01 Mog ATB…\nmogplugins.wordpress.com"
+    },
+    {
+      "post_id": "js-post-1516267",
+      "author": "ShadowDragon",
+      "date": "2025-05-30T04:15:54+0900",
+      "body": "cant you use something like:\n$gameMap.requestRefresh()\nif they got spawned?\nor motionRefresh or around that?\nI think also on which spawned event plugin you use if the scriptcall doesn't\nwork with the spawned event."
+    },
+    {
+      "post_id": "js-post-1516269",
+      "author": "AquaEcho",
+      "date": "2025-05-30T04:26:15+0900",
+      "body": "$gameMap.requestRefresh() doesn't help. You have to use\nSceneManager.goto(Scene_Map)\nIt also doesn't seem to matter which spawner you use. I've tried it with Ritter and QJ Event Spawner. If you check SceneManager._scene._spriteset._eventIndicators the spawned event indicators don't get created until you reload the map."
+    },
+    {
+      "post_id": "js-post-1516270",
+      "author": "ShadowDragon",
+      "date": "2025-05-30T04:37:01+0900",
+      "body": "$gameMap.requestRefresh(\n) should one of it.\ntry this one to force it otherwise:\n$gamePlayer.requestMapReload();\notherwise some dummy or transfer around this for spawned events:\nJavaScript:\n$gamePlayer.requestMapReload();\n$gameMap.requestRefresh();\n$gameMap.events().forEach(event => event.erase());\n$gamePlayer.reserveTransfer($gameMap.mapId(), $gamePlayer.x, $gamePlayer.y, 0, 2);\nor somewhere in the plugin to do it for you automatically?\nrefresh/update?"
+    },
+    {
+      "post_id": "js-post-1516278",
+      "author": "AquaEcho",
+      "date": "2025-05-30T05:51:04+0900",
+      "body": "Code:\n$gamePlayer.requestMapReload();\n$gamePlayer.reserveTransfer($gameMap.mapId(), $gamePlayer.x, $gamePlayer.y, 0, 2);\nThis has unintended consequences of not preserving the map state and running any scripts you had run on map load again. It's worse than SceneManager.goto(Scene_Map)\nEdit: Apparently there's an addChild() method for SceneManager._scene._spriteset I'll need to try"
+    },
+    {
+      "post_id": "js-post-1516588",
+      "author": "AquaEcho",
+      "date": "2025-06-01T14:11:14+0900",
+      "body": "I figured it out. You can use\nSceneManager._scene._spriteset.createEventIndicators()\nright after spawning an event to draw any new indicators."
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-state-stack-plugin-for-skill-cost-and-damage-formula.178144",
+  "title": "MZ A state stack plugin for skill cost and damage formula",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:14.692000+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1517227",
+      "author": "minu1494",
+      "date": "2025-06-07T03:53:45+0900",
+      "body": "I want to create a stackable stack for damage formula and skill resources.(I'm using visu battle core and atb fyi)\nFor example, a \"power\" state that can be use as skill cost and increase damage per \"power\" stack for skills,\nand I want them to display as a single state with the number of stacks display on the state icon. It will also be nice to have a skill notetag to bulk add many stack of state.(I dont want to copy 20times for a skill that add 20 stacks of \"power\")\nAll plugins I found cannot do all of the above.\nI have tried\nTheo StackingStates\n, but It display all stacks of state seperately(for example, if I have 2 stacks of burn, there will be 2 burn state icon display seperately).\nI have also tried\nSynrec Status Construct\n, It displays stack of a state as number in the battle scene, but in main menu, status menu and in-battle status menu by visu battle core, they still display seperately, and dont seems to have damage formula reference and skill notetag to bulk add.\nI have been using\nNemv State Resources\nin MV to do create all features listed above but I cant seems to find any plugin similar in MZ. I have tried using Fossils to use\nNemv State Resources\nin MZ but after also installing YEP skillcore and Buffstatecore as requirement for\nNemv State Resources\n, it bugged with Visu's ATB system.\nThanks."
+    },
+    {
+      "post_id": "js-post-1517230",
+      "author": "rpgLord69",
+      "date": "2025-06-07T04:20:24+0900",
+      "body": "Hmmm, if I understood you correctly, you can use the VS Skill and States Core State Displays for that. Their page has the scripts to set and get the display number, so you can make damage formulas use that and skills change that and also have it be a requirement for stuff.\nEDIT: You can use state notetags to change the number on add/erase state."
+    },
+    {
+      "post_id": "js-post-1517234",
+      "author": "punitdh89",
+      "date": "2025-06-07T04:26:14+0900",
+      "body": "rpgLord69 said:\nHmmm, if I understood you correctly, you can use the VS Skill and States Core State Displays for that. Their page has the scripts to set and get the display number, so you can make damage formulas use that and skills change that and also have it be a requirement for stuff.\nEDIT: You can use state notetags to change the number on add/erase state.\nClick to expand...\nI think the OP also wants the \"number of stacked states\" to be used as \"power\" though, if I'm understanding it correctly.\nThis \"power\" will then be used in damage formula in other skills.\nE.g. 2 x Rage = 2 x Power.\nThen in a damage formula, something like:\nJavaScript:\na.atk * 4 + power - b.def * 2\nI guess you could save the number of stacked states in a variable, then just use something like:\nJavaScript:\na.atk * 4 + v[10] - b.def * 2\nRPG Maker does allow using variables in the damage formula by default."
+    },
+    {
+      "post_id": "js-post-1517236",
+      "author": "rpgLord69",
+      "date": "2025-06-07T04:31:26+0900",
+      "body": "punitdh89 said:\nI think the OP also wants the \"number of stacked states\" to be used as \"power\" though, if I'm understanding it correctly.\nClick to expand...\nYeah but they can use VS on add state notetag to increase the number to \"count the states\".\nEDIT:\nThey can use in their damage formula:\na.getStateDisplay(stateId)\n(though you might have to also check that it exists)"
+    },
+    {
+      "post_id": "js-post-1517239",
+      "author": "punitdh89",
+      "date": "2025-06-07T04:37:30+0900",
+      "body": "Yeah, so basically it's just a combination of using:\n- VS Add State Notetag\n- Add +1 to a variable\n- Use the variable in damage formula\n- Make sure to reset the variable back to 0 when state is removed\nEDIT: Yeah, actually the\na.getStateDisplay(stateId)\nis probably the better way to go! No need to use variables."
+    },
+    {
+      "post_id": "js-post-1517241",
+      "author": "rpgLord69",
+      "date": "2025-06-07T04:39:50+0900",
+      "body": "Yeah but instead of variable it's easier to use the state display, since they want to also show the number. I edited in my previous post that they can use in the damage formula:\na.getStateDisplay(stateId)"
+    },
+    {
+      "post_id": "js-post-1517242",
+      "author": "punitdh89",
+      "date": "2025-06-07T04:40:56+0900",
+      "body": "rpgLord69 said:\nYeah but instead of variable it's easier to use the state display, since they want to also show the number. I edited in my previous post that they can use in the damage formula:\na.getStateDisplay(stateId)\nClick to expand...\nAgreed!"
+    },
+    {
+      "post_id": "js-post-1517244",
+      "author": "minu1494",
+      "date": "2025-06-07T04:54:54+0900",
+      "body": "rpgLord69 said:\nYeah but they can use VS on add state notetag to increase the number to \"count the states\".\nClick to expand...\npunitdh89 said:\nI think the OP also wants the \"number of stacked states\" to be used as \"power\" though, if I'm understanding it correctly.\nThis \"power\" will then be used in damage formula in other skills.\nE.g. 2 x Rage = 2 x Power.\nThen in a damage formula, something like:\nJavaScript:\na.atk * 4 + power - b.def * 2\nI guess you could save the number of stacked states in a variable, then just use something like:\nJavaScript:\na.atk * 4 + v[10] - b.def * 2\ns\nClick to expand...\nThanks ! But I am still figuring how to display the number. This is what I put in the skill notetag but it seems to not working."
+    },
+    {
+      "post_id": "js-post-1517245",
+      "author": "rpgLord69",
+      "date": "2025-06-07T05:02:17+0900",
+      "body": "Isn't that notetag from ATTTuran plugin? I thought you said you were using VS. If you use VS check their page for the correct notetags. And you need to use user/target in them. a/b is for damage formulas."
+    },
+    {
+      "post_id": "js-post-1517246",
+      "author": "punitdh89",
+      "date": "2025-06-07T05:03:16+0900",
+      "body": "minu1494 said:\nThanks ! But I am still figuring how to display the number. This is what I put in the skill notetag but it seems to not working.\nClick to expand...\nWait, are you using MV or MZ?\nI don't think VisuStellaMZ Skills States core has <Action After Eval>.\nIt has <JS On Add State>  and <JS On Erase State>."
+    },
+    {
+      "post_id": "js-post-1517248",
+      "author": "minu1494",
+      "date": "2025-06-07T05:08:59+0900",
+      "body": "rpgLord69 said:\nIsn't that notetag from ATTTuran plugin? I thought you said you were using VS. If you use VS check their page for the correct notetags. And you need to use user/target in them. a/b is for damage formulas\nClick to expand...\npunitdh89 said:\nWait, are you using MV or MZ?\nI don't think VisuStellaMZ Skills States core has <Action After Eval>.\nIt has <JS On Add State>  and <JS On Erase State>.\nClick to expand...\noh sorry I mixed up notetag of 2plugins . My brain is a bit dizzy now after whole day of searching. I am using Visu in MZ. It works very fine now. Thanks very much!!"
+    },
+    {
+      "post_id": "js-post-1517324",
+      "author": "Ms Littlefish",
+      "date": "2025-06-07T20:00:40+0900",
+      "body": "This thread is closed due to being reported as solved. If you need it reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

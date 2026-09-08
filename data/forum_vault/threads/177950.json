@@ -1,0 +1,17 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/compatibility-help-with-mckathlin-gameover.177950",
+  "title": "MZ Compatibility help with MCKathlin Gameover",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:24.676772+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1515825",
+      "author": "Gatamandra",
+      "date": "2025-05-27T21:00:22+0900",
+      "body": "Hi! I´m coming from this other thread\nhttps://forums.rpgmakerweb.com/inde...-appear-at-safe-place-after-game-over.177932/\nwhere I found out at the end that MCkathlin Gameover plugin (for MZ)\nhttps://www.tyruswoo.com/rpg-maker/mz/game-over-mz/\nto get the character to safety after a game over through a common event is conflicting with this other one I´m using, by making the game over and common event to run twice (?) I have tried tweaking by myself Mckathlin´s plugin by erasing the lines that used the \"actor leader\" in case that was what made it odd but it did nothing at all, so I don´t know what could be the thing making it double.\nThanks a mil! if it´s not possible it wouldn´t be a drama and I would just leave the default game over but it would be grand to get this to work haha\nCode:\n/*:\n * @target MZ\n * @plugindesc Party leader (map) is always actor 1.\n * @author Caethyril\n * @url https://steamcommunity.com/app/1096900/discussions/0/4333105935809404961/\n * @help Free to use and/or modify for any project, no credit required.\n */\n// Override - party leader is actor ID 1.\nGame_Party.prototype.leader = function() {\n  return $gameActors.actor(1);  // <- change this number if needed\n};\n\n// Patch - first party member is now first follower.\nvoid (alias => {\n  Game_Followers.prototype.setup = function() {\n    alias.apply(this, arguments);\n    // add party member index 0\n    const L = this._data.unshift(new Game_Follower(0));\n    // reapply max followers\n    if (L > $gameParty.maxBattleMembers())\n      this._data.pop();\n  };\n})(Game_Followers.prototype.setup);"
+    }
+  ]
+}

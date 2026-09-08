@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/visustella-crafting-crashing.178020",
+  "title": "MZ Visustella Crafting Crashing",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:19.955593+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1516277",
+      "author": "Z-Rune",
+      "date": "2025-05-30T05:39:47+0900",
+      "body": "Short and sweet: the crafting plugin crashes when the option is selected in the menu.\nI'm very ignorant to programming language so this is all gibberish to me.\nMy note tags are a copy/paste of the example given in the help file, both trying the ID as well as the name. I even tried just gold to see if it was the items I was using as ingredients. Any help would be deeply appreciated.\nQuick update:\nI disabled masking and it seemed to have fixed the issue. This is a little inconvenient as I would like the masking to be used for my project so I'm still very open to any proposed solutions."
+    },
+    {
+      "post_id": "js-post-1516300",
+      "author": "sunhihi",
+      "date": "2025-05-30T09:03:41+0900",
+      "body": "Z-Rune said:\nShort and sweet: the crafting plugin crashes when the option is selected in the menu.\nView attachment 341829\nView attachment 341830\nI'm very ignorant to programming language so this is all gibberish to me.\nMy note tags are a copy/paste of the example given in the help file, both trying the ID as well as the name. I even tried just gold to see if it was the items I was using as ingredients. Any help would be deeply appreciated.\nClick to expand...\nThis is no longer a matter of understanding programming.\nEven those who know how to code won’t fare much better after VS has been obfuscated and encrypted."
+    },
+    {
+      "post_id": "js-post-1516318",
+      "author": "Z-Rune",
+      "date": "2025-05-30T10:42:32+0900",
+      "body": "sunhihi said:\nThis is no longer a matter of understanding programming.\nEven those who know how to code won’t fare much better after VS has been obfuscated and encrypted.\nClick to expand...\nHuh. I can understand wanting to protect your proprietary blend, but that feels pretty user-hostile.\nThey're amazing plug-ins, however. I also figured out my issue. The masking needed to be defined to be enabled. I had to go in and input a masked tag for every single recipe I put in (which wasn't many as I'm just playing with it for now.)"
+    },
+    {
+      "post_id": "js-post-1516320",
+      "author": "sunhihi",
+      "date": "2025-05-30T11:06:16+0900",
+      "body": "This is interesting.\nOnly the programmer who wrote the code can truly understand it.\nEven if someone can read code, it doesn’t mean they can fully grasp what others have written.\nThis naturally leads to the mindset that if I have the ability to write my own code, I will do so.\nIf I can avoid using others' code, I will."
+    },
+    {
+      "post_id": "js-post-1516335",
+      "author": "Winshifter",
+      "date": "2025-05-30T14:30:20+0900",
+      "body": "sunhihi said:\nOnly the programmer who wrote the code can truly understand it.\nClick to expand...\nNot really, I can read code written by someone else and follow it, basically is what I have been doing for nearly 16 years.\nsunhihi said:\nEven if someone can read code, it doesn’t mean they can fully grasp what others have written.\nClick to expand...\nDepends, but most of the time, I can read code written by someone else and still understand what was the big picture or the intended purpose. Anyone can do that with practice.\nsunhihi said:\nThis naturally leads to the mindset that if I have the ability to write my own code, I will do so.\nIf I can avoid using others' code, I will.\nClick to expand...\nYou can write your own code and anyone that knows coding will understand it, that is technically the intended purpose, anyone with coding knowledge should be able to understand what you were trying to do. You should only avoid using code that is property of someone else, unless specifically stated that it can be used by anyone.\nZ-Rune said:\nThey're amazing plug-ins, however. I also figured out my issue. The masking needed to be defined to be enabled. I had to go in and input a masked tag for every single recipe I put in (which wasn't many as I'm just playing with it for now.)\nClick to expand...\nI just added the plugin and had mask allowed and didn't crash. Did you set correctly the notetags for the items? Were you using some other plugins besides Visustella's? Did you had it in the correct order? Maybe you should show the list of plugins from your plugin manager"
+    },
+    {
+      "post_id": "js-post-1516492",
+      "author": "Ms Littlefish",
+      "date": "2025-05-31T19:55:17+0900",
+      "body": "This thread was moved from RPG Maker MZ Support to JavaScript/Plugin Support."
+    },
+    {
+      "post_id": "js-post-1516950",
+      "author": "Gamepeon",
+      "date": "2025-06-04T00:25:49+0900",
+      "body": "Ran into the same crash testing out the plugin.\nSeems like the missing function call is this.maskName inside of a VisuMZ.ItemCraftingSys function\nbut maskName is a function in the Window_ItemCraftingList class and not whatever the\nVisuMZ.ItemCraftingSys class is.\nA quick fix is to just add the maskName function to VisuMZ.ItemCraftingSys\nVisuMZ.ItemCraftingSys.maskName = function (_0x32b0e8) {\nif (Imported.VisuMZ_1_MessageCore && TextManager.parseLocalizedText) {\n_0x32b0e8 = TextManager.parseLocalizedText(_0x32b0e8);\n}\nreturn Array(_0x32b0e8.length + 0x1).join(TextManager.itemCraftingMask);\n};\nor revert to an earlier version like 1.21"
+    }
+  ]
+}

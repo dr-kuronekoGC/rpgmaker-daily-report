@@ -1,0 +1,1325 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/external-text-v3-3-4-write-your-game-in-an-organized-manner-translate-with-ease.6608",
+  "title": "External Text v3.3.4 (Write your game in an organized manner! Translate with ease!)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:49.834826+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-70740",
+      "author": "Enelvon",
+      "date": "2012-12-01T14:06:39+0900",
+      "body": "[IMG]http://rpgmakersource.com/wp-content/uploads/2015/05/Freebies_Enelvon_01A.png[/IMG]​\nIntroduction\nThis script allows you to display text (as the Show Text event command) that is stored in external files. It will automatically wrap the text and divide it into as many messages as necessary, saving you the trouble of worrying about it yourself. The external files are extremely easy to configure, and support showing faces as well as all of the usual text codes. Displaying a block of text is as easy as a single-line script call!\nChange Log\nv1.0 (November 30th, 2012) - Initial release.\nv1.1 (December 1st, 2012) - Fixed a bug with Battle Test not loading text.\nv1.2 (December 1st, 2012) - Added nameboxes and the newline tag.\nv1.3 (December 6th, 2012) - Fixed a bug with persistent colors.\nv1.4 (December 6th, 2012) - Added an additional style for names.\nv1.5 (December 7th, 2012) - Added the [FName] tag, made adding tags easier for scripters, fixed a bug with the namebox, added block text call.\nv1.6 (December 10th, 2012) - Added in the ability to alter message window location and background.\nv1.7 (December 11th, 2012) - Added the [get_text] calls and a text code for referencing $game_text\nv1.8 (December 12th, 2012) - Added a fix for the choice window\nv1.9 (June 1st, 2013) - Width calculation is now based solely on the font size of Window_Message, rather than the default size\nv2.0 (June 1st, 2013) - Added scrolling text support\nv2.1 (June 13th, 2013) - Added Unicode support\nv2.2 (June 30th, 2013)     - Fixed issue with EOL characters and get_text\nv3.0 (Released May 23rd, 2015) - Small bugfixes, new ways to use block text, and prettier code!\nv3.1 (May 24th, 2015) - Now allows multiple files, as well as subfolders for organization!\nv3.2 (May 26th, 2015) - Allows you to override keys on a file-by-file basis!\nv3.3 (June 30th, 2015) - Allows you to manage choices! Extractor plugin released!\nv3.3.1 (July 5th, 2015) - Minor update to fix the way that \\t interacts with escape characters.\nv3.3.2 (July 5th, 2015) - Fix for 3.3.1.\nv3.3.3 (July 5th, 2015) - Final fix for 3.3.1/3.3.2.\nv3.3.4 (July 31st, 2015) - Fix for save error provided by Source.\nFeatures\nUse an organized directory tree of text files to hold all of your game text - your outline can become your game!\nSimple to configure - takes far less time than trying out various combinations of words in order to find the perfect length for a line!\nNote on Updating from v3.0 or below to v3.1 or higher\nYour Text.txt file will still work, don't worry! Just make sure to move it to a new folder named Text inside of the Data folder. You can divide it up into whatever kind of organization you'd like now!\nHow to Use\nThis script is incredibly easy to use. There is little in-script configuration - all you really need to do is format your text file correctly and call the text from events when it is appropriate.\nSpoiler\nSetting up your Text File\nThis is actually extremely simple. The first thing you have to do is create a directory named Text inside of your Data directory. We'll be using this folder to store all of our text data - I would recommend using a program like Notepad++ instead of the default Windows Notepad when editing the text files, for the sake of formatting. Any text file that we place in this Text folder will be read and included in the game! You can also add subfolders to the Text directory -- everything that they contain will be used, too.\nInside of our text file, the first thing we'll want to do is define a block of text. We do that like this:\n[Key] !Name!Replace !Name! with whatever you would like the block to be named. You will use the name to call it in the game, so make it something you'll associate with the text.\nIf we want to add a face, we've got four options.\nOption 1:\n[Face] !Faceset!, !Index!Here we replace !Faceset! with the name of the faceset image we're using and !Index! with the index of the face in the file, starting at 0.\nOption 2\n[AFace] !Index!Here we replace !Index! with the index of an actor. Whatever face they have at the time the text is displayed (including any changes made through the Change Actor Graphic event command) will be shown.\nOption 3:\n[PFace] !Index!For this, we replace !Index! with an index in the party (starting at 0). It will display the current face of whatever actor is in that slot of the party when the text is displayed.\nOption 4:\n[DFace] !Name!This one requires some configuration in the script itself. Go to SES::ExternalText and find the Faces hash (which should be easy - it's the only thing in the module). Define a face inside of it with this format:\n\"Name\" => [\"Faceset\", Index],I think each part of that is self-explanatory - \"Name\" is a string that you will use in the !Name! spot of the tag to call the face, \"Faceset\" is the name of the faceset file, and Index is the index of the face in the faceset, starting at 0.\nAdditionally, please note the [FName] tag, added in 1.5. It allows you to display both a face and a name with one tag - it will display the given name and a face from the Faces hash in the same manner that [DFace] would.\nAs for text itself, we just write that out anywhere below a [Key] tag. Going down to a new line (by pressing enter) will only add a space to the text, not a new line, so you can use it for the sake of an easily readable file. Just be careful not to hit space and then enter, or you will have two spaces instead of one.\nAfter you've defined your first text block, just add another [Key] tag and keep going! You can have as many as you want, and the order they're in doesn't affect anything, so feel free to organize things however you'd like! You can comment out lines by beginning them with either # or // (though these only work at the beginning of a line - leading spaces are okay, but not text, so you can still use them in dialogue) in order to divide the file into sections.\nNote that you will still need to manually handle choices - due to the way those work, they would be difficult to effectively apply through a script. It could be done with labels, but... it's easy enough to create choices yourself. If there's enough demand for it I'll set up a system, but I think it's fine as is.\nVersion 1.2 also adds in the ability to have a name box. We do that like this:\n[Name] !Name!Just replace !Name! with the name you want to display - this will take text codes, so you can specify actors or party members with \\n or \\p, and color the names in different ways.\nv1.2 added the [Line] tag for new lines, but that's now deprecated -- add new lines just by adding them in your text editor! It looks much cleaner. The [Line] tag still works, for the sake of backwards compatibility. [v3.3 Note: No longer deprecated for Choices]\n1.6 gives us the [Position] and  tags, which can be used to set the message window's position and background, respectively. We include these before the text, like we would for most tags. View the Header of the script for instructions on using these.\nAs of v1.7, you can use a text code to call text in any place that they can be used. This is only the message window by default, and I do not intend to add global text code functionality into this script, as I am sure there are others that do so. By using one of them, you can have all of your Database item names and descriptions come from Text.txt, allowing you to easily translate a game into multiple languages. Note that this code does not autowrap text. You can use it like this:\n\\t[!Key!]!Key! is, of course, the key of the text you want to use.\nAlso in v1.7 are some script calls to get the text (but not the face/name/etc) from a particular key. Read the Header of the script for more information on this.\nv3.3 has added the ability to manage choices with External Text. To set up choices, create a key like you would for normal text. Give it a default option with this tag:\n[Default Choice] !Choice!\nSet !Choice! to 0 to disable canceling, to a number from 1 through the number of choices that will be provided to have that option\nserve as the default, or to the number of choices + 1 (e.g. 5 if there are 4 choices) to give cancel its own branch.\nNext, we'll add our choices. Just type them! Each new line of text will act as a new choice. These\nwill\nget wrapped in the choice box, so feel free to make them long! If you want to add manual line breaks in a choice, use the `[Line]` tag. You can have as many choices as you want -- you're not limited to four, like in default Ace.\nYou're done! Go to the Script Calls section to learn how to use your new choices.\nDisplaying Text\nSpoiler\nDisplaying text is extremely easy. Place this in a Script event command, and you're set:\ntext(!Key!)Remember those keys that we defined for our text? Well, this is where we use them. Replace !Key! with the key of a section text to display it. You can have as many text(!Key!) calls per Script command as you would like - they will display one after the other.\nv1.5 added in the ability to display multiple sections of text with a single call. You can read more about that in the Header of the script or in the next section here, the Sample Text.txt File.\nv3.0 has added an unsorted version of block_text, as requested -- call it with\nblock_text_us(!KeyPattern!)\nCode:\nAs with block_text, !KeyPattern! can be a Regular Expression (recommended) or a String. v3.2 adds the ability to override existing keys for a given save file! Use this script call: [code]$game_system.add_override(!Key1!, !Key2!)\n`!Key1!` is the key that you want to override.`!Key2!` is the key that contains the value that `!Key1!` should now reference. You can remove overrides with this script call:\nCode:\n$game_system.delete_override(!Key!)\n`!Key!` is the key whose override you want to delete. You do not need to delete an override before replacing it. If you call add_override for a key that already has an override, the override will be replaced. Overrides are fully compatible with both MultiLang and Database. v3.3 has added the `show_choices` method. Use it in a script call with this format:\nCode:\nshow_choices(!Key!)\n!Key! should be an External Text key that you've formatted for choices as described in the previous section. This call will display the choices -- but how do you branch for them? With conditional branches! Just set up branches that will check the value of the designated ChoiceVariable (found in the SES::ExternalText module). If the player chooses the first choice, the result will be 1, the second choice will be 2, and so on. If you set it up to use a branch for cancel, the variable will be equal to the number you gave for said branch. Easy, right? Just put all of your processing in those conditional branches. You're done!\nSample Text.txt File - this can be used as-is in an empty project if you want to test the script\nSpoiler\nCode:\n# Introduction[Key] Intro 1[Face] Actor5, 7[Name] IsabelleSo some foolish heroes are approaching my land, hm? I'll just have to stomp them out![Key] Intro 2[PFace] 0[Name] \\p[1]So this is the evil empire of Cliche...[Key] Intro 3[AFace] 4[Name] \\n[4]Boss, are you sure we should be here? It's dangerous.[Key] Intro 4[DFace] Ralph[Name] RalphNonsense! Chaaaaaarge!// End Introduction\nYou would call these with these script calls:\nCode:\ntext(\"Intro 1\")text(\"Intro 2\")text(\"Intro 3\")text(\"Intro 4\")\nVersion 1.5 introduces block text calls, which allow us to simplify that to this:\nCode:\nblock_text(/Intro \\d+/i)\nor this\nCode:\nblock_text(\"Intro\")The first of those will display all text with a key matching the given Regular Expression. The second will display all text including the given string, making it a less accurate option - I would recommend learning the basics of Regular Expressions. They're not hard, and can be incredibly useful. Note that block_text will automatically sort the keys, so even if things are listed out of order in your text file they will display alphabetically in game - though I would recommend that you keep things organized.\n\n[/SPOILER]\n\n[B]Script[/B]\nIt's right over here on [URL=\"https://github.com/sesvxace/external-text\"]GitHub![/URL]\n\n[B]Addons:[/B]\n[URL=\"https://github.com/sesvxace/external-text/tree/master/lib/addons/external-text-database\"]Database[/URL] - Allows you to store all of your Database text in external files! Instructions are in the Header.\n[URL=\"https://github.com/sesvxace/external-text/tree/master/lib/addons/multi-lang\"]MultiLang[/URL] - Adds support for multiple languages! Instructions are in the Header.\n[URL=\"https://github.com/sesvxace/external-text/blob/master/lib/addons/extractor/enelvon_external_text_extractor.rb\"]Extractor[/URL] - this is a [URL=\"http://forums.rpgmakerweb.com/index.php?/topic/40752-demiurge-a-notes-manager-and-extensible-database/\"]Demiurge[/URL] plugin rather than an RM script. Put it in your Demiurge plugins directory as a .rb file, run Demiurge, and load it into your game's plugins list. A new option will be added to the Tools menu -- \"Extract Text for External Text\". If you select this option, you will be able to automatically extract [I]all[/I] of your game's text (from the Database, from Events, from Common Events, from Troops, and even from the Vocab module!) into neatly organized text files that are fully compatible with External Text. If you let it extract from events (map, common, and troop), it will automatically replace the Show Text commands with calls to External Text. It will also change Show Choices commands into External Text-style conditional branches. Everything will be done for you! Make sure to back up your Data folder before running this command, just in case. No problems have been discovered, even with large test projects, but you should [I]always[/I] be careful.\n\n[B]Credit and Thanks[/B][LIST][*]Enelvon (author)\n[*]Solistra (tester, giver-of-ideas-for-multiple-faceset-types [without her input, you would just have the [Face] and [DFace] tags. She's the one who convinced me to add in [AFace] and [PFace]. Bow down to her.], catcher of the # class Class commenting error)\n[*]♥ SOURCE ♥ (sanity checked v3.0, provided fix in v3.3.4)\n[*]♦SOURCE♦ (lovely banner image)\n[/LIST]\n[B]Author's Notes[/B]\nThis script is made available under the terms of the MIT Expat license. View [URL=\"http://sesvxace.wordpress.com/license/\"]this page[/URL] for more information."
+    },
+    {
+      "post_id": "js-post-70763",
+      "author": "Shaz",
+      "date": "2012-12-01T15:51:16+0900",
+      "body": "Nice script!  This would be especially helpful for proofreading/editing, and translating games.\nAnd thank you for making it available for commercial use.\nHave you tested that this works in a compressed game?  Fomar mentioned something to me a while ago (which I may be misrepresenting now) about issues with compressed (or encrypted?) games not being able to load external files.  I used a different approach, so I didn't really discover what the issue was."
+    },
+    {
+      "post_id": "js-post-70764",
+      "author": "Enelvon",
+      "date": "2012-12-01T15:56:54+0900",
+      "body": "Yes, it works in encrypted games. The Text.txt file gets serialized into Text.rvdata2 when the game is run unencrypted, so the only requirement for it to work in an encrypted game is that you playtest before compressing/encrypting."
+    },
+    {
+      "post_id": "js-post-70787",
+      "author": "Leinkreig",
+      "date": "2012-12-01T19:52:41+0900",
+      "body": "Ohhhh wow.\nThis is truly amazing! I really like how it's set up, and how simple it is to use. Plus, you've provided an easy-to-understand explanation on how to use it!\nThanks a lot for sharing this, as it makes it much easier to not have to keep checking the messages and Show Text editor when you change font/font size!\nDefinitely going to try it out."
+    },
+    {
+      "post_id": "js-post-70827",
+      "author": "Enelvon",
+      "date": "2012-12-02T02:37:13+0900",
+      "body": "Good, good. I'm glad you like it. One thing I didn't mention in the OP, though it may be good to know, is that this doesn't modify any of the methods used for drawing text - which means that scripts like Mithran's Text Cache will work with it without issues.\nEdit: Updated to version 1.1. Please download the new one - I had previously overlooked loading text in Battle Tests, so the text(!Key!) command only caused crashing before now.\nEdit 2: I have no idea what happened to the formatting, but it's fixed now. I've also updated the script to version 1.2, which adds namebox functionality."
+    },
+    {
+      "post_id": "js-post-70976",
+      "author": "Megablackdragon31",
+      "date": "2012-12-02T12:20:15+0900",
+      "body": "Nice script miss Enelvon,thanks you very much.\nExcuse me for my bad English and Greetings from Argentina."
+    },
+    {
+      "post_id": "js-post-72576",
+      "author": "Enelvon",
+      "date": "2012-12-07T03:14:44+0900",
+      "body": "I've updated the script to version 1.3 - this fixes an important issue with how it handles persistent text colors between pages."
+    },
+    {
+      "post_id": "js-post-72898",
+      "author": "Enelvon",
+      "date": "2012-12-08T12:13:45+0900",
+      "body": "Updated to v1.5. This includes an important bugfix for nameboxes and a few new features: a new tag, a new way to call text, and a quick way for scripters to add new tags."
+    },
+    {
+      "post_id": "js-post-72904",
+      "author": "Yin",
+      "date": "2012-12-08T12:48:19+0900",
+      "body": "Thank you for this, it is a very handy script!\nAny way to get the script call into a show choice box?"
+    },
+    {
+      "post_id": "js-post-72906",
+      "author": "Enelvon",
+      "date": "2012-12-08T12:54:26+0900",
+      "body": "That's something I've been considering, actually. At the moment the answer is no (especially as the choices box does not cleanly support multiple rows of text for a single choice), but I've got a couple of ideas in mind, and it may make an appearance in a future update."
+    },
+    {
+      "post_id": "js-post-73049",
+      "author": "Yin",
+      "date": "2012-12-09T05:06:33+0900",
+      "body": "That sounds great! Looking forward to future versions!"
+    },
+    {
+      "post_id": "js-post-73664",
+      "author": "Enelvon",
+      "date": "2012-12-11T08:31:56+0900",
+      "body": "Updated to v1.6 - this allows you to alter the position and background of the message window the way you could with a normal Show Text command by using the [Position] and  tags. At this point I'm willing to take requests for new tags - but please, don't ask me about choices. I'm working on that, and they will make an appearance at some point."
+    },
+    {
+      "post_id": "js-post-73767",
+      "author": "estriole",
+      "date": "2012-12-11T13:58:25+0900",
+      "body": "first of all... this is the greatest external text i ever seen. and really easy to use too.\ni have some suggestion.\n1)could you made escape code for fetching key in the text.\nexample: \\key[intro 1]\nwill change into \"intro 1\" text.\n2)to use in script call. example\na = get_key(\"intro 1\")\nit will store \"intro 1\" text in variable a\nthen it's up to developer to set the text files. if using that key for choice... don't use [FACE] or other.\nby adding number 1) feature\nyou could use it in choices. and even for all database items. (using global escape codes script of course)\nby adding number 2) feature\nwe could alter scripts that show text to use the key.\nEx: modify Attack command text.\nif that achievable... we could make multiple language games more easily. just change the text files and viola you got yourself another language version of your game."
+    },
+    {
+      "post_id": "js-post-73843",
+      "author": "Enelvon",
+      "date": "2012-12-11T23:57:35+0900",
+      "body": "Those are good suggestions, estriole. I have added them to the script - v1.7 is now up. Please note that this script does not contain the ability to use text codes anywhere but the message window - you will still need a global text codes script to use them in the Database. I am sure there is at least one out there - if not, let me know and I *may* write one, though it will still be separate from this script, as the purpose of this script is to read and process data from the Text.txt file."
+    },
+    {
+      "post_id": "js-post-73869",
+      "author": "Nicke",
+      "date": "2012-12-12T02:17:34+0900",
+      "body": "Neat script. Just wanna point out on your latest release (1.7) you still have this in the code:\nCode:\n($imported ||= {})[\"SES - External Text\"] = 1.5\nShould probably state 1.7 right?"
+    },
+    {
+      "post_id": "js-post-73873",
+      "author": "Enelvon",
+      "date": "2012-12-12T02:26:23+0900",
+      "body": "Ah, yes, thank you - I forgot to update the version number there. It shouldn't be a problem right now - as long as there's *something* there it will work - but it may be important for future versions, so I'll try to remember to update it in the future. Anyway, fixed now!"
+    },
+    {
+      "post_id": "js-post-74029",
+      "author": "estriole",
+      "date": "2012-12-12T13:34:32+0900",
+      "body": "Hurray for Enelvon!!! thanks a lot for this update.\nnow it's easy to translate a game from english to our own native language\ni made games for my toy store purchase bonus. and some of them didn't understand english. but some also complain when i use my 'native' language since it's not cool to use in games\n. so now i can just give them two Text.rvdata2 one english and one my native language. no more complaint\nedit: i forgot. i cannot encrypt the game it that's the case >.<.\nis there a way to switch the text database we use in game? like we have\nEnglish.txt\nIndonesian.txt\nboth of them will turn to:\nEnglish.rvdata2\nIndonesian.rvdata2\nin data folder.\ndefault will use\nEnglish.rvdata2\nthen when we change the chosen language and use\nIndonesian.rvdata2\nin game\nedit2: for now i think i could distribute two encrypted files (since it's not too big anyway). but above function could be helpful for anyone who create multi language games\n."
+    },
+    {
+      "post_id": "js-post-74030",
+      "author": "Enelvon",
+      "date": "2012-12-12T13:39:59+0900",
+      "body": "You're welcome! I'm glad you like the script, and I hope the update proves helpful! Let me know if you find any problems, and I'll make sure to fix them right away."
+    },
+    {
+      "post_id": "js-post-74057",
+      "author": "estriole",
+      "date": "2012-12-12T17:47:37+0900",
+      "body": "just want to let you know...\nthe updates work perfectly if using raizen more choice script.\na = get_text(\"Choice 1\")\n@get_choices = [a,\"No\"]\nthe width of the choice window will fit perfectly with the longest text including the one using the external window\nthen i do some test using normal choice box. there's problem with counting the size of the text. (affect choice window width)\nex:\n\\t[\"Choice 1\"]\nit will count \\t[\"Choice 1\"] width\ninstead of what the text in choice 1 key width.\nso if i have \"I want you to understand\" in that key\nit will cutted to \"I want you to\" the rest is hidden outside the window.\ni also do some test by adding spaces after the\n\\t[\"Choice 1\"]\nin choice box\nthe strange thing is... when i first talk to that choice. it will appear correctly (since it add some spaces)\nbut after talking it again... it will gain those extra spaces. it's like it recognize the key content width.\n.\nbut for me... it's ok as it is since i use raizen more choice script for my choice. thus i don't have that width problem.\nand after rereading your script... i found solution for my problem above (multi language). and i want to share it for any person creating multi language games like me\n.\ni just need to play test the game twice. using different language text files. then rename it to corresponding language (ex: English.rvdata2 and Indonesian.rvdata2)\ncopy it to data folder.\nthen i create this two method in module DataManager\nCode:\ndef self.change_indonesian\n$game_text = load_data(\"Data/Indonesian.rvdata2\")\nend\ndef self.change_english\n$game_text = load_data(\"Data/English.rvdata2\")\nend\nthen whenever i want to change it to english language...\nscript call\nDataManager.change_english\nthen whenever i want to change it to indonesian language...\nscript call\nDataManager.change_indonesian\nhope this help as temporary solution"
+    },
+    {
+      "post_id": "js-post-74070",
+      "author": "Enelvon",
+      "date": "2012-12-12T21:05:27+0900",
+      "body": "Mmmm, I'll admit I didn't test it in the choices window, though even if I had I might not have experienced issues, as I've modified a significant portion of the base scripts. When I get a chance, I'll run it in a fresh project and see if I can find a solution - I believe I know what the problem is, so it shouldn't be that hard.\nAs far as the multiple languages thing goes, yes, that is one of the most effective ways to do it (in the short-term). I am considering writing an add-on that will allow easy swapping of languages, but again, that will have to wait until a little later.\nEdit: The MultiLang addon has been released! It allows multiple languages to be used with ease. Instructions are in its header. v1.8 of the main script has also been released - you will need it for MultiLang. It also causes the choice window to be properly sized when using the \\t[key] text code."
+    },
+    {
+      "post_id": "js-post-74237",
+      "author": "ディーノス",
+      "date": "2012-12-13T09:57:02+0900",
+      "body": "i don't understand how to use it....\ni'm little dizzy after read this...\n@_@\nand using .txt file...\n@_@\nDIZZZZZYYYY.... @_@"
+    },
+    {
+      "post_id": "js-post-74239",
+      "author": "Enelvon",
+      "date": "2012-12-13T10:05:45+0900",
+      "body": "What part don't you understand? I thought I explained everything thoroughly, and I included a properly formatted example. If you can explain your problems, I'll try to clarify."
+    },
+    {
+      "post_id": "js-post-74270",
+      "author": "estriole",
+      "date": "2012-12-13T12:24:01+0900",
+      "body": "whoa... you add multi language nice one\n. last night after posting my post i try to fiddle your script again and made my own multi language add on. i'm using hash instead of array. then set the default language in the module. and have msg box warning to the developer if that language files not exist. for the scene.... i use normal show message and show choices\n. then do the script call to change language.\nhere's my version if you're interested. (but it's messy)\nSpoiler\nCode:\nmodule SES\nmodule ExternalText\n\tLANGUAGE={ #do not touch this line\n\tenglish: \"English\",\n\tindonesian: \"Indonesian\",\n\t} #do not touch this line\n\t#hash for defining what language files you have\n\t#format=> key: \"string\",\n\n\tDEFAULT_LANGUAGE = :english\n\t#set the default language. format=> :key\nend\nend\n\nmodule DataManager\n\n#modify it to convert txt to rvdata2 based on key send\ndef self.create_text(key)\n\tlanguage = SES::ExternalText::LANGUAGE[key]\n\ttext = {}\n\tkey = \"\"\n\tFile.open(\"Data/\"+language+\".txt\", \"r\") do |file|\n\t file.readlines.each_with_index do |v, i|\n\t\tnext if v =~ /(^\\s*(#|\\/\\/).*|^\\s*$)/\n\t\tSES::ExternalText::Tags.each_pair do |k,p|\n\t\t (eval(p); v = \"\") if v =~ k\n\t\tend\n\t\ttext[key][1] << v unless v.empty?\n\t end\n\tend\n\tFile.open(\"Data/\"+language+\".rvdata2\", \"w\") do |file| Marshal.dump(text, file) end\nend\n\n#change it to convert txt to rvdata2 for all language hash member\n#there's also msg box warning if default language files missing\ndef self.load_normal_database\n\ten_et_dm_lnd\n\tSES::ExternalText::LANGUAGE.each_key{|key|\n\tlanguage = SES::ExternalText::LANGUAGE[key.to_sym]\n\tcreate_text(key) if FileTest.exist?(\"Data/\"+language+\".txt\")\n\t}\n\tdefault_language = SES::ExternalText::LANGUAGE[SES::ExternalText::DEFAULT_LANGUAGE]\n\tif !FileTest.exist?(\"Data/\"+default_language+\".rvdata2\")\n\treturn msgbox(\"Missing Default Language Files!!\")\n\tend\n\t$game_text = load_data(\"Data/\"+default_language+\".rvdata2\")\nend\n\ndef self.load_battle_test_database\n\ten_et_dm_lbd\n\tSES::ExternalText::LANGUAGE.each_key{|key|\n\tlanguage = SES::ExternalText::LANGUAGE[key.to_sym]\n\tcreate_text(key) if FileTest.exist?(\"Data/\"+language+\".txt\")\n\t}\n\tdefault_language = SES::ExternalText::LANGUAGE[SES::ExternalText::DEFAULT_LANGUAGE]\n\tif !FileTest.exist?(\"Data/\"+default_language+\".rvdata2\")\n\treturn msgbox(\"Missing Default Language Files!!\")\n\tend\n\t$game_text = load_data(\"Data/\"+default_language+\".rvdata2\")\nend\n\n#change language function. there's also msg box warning if that\n#language files not exist\ndef self.change_language(key)\n\tlanguage = SES::ExternalText::LANGUAGE[key.to_sym]\n\treturn if !language\n\tif !FileTest.exist?(\"Data/\"+language+\".rvdata2\")\n\treturn msgbox(\"Language Files Not Exist!!\")\n\tend\n\t$game_text = load_data(\"Data/\"+language+\".rvdata2\")\nend\n\nend\ni guess i will grab your scene and combine both\n. thx for the update. especially the choice fix. this is really great script."
+    },
+    {
+      "post_id": "js-post-74273",
+      "author": "Enelvon",
+      "date": "2012-12-13T12:34:22+0900",
+      "body": "Interesting way of doing things. With mine, the default language is automatically set to the first one in the array, and I chose to allow it to crash if the file does not exist, as it will tell the developer that fact in the popup. I certainly see a benefit in using events to change the language, but I believe doing it as a scene (especially an RGSS3 one, as they can be modified more easily than RGSS2 ones due to most methods being contained in their windows) gives it a bit more flexibility for those who might want to work it into, say, an options menu. Another slight advantage my script has is that it will remember the last language the player changed it to, allowing you to use custom title text (among other things). Note that every time you save the game in the editor it will reset to the default language - this is because I store the selected language in $data_system, which gets overwritten by the editor's saving. Players will not face the same issue, obviously."
+    },
+    {
+      "post_id": "js-post-74341",
+      "author": "estriole",
+      "date": "2012-12-13T17:04:20+0900",
+      "body": "nice advice enelvon. i learn a lot from your sentence\n. i guess it's better to store it at data system. i didn't think when people change the language and save then resetting the games. since $game_text is not saved. i still need a lot to learn about rgss3\n.\nand i also agree with using scene is better. since you could add it to menu. it's not i prefer using show choice... it's just i'm still not good at creating scene\n.\nedit: found incompatibility with neon black ruby console\nhttp://forums.rpgmak...eloper-console/\nit''s solved by adding this\ndef start\nsuper #<<<<\ncreate_background\n@text_window = Window_Help.new(1)\nset_help_text\n@select_window = Window_LanguageSelect.new\nend\nsince neon black modify the scene_base.\nand by not calling super the window used by that script is nil. thus throw error.\nsecond bug.\ndef update\nsuper\nset_help_text\nSceneManager.return if Enelvon.inputno  #<<<<this line\nend\nEnelvon is not defined.\nthrow error uninitialized constant Scene_LanguageSelect::Enelvon\nedit2:\ngot it work by adding editable variable to check when to exit scene. and change that when call ok handler in window class\nCode:\nclass Window_LanguageSelect < Window_Command\ndef call_ok_handler\n$data_system.set_language(command_name(@index))\nactivate\nSceneManager.scene.exit = true\nend\n\ndef make_command_list; @list = SES::ExternalText::Languages; end\nend\nclass Scene_LanguageSelect < Scene_Base\nattr_accessor :exit\ndef start\nsuper\n@exit = false\ncreate_background\n@text_window = Window_Help.new(1)\nset_help_text\n@select_window = Window_LanguageSelect.new\nend\nend\ni think i learn something new in the way you create window command. i never know it could used that way\n.\nonly little lines and do the tricks"
+    },
+    {
+      "post_id": "js-post-74392",
+      "author": "Enelvon",
+      "date": "2012-12-13T23:52:08+0900",
+      "body": "Ah, oops. I have a custom input module, and forgot to update it to not rely on that (hence the Enelvon.inputno). I also *should* have called super in the scene - that was a careless mistake. I'm sorry - I've been exhausted lately, since I've had a huge workload. I have a brief vacation through this weekend, so hopefully I'll be able to catch up on my sleep. Anyway, MultiLang is now v1.1, which fixes a few small mistakes (including those two).\nAh, and I'm glad you learned something from my script! I'm always happy when my scripts teach someone something."
+    },
+    {
+      "post_id": "js-post-75123",
+      "author": "Enelvon",
+      "date": "2012-12-16T02:03:24+0900",
+      "body": "MultiLang has been updated to v1.2! 1.2 removes the placeholder method of remembering the last selected language (that did *not* work in encrypted archives) and replaces it with a line in Game.ini, which does. That and it looks nicer."
+    },
+    {
+      "post_id": "js-post-75368",
+      "author": "estriole",
+      "date": "2012-12-16T20:49:11+0900",
+      "body": "just want to report. you forgot the 'super' again\n. so neon black script crashed again.\nedit: checked and the language change not saved in save files.\nso i change the language to indonesian in game. then save. then hit f12. then load game. the language revert back to english.\nand my ini files didn't have language section too.\nprevious version save the language when saving and loading the files. it stay indonesian."
+    },
+    {
+      "post_id": "js-post-75514",
+      "author": "Enelvon",
+      "date": "2012-12-17T06:56:26+0900",
+      "body": "...of course I forgot it again. Silly me. *sighs*\nThank you, fixed that.\nAs far as it not adding language to the .ini... that's... because I forgot handling to add it initially, apparently. A quick fix is to add a Language= line to the .ini file, but I'm going to upload a fix in one second, so there's that too.\nEdit: Fix uploaded. Sorry for the inconvenience!"
+    },
+    {
+      "post_id": "js-post-75729",
+      "author": "estriole",
+      "date": "2012-12-17T18:24:07+0900",
+      "body": "great. i will try it later at home. i will report if i found something again\n. thx for this great script."
+    },
+    {
+      "post_id": "js-post-80495",
+      "author": "neoscully",
+      "date": "2012-12-28T22:42:28+0900",
+      "body": "There is an error with German, using German letters: Script '...' line 347: ArgumentError occured. Invalid byte sequence in UTF-8\ni.e. letters like \"ä\" in texts like \"Dies wäre also ein Test\"."
+    },
+    {
+      "post_id": "js-post-80502",
+      "author": "neoscully",
+      "date": "2012-12-28T23:18:20+0900",
+      "body": "Ok..found it out by myself... reading is power...\nIs it possible to use some comments in the text file, like:\n========================\n- ACTOR 1\n========================\nor anything else? So far I only found spaces possible beside the key tags and text."
+    },
+    {
+      "post_id": "js-post-80527",
+      "author": "neoscully",
+      "date": "2012-12-29T00:23:56+0900",
+      "body": "I feel like a comlete noob... probably because I am...\nCould you please be so kind and post an example for an event that includes choices? I am not sure if I need an additional script, if it is not included yet or still possible.\nAnd sorry for my terrible English, probably one of the reasons why I can't follow everything here."
+    },
+    {
+      "post_id": "js-post-81654",
+      "author": "estriole",
+      "date": "2012-12-31T18:10:25+0900",
+      "body": "for choices you can set the choice using event editor.\nthen in choice box you can use \\t[yourkey]\nexample:\n\\t[Choice 1]\nor alternatively you can also use multiple choices script (from raizen or tsukihime)\nthen call some script call BEFORE adding BLANK / ANY choice command from editor:\nCode:\na = get_text(\"Choice 1\")\n@get_choices = [a,\"No!\"]\nthis will result to:\nfirst choice\t  : choice1 key content\nsecond choice : No!\nhope this help\n."
+    },
+    {
+      "post_id": "js-post-81993",
+      "author": "DeleteMe",
+      "date": "2013-01-01T12:42:15+0900",
+      "body": "Hello, I think this is a really awesome script. Aside from crediting, what are the other terms of use? Thanks."
+    },
+    {
+      "post_id": "js-post-82026",
+      "author": "Solistra",
+      "date": "2013-01-01T15:58:33+0900",
+      "body": "Dhobby said:\nHello, I think this is a really awesome script. Aside from crediting, what are the other terms of use? Thanks.\nClick to expand...\nThe terms of use (the license, really) is clearly explained under the Author's Notes, just like every other SES script. Essentially, you're free to do whatever you want with any SES script as long as credit and the license terms are maintained (which means anyone else can also modify your modifications under the same terms). Both commercial and non-commercial use is allowed as well."
+    },
+    {
+      "post_id": "js-post-82065",
+      "author": "Asejia",
+      "date": "2013-01-01T19:47:30+0900",
+      "body": "Is there any script which let me also translate the database? Unfortunately I can't find one."
+    },
+    {
+      "post_id": "js-post-82116",
+      "author": "DeleteMe",
+      "date": "2013-01-02T00:21:53+0900",
+      "body": "Solistra said:\nThe terms of use (the license, really) is clearly explained under the Author's Notes, just like every other SES script. Essentially, you're free to do whatever you want with any SES script as long as credit and the license terms are maintained (which means anyone else can also modify your modifications under the same terms). Both commercial and non-commercial use is allowed as well.\nClick to expand...\nWOW. My bad. I can't believe I missed it. I opened the script and tried to ctrl F \"terms\" lol. Thanks for pointing it out solistra!\n------------------------------------------------------------------------------------------------------------\nEdit:\nI made a simple event as shown below with choices. After the text is displayed the choices are displayed. How can i Make it so that the text stays there while the choices are there?\nSpoiler\n[IMG]http://i.imgur.com/UMrTd.png[/IMG]\n[IMG]http://i.imgur.com/nfkTL.png[/IMG]"
+    },
+    {
+      "post_id": "js-post-82528",
+      "author": "estriole",
+      "date": "2013-01-02T17:47:21+0900",
+      "body": "@Dhobby: you could use normal show message instead of calling text(key).\nthen in that normal show message use\n\\t[intro 1]\nbut it will only grab the text (not grabbing the face etc). so you need to set the face with your message system's escape code inside the show message too.\n(i try adding the escape code in key text but using \\t[key] will not recognize escape codes since it already escape code. unless someone add the function to look for escape codes inside escape codes\n)\nexample if using yanfly ace message system:\n\\af[1]\\t[intro 1]\nand you also have to remember... using \\t[key]. new line in the text is really new line in the message.\nex:\ni am\nenglish\nwill shown in two line instead of one line using text(key) command.\nhope this help."
+    },
+    {
+      "post_id": "js-post-82677",
+      "author": "DeleteMe",
+      "date": "2013-01-03T03:47:18+0900",
+      "body": "Thanks estriole. It works but the no word wrapping thing is\n.\nEdit:\nIs this the only way of doing choices? I just realized that if I ever changed the font I would have to reformat all my choice text boxes and that would be more inconvenient as the game gets larger and larger."
+    },
+    {
+      "post_id": "js-post-82954",
+      "author": "estriole",
+      "date": "2013-01-03T14:32:11+0900",
+      "body": "yes no wrapping\n. since it's basically just escape codes. maybe it could work combined with killozapit auto wrap message script. but i haven't try that yet.\nsecond question... we only have two ways\n1) use normal choice command and use \\t[key] as the choice value\n2) use tsukihime/raizen multiple choices script and call it using script call.\nexample script call\na = get_text(\"Choice 1\")\n@get_choices = [a,\"No!\"]\nthen call BLANK show choice command. it will show two choices\nsecond one is \"No!\"\nfirst one is whatever you write in text database (AND ESCAPE CODES WORK so you can put \\i[10] to show icon 10, etc)\nso i suggest using number 2 method."
+    },
+    {
+      "post_id": "js-post-83046",
+      "author": "DeleteMe",
+      "date": "2013-01-03T23:49:31+0900",
+      "body": "Thanks for the suggestion estriole but my second question was actually asking if there were different ways to do the first question. I tried the suggestions for my second question but a choice box still shows up with no text underneath it. If this is intended behavior I think I will go with using an auto wrap script and using \\t calls when showing choices."
+    },
+    {
+      "post_id": "js-post-83698",
+      "author": "estriole",
+      "date": "2013-01-05T12:04:33+0900",
+      "body": "could you please post the result here. if it's work or not\n. it would be helpful if someone encounter the same problem"
+    },
+    {
+      "post_id": "js-post-83721",
+      "author": "Enelvon",
+      "date": "2013-01-05T13:27:27+0900",
+      "body": "Mmm, sorry for not being around to answer your questions - I've been pretty busy lately. estriole, thank you for your help with answering questions - it looks to me like you've covered everything. If anyone has any further questions, please do make sure you ask - with any luck I should have more free time to answer them in the coming week."
+    },
+    {
+      "post_id": "js-post-83722",
+      "author": "DeleteMe",
+      "date": "2013-01-05T13:37:22+0900",
+      "body": "@estriole Yes word wrapping script + this script does indeed work with \\t[key].\nSpecifically I am using modern alebra's ATS (advanced text system) to do the word wrapping for me. In order to call faces and a choice I would use a textbox \\af[x]\\t[key] and afterward I would use show choice and that would achieve the desired effect. Thank you for your suggestions estriole!"
+    },
+    {
+      "post_id": "js-post-83802",
+      "author": "estriole",
+      "date": "2013-01-05T19:29:49+0900",
+      "body": "@Dhobby: thanks for that information.\n@Enelvon: it's the least i can do to support this great script you've made\n."
+    },
+    {
+      "post_id": "js-post-109028",
+      "author": "Bethins",
+      "date": "2013-03-18T07:45:30+0900",
+      "body": "Great script! exactly what I need to keep all my text in check!\nSmall question though, how do I implement the scrolling text feature though this script? \"Show Scrolling Text\"\nThanks!"
+    },
+    {
+      "post_id": "js-post-109545",
+      "author": "Enelvon",
+      "date": "2013-03-19T09:53:38+0900",
+      "body": "I... completely forgot that the scrolling text feature existed. *sighs*\nI'll write up a patch that includes it - it will probably be released tomorrow or Wednesday, whatever my schedule permits."
+    },
+    {
+      "post_id": "js-post-109641",
+      "author": "Bethins",
+      "date": "2013-03-19T14:48:55+0900",
+      "body": "Awesome!  I didn't expect to get a patch, thanks : )\n/notworthy"
+    },
+    {
+      "post_id": "js-post-110500",
+      "author": "Andar",
+      "date": "2013-03-21T22:45:17+0900",
+      "body": "Hi,\nI experimented a bit with the script, good work!\nOne problem that I encountered was a display problem when combining it with Fomar's Faces-to-Busts Script:\nThe text was wrapped too early as your script expected to include the face picture that was removed by Fomar's script.\nBut the fix was easy:\nIf someone wants to use this external text script in combination with the Face-to-bust script, simply replace the single line \"width = Graph...\" (snipped) in the function too_wide?(text)  at the end of the Game_Message class with\nif @face_name.include?(Fomar::BUST_SYMBOL)       width = Graphics.width - 24    else         width = Graphics.width - (@face_name.empty? ? 24 : 136)    end(of course, this quick hack only works if Fomar's script is present, it doesn't check if the script is present)"
+    },
+    {
+      "post_id": "js-post-137769",
+      "author": "amicable",
+      "date": "2013-06-02T02:56:51+0900",
+      "body": "hey, i'm having some trouble with the automatic text wrapping. it worked like a dream at default font size, but when i shrunk the text down to 20 rather than the default 24, it went wonky and now it wraps too early. i found the too_wide? and messed around in it but got no real results, which shows i have no idea what i'm doing.\nis there any way for me to be able to adjust the size of the text wrap so i can get it to work with differently scaled font?"
+    },
+    {
+      "post_id": "js-post-137791",
+      "author": "Andar",
+      "date": "2013-06-02T04:19:45+0900",
+      "body": "amicable said:\nhey, i'm having some trouble with the automatic text wrapping. it worked like a dream at default font size, but when i shrunk the text down to 20 rather than the default 24, it went wonky and now it wraps too early. i found the too_wide? and messed around in it but got no real results, which shows i have no idea what i'm doing.\nis there any way for me to be able to adjust the size of the text wrap so i can get it to work with differently scaled font?\nClick to expand...\nYou probably misunderstood the numbers in too_wide. the 24 in too_wide? is not a font size, but a horizontal distance to be reserved, look at my post above yours.\nIf you reduce that 24 to 20, you increase the space reserved for text length - usually resulting in more letters on a single line. That's why the space for text is reduced by 136 if there is a face to be placed before the textline.\nFont size has to be handled somewhere else - but I don't have the script available (and aren't the original writer anyway), so I can't help you with finding the correct place for what to do with a different font size."
+    },
+    {
+      "post_id": "js-post-137793",
+      "author": "Enelvon",
+      "date": "2013-06-02T04:24:52+0900",
+      "body": "How exactly are you shrinking the font size? I just tested it myself, and it worked fine with font at size 20. My guess is that you're changing the font size only for Window_Message, correct? Give me a minute and I'll upload something that will let you use that without problems.\nEdit: Updated."
+    },
+    {
+      "post_id": "js-post-137798",
+      "author": "amicable",
+      "date": "2013-06-02T04:56:15+0900",
+      "body": "thank you! yes, that's exactly what i was doing. i'll give it a try now"
+    },
+    {
+      "post_id": "js-post-137799",
+      "author": "Andar",
+      "date": "2013-06-02T05:00:20+0900",
+      "body": "Enelvon said:\nI... completely forgot that the scrolling text feature existed. *sighs*\nI'll write up a patch that includes it - it will probably be released tomorrow or Wednesday, whatever my schedule permits.\nClick to expand...\nOne question: Has that feature been added yet or is it still not possible to use this script with scrolling text?"
+    },
+    {
+      "post_id": "js-post-137811",
+      "author": "Enelvon",
+      "date": "2013-06-02T05:30:52+0900",
+      "body": "Gah, looks like it's not in there. I'll have to look back and see why not... could have sworn I'd added it... maybe there was a complication I've forgotten. My notes should tell me."
+    },
+    {
+      "post_id": "js-post-137909",
+      "author": "Bethins",
+      "date": "2013-06-02T10:34:30+0900",
+      "body": "I was gonna ask about that too but I didn't wanna sound rude since it was me that asked for it : P\nThanks for the great script!"
+    },
+    {
+      "post_id": "js-post-139031",
+      "author": "estriole",
+      "date": "2013-06-05T13:27:25+0900",
+      "body": "just wanna share... i write this so i can use the message code inside the txt.\nbut don't know if there's problem though. i mainly use it to draw party actor face only. (yanflys: \\af[id]). oh and color too (\\c[id])\nclass Window_Base  def convert_escape_characters(*args, &block)    result = en_et_wb_cec(*args, &block)    result.gsub!(/\\eT\\[(.+)\\]/i) { if $game_text.keys.include?($1)                                      $game_text[$1][1]                                   else                                      \"Invalid key [#{$1}]. No matching text exists.\"                                   end                                 }    return final = en_et_wb_cec(result)  endendi put it below Enelvon script"
+    },
+    {
+      "post_id": "js-post-139487",
+      "author": "Enelvon",
+      "date": "2013-06-07T03:36:18+0900",
+      "body": "Finally have a bit of free time again, so put up v2.0, which supports scrolling text."
+    },
+    {
+      "post_id": "js-post-139491",
+      "author": "Andar",
+      "date": "2013-06-07T03:52:48+0900",
+      "body": "thank you ;-)"
+    },
+    {
+      "post_id": "js-post-139492",
+      "author": "Enelvon",
+      "date": "2013-06-07T03:57:04+0900",
+      "body": "Not a problem! Sorry that it took so long to upload, but I've been quite busy for the last few days."
+    },
+    {
+      "post_id": "js-post-140313",
+      "author": "amicable",
+      "date": "2013-06-09T20:30:33+0900",
+      "body": "i have another problem with the external text. it's not compatible with\ngalv's message busts\n(it runs but no image is displayed)\nis there another message bust script you know of that works with it? if not would it be easy to add compatibility? thanks!"
+    },
+    {
+      "post_id": "js-post-140318",
+      "author": "Andar",
+      "date": "2013-06-09T20:45:58+0900",
+      "body": "amicable said:\ni have another problem with the external text. it's not compatible with\ngalv's message busts\n(it runs but no image is displayed)\nis there another message bust script you know of that works with it? if not would it be easy to add compatibility? thanks!\nClick to expand...\nGo back to the third page, I posted a small change there to make \"external text 1.8\" compatible with fomar's bust script (in one of the restaff-releases).\nI imagine it should still be usable with 2.0, but you'll have to test that (it was a very quick and dirty hack)"
+    },
+    {
+      "post_id": "js-post-140326",
+      "author": "amicable",
+      "date": "2013-06-09T21:08:18+0900",
+      "body": "Andar said:\nGo back to the third page, I posted a small change there to make \"external text 1.8\" compatible with fomar's bust script (in one of the restaff-releases).\nI imagine it should still be usable with 2.0, but you'll have to test that (it was a very quick and dirty hack)\nClick to expand...\nerr i'll try using formars, i found it and downloaded it and it works without the patch (i want the images to be showing up on the right hand side so i don't want the text to wrap around it)\nbut having to manually configure where the image shows up is a bit of a hassle. i'll give it a try though, thanks\nedit: tried installing a script that could flip my pictures for me, but it doesn't work. i'm not sure fomar's script is going to work out for me\nany other options?\njust made the bust picture the same size as the window so i can put the image wherever i want on it"
+    },
+    {
+      "post_id": "js-post-145796",
+      "author": "cabfe",
+      "date": "2013-06-25T03:32:57+0900",
+      "body": "Strangely I get an error when I try to test a map with this script.\nIt says :\nScript \" line 366: NoMethodError occurred.\nundefined method `text' for \"\":String\nI used the sample Text.txt file and put it in the Data folder. It created a Text.rvdata2 at first but now it doesn't even generate it."
+    },
+    {
+      "post_id": "js-post-147289",
+      "author": "cabfe",
+      "date": "2013-06-29T02:07:48+0900",
+      "body": "I continued trying to get the script to work, but I couldn't with my low Ruby skill.\nI renamed my script, but no change :\nScript 'External text test' line 366: NoMethodError occurred.\nundefined method `text' for \"\":String\nHere are my settings :\nThe Text.txt file is the Sample one :\n(put in my Data folder as requested) :\nSpoiler\n# Introduction\n[Key] Intro 1\n[Face] Actor5, 7\n[Name] Isabelle\nSo some foolish heroes are approaching my land, hm? I'll just have to stomp them out!\n[Key] Intro 2\n[PFace] 0\n[Name] \\p[1]\nSo this is the evil empire of Cliche...\n[Key] Intro 3\n[AFace] 4\n[Name] \\n[4]\nBoss, are you sure we should be here? It's dangerous.\n[Key] Intro 4\n[DFace] Ralph\n[Name] Ralph\nNonsense! Chaaaaaarge!\n// End Introduction\nMy Event window :\nSpoiler\nAnd the script with the infamous line 366 :\nSpoiler\nIt crashes as soon as I launch a playtest, even before the Title screen.\nI don't why I am the only one with that crash, unless no one else is using the 2.0 version\n."
+    },
+    {
+      "post_id": "js-post-147308",
+      "author": "Andar",
+      "date": "2013-06-29T02:54:13+0900",
+      "body": "cabfe said:\nIt crashes as soon as I launch a playtest, even before the Title screen.\nI don't why I am the only one with that crash, unless no one else is using the 2.0 version\n.\nClick to expand...\nNo, you aren't the only one - I just tested it in a new project with the same error and with an old version to make sure it isn't something in the text file (same error when switching from 1.8 to 2.0).\nI'll send a PM to enelvon to check the changes"
+    },
+    {
+      "post_id": "js-post-149760",
+      "author": "ApproximatelyCats",
+      "date": "2013-07-06T15:32:22+0900",
+      "body": "This is an awesome script! Would love to use it in my current game (though sadly I use XP)\nWould be amazing to convert this into an XP format.. Though I myself am not too advanced in scripting at all..\nMaybe if I get better I can try to make this to work in XP. (Only if it is okay with you of course.)"
+    },
+    {
+      "post_id": "js-post-149768",
+      "author": "cabfe",
+      "date": "2013-07-06T16:28:14+0900",
+      "body": "If you use XP, you can try the program called DreaMaker.\nI didn't try it myself as I don't own XP but this be the right tool for you."
+    },
+    {
+      "post_id": "js-post-150104",
+      "author": "Enelvon",
+      "date": "2013-07-08T03:25:49+0900",
+      "body": "Sorry for the delay in replying - things have not exactly been going my way lately.\ncabfe, thank you for noticing that - it was a bit of code from a potential overhaul that somehow slipped in there. I've fixed it now, though I didn't bother incrementing the version number since it was literally a matter of removing a single word.\nskitzen, if you would like to make a version for XP, be my guest. Make sure to give me a link to it if you do, and I'll toss it up in the OP."
+    },
+    {
+      "post_id": "js-post-150458",
+      "author": "cabfe",
+      "date": "2013-07-09T02:23:24+0900",
+      "body": "Thank you for the fix, now it no longer crashes when launching the F12 test... but I still get a crash when I talk to my NPC.\nError this time goes like this :\nScript 'Game_Message' line 99: NoMethodError occured.\nundefined method ` +' for true:TrueClass\nI'm pretty sure the official Game_Message script is not in error, so that must be something sent to it by the script.\nMaybe it is just the Text.txt ?\nI am using the Text.txt sample, the file Text.rvdata2 is generated each time. That looks fine.\nI use the same infos as those posted on june 28.\nBasic event, basic map, no other scripts...\nI feel cursed on this one\nWish I were better at scripting now..."
+    },
+    {
+      "post_id": "js-post-150486",
+      "author": "Andar",
+      "date": "2013-07-09T03:30:22+0900",
+      "body": "cabfe said:\nThank you for the fix, now it no longer crashes when launching the F12 test... but I still get a crash when I talk to my NPC.\nError this time goes like this :\nScript 'Game_Message' line 99: NoMethodError occured.\nundefined method ` +' for true:TrueClass\nI'm pretty sure the official Game_Message script is not in error, so that must be something sent to it by the script.\nMaybe it is just the Text.txt ?\nI am using the Text.txt sample, the file Text.rvdata2 is generated each time. That looks fine.\nI use the same infos as those posted on june 28.\nBasic event, basic map, no other scripts...\nI feel cursed on this one\nWish I were better at scripting now...\nClick to expand...\ntry adding this script to get the correct error message, that message looks like it only points to the place where the error was detected, not where it was caused:\nhttp://himeworks.wordpress.com/2013/06/09/custom-main-full-error-backtrace/\nDon't forget to activate the console before playtest with the backtracer..."
+    },
+    {
+      "post_id": "js-post-150508",
+      "author": "cabfe",
+      "date": "2013-07-09T04:38:12+0900",
+      "body": "OK, here is what I got :\nGame_Message:99:in `block in all_text': undefined method `+' for true:TrueClass\n(NoMethodError)\nfrom Game_Message:99:in `each'\nfrom Game_Message:99:in `inject'\nfrom Game_Message:99:in `all_text'\nfrom Window_Message:209:in `process_all_text'\nfrom Window_Message:178:in `block in fiber_main'\nfrom Window_Message:177:in `loop'\nfrom Window_Message:177:in `fiber_main'\nfrom Window_Message:80:in `block in update_fiber'"
+    },
+    {
+      "post_id": "js-post-150866",
+      "author": "Enelvon",
+      "date": "2013-07-10T09:23:00+0900",
+      "body": "Located and fixed - oddly, it was coming from a line of code that hasn't changed since the first version of the script. I'm not entirely certain why it chose now of all times to act up, but since the issue has been resolved, it's not a real problem."
+    },
+    {
+      "post_id": "js-post-150991",
+      "author": "cabfe",
+      "date": "2013-07-10T15:27:15+0900",
+      "body": "Thank you, it works !\nNow I just have to make the multilang work with accentued letters to get rid of the UTF8 error and I'll be good.\nI suspect it has something to do with hashtags. I hope this isn't something like this line\nnext if v =~ /(^\\s*(#|\\/\\/).*|^\\s*$)/\nas I understand only the first two words\nEdit : forget it, I was just an idiot\nMy Text file was saved in ASCII, not UTF-8.\nEverything is alright !"
+    },
+    {
+      "post_id": "js-post-152870",
+      "author": "Galenmereth",
+      "date": "2013-07-16T08:10:23+0900",
+      "body": "There seems to be a bug where if you have a lot of text (more than one message window), on the next \"page\" the script inserts a blank line on the top even if your name style is set to :box. This happens to all subsequent pages after the first one."
+    },
+    {
+      "post_id": "js-post-162836",
+      "author": "Corlagon",
+      "date": "2013-08-09T21:16:44+0900",
+      "body": "Looks great, but I still cannot get it to work with special characters. If I save my text file as UTF-8 it can't load it at all …"
+    },
+    {
+      "post_id": "js-post-164948",
+      "author": "seita",
+      "date": "2013-08-15T01:09:48+0900",
+      "body": "Trying to get this to work with both the Yanfly Ace Message System and Galv's message bust. I'm fully invested in these two systems, so I can't really just replace it with fomar's bust or delete the message system.\nAndar said:\nGo back to the third page, I posted a small change there to make \"external text 1.8\" compatible with fomar's bust script (in one of the restaff-releases).\nI imagine it should still be usable with 2.0, but you'll have to test that (it was a very quick and dirty hack)\nClick to expand...\nDo you have a possible fix for the bust not showing up with Galv's, Andar?\nAs for the ace message system, I understand you can check for things on the external by adding entries to the hash of tags, but I wouldn't know where to start with allowing the ace message system to contact the external text. I assume it has something to do with the\n# new method: convert_ace_message_system_new_escape_characters\nmethod that starts on line 342 of yanfly's script.\nhttp://yanflychannel.wordpress.com/rmvxa/core-scripts/ace-message-system/"
+    },
+    {
+      "post_id": "js-post-164972",
+      "author": "Andar",
+      "date": "2013-08-15T02:17:09+0900",
+      "body": "seita said:\nDo you have a possible fix for the bust not showing up with Galv's, Andar?\nClick to expand...\nNo\nAs I said it was a very quick and dirty hack, and it only was possible because Fomar's script is very easy.\nI don't even know where to start with Galv's variant.\nI might look into it in a few months when I have time to continue with my own game, because I consider switching to Galv's script as well - but no chance of anything like that in the foreseeable future from me..."
+    },
+    {
+      "post_id": "js-post-165098",
+      "author": "estriole",
+      "date": "2013-08-15T08:52:01+0900",
+      "body": "Try using the window escape code feature. See a couple post from first post. I requested that feature. It's already implemented but I guess not well documented so many people don't know.\nAnd to use it with yanfly message code (and any message code). You could see a couple pages back. There's a snippet I wrote so it recognize the escape character from any message system."
+    },
+    {
+      "post_id": "js-post-165154",
+      "author": "seita",
+      "date": "2013-08-15T10:49:50+0900",
+      "body": "Thanks for the response Andar I really appreciate it.\nThanks for the fix estriole, it works with the escape codes.\nI noticed that the script inserts line breaks even without [line], is that right? The instructions say it will wrap itself, but it's not doing that. It's interpreting line breaks within the Text file as actual line breaks.\nAlso, I still need a compatibility fix for galv's message bust. Hmm."
+    },
+    {
+      "post_id": "js-post-165175",
+      "author": "estriole",
+      "date": "2013-08-15T12:12:04+0900",
+      "body": "Try using escape code mode so you can use galv message bust. For face and anything you can set it using yanfly message system escape code."
+    },
+    {
+      "post_id": "js-post-166767",
+      "author": "Marcio",
+      "date": "2013-08-21T08:43:51+0900",
+      "body": "What a great Script! Thank you Enelvon!\nI have a question though:\nI use Yanflys Message System with Control Codes.\nI have a English.txt within my Data Folder and it is setup as follow:\n#Startin sequence 1\n[Key] B&W 1\nOkay, we almost did it.\\!\nOur replacement should be here in a minute.\\! Hurry up!\n[Key] B&W 2\nWhat's wrong with you, lieutenant Cebola? C'mon, I can see that something\nis going on.\\! Tell me!\n[Key] B&W 3\nWell Captain...\\|\\.\\.my chield was born yesterday and I didn't had the\nopportunity to visit my wife.\n\\\\end of sequence\nNow I have the Problem, that the line Brakes aren't recognized. I can try and add them manualy with \\n but no matter what I do, the lines don't brake.\nWhat am I doing wrong?\nSomeone here that has used this with Yami's Popup Message? ^^\nEdit:\nStupid me: Could it really be that I didn't read the [Line] tag? Is there any other Solution to force a linebrake if this don't work?\nIf this solves the mystery though...\nWill try ASAP!\nEdit 2:\nOkay I got everything to work. Thanks for the awesome script!"
+    },
+    {
+      "post_id": "js-post-168367",
+      "author": "Marcio",
+      "date": "2013-08-26T04:17:54+0900",
+      "body": "I have encountered another problem with \\t(!Key!) and global codes.\nAs a example I'll just use one Item. I have declared Item 30 in the database as \\t[item 30]\nIn my English.txt file I have declared a Key:\n[Key] Item 30\nSoulstone\nEverything is right but when I have a message with this Key:\n[Key] Item 30 re\n\\ni[30] received.\nI call it like this text(\"Item 30 re\") and now it get's weird because my Text is being splitted in two lines like this:\nSoulstone\nreceived\nLike I said, I'm using Yanflys superb Message System and have Victors control Code + Text working properly but this call isn't going well. I tried different approaches but can't get it to work. :/\nCan someone please point me in the right direction?\nEdit:\nI tried it with Modern Algebras Global Text Code but I have the same problem.\nTo be more accurat: If I use this:\n[Key] Item 28 get\n\\ni[28] got\nThe line get stripped like this:\n\"Soulstone\nget\"\nIf I use\n[Key] Item 28 get\nGot \\ni[28]\nThen the Line reads \"Got Soulstone\"...\nAm I missing something...? -.-° I really need it to be the other way around *_*"
+    },
+    {
+      "post_id": "js-post-169551",
+      "author": "Marcio",
+      "date": "2013-08-29T17:07:45+0900",
+      "body": "Anyone has a Solution for this \"Problem\"? ^^\nI have encountered another \"problem\": When I use the script and have heavy messages going on I have \"hickups\" in my scene.\nI tried moving 2 Events on the same mouveroute using normal movetypes and have 10 Messages going on between 2 Events. If I use the script the moving characters stutters when I hit Enter to fast to go to the next Message.\nIf I use the normal message Window command with hardtyping the Messages, it's no problem at all..."
+    },
+    {
+      "post_id": "js-post-175152",
+      "author": "Marcio",
+      "date": "2013-09-16T22:09:23+0900",
+      "body": "No one who can help out?"
+    },
+    {
+      "post_id": "js-post-175891",
+      "author": "Corlagon",
+      "date": "2013-09-19T23:37:43+0900",
+      "body": "How do I get it to work with UTF-8 files? Can anybody explain?\nI always get \"undefined method '[]' for nil:NilClass\" on line 367 …"
+    },
+    {
+      "post_id": "js-post-175901",
+      "author": "seita",
+      "date": "2013-09-20T00:45:58+0900",
+      "body": "@Marcio\nMy scripter tackled this problem for me, I'll ask him and see if he can respond to this."
+    },
+    {
+      "post_id": "js-post-176045",
+      "author": "Enelvon",
+      "date": "2013-09-20T09:26:00+0900",
+      "body": "The Unicode issue is actually something I fixed a while back, but apparently forgot to upload. Doing so now, one moment.\nEdit: Uploaded. Updating OP now."
+    },
+    {
+      "post_id": "js-post-176128",
+      "author": "Marcio",
+      "date": "2013-09-20T16:45:56+0900",
+      "body": "seita said:\n@Marcio\nMy scripter tackled this problem for me, I'll ask him and see if he can respond to this.\nClick to expand...\nThis would be really sweet!\nThank you in advance. ^^\n@Envelon Was this Issue not reported? Those are serious \"hickups\". ^^"
+    },
+    {
+      "post_id": "js-post-176162",
+      "author": "Corlagon",
+      "date": "2013-09-20T21:55:04+0900",
+      "body": "Enelvon said:\nThe Unicode issue is actually something I fixed a while back, but apparently forgot to upload. Doing so now, one moment.\nEdit: Uploaded. Updating OP now.\nClick to expand...\nYay, thanks! Making a bilingual game will be less of a pain now.\nYou actually missed line 116 in the Multilang addon, but I was able to simply copy the code over from elsewhere in the script now. ;-)"
+    },
+    {
+      "post_id": "js-post-176924",
+      "author": "Roxas162",
+      "date": "2013-09-23T09:42:47+0900",
+      "body": "Does this script allow you to have a name box when showing a text message box?\nLike this:\nI understand this is Yanflys version but his version is shifting my text to the point where i would have to rewrite my whole game"
+    },
+    {
+      "post_id": "js-post-177099",
+      "author": "Roxas162",
+      "date": "2013-09-24T04:13:36+0900",
+      "body": "Why does this keep happening??? Can someone help me?"
+    },
+    {
+      "post_id": "js-post-177104",
+      "author": "Andar",
+      "date": "2013-09-24T05:55:24+0900",
+      "body": "Roxas162, please avoid double posting, as it is against the forum rules. You can review our forum rules\nhere\n. Thank you.\nRoxas162 said:\nWhy does this keep happening??? Can someone help me?\nClick to expand...\nI remember reading about that error somewhere as a combination of this script or the multilanguage-addon and possibly the encryption.\nIt was either when the text files was named wrong (depending on whether you have the ML-Addon or not the name of the text file has to be named differently) or when using the encryption.\nI don't remember the exact fix, but it was something referenced to on this site, so search for posts about this script and read through the previous pages of this topic."
+    },
+    {
+      "post_id": "js-post-177115",
+      "author": "Roxas162",
+      "date": "2013-09-24T06:15:16+0900",
+      "body": "Like all i need to know is how to make a rvdata.2 file so it will read it"
+    },
+    {
+      "post_id": "js-post-177130",
+      "author": "Andar",
+      "date": "2013-09-24T07:10:56+0900",
+      "body": "Roxas162 said:\nLike all i need to know is how to make a rvdata.2 file so it will read it\nClick to expand...\nwrong\nThe rvdata2-file is automatically created by the script IF you have a valid text.txt-file like described in the script.\nThat is why I asked you to check if you have the files named correctly depending on your use of this script and it's add-On."
+    },
+    {
+      "post_id": "js-post-177277",
+      "author": "Marcio",
+      "date": "2013-09-24T16:20:35+0900",
+      "body": "Can someone explain me the difference between the older Version and the Unicode Fix?"
+    },
+    {
+      "post_id": "js-post-208616",
+      "author": "Roguedeus",
+      "date": "2014-01-04T03:34:11+0900",
+      "body": "Enelvon, thank you very much for this script. It works very well, and I am lucky to have found it.\nHowever, there are a few things I was hoping you might clarify.\nFirst, the [Line] option doesn't seem to be working at all. I have tried using it many times, and made sure to follow your instructions. It has not worked once.\nSecond, is there a possibility that you might add a way to disable the auto wrapping of lines, and just allow for a manual line break?\nI realize that many people like to not have to wrestle with that kind of formatting, but I am going for a certain esthetic to my dialogue and not being able to have sentences end exactly where I need them to, is breaking that. Most especially when lots of special text codes are included in the line.\nThanks for your time."
+    },
+    {
+      "post_id": "js-post-238798",
+      "author": "Shian",
+      "date": "2014-03-15T10:33:45+0900",
+      "body": "Hi, can someone help me with the problem that\nGalenmereth\nmentioned a while back, of how when the text exceeds one box there is a blank line in the next box as shown:\nFirst window\nSpoiler\nSecond Window:\nSpoiler\nThe only text in text.txt is\n[Key] Test1The quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dogAlso this is a brand new project with no other scripts/edits except that required to emulate the problem.\nThanks in advance for any help."
+    },
+    {
+      "post_id": "js-post-280168",
+      "author": "Andar",
+      "date": "2014-06-30T23:17:22+0900",
+      "body": "I have a problem with using the get_text command - it results in an additional junk symbol after the displayed name/title, even when I can see no difference in how the textfile is set up there compared to keys used with other commands.\nBut there are a few places where I need the get_text, mainly in scripts for the vocabs there.\nCan anyone tell if something similiar happened with other projects, and if the problem is in the script or in the text file?\nThe picture and more info is here:\nhttp://forums.rpgmakerweb.com/index.php?/topic/29070-how-to-add-a-new-command-line-to-title-screen/#entry279482\n(later part of the topic)"
+    },
+    {
+      "post_id": "js-post-281795",
+      "author": "Enelvon",
+      "date": "2014-07-03T07:37:07+0900",
+      "body": "Fixed and updated - sorry, could have sworn I posted a reply, but it looks like I didn't. The problem occurred because it was trying to draw EOL characters, since I was a bit of an idiot and didn't tell it to strip them if you use get_text. Regardless, the problem shouldn't occur if you grab v2.2 from the Pastebin. I'll update the topic name now, since \"Now v2.1\" is no longer exactly accurate.\nIn other news, Solistra has convinced me to give this a bit of an overhaul in the near future, so you can look forward to that. Future updates should maintain full compatibility with old text files, of course - they'll simply be more efficient (and perhaps contain a few shiny new features).\nI will also be posting a few new (to the internet, anyway) scripts and revising some of my others very soon. Several are just waiting on me to write/update documentation, so you should see a couple of things from me by Sunday or so.\nEdit: Glanced back at it and realized I accidentally left in a debug statement. Fairly harmless, but distracting if the console is open. It's gone now."
+    },
+    {
+      "post_id": "js-post-282034",
+      "author": "Andar",
+      "date": "2014-07-03T16:12:48+0900",
+      "body": "thanks"
+    },
+    {
+      "post_id": "js-post-286112",
+      "author": "Tarumes",
+      "date": "2014-07-13T00:04:09+0900",
+      "body": "hi\n[Line] wont work\n[Key] 123[Face] People1, 6[Name] BelloTest [Line]Test"
+    },
+    {
+      "post_id": "js-post-286665",
+      "author": "Enelvon",
+      "date": "2014-07-14T08:43:44+0900",
+      "body": "Yes, that's a known issue that occurs because I changed the backend to allow for manual line breaks and forgot to update the documentation. v3.0 is almost complete, so the documentation will be corrected when that is released."
+    },
+    {
+      "post_id": "js-post-296001",
+      "author": "Euphoria",
+      "date": "2014-08-02T03:15:23+0900",
+      "body": "For some reason when I add color to the name box, the name is positioned to the left side automatically.\n[key] Test[Face] Actor1, 0[Name] \\c[14]RalphBlah Blah BlahShows the name in the window like this:\n[Ralph           ]\nI also tried manually adding it in to the script with the same results...\nAlso is it possible to add in other text codes to be used by this script? And if so, where would be the proper place to insert them?"
+    },
+    {
+      "post_id": "js-post-345447",
+      "author": "IsFutureBright",
+      "date": "2014-12-16T23:05:21+0900",
+      "body": "I've been having problems when I have more then 9 entries. Example:\n[Key] Intro 1Ola ola[Key] Intro 2Ola ola 2[Key] Intro 3Ola ola 3 [Key] Intro 4Ola ola 4[Key] Intro 5Ola ola 5[Key] Intro 6Ola ola 6[Key] Intro 7Ola ola 7[Key] Intro 8Ola ola 8[Key] Intro 9Ola ola 9[Key] Intro 10Ola ola 10[Key] Intro 11Ola ola 11[Key] Intro 12Ola ola 12[Key] Intro 13Ola ola 13And if I set up and event with a script command doing block_text(/^Intro \\d+/)\nThe result will be:\nOla ola\nOla ola 10\nOla ola 11\nOla ola 12\nOla ola 13\nOla ola 2\n..\nProbably because 'Ola ola 10' contains 'Ola ola 1'\nAm I doing something wrong or is this a known issue and if so is there a work around?"
+    },
+    {
+      "post_id": "js-post-345494",
+      "author": "Andar",
+      "date": "2014-12-17T01:57:11+0900",
+      "body": "That is alphanumeric sorting instead of numeric sorting - in alphanumeric sorting, 12 is in front of 2 - that is regular result for this sorting.\nAnd unfortunately this is NOT easily solved, because the alphabet isn't as intuitive for computers as it is for humans. You'll see the same if you have windows sort similiar filenames.\nI suggest (as done in thousands of programs with the same problem) to use full alphanumeric numbering, that is 'intro 01' instead of 'intro 1' and so on."
+    },
+    {
+      "post_id": "js-post-345497",
+      "author": "IsFutureBright",
+      "date": "2014-12-17T01:59:15+0900",
+      "body": "Andar said:\nThat is alphanumeric sorting instead of numeric sorting - in alphanumeric sorting, 12 is in front of 2 - that is regular result for this sorting.\nAnd unfortunately this is NOT easily solved, because the alphabet isn't as intuitive for computers as it is for humans. You'll see the same if you have windows sort similiar filenames.\nI suggest (as done in thousands of programs with the same problem) to use full alphanumeric numbering, that is 'intro 01' instead of 'intro 1' and so on.\nClick to expand...\nOh I see. Thanks for the quick reply. I honestly didn't even think of that. Thanks!"
+    },
+    {
+      "post_id": "js-post-345499",
+      "author": "seita",
+      "date": "2014-12-17T02:06:47+0900",
+      "body": "the best full proof solution is not to use spaces in your keys. Personally, I keep everything separate by sorting all posts into their respective maps and events.\nFor example, in Map 32 and Event 4, my key for this event is:\n032_Ev4_Intro001\nIt also helps to point you in the right direction when you're looking over your script and you cant find it in the editor."
+    },
+    {
+      "post_id": "js-post-345501",
+      "author": "IsFutureBright",
+      "date": "2014-12-17T02:15:31+0900",
+      "body": "My problem was that I was writing all the story conversations on a separate doc file in order to avoid spelling mistakes but it's just a whole lot of work to copy and paste it back to VX Ace and also organize it on the message box. Also after changing something to make more sense on the doc I would have to change it again on VX Ace.. So this script will fit a glove once I get it all organized."
+    },
+    {
+      "post_id": "js-post-345544",
+      "author": "IsFutureBright",
+      "date": "2014-12-17T04:12:44+0900",
+      "body": "I decide to make a quick function for my own needs here and I hope it helps someone else, follows:\ndef block_text_b_ex(key, start, finish)        i = start;    $game_text.keys.each do |k|      keys = key + \" \" +  i.to_s();      if keys == k        text(k)                i = i + 1        if i > finish          break        end      end    end  endWith this you're able to show, say, the first 5 five entries in your \"Intro\" Key.\nblock_text_b_ex(\"Intro\", 1,  5) #Will load the text on your text file from Intro 1 to Intro 5 (inclusive)#You can do something here: play audio, and then continue with the story without needing two keysblock_text_b_ex(\"Intro\", 6,  12) Notice I got read of the \".sort\" on the \"$game_text.keys.each\" do while which was what was making the \"Intro 10\" be put after \"Intro 1\". This way the order is the order that you have in your file. So if I have:\n[Key] Intro 1Ola 1[Key] Intro 2Ola 2[Key] Intro 3Ola 3[Key] Intro 4Ola 4[Key] Intro 5Ola 5[Key] Intro 6Ola 6[Key] Intro 7Ola 7[Key] Intro 8Ola 8[Key] Intro 9Ola 9[Key] Intro 10Ola 10It will work just fine. It wont show \"Ola 10\" after \"Ola 1\". Well, hope it helps someone.\nCheers!"
+    },
+    {
+      "post_id": "js-post-345698",
+      "author": "Enelvon",
+      "date": "2014-12-17T10:47:57+0900",
+      "body": "Glad you got things resolved! Sorry that I wasn't around earlier--I've been a little busy. This script will *probably* be getting its v3 soon--I meant to release it months ago, but things happened and it never got completed. It actually has something similar to your block_text_b_ex method, though slightly more efficient and without your sort alteration. I'll probably add in alternate block_text methods without the sort since it seems to have been a problem for you, though. Thanks for the heads up!"
+    },
+    {
+      "post_id": "js-post-345699",
+      "author": "IsFutureBright",
+      "date": "2014-12-17T10:51:20+0900",
+      "body": "Enelvon said:\nGlad you got things resolved! Sorry that I wasn't around earlier--I've been a little busy. This script will *probably* be getting its v3 soon--I meant to release it months ago, but things happened and it never got completed. It actually has something similar to your block_text_b_ex method, though slightly more efficient and without your sort alteration. I'll probably add in alternate block_text methods without the sort since it seems to have been a problem for you, though. Thanks for the heads up!\nClick to expand...\nAwesome\nThanks for the great script."
+    },
+    {
+      "post_id": "js-post-345700",
+      "author": "Enelvon",
+      "date": "2014-12-17T10:53:38+0900",
+      "body": "Not a problem! Glad you like it!"
+    },
+    {
+      "post_id": "js-post-363641",
+      "author": "sinchross",
+      "date": "2015-02-05T12:41:14+0900",
+      "body": "I'm trying to call the message by script in a Character_Base Class... but I don't figure out how to do it the right way...\nHow can I call the message inside a method of the RGSS3 editor?"
+    },
+    {
+      "post_id": "js-post-367472",
+      "author": "Ksi",
+      "date": "2015-02-16T09:51:40+0900",
+      "body": "Hey there, Enelvon! Thanks for this awesome script - it's great~\nI know v3.0 should contain a fix for the line issue (that is, being able to force a line break instead of relying on text wrapping) but was there any work-around that anyone can suggest? I've a text-heavy project that needs some line-breaks and while I could input all the lines in manually, I've something of a deadline and there's other bits of the game that also need working on so decided this script was perfect for my needs. But, yeah, line breaks... ^.^;\nSomeone (Hasvers~<3) on another forum presented a fix for this issue with the line break. It's very, very easy.\n- Go to line 367\n- Add \" before and after / and i, respectively. That is, the code should look like so:\nv.gsub!(\n\"\n/\\[Line\\]/i\n\"\n, \"\\n\" )\n- That is all. It should now work perfectly as it's supposed to.\nYey~"
+    },
+    {
+      "post_id": "js-post-369423",
+      "author": "seita",
+      "date": "2015-02-21T17:29:40+0900",
+      "body": "Enelvon seems very busy so I'll go ahead and post the fix for allowing choices, number inputs etc to appear along with the window instead of the message window stopping them from showing:\nIt's a simple copy and paste from the default Game_Interpreter script that this one forgot to implement.\nSimply paste the following around line 478, just below\n\"There is no text for the key #{key}.\")\nand above\nwait_for_message\nCode:\n#====================    case next_event_code    when 102  # Show Choices      @index += 1      setup_choices(@list[@index].parameters)    when 103  # Input Number      @index += 1      setup_num_input(@list[@index].parameters)    when 104  # Select Item      @index += 1      setup_item_choice(@list[@index].parameters)    end    #===================="
+    },
+    {
+      "post_id": "js-post-400069",
+      "author": "Enelvon",
+      "date": "2015-05-24T09:03:18+0900",
+      "body": "The v3.0 update is finally released! MultiLang has also been updated to v2.0."
+    },
+    {
+      "post_id": "js-post-400072",
+      "author": "♥SOURCE♥",
+      "date": "2015-05-24T09:19:08+0900",
+      "body": "Amazing work! This script is absolutely\nthe best\nin what it does. I\nhighly\nrecommend it to\neveryone\n. I can't imagine working on a project without it (and the MultiLang add-on!).\nThe code is of the highest quality (I didn't expect less from Enelvon) and the features and MultiLang add-on are very useful and convenient. This script is really a gem that everyone should get.\nThank you very much for sharing it <3"
+    },
+    {
+      "post_id": "js-post-400160",
+      "author": "cabfe",
+      "date": "2015-05-24T16:53:08+0900",
+      "body": "I tried the new versions (External v3.0.1 and Multilang 2.0) and got two errors (at least).\nFirst one in multilang, line 151:\nFile.open(\"Data/Text.txt\", \"r:BOM|UTF-8\") do |file|I fixed it like this:\nCode:\nFile.open(\"Data/#{l}.txt\", \"r:BOM|UTF-8\") do |file|\nbut now I have another error, at line 311 of External Text 3.0.1: (fixed, see edit below)\nSpoiler\nExternal Text v3.0.1:311:in `block in <module:ExternalText>': undefined local variable or method `text' for SES::ExternalText:Module (NameError)\nfrom External text multilang2.0:123:in `call'\nfrom External text multilang2.0:123:in `block (4 levels) in create_text'\nfrom External text multilang2.0:121:in `each_pair'\nfrom External text multilang2.0:121:in `block (3 levels) in create_text'\nfrom External text multilang2.0:119:in `each'\nfrom External text multilang2.0:119:in `each_with_index'\nfrom External text multilang2.0:119:in `block (2 levels) in create_text'\nfrom External text multilang2.0:118:in `open'\nfrom External text multilang2.0:118:in `block in create_text'\nfrom External text multilang2.0:115:in `each'\nfrom External text multilang2.0:115:in `create_text'\nfrom External text multilang2.0:145:in `load_normal_database'\nfrom DataManager:29:in `load_database'\nfrom DataManager:18:in `init'\nfrom SceneManager:20:in `run'\nI tried in a blank project, same errors. Am I doing something wrong? Has usage of the new versions changed?\nEdit:\nFixed the second error like this:\nfrom this\nCode:\n$game_text[@key][0][0], text[key][0][1] = name, index.to_i\nto this\nCode:\n$game_text[@key][0][0], $game_text[key][0][1] = name, index.to_i\nContinuing my testing."
+    },
+    {
+      "post_id": "js-post-400161",
+      "author": "Enelvon",
+      "date": "2015-05-24T17:04:15+0900",
+      "body": "Thanks for that! Not sure how those didn't come up in testing -- I probably need to update my test file. 3.0.2 of ET and 2.0.1 of ML are now on GitHub."
+    },
+    {
+      "post_id": "js-post-400172",
+      "author": "cabfe",
+      "date": "2015-05-24T18:11:03+0900",
+      "body": "I only had to tweak a couple things to make it work with my settings, but other than that I didn't find any other errors.\nJust note that there are functions that I don't use so it's not a complete testing of every features.\nThank you for this awesome script!"
+    },
+    {
+      "post_id": "js-post-400399",
+      "author": "Enelvon",
+      "date": "2015-05-25T05:43:59+0900",
+      "body": "Updated to v3.1.0! Text is now drawn from all text files within a Text folder placed in the Data directory, so you can organize things however you'd like. Subfolders are fine!\nMultiLang is now v2.1.0. It contains the same update as v3.1.0 of External Text -- each language draws its text from folders inside of the Text folder. So your languages would be contained in Data/Text/English, Data/Text/Japanese, and so on.\nFinally, the Database addon has been released! It allows all of your Database text to be drawn from your External Text files. Fully compatible with MultiLang! Please note that v1.0.0 of the Database addon does not support mid-game changes of text drawn from the files (e.g. actor nickname changes), but if the files don't contain a key for that data it will work just fine. v1.1.0, estimated release Tuesday, will include support for mid-game text changes, so feel free to start using it now! That essential support will be here soon."
+    },
+    {
+      "post_id": "js-post-400405",
+      "author": "♥SOURCE♥",
+      "date": "2015-05-25T06:00:18+0900",
+      "body": "Enelvon said:\nUpdated to v3.1.0! Text is now drawn from all text files within a Text folder placed in the Data directory, so you can organize things however you'd like. Subfolders are fine!\nMultiLang is now v2.1.0. It contains the same update as v3.1.0 of External Text -- each language draws its text from folders inside of the Text folder. So your languages would be contained in Data/Text/English, Data/Text/Japanese, and so on.\nClick to expand...\nThanks for adding my request :3 It's so convenient and comfortable to use it that way.\nEnelvon said:\nFinally, the Database addon has been released! It allows all of your Database text to be drawn from your External Text files. Fully compatible with MultiLang! Please note that v1.0.0 of the Database addon does not support mid-game changes of text drawn from the files (e.g. actor nickname changes), but if the files don't contain a key for that data it will work just fine. v1.1.0, estimated release Tuesday, will include support for mid-game text changes, so feel free to start using it now! That essential support will be here soon.\nClick to expand...\nThat sounds very good! I'll try it out."
+    },
+    {
+      "post_id": "js-post-400418",
+      "author": "nio kasgami",
+      "date": "2015-05-25T06:44:57+0900",
+      "body": "I have few question I wanted to make my own messages system (it's a Scene so this not work like the message_window) I was curious if I can use your script for build my message system ? but not worry this not for release this for my game!"
+    },
+    {
+      "post_id": "js-post-400419",
+      "author": "Enelvon",
+      "date": "2015-05-25T06:47:42+0900",
+      "body": "nio kasgami said:\nI have few question I wanted to make my own messages system (it's a Scene so this not work like the message_window) I was curious if I can use your script for build my message system ? but not worry this not for release this for my game!\nClick to expand...\nAbsolutely! The script is placed under the MIT license, so you're completely free to modify it however you'd like."
+    },
+    {
+      "post_id": "js-post-400458",
+      "author": "Enelvon",
+      "date": "2015-05-25T08:13:39+0900",
+      "body": "Bumped Database up to v1.0.1. Fixed a small (but potentially crashy) bug that slipped in during the first commit."
+    },
+    {
+      "post_id": "js-post-401113",
+      "author": "Enelvon",
+      "date": "2015-05-27T08:28:27+0900",
+      "body": "v3.2.0 of External Text and v1.1.0 of External Text: Database are now up! See the spoilers below for details.\nExternal Text v3.2.0\nSpoiler\nv3.2.0 adds the ability to override keys in given save files! Use this script call:$game_system.add_override(!Key1!, !Key2!)`!Key1!` is the key that you want to override.\n`!Key2!` is the key that contains the value that `!Key1!` should now reference.\nYou can remove overrides with this script call:\n$game_system.delete_override(!Key!)`!Key!` is the key whose override you want to delete.\nYou do not need to delete an override before replacing it. If you call add_override for a key that already has an override, the override will be replaced.\nOverrides are fully compatible with both MultiLang and Database.\nExternal Text: Database v1.1.0\nSpoiler\nAllows you to change Vocab constants in your External Text files! Use keys in this format:[Key] Vocab_!CONST!`!CONST!` is the name of the Vocab constant that you want to adjust. Works with MultiLang!\nAllows mid-game changes of any Database string through the Override system introduced in External Text v3.2.0!"
+    },
+    {
+      "post_id": "js-post-401133",
+      "author": "♥SOURCE♥",
+      "date": "2015-05-27T09:21:47+0900",
+      "body": "Great update! Thanks :3"
+    },
+    {
+      "post_id": "js-post-404132",
+      "author": "nio kasgami",
+      "date": "2015-06-03T10:40:30+0900",
+      "body": "Hellow I currently work on a AI module who permit to create Scene AI in VN style (eg : shopkeeper)\nhttp://forums.rpgmakerweb.com/index.php?/topic/40656-nkea-basic-ai-module-v01-beta/#entry403479\nmore information here\nI would love to know when I will finish to write down my script if you will accept to help me to make your script compatible with my module\n?"
+    },
+    {
+      "post_id": "js-post-404134",
+      "author": "Enelvon",
+      "date": "2015-06-03T10:43:43+0900",
+      "body": "nio kasgami said:\nHellow I currently work on a AI module who permit to create Scene AI in VN style (eg : shopkeeper)\nhttp://forums.rpgmakerweb.com/index.php?/topic/40656-nkea-basic-ai-module-v01-beta/#entry403479\nmore information here\nI would love to know when I will finish to write down my script if you will accept to help me to make your script compatible with my module\n?\nClick to expand...\nMy script should already be compatible! You'll just need to use SES::ExternalText.get_text(whatever) to grab text from the user's file and do whatever you'd like with it. If you encounter difficulties I may be able to provide some basic assistance, but my time tends to be fairly limited and I'm afraid I can't commit myself to something like full-scale support out of fear that offline life might get in the way and make me a liar."
+    },
+    {
+      "post_id": "js-post-404137",
+      "author": "nio kasgami",
+      "date": "2015-06-03T10:52:51+0900",
+      "body": "No worries haha Iwas not sure if this was compatible in a ways because I don't use the default message system for make the dialogues but if I encounter any minor problem I would try to find a ways to make it compatible by myself thanks for your answer : D"
+    },
+    {
+      "post_id": "js-post-413879",
+      "author": "Enelvon",
+      "date": "2015-07-01T09:58:02+0900",
+      "body": "v3.3 is out! You now have the ability to control choices through External Text.\nDo you like the way External Text looks but are afraid to use it because your project is huge and already contains a lot of text? Fear not! The Extractor Demiurge plugin has been released! It will pull all of your game text out of your project, organize it, format it for External Text, and even update your game's events to use External Text calls so that you don't have to worry about a thing!\nUsing Choices\nSpoiler\nTo set up choices, create a key like you would for normal text. Give it a default option with this tag:\n[Default Choice] !Choice!\nSet !Choice! to 0 to disable canceling, to a number from 1 through the number of choices that will be provided to have that option\nserve as the default, or to the number of choices + 1 (e.g. 5 if there are 4 choices) to give cancel its own branch.\nNext, we'll add our choices. Just type them! Each new line of text will act as a new choice. These\nwill\nget wrapped in the choice box, so feel free to make them long! If you want to add manual line breaks in a choice, use the `[Line]` tag. You can have as many choices as you want -- you're not limited to four, like in default Ace.\nTo show these choices, you'll need to use the `show_choices` method. Use it in a script call with this format:\nshow_choices(!Key!)\n!Key! should be an External Text key that you've formatted for choices as described in the previous section. This call will display the choices -- but how do you branch for them? With conditional branches!\nJust set up branches that will check the value of the designated ChoiceVariable (found in the SES::ExternalText module). If the player chooses the first choice, the result will be 1, the second choice will be 2, and so on. If you set it up to use a branch for cancel, the variable will be equal to the number you gave for said branch. Easy, right? Just put all of your processing in those conditional branches. You're done!\nExtractor\nSpoiler\nExtractor\n- this is a\nDemiurge\nplugin rather than an RM script. Put it in your Demiurge plugins directory as a .rb file, run Demiurge, and load it into your game's plugins list. A new option will be added to the Tools menu -- \"Extract Text for External Text\". If you select this option, you will be able to automatically extract\nall\nof your game's text (from the Database, from Events, from Common Events, from Troops, and even from the Vocab module!) into neatly organized text files that are fully compatible with External Text. If you let it extract from events (map, common, and troop), it will automatically replace the Show Text commands with calls to External Text. It will also change Show Choices commands into External Text-style conditional branches. Everything will be done for you! Make sure to back up your Data folder before running this command, just in case. No problems have been discovered, even with large test projects, but you should\nalways\nbe careful."
+    },
+    {
+      "post_id": "js-post-414351",
+      "author": "FeaR616",
+      "date": "2015-07-02T22:17:32+0900",
+      "body": "hi, I have only one question left, maybe I missed this part...\ninstead of face graphics, is it possible to show pictures for busts with the messages?"
+    },
+    {
+      "post_id": "js-post-414371",
+      "author": "Andar",
+      "date": "2015-07-02T23:22:23+0900",
+      "body": "That has nothing to do with this script, as this script still uses the regular show text commands.\nTo replace the faces of those command with busts, you'll need a bust script - but there should be no compatibility issues as the external text script doesn't display anything by itself."
+    },
+    {
+      "post_id": "js-post-414403",
+      "author": "FeaR616",
+      "date": "2015-07-03T01:41:13+0900",
+      "body": "ah, I see, okay sorry.\nI think I test this script at a later point with my system then."
+    },
+    {
+      "post_id": "js-post-414928",
+      "author": "Draek97",
+      "date": "2015-07-05T00:04:36+0900",
+      "body": "This is a really nice script, but I didn't exactly knssing something, but can I get the language choices shown in their respective languages in-game while my folders are named something else?\nYes I did miss something. As I've never logged on on this account... I am unable to edit as I have not yet been approved by the mods. Sorry for double posting as well, mods."
+    },
+    {
+      "post_id": "js-post-415127",
+      "author": "flimbo",
+      "date": "2015-07-05T10:57:12+0900",
+      "body": "Hello,\nSome feedback.. I'm using all ATS scripts from Modern Algebra (Special Message Codes,  Face Options, Formatting and Message Options). If I put External Text before all the ATS ones, and use the escape code mode (\\t[!Key!]) ET  seems to coexist fine with all ATS scripts but ATS:Special Message Codes.  Escape codes inside the text file that ATS:SMC should interpret are being ignored.  So for example :\n-\\nb{Name}TextTextText, that should be interpreted  as \"create a character name window\", or\n- \\b that would activate bold or\n-  \\| that would wait a few frames before printing the rest of the text, are  simple printed as they are.\nLuckily, If I use the text('!KEY!') mode, than all tested ATS:SMC escape codes works, including icons. I can also show faces with \\f{\"Actor1\":5} and show the character name with \\nb{\"Name\"}\nStill, I wonder if would be feasable for ET and ATS:Special Message Codes to work together, using the escape code mode. It would be nice to keep the face definitions in the event interface, if possible.\nThanks a lot for this script, since english isnt my native language, it will be great for proofreading!"
+    },
+    {
+      "post_id": "js-post-415138",
+      "author": "Enelvon",
+      "date": "2015-07-05T13:17:34+0900",
+      "body": "FeaR616 said:\nhi, I have only one question left, maybe I missed this part...\ninstead of face graphics, is it possible to show pictures for busts with the messages?\nClick to expand...\nAndar more-or-less answered this, but to provide a little more direct feedback: I am considering a bust addon of some kind, but it's a low priority as existing bust scripts should generally work with ET.\nDraek97 said:\nThis is a really nice script, but I didn't exactly knssing something, but can I get the language choices shown in their respective languages in-game while my folders are named something else?\nYes I did miss something. As I've never logged on on this account... I am unable to edit as I have not yet been approved by the mods. Sorry for double posting as well, mods.\nClick to expand...\nEverything's working as you need it to, then? If so, great! If not, let me know and I'll try to make things a little more obvious in the script. It's no good if people can't figure out what's going on! The text of your message is a little messed up -- it looks like the mods may have merged two posts and accidentally squished something in your first sentence.\nflimbo said:\nStill, I wonder if would be feasable for ET and ATS:Special Message Codes to work together, using the escape code mode. It would be nice to keep the face definitions in the event interface, if possible.\nThanks a lot for this script, since english isnt my native language, it will be great for proofreading!\nClick to expand...\nJust pushed v3.3.1 up to GitHub! I don't have time to run extensive tests right now, but it should fix \\t's performance when it comes to escape characters. If it doesn't, just let me know and I'll look at it again when I have a bit more time on my hands!"
+    },
+    {
+      "post_id": "js-post-415257",
+      "author": "flimbo",
+      "date": "2015-07-05T21:49:35+0900",
+      "body": "Enelvon said:\nJust pushed v3.3.1 up to GitHub! I don't have time to run extensive tests right now, but it should fix \\t's performance when it comes to escape characters. If it doesn't, just let me know and I'll look at it again when I have a bit more time on my hands!\nClick to expand...\nHi Enelvon,\nGot an issue with 3.3.1, a NameError on line 701: undefined method 'convert_escape_characters' for class Game_Message\nThanks!"
+    },
+    {
+      "post_id": "js-post-415328",
+      "author": "Enelvon",
+      "date": "2015-07-06T01:55:15+0900",
+      "body": "Ah, changed the wrong spot in the code. Ooops. Should be fixed now. If 3.3.2 doesn't seem to be working, try moving the Special Message Codes script\nabove\nExternal Text."
+    },
+    {
+      "post_id": "js-post-415402",
+      "author": "flimbo",
+      "date": "2015-07-06T06:04:56+0900",
+      "body": "Enelvon said:\nAh, changed the wrong spot in the code. Ooops. Should be fixed now. If 3.3.2 doesn't seem to be working, try moving the Special Message Codes script\nabove\nExternal Text.\nClick to expand...\nHi Enelvon,\nStill no luck.. tried to move the ET script after or before several scripts, but always get this error when I start a new game (the game runs, then it fails on New Game)\nHere's the backtrace from when I put ET as the last script before main:\nSpoiler\nEnelvon External Text:974:in `convert_escape_characters': undefined local variable or method `text' for #<Window_Gab:0xa300b10>, NameError\nfrom Window_Base:211:in `draw_text_ex'\nfrom Yanfly Gab Window:259:in `refresh'\nfrom Yanfly Gab Window:212:in `setup'\nfrom Yanfly Gab Window:312:in `setup_gab_window'\nfrom Yanfly Gab Window:143:in `gab'\nfrom Script Call Traceback:59:in `eval'\nfrom Script Call Traceback:59:in `eval'\nfrom Script Call Traceback:59:in `eval'\nfrom Tsuki Large Script Call:45:in `command_355'\nfrom Game_Interpreter:197:in `execute_command'\nfrom Paralel Process Fix:14:in `run'\nfrom Tsuki Effect Manager:907:in `run'\nfrom Game_Interpreter:500:in `command_117'\nfrom Tsuki Common Event Arguments:104:in `command_117'\nfrom Game_Interpreter:197:in `execute_command'\nfrom Paralel Process Fix:14:in `run'\nfrom Tsuki Effect Manager:907:in `run'\nfrom Game_Interpreter:60:in `block in create_fiber'\nThe error itself is 'Script Enelvon External Text' line  974:NameError ocurred\nThanks!"
+    },
+    {
+      "post_id": "js-post-415403",
+      "author": "Enelvon",
+      "date": "2015-07-06T06:09:33+0900",
+      "body": "This time I changed the right spot, but only part of it. Sigh. It still says 3.3.2, but that should be fixed. I haven't had access to Ace today, so these fixes have been untested -- sorry for all of the problems, but this one will hopefully do the job!"
+    },
+    {
+      "post_id": "js-post-415742",
+      "author": "flimbo",
+      "date": "2015-07-07T07:38:15+0900",
+      "body": "Enelvon said:\nsorry for all of the problems,\nClick to expand...\nIt's great you are taking the time to make ET and ATS work together!\nIn this latest version the \\t text code doesn't seem to be interpreted..\nFor example: Some words \\t[key1] just prints  Some words [key1]\nThanks again!"
+    },
+    {
+      "post_id": "js-post-415755",
+      "author": "Enelvon",
+      "date": "2015-07-07T08:22:35+0900",
+      "body": "Had access to Ace again today and tracked down the problem. The script is now v3.3.3, which worked with \\t for every test project I tossed it in!"
+    },
+    {
+      "post_id": "js-post-415780",
+      "author": "flimbo",
+      "date": "2015-07-07T10:43:22+0900",
+      "body": "Indeed, no problems found!  Thanks a lot!!"
+    },
+    {
+      "post_id": "js-post-424993",
+      "author": "Enelvon",
+      "date": "2015-08-01T05:06:14+0900",
+      "body": "v3.3.4 is now up! This is a rather important update, as it includes a fix for errors with saving that was provided by Source."
+    },
+    {
+      "post_id": "js-post-425418",
+      "author": "GolfHacker",
+      "date": "2015-08-02T08:10:52+0900",
+      "body": "Hi Enelvon! Your script looks super-useful, so I'm trying it out. But I'm running into 2 issues. I don't know if these are bugs, or if I'm doing something wrong.\nFirst, here is my text file:\nSpoiler\n[Key] MrsFairchild01\n[Face] !mrs_fairchild_sad, 5\n[Name] Mrs. Fairchild\n[Position] Top\nIthran! I'm so glad you're here! My daughter did not come home last night, and I can't find her! My husband, Jarvis, is away in the city of Garrett, and I can't leave my baby to look for my daughter!\n[Key] MrsFairchild02\n[Face] !Scarlet_sad, 5\n[Name] \\n[2]\n[Position] Top\nOh no! Can we help her, Ithran? I'm sure your dad wouldn't mind. This is important, after all!\n[Key] MrsFairchild03\n[Face] !mrs_fairchild_sad, 5\n[Name] Mrs. Fairchild\n[Position] Top\nPlease, can you help me?\n[Key] MrsFairchild04\n[Face] !mrs_fairchild_sad, 5\n[Name] Mrs. Fairchild\n[Default Choice] 1\nYes, I can help look for her!\nI'm sorry, I can't right now.\n[Key] MrsFairchild05\n[Face] !mrs_fairchild_sad, 5\n[Name] Mrs. Fairchild\n[Position] Top\nOh, thank you! The last time I saw her, she was chasing butterflies in the meadow across the river!\n[Key] MrsFairchild06\n[Face] !mrs_fairchild_sad, 5\n[Name] Mrs. Fairchild\n[Position] Top\nI understand. I'll see if I can find someone else to help. Please come back as soon as you can, just in case we haven't found her yet. I may still need your help!\nSecond, I made a couple of minor edits to your script, but I don't know if that has any bearing on my problems or not. One of the changes I had to make because I'm using your script in conjunction with Fomar's Faces to Busts script.\nSpoiler\nFirst, I changed the width of the name box to 250 because the default width was too small for me. It was causing the names to be cut off:\nclass Window_NameBox < Window_Base    # Creates a new instance of Window_NameBox.    #    # @return [Window_NameBox] a new instance of Window_NameBox    def initialize      super(0, Graphics.height - 168, 0, 0)      @position = 2      self.visible = false; close      self.height = 48      self.width = 250Second, I commented out this line so that the text wouldn't wrap too early. Per an earlier post, I saw that this could cause problems with Fomar's script, because it seems to be expecting an actual faceset and leaves room for it:\ndef too_wide?(text, type)    @message_width ||= SES::ExternalText.message_window.contents_width    width = @message_width    width -= 8 if type == :choices    # Removed since I'm using Fomar's Faces to Bust script.    # But this means that I need to use a Bust for every character.    #width -= 112 unless @face_name.empty?    SES::ExternalText.message_window.    text_size(slice_escape_characters(text)).width > width  end\nFinally, here is my event:\nSpoiler\nSo the first screen that comes up looks great. The text wraps nicely, the bust is present, and everything looks good:\nSpoiler\nOn the second screen, I'm using the text code \"\\n[2]\" to retrieve the actor's name from the database. As you can see, it isn't centered and is cut off on the right. I'm guessing it's trying to center it based on the width of \"\\n[2]\" instead of the actor's name in the database, \"Scarlet Fletcher\":\nSpoiler\nOn the third screen, I present my first set of choices. Unfortunately, the bust doesn't appear. If I remove the call to show_choices(), the bust appears. So it seems that the show_choices() call doesn't support faces? I tried putting the face on both the text and the choices, as you can see from my text file. Neither worked.\nSpoiler\nAre these bugs, or am I missing something?"
+    },
+    {
+      "post_id": "js-post-425522",
+      "author": "♥SOURCE♥",
+      "date": "2015-08-02T16:00:21+0900",
+      "body": "Hello GolfHacker! I made some changes to make the name display consistent when using message codes and to prevent the face (or busts graphics, in your case) removal when using choices.\nYou can find the edited version here.\nI also added an option to fit the width of the name box to the width of the name text:\n# Whether or not to fit the width of the name box window to the name text.    FitNameBoxWidth = trueIf you want to use the same width for every name, set the above constant to false and repeat the changes you made in Window_NameBox.\nTry it and let me know if you encounter anything else."
+    },
+    {
+      "post_id": "js-post-425661",
+      "author": "GolfHacker",
+      "date": "2015-08-03T03:12:12+0900",
+      "body": "That helped tremendously, thanks!!\nI still need my second edit to fix the issue with Fomar's script (where the text wraps too early), but that's ok with me. The other two issues are solved. Thank you for the amazingly quick fix, Source!\nOne more minor request: I'm using Yanfly's Ace Message System, and I really like the \"\\>\" code to make the text on each line show instantly, instead of one character at a time (which really bugs me as a player who reads very fast). Obviously, since this external text script does the text wrapping for me, it doesn't automatically put the \"\\>\" on subsequent lines - so I can put this code at the start of the first line, but only the first line displays immediately. I'm wondering if the script could be modified to detect this \"\\>\" code at the start of the text, and if it does, to then prepend this code at the start of each line when it wraps. It would need to ignore the auto-prepended \"\\>\" when computing the length of each subsequent line, so subsequent lines wrap properly. But this would be a really nice feature, if it could be done."
+    },
+    {
+      "post_id": "js-post-431428",
+      "author": "VarmintLP",
+      "date": "2015-08-14T00:09:07+0900",
+      "body": "Hey guys,\nCan someone help me with the Multi Lang Script?\nI really want to add this scripts into my game but I can't really work with them. I tried so many diffent things to make a selection for my RPG Users but I can't figure it out. Please. How can I change the language? I mean I don t want to add it like this.\nSceneManager.call(Scene_LanguageSelect)I know there must be something like this.\nSceneManager.call(Scene_LanguageSelect(English))Or even something similar to this. But I can't figure it out. I didn't really got it. T_T\nI hope someone here can help me with the whole thing. Currently it works but I also use a variable to check the language for some other stuff.\nSo is there a way I can just set the language on English or German without making the player to choose two times?"
+    },
+    {
+      "post_id": "js-post-432146",
+      "author": "Enelvon",
+      "date": "2015-08-15T11:34:39+0900",
+      "body": "GolfHacker said:\nOne more minor request: I'm using Yanfly's Ace Message System, and I really like the \"\\>\" code to make the text on each line show instantly, instead of one character at a time (which really bugs me as a player who reads very fast). Obviously, since this external text script does the text wrapping for me, it doesn't automatically put the \"\\>\" on subsequent lines - so I can put this code at the start of the first line, but only the first line displays immediately. I'm wondering if the script could be modified to detect this \"\\>\" code at the start of the text, and if it does, to then prepend this code at the start of each line when it wraps. It would need to ignore the auto-prepended \"\\>\" when computing the length of each subsequent line, so subsequent lines wrap properly. But this would be a really nice feature, if it could be done.\nClick to expand...\nThank you for your suggestion -- the ability to prepend escape characters to the start of each line will be included in the next release.\nVarmintLP said:\nHey guys,\nCan someone help me with the Multi Lang Script?\nI really want to add this scripts into my game but I can't really work with them. I tried so many diffent things to make a selection for my RPG Users but I can't figure it out. Please. How can I change the language? I mean I don t want to add it like this.\nSceneManager.call(Scene_LanguageSelect)I know there must be something like this.\nSceneManager.call(Scene_LanguageSelect(English))Or even something similar to this. But I can't figure it out. I didn't really got it. T_T\nI hope someone here can help me with the whole thing. Currently it works but I also use a variable to check the language for some other stuff.\nSo is there a way I can just set the language on English or German without making the player to choose two times?\nClick to expand...\nIt appears to be undocumented, which I'll fix when I have a little more time, but you can use this script call to set the language:\nDataManager.set_language(!Language!)\nwhere !Language! is the name of the language as a string. If you wanted to set the language to German, you'd use\nDataManager.set_language('German')\nand English would be\nCode:\nDataManager.set_language('English')"
+    },
+    {
+      "post_id": "js-post-432154",
+      "author": "VarmintLP",
+      "date": "2015-08-15T11:47:01+0900",
+      "body": "Enelvon said:\nThank you for your suggestion -- the ability to prepend escape characters to the start of each line will be included in the next release.\nIt appears to be undocumented, which I'll fix when I have a little more time, but you can use this script call to set the language:\nDataManager.set_language(!Language!)where !Language! is the name of the language as a string. If you wanted to set the language to German, you'd use\nDataManager.set_language('German')and English would be\nDataManager.set_language('English')\nClick to expand...\nOH A SUPER THANK YOU for that. Now I can go to the next step of translating my game.\nThat was the thing I needed to know\nNormally I only need an example to understand it but sometimes there is no. But that you very much. If you have something I maybe could help you with just ask. Maybe I can help you then."
+    },
+    {
+      "post_id": "js-post-432924",
+      "author": "BCj",
+      "date": "2015-08-17T04:49:00+0900",
+      "body": "Is this one compatible with YEA Meassage system codes? E.g. for when I want to add a namebox? Or change textstyle?"
+    },
+    {
+      "post_id": "js-post-432932",
+      "author": "GolfHacker",
+      "date": "2015-08-17T04:59:59+0900",
+      "body": "You can add a name box without the YEA Message system codes. This script provides tags for that in your data file.\nHaven't tried changing the text style yet..."
+    },
+    {
+      "post_id": "js-post-432935",
+      "author": "Enelvon",
+      "date": "2015-08-17T05:01:29+0900",
+      "body": "BCj said:\nIs this one compatible with YEA Meassage system codes? E.g. for when I want to add a namebox? Or change textstyle?\nClick to expand...\nI've never tested it, but it should be. It reads all message codes, just like the default system would. ET has its own built-in name box that works alongside its tagging system, though, which I'd recommend over Yanfly's for the sake of knowing whose text it is at a glance."
+    },
+    {
+      "post_id": "js-post-433454",
+      "author": "VarmintLP",
+      "date": "2015-08-18T10:34:51+0900",
+      "body": "Hey,\nIt s me again. I m struggle to get the \"\nexternal-text-database.rb\n\" to work. But I got a BIG problem.\nI added the script as told to the scripts list. Then I added this example and only changed the number so I can see if something changed.\n[Key] Skill_59_message1I added it in both external files and changed it to this.\n[Key] Skill_59_message2But nothing changed. Then I noticed I put the wrong class to the charakters so I decided to start a new game but then the next problem came up. You type in a name for the Hero but it get streight replaced by something like this\n#<SES::ExternalText::TextWrapper:0xc693c80>Then I also ask the player to select a nation and a genre but the charakter didn't get a skin so he is invisible for everyone.\nI don't know why but I can't really understand and work with these scripts. T_T\nPlease help me with this because I really need to just translate the skills, items etc in two diffrent languages."
+    },
+    {
+      "post_id": "js-post-450426",
+      "author": "Barduck",
+      "date": "2015-10-01T11:51:38+0900",
+      "body": "I just want to say thank you for this amazing script"
+    },
+    {
+      "post_id": "js-post-530122",
+      "author": "figuremaster",
+      "date": "2015-12-26T20:59:23+0900",
+      "body": "great script!"
+    },
+    {
+      "post_id": "js-post-555748",
+      "author": "J_C",
+      "date": "2016-02-13T19:24:32+0900",
+      "body": "I'm experimenting with this script, and I have a question. Is there a way to start a new line in a text?\nEDIT: Nevermind, I figured it out.\nAnd I must say, now that I have figured this script out, it is absolutely amazing, and essential for anyone who has many text in his game. Thank you so much!"
+    },
+    {
+      "post_id": "js-post-556008",
+      "author": "J_C",
+      "date": "2016-02-14T06:27:04+0900",
+      "body": "Hi!\nI get a strange error message, when I change the ChoiceReplaceMessageBox  option to \"never\" or \"always\". When a choice window should be displayed, i get a crash like this:\nAnd another one. Here is my text code for a choices screen:\n[Key] 5_RasinAsking\n[Default Choice] 0\nRemind me, what do you need again?\nI have them right here.\nSorry, I couldn't buy everything you asked for.\nNot yet.\nWhy is the third option displayed in 2 lines, one of which is empty."
+    },
+    {
+      "post_id": "js-post-561112",
+      "author": "srazysnake",
+      "date": "2016-02-25T06:46:42+0900",
+      "body": "hello, I'm interested in making a game with multi-lang support... however I'm new to this 'rpgmaker' gizmo and frankly, there aren't any visual guides as to how to install this particular script- or a guide-for-dummies version of how to use this script at all;;\nI'm sorry, but I cannot understand this whole 'key'.. 'faceset' professional terms;;\nit just says, 'it is extremely easy to use'... when it isn't. []\nmaybe it is- but the guide sure-ain't.\ntried to understand and install it.. but cannot find this 'language array' where I should input the name of my text files on the core script...\nit doesn't even say which of the 1- 100 whatnot line this 'language array' is within the core script.\nI dunno, maybe it's an old guide and it doesn't exist?\nwhen installed, it keep says cannot find English.vx2 somethingsomething and won't even let me testplay it. [][]\nalso, I could understand upto the part where I create a 'folder' in Data folder named 'Text' and creating text files within that 'Text' named folder..\nbut doesn't say as how to specifically create those text files- the guide just says, 'use Key! name!'......wha..???????\nam I supposed to just copy- paste those single command line into the text files within the 'Text' folder? or are those commands for the later use within the script?\n... all I want to do is create an rpgvxace game with multiple language options. []\nI'm snake, looking for guidance- thank you."
+    },
+    {
+      "post_id": "js-post-561343",
+      "author": "J_C",
+      "date": "2016-02-25T16:40:03+0900",
+      "body": "srazysnake said:\nhello, I'm interested in making a game with multi-lang support... however I'm new to this 'rpgmaker' gizmo and frankly, there aren't any visual guides as to how to install this particular script- or a guide-for-dummies version of how to use this script at all;;\nI'm sorry, but I cannot understand this whole 'key'.. 'faceset' professional terms;;\nit just says, 'it is extremely easy to use'... when it isn't. []\nmaybe it is- but the guide sure-ain't.\ntried to understand and install it.. but cannot find this 'language array' where I should input the name of my text files on the core script...\nit doesn't even say which of the 1- 100 whatnot line this 'language array' is within the core script.\nI dunno, maybe it's an old guide and it doesn't exist?\nwhen installed, it keep says cannot find English.vx2 somethingsomething and won't even let me testplay it. [][]\nalso, I could understand upto the part where I create a 'folder' in Data folder named 'Text' and creating text files within that 'Text' named folder..\nbut doesn't say as how to specifically create those text files- the guide just says, 'use Key! name!'......wha..???????\nam I supposed to just copy- paste those single command line into the text files within the 'Text' folder? or are those commands for the later use within the script?\n... all I want to do is create an rpgvxace game with multiple language options. []\nI'm snake, looking for guidance- thank you.\nClick to expand...\nHi. I myself had some problem with understanding this script at first, but it turned out quite simple. I think the best option is to give an example. So, you have copied to the script into your game, you created the text file in the Data folder. Let's say you want the character to say:\nHello, my name is Ryan.\nThen you write this into the text file:\n[Key] Ryan_dialogue1\nHello, my name is Ryan.\nThen, in the editor, call a script in an event (it's on the 3rd page of the events window), and write this into the script windows\ntext('Ryan_dialogue1')\nAnd that's it. You can use anything for Ryan_dialogue1, that is just a string, but it has to be unique for every dialogue line. Now, if you want to display the Character names's in the message box, you write this in the text file:\n[Key] Ryan_dialogue1\n[Name] Ryan\nHello, my name is Ryan.\nThere are many other options, but as you can see above, this is the gist of it.\nYou use the [Key] [Name] [DFace] etc tags in the text file, and you write a string after them. Then you write the text. And in the game, you call a script with a text('insert your key here') command.\nSince I don't use the multilang part of the script, I can't comment on that, but I think if you figure out the main external text script, it cannot be that difficult."
+    },
+    {
+      "post_id": "js-post-562491",
+      "author": "BCj",
+      "date": "2016-02-28T04:03:23+0900",
+      "body": "Is it also possible to call a common event in the script?\nE.g. text [blabla]\n[call common event: Characterface1]\n[tekst: blabla]\nEdit: And I just fiddled with it but it gives me an error. I don't understand..\nI have a text.txt file with this:\n[Key] Bandit_dialogue1\n[Name] Lumia\nYou! Where did you leave Makas?!\nAnd a scriptcall\ntext('Bandit_dialogue1')\nIt doesn't do anything, just gives me errors."
+    },
+    {
+      "post_id": "js-post-591159",
+      "author": "J_C",
+      "date": "2016-04-28T22:20:30+0900",
+      "body": "Is there a chance that this script will be ported to RPG Maker MV in the near future?"
+    },
+    {
+      "post_id": "js-post-601418",
+      "author": "Dark_Metamorphosis",
+      "date": "2016-05-24T08:36:35+0900",
+      "body": "Been trying to use the extract add on to give me a good start to use this script, but when I try to extract it from Demiurge many of the maps disappear from my project, all of the text files are transfered without a problem but some of the maps gets reset both when it comes to events and the mapping layout of the map. Anything I might be doing wrong for this to happen, or how come the initial data files for my maps are altered?\nAlso I'm a bit unsure on how to add a integer for a specific amount of key entries in the same block_text. If I just use the ordinary sorted one, all of the entries will be shown before the rest of the event triggers. What I would need is to have for example 1-5 of the same entry add the wait time, or whatever other events that should happen in between then add the other 6- whatever number. As it is now I have to add every single entry one after the other, would be really nice to show a certain amount of entries in the key with only one script call.\nEdit:\nPretty hard to organize this properly, but it will be amazing once you have it sorted out! Really great script! Hopefully I can add some organisation to it so nothing gets confusing\nThe interactable events are the worst part, and I cant decide if I shall add a side quest folder with every entry for the quests or list all the Npcs in each map instead. How do you people usually organize this to find it easy?\nIn any case it will be a lot easier to control everything from the folders than from all the events in the game-engine, that's for sure"
+    },
+    {
+      "post_id": "js-post-635819",
+      "author": "Erkallys",
+      "date": "2016-08-12T04:06:14+0900",
+      "body": "Very cool script, at least it seems, since I'm unable to use it. I created a simple event to test it, and it says me : error at line 587 : ArgumentError \"invalide byte sequence in UTF-8\". Could you please help me ? This script would save me a precious time !"
+    },
+    {
+      "post_id": "js-post-635828",
+      "author": "Andar",
+      "date": "2016-08-12T04:16:53+0900",
+      "body": "you need to resave the text file. Check notepad on saving, it allows for different encoding like Ansi or UTF, and you used the wrong coding type (that would be my guess on that error message)"
+    },
+    {
+      "post_id": "js-post-636564",
+      "author": "Erkallys",
+      "date": "2016-08-13T18:12:52+0900",
+      "body": "Andar said:\nyou need to resave the text file. Check notepad on saving, it allows for different encoding like Ansi or UTF, and you used the wrong coding type (that would be my guess on that error message)\nClick to expand...\nThank you, it solved my problem, but now I got a new one. I get a an error at the line 1411."
+    },
+    {
+      "post_id": "js-post-636573",
+      "author": "Andar",
+      "date": "2016-08-13T19:11:45+0900",
+      "body": "how do people expect to get help if they don't post the error messages they got?\nScripts like these are to complex to help without info, and they work for others so it is probably something you did wrong (when I used it years ago, I needed several tries to get the syntax right in the text files)"
+    },
+    {
+      "post_id": "js-post-636603",
+      "author": "Erkallys",
+      "date": "2016-08-13T21:22:06+0900",
+      "body": "Andar said:\nhow do people expect to get help if they don't post the error messages they got?\nScripts like these are to complex to help without info, and they work for others so it is probably something you did wrong (when I used it years ago, I needed several tries to get the syntax right in the text files)\nClick to expand...\nScript 'Game_Interpreter' line 1411: NoMethodError occured.\nundefined method 'lala!' for #<Game_Interpreter:0xbb41ba1c>"
+    },
+    {
+      "post_id": "js-post-636616",
+      "author": "Andar",
+      "date": "2016-08-13T22:35:13+0900",
+      "body": "that means you have a syntax error an event, and you need to give a screenshot of the event that was running when that error happened.\nIf \"lala!\" was one of your keys for texts, you used it in the wrong way."
+    },
+    {
+      "post_id": "js-post-636685",
+      "author": "Erkallys",
+      "date": "2016-08-14T02:02:23+0900",
+      "body": "Here is the event page. !lala! is the name of the of the text, following [Key] in the title."
+    },
+    {
+      "post_id": "js-post-636701",
+      "author": "cabfe",
+      "date": "2016-08-14T02:30:39+0900",
+      "body": "@Erkallys\n:\nYour script call should be in the form:\ntext(\"your_key_here\")\nTry adding quotes \" \" to see if it works better.\nI don't know if using the ! character is all right, I never tried it, but you can also test without it to be sure."
+    },
+    {
+      "post_id": "js-post-636704",
+      "author": "Andar",
+      "date": "2016-08-14T02:35:30+0900",
+      "body": "as cabfe said, you didn't read the instructions carefully enough - I admit that they are abbreviated here, but on the github there was an example\nScript Calls\nTo display text, place this in an event's script command:\ntext(!Key!)\n!Key! should be replaced with a string corresponding to the key of the text that you want to display. As an example, if I had a text key called Intro, I would use this to call it:\ntext('Intro')\nso the correct scriptcall would have been\ntext('!lala!')\nthe ! can be used in your keys, but they are not needed"
+    },
+    {
+      "post_id": "js-post-636709",
+      "author": "Erkallys",
+      "date": "2016-08-14T02:48:07+0900",
+      "body": "@cabfe\n@Andar\nThank you to you two. My second problem is solved, but now another one appears. Here's the error I get :\nScript 'Game_Interpreter' line 1411: NoMethodError occured\nundefined method '[]' for nil:NilClass"
+    },
+    {
+      "post_id": "js-post-636715",
+      "author": "Andar",
+      "date": "2016-08-14T02:55:32+0900",
+      "body": "all gameinterpreter errors mean a problem in an event script command, usually a typo or a wrong syntax.\nso we always need a screenshot of the script command where you made your mistake.\nThat said, it looks as if you're using the wrong brackets, you need ()"
+    },
+    {
+      "post_id": "js-post-636736",
+      "author": "Erkallys",
+      "date": "2016-08-14T03:18:51+0900",
+      "body": "Not so much to get from that screenshot. I've only changed !lala! into \"lala\"."
+    },
+    {
+      "post_id": "js-post-636749",
+      "author": "Andar",
+      "date": "2016-08-14T03:44:24+0900",
+      "body": "Did you also remove the ! from your textfile if you changed the key name here?\nAnyway, I think we need to check if that error really comes from that script.\nPlease follow the link \"how to use a script\" in my signature. In the bughunt section of that tutorial, you'll find a link and a description on how to use the backtracer script.\nPlease install that script, run your game again and give us the full error output from the console (that output is created by the backtracer), then we can see where the error was really caused (1411 is only the line where it was detected, but not where the error is)"
+    },
+    {
+      "post_id": "js-post-636786",
+      "author": "Erkallys",
+      "date": "2016-08-14T05:04:33+0900",
+      "body": "Here's what I get from the console :"
+    },
+    {
+      "post_id": "js-post-636795",
+      "author": "Andar",
+      "date": "2016-08-14T05:13:59+0900",
+      "body": "then it's probably something in your text file that went wrong - can you attach that?"
+    },
+    {
+      "post_id": "js-post-636796",
+      "author": "Erkallys",
+      "date": "2016-08-14T05:17:24+0900",
+      "body": "Here it is :\nView attachment [Key] !lala! !Index! 0 !Text! blablabla.txt"
+    },
+    {
+      "post_id": "js-post-636800",
+      "author": "Andar",
+      "date": "2016-08-14T05:24:03+0900",
+      "body": "the key needs to be inside the text file, and the text file needs to be named like told in the instructions. additionally, you didn't remove the ! from the key when you removed them from the text command\nEdit: every key of the hundreds you'll be using needs to be inside that single text file, you can't make a new file for a new key."
+    },
+    {
+      "post_id": "js-post-636804",
+      "author": "Erkallys",
+      "date": "2016-08-14T05:28:20+0900",
+      "body": "Okay so for one event, I have one single file, right ? Then all it a lot more clear\n! Thank you very much, I'll test this out now."
+    },
+    {
+      "post_id": "js-post-636809",
+      "author": "Andar",
+      "date": "2016-08-14T05:31:16+0900",
+      "body": "Erkallys said:\nOkay so for one event, I have one single file, right ? Then all it a lot more clear\n! Thank you very much, I'll test this out now.\nClick to expand...\nno - for every event in your entire game together you'll have a single file. Even if it is only one event for now, you'll have to add everything into that file."
+    },
+    {
+      "post_id": "js-post-636810",
+      "author": "Erkallys",
+      "date": "2016-08-14T05:32:13+0900",
+      "body": "Andar said:\nno - for every event in your entire game together you'll have a single file. Even if it is only one event for now, you'll have to add everything into that file.\nClick to expand...\nSo how do I make the difference between the events ?\nBy the way, I still get some errors, can you show me a sample .txt file ?"
+    },
+    {
+      "post_id": "js-post-636815",
+      "author": "Andar",
+      "date": "2016-08-14T05:37:09+0900",
+      "body": "that is what the keys are for - different events will use different keys.\nAnd no, I'm not on the computer where my old projects are stored..."
+    },
+    {
+      "post_id": "js-post-636816",
+      "author": "Erkallys",
+      "date": "2016-08-14T05:39:13+0900",
+      "body": "Andar said:\nthat is what the keys are for - different events will use different keys.\nAnd no, I'm not on the computer where my old projects are stored...\nClick to expand...\nSo how do I name the project ?\nEach change of character talking will have to get a script insert command ?"
+    },
+    {
+      "post_id": "js-post-636817",
+      "author": "Andar",
+      "date": "2016-08-14T05:42:36+0900",
+      "body": "yes, different texts will require different script commands\nhowever, I checked the github for example text files and while there are none, I learned that in a newer version Enelvon enabled you to use several text files for better organisation.\nBut that does not change that the keys need to be inside the text files, and that you need different script commands to access different texts."
+    },
+    {
+      "post_id": "js-post-636819",
+      "author": "Erkallys",
+      "date": "2016-08-14T05:45:27+0900",
+      "body": "Andar said:\nyes, different texts will require different script commands\nhowever, I checked the github for example text files and while there are none, I learned that in a newer version Enelvon enabled you to use several text files for better organisation.\nBut that does not change that the keys need to be inside the text files, and that you need different script commands to access different texts.\nClick to expand...\nI knew that it wasn't a pure fact of my imagination. How should a text file be named ?"
+    },
+    {
+      "post_id": "js-post-636845",
+      "author": "Andar",
+      "date": "2016-08-14T06:37:26+0900",
+      "body": "the name doesn't matter anymore, it will simply be ignored after loading the files content"
+    },
+    {
+      "post_id": "js-post-637043",
+      "author": "Erkallys",
+      "date": "2016-08-14T16:49:43+0900",
+      "body": "So how does the script know which text file to load ?\nNow I'm just waiting a sample file to understand the proper syntax."
+    },
+    {
+      "post_id": "js-post-637078",
+      "author": "cabfe",
+      "date": "2016-08-14T20:34:41+0900",
+      "body": "The key is unique so when it's called, there is (and should) only be one answer - one text for this key.\nAll those unique keys are stored inside one or multiple text files but each key must be unique, even if you use many text files, so the game can know which one to use."
+    },
+    {
+      "post_id": "js-post-637082",
+      "author": "Andar",
+      "date": "2016-08-14T21:06:59+0900",
+      "body": "Erkallys said:\nNow I'm just waiting a sample file to understand the proper syntax.\nClick to expand...\nThe attached textfile was to be used for a (now abandoned due to MV) Ace-Project using the multi-language add-on to translate not only the show texts, but the entire database of the game project, and intended for use by several persons (which is why I included that many comments on the key structure)\nIt was also done with the External Text V2.2, so there might be some changes in the file structure compared to your 3.3.4\nView attachment English.txt"
+    },
+    {
+      "post_id": "js-post-637089",
+      "author": "Erkallys",
+      "date": "2016-08-14T21:30:41+0900",
+      "body": "Finally it works ! What I had to do was to follow this format :\n[Key] blablabla\nTexteIci\nWhat messed me up was the !x! and the fact that all was on the same line in the explanations."
+    },
+    {
+      "post_id": "js-post-637133",
+      "author": "ShinGamix",
+      "date": "2016-08-14T23:43:49+0900",
+      "body": "I almost forgot about this script!"
+    },
+    {
+      "post_id": "js-post-637594",
+      "author": "Erkallys",
+      "date": "2016-08-16T03:10:47+0900",
+      "body": "Sorry to bother again, but I have now another problem, minor, but that still blocks me in progressing in my game. I've tried to set up a choice, but it symply display the two options as if they were text lines, one following the other. May you help me to solve this out\n@Andar\nplease ?"
+    },
+    {
+      "post_id": "js-post-637607",
+      "author": "Andar",
+      "date": "2016-08-16T03:33:29+0900",
+      "body": "sorry, I don't know how to use this in choices.\nAs I said I used an old version for some time but abandoned it incomplete when MV was announced."
+    },
+    {
+      "post_id": "js-post-637626",
+      "author": "J_C",
+      "date": "2016-08-16T04:13:20+0900",
+      "body": "Erkallys said:\nSorry to bother again, but I have now another problem, minor, but that still blocks me in progressing in my game. I've tried to set up a choice, but it symply display the two options as if they were text lines, one following the other. May you help me to solve this out\n@Andar\nplease ?\nClick to expand...\nIf you copy your event here, I might be able to help you, I'm using the script right now with my game."
+    },
+    {
+      "post_id": "js-post-637889",
+      "author": "Erkallys",
+      "date": "2016-08-17T00:24:23+0900",
+      "body": "Here's what I've entered in the text file :\n[Key] Inspecteur-choix-debut-non-mafia\n[Default Choice] 3\nTu sais, je me dis quand même que cet argent ne serait pas de trop..\nTu as bien raison, jamais je ne tomberai là-dedans."
+    },
+    {
+      "post_id": "js-post-637898",
+      "author": "J_C",
+      "date": "2016-08-17T01:31:29+0900",
+      "body": "Hm, I don't see anything bad about this. Could you show me a screenshot about your event page so I can see how did you setup the choice?"
+    },
+    {
+      "post_id": "js-post-642857",
+      "author": "Erkallys",
+      "date": "2016-08-29T21:55:59+0900",
+      "body": "My bad, I used text instead of show_choices in the script call. Now everything is fine. Thank you for your help\n@J_C"
+    },
+    {
+      "post_id": "js-post-734786",
+      "author": "The007who",
+      "date": "2017-05-18T02:43:56+0900",
+      "body": "Hi!\nVery nice script indeed!\nBtw, how would translate stuff from the Terms tab in the Database?\nStuff like: Start, Load, Quit, To the title, etc...\nHope you reply.\nThe007who"
+    },
+    {
+      "post_id": "js-post-757927",
+      "author": "CodeHunterEx",
+      "date": "2017-07-23T18:10:13+0900",
+      "body": "I could be blind, but I cannot find the script to view it.  Is it no longer available?"
+    },
+    {
+      "post_id": "js-post-757981",
+      "author": "Andar",
+      "date": "2017-07-24T00:22:37+0900",
+      "body": "CodeHunterEx said:\nI could be blind, but I cannot find the script to view it.  Is it no longer available?\nClick to expand...\nThe link somehow got lost in the first topic, here it is\nhttps://github.com/sesvxace/external-text"
+    },
+    {
+      "post_id": "js-post-812693",
+      "author": "dragon_slayer",
+      "date": "2018-01-03T22:20:26+0900",
+      "body": "Keep getting error:\nScript 'Game Interpreter' line 1411: NoMethodError occured.\nundefined method `< <' for nil:NilClass\nPlease help!"
+    },
+    {
+      "post_id": "js-post-812731",
+      "author": "Kes",
+      "date": "2018-01-04T00:56:17+0900",
+      "body": "@dragon_slayer\nDid you use an existing save file to test this?  That is the most usual reason for getting a NoMethodError.  When you install a new script you almost always have to start your play test again from 'New Game'.  That is because the script is calling for data which does not exist in your old save file."
+    },
+    {
+      "post_id": "js-post-812790",
+      "author": "dragon_slayer",
+      "date": "2018-01-04T04:13:10+0900",
+      "body": "@Kes\nNo...\nEven though I am using JV Master's Skip Title Screen"
+    },
+    {
+      "post_id": "js-post-812791",
+      "author": "Andar",
+      "date": "2018-01-04T04:21:58+0900",
+      "body": "\"Game interpreter\" in that error message means that this error is happening in an event, not in the scripts themselves. And the Rest of the message looks as if this is either inside a script command or inside a script line of a conditional branch or control variable.\nBoth indicate that the error might not even come from this script, unless you were trying to access one of its few script functions.\nCan you give us a Screenshot of the event that is supposed to run when the message pops up?"
+    },
+    {
+      "post_id": "js-post-812794",
+      "author": "dragon_slayer",
+      "date": "2018-01-04T04:31:34+0900",
+      "body": "The main event:\nSpoiler:\nEvent 1\nI noticed that the error occurs in the common event Language Select\nSpoiler:\nEvent 2\nThanks for the help"
+    },
+    {
+      "post_id": "js-post-812813",
+      "author": "Andar",
+      "date": "2018-01-04T05:23:10+0900",
+      "body": "You're using the multilanguage addon for this.\nUnfortunately I can't even find that add-on on the ses page anymore, can you give a link to it as well?"
+    },
+    {
+      "post_id": "js-post-812814",
+      "author": "dragon_slayer",
+      "date": "2018-01-04T05:25:16+0900",
+      "body": "Here:\nSpoiler:\nScript\n#--\n# External Text: MultiLang v2.1.0 by Enelvon\n# =============================================================================\n#\n# Summary\n# -----------------------------------------------------------------------------\n# This script allows you to have multiple languages in your game. The user\n# can swap between them, and the game will remember which language was last\n# selected in between gaming sessions.\n#\n# Compatibility Information\n# -----------------------------------------------------------------------------\n# **Required Scripts:**\n# SES - External Text v3.1.0 or higher\n#\n# **Known Incompatibilities:**\n# None.\n#\n# Usage\n# -----------------------------------------------------------------------------\n# Create a directory named Text in the Data folder for your project. Inside of\n# this directory, create a new directory with the name of each language that you\n# intend to include in your project -- make sure to add the names of these\n# directories to the Languages array in SES::ExternalText. Any text files that\n# you place in these language directories will be read into the project, so feel\n# free to organize them however you'd like! You can even add subfolders to the\n# language folders. The only thing that you *need* to do is use the same keys\n# in each language -- if you don't, the game won't know where to look for text\n# in alternate languages!\n#\n# Note that each language can (and probably should) have different text for\n# the language select screen. The default is in English, obviously. To change\n# it, create a key in the language's file called\n#\n#     `Language Select`\n#\n# Make sure it's spelled exactly the same way, space and capitalization\n# included. The text you use for this key will be displayed when selecting\n# languages with that language as the current game language.\n#\n# Script Calls\n# -----------------------------------------------------------------------------\n# To call the language selection scene, use this:\n#\n#     `SceneManager.call(Scene_LanguageSelect)`\n#\n# You can use it on the map, or add it to a menu of some kind. Your choice.\n#\n# New Methods\n# -----------------------------------------------------------------------------\n# * `module DataManager`\n#     - `self.check_language`\n#     - `self.set_language`\n#\n#\n#      DataManager.set_language(\"English\")\n#\n#\n#\n#DataManager.check_language == \"English\" # Returns true if the current language is set to English\n#DataManager.check_language != \"Italian\" # Returns true if the current language is not set to Italian.\n#\n#\n#\n# License\n# -----------------------------------------------------------------------------\n# This script is made available under the terms of the MIT Expat license.\n# View [this page](\nhttp://sesvxace.wordpress.com/license/\n) for more detailed\n# information.\n#\n# Installation\n# -----------------------------------------------------------------------------\n# Put this script below Materials and above Main. It must also be below\n# SES - External Text v3.1.0 or higher.\n#\n#++\nmodule SES\n# ExternalText\n# ===========================================================================\n# Module containing configuration information for the External Text script.\nmodule ExternalText\n# Array of languages present in the game.\nLanguages = [\"English\", \"French\", \"German\", \"Spanish\", \"Italian\", \"Polish\", \"Russian\", \"Japanese\"]\nend\nend\n$imported ||= {}\nif !$imported[\"SES - External Text\"] ||\n$imported[\"SES - External Text\"] < '3.1.0'\nraise(\"You need SES - External Text v3.1.0 or higher to use SES - MultiLang.\")\nend\n$imported[\"SES - MultiLang\"] = '2.1.0'\n# DataManager\n# =============================================================================\n# The singleton class of the default RPG Maker module for handling data.\nclass << DataManager\n# Checks what language the game should launch with.\n#\n# @return [String] the name of the default language\ndef check_language\nlanguage = SES::ExternalText::Languages[0]\nFile.open(\"Game.ini\", \"r:BOM|UTF-8\") do |f|\nf.readlines.each do |line|\nbegin\nif line =~ /Language=(\\w+)/\nlanguage = $1 if SES::ExternalText::Languages.include?($1)\nend\nrescue\nend\nend\nend\nlanguage\nend\n# Serializes all languages txt files to rvdata2 files, allowing them to be\n# read from inside an encrypted archive.\n#\n# @return [void]\ndef create_text\n$game_text = {}\ntext = {}\nkey = \"\"\nSES::ExternalText::Languages.each do |l|\n$game_text.clear\nSES::ExternalText.each_file(\"Data/Text/#{l}\") do |f|\nFile.open(f, \"r:BOM|UTF-8\") do |file|\nfile.readlines.each_with_index do |v,i|\nnext if v =~ /(^\\s*(#|\\/\\/).*|^\\s*$)/\nSES::ExternalText::Tags.each_pair do |k,p|\nif v =~ k\np.call(*$~[1..-1])\nv.clear\nend\nend\nif SES::ExternalText.key && !v.empty?\nv = \"\\n#{v}\" unless $game_text[SES::ExternalText.key][1].empty?\n$game_text[SES::ExternalText.key][1] << v\nend\nend\nend\nend\nFile.open(\"Data/#{l}.rvdata2\", \"w\") do |file|\nMarshal.dump($game_text, file)\nend\nend\nend\n# Loads the game's databases.\n#\n# @return [void]\ndef load_normal_database\nen_et_dm_lnd\nif FileTest.directory?(\"Data/Text/#{SES::ExternalText::Languages[0]}\")\ncreate_text\nend\n$game_text = load_data(\"Data/#{check_language}.rvdata2\")\nend\n# Loads the game's databases for a battle test.\n#\n# @return [void]\ndef load_battle_test_database\nen_et_dm_lbd\nif FileTest.directory?(\"Data/Text/#{SES::ExternalText::Languages[0]}\")\ncreate_text\nend\n$game_text = load_data(\"Data/#{check_language}.rvdata2\")\nend\n# Changes the default language.\n#\n# @return [void]\ndef set_language(language)\nlines = File.read(\"Game.ini\")\nlines.gsub!(/Language=(\\w+)/) { \"Language=#{language}\" }\nlines << \"Language=#{language}\\n\" if !lines.include?(\"Language=#{language}\")\nFile.open(\"Game.ini\", \"w\") { |f| f.write(lines) }\n$game_text = load_data(\"Data/#{language}.rvdata2\")\nend\nend\n# Window_LanguageSelect\n# =============================================================================\n# The main window for the bare-bones language selection scene.\nclass Window_LanguageSelect < Window_Command\n# Creates a new instance of Window_LanguageSelect.\n#\n# @return [Window_LanguageSelect] a new instance of Window_LanguageSelect\ndef initialize\nsuper((Graphics.width - window_width) / 2,\n(Graphics.height - window_height) / 2)\nend\n# The number of lines to display at once in the window.\n#\n# @return [Integer] the number of lines to display ato nce\ndef visible_line_number\n[SES::ExternalText::Languages.size, 8].min\nend\n# The name of the language at the given index\n#\n# @return [String] the name of the language at the given index\ndef command_name(index)\n@list[index]\nend\n# Whether or not the currently selected language is enabled.\n#\n# @return [TrueClass] always true\ndef current_item_enabled?\ntrue\nend\n# Whether or not the currently selected language is enabled.\n#\n# @return [TrueClass] always true\ndef command_enabled?(index)\ntrue\nend\n# Whether or not the user can select a language.\n#\n# @return [TrueClass] always true\ndef ok_enabled?\ntrue\nend\n# Processing for when the user selects a language.\n#\n# @return [void]\ndef call_ok_handler\nDataManager.set_language(command_name(@index))\nactivate\nend\n# Gets the list of languages to display.\n#\n# @return [void]\ndef make_command_list\n@list = SES::ExternalText::Languages\nend\nend\n# Scene_LanguageSelect\n# =============================================================================\n# A bare-bones language selection scene.\nclass Scene_LanguageSelect < Scene_Base\n# Initial processing for the scene.\n#\n# @return [void]\ndef start\nsuper\ncreate_background\n@text_window = Window_Help.new(1)\nset_help_text\n@select_window = Window_LanguageSelect.new\nend\n# Creates the background for the scene.\n#\n# @return [void]\ndef create_background\n@background = Sprite.new\n@background.bitmap = SceneManager.background_bitmap\nend\n# Sets the help text for the current language.\n#\n# @return [void]\ndef set_help_text\n@text_window.set_text(SES::ExternalText.get_text(\"Language Select\") ||\n\"Select a language from the list.\")\nend\n# Updates the scene.\n#\n# @return [void]\ndef update\nsuper\nset_help_text\nSceneManager.return if Input.trigger?\nend\n# Clears the scene.\n#\n# @return [void]\ndef terminate\nGraphics.freeze\ndispose_all_windows\nend\nend"
+    },
+    {
+      "post_id": "js-post-1056052",
+      "author": "EpsilonEridani",
+      "date": "2020-04-17T22:48:27+0900",
+      "body": "Sorry for necroposting, but I'm having some trouble with this.\nWhen using the External Database, the long texts like the Actor or Item descriptions appear on a single line.\nI've done line breaks on the .txt file, but that won´t work either.\nWith the regular text, both auto-wrapping and manual line breaks work.\nIn case it was a problem with another script, I created a New Project with only SES, Core, External Text and External Database scripts and the problem is still there.\nHas anyone else this problem or knows a way to fix it?"
+    },
+    {
+      "post_id": "js-post-1056083",
+      "author": "Andar",
+      "date": "2020-04-18T00:09:09+0900",
+      "body": "EpsilonEridani said:\nSorry for necroposting,\nClick to expand...\nthere is no necroposting here, that rule only counts for support topics and not forpresentation topics like this one.\nWhich way did you use for creating linebreaks? And please give a link to the external database script as well as the order you placed all scripts in your script editor.\nThe behaviour depends on how the external database script handles the lines..."
+    },
+    {
+      "post_id": "js-post-1056089",
+      "author": "EpsilonEridani",
+      "date": "2020-04-18T00:23:16+0900",
+      "body": "The\nExternal Database\nis that.\nI've placed the Scripts from top to bottom in this order: Core, External Text and External Database.\nAnd for line break I just hit Enter."
+    },
+    {
+      "post_id": "js-post-1056093",
+      "author": "Andar",
+      "date": "2020-04-18T00:37:12+0900",
+      "body": "I'm just guessing here, but have you tried to use the line code for the new line? It is from an older version but should still work, and that might be all it needs for this case"
+    },
+    {
+      "post_id": "js-post-1056126",
+      "author": "EpsilonEridani",
+      "date": "2020-04-18T02:38:00+0900",
+      "body": "Yep, already tried that and it doesn't work."
+    },
+    {
+      "post_id": "js-post-1071266",
+      "author": "goldencarroteater",
+      "date": "2020-06-04T03:17:01+0900",
+      "body": "EpsilonEridani said:\nYep, already tried that and it doesn't work.\nClick to expand...\nSet a variable at the start of the game to equal a script:\n\"\\n\"\n, then refer to the variable in your text keys.\nexample:\nCode:\n[Key] Item_73_description\nA magnificent elixir. \\v[99]Revives an ally!"
+    },
+    {
+      "post_id": "js-post-1500896",
+      "author": "Armadum",
+      "date": "2025-02-24T13:14:54+0900",
+      "body": "This topic is very old but i had a similar problem.\nI was using the scripts in this exact order:\nCore v2.4 by Solistra and Enelvon\nExternal Text v3.3.4 by Enelvon\nExternal Text: MultiLang v2.1.0 by Enelvon\nExternal Text: Database v1.1.1 by Enelvon\nI followed this instruction that came in the script:\nCreate a directory named Text in the Data folder for your project. Inside of this directory, create a text file.\nBut i was getting an error.\nThe error showed was:\nScript 'Game Interpreter' line 1411: NoMethodError occured.\nundefined method `[]' for nil:NilClass\nAfter some trials and errors i found an solution:\nI created a folder named English in the Data folder and put the text file inside the English folder, after that the script worked.\nMaybe because of the MultiLang script, the original script was searching for the language folder that was supposed to accessed since MultiLang needs folders with the language names, and English is the standard language for the script.\nAfter that i wanted to show the step by step that i used to intall and use this script to help others with the same problem.\n1_First_Download the scripts\n1.1_Go to\nhttps://github.com/SyncGM\n1.2_Search the Core and External Text Repositories(Inside you will find the scripts and the licenses for their use, make sure to read the licenses and give credit to the authors of this scripts in your project)\n1.3_In this repositories you want this links(this are the link to the scripts):\ncore/lib/core.rb at master · SyncGM/core\nProvides the basic foundation for all SES scripts written by Enelvon and Solistra. - SyncGM/core\ngithub.com\nexternal-text/lib/external-text.rb at master · SyncGM/external-text\nThis script allows you to create text files and use their contents in the in-game database and message windows. - SyncGM/external-text\ngithub.com\nexternal-text/lib/addons/multi-lang/multi-lang.rb at master · SyncGM/external-text\nThis script allows you to create text files and use their contents in the in-game database and message windows. - SyncGM/external-text\ngithub.com\nexternal-text/lib/addons/external-text-database/external-text-database.rb at master · SyncGM/external-text\nThis script allows you to create text files and use their contents in the in-game database and message windows. - SyncGM/external-text\ngithub.com\n1.4_Create text files in your computer where you like and with the name you like, one for each script\n1.5_Acces the links above, in the pages you will see numbers on the left collun starting from 1 and increasing and in the right you will find the text code. Make sure to copy the whole text code in text files you created\n2_Second_Installing the scrips in RPG Maker VX Ace:\n2.1_Go to Tools, Script Editor(or click F11 shortcut button)\n2.2_In the left side scroll thil finding the Materials topic, below materials you se written ( Insert here )\n2.3_In the blanck space below ( Insert here ) and above Main, click with the right mouse button and choose Insert(or click Ins shortcut button) to create a space for a script\n2.4_Click on the new blanck space to select it\n2.5_Copy all the text code of the script, from the text file that you created, in the white area on the right\n2.6_Put a name in the script by writing the name in the Name box in the lower left(Im not sure about that, but seens that the plugin name dont affect how it works, so put in the best way for you to remember and recognize it in the list)\n2.7_Insert the plugins in this exact order:\nCore v2.4 by Solistra and Enelvon\nExternal Text v3.3.4 by Enelvon\nExternal Text: MultiLang v2.1.0 by Enelvon\nExternal Text: Database v1.1.1 by Enelvon\n2.8_Now the scrips are installed\n3_Third_Create the needed folders and text files\n3.1_Go to where your game project was created, you will find in a RPG Maker VX Ace folder with the name of your project inside.(If you dont remember where your game project was saved click in Archive, New Project or click Ctrl+N, if you created the game project in the sugested folder then your actual project will likly be in the same folder)\n3.2_Go in the folder with the name of your game\n3.3_Go in the Data folder\n3.4_Inside the Data folder create an folder called Text\n3.5_Go in the Text folder\n3.6_Inside the Text folder create an folder called English\n3.7_Go in the English Folder\n3.8_Create a text file with the name that you like(this text file is where the script will search for the texts)\n4_Fourth_Testing if everything worked\nusing an adaptation of the example of\nJ_C\n(Example created by\nJ_C\n)\nlink to the example:\nExternal Text v3.3.4 (Write your game in an organized manner! Translate with ease!)\nHi!   \tI get a strange error message, when I change the ChoiceReplaceMessageBox  option to \"never\" or \"always\". When a choice window should be displayed, i get a crash like this:   \t   \tAnd another one. Here is my text code for a choices screen:   \t[Key] 5_RasinAsking \t[Default Choice] 0 \tRemind...\nforums.rpgmakerweb.com\n4.1_You write this into the text file created in the English Folder:\n[Key] Ryan_dialogue1\nHello, my name is Ryan.\n4.2_Save the text file\n4.3_Then, in the RPG Maker VX Ace, call a script in an event (it's on the 3rd page of the events window), and write this into the script windows:\ntext(\"Ryan_dialogue1\")\n4.4_If everything worked then the text Hello, my name is Ryan. will show in the screen.\n5_Fifth_If everything worked, how to use the commands\n5.1_In the 4_Fourth Step you see what needs to be put in the text file and how to use the command text.\n5.2_When you write the text file inside the english folder you need to write:\n[key]thenameofyourkey\nthe text you want to show\n5.3_You need an key to every diferent part of text you use in your game(Every key needs to be unique, you can have multiple text files with keys and texts but make sure that every key is unique)\n5.4_In the RPG Maker VX Ace you show your texts in the game using the command to call a script in an event(it's on the 3rd page of the events window), and write this into the script windows:\ntext(\"thenameofyourkey\")\n5.5_The command text will show in the screen what is writen below the [key] line in the text file\nNot sure if will work for everyone but this worked for me.\nObs:If anyone wants to transform this step by step guide into a video please feel free to do.\nThat would help others.\nIm not into creating videos so i will let the instructions here in this text.\nMake sure to read the licenses and give credit to the authors of this scripts in your project.\ndragon_slayer said:\nKeep getting error:\nScript 'Game Interpreter' line 1411: NoMethodError occured.\nundefined method `< <' for nil:NilClass\nPlease help!\nClick to expand..."
+    }
+  ]
+}

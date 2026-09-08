@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/hiding-specific-followers-without-removing-them-from-battle.177978",
+  "title": "MZ Hiding specific Followers without removing them from Battle",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:21.467860+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1516058",
+      "author": "Gatamandra",
+      "date": "2025-05-28T21:09:13+0900",
+      "body": "Hi! as the tittle says I would like to hide followers ,3 and 4 in the map without removing them from the battle party members, so in battle there are still 4 fighters but on the map only 2 follower, to have less of a longer following line, it could be even just making them transparent not to touch with many things, but I can´t figure out how to do it.\nthanks a mil in advance!!"
+    },
+    {
+      "post_id": "js-post-1516063",
+      "author": "rpgLord69",
+      "date": "2025-05-28T21:44:15+0900",
+      "body": "Hmmm, I guess you modify just one line to decide how many it makes. Like I changed maxBattleMembers to a number (currently 3). Put this as plugin. If you want just one dude after the main character, change 3 to 2.\nGame_Followers.prototype.setup = function() {\nthis._data = [];\nfor (let i = 1; i < 3; i++) {\nthis._data.push(new Game_Follower(i));\n}\n};"
+    },
+    {
+      "post_id": "js-post-1516070",
+      "author": "punitdh89",
+      "date": "2025-05-28T22:12:43+0900",
+      "body": "I believe the\nTyrusWoo Follower Control\nplugin may have what you're looking for. It has a \"Non-Combat\" class that you can add members to."
+    },
+    {
+      "post_id": "js-post-1516071",
+      "author": "Aerosys",
+      "date": "2025-05-28T22:16:04+0900",
+      "body": "rpgLord69 said:\nHmmm, I guess you modify just one line to decide how many it makes. Like I changed maxBattleMembers to a number (currently 3). Put this as plugin. If you want just one dude after the main character, change 3 to 2.\nGame_Followers.prototype.setup = function() {\nthis._data = [];\nfor (let i = 1; i < 3; i++) {\nthis._data.push(new Game_Follower(i));\n}\n};\nClick to expand...\nThis will absolutely work. Alternatively, one could do this approach:\nCode:\n(function() {\n\nconst_GameFollower_isVisible = Game_Follower.prototype.isVisible;\nGame_Follower.prototype.isVisible = function() {\n    \n    if (this.actor() && this.actor().index() >= 2) {\n      return false;\n    }\n    \n    // feel free to add any other rule here\n    \n    // no custom rule applies, resume original code\n    return _GameFollower_isVisible.call(this);\n}\n\n})();"
+    },
+    {
+      "post_id": "js-post-1516073",
+      "author": "Gatamandra",
+      "date": "2025-05-28T22:17:50+0900",
+      "body": "That worked perfect!! thanks a million! (EDIT: And thank you all guys for the responses! I didn´t saw them when makikng the response!)\nrpgLord69 said:\nHmmm, I guess you modify just one line to decide how many it makes. Like I changed maxBattleMembers to a number (currently 3). Put this as plugin. If you want just one dude after the main character, change 3 to 2.\nGame_Followers.prototype.setup = function() {\nthis._data = [];\nfor (let i = 1; i < 3; i++) {\nthis._data.push(new Game_Follower(i));\n}\n};\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1516074",
+      "author": "Robro33",
+      "date": "2025-05-28T22:21:33+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

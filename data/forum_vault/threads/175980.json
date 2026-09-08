@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/unison-skill-plugin.175980",
+  "title": "MZ Unison Skill Plugin",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:43.550758+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1502568",
+      "author": "Dunkle_G",
+      "date": "2025-03-04T10:21:14+0900",
+      "body": "So I wanted to create some skills in my game that involved having 2 characters use both of their actions that turn to perform a skill together. At first it seemed like something simple to add, but to my knowledge, there's nothing in my plugin list that allows this. (For reference, I have been using VisuStella for the most part. Specifically, I have also been using the OTB Battle System plugin of theirs)\nI have a video demonstrating the idea from an old project of mine in RPG Maker VX Ace, where I somehow easily found exactly what I needed.\nSo far, I do have some JS Code that would allow the game to check if Actor's A and B are in the current party, along with ensuring both spend the appropriate amount of resources for the skill, but that's basically it.\nFrom what I've gathered + learned, I don't really know a way to fully implement this skill into the game with simple JS Notetags, though I have asked a few friends to help me see if it's possible.\nUntil then though, would anyone here know any plugins at all that would help accomplish this idea, or anything at all, I'd greatly appreciate it.\n(Also if I've posted this to the wrong forum, I apologize)\nHere's the video showcasing the idea that I mentioned. The first half covers the unified TP Bar used for the idea, which I've already implemented. Now I'm focusing purely on adding in the \"requires 2 specific party members\" thing now oof."
+    },
+    {
+      "post_id": "js-post-1502594",
+      "author": "Another Fen",
+      "date": "2025-03-04T15:45:14+0900",
+      "body": "Hey,\nI can't make any guarantees, but since in the OTB all battlers act immediately, there is a chance this would work there (I did not test anything):\nTo check whether all required actors are available you could try to add this to the skills note:\n(Requires VisuStellas Skills&States Core)\nSpoiler\nJavaScript:\n<JS Skill Enable>\n  // Replace 3, 4 with the IDs of the participants\n  let requiredActors = [3, 4].map(id => $gameActors.actor(id));\n  // Make sure all participants can still act\n  // (= unrestricted by states and either be the user or still be in the action queue)\n  enabled = requiredActors.every(actor => {\n    if (actor.isRestricted()) { return false; }\n    if (!$gameParty.inBattle()) { return true; }\n    if (actor === user) { return true; }\n    return BattleManager._actionBattlers.includes(actor);\n  });\n</JS Skill Enable>\n(In case this seems to work, make sure the skill is also properly disabled if some of the required actors already finished their turn)\nTo make sure all participating actors are losing their action (hopefully visible in OTBs turn order) when the skill is used, you could also add this to the note:\nSpoiler\nJavaScript:\n<JS Pre-Start Action>\n  // Also replace the actor IDs here:\n  let requiredActors = [3, 4].map(id => $gameActors.actor(id));\n  // ---\n  requiredActors.reverse().forEach(actor => {\n    let index = BattleManager._actionBattlers.indexOf(actor);\n    if (index >= 0) {\n      // Move all participants to the front of the queue:\n      BattleManager._actionBattlers.copyWithin(1, 0, index);\n      BattleManager._actionBattlers[0] = actor;\n      // And clear their action:\n      actor.clearActions();\n    }\n  });\n</JS Pre-Start Action>\nThere is a chance that the moving part works, but the other actors can still input an action.\nIf that is the case, an easy solution might be to make a new State that lasts 0 turns and stuns the target until the end of their action, and replace the line\nactor.clearActions();\nwith\nactor.addState(27);\n(replace 27 with the ID of your stun state)\nEdit\n: Small Fix"
+    },
+    {
+      "post_id": "js-post-1502699",
+      "author": "Dunkle_G",
+      "date": "2025-03-05T01:57:14+0900",
+      "body": "Another Fen said:\nHey,\nI can't make any guarantees, but since in the OTB all battlers act immediately, there is a chance this would work there (I did not test anything):\nTo check whether all required actors are available you could try to add this to the skills note:\n(Requires VisuStellas Skills&States Core)\nSpoiler\nJavaScript:\n<JS Skill Enable>\n  // Replace 3, 4 with the IDs of the participants\n  let requiredActors = [3, 4].map($gameActors.actor);\n  // Make sure all participants can still act\n  // (= unrestricted by states and either be the user or still be in the action queue)\n  enabled = requiredActors.every(actor => {\n    if (actor.isRestricted()) { return false; }\n    if (!$gameParty.inBattle()) { return true; }\n    if (actor === user) { return true; }\n    return BattleManager._actionBattlers.includes(actor);\n  });\n</JS Skill Enable>\n(In case this seems to work, make sure the skill is also properly disabled if some of the required actors already finished their turn)\nTo make sure all participating actors are losing their action (hopefully visible in OTBs turn order) when the skill is used, you could also add this to the note:\nSpoiler\nJavaScript:\n<JS Pre-Start Action>\n  // Also replace the actor IDs here:\n  let requiredActors = [3, 4].map($gameActors.actor);\n  // ---\n  requiredActors.reverse().forEach(actor => {\n    let index = BattleManager._actionBattlers.indexOf(actor);\n    if (index >= 0) {\n      // Move all participants to the front of the queue:\n      BattleManager._actionBattlers.copyWithin(1, 0, index);\n      BattleManager._actionBattlers[0] = actor;\n      // And clear their action:\n      actor.clearActions();\n    }\n  });\n</JS Pre-Start Action>\nThere is a chance that the moving part works, but the other actors can still input an action.\nIf that is the case, an easy solution might be to make a new State that lasts 0 turns and stuns the target until the end of their action, and replace the line\nactor.clearActions();\nwith\nactor.addState(27);\n(replace 27 with the ID of your stun state)\nClick to expand...\nJust woke up and tried the code out.\nIt didn't really work though. Whenever I would pull the skill up, I would get this error in the console here:"
+    },
+    {
+      "post_id": "js-post-1502710",
+      "author": "Another Fen",
+      "date": "2025-03-05T02:14:07+0900",
+      "body": "Oh, apparently I did make an error in the first lines of both notes.\nFixed that one, still cannot really test anything since I do not have access to the OTB."
+    }
+  ]
+}

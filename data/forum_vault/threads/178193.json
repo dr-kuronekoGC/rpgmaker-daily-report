@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-event-spawner-bug-fix-or-workaround.178193",
+  "title": "MV Yanfly Event Spawner Bug (Fix or Workaround?)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T16:41:31.095514+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1517477",
+      "author": "NightmareMMZero",
+      "date": "2025-06-08T20:02:33+0900",
+      "body": "I've got an interesting problem with Yanfly's Event Spawner in RPG Maker MV... All I want to do is spawn events that persist on the map and move on a set path from then on. The plugin seems to work well, but it gets wonky when I spawn an event with a move route.\nThe spawned event doesn't move as expected when the player leaves the map and returns to it. It seems to me that the spawned event remembers its X,Y position when the player leaves the map and retains it upon returning to the map, instead of behaving like normal events do, where they reload into their original X,Y positions when the player leaves the map and returns...\nThis wouldn't be such a big deal if not for the fact that the events do not retain the memory of their progress along their move routes. This causes the spawned events to have their move routes messed up when exiting and returning to the map. Interestingly, this is not a problem when saving the game and reloading the save, as both the X,Y positions and the move route progress are saved when saving and reloading.\nI tested this in a brand-new project with only the one plugin, so I'm fairly certain it's a problem with Yanfly's code and not a conflict with another plugin or an issue with my eventing. As far as I know, there's no new revisions to this plugin that I don't have (I have V1.02) so I was looking to tweak the plugin maybe myself to fix the issue, but unfortunately while I am somewhat well-versed in JavaScript, I am not terribly familiar with how MV works under the hood (yet.)\nI attempted some workarounds, like spawning an invisible event that persists and acts as a \"spawner\" for the moving events (which were changed to NOT persist, so that they could be freshly spawned every time the map loaded by the spawner event) but I hit another road block there when I discovered that if you use \"Erase Event\" within an event spawned by Yanfly's event spawner, the event disappears for good and doesn't come back when reloading the map, like a normal event.\nI'm not sure if all of this weird behavior is a bug or a feature, but I really wish these spawned events would just behave in the same way as the vanilla events.\nTo my more experienced game makers, any advice? Is there a straightforward way to patch Yanfly's plugin to make the event behavior more consistent with the ones made in the editor? Does anybody have advice for a workaround? Are there any more details I could share that would make determining either easier?\nHere's a video somewhat demonstrating my problem:\nThanks in advance to anyone who can provide help or insight."
+    },
+    {
+      "post_id": "js-post-1517561",
+      "author": "rpgLord69",
+      "date": "2025-06-09T04:57:41+0900",
+      "body": "Throw it back to the original spawn coordinates when it restores the preserved spawned events, like add one line:\nGame_Map.prototype.restoreSpawnedEvents = function() {\nvar length = this._spawnedEvents.length;\nfor (var i = 0; i < length; ++i) {\nvar spawnedEvent = this._spawnedEvents[i];\nif (!spawnedEvent) continue;\nthis._events[i + Yanfly.Param.EventSpawnerID] = spawnedEvent;\nspawnedEvent._pageIndex = -2;\nspawnedEvent.locate(spawnedEvent._spawnData.x, spawnedEvent._spawnData.y); // ADDED THIS LINE\nthis._needsRefresh = true;\n}\n};"
+    },
+    {
+      "post_id": "js-post-1517649",
+      "author": "NightmareMMZero",
+      "date": "2025-06-09T21:19:54+0900",
+      "body": "rpgLord69 said:\nThrow it back to the original spawn coordinates when it restores the preserved spawned events, like add one line:\nGame_Map.prototype.restoreSpawnedEvents = function() {\nvar length = this._spawnedEvents.length;\nfor (var i = 0; i < length; ++i) {\nvar spawnedEvent = this._spawnedEvents[i];\nif (!spawnedEvent) continue;\nthis._events[i + Yanfly.Param.EventSpawnerID] = spawnedEvent;\nspawnedEvent._pageIndex = -2;\nspawnedEvent.locate(spawnedEvent._spawnData.x, spawnedEvent._spawnData.y); // ADDED THIS LINE\nthis._needsRefresh = true;\n}\n};\nClick to expand...\nSuch a simple but elegant solution.\nThank you, friend. Due to my still learning all of the ins and outs of MV's inner workings, that probably would have taken me an embarrassing amount of time to deduce on my own.\nIt works like a charm. Adding this line to Yanfly's plugin loads the spawned events into their initial spawn locations, just like I wanted. I had an issue where the move routes were still wonky due to the initial direction of the events not being retained. However, with further thought, I don't think I want the plugin to handle that.\nIn case anyone reading this later is curious, I remedied the direction issue by using Yanfly's Self Variables plugin, saved the initial direction I wanted the event to be facing when spawned to a Self Variable set on the freshly spawned event at creation, and added the following script call to the start of my template event's move route:\n$gameMap.event(this._eventId).setDirection($gameSelfSwitches.value([$gameMap.mapId(), this.eventId(), 'SELF VARIABLE ' + 304]));\nClick to expand...\nIn this example, \"304\" is my Self Variable ID.\nAnyhow, my event works as intended, spawning in and moving along its intended route, even when leaving the map and returning. Thank you for saving me some headache, you've earned a spot in my credits roll."
+    },
+    {
+      "post_id": "js-post-1517671",
+      "author": "rpgLord69",
+      "date": "2025-06-10T00:00:50+0900",
+      "body": "Cool!\nYeah, I guess if you wanted to also put the direction in the plugin, you'd have to access the preloaded map data where it spawns the event to get the direction. But using a self variable to set it works also."
+    }
+  ]
+}
