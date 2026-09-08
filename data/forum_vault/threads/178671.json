@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-change-the-color-of-menu-windows.178671",
+  "title": "How to change the color of menu windows?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:55:04.350627+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1520688",
+      "author": "Magenta-Fantasies",
+      "date": "2025-07-02T11:24:28+0900",
+      "body": "I'm trying to change the dark gray shade behind the menu options to purple to match the purple and yellow color scheme I use throughout the UI.\nHere is an example with the menu plugins that I use (\nMoghunter's menu plugins\nand VisuStella Core, Skills and States Core and Elements and Status Core.) The dark gray stands out too much against the background I set, and I'd like to either change the color or even not have any color there at all.\nHere is an example after I turned off all the plugins I use. Notice that the dark gray background persists, so it isn't a plugin issue.\nThis seems like something that should be easy to change, and at first it felt like a noobish question to ask.  However, after an hour or so of trying different things, I can't figure out how to change or remove that dark gray color. I didn't see anything under System settings or anywhere else that lets me change that part of the UI. Does anyone have any idea where in the settings that option is?"
+    },
+    {
+      "post_id": "js-post-1520717",
+      "author": "rpgLord69",
+      "date": "2025-07-02T17:39:38+0900",
+      "body": "I think the command backgrounds come from window selectable drawItemBackground which uses drawBackgroundRect. Change it for the windows menucommand and menustatus I think."
+    },
+    {
+      "post_id": "js-post-1520723",
+      "author": "caethyril",
+      "date": "2025-07-02T18:47:13+0900",
+      "body": "Here are a couple of different answers:\nSkip drawing it:\nRobro33 said:\nsave this as a .js file and add it into your project as a plugin at the bottom of the list\nCode:\nWindow_ItemList.prototype.drawBackgroundRect = function(rect) {};\nClick to expand...\nChange its colour:\ncaethyril said:\nThese background rectangles appear in all of RMMZ's selectable windows and their colours do not reference the window skin:\ncaethyril said:\nThe selectable item background rectangles reference two colours from the\nColorManager\n:\nitemBackColor1\n- upper gradient colour and rectangle border;\nitemBackColor2\n- lower gradient colour.\nYou can override these colours with a plugin that lets you configure the\nColorManager\n, e.g.\nVisuStella Core Engine\nor my own\nCae_MenuDisplayOpts\n~\nAlternatively, you can put these methods in a .js file, edit the numbers, and import as a plugin:\nJavaScript:\nColorManager.itemBackColor1 = function() {\n    return \"rgba(32, 32, 32, 0.5)\";\n};\n\nColorManager.itemBackColor2 = function() {\n    return \"rgba(0, 0, 0, 0.5)\";\n};\nIf you want it totally transparent, try a value with 0 alpha, e.g.\nrgba(0,0,0,0)\n.\nClick to expand...\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1520855",
+      "author": "Magenta-Fantasies",
+      "date": "2025-07-03T09:31:46+0900",
+      "body": "caethyril said:\nHere are a couple of different answers:\nSkip drawing it:\nChange its colour:\nClick to expand...\nThe second option worked! Thank you! I'm baffled that isn't something that is a hard-coded option within RPG Maker. It really feels like it should be.\nMy menu looks vastly better without those boxes. I still kept them on the Status page (to make it easier to read the text) using VisuStella Elements Core. I also made the outline on the type a little more pronounced with VisuStella Core. Now it's readable against the beige of the pages and also against purple backgrounds in other areas of the game.\nIf I had to nitpick something, I would have the character portraits on the right page, but that would be a massive pain to configure and I feel like there would be far too much empty space on the left page that way. I'm pretty satisfied with this new layout!"
+    },
+    {
+      "post_id": "js-post-1520896",
+      "author": "caethyril",
+      "date": "2025-07-03T17:52:04+0900",
+      "body": "Great, you're welcome!\n(As an aside: I notice you're using the fallback font, Times New Roman. If that is not intentional, as a placeholder or otherwise, then you may have specified an invalid font, e.g. on the System 2 tab and/or in one of your plugins.)\nMagenta-Fantasies said:\nI'm baffled that isn't something that is a hard-coded option within RPG Maker. It really feels like it should be.\nClick to expand...\nYep. Personally I've been answering variations of this question for years.\nMagenta-Fantasies said:\nI still kept them on the Status page (to make it easier to read the text)\nClick to expand...\nYes, I think that's the main reason they exist: to improve contrast and make sure things are readable. They might also be a UX consideration, since the core scripts omit them for non-selectable lists."
+    },
+    {
+      "post_id": "js-post-1520985",
+      "author": "Magenta-Fantasies",
+      "date": "2025-07-04T10:30:21+0900",
+      "body": "caethyril said:\nGreat, you're welcome!\n(As an aside: I notice you're using the fallback font, Times New Roman. If that is not intentional, as a placeholder or otherwise, then you may have specified an invalid font, e.g. on the System 2 tab and/or in one of your plugins.)\nYep. Personally I've been answering variations of this question for years.\nYes, I think that's the main reason they exist: to improve contrast and make sure things are readable. They might also be a UX consideration, since the core scripts omit them for non-selectable lists.\nClick to expand...\nI have the main font and number font set to Times New Roman and the fallback font set to Verdana. Ideally, I'd like to use Bell MT, which is a prettier but still very practical serif font, but I can't get it to work, even though it is a .ttf file and I have it in the Fonts folder. If I set it as the main font and load the game, I immediately get an error message saying it failed to load from the fonts folder, as well as a message saying the font failed to decode if I press F8. I made sure the name is typed correctly (which is easy to do, since it's just \"bell.ttf\") so I know it's not a typo."
+    }
+  ]
+}

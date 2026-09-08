@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-reloading-bullets-in-cross-engine.178770",
+  "title": "MV How Reloading bullets in Cross Engine",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:55:14.813609+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1521358",
+      "author": "stprod",
+      "date": "2025-07-07T04:31:30+0900",
+      "body": "Good day.\nI'm using\nCross Engine\nplugin for\nRPG Maker MV\n(ABS system) and I want to change how projectiles (bullets in my case) work.\nCould someone help me modify this plugin?\nI'm using bullets (for firearms in my game) instead of arrows. I need bullets to be reloadable after a certain number of bullets (10 for a pistol, 15 for a shotgun, etc.). The game displays all the bullets in the inventory in the interface, and I don't want that.\nI want to only show the bullets, when they reach zero, I can reload them by pressing a key (R, for example).\nThanks in advance."
+    },
+    {
+      "post_id": "js-post-1521471",
+      "author": "AquaEcho",
+      "date": "2025-07-08T03:03:08+0900",
+      "body": "Are the bullets consumable items in your inventory or are they infinite but you can only shoot x number at a time?"
+    },
+    {
+      "post_id": "js-post-1521472",
+      "author": "stprod",
+      "date": "2025-07-08T03:11:10+0900",
+      "body": "AquaEcho said:\nAre the bullets consumable items in your inventory or are they infinite but you can only shoot x number at a time?\nClick to expand...\nthe bullets are consumable items, The interface only shows the number of bullets in the weapon, but not the total number of bullets in the inventory."
+    },
+    {
+      "post_id": "js-post-1521482",
+      "author": "AquaEcho",
+      "date": "2025-07-08T04:03:07+0900",
+      "body": "It's probably going to require you to edit the Chrono Engine or MOG_ToolHUD file as the built-in behavior is to display your entire inventory stock. It might be easier to make a custom HUD for bullets using SRD HUDMaker or another HUD plugin.\nHave SRD HUDMaker display the remainder of a formula dividing the total number of bullets in your inventory by the magazine size."
+    },
+    {
+      "post_id": "js-post-1521493",
+      "author": "stprod",
+      "date": "2025-07-08T05:25:41+0900",
+      "body": "AquaEcho said:\nIt's probably going to require you to edit the Chrono Engine or MOG_ToolHUD file as the built-in behavior is to display your entire inventory stock. It might be easier to make a custom HUD for bullets using SRD HUDMaker or another HUD plugin.\nHave SRD HUDMaker display the remainder of a formula dividing the total number of bullets in your inventory by the magazine size.\nClick to expand...\nI think I managed to implement it with common events, but now please help me find a very strange error I'm experiencing.\nWe know that in these real-time battle engine plugins for Chrono Engine Cross, there is a map that we must define as a Toolmap where the events, items, and projectiles (bullets) that the game will have will be located. Each one is a different event. For example, my bullet is event 1.\nMy tool map is map 150.\nWhat happens is that when the player shoots a bullet or arrow, the bullet event is instantiated (from that toolmap) to the map where the player is located so that the bullet travels the distance in the direction where the player is looking (forward) several tiles. This is included in the movement paths on the first page of the bullet event, but sometimes it happens that that bullet (that event) isn't instantiated correctly. That is, the bullet isn't instantiated right in front of the player to complete its corresponding path. Instead, that bullet is instantiated (and I've already checked this) right above event #1 of the player's current map, which is just a random event where I only play a BGM (it doesn't matter).\nAnd from there, the bullet is instantiated, and since it's in a ceiling area (black tiles with an X), it doesn't go beyond that. This shouldn't happen because the bullet must be instantiated right in front of the player to complete its respective path. I managed to partially fix this by switching to another weapon, or by shooting more times, or by switching to another map. But that can't be the case.\nThe bullet should always be instantiated in front of the player, regardless of which map they're on.\nIt's as if sometimes the bullet is instantiated in the first event created on the player's current map. If there's event #1, it's sometimes instantiated on top of it, which is very strange. I don't know if the plugin thinks event 1 is the player, because I understand that to refer to the player in rpg maker mv the event -1 is used and not 1."
+    },
+    {
+      "post_id": "js-post-1521496",
+      "author": "AquaEcho",
+      "date": "2025-07-08T05:34:23+0900",
+      "body": "Without seeing your tool event page for the bullet I can't tell you where you went wrong. You can put this.locate($gamePlayer.x,$gamePlayer.y) at the beginning of the tool's autonomous move route if for some reason it's not starting at the player's position."
+    },
+    {
+      "post_id": "js-post-1521497",
+      "author": "stprod",
+      "date": "2025-07-08T05:39:36+0900",
+      "body": "AquaEcho said:\nWithout seeing your tool event page for the bullet I can't tell you where you went wrong. You can put this.locate($gamePlayer.x,$gamePlayer.y) at the beginning of the tool's autonomous move route if for some reason it's not starting at the player's position.\nClick to expand...\nI already put what you mentioned at the beginning of the movement route, and sometimes (not always), say 10% of the time, the bullet doesn't show up.\nThen I go to the location where event 1 is, and it's triggered a few times. I have to shoot in other directions or change maps to fix it. It's very weird."
+    },
+    {
+      "post_id": "js-post-1521613",
+      "author": "AquaEcho",
+      "date": "2025-07-09T02:22:08+0900",
+      "body": "This is something you're going to have to extensively test with the console log to see what the game state is when the issue happens."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/galv-layered-graphic-help.178843",
+  "title": "MV Galv Layered Graphic help...",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:54:57.061996+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1521902",
+      "author": "Neal_Sage",
+      "date": "2025-07-11T19:13:48+0900",
+      "body": "I've been using\nGalv's Layered Plugin\nin RPG Maker\nMZ\n, and it usually works perfectly. But when I tried using it in\nMV\n, things got a lot more complicated...\nHere's how it looks\nin-game\n, and here's how it's\nsupposed\nto look (as shown in Photoshop).\nIt works like a charm in\nMZ\n, but in\nMV\n... nope.\nGalv\n, if you happen to see this and have some time, could you please take a look? Or if\nanyone else\nhas experienced a similar issue and found a solution, I’d really appreciate your help.\nHere the map notes:\nLAYER_S 1 Dungeon1Bottom 0 0 255 0.5 10 0 0\nLAYER_S 2 Dungeon1Top 0 0 255 5 10 0 0"
+    },
+    {
+      "post_id": "js-post-1521904",
+      "author": "TheAM-Dol",
+      "date": "2025-07-11T19:30:23+0900",
+      "body": "According to the help document, you have set the anchor point to the top left corner, additionally you have set the blending mode to an invalid blend mode.\nAs the help documentation states, map notes are:\nLAYER_S ID GRAPHIC X Y OPACITY Z BLEND XANCHOR YANCHOR CHAR ROTATE\nYours are:\nLAYER_S 1(ID) Dungeon1Bottom(Graphic) 0(x) 0(y) 255(opacity) 0.5(z) 10(blend) 0(xanchor) 0(yanchor)\nPlease ensure that you check the help documentation thoroughly.\nNeal_Sage said:\nGalv\n, if you happen to see this and have some time, could you please take a look?\nClick to expand...\nGalv is still active, but he primarily only replies to his own threads:\nLink to thread"
+    },
+    {
+      "post_id": "js-post-1521907",
+      "author": "Neal_Sage",
+      "date": "2025-07-11T20:19:31+0900",
+      "body": "Well... Its new for me... since i use it mostly in mz and i don't need to change the x and y anchor... so what should the x and y anchor should be?\nAfter fixing:\nX and Y = I tried using the middle of the graphic which is in my case 22, 25\nX and Y Anchor = 0.5 so should be middle\nChar= should 0 or map will follow character\nLAYER_S 1(iD) Dungeon1Bottom(Graphic) 22(X) 25(Y) 255(Opacity) 0.5(Z) 0(Blend) 0.5(X Anchor) 0.5(Y Anchor) 0(Char) 0(Rotate)\nLAYER_S 2 Dungeon1Top 0 0 255 5 0 0.5 0.5 0 0"
+    },
+    {
+      "post_id": "js-post-1521910",
+      "author": "TheAM-Dol",
+      "date": "2025-07-11T21:31:38+0900",
+      "body": "Okay, so to be fair, this one isn't entirely on you since the documentation leaves something to be desired.\nchar and rot are optional.\nIf you use X/Y values (which are pixel values, not tiles) then you should not use a char value - leave it blank (same thing for rot).\nSomething like this:\nCode:\nLAYER_S 1 Dungeon1Bottom 640 480 255 0.5 0 0.5 0.5\nfwiw, I've always bound the image to an autorun event and rarely use the map notetag.\nFor example:"
+    },
+    {
+      "post_id": "js-post-1521919",
+      "author": "Neal_Sage",
+      "date": "2025-07-11T22:36:52+0900",
+      "body": "Still cant...Maybe i should ask in his thread... Thank you for helping anyway,\nTheAM-Dol\nthe image keep small and not big like it supposed to"
+    }
+  ]
+}

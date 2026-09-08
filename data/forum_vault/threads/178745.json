@@ -1,0 +1,137 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-little-help-with-swith-variable-in-a-common-event-please.178745",
+  "title": "MV A little help with swith, variable in a common event please",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:54:58.343333+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1521204",
+      "author": "white90",
+      "date": "2025-07-06T01:18:46+0900",
+      "body": "Hello, Basically I have a common event that recalls a diary as IMG, and also the various notes that may appear are image.\nThe principal notes are for the main quest and appears by : variable = 1,2,3,4..\nso IF variable m quest = 1\nshow this img\nevent output processing\nelse\nIF variable m quest = 2 etc.\nbut in the same way I have to enter the switches that unlike the main quest which is linear are variable depending on whether or not the player talks with certain npc.  like : IF variable m quest = 1; show img; IF switch A is ON; show img2\nthere is a command like \"\nevent output processing\n\" to check the first group of IF (variables) and does not leave the event once a positive result has been obtained but passes to the next group of IF (switches)"
+    },
+    {
+      "post_id": "js-post-1521215",
+      "author": "SGHarlekin",
+      "date": "2025-07-06T02:29:42+0900",
+      "body": "There's no such thing as an event output processing command. Maybe you got some wrong translation there. Regardless, I think what you're talking about are nested conditional branches, and yes, they are certainly possible."
+    },
+    {
+      "post_id": "js-post-1521219",
+      "author": "white90",
+      "date": "2025-07-06T03:29:52+0900",
+      "body": "SGHarlekin said:\nSGHarlekin said:\nThere's no such thing as an event output processing command. Maybe you got some wrong translation there. Regardless, I think what you're talking about are nested conditional branches, and yes, they are certainly possible.\nClick to expand...\nClick to expand...\nis the fourth command, below stop cycle; near conditional branches"
+    },
+    {
+      "post_id": "js-post-1521221",
+      "author": "SGHarlekin",
+      "date": "2025-07-06T03:35:00+0900",
+      "body": "That's exit event processing.\nas I suspected. The answer is still the same. What you're asking for is nested conditional branches. You can do that by just having multiple conditional branches inside other conditional branches, just gotta figure out the logic you'll need for it."
+    },
+    {
+      "post_id": "js-post-1521227",
+      "author": "gundambison",
+      "date": "2025-07-06T05:04:27+0900",
+      "body": "imho.. the logic should be fix first..\nperhaps focus only using variable.. but you use switch right? just make it as variable\n..\nnext is about condition. I prefer to count how many action you have.. based on your variable..\nSpoiler:\ncombination method\nI'm not fluent on English.. but I think the action I mean is combination method on math\n* fyi I'm using AI to help me\nlets say you have 4 condition based on above combination.. put it on result variabel\nex:\nJavaScript:\nvar iCon01=1; //change as you wanted\nvar iCon02=1; //change as you wanted\nvar result;\nif(iCon01==1){\n    if(iCon02==1){\n        result=1;\n    }\n    if(iCon02==2){\n        result=2;\n    }\n    if(iCon02==3){\n        result=2;\n    }\n\n}\nif(iCon01==2){\n    if(iCon02==1){\n        result=3;\n    }\n    if(iCon02==2){\n        result=4;\n    }\n    if(iCon02==3){\n        result=5;\n    }\n\n}\n\nif(result==1){\n    //run image based on result 1\n}\nif(result==2){\n    //run image based on result 2\n}\n//you should use switch but this is only example\nswitch (result) {\n    case 1:\n    //run image based on result 1\n    break;\n    case 2:\n    //run image based on result 2\n    break;\n   \n    default:\n    //run default image\n\n}\nSummary:\nmake flowchart based on your idea\nput as coding (mean using plugin)\ntested"
+    },
+    {
+      "post_id": "js-post-1521232",
+      "author": "white90",
+      "date": "2025-07-06T05:29:51+0900",
+      "body": "gundambison said:\nimho.. the logic should be fix first..\nperhaps focus only using variable.. but you use switch right? just make it as variable\n..\nClick to expand...\nThanks for the answer, the problem is i dind't know how to use code, so I asked how to do it in rpg maker. I can explayn the logic : The\nfirst Variable\n1 to 7 or more, the seconds are for example 5 other distinct variable or switch. So the result can be for\n3 simple\nexample:\nfirst Variable\n= 2       |||\nfirst Variable\n= 4   |||\nfirst Variable\n= 6\nfirst switch = off           |||      first switch = on        |||          first switch = off\nsecond switch = on     |||       second switch = off     |||       second switch = off\nthird switch = on           |||      third switch = on        |||         third switch = on\nfourth switch = off        |||      fourth switch = off       |||       fourth switch = on\nbecause these secondary are totaly random, depends on whether and when the player interacts with them. I don’t know if the code you posted already can be used in this way\nSGHarlekin said:\nThat's exit event processing.\nView attachment 344330\nas I suspected. The answer is still the same. What you're asking for is nested conditional branches. You can do that by just having multiple conditional branches inside other conditional branches, just gotta figure out the logic you'll need for it.\nClick to expand...\nmaybe label, and jump to label did what i say"
+    },
+    {
+      "post_id": "js-post-1521240",
+      "author": "gundambison",
+      "date": "2025-07-06T06:41:34+0900",
+      "body": "weit a sec.. like this?\nCode:\nvar1=2 |var1=4 |var1=6 |\nSw1=0  |Sw1=1  |Sw1=0  |\nSw2=1  |Sw2=0  |Sw2=0  |\nSw3=1  |Sw3=1  |Sw3=1  |\nSw4=0  |Sw4=0  |Sw4=1  |\nSw is switch\n1: On\n0: off\nwell.. you logic is kinda VN game based your description. The VN is more complex (thats why have 10++ ending)\nanyway.. if using your example logic.. You will have like this\nis kinda long..  in this image, you need to put number to variable ex:\nthen make another condition in the end to process the condition value(!)\nSpoiler:\noot\nyou might try this when reply\nclick + quote\nadded it using this button"
+    },
+    {
+      "post_id": "js-post-1521263",
+      "author": "white90",
+      "date": "2025-07-06T09:34:07+0900",
+      "body": "Yes when I started thinking about the project, i think the same, is the first thing that came to my mind,\nBut of course this solution means if the variable go like 1 to 7 it means 7 of the same you post in the first image, all connected. I was trying to looking for simpler or faster methods"
+    },
+    {
+      "post_id": "js-post-1521293",
+      "author": "gundambison",
+      "date": "2025-07-06T14:52:26+0900",
+      "body": "white90 said:\nYes when I started thinking about the project, i think the same, is the first thing that came to my mind,\nBut of course this solution means if the variable go like 1 to 7 it means 7 of the same you post in the first image, all connected. I was trying to looking for simpler or faster methods\nClick to expand...\nthere is no shortcut. sometime the simple make you fail to capture what you needed.\nthe condition is complex and you need detail methods to find the correct action is needed here.."
+    },
+    {
+      "post_id": "js-post-1521295",
+      "author": "pawsplay",
+      "date": "2025-07-06T15:16:55+0900",
+      "body": "white90 said:\nYes when I started thinking about the project, i think the same, is the first thing that came to my mind,\nBut of course this solution means if the variable go like 1 to 7 it means 7 of the same you post in the first image, all connected. I was trying to looking for simpler or faster methods\nClick to expand...\n90% of coding is just doing things meticulously and repetitiously that aren't automated in your coding language of choice."
+    },
+    {
+      "post_id": "js-post-1521579",
+      "author": "caethyril",
+      "date": "2025-07-08T20:56:37+0900",
+      "body": "white90 said:\nthere is a command like \"\nevent output processing\n\" to check the first group of IF (variables) and does not leave the event once a positive result has been obtained but passes to the next group of IF (switches)\nClick to expand...\nYou could use the\nLabel\nand\nJump To Label\ncommands:\nLabel\nlets you define a \"name\" to jump to. Without Jump to Label, it does nothing.\nJump to Label\ngoes immediately to the named Label (if it exists in the current event).\nThese commands can be helpful for designing non-linear events.\nAs a general rule, Don't Repeat Yourself, i.e. try to avoid copy+pasting the same thing to many places. For a diary that displays pictures based on certain variables/switches:\nMaybe the optional parts can be split into their own picture. E.g.\nVariable 1 > 5: \"I've found the magic bell. I should bring it back to Harold.\"\nSwitch 1 is ON: \"I rang the bell and found myself in a strange world. I need to escape!\"\nI.e. 2 different pictures on screen at the same time. It sounds like maybe you already do this?\nIf some combinations show the same picture then you can give each possible result a unique value, or \"index\". You can use another variable to determine the quest's current index, e.g.\nVariable 2 = 0\nIf Variable 1 > 5\nVariable 2 += 1\nIf Switch 1 is ON\nVariable 2 += 2\nEtc.\nThen just show the picture based on Variable 2.\nIf you have a different image for every different combination of variable/switch, then you need to branch that many times. In that case there is no workaround."
+    },
+    {
+      "post_id": "js-post-1521596",
+      "author": "white90",
+      "date": "2025-07-08T23:19:59+0900",
+      "body": "@caethyril\n@pawsplay\n@gundambison\nAt the end there is, I did it with the long method, I thought it was more complicated.\nIs \"only\" check variable if is 1, check switch 1,2,3,4 if yes show diary 1+1 or 1+2 etc. if not show diary 1\nOnce you build the first one, just copy and paste.\ncheck variable if is 2, check switch 1,2,3,4 if yes show diary 2+1 or 2+2 etc. if not show diary 2\nAnyway thanks to all for the advice\nAh no... error as not said.. so doing if switch 1 is on, already stops the whole process xD\nMaybe the optional parts can be split into their own picture. E.g.\nVariable 1 > 5: \"I've found the magic bell. I should bring it back to Harold.\"\nSwitch 1 is ON: \"I rang the bell and found myself in a strange world. I need to escape!\"\nI.e. 2 different pictures on screen at the same time. It sounds like maybe you already do this?\nClick to expand...\nYes, maybe i can try that, i can do a img only with the Text and add upper the img of the diary.\nThis way i can work separated and easier too. But how to connect that in the common event ?\nIn the first part the software check the variable, and then ?"
+    },
+    {
+      "post_id": "js-post-1521601",
+      "author": "gundambison",
+      "date": "2025-07-08T23:50:32+0900",
+      "body": "this kinda suggestion from programer.. I'm Web Programer\nSpoiler:\ncreate a matrix\nthis matrix for detailing the ending (example)\nbased on this post.. you will have a lot condition. which if you make on action command.. it would be like previous image\nSpoiler:\nreminder\nif this write as plugin.. it would help a lot, since it would be readable\nJavaScript:\nlet cond1 = $gameVariables.value( 21 );\n//where you place cond 1\nlet cond2 = $gameVariables.value( 22 );\n//where you place cond 2\nlet cond3 = $gameVariables.value( 23 );\n//where you place cond 3\nlet cond4 = $gameVariables.value( 24 );\n//where you place cond 4\nlet endValue;\nif( cond1==1 AND cond2==2 and cond3==1){\n     switch (cond4) {\n         case 1:\n            endValue = 1;\n         break;\n         case 2:\n            endValue = 2;\n         break;\n         default:\n            endValue = 5;\n     }\n}\n\n$gameVariables.setValue( 31, endValue);\n//where you send the result value on var number 31\nto run you can use\nSpoiler:\ncommand plugin\nthen use var 31 to decide what the ending\nto make plugin. you can search how to make simple plugin\non this forum\nor/and read my guide on this\nGoogle Doc (link)\nnb: image put on spoiler to decrease bandwith consume"
+    },
+    {
+      "post_id": "js-post-1521605",
+      "author": "caethyril",
+      "date": "2025-07-09T00:46:17+0900",
+      "body": "I'm not sure if I'm understanding correctly, but...\nwhite90 said:\nBut how to connect that in the common event ?\nIn the first part the software check the variable, and then ?\nClick to expand...\nThe\nShow Picture\ncommand shows a picture with an ID (1~100). So you can show up to 100 pictures at the same time. To show more than 1 picture, use more than 1 Show Picture command. If 2 pictures overlap, the one with higher ID shows on top.\nExample:\nSpoiler\nComment: Set up diary pictures.\nShow Picture 7: Diary_Background\nErase Picture: 8\nErase Picture: 9\nComment: Stage 1 content.\nIf Variable 1 = 1\nShow Picture 8: Diary1\nIf Switch 1 is ON\nShow Picture 9: Diary1_S1\nJump to Label: Done\nComment: Stage 2 content.\nIf Variable 1 = 2\nShow Picture 8: Diary2\nIf Switch 2 is ON\nShow Picture 9: Diary2_S2\nJump to Label: Done\nLabel: Done\nComment: Wait for player input, then clear.\nShow Text: Text = (Nothing), Background = Transparent.\nErase Picture: 7\nErase Picture: 8\nErase Picture: 9\nHere, I've used picture ID 7 for the background, 8 for the main content, and 9 for optional content."
+    },
+    {
+      "post_id": "js-post-1521622",
+      "author": "white90",
+      "date": "2025-07-09T03:35:36+0900",
+      "body": "caethyril said:\nI'm not sure if I'm understanding correctly, but...\nThe\nShow Picture\ncommand shows a picture with an ID (1~100). So you can show up to 100 pictures at the same time. To show more than 1 picture, use more than 1 Show Picture command. If 2 pictures overlap, the one with higher ID shows on top.\nExample:\nSpoiler\nComment: Set up diary pictures.\nShow Picture 7: Diary_Background\nErase Picture: 8\nErase Picture: 9\nComment: Stage 1 content.\nIf Variable 1 = 1\nShow Picture 8: Diary1\nIf Switch 1 is ON\nShow Picture 9: Diary1_S1\nJump to Label: Done\nComment: Stage 2 content.\nIf Variable 1 = 2\nShow Picture 8: Diary2\nIf Switch 2 is ON\nShow Picture 9: Diary2_S2\nJump to Label: Done\nLabel: Done\nComment: Wait for player input, then clear.\nShow Text: Text = (Nothing), Background = Transparent.\nErase Picture: 7\nErase Picture: 8\nErase Picture: 9\nHere, I've used picture ID 7 for the background, 8 for the main content, and 9 for optional content.\nClick to expand...\nBut you make a mistake, because Variable can be 1 to 7, And you can encounter variable = 2 with 3 switch ON,  switch can either 1,2,3,4 ON or OFF at the same time, starting to variable=2,3,4,5..\nSorry for mi english, i try to explicate simple :\nThe main variable is Diary, this follows the main plot, and is therefore gradual from 0 to i dont know.. 7. ok ? The second are various switch, like 4 or 5. This are NOTES that you CAN catch or no, speaking to random citizen. And you can activate them from phase 2 of the variable to the final .. is clear now no ?\nThen you suggested that I separate the images, to manage variables and switch separately, but this, that you show is a unique event xD im a little bit confused. Remember that i start all with a simple common event. that’s why I asked you how to connect the variable control, with the switch control...\ngundambison said:\nthis kinda suggestion from programer.. I'm Web Programer\nSpoiler:\ncreate a matrix\nView attachment 344519\nthis matrix for detailing the ending (example)\nbased on this post.. you will have a lot condition. which if you make on action command.. it would be like previous image\nSpoiler:\nreminder\nif this write as plugin.. it would help a lot, since it would be readable\nJavaScript:\nlet cond1 = $gameVariables.value( 21 );\n//where you place cond 1\nlet cond2 = $gameVariables.value( 22 );\n//where you place cond 2\nlet cond3 = $gameVariables.value( 23 );\n//where you place cond 3\nlet cond4 = $gameVariables.value( 24 );\n//where you place cond 4\nlet endValue;\nif( cond1==1 AND cond2==2 and cond3==1){\n     switch (cond4) {\n         case 1:\n            endValue = 1;\n         break;\n         case 2:\n            endValue = 2;\n         break;\n         default:\n            endValue = 5;\n     }\n}\n\n$gameVariables.setValue( 31, endValue);\n//where you send the result value on var number 31\nto run you can use\nSpoiler:\ncommand plugin\nView attachment 344520\nthen use var 31 to decide what the ending\nto make plugin. you can search how to make simple plugin\non this forum\nor/and read my guide on this\nGoogle Doc (link)\nnb: image put on spoiler to decrease bandwith consume\nClick to expand...\nMan i realy like your help, but i need a summary of what this code indeed DO xD for understand, and either i dont know the other command in javascript, like show picture, play SE, wait etc\ni try to read the code, but is complicated, and i think i see only 1 switch in this code. i even don't understand if is variable 21, or the value of the variable is 21 xDXDXDXD"
+    },
+    {
+      "post_id": "js-post-1521635",
+      "author": "white90",
+      "date": "2025-07-09T04:52:25+0900",
+      "body": "Please delete this msg, i make an error"
+    },
+    {
+      "post_id": "js-post-1521687",
+      "author": "gundambison",
+      "date": "2025-07-09T16:34:42+0900",
+      "body": "white90 said:\n....\nMan i realy like your help, but i need a summary of what this code indeed DO xD for understand, and either i dont know the other command in javascript, like show picture, play SE, wait etc\ni try to read the code, but is complicated, and i think i see only 1 switch in this code. i even don't understand if is variable 21, or the value of the variable is 21 xDXDXDXD\nClick to expand...\nyou can read this\nhttps://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mv-mz-script-call-list.46456\nback to main question\nvariable 21 is mean position of your variable name. if you place on action script you will have like your previous image\nor like this\nthe final result I wanted is like this\nwhere the condition is handle by your plugin code.\nI may have been a bit insensitive in presenting more complex answer. Since I have a programming background, my input doesn't quite align with the initial statement in the following topic.\nPlease use my input as a reference. Maybe you might try creating a plugin based on my last input for fun. just think of programming as\nNOT\nfun"
+    },
+    {
+      "post_id": "js-post-1521819",
+      "author": "white90",
+      "date": "2025-07-10T22:21:30+0900",
+      "body": "Hello again, I encounter the solution, and was MORE much symple than i think, or WE think xD Here is my diary now, working :\nSpoiler\n◆Se：Il gruppo ha Diario\n◆Se：diario = 1\n◆Riprodurre SE：Book2 (100, 100, 0)\n◆Mostra Immagine：#90, diario1, In alto a sinistra (100,0), (100%,100%), 255, Normale\n◆Attesa：1 fotogramma\n◆\n：Fine\n◆Se：diario = 2\n◆Riprodurre SE：Book2 (100, 100, 0)\n◆Mostra Immagine：#90, diario2, In alto a sinistra (100,0), (100%,100%), 255, Normale\n◆Attesa：1 fotogramma\n◆\n：Fine\n◆Se：diario = 3\n◆Riprodurre SE：Book2 (100, 100, 0)\n◆Mostra Immagine：#90, diario3, In alto a sinistra (100,0), (100%,100%), 255, Normale\n◆Attesa：1 fotogramma\n◆\n：Fine\n◆Se：inidizio diario 1 è ON\n◆Mostra Immagine：#91, indizio-1, In alto a sinistra (100,0), (100%,100%), 255, Normale\n◆Attesa：1 fotogramma\n◆\n：Fine\n◆Se：indizio diario 2 è ON\n◆Mostra Immagine：#92, indizio-2, In alto a sinistra (100,0), (100%,100%), 255, Normale\n◆Attesa：1 fotogramma\n◆\n：Fine\n◆\n：Fine\n◆Attesa：5 fotogrammi\n◆Mostra Scelte：Salir (Finestra, Destra, #1, -)\n：Quando Salir\n◆Riprodurre SE：Book closing (100, 100, 0)\n◆Cancell Immagine：#90\n◆Cancell Immagine：#91\n◆Cancell Immagine：#92\n◆\n：Fine\nIndizio = Clue the secondary notes; Attesa = wait; Se = If; salir =exit;\nthe main fact, was to NOT use Else, muy simple xD"
+    },
+    {
+      "post_id": "js-post-1521820",
+      "author": "pawsplay",
+      "date": "2025-07-10T22:56:39+0900",
+      "body": "Yeah, one good tip is to ask when looking at conditions: is there actually a problem with testing each case sequentially?"
+    },
+    {
+      "post_id": "js-post-1521927",
+      "author": "white90",
+      "date": "2025-07-11T23:45:16+0900",
+      "body": "pawsplay said:\nYeah, one good tip is to ask when looking at conditions: is there actually a problem with testing each case sequentially?\nClick to expand...\nI did not very well understand your question, but for now everything works without problems,\nI tried all the conditions plus a new clue."
+    },
+    {
+      "post_id": "js-post-1522021",
+      "author": "gundambison",
+      "date": "2025-07-12T16:12:16+0900",
+      "body": "white90 said:\nHello again, I encounter the solution, and was MORE much symple than i think, or WE think xD Here is my diary now, working :\nIndizio = Clue the secondary notes; Attesa = wait; Se = If; salir =exit;\nthe main fact, was to NOT use Else, muy simple xD\nClick to expand...\nyou might give the ss.. I cant read it clearly.. perhaps you mean\nCode:\n◆Se：Il gruppo ha Diario\n  ◆Se：diario = 1\n    ◆Riprodurre SE：Book2 (100, 100, 0)\n    ◆Mostra Immagine：#90, diario1, In alto a sinistra (100,0), (100%,100%), 255, Normale\n    ◆Attesa：1 fotogramma\n    ◆\n  ：Fine\n  ◆Se：diario = 2\n    ◆Riprodurre SE：Book2 (100, 100, 0)\n    ◆Mostra Immagine：#90, diario2, In alto a sinistra (100,0), (100%,100%), 255, Normale\n    ◆Attesa：1 fotogramma\n    ◆\n  ：Fine\n  ◆Se：diario = 3\n    ◆Riprodurre SE：Book2 (100, 100, 0)\n    ◆Mostra Immagine：#90, diario3, In alto a sinistra (100,0), (100%,100%), 255, Normale\n    ◆Attesa：1 fotogramma\n    ◆\n  ：Fine\n  ◆Se：inidizio diario 1 è ON\n    ◆Mostra Immagine：#91, indizio-1, In alto a sinistra (100,0), (100%,100%), 255, Normale\n    ◆Attesa：1 fotogramma\n    ◆\n  ：Fine\n  ◆Se：indizio diario 2 è ON\n    ◆Mostra Immagine：#92, indizio-2, In alto a sinistra (100,0), (100%,100%), 255, Normale\n    ◆Attesa：1 fotogramma\n    ◆\n  ：Fine\n  ◆\n：Fine\n◆Attesa：5 fotogrammi\n◆Mostra Scelte：Salir (Finestra, Destra, #1, -)\n：Quando Salir\n  ◆Riprodurre SE：Book closing (100, 100, 0)\n  ◆Cancell Immagine：#90\n  ◆Cancell Immagine：#91\n  ◆Cancell Immagine：#92\n  ◆\n：Fine\nseem not right? better have it on plugins"
+    }
+  ]
+}

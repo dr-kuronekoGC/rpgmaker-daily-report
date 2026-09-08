@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/spacing-between-each-equip-slot.178666",
+  "title": "MV Spacing between each equip slot",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:55:19.358644+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1520639",
+      "author": "Arkos",
+      "date": "2025-07-02T03:09:36+0900",
+      "body": "Hey guys!\nI'm having a bit of an issue with getting my equip menu looking just right. Check the image below and you'll understand what I'm after. Basically, I want each equip slot to match my background image. As you can see the \"sword\" is positioned correctly but I want to space the other slots so that they too can look good. I'm using Moghunters equip menu plugin and I have looked through and changed values left and right but I just can't get it to add spacing vertically.\nIf you look to the left, you can see my parameters. I managed to add spacing to them without issue because Mog had included the line of code needed for this. I'm referring to \"this.lineheight()\", specifically. This line of code doesn't exist for the equip slots and I have no idea how to add spacing between each slot.\nWill add that I have gone into the default rpg maker script files/plugins as well and made a lot of changes but none of if helped.\nUnsure how to proceed so any help/hint/guidance/vague pointing at something or someone would be appreciated, thanks"
+    },
+    {
+      "post_id": "js-post-1520753",
+      "author": "rpgLord69",
+      "date": "2025-07-03T00:09:05+0900",
+      "body": "Hmmm yeah I think you need to modify this in MOG's plugin (I changed the drawItemName line to push the y lower depending on the index). I'm not 100% sure if you should draw the whole itemRect or whatever lower though. But try and test with this:\nWindow_EquipSlot.prototype.drawItem = function(index) {\nthis.contents.fontSize = Moghunter.scEquip_FontSize;\nif (this._actor) {\nvar rect = this.itemRectForText(index);\nthis.changeTextColor(this.systemColor());\nthis.changePaintOpacity(this.isEnabled(index));\nthis.drawItemName(this._actor.equips()[index], rect.x + 138, rect.y+index*5); // CHANGED THIS\nthis.changePaintOpacity(true);\n}\n};\nEDIT: Change 5 to another number to fit your game."
+    },
+    {
+      "post_id": "js-post-1520770",
+      "author": "Arkos",
+      "date": "2025-07-03T01:23:33+0900",
+      "body": "rpgLord69 said:\nHmmm yeah I think you need to modify this in MOG's plugin (I changed the drawItemName line to push the y lower depending on the index). I'm not 100% sure if you should draw the whole itemRect or whatever lower though. But try and test with this:\nWindow_EquipSlot.prototype.drawItem = function(index) {\nthis.contents.fontSize = Moghunter.scEquip_FontSize;\nif (this._actor) {\nvar rect = this.itemRectForText(index);\nthis.changeTextColor(this.systemColor());\nthis.changePaintOpacity(this.isEnabled(index));\nthis.drawItemName(this._actor.equips()[index], rect.x + 138, rect.y+index*5); // CHANGED THIS\nthis.changePaintOpacity(true);\n}\n};\nEDIT: Change 5 to another number to fit your game.\nClick to expand...\nBeautiful, this did exactly what it was supposed to, appreciate the help immensely. But we now have another problem which you mentioned at the end. While the words themselves now have spacing the \"select\" area does not. Check the image below.\nYou mentioned re-drawing the entire itemRect lower which might be needed here...I think, I'm gonna be honest with you, I have no idea what I'm talking about so take what I say with a bag of salt.\nSo the solution I'm after here is to give the exact same spacing to the \"Selection rect\" as we did with the item names. I tried changing the \"this.itemrectfortext\" line but this doesn't change the selection area, instead it shoots everything out of bounds. Does this mean that the line of code for this is located in another file? Like for example \"rpg_windows.js\" or maybe somewhere else?"
+    },
+    {
+      "post_id": "js-post-1520878",
+      "author": "rpgLord69",
+      "date": "2025-07-03T15:23:05+0900",
+      "body": "I think you can modify the item rectangle by making modifications to y values in the function below (where I currently put -= X), but looking at your pic it's unclear to me if you'd need to modify where the highlight appears directly with setCursorRect or something, and I've no motivation to try and find out at the moment. Maybe someone else can help you.\nWindow_EquipSlot.prototype.itemRectForText = function(index) {\nvar rect = this.itemRect(index);\nrect.x += this.textPadding();\nrect.y -= X;\nrect.width -= this.textPadding() * 2;\nreturn rect;\n};"
+    },
+    {
+      "post_id": "js-post-1520917",
+      "author": "Arkos",
+      "date": "2025-07-03T22:08:02+0900",
+      "body": "rpgLord69 said:\nI think you can modify the item rectangle by making modifications to y values in the function below (where I currently put -= X), but looking at your pic it's unclear to me if you'd need to modify where the highlight appears directly with setCursorRect or something, and I've no motivation to try and find out at the moment. Maybe someone else can help you.\nWindow_EquipSlot.prototype.itemRectForText = function(index) {\nvar rect = this.itemRect(index);\nrect.x += this.textPadding();\nrect.y -= X;\nrect.width -= this.textPadding() * 2;\nreturn rect;\n};\nClick to expand...\nThanks for all the help so far. In this case we really do need to change the CursorRect as your code only pushed the text up and down. But no matter. I've spent to long on just this part/feature and it's time to move forward. I've decided to take the easy way out and match my image to the default selection area instead.\nWas hoping I could easily add spacing similar to how I did it with the parameters but since that is not the case I will move on. Again, thanks for all the help man. Appreciate it"
+    }
+  ]
+}

@@ -1,0 +1,1457 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/galvs-layer-graphics-fogs-parallaxes-mapping.48483",
+  "title": "Galv's Layer Graphics (fogs, parallaxes, mapping)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:54:56.183922+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-481619",
+      "author": "Galv",
+      "date": "2015-10-30T23:07:46+0900",
+      "body": "Layer Graphics - Version 1.9\nRPG Maker MV Plugin\nGalv\n​\nIntroduction\nI couldn't live without graphic layers. Converted this one from my Ace script.\nI have not tested this on slower computers to see what kind of lag large images create, but I would harazard a guess that especially playing on a server, larger files might cause issues when downloading. So make sure to test!\nScreenshot\nFeatures\nThis plugin allows you to use graphics as layers on the map, designed to be used for layer mapping (parallax mapping), fogs and other effects.\nLayers can move at different speed to player movement (useful for perspective effects), slide like fogs, display at different levels on the map (below map, below characters, above everything, etc.), opacity, blend, etc.\nUses 'Plugin' command to change layer settings during game.\nBattle layers are now implemented, so you can create fogs and the like for battles.\nHow to Use\n- Copy the \"GALV_LayerGraphics.js\" file into your project's /js/plugins/ folder.\n- Activate plugin using the 'Plugin Manager'\n- Create a new folder in your project: /img/layers/\n- Use Plugin commands to setup layers\n- Read the 'HELP' documentation (also found in plugin manager) for more details and try the demo if you don't understand.\nPlugin\nGet it here\nCredit and Thanks\n- Galv\nTerms\nFree to use in any RPG Maker MV project including commercial. Please credit \"Galv\".\nUpdates\n2016-06-15 - Version 1.9 - fixed compatibility issue with Yanfly Battle Core and layer positioning\n2016-05-02 - Version 1.8 - fixed a crash when starting a battle with layers when no map layers were made\n2016-04-16 - Version 1.6 - Added non-repeating layers to map. Added battle layers.\n2016-01-23 - Version 1.5 - Added trial code for potential memory issue\n2015-11-29 - Version 1.4 - Added efficiency code, added setting to specify tile size if you have changed it.\n2015-11-06 - Version 1.1 - Can now add layers via map notes\n2015-10-30 - Version 1.0 - Release"
+    },
+    {
+      "post_id": "js-post-481624",
+      "author": "Mako",
+      "date": "2015-10-30T23:09:21+0900",
+      "body": "Literally just started looking for this 3 min ago. LMAO"
+    },
+    {
+      "post_id": "js-post-481642",
+      "author": "mlogan",
+      "date": "2015-10-30T23:24:19+0900",
+      "body": "Can't wait to try it out!"
+    },
+    {
+      "post_id": "js-post-482902",
+      "author": "harvard1932",
+      "date": "2015-10-31T15:10:20+0900",
+      "body": "I loveeeeeeeeeeeee XSHIFT and YSHIFT\nIt makes light 3D c:"
+    },
+    {
+      "post_id": "js-post-483182",
+      "author": "Nomi",
+      "date": "2015-10-31T20:59:17+0900",
+      "body": "Thanks a lot Galv. Again a amazing script, I allready loved your work in Vx Ace.\nI checked the comments on your homepage and figured it makes sense to load up all parallax plugins in a kind of loading screen level?\nRefresh it in the loading screen and after that I can just go from map to map without further plugin lines needed?\nbtw. I would love to see your timed button attacks for rpg maker mv, loved that one"
+    },
+    {
+      "post_id": "js-post-483750",
+      "author": "Galv",
+      "date": "2015-11-01T04:59:32+0900",
+      "body": "Yeah, I use an initialize map and add the plugin calls to it to set up all maps. No need to refresh if it's in the loading map, though. Layers are created when player goes to a new map and the refresh option only needs to be used if a new layer is setup on the map the player is currently on so it creates the graphic on it, too.\nSo basically, once layers are created, their settings are saved. Using the plugin command again for an existing layer will modify it, no need to refresh then either"
+    },
+    {
+      "post_id": "js-post-486374",
+      "author": "Myshu",
+      "date": "2015-11-03T03:23:51+0900",
+      "body": "This is great! I was looking for a good alternative to Galenmereth's BindPictureToMap plugin for parallax mapping, and this fits the bill nicely.\nPROTIP for users, though: if using a layer for the ground, make the Z value -1 (rather than 0, according to the help file) or tiles you put on the map that are below star priority won't appear."
+    },
+    {
+      "post_id": "js-post-487028",
+      "author": "Galv",
+      "date": "2015-11-03T11:31:59+0900",
+      "body": "Thanks Myshu.\nI'm interested in how slower machines handle lots of layer images.\nI have tested 255 fogs (using one cached graphic) on the same map and my laptop still ran fine. Much more impressive that doing it on Ace for me."
+    },
+    {
+      "post_id": "js-post-487462",
+      "author": "Nomi",
+      "date": "2015-11-03T20:14:52+0900",
+      "body": "That sounds awesone Galv...was a bit worried. Especially for Android etc.\nDid you do any tests there?"
+    },
+    {
+      "post_id": "js-post-487664",
+      "author": "Galv",
+      "date": "2015-11-04T00:28:40+0900",
+      "body": "I haven't done any tests on android, only PC. Not sure how this will run on those devices."
+    },
+    {
+      "post_id": "js-post-487705",
+      "author": "DoctorMolotov",
+      "date": "2015-11-04T00:54:28+0900",
+      "body": "Looking forward to testing this out. Downloading now xD"
+    },
+    {
+      "post_id": "js-post-487717",
+      "author": "MikeMakes",
+      "date": "2015-11-04T01:01:02+0900",
+      "body": "@Galv: I have a few questions\nI want to ask as someone who went inside to do this, do you know if pictures and your bust system's busts are always in front of the layer graphics (despite of their priority setting)?\nAlso, how much images are allowed per layer and how many layers can I do with this?\nIf I had layer 4 with an Image's Z at 5\nthen I had a layer 5 with an Image's Z at 0,\nwould layer 4's image cover layer 5?"
+    },
+    {
+      "post_id": "js-post-487854",
+      "author": "drack_669",
+      "date": "2015-11-04T03:14:13+0900",
+      "body": "Well, I want to give my thanks to Galv, this plugin is awesome, really awesome.\nIf I had layer 4 with an Image's Z at 5\nthen I had a layer 5 with an Image's Z at 0,\nwould layer 4's image cover layer 5?\nClick to expand...\n@MikeMakes when I put this plugin in my project I make a mistake like those, I put a image in layer 3 with z at 5, and other layer 4 with Z at 1, but i forget to put the blend of layer 4 at multipply, the layer 4 cover over the layer 3, i just adjust the blend type online.\nI was playing around the amount of layers that its recognize and is really awesome, because I put shadows in layer 3 with multipply blend, in layer 4 I put lights with add blend, and later I put more shadows over in a 5th layer, and goes everything so cool."
+    },
+    {
+      "post_id": "js-post-487936",
+      "author": "Galv",
+      "date": "2015-11-04T04:09:29+0900",
+      "body": "I haven't tested but the busts from my plugin and pictures should always appear in front of the layers, yep.\nAlso, you can have as many layers on a map as you like. I wouldn't recommend using lots, though, especially if you plan to export to mobile devices.\nA layer with higher Z value will appear above layers with lower Z value.\nYou can have multiple layers on the same z value if you like, the layer order will depend on which one you added first."
+    },
+    {
+      "post_id": "js-post-488500",
+      "author": "MikeMakes",
+      "date": "2015-11-04T12:42:16+0900",
+      "body": "Thanks drack_669 for the pointer and Galv for clarifying it for me."
+    },
+    {
+      "post_id": "js-post-489198",
+      "author": "SilverDash",
+      "date": "2015-11-05T04:19:10+0900",
+      "body": "Would be nice if I could just use mapnotetags or something instead. Now I gotta make a parallel event and erase it on each map with fog just for that. Or am I supposed to make all these plugin calls for all maps in the titlescreen?\nEDIT: Nevermind, it doesn't even work If I call this while I'm already in the map. I gotta call all these in the titlescreen somewhere. Would still prefer mapnotetags."
+    },
+    {
+      "post_id": "js-post-489523",
+      "author": "Nomi",
+      "date": "2015-11-05T08:40:41+0900",
+      "body": "You have to refresh the Layers if u are allrdy on the map\nBut you got a point with the map notetags...would be a bit simpler, so I asked myself if thats possible. Is it?\nDoesnt rly matter to much, the one or the other way Galv did us a huuuge favor with this awesome script"
+    },
+    {
+      "post_id": "js-post-489530",
+      "author": "Galv",
+      "date": "2015-11-05T08:46:59+0900",
+      "body": "It would be possible, yes. I will put it on my to-do list to add map notetag feature.\nThe reason it was designed this way is due to projects I made, I change layers a lot (daytime, nighttime, changing fogs, storm/lightning effects, etc.) so notetags on a map didn't work for me.\nBut I don't see why I can't include both methods\nEDIT: I have updated to version 1.1 - can now add layers via map NOTES as well."
+    },
+    {
+      "post_id": "js-post-509629",
+      "author": "MikeMakes",
+      "date": "2015-11-26T13:34:04+0900",
+      "body": "Is locking in the layer on the map in the upper left corner supported like how locking parallax with \"!\"? If so, what are the settings?"
+    },
+    {
+      "post_id": "js-post-509666",
+      "author": "Galv",
+      "date": "2015-11-26T14:35:14+0900",
+      "body": "The ! functionality doesn't work for layers (I honestly haven't actually tried it to know exactly how it acts).\nHow exactly do you want the layer to act? Sticking to the map for \"parallax\" mapping?"
+    },
+    {
+      "post_id": "js-post-509671",
+      "author": "MikeMakes",
+      "date": "2015-11-26T14:37:34+0900",
+      "body": "Yes. Like if I had a parallax map at night with a dark layer with lamp posts lights.\nCurrently I don't know how to set to the upper left and not moving when I scroll."
+    },
+    {
+      "post_id": "js-post-509700",
+      "author": "Galv",
+      "date": "2015-11-26T15:33:24+0900",
+      "body": "The XSHIFT and YSHIFT values should be 0, then the layer will stick to the map for parallax mapping.\nGrab the demo with an example of it.\nMake sure the layer is the same size as the map"
+    },
+    {
+      "post_id": "js-post-509712",
+      "author": "MikeMakes",
+      "date": "2015-11-26T16:14:25+0900",
+      "body": "The layer and the parallax map are the same size. I am using the latest version 1.2 and turned off the other plugins.\nCould you please check my input because for some reason, I can't get the layer shown through Plugin Command: LAYER 11 1 Night 0 0 255 5 0 0 0\nor get it to stick with Map notes: LAYER 1 Night 0 0 255 5 0 0 0"
+    },
+    {
+      "post_id": "js-post-509901",
+      "author": "Galv",
+      "date": "2015-11-27T00:31:16+0900",
+      "body": "The plugin command and note look correct.\nhmmmm - Are you using a plugin that changes the default tile size from 48 pixels to something else?"
+    },
+    {
+      "post_id": "js-post-509908",
+      "author": "MikeMakes",
+      "date": "2015-11-27T00:51:56+0900",
+      "body": "Ah, I see now. I did turn off Change Tile Size plugin and others to make sure, but I forgot I edited some tile settings in the default .js files.\nI went ahead and edit your script's setting from 48 to 32. It works perfectly now.\nThanks for pointing me in the right direction."
+    },
+    {
+      "post_id": "js-post-510105",
+      "author": "Galv",
+      "date": "2015-11-27T06:10:22+0900",
+      "body": "I'll make a note to add that as a setting for future updates.\nEDIT: And done - added setting to specify tile size."
+    },
+    {
+      "post_id": "js-post-545310",
+      "author": "LeeOccleshaw",
+      "date": "2016-01-24T06:20:56+0900",
+      "body": "Hey, I'm running into a memory issue when opening and closing the in-game menu. Every time I close the menu after opening it, it adds to the usage and never goes down. It takes a few seconds of hitting the menu button quickly to ramp up the memory usage and pretty much grind the computer to a halt. It seems to raise it in correlation to how many layers I'm using at once.\nThe images are being re-cached each time and not being disposed or something?\nAsides from this problem the script is perfect for what I'm making so thanks!"
+    },
+    {
+      "post_id": "js-post-545392",
+      "author": "Galv",
+      "date": "2016-01-24T09:38:35+0900",
+      "body": "I managed to replicate the memory usage how you mentioned (having to spam open and close menu many times for me haha). I updated to 1.5, making a few changes that seemed to positively affect this, the memory usage went back down more quickly after the menu open/close spamming.\nPlease download new version (make sure to go into the plugin in the plugin manager, click okay and save after you update the file) and let me know if you see any improvements your end. Thanks!"
+    },
+    {
+      "post_id": "js-post-546215",
+      "author": "LeeOccleshaw",
+      "date": "2016-01-26T00:48:57+0900",
+      "body": "Galv said:\nI managed to replicate the memory usage how you mentioned (having to spam open and close menu many times for me haha). I updated to 1.5, making a few changes that seemed to positively affect this, the memory usage went back down more quickly after the menu open/close spamming.\nPlease download new version (make sure to go into the plugin in the plugin manager, click okay and save after you update the file) and let me know if you see any improvements your end. Thanks!\nClick to expand...\nHi Galv, thanks for that, it appears to still create 100% drive usage though, bringing the system process up the list and to a halt. It only seems to happen with your plugin enabled and I'm not using particularly large images or anything so it can't be that. It seems to just shoot the system usage up as soon as you close the menu and then every repeat of that action quickly makes use of the rest."
+    },
+    {
+      "post_id": "js-post-546418",
+      "author": "Galv",
+      "date": "2016-01-26T06:08:38+0900",
+      "body": "Are you using a parallel process or anything to create layers?\nEDIT: Does it happen for you in the plugin demo?"
+    },
+    {
+      "post_id": "js-post-546455",
+      "author": "LeeOccleshaw",
+      "date": "2016-01-26T07:43:28+0900",
+      "body": "I'll just check the demo, one sec.\nEdit: I've checked the demo now and didn't really get the same problem, it wasn't noticable. I then placed the images that I'm using into your demo and that's when the problems started again. I'm using very large images but they have small file sizes. Do larger sized images work for you? (4000px width, transparent .png - 16kb in size)\nEdit2: I'm trying my images at half the resolution (around 2000px width) and it is still building up heavy usage after opening and closing the menu a few times in a row. What exactly happens when the menu scene opens and closes in relation to this plugin? Not sure if it's related but I'm just using the map notetags to place the layers."
+    },
+    {
+      "post_id": "js-post-546571",
+      "author": "Galv",
+      "date": "2016-01-26T12:12:14+0900",
+      "body": "RPG Maker MV redraws the sprite and bitmap every time you close/open your menu. Although 4000x4000 worked fine in my project (on my PC), I wouldn't recommend using big images at all - Seems that might be a bit high for rpgmaker to handle. I tested up to 8000x8000 and my computer did not like that one bit.\nThe layers work just like the default parallax. I tested the large images in the parallax with the same thing happening.\nI think this will depend on PC specs.\nIf you're using this plugin for mapping, I would recommend\nsignificantly\nsmaller maps. It doesn't appear it can handle images with large dimensions.\nBut I will look into this more to see what I can work out and let you know when I get time.\nThanks for helping test!"
+    },
+    {
+      "post_id": "js-post-546741",
+      "author": "LeeOccleshaw",
+      "date": "2016-01-26T22:09:52+0900",
+      "body": "Thanks Galv, I hope there is some way round this eventually. I was using your ace version originally but I'm redesigning my game for MV now so having overlays that move at different x speeds is crucial to getting my pseudo-side scroller look. Did ace handle things differently in this department? I had no issues using larger images in the ace version but they caused the frame rate to suffer instead (this version runs smooth as butter until you start using the menu scene.) Thanks again for your scripting super powers!"
+    },
+    {
+      "post_id": "js-post-546825",
+      "author": "Galv",
+      "date": "2016-01-27T02:14:23+0900",
+      "body": "MV works different to Ace, yeah. It does seem like there's an issue with how MV handles images in memory.\nHave you tried plugins that control cache such as Shaz's (below)? See if this helps, make sure to add img/layers folder to the custom ones in the settings.\nFrom other posts I have read, they are working on official bug fixes to these memory issues... hopefully they fix this up."
+    },
+    {
+      "post_id": "js-post-585270",
+      "author": "Cvrtis",
+      "date": "2016-04-12T23:53:16+0900",
+      "body": "Hello, I wanted to say that in You plugin we can use more, then 6 layers - It's funny\nBut I have one question. Is it possible to make any layer \"Above All\", that will be above ivent with \"Above character\" position.\nI mean that:\nSpoiler\nThe ivent in the center (positon \"Abow character\") is above a layer with z=5. Is it possible to make a layer that will be above this ivent?"
+    },
+    {
+      "post_id": "js-post-585296",
+      "author": "Galv",
+      "date": "2016-04-13T00:31:52+0900",
+      "body": "I'm sorry, I don't think I am understanding. Why is using more than 6 layers funny?\nYou can set the z position for each layer as you said. Decimal places work as well if you need to be inbetween two integers."
+    },
+    {
+      "post_id": "js-post-585973",
+      "author": "Cvrtis",
+      "date": "2016-04-14T21:56:32+0900",
+      "body": "Galv said:\nI'm sorry, I don't think I am understanding. Why is using more than 6 layers funny?\nYou can set the z position for each layer as you said. Decimal places work as well if you need to be inbetween two integers.\nClick to expand...\n\"Cool\", \"nice\", \"good\". I used the wrong word? Sorry )\nOh, I understood: the layers are not attached to the \"z\"."
+    },
+    {
+      "post_id": "js-post-585991",
+      "author": "Galv",
+      "date": "2016-04-14T22:28:03+0900",
+      "body": "Oh I see\nI hope that you worked out what you are trying to do now"
+    },
+    {
+      "post_id": "js-post-586247",
+      "author": "KaYsEr",
+      "date": "2016-04-15T07:45:15+0900",
+      "body": "Decimal places work as well if you need to be inbetween two integers\nClick to expand...\nI didn't know that. Thanks. Keep up the good work Galv!"
+    },
+    {
+      "post_id": "js-post-586539",
+      "author": "Galv",
+      "date": "2016-04-16T23:11:53+0900",
+      "body": "Just updated to v.1.6 - you can now add layers that do not tile (repeat) to the map - and also battle layers have now been implemented."
+    },
+    {
+      "post_id": "js-post-592858",
+      "author": "Tohisu",
+      "date": "2016-05-02T14:18:12+0900",
+      "body": "Excuse me, maybe i did something wrong, but am I the only one who has the following message just before I encounter a battle? :\nCannot convert undefined or null object.\nWhat could be the problem?"
+    },
+    {
+      "post_id": "js-post-592866",
+      "author": "Galv",
+      "date": "2016-05-02T15:20:28+0900",
+      "body": "Did you start a new game after installing the plugin?\nDoes it happen in the demo?"
+    },
+    {
+      "post_id": "js-post-592904",
+      "author": "Tohisu",
+      "date": "2016-05-02T17:37:07+0900",
+      "body": "I tested your demo : everything is fine.\nSo, i created my own \"layers\" file, put the picture (it's a png so it should be fine) put the same code you put in your demo (with the script function, of course) with the file name, etc... but then, there's the problem I said.\nIf you need pictures or precisions, do not hesitate.\nBtw thx for your work, your plugins are clean and usefull.\nEdit : it's about a layer in battle. I'm using \"sideview\" battle. Maybe it can help you to understand."
+    },
+    {
+      "post_id": "js-post-592995",
+      "author": "Galv",
+      "date": "2016-05-02T23:49:17+0900",
+      "body": "I have done tests with sideview but I cannot replicate this error. In order to help you out we'll need to be able to replicate this.\nIt could be a plugin conflict - to find this out (or rule it out as an issue) you will need to do tests in your project disabling your other plugins and testing to see if it still happens.\nOther things I could look at is if you screenshot your plugin calls and the error (so I can see what line the error is appearing on at least)"
+    },
+    {
+      "post_id": "js-post-593045",
+      "author": "Tohisu",
+      "date": "2016-05-03T01:41:28+0900",
+      "body": "Ok, so here's the thing :\n_it's not a plugin conflict (I tested with all plugins disabled, except yours, the problem remains the same)\n_to be sure of what is the problem, i created a whole new project where I tried to use your plugin. The problem is exactly the same, so I bet it's me who does something wrong.\nHere's some screenshots :"
+    },
+    {
+      "post_id": "js-post-593057",
+      "author": "Galv",
+      "date": "2016-05-03T02:24:45+0900",
+      "body": "Thanks that helped and I managed to replicate the issue. It was indeed a bug in the plugin, thanks for helping pinpoint it.\nI've updated to version 1.8 with a fix for it, let me know if you have any issues with it"
+    },
+    {
+      "post_id": "js-post-593059",
+      "author": "Tohisu",
+      "date": "2016-05-03T02:38:15+0900",
+      "body": "Just tested it, it works perfectly!\nThanks for your time.\nBy the way, I have a little question : do you plan to convert your RPG Maker VX Ace script \"Menu Themes Engine\" into a plugin for RPG Maker MV?\nThe menuing was amazing!"
+    },
+    {
+      "post_id": "js-post-593060",
+      "author": "Galv",
+      "date": "2016-05-03T02:41:12+0900",
+      "body": "One day I will. So much to do, so little time"
+    },
+    {
+      "post_id": "js-post-593063",
+      "author": "Tohisu",
+      "date": "2016-05-03T02:52:17+0900",
+      "body": "It's totally understandable.\nGood luck and keep on the good work!"
+    },
+    {
+      "post_id": "js-post-604853",
+      "author": "Ste",
+      "date": "2016-06-01T03:24:58+0900",
+      "body": "Hi Galv!\nThank for the plugin\nbut in some maps it gives black screen when I set the blend mode of a fog to 2 (multiply)"
+    },
+    {
+      "post_id": "js-post-604873",
+      "author": "Galv",
+      "date": "2016-06-01T04:08:08+0900",
+      "body": "Currently multiply doesn't seem to work. Waiting for an rpgmaker update to see if it helps."
+    },
+    {
+      "post_id": "js-post-606827",
+      "author": "TNID",
+      "date": "2016-06-05T06:31:10+0900",
+      "body": "Been stumped on this one for hours sir. Getting lot of color bleed when I run event plugin command [ LAYER_S 4 3 !RTP_roof1 0 96 255 20 0  ] specifically from the png in Img / Layer. I know this is a color bleed from the png that's targeted to load because i recolored my png green and then got a big green screen when I ran it. I am using layer refresh after the layer command and have turned off every plugin but galv layer graphic which also moved to the top.\nEDIT: I copied the map to a brand new project, installed your plugin, and was able to get it to work with no problem. I have no idea what the problem could be if anyone has an idea. Color bleed examples below."
+    },
+    {
+      "post_id": "js-post-606839",
+      "author": "Galv",
+      "date": "2016-06-05T06:54:01+0900",
+      "body": "It just shows you a block of color instead of the image?\nDouble check your plugin command parameters are correct. And if you can put your project somewhere that I can download it, I will take a look.\n(The demo project you replicated the issue in I mean)"
+    },
+    {
+      "post_id": "js-post-606862",
+      "author": "TNID",
+      "date": "2016-06-05T07:56:06+0900",
+      "body": "I will try but may not be able to replicate the problem on a new project. The one I spoke of earlier processed the layer and game fine and I got no bleed. It is also worth mentioning that once a\nparticular event runs, specifically the one below\n, the layer graphic will not load. Every time I begin new game, the layer graphic will load one time. Then I initiate the event below, which particularly executes layer remove and layer refresh, that breaks the graphic layer and two things happen. 1- I use teleportation spell to exit then reenter, only to see the layer graphic does not load as it should .. and 2- I will initiate the event to load the graphic layer through the layer_s command .. when that happens all map layers turn into the solid block of color minus character and event objects now that I reduced the Z setting. Again the event I have provided below seems to be the source of the problem."
+    },
+    {
+      "post_id": "js-post-606867",
+      "author": "TNID",
+      "date": "2016-06-05T08:02:37+0900",
+      "body": "I have just noticed the game that worked fine with my script that the event command Transfer Player was all the way at the bottom. I then moved it all they way down the list and stopped getting blocks of color for images. So that is one issue solved on my side, but the other problem remains that the layer graphic only loads the initial time it is called by the layer_s command in the map note. Once the layer remove event runs, the graphic is removed and never comes back."
+    },
+    {
+      "post_id": "js-post-606892",
+      "author": "Galv",
+      "date": "2016-06-05T08:42:00+0900",
+      "body": "If you cannot replicate the previous issue in a new project or the demo, then I recommend doing tests to see if another plugin is causing conflict.\nLike you said, when you remove a layer it gets removed permanently. If you want it back, you'll need to add it back with a plugin command."
+    },
+    {
+      "post_id": "js-post-606960",
+      "author": "TNID",
+      "date": "2016-06-05T11:53:00+0900",
+      "body": "This issue has been fixed on my main project and remain at a loss on how to break it again. If I later learn further isolate and replicate the issue I will be happy to share what I know."
+    },
+    {
+      "post_id": "js-post-611857",
+      "author": "TNID",
+      "date": "2016-06-15T18:10:58+0900",
+      "body": "Not compatible with the latest Yanfly YEP_BattleEngineCore v1.36. I applied the following event script for layered dust in fights without the said YEP engine and it looks fantastic.\nGalv.LG.bLayer(1,'dust',0.5,0,255,0,0);\nGalv.LG.bLayer(2,'bdust',1,0,150,2,0);\nGalv.LG.bLayer(3,'fdust',3,0,150,3,0);\nI later downloaded the said latest YEP battle engine and no matter of plugin order, if the YEP battle engine is enabled, the dust layers from Galv.LG.bLayer covers the entire battleback so it cannot be seen at all."
+    },
+    {
+      "post_id": "js-post-611953",
+      "author": "Galv",
+      "date": "2016-06-15T23:33:34+0900",
+      "body": "Thanks for letting me know. Had to wrap my head around it but I think I solved the issue.\nI've updated to version 1.9 now, please grab it and make sure it's under Yanfly's Battle plugin. Let me know if any issues"
+    },
+    {
+      "post_id": "js-post-612234",
+      "author": "TNID",
+      "date": "2016-06-16T11:27:53+0900",
+      "body": "No defect noted on 1.9 ops check good sir.\nI say it is working great for me combined with YEP\nBattleEngineCore v1.36 an\nd WCouillard's Final Fantasy Style BattleLog v1.02!\nSpoiler\nGalv said:\nI've updated to version 1.9 now, please grab it and make sure it's under Yanfly's Battle plugin. Let me know if any issues\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-618117",
+      "author": "Palkia",
+      "date": "2016-06-29T18:03:08+0900",
+      "body": "I want to make a map that has cloud shadows in it without moving, but when I go to map and move around, it moves around like the camera (which is annoying). Anyone can help me by giving command or explanation?\nvery much appreciated."
+    },
+    {
+      "post_id": "js-post-618180",
+      "author": "Galv",
+      "date": "2016-06-29T21:05:06+0900",
+      "body": "Do you mean as though the shadows are stuck to the map?\nMake the XSHIFT and YSHIFT number 0 to have the layer move with map.\nCheck out the help documentation for examples and descriptions. Grab the demo and look in the events for working examples."
+    },
+    {
+      "post_id": "js-post-638165",
+      "author": "Tiwany",
+      "date": "2016-08-17T18:41:44+0900",
+      "body": "Hey I just downloaded this plugin because it looks amazing but I cant make it work, even when turning all the others off\nLets say I have a map called \"025:Church\" and I want to add a static layer that I made called \"churcheffects.png\", so the plugin would be:\nLAYER_S 025 2 churcheffects 0 0 110 0 1\nBut when I enter the map it doesnt show\nThis is how it should be on the map\nBut\nAm I doing something wrong?"
+    },
+    {
+      "post_id": "js-post-638712",
+      "author": "Galv",
+      "date": "2016-08-19T01:17:57+0900",
+      "body": "Some possible causes.\n1. Make sure you call the plugin command before you enter the map (or use the LAYER REFRESH plugin command if you create the layer while on the same map).\n2. You Z value is 0, which might make it appear underneath other map objects. Try making it a larger number (eg. 10)\n3. For the map ID, you can just use 25 instead of 025\n4. Try changing the blend mode to 0 to test it's actually showing up.\nSee the demo for examples."
+    },
+    {
+      "post_id": "js-post-639550",
+      "author": "YuiDemonia",
+      "date": "2016-08-20T20:57:37+0900",
+      "body": "Hi Galv~\nI would like to thank you for this awesome plugin! I use this for parallax mapping and it works great for my smaller maps, however, I encountered something and I hope you can help me out on this one. I created a sample map with 41x30 size. I created my ground parallax layer and overlay parallax layer for it. Now what happens is, as soon as I load the game, the ground parralax layer wont show up, not until I go to the top section of my map. Then as soon as I go down approx. 4-5 grid, the ground parallax layer disappears. It goes back if I go to the top of the map again.\nThanks in advance!\n*EDIT*\nhere's the vid"
+    },
+    {
+      "post_id": "js-post-639601",
+      "author": "Galv",
+      "date": "2016-08-21T00:21:53+0900",
+      "body": "Are you changing layer settings with an event anywhere on the map and using the same layer id?\nDo you have map looping turned on?\nHave you tested if another plugin is conflicting with it?\nI can't think of why else that would happen unless it's a bug that has popped up with the latest MV updates. Have you updated MV to latest 1.3.1?"
+    },
+    {
+      "post_id": "js-post-639793",
+      "author": "YuiDemonia",
+      "date": "2016-08-21T14:50:42+0900",
+      "body": "Hi Galv, thanks for replying back.\nI tried both, the map notetag and by event. However, I managed to fix it by changing the layer ID and priority of the image to a different number. Thanks again!"
+    },
+    {
+      "post_id": "js-post-646364",
+      "author": "Nomi",
+      "date": "2016-09-07T07:00:33+0900",
+      "body": "Hi Galv,\nis multiply still bugged or is it just me?\nIt doest seem to load the img when I set the blendmode to 2."
+    },
+    {
+      "post_id": "js-post-646416",
+      "author": "Galv",
+      "date": "2016-09-07T09:49:02+0900",
+      "body": "Multiply works for me since pixi was updated - make sure you've copied over all the right files after updating to MV 1.3.1."
+    },
+    {
+      "post_id": "js-post-646685",
+      "author": "Nomi",
+      "date": "2016-09-08T00:03:28+0900",
+      "body": "Hmm, I got the steam version - expected it to be doing everything automatic.\nIt's version 1.3.1 so, but maybe I need to change something by hand?\nI get a black ingame screen as soon as I use the blend option 2. Option 0 and 1 work...but look terrible >.< Sadly"
+    },
+    {
+      "post_id": "js-post-646700",
+      "author": "Galv",
+      "date": "2016-09-08T00:40:15+0900",
+      "body": "The steam version automatically updates your MV software, but not your projects. You need to update your projects manually by copying certain files from the /NewData/ folder from your MV install location to your projects. See the top of this post for more info:\nhttp://forums.rpgmakerweb.com/index.php?/topic/66712-rpg-maker-mv-v131-fixes/"
+    },
+    {
+      "post_id": "js-post-646712",
+      "author": "Nomi",
+      "date": "2016-09-08T01:12:32+0900",
+      "body": "Hmmm... okay, but wont that reset all my changes to database?\n(actors, weapons, spells, items etc.)"
+    },
+    {
+      "post_id": "js-post-646722",
+      "author": "Galv",
+      "date": "2016-09-08T01:22:29+0900",
+      "body": "Don't copy those files... backup your project first!\nI'm sure there's gotta be info on how to do this somewhere on the forum, you shouldn't have to learn about this from this plugin thread"
+    },
+    {
+      "post_id": "js-post-662072",
+      "author": "KanaX",
+      "date": "2016-10-17T06:16:00+0900",
+      "body": "Can I place layers below parallaxes? That would be really helpful."
+    },
+    {
+      "post_id": "js-post-662112",
+      "author": "Galv",
+      "date": "2016-10-17T09:12:10+0900",
+      "body": "I believe if you make the z value negative numbers it should go below parallax, yep"
+    },
+    {
+      "post_id": "js-post-662114",
+      "author": "KanaX",
+      "date": "2016-10-17T09:17:32+0900",
+      "body": "It didn't though! And I wasn't subtle about it, I tried big negative numbers."
+    },
+    {
+      "post_id": "js-post-662115",
+      "author": "Galv",
+      "date": "2016-10-17T09:19:09+0900",
+      "body": "Hmm, darn - perhaps they don't. Perhaps you could use a layer instead of the parallax"
+    },
+    {
+      "post_id": "js-post-662116",
+      "author": "KanaX",
+      "date": "2016-10-17T09:22:54+0900",
+      "body": "Thought about that, but I have several plugins targeted towards parallaxes, so I cannot move my parallaxes without working from scrap."
+    },
+    {
+      "post_id": "js-post-662120",
+      "author": "Galv",
+      "date": "2016-10-17T09:30:59+0900",
+      "body": "Having a quick look it looks like the parallaxes are not part of the z layers because they are created separately to the map sprites. I did not want to change how they worked in case it conflicted with other parallax related plugins."
+    },
+    {
+      "post_id": "js-post-695285",
+      "author": "Driftwood Gaming",
+      "date": "2017-01-19T23:07:14+0900",
+      "body": "I've made a tutorial on how to use this plugin to make some basic scrolling clouds. I also include some free cloud art in the description of the video.\nSpoiler\nScrolling Clouds Video Tutorial"
+    },
+    {
+      "post_id": "js-post-698438",
+      "author": "Platsch",
+      "date": "2017-01-28T01:35:59+0900",
+      "body": "Hi Galv,\nIs there a way to zoom the fog?"
+    },
+    {
+      "post_id": "js-post-698439",
+      "author": "Galv",
+      "date": "2017-01-28T01:43:43+0900",
+      "body": "If it isn't in the help file then I didn't include a way to zoom in the plugin, sorry"
+    },
+    {
+      "post_id": "js-post-738066",
+      "author": "Zerotrikz",
+      "date": "2017-05-28T17:45:01+0900",
+      "body": "(I'd like to apologize if this a necro-post. I'm not really familiar with the rules yet\n)Hi, Galv. I'm kinda having an issue with the plugin. It wont show the layers that I want to show\n. Here's the event that I made that would've triggered the layers to work.\nSpoiler:\nEvent pic"
+    },
+    {
+      "post_id": "js-post-738121",
+      "author": "Galv",
+      "date": "2017-05-28T23:16:03+0900",
+      "body": "I don't see any issues with your plugin commands. You might need to check for plugin incompatibility to make sure another plugin isn't causing the issue"
+    },
+    {
+      "post_id": "js-post-738354",
+      "author": "Zerotrikz",
+      "date": "2017-05-29T11:21:18+0900",
+      "body": "Ok, here's a picture of the plugins I have.\nSpoiler:\nPlugins"
+    },
+    {
+      "post_id": "js-post-738357",
+      "author": "Galv",
+      "date": "2017-05-29T11:29:16+0900",
+      "body": "You need to do the tests to check for incompatibility. I cannot do this for you from a picture, sorry."
+    },
+    {
+      "post_id": "js-post-738377",
+      "author": "Zerotrikz",
+      "date": "2017-05-29T12:38:41+0900",
+      "body": "Yeah it actually worked! Thanks alot, Galv."
+    },
+    {
+      "post_id": "js-post-773944",
+      "author": "arceus69",
+      "date": "2017-09-11T01:45:45+0900",
+      "body": "Hi, i need some help about that plugin. Everytime i load a map, it says \"Cannot read property 'id of the map' of undefined\".\nThe error point to the line 498 of the plugin: this.layerSettings[mapId] = this.layerSettings[mapId] || {}\nI'm using Rpg Maker MV 1.5.1. What can be the problem? Thanks!"
+    },
+    {
+      "post_id": "js-post-773977",
+      "author": "Galv",
+      "date": "2017-09-11T04:50:46+0900",
+      "body": "The error you are getting sounds like you have litterally put the text 'id of the map' in a script call somewhere instead of a number of the map.\nDownload the demo and see examples of working script calls and how they should look when you use them.\nHere's a generic checklist of error trapping ideas also:\nhttps://galvs-scripts.com/errors-using-plugins/"
+    },
+    {
+      "post_id": "js-post-773996",
+      "author": "arceus69",
+      "date": "2017-09-11T06:04:08+0900",
+      "body": "Oh nono, i've didn't put any script call. When i turn on the plugin (MV Layer Graphics), i've got that error. The 'id of the map' is a number, for example 8, or 4, etc... for the map i'm trying to load. I've tried with only that plugin in a new project, but there isn't any way to get it work. So, i think that it's for the RPG core version 1.5.1."
+    },
+    {
+      "post_id": "js-post-774000",
+      "author": "KaYsEr",
+      "date": "2017-09-11T06:25:20+0900",
+      "body": "MV 1.5.1 is fine with this plugin."
+    },
+    {
+      "post_id": "js-post-774003",
+      "author": "arceus69",
+      "date": "2017-09-11T06:38:41+0900",
+      "body": "KaYsEr said:\nMV 1.5.1 is fine with this plugin.\nClick to expand...\nSo? What can it be? I've tried everything, even rewrite part of the plugin code to make it read the map id correctly.\nP.S. I've resolved! It was a problem with the main map, i've recreated it and it's all fine now!"
+    },
+    {
+      "post_id": "js-post-786029",
+      "author": "mpurnell",
+      "date": "2017-10-18T20:16:22+0900",
+      "body": "is there something im missing?\nlayer priority (no matter what priority i put, or removing of the other parallax mapping) doesnt affect the image... actually its not showing anything at all. tried reloading plugin but no avail"
+    },
+    {
+      "post_id": "js-post-786083",
+      "author": "Galv",
+      "date": "2017-10-18T23:13:24+0900",
+      "body": "Yes, please read the plugin instructions.\n* When a layer is made, it is stored, so you can set layers for maps before\n* a player enters them. The layers are created when the map is created, so\n* for layer commands created on the same map, 'REFRESH LAYERS' plugin command\n* can be used to force the layers to create during play.\nClick to expand...\nYou need to create the layer before entering the map, or use the REFRESH LAYERS plugin command if creating it on the same map you want it to appear on."
+    },
+    {
+      "post_id": "js-post-801557",
+      "author": "Pherocity_Studios",
+      "date": "2017-12-02T14:31:19+0900",
+      "body": "Hey Galv! This plugin is awesome!\nQuick question, is there any easy way to allow pictures to show behind layers? I have Yanfly's Picture Common Events script (to allow for clickable pictures) and I'd like to have some pictures how behind a layer. But, it seems pictures are always on top.\nThank you in advance!"
+    },
+    {
+      "post_id": "js-post-801605",
+      "author": "Galv",
+      "date": "2017-12-02T22:15:01+0900",
+      "body": "I think that plugin would have to be modified to draw the pictures as part of the layers. I believe they are drawn above by default."
+    },
+    {
+      "post_id": "js-post-803889",
+      "author": "Pherocity_Studios",
+      "date": "2017-12-10T00:58:50+0900",
+      "body": "Okay gotcha. I may look into seeing what I can do with that script to achieve what I need.\nAgain, thanks Galv! This thing is awesome!"
+    },
+    {
+      "post_id": "js-post-825391",
+      "author": "_l3m35_",
+      "date": "2018-02-06T08:29:49+0900",
+      "body": "Is there any command to fade in/out layers? I'm planning to use it with some time/system plugin, and fade snow or rain in/out in some situations."
+    },
+    {
+      "post_id": "js-post-825483",
+      "author": "BloodletterQ",
+      "date": "2018-02-06T12:21:44+0900",
+      "body": "I'm sorry to be a bother but regarding the layer priorities, can you go a little more in depth? I know 0 is below characters and 5 is above all characters...."
+    },
+    {
+      "post_id": "js-post-825849",
+      "author": "Galv",
+      "date": "2018-02-07T10:20:41+0900",
+      "body": "l3m35 said:\nIs there any command to fade in/out layers? I'm planning to use it with some time/system plugin, and fade snow or rain in/out in some situations.\nClick to expand...\nThe only way to fade layers is by changing the opacity. There are no commands for fade in/out. There is an example in the demo.\nBloodletterQ said:\nI'm sorry to be a bother but regarding the layer priorities, can you go a little more in depth? I know 0 is below characters and 5 is above all characters....\nClick to expand...\nExperiment with the numbers to see where the layer appears in the Z order. Remember you can use decimal places if required."
+    },
+    {
+      "post_id": "js-post-825985",
+      "author": "mpurnell",
+      "date": "2018-02-07T18:55:50+0900",
+      "body": "0=ground, 1=player, 2=parallax, 3=shadow, 4=parallax2, 5=light/showpicture ... basically that"
+    },
+    {
+      "post_id": "js-post-826142",
+      "author": "BloodletterQ",
+      "date": "2018-02-08T04:02:39+0900",
+      "body": "Sorry for this possibly dumb question but does anybody know if there's a layer that's the same as player? Using two-tile high sprites and if I stand below one layer, the top half (say a tree) still shows up over the player sprite. Or think of it as standing over the same sprite the player is standing on top of the tree."
+    },
+    {
+      "post_id": "js-post-827874",
+      "author": "mpurnell",
+      "date": "2018-02-12T11:56:08+0900",
+      "body": "1= player player level so u can put it as that but in your situation, i would suggest parallax mapping with half layer above and half layer below"
+    },
+    {
+      "post_id": "js-post-827879",
+      "author": "BloodletterQ",
+      "date": "2018-02-12T12:23:34+0900",
+      "body": "Probably should have made it clear that I'm using tall character sprites."
+    },
+    {
+      "post_id": "js-post-875090",
+      "author": "Monkey",
+      "date": "2018-06-25T23:26:07+0900",
+      "body": "Hello Galv,\nI find your plugin recently, and I came across a small situation (a noob situation\n).\nI saw in a video tutorial about the plugin, teaching to put the LAYERS commands in the \"Note\" of the map\nand so I can't load two LAYERS at the same map at the same time.\nI would like to know how do I load two different layers on the same map and at the same time this way.\nAnd if that's not possible, how can I do that?\nSince now thanks for your attention. This plugin is amazing!"
+    },
+    {
+      "post_id": "js-post-875133",
+      "author": "KaYsEr",
+      "date": "2018-06-26T03:30:02+0900",
+      "body": "You just need to give different ID to each layer and everything will be fine, check the plugin's \"Help File\" with care, we can't give much more information than what the \"Help\" already gives.\nHere you'd have for example:\nLAYER 1 uvover 0 0 255 1 0 0 0\nLAYER 2 soulfog 0 0 255 2 0 0 0\n(You'll have to check the Help file to know what all the \"0\" mean, it's just about behavior settings.)\nGood luck!"
+    },
+    {
+      "post_id": "js-post-875163",
+      "author": "Monkey",
+      "date": "2018-06-26T06:01:32+0900",
+      "body": "Hello KaYsEr,\nFirst, thanks for ansewer my question;\nI tried to do this, in the Help talks about the following sequence for code:\nLAYER MAPID ID GRAPHIC XSPEED YSPEED OPACITY Z XSHIFT YSHIFT BLEND\nTheoretically the command should be:\nLAYER 2 1 UVover 0 0 250 1 0 0 0\nBut when I put it like this, I get an error message when starting the map (Failed to load:img/layers/1.png)\nseems my plugin interprets \"1\" where it should be the \"ID\" as the \"GRAPHIC\".\nI tried this way you told, just to see if my two layers will appear together and then I could change the opacity, speed and z:\nLAYER 1 uvover 0 0 255 1 0 0 0\nLAYER 2 soulfog 0 0 255 2 0 0 0\nBut keeps showing only one of them."
+    },
+    {
+      "post_id": "js-post-875174",
+      "author": "KaYsEr",
+      "date": "2018-06-26T06:39:13+0900",
+      "body": "Monkey said:\nTheoretically the command should be:\nLAYER 2 1 UVover 0 0 250 1 0 0 0\nBut when I put it like this, I get an error message when starting the map (Failed to load:img/layers/1.png)\nseems my plugin interprets \"1\" where it should be the \"ID\" as the \"GRAPHIC\".\nClick to expand...\nNo just get rid of that \"1\", this command is for when you use the \"plugin call\" in the event, but here you use a MAP NOTE so the plugin already knows which map you're \"talking about\", it would be redundant to add the MAP ID again."
+    },
+    {
+      "post_id": "js-post-875176",
+      "author": "Monkey",
+      "date": "2018-06-26T06:48:42+0900",
+      "body": "KaYsEr said:\nNo just get rid of that \"1\", this command is for when you use the \"plugin call\" in the event, but here you use a MAP NOTE so the plugin already knows which map you're \"talking about\", it would be redundant to add the MAP ID again.\nClick to expand...\nWow, I didn't know abou this, It's working fine now.\nThanks a lot."
+    },
+    {
+      "post_id": "js-post-901701",
+      "author": "Eliaquim",
+      "date": "2018-09-23T07:16:22+0900",
+      "body": "Hey!\nAfter a long time searching and testing other plugins for parallax map, I finally found and tested yours. Dude thanks a lot for this contribution.\nI just tested in a deployment for android, RM MV 1.6.1 +, with the following plugins, and so far everything working.\nSpoiler:\nImage"
+    },
+    {
+      "post_id": "js-post-914468",
+      "author": "Archeia",
+      "date": "2018-11-12T03:18:42+0900",
+      "body": "I was looking for an alternative from Bind Pictures to Map and this is exactly what I'm looking for. Thanks!"
+    },
+    {
+      "post_id": "js-post-914733",
+      "author": "dgo1980",
+      "date": "2018-11-12T19:50:54+0900",
+      "body": "Thank you galv! it´s working with 1.6.1"
+    },
+    {
+      "post_id": "js-post-955522",
+      "author": "Switz",
+      "date": "2019-03-25T06:35:38+0900",
+      "body": "Hi Galv,\nIs there any way to have a overlay image using your plugin to be centered on your character/screen?  I am trying to make a sandstorm where the edges of the screen are obscured, and over that it shows the sandstorm whisking by.\nThe only way I can do it now is to set the overlay image obscuring the corners of the screen as a picture, but problem is, the dust and sand particles flying by are under the picture layer."
+    },
+    {
+      "post_id": "js-post-973441",
+      "author": "Eliaquim",
+      "date": "2019-05-31T08:41:12+0900",
+      "body": "Switz said:\n...\nClick to expand...\n@Switz\nI think you have to put the layer with this plugin commands, and put the CHAR to \"-1\" (without the quotes).\nLAYER_S MAPID ID GRAPHIC X Y OPACITY Z BLEND XANCHOR YANCHOR\nCHAR\nROTATE\nHi guys! Anyone have this error? I can't remove a layer from my map.\nSpoiler:\nSOLVED]\ni put the map notetag(Map06_Ground is the name of the file):\nLAYER_S 1 Map06_Ground 0 0 255 -1 0 0 0 0 0\nAnd use the plugin command in a event in the same map:\nLAYER REMOVE 6 1\nBut i keep getting the error:\nSpoiler:\nimage\nAlso i'm trying to add the static layer with plugin command, in a different map, and its not working too. When i transfer to map id 6, the layer is not there.\nLAYER_S 6 1 Map06_Ground 0 0 255 -1 0 0 0 0 0"
+    },
+    {
+      "post_id": "js-post-984729",
+      "author": "Eliaquim",
+      "date": "2019-07-12T15:14:19+0900",
+      "body": "Hey, I find compatibility issues with HimeWorks_PreTitleEvent.\nIn hime plugin, I have set to use the maps as a title screen.\nIf a map has a note with Layer_S,\nExample: \"LAYER_S 1 Map06_Ground 0 0 255 5 0 0 0 0 0\",\nThe command \"Return to title screen\" doesn't work.\nit gives this error back:\nWhen I remove the HimePlugin, it works."
+    },
+    {
+      "post_id": "js-post-987154",
+      "author": "OO",
+      "date": "2019-07-21T10:26:29+0900",
+      "body": "Galv said:\nThe only way to fade layers is by changing the opacity. There are no commands for fade in/out. There is an example in the demo.\nExperiment with the numbers to see where the layer appears in the Z order. Remember you can use decimal places if required.\nClick to expand...\nI had luck with this method for fading layers (you'll also need  the plugin to allow variables to be called using \"v26\" method: YEP plugincmdswvar)"
+    },
+    {
+      "post_id": "js-post-994864",
+      "author": "NazuSan",
+      "date": "2019-08-21T07:58:07+0900",
+      "body": "Hey Galv,\nI've got a strange issue with your plugin.\nI made a 40x40 sized map with 2 layers (1st at Z=0, 2nd=overlay at Z=5). I used the water tiles to get animated water. Therefore layer 1 is below the tileset. But strange things did happen, when my character reaches the top of the map. Somehow layer 1 changes priority and covers the tileset/animated water. You can also see now that I drew the sand texture above the edges of the river. Usually this should be hidden when covered by the water tiles.\nHere some pictures\nSpoiler:\nPics\nI wrote the plugin commands into the map notes:\nLAYER_S 1 WaldOL 0 0 255 5 0 0 0 0 0 (-> for the shadow and light overlay)\nLAYER_S 0 Wald 0 0 255 0 0 0 0 0 0 (-> for the ground, that should be below the tileset)\nAny idea what's the reason for this?"
+    },
+    {
+      "post_id": "js-post-994868",
+      "author": "Eliaquim",
+      "date": "2019-08-21T08:31:22+0900",
+      "body": "NazuSan said:\nHey Galv,\nI've got a strange issue with your plugin.\nI made a 40x40 sized map with 2 layers (1st at Z=0, 2nd=overlay at Z=5). I used the water tiles to get animated water. Therefore layer 1 is below the tileset. But strange things did happen, when my character reaches the top of the map. Somehow layer 1 changes priority and covers the tileset/animated water. You can also see now that I drew the sand texture above the edges of the river. Usually this should be hidden when covered by the water tiles.\nHere some pictures\nSpoiler:\nPics\nView attachment 121637\nView attachment 121638\nI wrote the plugin commands into the map notes:\nLAYER_S 1 WaldOL 0 0 255 5 0 0 0 0 0 (-> for the shadow and light overlay)\nLAYER_S 0 Wald 0 0 255 0 0 0 0 0 0 (-> for the ground, that should be below the tileset)\nAny idea what's the reason for this?\nClick to expand...\nHi!\nFor your own good, in the map notes, put the Layers command in order:\nLayer 1\nLayer 2\nLayer 3... Etc.\nDon't put the layer ID in 0.\nStart with 1, then 2, etc.\nAlso on the layer for the ground, try to change the Z value for -1 instead of 0."
+    },
+    {
+      "post_id": "js-post-994999",
+      "author": "NazuSan",
+      "date": "2019-08-21T21:38:27+0900",
+      "body": "Eliaquim said:\nHi!\nFor your own good, in the map notes, put the Layers command in order:\nLayer 1\nLayer 2\nLayer 3... Etc.\nDon't put the layer ID in 0.\nStart with 1, then 2, etc.\nAlso on the layer for the ground, try to change the Z value for -1 instead of 0.\nClick to expand...\nThank you so much :3 Setting the z value to -1 fixed my problem."
+    },
+    {
+      "post_id": "js-post-1001640",
+      "author": "Memerto",
+      "date": "2019-09-16T04:01:15+0900",
+      "body": "Hi guys!\nI'm having an issue with the plugin. I'm using the following plugin commands in a parallel process:\nLAYER_S v20 1 reveal v12 v13 255 200 0 0.5 0.5\nLAYER REFRESH\nvar 20 = map id\nvar 12 = player x\nvar 13 = player y\nClick to expand...\nI'm trying to create a layer centered on player's x and y that doesn't move with the player (so CHAR  = -1 doesn't work for me, as it makes the layer move with the player). The commands above create the layer. It is supossed to be created centered in the player's x and y, but instead of that it is created centered in the map's coordinates 0 (x) and 0 (y). I'd been hours looking for what I'm doing wrong, but I'm unable to find it. Can you check it out and tell me what am I doing wrong?"
+    },
+    {
+      "post_id": "js-post-1001815",
+      "author": "Galv",
+      "date": "2019-09-16T18:28:22+0900",
+      "body": "The layer x,y position is based on pixels.\nThe player x,y is based on the movement grid. I believe by default the grid is 48 pixels per square."
+    },
+    {
+      "post_id": "js-post-1019074",
+      "author": "Zakarijazh",
+      "date": "2019-11-24T05:30:36+0900",
+      "body": "<<<SOLVED>>>\nI'm highly confused on how to make a scrolling effect for my fog graphic in battles\nI created a test event that leads to a battle with this script call as it's first part of the event following the example,\nGalv.LG.bLayer(id,'graphic',xspeed,yspeed,opacity,z,blend);\nGalv.LG.bLayer 1 BattleFogB 1 0 255 3\nBut it doesn't do anything when used in an event... ?\nThe map itself has this as it's note-tag\nLAYER 1 cloud -1 2 205 5 0.5 0.5 0\nand works exactly as desired.\nBut are they clashing because of the 'layers' used maybe or did I just misread the instructions?"
+    },
+    {
+      "post_id": "js-post-1019078",
+      "author": "Eliaquim",
+      "date": "2019-11-24T05:42:06+0900",
+      "body": "Zakarijah said:\nI'm highly confused on how to make a scrolling effect for my fog graphic in battles\nI created a test event that leads to a battle with this script call as it's first part of the event\nGalv.LG.bLayer 1 BattleFogB 1 0 255 3\nBut it doesn't do anything when used in an event?\nThe map itself has this as it's note-tag following your example,\nGalv.LG.bLayer(id,'graphic',xspeed,yspeed,opacity,z,blend);\nLAYER 1 cloud -1 2 205 5 0.5 0.5 0\nand works exactl as desired.\nBut are they clashing because of the 'layers' used maybe or did I just misread the instructions?\nClick to expand...\nWhat is exaclty in the map note tag?\nThis:\nGalv.LG.bLayer(id,'graphic',xspeed,yspeed,opacity,z,blend);\nOr this\n:\nLAYER 1 cloud -1 2 205 5 0.5 0.5 0\n?\nShow to us a picture of your note tags or script/plugin commands. I will take a look"
+    },
+    {
+      "post_id": "js-post-1019081",
+      "author": "Zakarijazh",
+      "date": "2019-11-24T05:56:15+0900",
+      "body": "Eliaquim said:\nWhat is exaclty in the map note tag?\nThis:\nGalv.LG.bLayer(id,'graphic',xspeed,yspeed,opacity,z,blend);\nOr this\n:\nLAYER 1 cloud -1 2 205 5 0.5 0.5 0\n?\nShow to us a picture of your note tags or script/plugin commands. I will take a look\nClick to expand...\nI updated it, I had it written backwards!!\nLAYER 1 cloud -1 2 205 5 0.5 0.5 0\nis the map notetag\nGalv.LG.bLayer 1 BattleFogB 1 0 255 3\nis what i put as the script for the event"
+    },
+    {
+      "post_id": "js-post-1019091",
+      "author": "Eliaquim",
+      "date": "2019-11-24T06:50:04+0900",
+      "body": "Zakarijah said:\nI updated it, I had it written backwards!!\nLAYER 1 cloud -1 2 205 5 0.5 0.5 0\nis the map notetag\nGalv.LG.bLayer 1 BattleFogB 1 0 255 3\nis what i put as the script for the event\nClick to expand...\nI think that can be related to the Id os the layers.\nTry to change it. It is the first number after the command. Both are \"1\""
+    },
+    {
+      "post_id": "js-post-1019093",
+      "author": "Tohisu",
+      "date": "2019-11-24T06:58:28+0900",
+      "body": "I don't know if this your problem source, but have you also, in the event, done the plugin command \"layer refresh\"?\nI might be totally wrong tho."
+    },
+    {
+      "post_id": "js-post-1019104",
+      "author": "Zakarijazh",
+      "date": "2019-11-24T07:35:38+0900",
+      "body": "Eliaquim said:\nI think that can be related to the Id os the layers.\nTry to change it. It is the first number after the command. Both are \"1\"\nClick to expand...\nI tried making the ID '2', so;\nGalv.LG.bLayer 2 BattleFogB 1 0 255 3\ninstead of\nGalv.LG.bLayer 1 BattleFogB 1 0 255 3\nbut still nothing"
+    },
+    {
+      "post_id": "js-post-1019106",
+      "author": "Zakarijazh",
+      "date": "2019-11-24T07:36:11+0900",
+      "body": "Tohisu said:\nI don't know if this your problem source, but have you also, in the event, done the plugin command \"layer refresh\"?\nI might be totally wrong tho.\nClick to expand...\ntried that right after the 'script' and still nothing :/"
+    },
+    {
+      "post_id": "js-post-1019108",
+      "author": "Zakarijazh",
+      "date": "2019-11-24T07:47:01+0900",
+      "body": "Eliaquim said:\nI think that can be related to the Id os the layers.\nTry to change it. It is the first number after the command. Both are \"1\"\nClick to expand...\nSo the script is VERY specific, per GALV's example.\nBut I managed to make it work with this!\nGalv.LG.bLayer(1,'BattleFogB',2,0,255,3,0);\nI didn't think the parentheses and commas were necessary, as most people just use them flippantly and they're not required but IN FACT, they are!\nlol"
+    },
+    {
+      "post_id": "js-post-1019164",
+      "author": "Tohisu",
+      "date": "2019-11-24T14:05:06+0900",
+      "body": "Good for you. I was about to screenshot my script for the layer set up, but apparently you figured it out."
+    },
+    {
+      "post_id": "js-post-1028056",
+      "author": "Argentdragon",
+      "date": "2019-12-31T16:21:32+0900",
+      "body": "I'm having some difficulty with this plugin and I've read the help section multiple times, but am unable to resolve the problem. I've just gotten back into RMMV after a few months hiatus. Last I remembered, everything was working fine with this plugin, however, when I go back into the maps I previously set up, they are no longer showing properly.\nI have an image attached to show what I mean. The picture shows the top left corner of my map, even though the player starts out at the bottom right corner of the map. It remains static (player moves but map stays in once place even though I see my events pop up when I move my player to that direction). I thought you could set up the images in the NOTE section, but I have also tried initialising the map using plugin commands as well and neither work. This is the code I'm using for the bottom layer of the map:\nCode:\nLAYER_S 29 2 Libbottom 0 0 225 1 0 0 0\nThe name matches the PNG exactly and I've checked the MAP ID as well. I figured you didn't need the 0s for CHAR and ROTATE which are at the end, but I've tried putting them and it still hasn't worked. The image won't show at all if I remove it from the Parallax Background section. I even tried switching the command to LAYER even though I'm pretty sure it's LAYER_S for parallax mapping.\nI thought I knew what I was doing when using this plugin, and I've tried messing with the numbers to what I thought may have been correct, but no luck so far. Any help would be appreciated!"
+    },
+    {
+      "post_id": "js-post-1028069",
+      "author": "Eliaquim",
+      "date": "2019-12-31T17:55:09+0900",
+      "body": "Argentdragon said:\n....\nClick to expand...\nHi there!\nI've taken your code and applied it into the quick and detailed plugin commands, also to map notes too:\nQuick plugin command:\nHere, your code has an additional of two zero's in the end. Don't know if it can cause an error, or if the engine/plugin can simply ignore them.\nCode:\nLAYER_S MAPID ID GRAPHIC X Y OPACITY Z BLEND\n\nLAYER_S 29 2 Libbottom 0 0 225 1 0 0 0\n\nMAP ID = 29\nLAYER ID = 2\nGRAPHIC = Libbottom\nX = 0\nY = 0\nOPACITY = 255\nZ = 1\nBLEND = 0\nDetailed plugin command:\nHere, your code will be missing two attributes(CHAR and ROTATE).\nCode:\nLAYER_S MAPID ID GRAPHIC X Y OPACITY Z BLEND XANCHOR YANCHOR CHAR ROTATE\n\nLAYER_S 29 2 Libbottom 0 0 225 1 0 0 0\n\nMAP ID = 29\nLAYER ID = 2\nGRAPHIC = Libbottom\nX = 0\nY = 0\nOPACITY = 255\nZ = 1\nBLEND = 0\nXANCHOR = 0\nYANCHOR = 0\nCHAR = ?\nROTATE = ?\nMap notes\nIn Map notes, your code will be messy. I think you can see it below very clearly.\nCode:\nLAYER_S ID GRAPHIC X Y OPACITY Z BLEND XANCHOR YANCHOR CHAR ROTATE\n\nLAYER_S 29 2 Libbottom 0 0 225 1 0 0 0\n\nLAYER ID = 29\nGRAPHIC = 2\nX = Libbottom\nY = 0\nOPACITY = 0\nZ = 255\nBLEND = 1\nXANCHOR = 0\nYANCHOR = 0\nCHAR = 0\nROTATE = ?\nSo my point is:\n- Send a picture of your event(if you make with plugin command) or map note with the code you used, this will be more helpful to help you.\n- Also, pay attention that in MAP NOTE you can't use map id. So assuming your map id is 29...\n- Another thing that you want to pay attention to is to see if you do not have another layer with the same id.\n- Or another layer with a Z index higher than the one you are trying to use and is above.\n- Or set this layer to another map.\nYou can also press F8 or F12 to open the console and access the layer properties. This will be helpful for you to see if the properties are set correctly with the plugin commands or map notes:\nCode:\n$gameMap.layerSettings[mapId][layerId].property\nreplace the mapId, layerId for the respective numbers.\nAnd replace property for one of that(I think it is in lower case):\nID GRAPHIC X Y OPACITY Z BLEND XANCHOR YANCHOR CHAR ROTATE\nI hope it helps to track the error! ^^"
+    },
+    {
+      "post_id": "js-post-1028174",
+      "author": "Argentdragon",
+      "date": "2020-01-01T06:00:16+0900",
+      "body": "Thank you very much for the reply! Ideally I prefer to use the MAP NOTE method and here's a picture of what I have for that. I have checked and disabled both mogtimesystem and terrax lighting, but the issue still remains so I don't believe it's a compatibility issue, and I remember getting it to work previously. I know the Z number refers to where a layer will show up but the Libtop is a mostly transparent layer which holds the overlay images so I didn't think it would affect how Libbottom shows up."
+    },
+    {
+      "post_id": "js-post-1028204",
+      "author": "Eliaquim",
+      "date": "2020-01-01T07:41:34+0900",
+      "body": "Argentdragon said:\n....\nClick to expand...\nThat's what I said, your map notes are missing properties. You have to put a value for all of them.\nFirst copy that into your map notes, then replace each property with a value.\nLAYER_S ID GRAPHIC X Y OPACITY Z BLEND XANCHOR YANCHOR CHAR ROTATE\nAlso, you are using tilesets? If yes, try to put the layer with Z index of 1.1\nBecause the tilesets can be above the layer with Z value of 0.\nI use that plugin with a lot of other ones and never have a issue with compatibility. But if everything goes wrong, I suggest you try it in a blank project or disable all other plugins before you make a test in your aa actual project."
+    },
+    {
+      "post_id": "js-post-1028209",
+      "author": "Argentdragon",
+      "date": "2020-01-01T08:07:41+0900",
+      "body": "So I tried that and initially it again did not work, but when I tested it out on a blank project, it worked just fine. So I tried reinstalling the plugin and placed it at the lowest spot on the list, and that helped and now it's working normally again. Thank you so much! I really appreciate it, I thought it wasn't going to work at all!"
+    },
+    {
+      "post_id": "js-post-1028219",
+      "author": "Eliaquim",
+      "date": "2020-01-01T09:00:55+0900",
+      "body": "Argentdragon said:\nSo I tried that and initially it again did not work, but when I tested it out on a blank project, it worked just fine. So I tried reinstalling the plugin and placed it at the lowest spot on the list, and that helped and now it's working normally again. Thank you so much! I really appreciate it, I thought it wasn't going to work at all!\nClick to expand...\nYes! Glad you made it!\nHappy new year!!"
+    },
+    {
+      "post_id": "js-post-1038796",
+      "author": "hosercanadian",
+      "date": "2020-02-10T06:53:56+0900",
+      "body": "I am having a strange effect when I use two layers.\nI have built my maps with both a ground layer (or parallax) and a top layer.  The images show all the shadows properly, until I play the game.\nDuring game play, the \"shadows\" on the base layer disappear and I have the jagged edges shown.  My screen shot image shows a close up.  This errors occurs when I use either a parallax for the ground or use both layers as layer images with the plug-in.\nIs there a setting I am not aware of or that I can tweak in the code to have what I assume is soft blending (which drops the semi-transparent shadows)?\nThanks."
+    },
+    {
+      "post_id": "js-post-1038799",
+      "author": "Eliaquim",
+      "date": "2020-02-10T07:13:41+0900",
+      "body": "hosercanadian said:\nI am having a strange effect when I use two layers.\nI have built my maps with both a ground layer (or parallax) and a top layer.  The images show all the shadows properly until I play the game.\nDuring gameplay, the \"shadows\" on the base layer disappear and I have the jagged edges shown.  My screenshot image shows a close-up.  This error occurs when I use either a parallax for the ground or use both layers as layer images with the plug-in.\nIs there a setting I am not aware of or that I can tweak in the code to have what I assume is soft blending (which drops the semi-transparent shadows)?\nThanks.\nClick to expand...\nHi!\nWe can't help you with only this information. Please put the screenshot of your event that is making the layers or your map notes if you are creating them by notes."
+    },
+    {
+      "post_id": "js-post-1038801",
+      "author": "hosercanadian",
+      "date": "2020-02-10T07:19:29+0900",
+      "body": "Eliaquim said:\nHi!\nWe can't help you with only this information. Please put the screenshot of your event that is making the layers or your map notes if you are creating them by notes.\nClick to expand...\nThe map note script I am using is this for two layers:\nLAYER_S 1 Start 0 0 255 5 0 0 0\nLAYER_S 2 StartGround 0 0 255 0 0 0 0\nWhen I am using the parallax I only use the first line of the script."
+    },
+    {
+      "post_id": "js-post-1038882",
+      "author": "Eliaquim",
+      "date": "2020-02-10T12:33:21+0900",
+      "body": "hosercanadian said:\nThe map note script I am using is this for two layers:\nLAYER_S 1 Start 0 0 255 5 0 0 0\nLAYER_S 2 StartGround 0 0 255 0 0 0 0\nWhen I am using the parallax I only use the first line of the script.\nClick to expand...\nHi!\nWell as I can see, it seems ok. Maybe your filename can be different from map notes to the file(it is case sensitive).\nAlso, you are using any plugins that mess with parallax too?\nI also advise you to not use the default parallax with this plugin, for the sake of organizing it better.\nIn your map notes, try to put a value for all the properties:\nLAYER_S ID GRAPHIC X Y OPACITY Z BLEND XANCHOR YANCHOR CHAR ROTATE\nAs you can see, are 11 properties. In your map notes, it seems to have only 9 properties.\nIf nothing helps you, try to send a screenshot of your map notes, your filenames, and your plugin manager.\nOr even better, upload a project with these things and I will take a look."
+    },
+    {
+      "post_id": "js-post-1040008",
+      "author": "Papillon",
+      "date": "2020-02-14T17:23:29+0900",
+      "body": "Really fantastic plugin, but I'm getting a weird error. Whenever I use a layer graphic inside a battle and the battle ends the game crashes and I get \"TypeError: Cannot read property 'graphic' of undefined\". Disabling the layers before the battle ends gets the same result.\nI'm not quite sure why this is happening."
+    },
+    {
+      "post_id": "js-post-1040009",
+      "author": "Eliaquim",
+      "date": "2020-02-14T17:27:04+0900",
+      "body": "didi you try to use the plugin command to remove the battle layers before the battle ends?\nNot sure if I can help you, but I think this error is related to the name of the file layer graphic. It is case-sensitive.\nMake sure if everything is correct and if you use plugin commands if you don't do any typos.\nSend a screen of the console when the error happens, also helps(press f8 or f12 when the error occurs)."
+    },
+    {
+      "post_id": "js-post-1040039",
+      "author": "Papillon",
+      "date": "2020-02-14T20:26:49+0900",
+      "body": "Eliaquim said:\ndidi you try to use the plugin command to remove the battle layers before the battle ends?\nNot sure if I can help you, but I think this error is related to the name of the file layer graphic. It is case-sensitive.\nMake sure if everything is correct and if you use plugin commands if you don't do any typos.\nSend a screen of the console when the error happens, also helps(press f8 or f12 when the error occurs).\nClick to expand...\nI'm not quite sure what's causing it.\nI've double-checked the script calls to make sure everything is spelled correctly and all the files are correct.\nAs far as I'm aware there's no conflicts.\nIt doesn't happen when testing troops in the editor but when a battle finishes in a playtest the game just crashes, so I'm assuming something is happening in the transition from battle to map."
+    },
+    {
+      "post_id": "js-post-1040043",
+      "author": "Galv",
+      "date": "2020-02-14T21:04:34+0900",
+      "body": "Does it happen in the demo or fresh project?"
+    },
+    {
+      "post_id": "js-post-1040046",
+      "author": "Papillon",
+      "date": "2020-02-14T21:25:33+0900",
+      "body": "Galv said:\nDoes it happen in the demo or fresh project?\nClick to expand...\nSame thing is happening in a fresh project so I assume at this point I'm getting the syntax wrong.\nSpoiler"
+    },
+    {
+      "post_id": "js-post-1040048",
+      "author": "Galv",
+      "date": "2020-02-14T22:01:01+0900",
+      "body": "Ah I see - I never tested removing layers in battle. This is indeed a bug and one day (if I ever have time) I will look into it. Immediate solution is not to remove layers mid-battle, they can be added and removed outside of battle"
+    },
+    {
+      "post_id": "js-post-1040050",
+      "author": "Papillon",
+      "date": "2020-02-14T22:15:46+0900",
+      "body": "Galv said:\nAh I see - I never tested removing layers in battle. This is indeed a bug and one day (if I ever have time) I will look into it. Immediate solution is not to remove layers mid-battle, they can be added and removed outside of battle\nClick to expand...\nThat's a shame to hear, but thank you for the response and assisting me.\nI'll have to find some away around this, but calling layers outside the battle still seems to trigger the same error."
+    },
+    {
+      "post_id": "js-post-1040053",
+      "author": "Galv",
+      "date": "2020-02-14T22:29:25+0900",
+      "body": "Hmm, can't get it to happen when modifying layers outside of battle. There's an example of that in the demo.\nEdit: (Specially removing layers)"
+    },
+    {
+      "post_id": "js-post-1040085",
+      "author": "Papillon",
+      "date": "2020-02-15T01:16:19+0900",
+      "body": "Galv said:\nHmm, can't get it to happen when modifying layers outside of battle. There's an example of that in the demo.\nEdit: (Specially removing layers)\nClick to expand...\nActually, disregard my last post. That only seems to be a conflict with a plugin I'm using for testing purposes. It works fine otherwise."
+    },
+    {
+      "post_id": "js-post-1047835",
+      "author": "Chazareth",
+      "date": "2020-03-18T10:14:34+0900",
+      "body": "I was getting an error from the plugin when attempting to transfer the player to another map. I have noticed that this error only occurs when transferring the player using variable coordinates; direct designation transfers work fine. I have only encountered this error recently, so I'm still trying to figure out what changed to cause it now. Any know why variable transfers are causing this?\nEdit: It seems like the problem occurs when transferring the player using variable coordinates but the variable designating which map to transfer to is 0. So all I really have to do is just find out why/how that variable is getting set to 0."
+    },
+    {
+      "post_id": "js-post-1047854",
+      "author": "Eliaquim",
+      "date": "2020-03-18T12:08:24+0900",
+      "body": "@Chazareth\nyour image has not been attached. Please send a screenshot of the console error and your event with this transfer using the variable."
+    },
+    {
+      "post_id": "js-post-1047858",
+      "author": "Chazareth",
+      "date": "2020-03-18T12:29:41+0900",
+      "body": "Eliaquim said:\n@Chazareth\nyour image has not been attached. Please send a screenshot of the console error and your event with this transfer using the variable.\nClick to expand...\nI took down the screenshot, as I've figured out what the problem was. The plugin wasn't at fault, it was just a messed up variable on my end."
+    },
+    {
+      "post_id": "js-post-1065113",
+      "author": "Uranium",
+      "date": "2020-05-15T01:47:02+0900",
+      "body": "Hey has anyone have the issue with the layers flickering on screen when you press \"z\"?\nI tried moving tghe plugin order every way possible but still all my layers flicker when using\nI am thinking there is a compatibly issue with Mog_ChronoEngine. As the layers from galv's plugin flicker when Attacking/using Tools."
+    },
+    {
+      "post_id": "js-post-1065117",
+      "author": "Uranium",
+      "date": "2020-05-15T02:01:00+0900",
+      "body": "Compatibility Fix: Galv_LayerGraphics + Mog_ChronoEngine\nIf you are using this plugin along side Mog_ChronoEngine you may experience your LAYERS from Galv's plugin flickering when using tools,attacking etc.. I believe changing the layer to a higher position,  it should fix the issue.\nI was having this happen to any layers which I had set to \"4\" in the note box.\nI just double checked and it is 100% fixed!"
+    },
+    {
+      "post_id": "js-post-1065118",
+      "author": "Galv",
+      "date": "2020-05-15T02:04:18+0900",
+      "body": "Also, to add - you can use decimal numbers for the z value."
+    },
+    {
+      "post_id": "js-post-1071263",
+      "author": "codapill",
+      "date": "2020-06-04T03:06:51+0900",
+      "body": "Is it bad practice that I use this plugin exclusively for all of my mapping? None of my maps are big (max size in my project being 25 x 25 MV tiles, and can't see them getting much bigger than that at all) and I've generally limited myself to around 5 layers p/map.\nI just wondered if anyone has any experience of being heavily penalized - performance wise - for just using images for all maps (or any downside, for that matter)."
+    },
+    {
+      "post_id": "js-post-1074347",
+      "author": "Poladead",
+      "date": "2020-06-11T20:24:53+0900",
+      "body": "I have 2 questions:\nFirst why does the overlay level (The shadows) offsets by one pixel??? it's set as 0 0 in the map notes.\nLAYER_S 2 TwinsHouseOL 0 0 255 5 0 0 0 0 0 this is what I have set in the map notes btw\nSecond, if the parallax background has ! before the name, shouldn't that stop it from tiling? and yet as you can see it's start tiling on the edges, can anyone help me?"
+    },
+    {
+      "post_id": "js-post-1088948",
+      "author": "cedr777",
+      "date": "2020-07-11T19:50:56+0900",
+      "body": "Hello, Can anyone help me? I want to align these two static Layers into the screen which is set at 1280 x 720.\nI keep trying different settings, But it keeps turning out this way and won't align properly...\nEDIT: If it helps, the Picture file is at 640 x 480 and the Textured Background file is at 1280 x 720.\nEDIT: If it helps, I want something similar to a Show Picture command that would encompass the X and Y coordinate based on the screen. A PNG Graphic Layer that would stick to the Screen and not the Map.\nEDIT: I made a Request at JS Plugins request for a\nPlugin Command  for this.\nThe details can be found there, I hope someone can help me.\nEDIT: The specific lines I am referring to for the two Static Layers is:\nPlugin Command: LAYER_S v31 1 Mao_syokuin 35 35 255 5 0 0 0 0 0\nPlugin Command: LAYER_S v31 2 Texture_Background_01 0 0 255 5 0 0 0 0 0"
+    },
+    {
+      "post_id": "js-post-1088967",
+      "author": "Ace of Spades",
+      "date": "2020-07-11T22:24:51+0900",
+      "body": "cedr777 said:\nHello, Can anyone help me? I want to align these two static Layers into the screen which is set at 1280 x 720.\nI keep trying different settings, But it keeps turning out this way and won't align properly...\nEDIT: If it helps, the Picture file is at 640 x 480 and the Textured Background file is at 1280 x 720.\nEDIT: If it helps, I want something similar to a Show Picture command that would encompass the X and Y coordinate based on the screen. A Layer that would stick to the Screen and not the Map.\nClick to expand...\nSo the plugin applies layers to the map, not the screen.  (Think of it like applying a big sticker to your map; once it's down, it's not moving.)  So a static layer is going to be laid in one spot on the map, but isn't going to follow your player's screen when they move around the map.  Because your map is taller than 720 pixels, the image isn't going to be centered on your screen.\nSince you want the image to display using the Screen coordinates, why not just use display picture command for that instead?"
+    },
+    {
+      "post_id": "js-post-1088972",
+      "author": "cedr777",
+      "date": "2020-07-11T22:36:26+0900",
+      "body": "Spoiler\nAce of Spades said:\nSo the plugin applies layers to the map, not the screen.  (Think of it like applying a big sticker to your map; once it's down, it's not moving.)  So a static layer is going to be laid in one spot on the map, but isn't going to follow your player's screen when they move around the map.  Because your map is taller than 720 pixels, the image isn't going to be centered on your screen.\nSince you want the image to display using the Screen coordinates, why not just use display picture command for that instead?\nClick to expand...\nGood suggestion with the display picture command. I can achieve the same results with it but unfortunately, in my case I am using Irina's Visual Novel Busts Plugin that has an issue with layer order when paired up with the Show Picture commands. I also extensively Galv's layer graphics as a separate \"Background Picture\" folder (for organizational purposes )as well because my Picture folder is now at 500+ images and it's getting hard to navigate what I need whenever I need a specific background image for a scene in an event."
+    },
+    {
+      "post_id": "js-post-1088989",
+      "author": "Ace of Spades",
+      "date": "2020-07-11T23:36:21+0900",
+      "body": "cedr777 said:\nGood suggestion with the display picture command. I can achieve the same results with it but unfortunately, in my case I am using Irina's Visual Novel Busts Plugin that has an issue with layer order when paired up with the Show Picture commands. I also extensively Galv's layer graphics as a separate \"Background Picture\" folder (for organizational purposes )as well because my Picture folder is now at 500+ images and it's getting hard to navigate what I need whenever I need a specific background image for a scene in an event.\nClick to expand...\nHmm, I see.  There is an option for setting the coordinates of the layer using a Variable.  You could in theory change two variables to player map x,y and then multiply the variable by 48, and adjust manually from there.  I tried it for a few minutes, but ultimately seems like it  might be more of a hassle than I thought, and likely not the ideal solution.\nIt might be easier to see if  someone can edit the Bust plugin you're using... basically you need the bust to show above pictures but below the message window?  I'm not familiar with that plugin, but there should be some sort of way to change the Z layer it's drawing the busts to.  Alternatively, see if any plugins exist that change the Picture Z coordinates (not sure if this exists yet).  Good luck!"
+    },
+    {
+      "post_id": "js-post-1089236",
+      "author": "cedr777",
+      "date": "2020-07-12T14:10:40+0900",
+      "body": "I've updated the description of feature request to make it more clear.\nGALV Layer Graphics Feature Request\nHi, would anyone be interested in making a plugin command for  GALV_LayerGraphics that can make it so that it behaves similar to a Show Picture command that would encompass the X and Y coordinate based on the screen. A PNG Graphics layer that would stick to the Screen and not the Map is what I...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1155579",
+      "author": "DaveTheArakin",
+      "date": "2021-01-17T06:51:54+0900",
+      "body": "Heya! Can anyone who is experienced with Galv Layer Graphic plugin answer some questions?\nAfter the previous plugin (upp_parallaxPro) caused issues with saving the game, I switched to Galv Layer Graphic. I have figured out the basics, but I do wonder if I can do more.\nFirst off, I can't make it work with plugin command. The map that I have created won't show up with a plugin command. It only works if I use Map Notes. I followed the instruction on Help, but it doesn't work.\nIt is possible to have more than one parallax map? Like an over and under layer. With the previous plugin, I was able to use an over and under, so my characters can walk beneath tree leaves without looking like they are stepping over it.\nAny help would be appreciated."
+    },
+    {
+      "post_id": "js-post-1155581",
+      "author": "Galv",
+      "date": "2021-01-17T07:11:50+0900",
+      "body": "Check the plugin instructions again, make sure to read it all. You need to refresh layers if adding layers on the same map. And yes you can have as many layers as you need on any z level you need them on.\nI recommend downloading the demo to see examples."
+    },
+    {
+      "post_id": "js-post-1155594",
+      "author": "DaveTheArakin",
+      "date": "2021-01-17T07:49:21+0900",
+      "body": "Galv said:\nCheck the plugin instructions again, make sure to read it all. You need to refresh layers if adding layers on the same map. And yes you can have as many layers as you need on any z level you need them on.\nI recommend downloading the demo to see examples.\nClick to expand...\nI tried to open the demo, but when I did, it says \"Unable to read file Actors.json"
+    },
+    {
+      "post_id": "js-post-1155622",
+      "author": "Galv",
+      "date": "2021-01-17T09:35:20+0900",
+      "body": "Open the demo in your RPG Maker MV via 'Game.rpgproject', don't open the html file in a browser."
+    },
+    {
+      "post_id": "js-post-1155727",
+      "author": "DaveTheArakin",
+      "date": "2021-01-17T21:25:28+0900",
+      "body": "Galv said:\nOpen the demo in your RPG Maker MV via 'Game.rpgproject', don't open the html file in a browser.\nClick to expand...\nThanks for the help. I managed to get your plugin to work how I wanted it."
+    },
+    {
+      "post_id": "js-post-1165403",
+      "author": "Deduu",
+      "date": "2021-02-22T06:37:38+0900",
+      "body": "Thank you very much for this plugin and the demo which makes it pretty easy to use.\nHowever there are two questions left for me: What exactly does \"char\" do for static sprite layers? Does it make the layer move along if a certain object moves?\nAnd is there any way to apply a layer graphic only to a certain object? E.g. show a shadow only above the player but make it invisible for the rest of the map? I am thinking of sth. very similar like your \"SHADOW DARKEN\"-plugin but not tile based and instead based on real graphics."
+    },
+    {
+      "post_id": "js-post-1165495",
+      "author": "Galv",
+      "date": "2021-02-22T17:19:50+0900",
+      "body": "The 'char' setting lets you center the static layer on an event or player. In the demo, the red semicircle on the event is an example of that."
+    },
+    {
+      "post_id": "js-post-1165766",
+      "author": "xiamumomo",
+      "date": "2021-02-23T20:26:34+0900",
+      "body": "I found that when your plug-in encounters horizontal and vertical circulation of the map, it will have problems. When you go to a fixed position, the foreground map will be refreshed"
+    },
+    {
+      "post_id": "js-post-1178906",
+      "author": "Puryfire",
+      "date": "2021-04-11T08:55:17+0900",
+      "body": "EDIT: Forget it...! Got the Problem! ^^ Can't load Savegames from before adding the Layers. A new Game will start fine. Thanks anyway! ^^\nBtw can't I delete my own posts??? oO"
+    },
+    {
+      "post_id": "js-post-1178921",
+      "author": "Shaz",
+      "date": "2021-04-11T10:14:52+0900",
+      "body": "Puryfire said:\nBtw can't I delete my own posts??? oO\nClick to expand...\nNo, you can't.  We usually like you to leave the description of the issue as well as the solution, in case someone else has the same problem down the track."
+    },
+    {
+      "post_id": "js-post-1178930",
+      "author": "Restart",
+      "date": "2021-04-11T11:27:39+0900",
+      "body": "Puryfire said:\nEDIT: Forget it...! Got the Problem! ^^ Can't load Savegames from before adding the Layers. A new Game will start fine. Thanks anyway! ^^\nBtw can't I delete my own posts??? oO\nClick to expand...\nto fix that\nCode:\nGalv.LG.Game_Map_setup = Game_Map.prototype.setup;\nGame_Map.prototype.setup = function(mapId) {\n\tGalv.LG.Game_Map_setup.call(this,mapId);\n\tif (!this.layerSettings)\n\t{\n\t\tthis.layerSettings = {}\n\t}\n\tthis.layerSettings[mapId] = this.layerSettings[mapId] || {}\n\n\t// Setup map notetag layers\n\tthis.createNoteLayers(mapId);\n\t\n\tfor (var obj in this.layerConfig()) {\n\t\tobj.currentx = 0;\n\t\tobj.currenty = 0;\n\t};\n};"
+    },
+    {
+      "post_id": "js-post-1179143",
+      "author": "Puryfire",
+      "date": "2021-04-12T09:15:55+0900",
+      "body": "Restart said:\nto fix that\nCode:\nGalv.LG.Game_Map_setup = Game_Map.prototype.setup;\nGame_Map.prototype.setup = function(mapId) {\n    Galv.LG.Game_Map_setup.call(this,mapId);\n    if (!this.layerSettings)\n    {\n        this.layerSettings = {}\n    }\n    this.layerSettings[mapId] = this.layerSettings[mapId] || {}\n\n    // Setup map notetag layers\n    this.createNoteLayers(mapId);\n   \n    for (var obj in this.layerConfig()) {\n        obj.currentx = 0;\n        obj.currenty = 0;\n    };\n};\nClick to expand...\nThank you Restart for the Information.\nBut... how do I have to use this? ^^ Do I have to change the Plugin? I am not really experienced with this Stuff.\nI am quite new to all of this."
+    },
+    {
+      "post_id": "js-post-1179144",
+      "author": "Puryfire",
+      "date": "2021-04-12T09:19:30+0900",
+      "body": "Shaz said:\nNo, you can't.  We usually like you to leave the description of the issue as well as the solution, in case someone else has the same problem down the track.\nClick to expand...\nAh ok I understand. Then I won't delete my Post the next time."
+    },
+    {
+      "post_id": "js-post-1179202",
+      "author": "Restart",
+      "date": "2021-04-12T13:13:52+0900",
+      "body": "Puryfire said:\nThank you Restart for the Information.\nBut... how do I have to use this? ^^ Do I have to change the Plugin? I am not really experienced with this Stuff.\nI am quite new to all of this.\nClick to expand...\nprobably easiest to edit the Game_Map.prototype.setup in the plugin itself, just replace it with the code I had in the previous post.\nYou could also save this:\nCode:\nGalv.LG.Game_Map_setupPatch = Game_Map.prototype.setup;\nGame_Map.prototype.setup = function(mapId) {\n    if (!this.layerSettings)\n    {\n        this.layerSettings = {}\n    }\n    Galv.LG.Game_Map_setupPatch.call(this,mapId);\n\n};\nas a new .js file and import it as a plugin after galv layer graphics, either is good.\nBasically the issue is that an empty game map layersettings gets defined upon new game creation, but not upon savegame loading.  This just checks to see if it exists, and if it doesn't, it creates one."
+    },
+    {
+      "post_id": "js-post-1241296",
+      "author": "poorandweird",
+      "date": "2022-01-05T04:21:17+0900",
+      "body": "Papillon said:\nReally fantastic plugin, but I'm getting a weird error. Whenever I use a layer graphic inside a battle and the battle ends the game crashes and I get \"TypeError: Cannot read property 'graphic' of undefined\". Disabling the layers before the battle ends gets the same result.\nI'm not quite sure why this is happening.\nClick to expand...\nHey there!\nI recently discovered the same issue, but not within battle.\nTurns out that layers in the map note section cannot have an ID of 0 which wasn't mentioned anywhere, I think. Maybe that helps someone with similar issues.\nThanks Galv for this great plugin!!"
+    },
+    {
+      "post_id": "js-post-1262009",
+      "author": "pastreloks",
+      "date": "2022-03-22T17:13:09+0900",
+      "body": "Hi pals. Just started to use this plugin. I have a map 8x6, and 2 layers 8x6. How can I make layers appear right on the center and not on the left upper side? Because adjusting it but x and y doesn't give right positioning."
+    },
+    {
+      "post_id": "js-post-1262029",
+      "author": "Galv",
+      "date": "2022-03-22T19:11:23+0900",
+      "body": "The layer graphics and their x,y positions are in pixels. Each tile is 48 pixels by default, so moving the layer around would need to move 48 to move a tile.\nYou might want to use the static layer option, too."
+    },
+    {
+      "post_id": "js-post-1262032",
+      "author": "pastreloks",
+      "date": "2022-03-22T19:36:01+0900",
+      "body": "Galv said:\nThe layer graphics and their x,y positions are in pixels. Each tile is 48 pixels by default, so moving the layer around would need to move 48 to move a tile.\nYou might want to use the static layer option, too.\nClick to expand...\nyeah, I use static layer and 0.5 anchors to place layer closer to needed position. I guess I figured it out."
+    },
+    {
+      "post_id": "js-post-1262077",
+      "author": "pastreloks",
+      "date": "2022-03-23T00:05:44+0900",
+      "body": "Galv said:\nThe layer graphics and their x,y positions are in pixels. Each tile is 48 pixels by default, so moving the layer around would need to move 48 to move a tile.\nYou might want to use the static layer option, too.\nClick to expand...\nAlso noticed one thing. When event moves to layer which has z=5, it is still above the layer. Is there any way to place events under layers?"
+    },
+    {
+      "post_id": "js-post-1262131",
+      "author": "Galv",
+      "date": "2022-03-23T04:56:45+0900",
+      "body": "Make the layer z value higher."
+    },
+    {
+      "post_id": "js-post-1292188",
+      "author": "Crossbow",
+      "date": "2022-08-04T08:37:07+0900",
+      "body": "Hey... I'm a little late to the party here, but I am looking for someone who is familiar with Galv layer graphics plugin.  I have read through all the literature, looked at the Demo and think I am doing things correctly, but it isn't working for me, so obviously I'm doing something wrong.  Is there any way I can get some help with this plugin?"
+    },
+    {
+      "post_id": "js-post-1292195",
+      "author": "Eliaquim",
+      "date": "2022-08-04T09:32:28+0900",
+      "body": "Crossbow said:\nHey... I'm a little late to the party here, but I am looking for someone who is familiar with Galv layer graphics plugin.  I have read through all the literature, looked at the Demo and think I am doing things correctly, but it isn't working for me, so obviously I'm doing something wrong.  Is there any way I can get some help with this plugin?\nClick to expand...\nHi there!\nThe best way to find help is not only to tell but show what you are doing and tell exactly what you are not understanding.\nIf perhaps you don't know what you don't understand, you need to show how you set up everything, and maybe someone else will see and point that out for you.\nSo, how you are setup the layers? Via plugin command or map note tag? Can you show to us the folder and filenames of the layer images? Screenshot of the plugin commands or map note tags...\nIs there an error pop up? can you show that?"
+    },
+    {
+      "post_id": "js-post-1292434",
+      "author": "Crossbow",
+      "date": "2022-08-05T13:48:20+0900",
+      "body": "Thanks for clarifying what I should have posted...\nI got it to work by putting in the refresh plugin command first, then the static layer command, and I also raised the Z level.  Thanks for your interest in helping, but I'm good to go now!!"
+    },
+    {
+      "post_id": "js-post-1302989",
+      "author": "Spocker",
+      "date": "2022-09-28T23:24:51+0900",
+      "body": "Hi everyone,\nHappy to see that this is still active, given how usefull this plugin is.\nI'm using MV.\nI had a question: would it be possible (by a trick I have yet to learn) to make it so one layer is in fact a \"collision map\". I mean by that that what would be on this layer would be unpassable. Not that the character would go above or under, but that it would block him.\nThanks for any help!"
+    },
+    {
+      "post_id": "js-post-1303009",
+      "author": "Galv",
+      "date": "2022-09-29T01:15:59+0900",
+      "body": "Sorry, this plugin doesn't do collision."
+    },
+    {
+      "post_id": "js-post-1303011",
+      "author": "Spocker",
+      "date": "2022-09-29T01:20:36+0900",
+      "body": "Many thanks for your answer. I can't seem to find any map collision plugin (or trick) now that QMovement can't be used on my project, and that HIME's collision map is not an MV plugin. Still looking ><"
+    },
+    {
+      "post_id": "js-post-1306869",
+      "author": "magnumwhisper",
+      "date": "2022-10-20T14:22:39+0900",
+      "body": "Hi, I'm having the following error with the Layers plugin. I'm using MZ. I have never experienced an error like this before. If I disable the plugin everything works fine. Is there a limit on map size? This map is 50 x 50. Has anyone had this happen before?\nThanks!"
+    },
+    {
+      "post_id": "js-post-1306884",
+      "author": "Galv",
+      "date": "2022-10-20T17:06:16+0900",
+      "body": "Not knowing exactly how it's set up, try changing the z value of your layer.\nFor example, if it's 0, try making it 1 (or it could be a decimal if it needs to be bigger than 0 but smaller than 1.)"
+    },
+    {
+      "post_id": "js-post-1306929",
+      "author": "magnumwhisper",
+      "date": "2022-10-20T23:09:08+0900",
+      "body": "Galv said:\nNot knowing exactly how it's set up, try changing the z value of your layer.\nFor example, if it's 0, try making it 1 (or it could be a decimal if it needs to be bigger than 0 but smaller than 1.)\nClick to expand...\nWow, thank you for the fast reply!\nHere is the current settings for the two layers:\nLAYER_S 0 Base 0 0 255 1 10 0 0\nLAYER_S 2 Top 0 0 255 5 10 0 0"
+    },
+    {
+      "post_id": "js-post-1306939",
+      "author": "Galv",
+      "date": "2022-10-20T23:54:50+0900",
+      "body": "Assuming it's your base layer - change the z value from 1 to 1.1 and see if it fixes it."
+    },
+    {
+      "post_id": "js-post-1307691",
+      "author": "magnumwhisper",
+      "date": "2022-10-25T14:43:30+0900",
+      "body": "Galv said:\nAssuming it's your base layer - change the z value from 1 to 1.1 and see if it fixes it.\nClick to expand...\nIt solves the map flickering issues, but it seems the tile-set is not displaying properly. I can work around this though. Thank you for your help and for designing such awesome plugins!! Here is a video to better explain. Am I missing something obvious?"
+    },
+    {
+      "post_id": "js-post-1307697",
+      "author": "Galv",
+      "date": "2022-10-25T16:13:55+0900",
+      "body": "I don't really understand - does your layer graphic have ground that covers your lower layer tileset objects?"
+    },
+    {
+      "post_id": "js-post-1308240",
+      "author": "magnumwhisper",
+      "date": "2022-10-28T12:51:44+0900",
+      "body": "Galv said:\nI don't really understand - does your layer graphic have ground that covers your lower layer tileset objects?\nClick to expand...\nI don't understand either. No, my top graphic layer is attached below. The entire middle area is transparent. It is really strange. I'm glad it isn't something obvious. I'm going to try recreating the map and making it smaller. I can't think of any other reason?"
+    },
+    {
+      "post_id": "js-post-1312869",
+      "author": "FearRaiser",
+      "date": "2022-11-27T07:54:19+0900",
+      "body": "Hi, can someone help me?\nPlugin works fine, however when I press \"test\" function, I get this error.\nSpoiler:\nThis\nrmmz_managers.js:2032 TypeError: Cannot read property 'match' of undefined\nat Game_Map.createNoteLayers (GALV_LayerGraphicsMZ.js:572)\nat Game_Map.setup (GALV_LayerGraphicsMZ.js:562)\nat Game_Map.setup (GALV_CamControlMZ.js:256)\nat Game_Player.performTransfer (rmmz_objects.js:8171)\nat Scene_Map.onMapLoaded (rmmz_scenes.js:677)\nat Scene_Map.onMapLoaded (GALV_CamControlMZ.js:317)\nat Scene_Map.isReady (rmmz_scenes.js:669)\nat Function.SceneManager.updateScene (rmmz_managers.js:2101)\nat Function.SceneManager.updateMain (rmmz_managers.js:2059)\nat Function.SceneManager.update (rmmz_managers.js:1938)\nThese are the lines for errors.\nSpoiler:\nError lines\nGame_Map.prototype.createNoteLayers = function(mapId) {\n// CREATE MAP NOTE CONFIG HERE\nlet txtArray = $dataMap.note.match(/[^\\r\\n]+/g);\nif (!txtArray) return;\nfor (i = 0; i < txtArray.length; i++) {\nif (txtArray\n.indexOf(\"LAYER \") >= 0) {\nlet config = (mapId + txtArray\n.replace('LAYER','')).split(\" \");\n// If layer doesn't already exist, create it:\nif (!this.layerSettings[mapId][Number(config[1])]) {\nGalv.LG.createLayer(config);\n};\n};\nif (txtArray\n.indexOf(\"LAYER_S \") >= 0) {\nlet config = (mapId + txtArray\n.replace('LAYER_S','')).split(\" \");\n// If layer doesn't already exist, create it:\nif (!this.layerSettings[mapId][Number(config[1])]) {\nGalv.LG.createLayerS(config);\n};\nAnd\nSpoiler:\nThis one as well\n// Setup map notetag layers\nthis.createNoteLayers(mapId);\nfor (let obj in this.layerConfig()) {\nobj.currentx = 0;\nobj.currenty = 0;\n};\nWhen I disable layer plugin it works fine, when I enable it, it doesn't allow me to start the \"test\".\nI'm not good at Java, so can someone please help or do I have to keep disabling it when I want to test stuff?"
+    },
+    {
+      "post_id": "js-post-1313162",
+      "author": "Galv",
+      "date": "2022-11-29T03:50:40+0900",
+      "body": "If it happens directly when you attempt to test your project, it might be related to a plugin conflict. I am guessing perhaps a plugin that changes the default menu to something that uses a map?"
+    },
+    {
+      "post_id": "js-post-1313179",
+      "author": "FearRaiser",
+      "date": "2022-11-29T06:44:22+0900",
+      "body": "Galv said:\nIf it happens directly when you attempt to test your project, it might be related to a plugin conflict. I am guessing perhaps a plugin that changes the default menu to something that uses a map?\nClick to expand...\nI use VS plugins, however I have don't have main menu changed. I use options core and items equip, which changes options and items menu. Tried disabling them, but to no avail.\nAs for plugins that use map, there are few that come to mind, but I disabled them all and only left this plugin ON. I still have the same error with it saying \" cannot read property \"match\" of undefined \"\nOnly thing that comes to mind is that RPG Maker MZ got an update which is interfering with your code, but since I know nothing of Java, I am helpless\nIs there any way I can fix this?\nThank you in advance!"
+    },
+    {
+      "post_id": "js-post-1313248",
+      "author": "Galv",
+      "date": "2022-11-29T17:45:45+0900",
+      "body": "This thread is for the MV version of the plugin.\nMake sure you are using the MZ version:\nMZ Layer Graphics\nFEATURES This plugin allows you to use graphics as layers on the map. The layers can appear at different height levels (below the map, below characters, above everything, etc.) and can move in diff…\ngalvs-scripts.com\nAlso, some other error-trapping ideas you can try:\nErrors Using Plugins\nIf you experience an issue using an RPG Maker plugin – here is a list of things to try and error trap the issue before making a bug report. 1. Check RPG Maker version Make sure the plugin is …\ngalvs-scripts.com"
+    },
+    {
+      "post_id": "js-post-1313305",
+      "author": "FearRaiser",
+      "date": "2022-11-30T03:14:46+0900",
+      "body": "Galv said:\nThis thread is for the MV version of the plugin.\nMake sure you are using the MZ version:\nMZ Layer Graphics\nFEATURES This plugin allows you to use graphics as layers on the map. The layers can appear at different height levels (below the map, below characters, above everything, etc.) and can move in diff…\ngalvs-scripts.com\nAlso, some other error-trapping ideas you can try:\nErrors Using Plugins\nIf you experience an issue using an RPG Maker plugin – here is a list of things to try and error trap the issue before making a bug report. 1. Check RPG Maker version Make sure the plugin is …\ngalvs-scripts.com\nClick to expand...\nAh my bad, I found out about this on a random search and thought it would be a good place to ask.\nI am using MZ version.\nI tried all of those and now I am on number 10"
+    },
+    {
+      "post_id": "js-post-1313334",
+      "author": "Galv",
+      "date": "2022-11-30T06:19:31+0900",
+      "body": "If you've really done all on that list, besides someone taking the time look at your project and error trap what is happening in it, I don't have any other ideas, sorry."
+    },
+    {
+      "post_id": "js-post-1313539",
+      "author": "FearRaiser",
+      "date": "2022-12-01T08:00:48+0900",
+      "body": "Galv said:\nIf you've really done all on that list, besides someone taking the time look at your project and error trap what is happening in it, I don't have any other ideas, sorry.\nClick to expand...\nAh well, was worth a try. Thank you either way for trying"
+    },
+    {
+      "post_id": "js-post-1315755",
+      "author": "seyfer110",
+      "date": "2022-12-13T22:51:45+0900",
+      "body": "Uhm, I'm getting an error just by running the test with the plugin enabled:\nline 40 is\n* @default 48\nwhich I suppose refers to the tile size.\nIs it a plugin conflict?\nBut I'm still using the basic size, 48x48, for tiles...\nI really wanted to givea  try at map parallax T.T\nEDIT:\nStarting a new game seems to avoid the issue, at least for the test version."
+    },
+    {
+      "post_id": "js-post-1315772",
+      "author": "Galv",
+      "date": "2022-12-13T23:31:16+0900",
+      "body": "Yes, you'll need to start a new game after adding the plugin as it creates data on a new game, not on a file that was saved prior to adding it.\nAlso, just so you know, the error message you screenshot is not referring to a line number."
+    },
+    {
+      "post_id": "js-post-1315781",
+      "author": "ATT_Turan",
+      "date": "2022-12-13T23:45:08+0900",
+      "body": "seyfer110 said:\nUhm, I'm getting an error just by running the test with the plugin enabled:\nClick to expand...\nWhen you experience a crash, press F8 and go to the Console tab. That error trace is what anyone needs to start tracking down a bug, and it includes line numbers."
+    },
+    {
+      "post_id": "js-post-1329322",
+      "author": "aLostSolo",
+      "date": "2023-02-19T03:37:26+0900",
+      "body": "Hi\n@Galv\n, thanks for the great plugin!\nHowever I encountered a bug when trying to test run specific events (Running \"Test\" from the context menu in an event).\nI have actually found the cause of the bug and fixed it though it might require looking more into it:\nCode:\nGalv.LG.Game_Map_setup = Game_Map.prototype.setup;\nGame_Map.prototype.setup = function(mapId) {\n    Galv.LG.Game_Map_setup.call(this,mapId);\n    this.layerSettings[mapId] = this.layerSettings[mapId] || {}\n    // Setup map notetag layers\n    this.createNoteLayers(mapId);\n   \n    for (var obj in this.layerConfig()) {\n        obj.currentx = 0;\n        obj.currenty = 0;\n    };\n};\nWhen setting up a map in event test the mapId equals -1, so the resulting $dataMap exists but a little different - $dataMap.note in fact doesn't exist in this case.\nSo a simple check fixes this:\nCode:\nGalv.LG.Game_Map_setup = Game_Map.prototype.setup;\nGame_Map.prototype.setup = function(mapId) {\n    Galv.LG.Game_Map_setup.call(this,mapId);\n    this.layerSettings[mapId] = this.layerSettings[mapId] || {}\n    if (!$dataMap || !$dataMap.note) {\n        return;\n    }\n\n    // Setup map notetag layers\n    this.createNoteLayers(mapId);\n   \n    for (var obj in this.layerConfig()) {\n        obj.currentx = 0;\n        obj.currenty = 0;\n    };\n};\nThanks again."
+    },
+    {
+      "post_id": "js-post-1359772",
+      "author": "LeetMusic",
+      "date": "2023-06-27T22:08:46+0900",
+      "body": "Is there a way to use this plugin so that layers don't repeat? Attached is an example of what I am trying to avoid. Thanks."
+    },
+    {
+      "post_id": "js-post-1359878",
+      "author": "Galv",
+      "date": "2023-06-28T04:07:07+0900",
+      "body": "Assuming you want to just put the ribbons on the wall? You could use map tiles or events for those.\nThe plugin does allow you to put non-repeating layers on, though. Look at the plugin command for the static layer (LAYER_S) and check the plugin documentation and demo for examples."
+    },
+    {
+      "post_id": "js-post-1375073",
+      "author": "PersistentDreamerGames",
+      "date": "2023-08-22T02:12:06+0900",
+      "body": "So I tried using this Plugin and I downloaded the demo. Put in as a game under my game files like regular. RPGMaker will of course let me open the game file but when I try to playtest the demo, it does this. I have the file there in the layers folder, so not really sure what the issue is."
+    },
+    {
+      "post_id": "js-post-1375074",
+      "author": "Galv",
+      "date": "2023-08-22T02:23:38+0900",
+      "body": "Without more information, the error appears to say you don't have that image file in the correct folder. Double-check you put it in the correct place. If you have multiple RPG Maker project folders, make sure you're in the right one."
+    },
+    {
+      "post_id": "js-post-1375089",
+      "author": "PersistentDreamerGames",
+      "date": "2023-08-22T03:20:05+0900",
+      "body": "I finally figured it out! I had seen that error before when it doesn't find a file or what have you but it was confusing because I saw the file there!\nWell, it turns out that the event in the demo was asking for \"002test.png\"\nBut the file in the demo was \"002Test.png\"\nI have no idea if I accidentally edited the file or what, but I'd have to assume so because so many people have used your plugin successfully without this problem so I don't know why else there would have been that little difference there.\nIt's weird though, because I was sure I hadn't touched anything there other than move the folder into the game folder but the main thing that matters is its working now.\nEither way, thanks for the help, and the amazing plugin!"
+    },
+    {
+      "post_id": "js-post-1375161",
+      "author": "PersistentDreamerGames",
+      "date": "2023-08-22T07:49:42+0900",
+      "body": "I actually had one other question about this. Since you're supposed to create layers before you go to a given map, if I declare all the layers at the beginning of a large game, will that cause the game to run slower? Does it make a difference performance wise to create layers as you go to prevent this?\nSo if I create map 2 layer on map 1, I create map 3 layer on map 2 etc. Is that better than just creating everything at the start?"
+    },
+    {
+      "post_id": "js-post-1375602",
+      "author": "Galv",
+      "date": "2023-08-24T00:01:17+0900",
+      "body": "It won't make the game run any slower.\nCreating layers before going to a map (or using map notes) allows the layers to load their graphics when the map loads, rather then needing them to load during an event when already on the map."
+    },
+    {
+      "post_id": "js-post-1383825",
+      "author": "m3fchan",
+      "date": "2023-09-26T20:09:02+0900",
+      "body": "How to change layers when called by an event? I have parallax in the map comments, how can I change layers using the plugin command? For some reason, the plugin command does not change anything even after a refresh."
+    },
+    {
+      "post_id": "js-post-1383863",
+      "author": "Galv",
+      "date": "2023-09-26T23:45:24+0900",
+      "body": "Not enough information to know how you've set it up. But you can use the LAYER command and reference a layer ID without removing it first. The new settings will replace the existing layer ID."
+    },
+    {
+      "post_id": "js-post-1397124",
+      "author": "muffinswords",
+      "date": "2023-11-16T07:44:12+0900",
+      "body": "I'm trying to make it so I can show a picture (Show Picture command)...and I want the picture to display\nbelow\na layer for an effect I'm going for. No matter what I try, like altering the Z value of the layer, the picture is always on top. Is it possible to get a picture to appear below? Thank you for any help, I really love this plugin."
+    },
+    {
+      "post_id": "js-post-1397322",
+      "author": "Galv",
+      "date": "2023-11-17T03:01:12+0900",
+      "body": "You can create a static layer that displays like a picture with the right settings. Then it will be part of the map z levels."
+    },
+    {
+      "post_id": "js-post-1401092",
+      "author": "Super015",
+      "date": "2023-11-29T19:33:39+0900",
+      "body": "Hello, is it possible to modify the plugin so that layers on the same z-plane are arranged based on the ID number?"
+    },
+    {
+      "post_id": "js-post-1422558",
+      "author": "TheAM-Dol",
+      "date": "2024-02-14T21:36:08+0900",
+      "body": "Hey there Galv,\nI've been running into a problem with my game using Layer Graphics on MV. (I've also updated the NWJS and pixi, if that is relevant at all: 49.2 & 4.8.9 respectively)\nIn this case, it seems like I can only load 2 layers. The third layer will strangely get culled after moving 9 tiles below the event the layer image is tied to. Even weirder is that it\ndoes not\nget culled at all no matter how many tiles I am above and/or to the side of the event.\nI would just place the anchor to be on the bottom of the image, but then I am running into an alignment issue, where the image will no longer align with the tiles. I tried using the nudge X/Y but it doesn't seem to do anything at all\nAs in, no matter the value I input, it does not nudge the image any amount.\nI made a post about this problem in more detail here:\nRMMV - Fidel & The Layer Graphics Problem\nHello, I have run in to 2 different issues, both related to Galv's Layer Graphics  Alignment still technically continues to be a problem, however I have found a solution that...works........So, I have spoiler tagged \"Problem 1\" since I guess it's \"solved\"....   To provide some details...\nforums.rpgmakerweb.com\nAn update to that post since the last time I bumped it is that I have tried disabling all of my plugins to see if it's a plugin conflict. However, this did not change the results at all. I am still having the same problem.\nAny help would be appreciated!"
+    },
+    {
+      "post_id": "js-post-1422611",
+      "author": "Galv",
+      "date": "2024-02-15T01:46:22+0900",
+      "body": "It sounds like a z value issue. Make the z value below the layer the character appears on. You can use decimal values to put it between layers as needed."
+    },
+    {
+      "post_id": "js-post-1422816",
+      "author": "TheAM-Dol",
+      "date": "2024-02-15T16:12:59+0900",
+      "body": "Thank you Galv for your reply. Technically you were correct, and technically this was me misunderstanding the problem.\nTo cut to the chase; The layer I\nthought\nwas being culled actually was not. And actually neither layer was being culled at all, but instead it was jumping below tiles marked as above the player. Changing the correct layer to layer 5 fixed this problem.\nFor an extended version of my trouble shooting:\nI started by assigning decimal values at your suggestion (good to know you can do that with this plugin!) However, it didn't fix it.\nI decided to disable one of the layers to see if the problem persisted. It \"didn't\" persist, but that's because I had misidentified the layer that was being \"removed\". Upon noticing that, I realized it was the other layer that was having the problem. But the problem was not that the layer was being removed, but instead it was \"jumping\" between layer priorities.\nI changed the layer I was having trouble with from 4 to 5 (and set the other layer to 5.1) and this seems to have resolved my issue!\nHuh...funny that. This has been wracking me for 3 months now.\nWell, thank you Galv so much."
+    },
+    {
+      "post_id": "js-post-1423092",
+      "author": "Zion",
+      "date": "2024-02-16T15:25:58+0900",
+      "body": "Hello, I have a small question about understanding your plugin. I'm used to TDDP Bind Pictures to Map, where you have to delete the pictures to free the cache. So I tried to remove the layers when leaving the map with your plugin as well.\nFirst question: Is it necessary to remove layers to free the cache or is it done by the plugin/engine itself?\nSo after I tried to remove and re-bind the layers at the next map entry, I got a map that was... empty (just events, but no ground).\nSecond question: Is this intended? Or am I doing something wrong?\nThe commands are done via eventing, not map notes.\nHere are some screenshots (please don't mind the rpg maker is in german):\nLeaving the map is done via teleport event. In this teleport a CE will be called with deleting layers."
+    },
+    {
+      "post_id": "js-post-1423136",
+      "author": "Galv",
+      "date": "2024-02-16T21:06:53+0900",
+      "body": "You don't need to remove the layers as you leave the map. They are removed and created the same as default sprites on map change."
+    },
+    {
+      "post_id": "js-post-1423138",
+      "author": "Zion",
+      "date": "2024-02-16T21:15:27+0900",
+      "body": "Nice, thank you for letting me know!\nFor what reason the remove command exist if you can't remove and re-draw a layer?"
+    },
+    {
+      "post_id": "js-post-1423148",
+      "author": "Galv",
+      "date": "2024-02-16T21:51:31+0900",
+      "body": "The Remove Layer command is so that you can remove a layer that you have set up in your layer settings. If the remove command didn't exist, you could never remove that layer.\nCreate Layer plugin command is creating the settings for a layer. If you create settings for a layer that already exists (same layer id) it will replace those settings and the layer will redraw/update using the new settings. (See the demo for an example of doing that).\nWhen a map loads, it creates all the sprites required using existing layer settings that you've already created (including layer settings in map tags). When you leave a map, it removes those sprites along with all other map sprites.\nIf you Create Layer for layer settings that do not yet exist from an event for the current map, that layer wasn't created on map load. This is where you would need to use the Layer Refresh command, or have created the layer settings for the current map before you load the map.\nHope that helps explain how it works a little better."
+    },
+    {
+      "post_id": "js-post-1423185",
+      "author": "Zion",
+      "date": "2024-02-17T00:44:29+0900",
+      "body": "Nice! Good to know. Thank you for explaining"
+    },
+    {
+      "post_id": "js-post-1429664",
+      "author": "PersistentDreamerGames",
+      "date": "2024-03-13T22:33:46+0900",
+      "body": "Hey so I had two questions about this plugin:\nThe first is how would I do this to make a short term map effect?\nLike say I wanted to replace a map with a different map for a few seconds and then switch it back while the player is on the same map still?"
+    },
+    {
+      "post_id": "js-post-1429725",
+      "author": "Galv",
+      "date": "2024-03-14T01:33:20+0900",
+      "body": "Using the plugin command with the same layer ID as an existing layer can change that layer's settings, such as a different graphic."
+    },
+    {
+      "post_id": "js-post-1461698",
+      "author": "Avocado",
+      "date": "2024-08-05T21:42:58+0900",
+      "body": "Hi Galv, thanks for all the amazing plugins you created!\nI'm having a strange problem when I try to change a layer, it doesn't work!\nThis is the layer I want to change (it is on the map notes)\nLAYER_S 4 Ombrasera 0 0 255 4 0\nI tried doing this but didn't work. Am I doing something wrong? Thank you so much!"
+    },
+    {
+      "post_id": "js-post-1461703",
+      "author": "TheAM-Dol",
+      "date": "2024-08-05T21:49:01+0900",
+      "body": "Use the Refresh Layer tag.\nAlso, don't put it in a parallel event that doesn't have an end to it, otherwise it will loop the same command infinitely when it only needs to be input once."
+    },
+    {
+      "post_id": "js-post-1475225",
+      "author": "Aandel",
+      "date": "2024-10-13T05:04:51+0900",
+      "body": "Hello Galv! First of all, thanks for the amazing plugins! I’m using the Screen_zoom Plugin and when using it in conjunction with the Layer_graphics Plugin, the Layer does not adapt to the new map size when I reduce the zoom below 1! Is there anything that could be changed so that the Layer updates itself and fits the new map size?\nBelow is the screen image with Zoom at 0.8 and see that the edges of the Layers do not fill the Map\nSpoiler"
+    },
+    {
+      "post_id": "js-post-1475296",
+      "author": "Acecool",
+      "date": "2024-10-13T19:41:24+0900",
+      "body": "Hi guys can anyone please send files for layer image\nfor the plugin MV layer graphic"
+    },
+    {
+      "post_id": "js-post-1491538",
+      "author": "ItsZealot",
+      "date": "2025-01-03T12:17:02+0900",
+      "body": "Hi, Can anyone help me? I just installed the plugin yesterday and get my maps done. It works great, but for some reason the actors becomes semi transparent. I checked the demo and i couldn't identify the problem. Here's an image of the problem\nSpoiler:\nProblem Image\nSpoiler:\nThe Map Note\nLAYER_S 1 TarmsworthInnGround 0 0 255 0 0\nLAYER_S 2 TarmsworthInnShadow 0 0 150 9 0\nLAYER_S 3 TarmsworthInnLight 0 0 150 10 0"
+    },
+    {
+      "post_id": "js-post-1509222",
+      "author": "ElvenNeko",
+      "date": "2025-04-14T18:10:12+0900",
+      "body": "I have a problem, no matter what coordinates i set, the image still remains in one place - top left corner of the map.\nAlso, when the character starts moving, after some time images starts twitching, like this -\nWhy it could happen?"
+    },
+    {
+      "post_id": "js-post-1521921",
+      "author": "Neal_Sage",
+      "date": "2025-07-11T22:41:19+0900",
+      "body": "I've been using\nGalv's Layered Plugin\nin RPG Maker\nMZ\n, and it usually works perfectly. But when I tried using it in\nMV\n, things got a lot more complicated...\nHere's how it looks\nin-game\n, and here's how it's\nsupposed\nto look (as shown in Photoshop).\nIt works like a charm in\nMZ\n, but in\nMV\n... nope.\nGalv\n, if you happen to see this and have some time, could you please take a look? Or if\nanyone else\nhas experienced a similar issue and found a solution, I’d really appreciate your help.\nLayer just keep smaller than supposed to...I repeat what i usuall do when parallaxing in MZ.\n1. Make base map in RPG Maker\n2. Save as Image into folder\n3. Modify in photoshop."
+    },
+    {
+      "post_id": "js-post-1521954",
+      "author": "Galv",
+      "date": "2025-07-12T04:15:51+0900",
+      "body": "I think when you save a map as image in MV, it saves it at half the size."
+    },
+    {
+      "post_id": "js-post-1521979",
+      "author": "Neal_Sage",
+      "date": "2025-07-12T08:23:03+0900",
+      "body": "What??? WTH! i didn't know that...Cause in MZ i can just usually do what i do and everything was fine and dandy"
+    },
+    {
+      "post_id": "js-post-1522000",
+      "author": "TheAM-Dol",
+      "date": "2025-07-12T11:52:29+0900",
+      "body": "Neal_Sage said:\ni didn't know\nClick to expand...\nThis slipped my mind when I was helping you in your thread.\nYes, MV exports maps at half resolution.\nYou can use a plugin like Orange Mapshot to take a full res picture of the map.\nmv-plugins/OrangeMapshot.js at master · Hudell/mv-plugins\nJavascript plugins for RPG Maker MV. Contribute to Hudell/mv-plugins development by creating an account on GitHub.\ngithub.com"
+    },
+    {
+      "post_id": "js-post-1537852",
+      "author": "fabz",
+      "date": "2025-11-25T01:01:46+0900",
+      "body": "Hello,\nI have a problem with the plugin. I am trying to add a big layer on Map 11, which is the world map of the game.\nI use the following command :\nThe command works and the layer appears on the top left corner as expected. There is no problem when I move left or right, but when I move down on the map, the layer disappears.\nI am not sure what causes it.\nThe image below shows that when I move a few cases down (red square as reference), the layer is completely gone.\nIs does reappear when I go back up tho.\nThe layer itself is quite big, is that the cause ? Or something else ?\nI am using RMMV.\nThanks in advance"
+    },
+    {
+      "post_id": "js-post-1537984",
+      "author": "Nomi",
+      "date": "2025-11-26T06:32:58+0900",
+      "body": "Not a real pro with this... but I had similiar issues and I think I fixed em by higher layer numbers? Not sure anymore, but you could give it a try"
+    },
+    {
+      "post_id": "js-post-1538069",
+      "author": "Galv",
+      "date": "2025-11-27T02:17:25+0900",
+      "body": "Yes, try different z levels for the layer. You can use decimal places if it needs to be between other layers."
+    }
+  ]
+}

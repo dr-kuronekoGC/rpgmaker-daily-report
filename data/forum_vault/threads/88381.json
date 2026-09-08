@@ -1,0 +1,125 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/regional-wheater-effects.88381",
+  "title": "Regional wheater effects",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:55:29.040659+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-805045",
+      "author": "Wasserteufel",
+      "date": "2017-12-13T01:54:05+0900",
+      "body": "Hey !\nI want to make it snow, but only on the yellow circled island.\nIs there a way to set a wheater effect, only to certain tiles?\nSpoiler"
+    },
+    {
+      "post_id": "js-post-805065",
+      "author": "EpicFILE",
+      "date": "2017-12-13T02:45:09+0900",
+      "body": "Unfortunately I can't see the image. (maybe due to slow connection here)\nI get the idea though. The easiest way is to make a touchable event that activate the weather effect.\nLet's say there are grassland and snowfield.\nDraw barricades of mountains inbetween. But leave 2 tile as it is. (these will act as an entrance and the weather activator)\nMake a touchable event in the first tile. Set it to activate the grassland weather.\nMake a second one. This time, set it to activate the snowfield weather.\nI hope you can get the idea. It's hard to explain it without a picture.\nHopefully this will help."
+    },
+    {
+      "post_id": "js-post-805075",
+      "author": "Wasserteufel",
+      "date": "2017-12-13T03:17:24+0900",
+      "body": "EpicFILE said:\nUnfortunately I can't see the image.\nClick to expand...\nCan you see the picture now?"
+    },
+    {
+      "post_id": "js-post-805079",
+      "author": "Arcaines",
+      "date": "2017-12-13T03:28:12+0900",
+      "body": "Ah do you mean by snow only on the yellow like the snow there is a snow cloud hovering over the middle area and snowing around that area only but the rest of the are there isn't any?"
+    },
+    {
+      "post_id": "js-post-805082",
+      "author": "Roninator2",
+      "date": "2017-12-13T03:39:19+0900",
+      "body": "From the picture I would say he wants the snow to be only on the water/ice part. Interesting idea. I'm not sure of a way to do it or if any scripts would help. I'll keep watching to see if a solution comes up."
+    },
+    {
+      "post_id": "js-post-805125",
+      "author": "Kes",
+      "date": "2017-12-13T06:03:28+0900",
+      "body": "I personally have never seen an existing weather script which can do this - they are all \"whole map\" with no option to have only a reduced area affected."
+    },
+    {
+      "post_id": "js-post-805130",
+      "author": "TheoAllen",
+      "date": "2017-12-13T06:14:58+0900",
+      "body": "Easier than I thought. You might want to remove the tone effect though\nCode:\nclass Spriteset_Weather\n  #-----------------------------------------------------------------------------\n  # How to use :\n  # Decide which variabled ID that determine which region ID gonna handle the\n  # weather effect below\n  #-----------------------------------------------------------------------------\n    Weather_VarID = 99\n  #-----------------------------------------------------------------------------\n  # Then, set the variable ID to region ID. For example, if you want to show\n  # snow weather in region 1, set variable 99 value to 1. If you set it back to\n  # 0, then snow weather will be displayed everywhere\n  #-----------------------------------------------------------------------------\n  def screen_to_world(sprite)\n    return sprite.visible = true if $game_variables[Weather_VarID] == 0\n    x_map = (sprite.x - sprite.ox + $game_map.display_x * 32)/32\n    y_map = (sprite.y - sprite.oy + $game_map.display_y * 32)/32\n    world_visible(sprite, x_map.floor, y_map.floor)\n  end\n \n  def world_visible(spr, x, y)\n    if $game_map.region_id(x, y) == $game_variables[Weather_VarID]\n      spr.visible = true\n    else\n      spr.visible = false\n    end\n  end\n \n  alias theo_regweather_update_snow update_sprite_snow\n  def update_sprite_snow(sprite)\n    theo_regweather_update_snow(sprite)\n    screen_to_world(sprite)\n  end\n \n  alias theo_regweathen_new_particle create_new_particle\n  def create_new_particle(sprite)\n    theo_regweathen_new_particle(sprite)\n    screen_to_world(sprite) if @type == :snow\n  end\nend"
+    },
+    {
+      "post_id": "js-post-805267",
+      "author": "Wasserteufel",
+      "date": "2017-12-13T16:12:08+0900",
+      "body": "Martin_Arcainess said:\nAh do you mean by snow only on the yellow like the snow there is a snow cloud hovering over the middle area and snowing around that area only but the rest of the are there isn't any?\nClick to expand...\nInside of the yelllow circle. =)\nRoninator2 said:\nFrom the picture I would say he wants the snow to be only on the water/ice part. Interesting idea. I'm not sure of a way to do it or if any scripts would help. I'll keep watching to see if a solution comes up.\nClick to expand...\nThanks, yeah. That's the idea. The ceiling of the ice ruin has collapsed many years in this area and I want the sunlight and snow coming in only from and on this spot. =)\nTheoAllen said:\nEasier than I thought. You might want to remove the tone effect though\nClick to expand...\nWow! Thanks!\nI will try it out!\nMay I ask you, if I doesn't fully understand the script?\nBecause I am still learning with scripts and Ruby. ^^\"\nThanks ya all! =)"
+    },
+    {
+      "post_id": "js-post-805268",
+      "author": "TheoAllen",
+      "date": "2017-12-13T16:16:03+0900",
+      "body": "Go ahead and ask if you have a question"
+    },
+    {
+      "post_id": "js-post-805277",
+      "author": "Wasserteufel",
+      "date": "2017-12-13T16:58:42+0900",
+      "body": "TheoAllen said:\nGo ahead and ask if you have a question\nClick to expand...\nThank you!\nDo I use your script via script call or is it a script I have to implement into my scripts under \"Material\" ? ^^"
+    },
+    {
+      "post_id": "js-post-805278",
+      "author": "TheoAllen",
+      "date": "2017-12-13T17:06:20+0900",
+      "body": "Wasserteufel said:\nThank you!\nDo I use your script via script call or is it a script I have to implement into my scripts under \"Material\" ? ^^\nClick to expand...\nImplement it under material. You just have to set the variable value to a region ID you with where the snow weather will be displayed\nIn the script, I use variable 99. You can change the variable ID you want to use as you want. Then set the value to (for example) 1, then snow weather effect will only being displayed on region ID 1. If you put back the value to 0, it will be displayed everywhere."
+    },
+    {
+      "post_id": "js-post-805279",
+      "author": "Wasserteufel",
+      "date": "2017-12-13T17:20:16+0900",
+      "body": "TheoAllen said:\nImplement it under material. You just have to set the variable value to a region ID you with where the snow weather will be displayed\nIn the script, I use variable 99. You can change the variable ID you want to use as you want. Then set the value to (for example) 1, then snow weather effect will only being displayed on region ID 1. If you put back the value to 0, it will be displayed everywhere.\nClick to expand...\nI set the variable to 1, because the regional code of this area is 1 in my game.\nBut unfortunately its not working.\nHere is the script.\nI marked 3 yellow spots.\nSpot 1 for the variable.\nSpot 2 if I have to change this variable too?\nand spot 3 if \"regweathen\" is a typo and it should be \"regwheater\" and if this makes a difference in the script?\nSpoiler\nSpoiler\nPS: THANK YOU VERY MUCH FOR YOUR HELP!!!! =D"
+    },
+    {
+      "post_id": "js-post-805282",
+      "author": "TheoAllen",
+      "date": "2017-12-13T17:33:49+0900",
+      "body": "1 What you should do is\nset the variable value\n2. No, it's ok. It just a check if your variable value is 0 (if so, snow weather wont be displayed only in region ID)\n3. It's indeed typo but also happened that I copy pasted it in other line so it's irrelevant lol"
+    },
+    {
+      "post_id": "js-post-805290",
+      "author": "Wasserteufel",
+      "date": "2017-12-13T18:37:45+0900",
+      "body": "TheoAllen said:\n1 What you should do is\nset the variable value\nl\nClick to expand...\nIt works perfectly now!!\nThank you very much!\nThis effect will help the mood and is very satisfying for me. thanks. =D"
+    },
+    {
+      "post_id": "js-post-805296",
+      "author": "Roninator2",
+      "date": "2017-12-13T19:53:14+0900",
+      "body": "@TheoAllen\ncan this be adapted to all weather effects?"
+    },
+    {
+      "post_id": "js-post-805301",
+      "author": "TheoAllen",
+      "date": "2017-12-13T20:22:36+0900",
+      "body": "@Roninator2\nHere universal version to all weather effect. Do note that it might incompatible with some weather effect script out these as I don't bother to double check it\nCode:\nclass Spriteset_Weather\n  #-----------------------------------------------------------------------------\n  # How to use :\n  # Decide which variabled ID that determine which region ID gonna handle the\n  # weather effect below \n  #-----------------------------------------------------------------------------\n    Weather_VarID = 99\n  #-----------------------------------------------------------------------------\n  # Then, set the variable value to region ID. For example, if you want to show\n  # snow weather in region 1, set variable 99 value to 1. If you set it back to\n  # 0, then snow weather will be displayed everywhere\n  #-----------------------------------------------------------------------------\n  def screen_to_world(sprite)\n    return sprite.visible = true if $game_variables[Weather_VarID] == 0\n    x_map = (sprite.x - sprite.ox + $game_map.display_x * 32)/32\n    y_map = (sprite.y - sprite.oy + $game_map.display_y * 32)/32\n    world_visible(sprite, x_map.floor, y_map.floor)\n  end\n \n  def world_visible(spr, x, y)\n    if $game_map.region_id(x, y) == $game_variables[Weather_VarID]\n      spr.visible = true\n    else\n      spr.visible = false\n    end\n  end\n \n  # Overwritten\n  def update_sprite(sprite)\n    sprite.ox = @ox\n    sprite.oy = @oy\n    case @type\n    when :rain\n      update_sprite_rain(sprite)\n    when :storm\n      update_sprite_storm(sprite)\n    when :snow\n      update_sprite_snow(sprite)\n    end\n    screen_to_world(sprite)\n    create_new_particle(sprite) if sprite.opacity < 64\n  end\n \n  alias theo_regweathen_new_particle create_new_particle\n  def create_new_particle(sprite)\n    theo_regweathen_new_particle(sprite)\n    screen_to_world(sprite) #if @type == :snow\n  end\nend"
+    },
+    {
+      "post_id": "js-post-1505846",
+      "author": "otaku_lady89",
+      "date": "2025-03-22T13:02:36+0900",
+      "body": "Wasserteufel said:\nDo I use your script via script call or is it a script I have to implement into my scripts under \"Material\" ? ^^\nClick to expand...\nTheoAllen said:\nImplement it under material. You just have to set the variable value to a region ID you with where the snow weather will be displayed\nClick to expand...\nHey, total scripting newb here, regarding RPGMaker MV. What's \"Material\", and where is this script implemented? I've never seen the program below before:\nIs this an IDE, like Visual Studio Code? Or is this something within the RPGMAKER MV Engine? Or is this a plugin?"
+    },
+    {
+      "post_id": "js-post-1505944",
+      "author": "Roninator2",
+      "date": "2025-03-22T22:17:35+0900",
+      "body": "otaku_lady89 said:\nHey, total scripting newb here, regarding RPGMaker MV. What's \"Material\", and where is this script implemented? I've never seen the program below before:\nClick to expand...\nThis is ruby code specifically for Rpg Maker VX Ace. XP, VX and VX Ace use Ruby for programming code. MV and MZ use Javascript.\nIf you owned VX Ace then you would know more as the 'Materials' is in the script editor.\nMV uses individual files for plugins that can be selected to be used. xp, vx and vx ace have all the code put in the script editor which gets saved to one file.\nSo short story, you can't use this in MV."
+    },
+    {
+      "post_id": "js-post-1505952",
+      "author": "otaku_lady89",
+      "date": "2025-03-22T23:07:21+0900",
+      "body": "Roninator2 said:\nSo short story, you can't use this in MV.\nClick to expand...\nOh shoot. I don't suppose you guys know of something like this script for MV then? I will, of course, begin to search myself, but if you know off the top of your head, I'd appreciate a link or something. I want this for my game!"
+    }
+  ]
+}

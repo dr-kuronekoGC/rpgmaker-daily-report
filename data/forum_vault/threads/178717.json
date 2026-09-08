@@ -1,0 +1,119 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/need-help-with-sumrndm-input-sequence-script.178717",
+  "title": "MV Need help with SumRnDm Input Sequence script",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:55:16.465253+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1521033",
+      "author": "bg400",
+      "date": "2025-07-04T17:24:04+0900",
+      "body": "I tried making an attack with SomeRandomDev's Input Sequence plugin, and said attack was working perfectly fine before this started happening out of nowhere. I've been digging through everything and I genuinely cannot figure this out.\nHere's all the stuff I did\n<target action>\nmotion thrust: user\nwait for movement\nmove user: target, FRONT BASE, 20\nwait for movement\nmotion walk: user\nwait: 10\nOPACITY user: 0, 2\nanimation 123: target\nwait: 64\naction effect: target\nwait for animation\nOPACITY user: 255, 2\nstart sequence input: ok, 1\nwait for sequence input: 50\nend sequence input\nelse\nwait: 10\nOPACITY user: 0, 0\nanimation 123: target\nwait: 64\naction effect: target\nwait for animation\nOPACITY user: 255, 2\n</target action>"
+    },
+    {
+      "post_id": "js-post-1521038",
+      "author": "caethyril",
+      "date": "2025-07-04T17:59:01+0900",
+      "body": "Button names should be strings, e.g.\nJavaScript:\nInput.isTriggered(\"ok\")\nI've used\nok\nhere instead of\nz\nbecause by default there is no button named\nz\nin the core scripts. The game input\nok\nis triggered by several keys on the keyboard (space, enter, Z), as well as a gamepad button: pressing any of these will count as triggering\nok\nin-game.\nAlso, in future if you want your thread moved you can just click the Report button on it. No need to clutter the place with duplicate threads.\n[Edit: corrected\nTouchInput\nto\nInput\n.\n]"
+    },
+    {
+      "post_id": "js-post-1521163",
+      "author": "bg400",
+      "date": "2025-07-05T18:05:11+0900",
+      "body": "okay that worked, but I'm still having trouble with the skill I made? I'm basically doing a thing where a character will damage an enemy once, and if a button is pressed, they can damage the enemy again. But if a button isn't pressed, then the sequence has failed and they just go back to where they started.\nFor some reason, the game doesn't seem to register any of the \"sequence input\" stuff I'm putting in at all, and just does the second attack automatically. Am I doing something wrong, or is it just not possible at all?\nCode:\n<target action>\nmotion thrust: user\nwait for movement\nmove user: target, FRONT BASE, 20\nwait for movement\nmotion walk: user\nwait: 10\nOPACITY user: 0, 2\nanimation 123: target\nwait: 64\naction effect: target\nwait for animation\nOPACITY user: 255, 2\n\nstart sequence input: ok, 1\nwait for sequence input: 60\nend sequence input\n\nelse\nanimation 125: user, mirror\nwait for animation\nOPACITY user: 0, 0\nanimation 123: target\nwait: 64\naction effect: target\nwait for animation\nOPACITY user: 255, 2\n</target action>"
+    },
+    {
+      "post_id": "js-post-1521184",
+      "author": "caethyril",
+      "date": "2025-07-05T21:24:13+0900",
+      "body": "I just realised I made a mistake in my previous post, re the plugin parameter. Try one of these instead:\nDid touch input (mouse/touch) change from \"not-pressed\" to \"pressed\" this frame?\nJavaScript:\nTouchInput.isTriggered()\nDid the OK button (keyboard/gamepad) change from \"not-pressed\" to \"pressed\" this frame?\nJavaScript:\nInput.isTriggered(\"ok\")\nAre either of the above conditions true?\nJavaScript:\nTouchInput.isTriggered() || Input.isTriggered(\"ok\")\nIn future if you want help with a plugin, please provide a link to that plugin's page/thread:\nRPG-Maker-MV-Plugins/SRD_SequenceInput.js at master · SumRndmDde/RPG-Maker-MV-Plugins\nAn updated list of all supported RMMV plugins. Contribute to SumRndmDde/RPG-Maker-MV-Plugins development by creating an account on GitHub.\ngithub.com\nI had a quick look at the plugin's help section and your usage seems OK. I assume you're using a Common Event effect on the skill to check the value of variable 1 and respond appropriately~\nIf it's still not working, here are a couple of ideas:\nSRD's plugin extends YEP_BattleEngineCore, so you should load it after Yanfly's plugin. Maybe you accidentally click+dragged the plugins out of order in the Plugin Manager. Remember to save your project to apply any Plugin Manager changes before testing.\nPress F8 or F12 during playtest to show the dev tools window. Click the Console tab and check for any errors (red text). If a plugin errors out on game boot, that plugin will be ignored completely."
+    },
+    {
+      "post_id": "js-post-1521186",
+      "author": "SGHarlekin",
+      "date": "2025-07-05T21:59:58+0900",
+      "body": "What's it supposed to register? You're starting the input sequence, meaning your variable 1 will increase by 1 every frame. You wait for this input for 60 frames and then stop the input. (btw you don't need the \"end sequence input here, as the \"wait for sequence input\" already puts the variable at 0 if no input was registered, although it doesn't really hurt to have it either I suppose)\nWhat you're doing is simply counting up a variable, but don't do anything with it. The sequence input is not a conditional branch on its own.\nYou have an \"else\", but no \"if\". You need to do something like:\nCode:\nif $gameVariables.value(1) <= 60\n    do stuff (this is what should happen if input has been triggered within these 60 frames)\nelse\n   do stuff (this is what should happen if the player fails the input)"
+    },
+    {
+      "post_id": "js-post-1521197",
+      "author": "rpgLord69",
+      "date": "2025-07-06T00:05:13+0900",
+      "body": "Like SGHarlekin said, but since the variable will be 0 if you didn't press anything, so you shouldn't check <= 60 (which is true for zero), but instead > 0"
+    },
+    {
+      "post_id": "js-post-1521205",
+      "author": "bg400",
+      "date": "2025-07-06T01:40:31+0900",
+      "body": "ok, I'm trying all this rn, and it still doesn't seem to be working; this is my script now so far\nCode:\n<target action>\nmotion thrust: user\nwait for movement\nmove user: target, FRONT BASE, 20\nwait for movement\nmotion walk: user\nwait: 10\nOPACITY user: 0, 2\nanimation 123: target\nwait: 64\naction effect: target\nwait for animation\nOPACITY user: 255, 2\n\nstart sequence input: ok, 1\nwait for sequence input: 60\n\nif $gameVariables.value(1) <= 60\n    animation 125: user, mirror\n    wait for animation\n    OPACITY user: 0, 0\n    animation 123: target\n    wait: 64\n    action effect: target\n    wait for animation\n    OPACITY user: 255, 2\nelse\n   move user: HOME, 15\n   motion thrust: user\n   wait: 23\n</target action>"
+    },
+    {
+      "post_id": "js-post-1521209",
+      "author": "SGHarlekin",
+      "date": "2025-07-06T01:57:12+0900",
+      "body": "You're missing \"end\" at the end of your conditional branch. Did you read the instructions on action sequencing? We also need to know *What* exactly isn't working. \"it's not working\" is not helpful.\n@rpgLord69\noh true, you got me there, haha."
+    },
+    {
+      "post_id": "js-post-1521210",
+      "author": "rpgLord69",
+      "date": "2025-07-06T01:59:55+0900",
+      "body": "Hmmm it also looks like the dude didn't read what I wrote."
+    },
+    {
+      "post_id": "js-post-1521211",
+      "author": "bg400",
+      "date": "2025-07-06T02:05:39+0900",
+      "body": "rpgLord69 said:\nHmmm it also looks like the dude didn't read what I wrote.\nClick to expand...\nok apologies I should've said, I did actually try what you wrote, but that still didn't work\nWhat's not working is half of the skill; like I said before, it's supposed to deal damage once, and then wait for an input to deal damage again. But again, it's ignoring the sequence input stuff and just goes for dealing damage again. Gonna try it again with the \"end\" part now though."
+    },
+    {
+      "post_id": "js-post-1521212",
+      "author": "bg400",
+      "date": "2025-07-06T02:16:20+0900",
+      "body": "ok NOW it seems to work\nI apologize for being annoying (as I clear was being, haha), idk why it wasn't grasping with me lol"
+    },
+    {
+      "post_id": "js-post-1521214",
+      "author": "SGHarlekin",
+      "date": "2025-07-06T02:23:28+0900",
+      "body": "I don't know what made you think anyone was annoyed. If any of us were, we just wouldn't respond. Getting basic stuff wrong like having an end line to your conditional branch just makes me question if you read the instructions of the help file. (which people seem to skip more than you would believe)\nIn any case, glad it works now. Don't hesitate to ask further questions."
+    },
+    {
+      "post_id": "js-post-1521216",
+      "author": "bg400",
+      "date": "2025-07-06T02:35:22+0900",
+      "body": "SGHarlekin said:\nI don't know what made you think anyone was annoyed. If any of us were, we just wouldn't respond. Getting basic stuff wrong like having an end line to your conditional branch just makes me question if you read the instructions of the help file. (which people seem to skip more than you would believe)\nIn any case, glad it works now. Don't hesitate to ask further questions.\nClick to expand...\nOk I think I know what's going on now that you say that, there were no instructions in the script file itself on putting \"end\" in my skills, so while I was reading them, I just kept assuming I didn't need ends; that's entirely my bad though lol\nregardless, thanks for the help"
+    },
+    {
+      "post_id": "js-post-1521217",
+      "author": "SGHarlekin",
+      "date": "2025-07-06T03:06:45+0900",
+      "body": "It's clearly there tho.\nAnd in the plugin file itself:"
+    },
+    {
+      "post_id": "js-post-1521235",
+      "author": "bg400",
+      "date": "2025-07-06T06:14:07+0900",
+      "body": "SGHarlekin said:\nIt's clearly there tho.\nView attachment 344327\nAnd in the plugin file itself:\nView attachment 344328\nView attachment 344329\nClick to expand...\nok I was so focused on the \"help\" section of the plugin in the actual engine, that's it\nthanks for your help, I'm gonna go melt from embarrassment now ^^;"
+    },
+    {
+      "post_id": "js-post-1521237",
+      "author": "SGHarlekin",
+      "date": "2025-07-06T06:29:17+0900",
+      "body": "bg400 said:\nok I was so focused on the \"help\" section of the plugin in the actual engine, that's it\nthanks for your help, I'm gonna go melt from embarrassment now ^^;\nClick to expand...\nThe second and third screenshot is the \"help file\" in the actual engine lmao.\nAnyway, best of luck."
+    },
+    {
+      "post_id": "js-post-1521243",
+      "author": "Robro33",
+      "date": "2025-07-06T06:44:55+0900",
+      "body": "bg400 said:\nSequence Input plugin\nClick to expand...\nit might not be there, but if youre using a plugin that has dependencies, youre expected to be familiar with those plugins as well. those screenshots are from yanfly's action sequence pack 1"
+    },
+    {
+      "post_id": "js-post-1521247",
+      "author": "SGHarlekin",
+      "date": "2025-07-06T07:13:11+0900",
+      "body": "Robro33 said:\nit might not be there, but if youre using a plugin that has dependencies, youre expected to be familiar with those plugins as well. those screenshots are from yanfly's action sequence pack 1\nClick to expand...\nYes, Action sequencing, not sequence input, as I said in my post... Guess it's not overly clear. But since the conditional branch code is part of the regular action sequencing, you'd find that there, not in some sequence input plugin.\nSGHarlekin said:\nDid you read the instructions on action sequencing?\nClick to expand..."
+    }
+  ]
+}

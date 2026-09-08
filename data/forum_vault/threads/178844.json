@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/class-change-system-visustella-mz-actor-multiclass-id-in-battle.178844",
+  "title": "MZ [Class Change System VisuStella MZ ] Actor multiclass ID in battle",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:54:56.660134+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1521903",
+      "author": "Akou",
+      "date": "2025-07-11T19:13:58+0900",
+      "body": "Hi, (sorry for my english, not my native langage)\nThe plugin\nClass Change System\nby VisuStella give the possibility to get the data of classes and multiclasses that an actor has with :\nactor.multiclasses()\n- This returns an array of all of the multiclasses an actor has.\n- This includes the actor's primary class.\nactor.multiclass(x)\n- This returns the class data (not ID) of whatever class the actor has\nin x multiclass slot.\n- An x value of 1 would yield the primary class.\nactor.multiclassId(x)\n- This returns the class ID (not data) of whatever class the actor has\nin x multiclass slot.\n- An x value of 1 would yield the primary class's ID.\nClick to expand...\nI have an issue when I set a skill who use an Event to have one of the active actor's multiclass in a variable.\nInstead of having the ID of the multiclass, the return is zero.\nAs the description above says, I use the code\nactor.multiclassId(x)\n(with x equal to the desired multiclass).\nI tested several variations using codes I found in the sheet\nRPG MAKER MV / MZ Script Calls\nbut I haven't been able to find a solution (if there is one).\nAm I missing something obvious?"
+    },
+    {
+      "post_id": "js-post-1521905",
+      "author": "Robro33",
+      "date": "2025-07-11T19:58:18+0900",
+      "body": "Akou said:\nI use the code\nactor.multiclassId(x)\n(with x equal to the desired multiclass).\nI tested several variations using codes I found in the sheet\nRPG MAKER MV / MZ Script Calls\nbut I haven't been able to find a solution (if there is one).\nClick to expand...\nWhat exactly did you use in the event, and what exactly are you trying to get the skill to do? Without knowing exactly what you typed, I can't tell you much about what you did. 0 is the default value you'll get from reading variables inside the engine, so if you did something to set the variable and it gives you a 0, it's likely there was some kind of error.\njust to be sure, when you put this in the script box for the control variables event command, does this do anything for you?\nCode:\n$gameParty.members()[0].multiclassId(1)"
+    },
+    {
+      "post_id": "js-post-1521915",
+      "author": "Akou",
+      "date": "2025-07-11T22:00:30+0900",
+      "body": "(Forgive my english google translate)\nThx for your reply.\nRobro33 said:\nWhat exactly did you use in the event, and what exactly are you trying to get the skill to do?\nClick to expand...\n1 -> I use a variable to get the current Tier 3 multiclass's ID of the active actor in battle (Tier 3 multiclass named 'Posture').\n2 -> The result allows me, thanks to a conditional branch, to display a choice (3) wich change according to the actor's Posture.\nEx : If actor have Posture 'Défense', the choice 'Défense' is disabled.\nThis is a work in progress, but the goal is to be able to change Posture once per turn, without being able to re-equip the same posture.\n(Inspired by the way roles work in FF13)\nRobro33 said:\njust to be sure, when you put this in the script box for the control variables event command, does this do anything for you?\nCode:\n$gameParty.members()[0].multiclassId(1)\nClick to expand...\nThis script works. Before I didn't have the choices that appeared.\nThe problem here is that the result is only based on the leader if I understand correctly.\nI did some tests with the code\nBattleManager._subject.\nbut the results were all zero.\nI probably wasn't doing things right.\nI know that the\nCore Engine\nby VisuStella has a plugin command that allows you to do more complex things.\n(It's in the plugin description)\nWould it be more useful to use this?"
+    },
+    {
+      "post_id": "js-post-1521918",
+      "author": "Robro33",
+      "date": "2025-07-11T22:36:40+0900",
+      "body": "Akou said:\nI did some tests with the code\nBattleManager._subject.\nbut the results were all zero.\nClick to expand...\nBy the time common events run, I believe BattleManager._subject would have already been cleared. SInce MZ does record data like the last actor to act, you could use the control variables command to get the id of the last actor and then use the same variable to save the multiclass id of the actor with that id.\nIm skipping a step here, but try this\nCode:\n$gameActors.actor($gameTemp._lastActionData[2]).multiclass(3)\nAkou said:\nWould it be more useful to use this?\nClick to expand...\nI wouldn't be able to tell you. My knowledge of VS plugins pretty much only extends to the questions i see people ask about them. I don't use them myself"
+    },
+    {
+      "post_id": "js-post-1521924",
+      "author": "Akou",
+      "date": "2025-07-11T23:18:58+0900",
+      "body": "Robro33 said:\nBy the time common events run, I believe BattleManager._subject would have already been cleared. SInce MZ does record data like the last actor to act, you could use the control variables command to get the id of the last actor and then use the same variable to save the multiclass id of the actor with that id.\nClick to expand...\nThis is what I understood from doing research.\nRobro33 said:\nIm skipping a step here, but try this\nCode:\n$gameActors.actor($gameTemp._lastActionData[2]).multiclass(3)\nClick to expand...\nHere is the result.\n(It's just a text box with :\nCurrentActorPosture = \\V[5]\n)\nRobro33 said:\nI wouldn't be able to tell you. My knowledge of VS plugins pretty much only extends to the questions i see people ask about them. I don't use them myself\nClick to expand...\nI find their work really good\nAs for the command plugin, it would allow to create a more advanced script to have the desired result in the variable.\nDescription on the website:\nVariable: JS Block\n- Pick a variable ID and value to alter through JS.\n- Allows JS block code for variable ID and operand.\n- Functions like RM2k3's Variable Pointers.\nVariable ID:\n- This is the target variable to alter.\n- You may use JavaScript.\n- ie: $gameVariables.value(1)\nOperation Type:\n- What operation do you wish to use for this Plugin Command?\nOperand Modifier:\n- Value to be used in calculating the target variable.\n- You may use JavaScript.\n- ie: $gameVariables.value(1)\nClick to expand...\nWould doing some extra calculations help make it work?\nSorry to ask, I've never done any coding."
+    },
+    {
+      "post_id": "js-post-1521925",
+      "author": "Robro33",
+      "date": "2025-07-11T23:22:20+0900",
+      "body": "Akou said:\nHere is the result.\n(It's just a text box with :\nCurrentActorPosture = \\V[5]\n)\nClick to expand...\nah, my bad there. i meant to type\nCode:\n$gameActors.actor($gameTemp._lastActionData[2]).multiclassId(3)\n, not\nmulticlass\n. The latter returns the entire class, but you just want the id."
+    },
+    {
+      "post_id": "js-post-1521926",
+      "author": "Akou",
+      "date": "2025-07-11T23:36:50+0900",
+      "body": "Robro33 said:\nCode:\n$gameActors.actor($gameTemp._lastActionData[2]).multiclassId(3)\n, not\nmulticlass\n. The latter returns the entire class, but you just want the id.\nClick to expand...\n...I didn't notice that it wasn't\nmulticlass\nId\n.\nIt work better now !\nThank you very much for your help!\nNow I'm going to try to finish this\nJust to be sure, does this script return the active actor's id?\n$gameActors.actor($gameTemp._lastActionData[2])"
+    },
+    {
+      "post_id": "js-post-1521928",
+      "author": "Robro33",
+      "date": "2025-07-12T00:03:32+0900",
+      "body": "Akou said:\nJust to be sure, does this script return the active actor's id?\n$gameActors.actor($gameTemp._lastActionData[2])\nClick to expand...\nIt wouldn't be completely accurate to say it's the active one, but it'll generally be true. It's really the last actor to act, starting from the start of their action.\nThe distinction matters depending on your battle system. For example, in an ATB system, if actor A acts and now it's actor B's turn but they haven't acted yet, then the script would get you actor A even though actor B is the active actor."
+    },
+    {
+      "post_id": "js-post-1521929",
+      "author": "Akou",
+      "date": "2025-07-12T00:06:30+0900",
+      "body": "OK\nThanks for the explanation!\nEDIT - Rather like this to have the ID:\n$gameActors.actor($gameTemp._lastActionData[2]).actorId()"
+    },
+    {
+      "post_id": "js-post-1521946",
+      "author": "Robro33",
+      "date": "2025-07-12T02:32:57+0900",
+      "body": "Akou said:\n$gameActors.actor($gameTemp._lastActionData[2]).actorId()\nClick to expand...\nThat'll work to get their id, but it's a redundant script.\n$gameTemp._lastActionData[2] Already returns the id of the last actor to act, and the control variables window already has an option to get the id of the last actor to act."
+    },
+    {
+      "post_id": "js-post-1521951",
+      "author": "Akou",
+      "date": "2025-07-12T03:33:41+0900",
+      "body": "Robro33 said:\nThat'll work to get their id, but it's a redundant script.\n$gameTemp._lastActionData[2] Already returns the id of the last actor to act, and the control variables window already has an option to get the id of the last actor to act.\nClick to expand...\nTested and approved !\n$gameTemp._lastActionData[2]\nworks very well.\nRobro33 said:\nthe control variables window already has an option to get the id of the last actor to act.\nClick to expand...\nThat's true, but I use OTB's\ninstant use\nfrom\nBattle System - OTB\nby VisuStella for my skill, and when I tested using the option to have the Id of the last actor to act, the result was zero. There may be some kind of conflict.\nSpoiler:\nInstant Use-Related Notetags\n<OTB Instant>\n<OTB Instant Use>\n<OTB Instant Cast>\n- Used for: Skill, Item Notetags\n- Allows the skill/item to be used immediately\nwithout consuming a turn\n."
+    }
+  ]
+}

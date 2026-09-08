@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-add-smart-pathing-for-the-player.178528",
+  "title": "How to add smart pathing for the player",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:55:09.720043+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1519856",
+      "author": "Live2Kill",
+      "date": "2025-06-26T02:26:24+0900",
+      "body": "Looking for a way to make the player have some sort of smart pathing that will auto walk around tiles you cant walk on."
+    },
+    {
+      "post_id": "js-post-1519938",
+      "author": "caethyril",
+      "date": "2025-06-26T19:52:02+0900",
+      "body": "You could try one of these script calls:\nThese screenshots are from the MV / MZ Script Call List:\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nAlternatively you could look for a plugin that offers \"pathfinding\" or \"path to\" features, e.g.\nSmart Pathfinding\nSmart Pathfinding 2015.10.21 by Shaz   Introduction This plugin allows you to set up smart pathfinding for events.   How to use Add to your plugins folder (file name does not really matter, but I call mine SmartPath.js).  There are no parameters to set.   Use the plugin command SmartPath...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1520010",
+      "author": "Live2Kill",
+      "date": "2025-06-27T05:47:43+0900",
+      "body": "caethyril said:\nYou could try one of these script calls:\nView attachment 343660\nView attachment 343661\nThese screenshots are from the MV / MZ Script Call List:\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nAlternatively you could look for a plugin that offers \"pathfinding\" or \"path to\" features, e.g.\nSmart Pathfinding\nSmart Pathfinding 2015.10.21 by Shaz   Introduction This plugin allows you to set up smart pathfinding for events.   How to use Add to your plugins folder (file name does not really matter, but I call mine SmartPath.js).  There are no parameters to set.   Use the plugin command SmartPath...\nforums.rpgmakerweb.com\nClick to expand...\nHow would I use these script calls? Like on an event? Im not sure I understand. I looked at the plug in but that ones for event pathing instead of player pathing"
+    },
+    {
+      "post_id": "js-post-1520024",
+      "author": "caethyril",
+      "date": "2025-06-27T06:32:46+0900",
+      "body": "Live2Kill said:\nHow would I use these script calls? Like on an event? Im not sure I understand.\nClick to expand...\nYes, you would apply the movement to the player using an event command.\n$gameTemp.setDestination(4, 5)\ncan be used in a\nScript\ncommand. It should mimic the player clicking on map tile (4, 5), which makes the player (try to) path to that tile. As noted, normal movement input can interrupt this.\nThe other two are for use in a move route, e.g. via the\nSet Movement Route\ncommand. A move route targets a character, which can be the player. One of the move route commands is labelled Script: that's where you would put the script call.\nthis.moveStraight(this.findDirectionTo(4, 5))\nAs noted, this script call moves the character 1 step on a path to the specified tile: (4, 5) in this case. But you probably want the next one instead...\nvar x = 4, y = 5; var d = this.findDirectionTo(x, y); if (!d || !this.canPass(this.x, this.y, d)) { this.forceMoveRoute({ list: [{ code: 0 }] }); this.setMovementSuccess(true); this._moveRouteIndex--; } else this.moveStraight(d);\nAs noted, this script call is designed to be used as the only command in a repeating move route. It will repeatedly move the character 1 step on the path until they are at the destination or the path is blocked. Then the move route will end.\nThese examples all used fixed coordinates: X = 4, Y = 5. If the destination moves around, then you'll need to replace those fixed numbers with something else. E.g. path to event ID 8:\nvar x = $gameMap.event(8).x, y = $gameMap.event(8).y; var d = this.findDirectionTo(x, y); if (!d || !this.canPass(this.x, this.y, d) { this.forceMoveRoute({ list: [{ code: 0 }] }); this.setMovementSuccess(true); this._moveRouteIndex--; } else this.moveStraight(d);\nLive2Kill said:\nI looked at the plug in but that ones for event pathing instead of player pathing\nClick to expand...\nOh, oops. Maybe someone else knows of a more suitable plugin~"
+    }
+  ]
+}
