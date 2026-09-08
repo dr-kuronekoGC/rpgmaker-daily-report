@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/encounter-steps-with-region-id.180419",
+  "title": "Encounter Steps with Region ID",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:34:54.494827+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532399",
+      "author": "Pikuseruatisuto",
+      "date": "2025-10-05T11:00:22+0900",
+      "body": "I was looking around the web and RPG Maker MV to see if I could find anything about changing the encounter steps depending on the Region ID, but I do not see anything anywhere saying that it is possible to do so or even an option to change the Encounter Steps besides in the Map Settings.\nAm I overlooking something or is this just not doable without a script? If so, then can someone point me in that direction because I don't see a script anywhere either."
+    },
+    {
+      "post_id": "js-post-1532405",
+      "author": "DevRPG2k",
+      "date": "2025-10-05T12:17:03+0900",
+      "body": "As far as I remember, the step count depends on each group configured on the map.\nYou could easily create your own dating system with events and help with a little Javascript:\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆\n：End\nAnd if you want to check the terrain ID to set the battle background graphic:\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0015 = $gamePlayer.terrainTag()\n  ◆\n：End\nAnd simply adding a variable would make it simple to check a minimum number of steps to start a battle, and then you could restart the count:\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0003 Step Count += 1\n  ◆If：Step Count ≥ 25\n    ◆Control Variables：#0005 Tag Terrain = $gamePlayer.terrainTag()\n    ◆If：Tag Terrain = 0\n      ◆Change Battle Back：Grassland & Grassland\n      ◆\n    ：End\n    ◆If：Tag Terrain = 1\n      ◆Change Battle Back：Dirt1 & Grassland\n      ◆\n    ：End\n    ◆If：Tag Terrain = 2\n      ◆Change Battle Back：Dirt2 & Grassland\n      ◆\n    ：End\n    ◆\n  ：End\n  ◆Battle Processing：Bat*2\n  ：If Win\n    ◆\n  ：If Escape\n    ◆\n  ：End\n  ◆\n：End\nOf course, these are simple examples, I would do most of these checks just with Javascript, but it will depend on what you really need."
+    },
+    {
+      "post_id": "js-post-1532407",
+      "author": "Piyan Glupak",
+      "date": "2025-10-05T12:26:12+0900",
+      "body": "Pikuseruatisuto said:\nI was looking around the web and RPG Maker MV to see if I could find anything about changing the encounter steps depending on the Region ID, but I do not see anything anywhere saying that it is possible to do so or even an option to change the Encounter Steps besides in the Map Settings.\nAm I overlooking something or is this just not doable without a script? If so, then can someone point me in that direction because I don't see a script anywhere either.\nClick to expand...\nA while ago, Trihan did a plugin called \"RegionEncounters.js\". I don't think that that is one of the ones that he lists in his signature, so you will have to Google it, but it is on this site. It lets you do 2 things:\nFirstly let each region of a map have a different encounter rate;\nSecondly set the encounter rate of a region to a variable. [Top tip - if you forget to set the variable before the player enters that region on that map, your party will get\nvery\nbusy.]\nIt is pretty much plug-in-and-play. All you need to do is put notetags in the maps that you want to use its features.\nThis plugin also works on MZ, I have found."
+    },
+    {
+      "post_id": "js-post-1532408",
+      "author": "Pikuseruatisuto",
+      "date": "2025-10-05T13:02:57+0900",
+      "body": "Piyan Glupak said:\nA while ago, Trihan did a plugin called \"RegionEncounters.js\". I don't think that that is one of the ones that he lists in his signature, so you will have to Google it, but it is on this site. It lets you do 2 things:\nFirstly let each region of a map have a different encounter rate;\nSecondly set the encounter rate of a region to a variable. [Top tip - if you forget to set the variable before the player enters that region on that map, your party will get\nvery\nbusy.]\nIt is pretty much plug-in-and-play. All you need to do is put notetags in the maps that you want to use its features.\nThis plugin also works on MZ, I have found.\nClick to expand...\nThank you so much! I will look into this in the next few days."
+    },
+    {
+      "post_id": "js-post-1532409",
+      "author": "Pikuseruatisuto",
+      "date": "2025-10-05T13:04:11+0900",
+      "body": "Dev_With_Coffee said:\nAs far as I remember, the step count depends on each group configured on the map.\nYou could easily create your own dating system with events and help with a little Javascript:\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆\n：End\nAnd if you want to check the terrain ID to set the battle background graphic:\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0015 = $gamePlayer.terrainTag()\n  ◆\n：End\nView attachment 350701\nAnd simply adding a variable would make it simple to check a minimum number of steps to start a battle, and then you could restart the count:\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0003 Step Count += 1\n  ◆If：Step Count ≥ 25\n    ◆Control Variables：#0005 Tag Terrain = $gamePlayer.terrainTag()\n    ◆If：Tag Terrain = 0\n      ◆Change Battle Back：Grassland & Grassland\n      ◆\n    ：End\n    ◆If：Tag Terrain = 1\n      ◆Change Battle Back：Dirt1 & Grassland\n      ◆\n    ：End\n    ◆If：Tag Terrain = 2\n      ◆Change Battle Back：Dirt2 & Grassland\n      ◆\n    ：End\n    ◆\n  ：End\n  ◆Battle Processing：Bat*2\n  ：If Win\n    ◆\n  ：If Escape\n    ◆\n  ：End\n  ◆\n：End\nOf course, these are simple examples, I would do most of these checks just with Javascript, but it will depend on what you really need.\nClick to expand...\nI appreciate this as well! Thank you! I will see which one of these options fit best for me."
+    },
+    {
+      "post_id": "js-post-1532410",
+      "author": "ATT_Turan",
+      "date": "2025-10-05T13:21:32+0900",
+      "body": "Piyan Glupak said:\nA while ago, Trihan did a plugin called \"RegionEncounters.js\". I don't think that that is one of the ones that he lists in his signature, so you will have to Google it, but it is on this site. It lets you do 2 things:\nClick to expand...\nThe plugin you're referencing is here:\nVariable Random Encounter Rates\nIs there a plugin that lets you:  1) Set different encounter rates for different regions on the same map? 2) Alter the encounter rates for individual maps during the game, for instance in response to switches triggered by the player's actions?  MV lets you choose the troops for random encounters...\nforums.rpgmakerweb.com\nIt kind of does what you're describing, but it's important to understand what it\nexactly\ndoes, because we don't really know what the OP is trying to achieve.\nWhat Trihan's plugin does (which he states in the post) is reset the encounter steps every time you change regions, according to the rate you want for that new region.\nSo if you're going to have sections of a map and walking around in them has encounters more or less frequently, this can work.\nBut if you're trying to do something like Pokémon's system where you encounter more quickly when walking through tall grass (which, incidentally, is supported by RPG Maker natively), Trihan's plugin will do\nthe opposite\nof that because it will reset the random number of steps every time you walk in and out of the grass.\nI've just added this feature to my Encounter Control plugin - you can use map notetags to make specific regions count more or less toward your encounter steps without resetting the count.\nEncounter Control (MV/MZ)\nEncounter Control 1.5 ATT_Turan  Introduction This plugin was inspired by a comment from @RCXGaming that I thought led into a nice little set of features. The overall purpose is to give the developer more control over encounters while still allowing them to be randomized, and without having to...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1532628",
+      "author": "Piyan Glupak",
+      "date": "2025-10-07T15:43:10+0900",
+      "body": "You know better than anyone else what you want. In my opinion, both Trihan's and ATT_Turan's plugins are excellent, but are not same. Instead of the old saying \"Yer pays yer money and you makes your choice\" it is \"Yer thanks the kind gentlemen for writing free plugins and yer takes yer choice.\"\nSpoiler:\nMy take on Trihan's plugin\nI take ATT_Turan's information to mean to only use this to give regions different encounter rates when you think that the player is going to walk through the same region for a while. This conforms to my experience.\nOn the other hand, setting a region on a map to a variable means that you can alter the difference in the number of encounters for that region, leaving other regions and maps untouched. A whole map might be the same region.\nThis plugin is compatible (in MZ) with MalMZ_EncounterConditions, which lets you vary which troop are available under certain conditions (such as a switch being on). Haven't checked whether Mal does one for MV yet.\nSpoiler:\nMy take on ATT_Turan's plugin\nThis works very differently from Trihan’s encounter plugin. Could use this for game difficulty levels, or for making\nall\nmaps more dangerous at night. Not so easy to do the “kill robber chief to make one map or large chunk of a map safer” trick, though. [You can always edit the events that tranfer in to the map to check a switch and if it is on, turn encounters off. Remember to turn on encounters when you leave the map.]\nIn general, high numbers in note-tags and the variable chosen as a parameter mean higher numbers of encounters.\nOne parameter variable affects the encounter rate of all regions on all maps. Setting the variable to 1 is equivalent to not using the feature. Setting the variable higher increases the number of encounters (2 gives a noticeable increase).\nYou can use note-tags to set a differential between the regions of a map, but can't alter them in game.\nThis offers the feature of avoiding the same enemy troop appearing repeatedly. It lets you avoid random encounters very soon after the previous one. It also lets you get rid of random encounters for a map when your party reaches a certain average level chosen for that map.\nNot yet tested whether this plugin is compatible (in MZ) with MalMZ_EncounterConditions, but I suspect that it will."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/enemy-patrol-then-chase-and-patrol-again.180304",
+  "title": "Enemy patrol then chase and patrol again",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:35:06.902887+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1531491",
+      "author": "Xipinjin",
+      "date": "2025-09-26T07:26:50+0900",
+      "body": "Hi everyone,\nI’m trying to figure out how to make a guard/enemy behave like this:\nThe guard starts by patrolling on the map using a\ncustom move route\n;\nIf the player enters the guard’s field of vision, the guard chases the player;\nIf the guard touches the player, a battle starts;\nIf the player manages to escape (by staying out of sight for a few seconds), the guard goes back to its original position and resumes the patrol.\nI’ve already downloaded and tested several plugins (Yanfly’s EventChasePlayer, Galv’s EventDetectors, and Vlue’s Proximity), but none of them allow me to combine all of this: patrolling + chasing + returning to patrol after losing sight of the player.\nIf anyone could help me or point me in the right direction, that would be amazing! I’ve searched the forum and YouTube a lot but haven’t found any clear solution yet.\nThanks in advance!"
+    },
+    {
+      "post_id": "js-post-1531515",
+      "author": "Solar_Flare",
+      "date": "2025-09-26T10:39:51+0900",
+      "body": "I think the most obvious way to do this would be to split the event into 3 pages.\nPage 1: the guard patrols around the map using a custom move route. It's set as parallel, and the commands check the player's proximity and switch to page 2 (via self switch) when the player is in range.\nPage 2: the guard approaches the player. Again, it's a parallel page that switches to page 3 if the player moves out of sight for long enough.\nPage 3: the guard returns to its original position. I think the best way to do this is\nthis.step_toward\nfrom Galv's Move Route Extras. Yet again, it's a parallel event – this one checks the event's own location and switches back to page 1 once it's on the target location. Maybe it also checks the player's proximity and switches to page 2 if they come back into view.\nI can see at least 2 problems with that approach, but I think it might be enough to get you started?\nThe problems are:\nPage 2 is not Event Touch, so actually triggering the battle might get a bit tricky.\nSetting an event to parallel will (if I'm not mistaken) cause it to draw above star terrains."
+    },
+    {
+      "post_id": "js-post-1531898",
+      "author": "Xipinjin",
+      "date": "2025-09-29T10:23:27+0900",
+      "body": "Solar_Flare said:\nI think the most obvious way to do this would be to split the event into 3 pages.\nPage 1: the guard patrols around the map using a custom move route. It's set as parallel, and the commands check the player's proximity and switch to page 2 (via self switch) when the player is in range.\nPage 2: the guard approaches the player. Again, it's a parallel page that switches to page 3 if the player moves out of sight for long enough.\nPage 3: the guard returns to its original position. I think the best way to do this is\nthis.step_toward\nfrom Galv's Move Route Extras. Yet again, it's a parallel event – this one checks the event's own location and switches back to page 1 once it's on the target location. Maybe it also checks the player's proximity and switches to page 2 if they come back into view.\nI can see at least 2 problems with that approach, but I think it might be enough to get you started?\nThe problems are:\nPage 2 is not Event Touch, so actually triggering the battle might get a bit tricky.\nSetting an event to parallel will (if I'm not mistaken) cause it to draw above star terrains.\nClick to expand...\nThanks, I'm currently trying to apply your advice but I'm still struggling with setting conditions based on the event seeing the player or losing him during the chase.\nI don't really understand how to implement these conditions since the Yanfly’s EventChasePlayer plugin works with script commands in the custom movement route window.\nFor now, I managed to make the enemy patrol with a parallel page (but the loop setting doesn't seem to work everytime so the enemy stops his patrol at the end of the movement route) and chase the player for a certain amount of time. If the player escapes, the enemy walks back to where he got stuck in the first place and stops moving.\nThanks again for the help!"
+    },
+    {
+      "post_id": "js-post-1531903",
+      "author": "KayronDEV",
+      "date": "2025-09-29T12:12:04+0900",
+      "body": "Take a look at this playlist:\nplaylist"
+    },
+    {
+      "post_id": "js-post-1531926",
+      "author": "Xipinjin",
+      "date": "2025-09-29T19:50:37+0900",
+      "body": "KayronDEV said:\nTake a look at this playlist:\nplaylist\nClick to expand...\nThanks, I already watched a few videos from this playlist a while ago and I remember that this youtuber doesn't really talk about patrolling but just about detection and following the player for some time. Even in the \"patrol, spot & chase in 3 ways\" video, he ends the video without showing how to make the enemy patrol (he's just standing there and waiting for the player to enter his field of view).\nAs I said, I already managed to make the enemy patrol, chase the player and go back to where he was patrolling but I'm struggling with making the enemy go back to patrol and not just standing there.\nMaybe I'm not understanding the possibilities this youtuber's method is giving but it seems to me that he's not precisely talking about my problem :/"
+    }
+  ]
+}

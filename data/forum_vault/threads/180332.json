@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/any-way-to-have-a-conditional-event-choose-between-a-range-of-numbers-in-a-variable.180332",
+  "title": "MZ Any way to have a conditional event choose between a range of numbers in a variable?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:35:00.797908+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1531810",
+      "author": "MoonWolfV",
+      "date": "2025-09-28T16:39:03+0900",
+      "body": "Just wondering if there's a way to have the conditional event command to pick between a range of numbers in a variable.\n1. First a variable picks a random number between 1 and 20.\n2. A conditional event then has different outcomes depending on the number. 1 - 10 fails, which is easy enough to implement, simply being lesser or equal to 10.\n3. A different outcome would happen between numbers 11 - 15\n4. And then another outcome for 15 -20. This one is also easy just being greater or equal to.\nI'm having questions about the 3rd step. Do I have to use the approach using a separate conditional event for each number, or is there a procedure in Rpg Maker MZ where you can tell it to apply a condition within a range like this. (If it's 11 to 15, then do this...)"
+    },
+    {
+      "post_id": "js-post-1531811",
+      "author": "JamesRyan",
+      "date": "2025-09-28T17:07:18+0900",
+      "body": "I think you can use the Script option (Page 4) in Conditional Branch, and state your condition there like:\nCode:\n$gameVariables.value(x) >= 11 && $gameVariables.value(x) <= 15\nWhich X is the variable ID from the variable you set before"
+    },
+    {
+      "post_id": "js-post-1531812",
+      "author": "ShadowDragon",
+      "date": "2025-09-28T17:26:05+0900",
+      "body": "a cleaner way is to do make conditions separate or nested.\nCode:\n// sample 1\n\nif variable x > 0 && variable x <= 10\noutcome 1\nend\n\nif variable x > 10 && variable x <= 15\noutcome 2\nend\n\nif variable x > 15\noutcome 3\nend\n\n// alternate\nif variable x < 11\noutcome 1\nelse\nif variable x < 15\noutcome 2\nelse\nif variable < 20\noutcome 3\nend\nend\nend\nthose are valid ways to use 1 variable.\nthis is the pure evented way, but you can make it shorter as well,\nwhich require ternary operator to get a sweet 1 liner or under each other\nto make it more readable, but also cleaner to write.\nbut that choice is up to you though."
+    },
+    {
+      "post_id": "js-post-1531814",
+      "author": "MoonWolfV",
+      "date": "2025-09-28T17:32:07+0900",
+      "body": "Hey thanks for the script, it works perfectly. This is going to be used for a way to acquire magic in battle but with a chance of gaining a variety of types - and a good chance of failure.\nThanks for the quick reply.\nCheers\nJamesRyan said:\nI think you can use the Script option (Page 4) in Conditional Branch, and state your condition there like:\nCode:\n$gameVariables.value(x) >= 11 && $gameVariables.value(x) <= 15\nWhich X is the variable ID from the variable you set before\nClick to expand..."
+    }
+  ]
+}

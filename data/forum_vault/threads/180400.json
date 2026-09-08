@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/visustella-battlecore-dual-wield-issues.180400",
+  "title": "MZ Visustella BattleCore - Dual Wield issues",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:34:55.611152+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532276",
+      "author": "Deleted member 223646",
+      "date": "2025-10-04T00:13:50+0900",
+      "body": "Hello, I found a very old thread here on the same subject, but it wasn't the issue I was having.\nI'm using RPGMaker MZ, I have Visustella plugins (Battle core, Skills and States... etc)\nAn actor in my game has dual wield, and can equip two of the same weapon type. (Sword)\nWhat I think might be the root cause of the issue, is this Actor's CLASS has the attack skill set to a different skill in the list (282, not 1).\nThis is so I can use a 'sword' icon (the type the class can equip) for that attack skill, and run a custom formula to restore a little MP with each hit - tailored to that class.\nWith two swords equipped, the attack skill is only hitting once, and the damage is a result equivalent to that of one attack.\nI was wondering if anyone else has had any difficulty with using a\ncustom attack skill\n, and Battlecore's dual wield effect not triggering? (And, if they found a fix?)\nI'm suspecting BattleCore is expecting me to be using skill #1, but that's an assumption because I'm out of ideas.\nThank you, in advance."
+    },
+    {
+      "post_id": "js-post-1532280",
+      "author": "Andar",
+      "date": "2025-10-04T01:36:58+0900",
+      "body": "Dual Wield has never meant that you get two attacks. The actor has only one action, no matter if he has two weapons equipped or not.\nDual wield only replaces something that i usually a shield slot (usually holding a DEF bonus) with a weapon (usually an ATK bonus), and that affects the values of the attack but not the numbers of actions."
+    },
+    {
+      "post_id": "js-post-1532296",
+      "author": "Deleted member 223646",
+      "date": "2025-10-04T05:04:41+0900",
+      "body": "Andar said:\nDual Wield has never meant that you get two attacks. The actor has only one action, no matter if he has two weapons equipped or not.\nDual wield only replaces something that i usually a shield slot (usually holding a DEF bonus) with a weapon (usually an ATK bonus), and that affects the values of the attack but not the numbers of actions.\nClick to expand...\nHello, thank you for your reply\nThe default behaviour of the engine is this, yes.\nI apologise if my message was unclear - I am using Visustella's plugins. BattleCore specifically changes this behaviour.\nTo quote from BattleCore:\nPreviously, RPG Maker MZ had \"Dual Wielding\" attack using both weapon animations at once, with the combined ATK of each weapon. It's confusing to look at and does not portray the nature of \"Dual Wielding\".\nDual Wielding, or in the case of users adding in third and fourth weapons, Multi Wielding is now changed.\nEach weapon is displayed individually, each producing its own attack animation, showing each weapon type, and applying only that weapon's ATK, Traits, and related effects. It is no longer a combined effect to display everything at once like RPG Maker MZ default.\nIf an actor has multiple weapon slots but some of them are unequipped, then the action will treat the attack as a single attack. There will be no barehanded attack to add on top of it. This is to match RPG Maker MZ's decision to omit a second animation if the same scenario is applied.\nClick to expand...\nMy understanding is that with two swords equipped I should see two separate attacks occur with one use of attack in combat. This is not happening, hence my request for support\nI'm happy to share screenshots of pages from my DB and plugin manager if that helps at all?\nThanks"
+    },
+    {
+      "post_id": "js-post-1532334",
+      "author": "rpgLord69",
+      "date": "2025-10-04T17:02:39+0900",
+      "body": "You can just use an action sequence for the skill. They have ready made commands for that, like WEAPON: Next Weapon Slot where you can make it jump to a label as long as it finds a next weapon slot or whatever.\nIf your skill doesn't use an action sequence, then I think what matters is if you've set it to physical attack or certain hit. Anyway, you can always use an action sequence."
+    },
+    {
+      "post_id": "js-post-1532356",
+      "author": "Deleted member 223646",
+      "date": "2025-10-04T22:08:47+0900",
+      "body": "rpgLord69 said:\nYou can just use an action sequence for the skill. They have ready made commands for that, like WEAPON: Next Weapon Slot where you can make it jump to a label as long as it finds a next weapon slot or whatever.\nIf your skill doesn't use an action sequence, then I think what matters is if you've set it to physical attack or certain hit. Anyway, you can always use an action sequence.\nClick to expand...\nI'll give this a shot! Thank you."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/can-i-force-the-player-to-dash-at-a-specific-point.180439",
+  "title": "MV Can I force the player to Dash at a specific point?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:35:04.359693+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532553",
+      "author": "immacksg",
+      "date": "2025-10-07T02:46:37+0900",
+      "body": "I made a dodge the falling blocks mini game section for my game, but the player can only move if they're actively dashing and I'm not sure what exactly I can do to fix that. Is there any kind of script call I can use or something to force the player to dash during this section so it's completable? I know most people tend to just put auto-dash on, but I still want to make sure it won't be an issues for players that don't."
+    },
+    {
+      "post_id": "js-post-1532557",
+      "author": "Eliaquim",
+      "date": "2025-10-07T03:11:41+0900",
+      "body": "Hi there!\nI'm not sure if I understand you correctly. But you can enable/disable the always dash feature with script calls:\nConfigManager.alwaysDash = true\nConfigManager.alwaysDash = false\nThis way, you don't rely on the player tpo manually set the auto dash on via options menu, you can set it to true at the start of the minigame. And set it to off at the end."
+    },
+    {
+      "post_id": "js-post-1532562",
+      "author": "Solar_Flare",
+      "date": "2025-10-07T03:18:30+0900",
+      "body": "There isn't a script call that toggles dash on and off – dash is something where the game checks on each move if you're dashing.\nYou could use a plugin like this to allow forcing dash on/off with a switch:\nJavaScript:\nGame_Player.prototype.isDashing = function() {\n    if($gameSwitches.value(1)) return true;\n    if($gameSwitches.value(2)) return false;\n    return this._dashing;\n};\nIf you add the above code as a plugin, then you can toggle switch 1 on to force always dashing, or you can toggle switch 2 on to prevent dashing (similar to the map option). The plugin should go towards the top of your plugin list. You can replace 1 and 2 with whatever switches you want. You can also delete the 2 line entirely if you don't need that feature anywhere. Note that this will even override the setting on a map that has dashing disabled.\nEliaquim said:\nHi there!\nI'm not sure if I understand you correctly. But you can enable/disable the always dash feature with script calls:\nConfigManager.alwaysDash = true\nConfigManager.alwaysDash = false\nThis way, you don't rely on the player tpo manually set the auto dash on via options menu, you can set it to true at the start of the minigame. And set it to off at the end.\nClick to expand...\nI wouldn't recommend this, as you're messing with the player's preferences against their will. If you do prefer this approach, you should use this script call to force dash on:\nJavaScript:\n$gameSwitches.setValue(46, ConfigManager.alwaysDash)\nConfigManager.alwaysDash = true;\nAnd this script call to reverse it:\nJavaScript:\nConfigManager.alwaysDash = $gameSwitches.value(46)\nThis way, the user's preference will be preserved. Replace 46 in both cases with the ID of an unused switch. That said, I do think the other way is better; even with this precaution, it's likely there are some edge cases where the user's preference\nwon't\nbe preserved."
+    },
+    {
+      "post_id": "js-post-1532565",
+      "author": "immacksg",
+      "date": "2025-10-07T04:12:06+0900",
+      "body": "Solar_Flare said:\nThere isn't a script call that toggles dash on and off – dash is something where the game checks on each move if you're dashing.\nYou could use a plugin like this to allow forcing dash on/off with a switch:\nJavaScript:\nGame_Player.prototype.isDashing = function() {\n    if($gameSwitches.value(1)) return true;\n    if($gameSwitches.value(2)) return false;\n    return this._dashing;\n};\nIf you add the above code as a plugin, then you can toggle switch 1 on to force always dashing, or you can toggle switch 2 on to prevent dashing (similar to the map option). The plugin should go towards the top of your plugin list. You can replace 1 and 2 with whatever switches you want. You can also delete the 2 line entirely if you don't need that feature anywhere. Note that this will even override the setting on a map that has dashing disabled.\nI wouldn't recommend this, as you're messing with the player's preferences against their will. If you do prefer this approach, you should use this script call to force dash on:\nJavaScript:\n$gameSwitches.setValue(46, ConfigManager.alwaysDash)\nConfigManager.alwaysDash = true;\nAnd this script call to reverse it:\nJavaScript:\nConfigManager.alwaysDash = $gameSwitches.value(46)\nThis way, the user's preference will be preserved. Replace 46 in both cases with the ID of an unused switch. That said, I do think the other way is better; even with this precaution, it's likely there are some edge cases where the user's preference\nwon't\nbe preserved.\nClick to expand...\nThank you so much! This did exactly what I needed it to. For the script call to reverse it, do I still include the $gameSwitches.setValue(46, ConfigManager.alwaysDash) at the beginning?"
+    },
+    {
+      "post_id": "js-post-1532601",
+      "author": "Solar_Flare",
+      "date": "2025-10-07T09:23:00+0900",
+      "body": "Your question is a bit too vague, as I outlined two different methods in my post and you didn't specify which one you're using.\nIf you're using the plugin, then you don't need any of the ConfigManager stuff. If you're using the ConfigManager method (which I still don't recommend), then you should use both snippets exactly as I posted them. That means 2 lines when forcing dash on and 1 line when removing the override. If you added that as a 2nd line when removing the override, that would completely defeat the point."
+    }
+  ]
+}

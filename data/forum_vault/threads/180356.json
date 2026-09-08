@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/item-that-adds-subtracts-tp.180356",
+  "title": "MZ Item that adds/subtracts TP",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:34:58.241245+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1531977",
+      "author": "Trocnov",
+      "date": "2025-09-30T05:23:02+0900",
+      "body": "Hello,\nI am creating a game in which I use TP as an additional parameter treated similarly to HP/MP.\nI would like to be able to change TP with an item in the same way as, for example, a potion in relation to HP.\nThere is a “tp gain” command in the item options, but there is no way to decrease TP. The second problem with this option is that the item can be used even if we already have 100 TP.\nI would appreciate some advice on how to create such an item."
+    },
+    {
+      "post_id": "js-post-1531980",
+      "author": "Eliaquim",
+      "date": "2025-09-30T05:53:17+0900",
+      "body": "Hi there!\nUnless you use a common event, you will have to rely on a plugin to achieve that. As I can see, the Gain Tp on an item effect cannot be negative. And if you say that even with already full tp, the item can still be used, you would have to edit the code to prevent that.\nWith the common event, you could check the actor tp, if it is 100, then you do not recover it's tp with event commands, and instead, give him another tp item to trick the system so you don't lose the item.\nIn case he got less then 100 tp, then you just recover it with the event command.\nThe downside of this, is that RPG Maker will leave the menu scene to run the common event.\nNot with time now, but if no one appears, maybe when I had some time I can write you a tiny code to handle this."
+    },
+    {
+      "post_id": "js-post-1532045",
+      "author": "Trocnov",
+      "date": "2025-10-01T04:03:45+0900",
+      "body": "Thank you for suggesting the use of common event, but I encountered some problems:\n- the TP command I found (RPG MAKER MV / MZ Script Calls spreadsheet) has the following form:\nCode:\ntarget.gainTp(value);\nCode:\n(e.g. $gameActors.actor(3).gainTp(100);).\nI would like the TP change to apply to any character who uses the item. This command causes TP to regain/lose the character whose ID is in the code.\n- How can I check if the character's TP has not exceeded 100? I don't see an option to check TP in Conditional Branches."
+    },
+    {
+      "post_id": "js-post-1532060",
+      "author": "Eliaquim",
+      "date": "2025-10-01T07:27:34+0900",
+      "body": "Hi!\nI think you can use a common event like that:\n$gameParty.menuActor()\n→ Will work to get the actor you used the item on the scene item.\n$gameParty.menuActor().tpRate() === 1\n→ This is for the conditional branch. If this value is equal to 1, then the TP is at maximum value.\n$gameTemp._lastActionData[1]\n→ Will get the last item ID used. And with this, you can give the item back to the party.\n$gameParty.gainItem(ItemObject, amount)\n→ Will give the item object to the party with the specified amount.\nAs I said previously, this is a workaround. But I guess, without plugins, this is something you can do."
+    },
+    {
+      "post_id": "js-post-1532115",
+      "author": "Trocnov",
+      "date": "2025-10-02T04:54:56+0900",
+      "body": "Thank you for the detailed explanation.\nThe method of returning item if TP exceeds 100 works great.\nHowever, I have a problem with command “$gameParty.menuActor().gainTp(30)” - it only increases TP of the first character, even if item is used on another party member."
+    },
+    {
+      "post_id": "js-post-1532144",
+      "author": "Eliaquim",
+      "date": "2025-10-02T10:24:35+0900",
+      "body": "Trocnov said:\nThank you for the detailed explanation.\nThe method of returning item if TP exceeds 100 works great.\nHowever, I have a problem with command “$gameParty.menuActor().gainTp(30)” - it only increases TP of the first character, even if item is used on another party member.\nClick to expand...\nIts true! My bad!\nReplace that script call with this one:\n$gameParty.targetActor()"
+    },
+    {
+      "post_id": "js-post-1532190",
+      "author": "Trocnov",
+      "date": "2025-10-03T03:36:15+0900",
+      "body": "Now everything works perfectly, thanks!"
+    }
+  ]
+}

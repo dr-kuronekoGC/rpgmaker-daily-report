@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-buffs-and-states-code-for-repeating-skill-action-at-the-end-doesnt-work-properly.180311",
+  "title": "MV (Yanfly Buffs and States) code for repeating skill action at the end doesn't work properly",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:35:06.605632+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1531564",
+      "author": "ColinTornada",
+      "date": "2025-09-26T20:21:41+0900",
+      "body": "To make a long story short,using yanflys autopassives and buffs and states plugins,I'm making a passive state for a trinket that makes the user repeat their last used skill at the end of each turn with the repeated action dealing 50% less damage and not costing any mp or tp (with the help of state number 298 as you can see in the notetag code down below), however to not make it too broken I've made some restrictions,For starters the used skill needs to be certain, physical and magical, secondly a repeated skill will not repeat at the end of the next turn on the condition that the user guards or uses the attack button or use an item as his last used action,it works fine except for one thing that being that the user's repeated skills still repeat even after using an item rather than not using a skill at all,I tried looking through the functions and labels and this is the best I've gotten so far in the notetag code is there something I'm writing wrong that's preventing the skill from being stopped when using an item ?\nCode:\n<Custom Turn End Effect>\nif (user._lastBattleSkill && user._lastBattleSkill.isSkill()) {\n  var skill = user._lastBattleSkill;\n  var stype = $dataSkills[skill._itemId].stypeId;\n\n\n  if ([1, 2, 3].includes(stype)) {\n    if (user._lastTargetIndex >= 0 && $gameTroop.members()[user._lastTargetIndex] && $gameTroop.members()[user._lastTargetIndex].isAlive()) {\n      user.addState(298);\n      BattleManager.queueForceAction(user, skill._itemId, user._lastTargetIndex);\n    } else {\n      user.addState(298);\n      BattleManager.queueForceAction(user, skill._itemId, -1);\n    }\n  }\n}\n</Custom Turn End Effect>"
+    },
+    {
+      "post_id": "js-post-1531589",
+      "author": "Robro33",
+      "date": "2025-09-26T23:29:03+0900",
+      "body": "when youre sharing code on here, use the\n[CODE] [/CODE]\ntags or use the code option by the textbox's toolbar so that it doesnt get formatted. your code is harder to follow now that all indentation is gone\nColinTornada said:\nit works fine except for one thing that being that the user's repeated skills still repeat even after using an item rather than using a skill\nClick to expand...\nthe _lastBattleSkill isnt overwritten when an item is used (and i think is used in a few places, so i wouldnt suggest overwriting it either without looking into it further). what you could do is use one of the action start or end notetags to save the action the actor just did to some other property and then use it in your current notetag to check if that was a skill. you'd still want to delete the property after your turn end stuff runs regardless"
+    },
+    {
+      "post_id": "js-post-1531616",
+      "author": "ColinTornada",
+      "date": "2025-09-27T03:21:23+0900",
+      "body": "i actually did try that before but to no avail sadly"
+    },
+    {
+      "post_id": "js-post-1531629",
+      "author": "rpgLord69",
+      "date": "2025-09-27T04:44:29+0900",
+      "body": "Yeah, the game actors have in initMembers this._lastBattleSkill  = new Game_Item(); and it's only set in Scene Battle onSkillOk. So your conditional just keeps returning true if you've used a skill. Show how you tried using another property and the action and someone can help you better."
+    },
+    {
+      "post_id": "js-post-1531721",
+      "author": "ColinTornada",
+      "date": "2025-09-27T18:47:34+0900",
+      "body": "here's the different approch\nCode:\n<Custom Action End Effect>\nif (BattleManager._action != null) user.setLastBattleSkill(BattleManager._action.item())\n</Custom Action End Effect>\n<Custom Turn End Effect>\nif (DataManager.isSkill(user.lastBattleSkill()) && user.lastBattleSkill().id != 1 &&  user.lastBattleSkill().id != 2 &&  user.lastBattleSkill().id != 3 && !user.isStateAffected(298)){\n  user.addState(298);\n  BattleManager.queueForceAction(user, user.lastBattleSkill().id, -1);\n}\n</Custom Turn End Effect>\nand here's what state 298 looks like (ps: the item issue is fixed but now the attack button repeats when it's not supposed to lol and the weirder thing is the notetag perfectly works if i replace state 298 with state number 3 which is the immortal state)"
+    },
+    {
+      "post_id": "js-post-1531737",
+      "author": "Robro33",
+      "date": "2025-09-27T23:07:39+0900",
+      "body": "the notetags looked fine to me so i tested them in a project and and had no issue with it as is. did you save your project after setting the notetag? the changes wont actually be reflected ingame until you do. other than that, did you set up a console.log() to check what the lastSkill is and what the ID is when the issue happens?\nalso as a note, you might have to change the priority of your states. the action end effects are ran in order of highest to lowest priority and then highest to lowest id. so if the state the notetag is in is below 298 and is the same prioprity, affected battlers will never have 298 by the time the other state checks for it"
+    },
+    {
+      "post_id": "js-post-1531738",
+      "author": "rpgLord69",
+      "date": "2025-09-27T23:09:52+0900",
+      "body": "Only thing that came to my mind is that did you check that your attack skill id is 1 (since it's repeating)? Doesn't explain the weird change when using different states though."
+    },
+    {
+      "post_id": "js-post-1531752",
+      "author": "ColinTornada",
+      "date": "2025-09-28T01:18:30+0900",
+      "body": "i found out what's wrong with the notetag it's not the code itself it's the fact that the actor i'm using is using a completely different skill attack that not numbered as 1 (it's 342) so essentially what i could've done is just add the skill 342 in there and i'm honestly pretty embarresed"
+    }
+  ]
+}

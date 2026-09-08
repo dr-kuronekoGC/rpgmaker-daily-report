@@ -1,0 +1,1631 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/vx-ace-to-mv-converter.45296",
+  "title": "VX Ace to MV Converter",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:34:53.193221+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-450259",
+      "author": "Shaz",
+      "date": "2015-10-01T08:16:31+0900",
+      "body": "***************************************************************\nVersion 2.0 is now available\nright here!\nThe original version put the upper layer tiles onto the 'bottom' MV\nupper layer, so if you wanted to place another tile on top in MV, the\noriginal tile disappeared.\nVersion 2.0 fixes that - once in MV, you can now draw a second tile\non top of any upper layer tiles.\nAlso, version 2.0 removes any events used for decoration, and places\nthem onto the 'top' MV upper layer.  All those events that were used\nbecause Ace only had one upper layer and you needed an event to\nadd an extra tile on top, have now been converted to tiles rather\nthan events.\n***************************************************************\nUpdate:\nFor those who have all the extra files, the converter script is in the RPGMakerWeb_plugins folder, in the Shaz subfolder.\nIf you don't have the extra files yet, you can get it\nfrom my pastebin\n. (this is the original version.  See above for the latest version)\n----------------------------------------\nSo I can talk a bit about the converter, but everything else about MV that hasn't yet been announced is still protected by NDA.\nThe converter is a script that you can put into VX Ace.  It is not an MV plug-in.\nWith the script active, when you playtest the game, it will create an mv-data folder.\nIt will convert your database and all your maps and events to MV format and save new files to the mv-data folder (it does not modify your Ace project at all).\nYou can copy all of these files into the data folder of a new MV project and MV will be able to read them.\nIt will NOT convert resources.  You will have to do that manually.\nIt will NOT convert scripts.  You will have to find MV plugin equivalents, see if someone can convert the scripts for you, or use an alternative.\nThe converted version will include all the tags you have added to notes in the database and maps, but as scripts aren't converted, they will do nothing.\nThe converted version will include any script calls used in Control Variables, Conditional Branch or the Script event command.  However, because those script calls will all be RGSS3 commands, you will need to find them all and change them to use JavaScript commands instead.\nA VX converter is a distinct possibility, but likely will not be available prior to MV's release.\nAn XP converter is also on my wish list, but it's going to be quite a bit tougher due to the database, tileset & layering differences.\nI think I've covered everything, but go ahead and ask if you have any more questions."
+    },
+    {
+      "post_id": "js-post-450262",
+      "author": "NeoFantasy",
+      "date": "2015-10-01T08:19:14+0900",
+      "body": "So will map data be replaced with what corresponds in mv's tile set or does it just leave the map blank?"
+    },
+    {
+      "post_id": "js-post-450267",
+      "author": "Sarlecc",
+      "date": "2015-10-01T08:21:58+0900",
+      "body": "Just a question (and not certain if you can answer yet) on the event stuff but: Lets say I have an event that makes a script call to a default script in vx ace, I am guessing I would have to change that script call in the mv version?\nEdit: Aww never mind my reading comprehinsion is bad atm (was up till 3:00 last night)"
+    },
+    {
+      "post_id": "js-post-450275",
+      "author": "richter_h",
+      "date": "2015-10-01T08:26:51+0900",
+      "body": "Question:\nCould you explain what's the 'distinct possibility' of VX to MV converter and why it's unlikely to be available?"
+    },
+    {
+      "post_id": "js-post-450281",
+      "author": "Hudell",
+      "date": "2015-10-01T08:31:18+0900",
+      "body": "Shaz said:\nThe converted version will include all the tags you have added to notes in the database and maps, but as scripts aren't converted, they will do nothing.\nThe converted version will include any script calls used in Control Variables, Conditional Branch or the Script event command.  However, because those script calls will all be RGSS3 commands, you will need to find them all and change them to use JavaScript commands instead.\nClick to expand...\nCan the converter generate a list of all events with a script call?\nThe \"converted map\" will use the same tileset with 32x32 pixels, or will we need to do something else to keep it working (I actually plan on using 64x64 on MV)"
+    },
+    {
+      "post_id": "js-post-450294",
+      "author": "nio kasgami",
+      "date": "2015-10-01T08:45:50+0900",
+      "body": "I do know why you created this shaz : D!\nit's for DAU! <3"
+    },
+    {
+      "post_id": "js-post-450303",
+      "author": "Shaz",
+      "date": "2015-10-01T08:52:27+0900",
+      "body": "lol - I need a \"multiquote all\" button\nNeoFantasy said:\nSo will map data be replaced with what corresponds in mv's tile set or does it just leave the map blank?\nClick to expand...\nIf you convert your tilesets to the correct size according to MV's resource specifications, and place them into the appropriate folders, your maps will look just like they do in Ace - only bigger.\nSarlecc said:\nJust a question (and not certain if you can answer yet) on the event stuff but: Lets say I have an event that makes a script call to a default script in vx ace, I am guessing I would have to change that script call in the mv version?\nEdit: Aww never mind my reading comprehinsion is bad atm (was up till 3:00 last night)\nClick to expand...\nYes, you will need to change all events that make a Script call, as well as those that use the Script option in Control Variables or Conditional Branch.\nrichter_h said:\nQuestion:\nCould you explain what's the 'distinct possibility' of VX to MV converter and why it's unlikely to be available?\nClick to expand...\nIt is a 'distinct possibility' because VX and VX Ace are very similar.  I would not have to make too many mods to the script to create a VX version.  It is unlikely to be available prior to MV's launch because it would have to be written and tested, and I am concentrating on MV stuff which is more important.\nHudell said:\nCan the converter generate a list of all events with a script call?\nThe \"converted map\" will use the same tileset with 32x32 pixels, or will we need to do something else to keep it working (I actually plan on using 64x64 on MV)\nClick to expand...\nThere is no list of events generated, but I was thinking about doing that, and I might still put it in.\nTile size is irrelevant for the converter.  The converted maps will use MV's default 48x48 size.  You will have to provide the resources that match that default.  Converter or no converter, if you want to use something other than 48x48, you will need a plugin.\nnio kasgami said:\nI do know why you created this shaz : D!\nit's for DAU! <3\nClick to expand...\nHaha!  I did consider it, but I'm actually toying with just starting mine again from scratch in MV.  I really just wanted to make a tool that would make it easier to port projects for those who wanted to.  I didn't want \"I have to start over\" to be a reason for people to NOT get MV."
+    },
+    {
+      "post_id": "js-post-450305",
+      "author": "richter_h",
+      "date": "2015-10-01T08:58:14+0900",
+      "body": "Well, that gave me some insight for the possibility of porting games from older RPG Maker versions, although it's only porting the maps. But it doesn't matter, though; there's possibility of no re-creating the maps of VX games in MV.\nThanks for the explanation, Shaz. I know you put more of your efforts in MV right now, but I'll be thankful if you ever consider to make the VX version (I'll be waiting for it TBH\n)"
+    },
+    {
+      "post_id": "js-post-450306",
+      "author": "nio kasgami",
+      "date": "2015-10-01T09:00:17+0900",
+      "body": "AWWW so DAU is now Cross platform c: ?"
+    },
+    {
+      "post_id": "js-post-450307",
+      "author": "NeoFantasy",
+      "date": "2015-10-01T09:00:48+0900",
+      "body": "Thanks for the info Shaz. I was worried that if I did decide to port my project over to MV Thet I'd have to re-map everything."
+    },
+    {
+      "post_id": "js-post-450309",
+      "author": "Shaz",
+      "date": "2015-10-01T09:02:28+0900",
+      "body": "You won't have to remap, and you won't have to redo the database.  All the resources will need to be converted to the correct size, and you will have to \"tweak\" stuff in the database and events if they do script calls.\nThat's about as easy as I could make it"
+    },
+    {
+      "post_id": "js-post-450311",
+      "author": "richter_h",
+      "date": "2015-10-01T09:06:00+0900",
+      "body": "Shaz said:\nYou won't have to remap, and\nyou won't have to redo the database\n.  All the resources will need to be converted to the correct size, and you will have to \"tweak\" stuff in the database and events if they do script calls.\nThat's about as easy as I could make it\nClick to expand...\nThe bold one. Now it really caught me up. Now I wonder how do you make it happens.\nThis is going to be a real good news for my people.\nAnd then, since most of my projects are heavily relied on scripts rather than database..."
+    },
+    {
+      "post_id": "js-post-450317",
+      "author": "Shaz",
+      "date": "2015-10-01T09:08:55+0900",
+      "body": "You and me both, buddy"
+    },
+    {
+      "post_id": "js-post-450376",
+      "author": "Leo Epitav",
+      "date": "2015-10-01T10:13:28+0900",
+      "body": "This Will make Things a lot easier,\nCan't wait."
+    },
+    {
+      "post_id": "js-post-450400",
+      "author": "GrandmaDeb",
+      "date": "2015-10-01T10:54:38+0900",
+      "body": "Okay, so this will not make 32x32 tile maps suddenly work. It will, instead, take the pattern of those maps and re-create those maps in MV. You just need to recreate all of your tilesets in 48x48 size.\n/me wonders if Lunarea wants to remake all of her Arabian Nights tiles......"
+    },
+    {
+      "post_id": "js-post-450404",
+      "author": "Shaz",
+      "date": "2015-10-01T11:01:43+0900",
+      "body": "Or use a plugin to set the tile size to 32x32.  That'd work for\nplaying\nbut it'd look ugly in the editor."
+    },
+    {
+      "post_id": "js-post-450406",
+      "author": "JosephSeraph",
+      "date": "2015-10-01T11:02:48+0900",
+      "body": "this is something i was totally\nnot\nexpecting o_o"
+    },
+    {
+      "post_id": "js-post-450413",
+      "author": "deathsia",
+      "date": "2015-10-01T11:08:58+0900",
+      "body": "I didn't want \"I have to start over\" to be a reason for people to NOT get MV.\nClick to expand...\nIt depends on how much the person's scripts they use with their game work in it.\nA example is scripts that drastically alter how events work or use parallax mapping with pseudo pixel point accuracy.\nOr scripts like the sapphire action system which run based on maps.\nThis will be a fix-all for the most basic of VX Ace based projects but anyone who heavily uses map related scripts will be reluctant to switch anytime soon.\nAlso, please don't see my comments as negative, I'm as excited as everyone else is for this new engine but I'm pointing out the elephant in the room as it were.^^;"
+    },
+    {
+      "post_id": "js-post-450419",
+      "author": "Shaz",
+      "date": "2015-10-01T11:23:09+0900",
+      "body": "Absolutely, and even when people were talking about converting previously (prior to my getting MV or starting work on this), I pointed out that the closer to RTP your game was, the easier it'd be to convert, and the more scripts you'd added, the more difficult it would be (or the more work you'd have to do yourself)."
+    },
+    {
+      "post_id": "js-post-450427",
+      "author": "Carde",
+      "date": "2015-10-01T11:51:47+0900",
+      "body": "Shaz said:\nOr use a plugin to set the tile size to 32x32.  That'd work for\nplaying\nbut it'd look ugly in the editor.\nClick to expand...\nAnnnny word on if one of those will be included in the 37~ plugins coming with the pre-order version?"
+    },
+    {
+      "post_id": "js-post-450436",
+      "author": "everybear",
+      "date": "2015-10-01T12:16:55+0900",
+      "body": "Soooo how will this work if you mostly use parallax backgrounds? Not even concerned with pixel movement or anything else, just regular parallax. Is there a parallax lock plugin yet? I assume it would just export the tile passability."
+    },
+    {
+      "post_id": "js-post-450439",
+      "author": "Shaz",
+      "date": "2015-10-01T12:21:41+0900",
+      "body": "Carde said:\nAnnnny word on if one of those will be included in the 37~ plugins coming with the pre-order version?\nClick to expand...\nI couldn't say - both because I haven't scoured the list of plugins myself yet, and because if I had, I would not be able to reveal what is or isn't there\neverybear said:\nSoooo how will this work if you mostly use parallax backgrounds? Not even concerned with pixel movement or anything else, just regular parallax. Is there a parallax lock plugin yet? I assume it would just export the tile passability.\nClick to expand...\nIf you use parallax and you set passabilities via the tileset, then the passabilities would be converted.  You would need to enlarge your parallax backgrounds.  As for whether there's a parallax lock plugin, see my answer to the previous question about plugins.  Parallaxed maps are something that's so common, I think it would be safe to assume if there's NOT a plugin to allow locking on release, it won't take long for someone to make one."
+    },
+    {
+      "post_id": "js-post-450466",
+      "author": "Monochrome Phantom",
+      "date": "2015-10-01T13:09:20+0900",
+      "body": "richter_h said:\nQuestion:\nCould you explain what's the 'distinct possibility' of VX to MV converter and why it's unlikely to be available?\nClick to expand...\nEven if it isn't made, there's a work around. FenixFyreX made a converter from VX to VXAce that works (I've confirmed it), so then once you've converted your VX project to Ace all you need to do is then use the converter from VXAce to MV.\nSure, it'll be a bit more sloppy, but it should work."
+    },
+    {
+      "post_id": "js-post-450528",
+      "author": "Liak",
+      "date": "2015-10-01T15:55:09+0900",
+      "body": "I think nobody was expecting this.\nThank you, Shaz! Such an important contribution to the community!"
+    },
+    {
+      "post_id": "js-post-450563",
+      "author": "richter_h",
+      "date": "2015-10-01T17:18:52+0900",
+      "body": "Monochrome Phantom said:\nEven if it isn't made, there's a work around. FenixFyreX made a converter from VX to VXAce that works (I've confirmed it), so then once you've converted your VX project to Ace all you need to do is then use the converter from VXAce to MV.\nSure, it'll be a bit more sloppy, but it should work.\nClick to expand...\nAh, that sounds good, too, but the ultimate thing I concern in this matter is the script. I've worked on my own projects for years and the scripts are mostly custom made. I want to minimize my works if I ever move to later tools. Maps and database are okay, though.\nI just don't want to repeat the endless loop of my circle. They tend to update their tools while the projects were barely touched, which led into Eternal project (a.k.a. Never Ending Project/NEP); literally, UNLIMITED UPDATE WORKS.\nSo, if the only way to continue my projects with MV is to reproduce the same modules all over again, I'd rather to stay with the antique one instead. Doesn't matter, people have their own choices, right?\nAnyway, I'll look forward into awesome projects that made with the highly anticipated MV later"
+    },
+    {
+      "post_id": "js-post-450583",
+      "author": "GrandmaDeb",
+      "date": "2015-10-01T18:28:28+0900",
+      "body": "Shaz said:\nOr use a plugin to set the tile size to 32x32.  That'd work for\nplaying\nbut it'd look ugly in the editor.\nClick to expand...\nI LOVE ugly editors! I LOVE ugly editors!\nSo I can import game, then use script/plugin to set tile size, then Bob's your uncle!"
+    },
+    {
+      "post_id": "js-post-450600",
+      "author": "gnmmarechal",
+      "date": "2015-10-01T19:18:15+0900",
+      "body": "This might be just what I need."
+    },
+    {
+      "post_id": "js-post-450647",
+      "author": "Schlangan",
+      "date": "2015-10-01T21:56:11+0900",
+      "body": "I'll look at how the converter is done for VXAce, and i'll try to do it for XP if I got some time after the release of MV. Who knows, it might actually work ^^"
+    },
+    {
+      "post_id": "js-post-450664",
+      "author": "Ludicrousda3ve",
+      "date": "2015-10-01T22:16:01+0900",
+      "body": "Shaz, you're my hero.\nThis is going to save\nso much\ntime. As long as JS-HTML5-NWF for Wii U works out halfway smoothly, things are going to be extremely beautiful."
+    },
+    {
+      "post_id": "js-post-450681",
+      "author": "Hudell",
+      "date": "2015-10-01T22:39:52+0900",
+      "body": "GrandmaDeb said:\nI LOVE ugly editors! I LOVE ugly editors!\nSo I can import game, then use script/plugin to set tile size, then Bob's your uncle!\nClick to expand...\nThe plugin could also let you use a different tileset file for the editor and the game, so it doesn't look that bad. You'd see a 48x48 version of the tileset on the editor, but run the game with a 32x32 tileset."
+    },
+    {
+      "post_id": "js-post-450783",
+      "author": "Paoly",
+      "date": "2015-10-02T01:24:39+0900",
+      "body": "So, if I convert one VX Ace project, will it look blurry on MV for the 1.5 upscale? Isn't there an option to play an MV project at the same resolution as VX Ace?"
+    },
+    {
+      "post_id": "js-post-450945",
+      "author": "Tigrean",
+      "date": "2015-10-02T05:12:25+0900",
+      "body": "Shaz said:\nSo I can talk a bit about the converter, but everything else about MV that hasn't yet been announced is still protected by NDA.\nThe converter is a script that you can put into VX Ace.  It is not an MV plug-in.\nWith the script active, when you playtest the game, it will create an mv-data folder.\nIt will convert your database and all your maps and events to MV format and save new files to the mv-data folder (it does not modify your Ace project at all).\nYou can copy all of these files into the data folder of a new MV project and MV will be able to read them.\nIt will NOT convert resources.  You will have to do that manually.\nIt will NOT convert scripts.  You will have to find MV plugin equivalents, see if someone can convert the scripts for you, or use an alternative.\nThe converted version will include all the tags you have added to notes in the database and maps, but as scripts aren't converted, they will do nothing.\nThe converted version will include any script calls used in Control Variables, Conditional Branch or the Script event command.  However, because those script calls will all be RGSS3 commands, you will need to find them all and change them to use JavaScript commands instead.\nA VX converter is a distinct possibility, but likely will not be available prior to MV's release.\nAn XP converter is also on my wish list, but it's going to be quite a bit tougher due to the database, tileset & layering differences.\nI think I've covered everything, but go ahead and ask if you have any more questions.\nClick to expand...\nWhere is this scrip I really would like to get so I can add it to my project now?"
+    },
+    {
+      "post_id": "js-post-450955",
+      "author": "Vox Novus",
+      "date": "2015-10-02T05:25:41+0900",
+      "body": "It's part of the pre-order bonuses for MV (at least currently)."
+    },
+    {
+      "post_id": "js-post-450957",
+      "author": "Andar",
+      "date": "2015-10-02T05:27:05+0900",
+      "body": "Paoly said:\nSo, if I convert one VX Ace project, will it look blurry on MV for the 1.5 upscale? Isn't there an option to play an MV project at the same resolution as VX Ace?\nClick to expand...\nBoth variants are possible, and both depend on what you do and like.\nYou need to scale the tilesets manually, but there are different programs for scaling, and some give very good results.\nOr you could put in a plugin to change MV to use 32x32 grid, keeping exactly the same resources - it would just look bad in the editor as that can't be changed.\nTigrean said:\nWhere is this scrip I really would like to get so I can add it to my project now?\nClick to expand...\nNowhere - it is currently part of the preorder package and will not be available until that release, and while it was confirmed that it will be released for free later, that will probably take some days after release of RMMV."
+    },
+    {
+      "post_id": "js-post-450970",
+      "author": "Tigrean",
+      "date": "2015-10-02T05:41:59+0900",
+      "body": "Vox Novus said:\nIt's part of the pre-order bonuses for MV (at least currently).\nClick to expand...\nCool does that include the steam preorder or do I have to get it from the site?"
+    },
+    {
+      "post_id": "js-post-450975",
+      "author": "Vox Novus",
+      "date": "2015-10-02T05:48:20+0900",
+      "body": "The pre-orders seem to be the same regardless of which you get; although if you buy from this site you will get a steam version as well."
+    },
+    {
+      "post_id": "js-post-451143",
+      "author": "Shaz",
+      "date": "2015-10-02T10:58:50+0900",
+      "body": "I think I'm okay to say this, as I've seen comments to a similar effect in the main thread.\nI believe it will come packaged with both versions of MV, even though it's not an MV plugin, AND will be available for separate, free download.\nPaoly said:\nSo, if I convert one VX Ace project, will it look blurry on MV for the 1.5 upscale? Isn't there an option to play an MV project at the same resolution as VX Ace?\nClick to expand...\nDepending on what converter you use.  The one I've seen gives a pretty nice result, but doesn't convert to 1.5 - only 1.6 (because you can't have half tiles).\nHudell said:\nThe plugin could also let you use a different tileset file for the editor and the game, so it doesn't look that bad. You'd see a 48x48 version of the tileset on the editor, but run the game with a 32x32 tileset.\nClick to expand...\nThe plugin Archeia used took a TileD map with a 16x16 tileset.  I'd like a plugin that will let you specify what size your tiles are, so you don't have to scale any graphics and can stick with 32x32.  But that'd look weird in the editor.  So I was thinking along the same lines - have a scaled-up version of the tiles just for the editor, and a smaller version for the finished product, and the plugin would use the smaller version.  It's a lot of messing around, and you'd have to remove those resources prior to sharing your game, but at least it means you'd still be able to use the editor to adjust your maps and not require an external program.\nSchlangan said:\nI'll look at how the converter is done for VXAce, and i'll try to do it for XP if I got some time after the release of MV. Who knows, it might actually work ^^\nClick to expand...\nIt's harder with XP, because the tileset format is different, the map editor is different, and the database is really different - as far as elements, resistances, allocating equipment.  You'd have to make some decisions as to how you're going to re-interpret stuff."
+    },
+    {
+      "post_id": "js-post-451239",
+      "author": "Liak",
+      "date": "2015-10-02T15:53:47+0900",
+      "body": "I think the upscaling question referred to your converter itself. Right, Paoly? So maybe we need to clarify that Shaz's converter doesn't turn your VX Ace project into an MV project with all graphics upscaled. See, what maps really are is they are a file with data in it. I have no idea how that data is actually structured, but for the time being, let's imagine it as a text document that defines coordinates and tile IDs. VX Ace reads that and turns it into a map. MV does the same thing, but with a different data structure. Shaz's converter merely changes the text file's data structure from the VX Ace one to the MV one. It does a similar thing for the database and events, but graphics are not touched at all. In fact, your map in MV will look horrible if you use a MV tileset that is structured differently than your VX Ace. You need to re-create your VX Ace tileset for MV (you know, put trees where there are trees, rocks where there are rocks etc.).\nWas that the question?"
+    },
+    {
+      "post_id": "js-post-451245",
+      "author": "Shaz",
+      "date": "2015-10-02T15:59:52+0900",
+      "body": "No, I already made it clear in the first post that resources are NOT converted.\nOnly database, maps & events.  No graphics."
+    },
+    {
+      "post_id": "js-post-451344",
+      "author": "Tigrean",
+      "date": "2015-10-02T22:19:37+0900",
+      "body": "SO pretty much all the maps databases and events are converted but I will have to pull the graphics from the VX ace one and move them whhere they need to be in MV and also find someone who can convert the Ruby language scripts into Java, Any one willing to do that for me here?"
+    },
+    {
+      "post_id": "js-post-451411",
+      "author": "Schlangan",
+      "date": "2015-10-03T00:16:15+0900",
+      "body": "Shaz said:\nIt's harder with XP, because the tileset format is different, the map editor is different, and the database is really different - as far as elements, resistances, allocating equipment.  You'd have to make some decisions as to how you're going to re-interpret stuff.\nClick to expand...\nStill, it might be an interesting challenge for me, and it could be helpful for the community, so I'll try\nThe thing is unlike you I'll have to wait for MV to be out"
+    },
+    {
+      "post_id": "js-post-451599",
+      "author": "Shaz",
+      "date": "2015-10-03T07:25:52+0900",
+      "body": "Tigrean said:\nSO pretty much all the maps databases and events are converted but I will have to pull the graphics from the VX ace one and move them whhere they need to be in MV and also find someone who can convert the Ruby language scripts into Java, Any one willing to do that for me here?\nClick to expand...\nYou would not only have to move all the resources - you would have to resize them all to meet MV's specifications.\nAs for converting scripts, this is not the place or the time to be asking for anyone to do that (and probably nobody would volunteer either, considering how many you may or may not have).  AFTER MV is released, there will be an MV PlugIn Requests forum, where you can ask that."
+    },
+    {
+      "post_id": "js-post-451691",
+      "author": "Tigrean",
+      "date": "2015-10-03T10:50:53+0900",
+      "body": "Ok thanks again."
+    },
+    {
+      "post_id": "js-post-452156",
+      "author": "heroscratch",
+      "date": "2015-10-04T06:44:45+0900",
+      "body": "Shaz said:\nYou would not only have to move all the resources - you would have to resize them all to meet MV's specifications.\nAs for converting scripts, this is not the place or the time to be asking for anyone to do that (and probably nobody would volunteer either, considering how many you may or may not have).  AFTER MV is released, there will be an MV PlugIn Requests forum, where you can ask that.\nClick to expand...\nSo would simply stretching the image to fit a 42x42 from 32x32 look real awkward/ugly in game? It's really hard for me to tell a difference since I can't look at MV resources side by side. If all my old ACE gfx become ugly when I re-size them, I'll just avoid MV and continue what I'm doing with the Unreal Engine. I only considered MV because it uses Javascript; which I'm actually familiar with unlike ruby."
+    },
+    {
+      "post_id": "js-post-452158",
+      "author": "Andar",
+      "date": "2015-10-04T06:57:36+0900",
+      "body": "There are different ways to resize, including specialized program with optimized formulae.\nHowever, the basic problem is that the conversion 32->48 requires three pixels for each of two original pixels - and it depends on the formula what color is suddenly selected for the new pixel between the original.\nThere is no general answer possible, some tiles look good when resized, others get blurry, and a different formula gives different results.\nYou'll have to test the conversion before you can really decide on quality."
+    },
+    {
+      "post_id": "js-post-452162",
+      "author": "heroscratch",
+      "date": "2015-10-04T07:02:30+0900",
+      "body": "Andar said:\nThere are different ways to resize, including specialized program with optimized formulae.\nHowever, the basic problem is that the conversion 32->48 requires three pixels for each of two original pixels - and it depends on the formula what color is suddenly selected for the new pixel between the original.\nThere is no general answer possible, some tiles look good when resized, others get blurry, and a different formula gives different results.\nYou'll have to test the conversion before you can really decide on quality.\nClick to expand...\nYeah, that's what I'm thinking. Hopefully MV launches with a trial. Till I see how it looks in game I wouldn't be happy with the idea of throwing down $80. Because while you can convert your project, it's more of a, 'you can KINDA convert your project. It just won't look and function well' (assuming you have ruby scripts, not that it matters much to me anymore, but it might to some)."
+    },
+    {
+      "post_id": "js-post-452164",
+      "author": "Andar",
+      "date": "2015-10-04T07:08:01+0900",
+      "body": "you don't need MV to check conversions - you'll convert them in a different program anyway, and then you can check the tilesheets directly.\nThe B-E tiles will work that way without problems, and even the autotiles will be able to get you a first guess.\nIt might still be that there'll problems with the resized autotiles due to the automapping, but everything else can be checked without MV."
+    },
+    {
+      "post_id": "js-post-452185",
+      "author": "Shaz",
+      "date": "2015-10-04T08:25:53+0900",
+      "body": "Without these scripts, you would not be able to convert your project at all.  \"You can KINDA convert your project\" is a step up imo\nYou can take that step, or not.\nYesterday I converted my game and as a trial I grabbed all the tilesets for one area and just increased them to 150% in Paint.NET - if you hunted around you'd probably find better programs to use to resize them.  They actually look better than I expected (someone with an eye for art would no doubt find flaws all over the place).  There's a bit of an issue with autotile tree tops, where the middle is just a single colour, but that wouldn't be difficult to fix.  I'm now thinking that I may not have to get all my art redone after all."
+    },
+    {
+      "post_id": "js-post-453879",
+      "author": "heroscratch",
+      "date": "2015-10-07T12:06:16+0900",
+      "body": "Shaz said:\nWithout these scripts, you would not be able to convert your project at all.  \"You can KINDA convert your project\" is a step up imo\nYou can take that step, or not.\nYesterday I converted my game and as a trial I grabbed all the tilesets for one area and just increased them to 150% in Paint.NET - if you hunted around you'd probably find better programs to use to resize them.  They actually look better than I expected (someone with an eye for art would no doubt find flaws all over the place).  There's a bit of an issue with autotile tree tops, where the middle is just a single colour, but that wouldn't be difficult to fix.  I'm now thinking that I may not have to get all my art redone after all.\nClick to expand...\nSorry, I'm really not trying to downplay what you've made. It's honestly pretty cool; just not sure if it'd be something I could use or not. After giving some thought, I might just grab MV anyways to see if I can streamline 2d rpg style games better with this than with something like Construct 2."
+    },
+    {
+      "post_id": "js-post-453883",
+      "author": "Shaz",
+      "date": "2015-10-07T12:13:44+0900",
+      "body": "Yeah, I didn't take it that way at all, so it's okay\nThis converter will be suitable for some people and some projects, but not for others. And that's okay"
+    },
+    {
+      "post_id": "js-post-454024",
+      "author": "Ludicrousda3ve",
+      "date": "2015-10-07T21:29:33+0900",
+      "body": "Shaz said:\nWithout these scripts, you would not be able to convert your project at all.  \"You can KINDA convert your project\" is a step up imo\nYou can take that step, or not.\nYesterday I converted my game and as a trial I grabbed all the tilesets for one area and just increased them to 150% in Paint.NET - if you hunted around you'd probably find better programs to use to resize them.  They actually look better than I expected (someone with an eye for art would no doubt find flaws all over the place).  There's a bit of an issue with autotile tree tops, where the middle is just a single colour, but that wouldn't be difficult to fix.  I'm now thinking that I may not have to get all my art redone after all.\nClick to expand...\nI've done the same, albeit with Gimp. Looks good! Of course there's time until I can see how it all works out in MV, but visually it's fine (maybe a few passes of polish?), and they tested well in TileD."
+    },
+    {
+      "post_id": "js-post-454836",
+      "author": "Tome571",
+      "date": "2015-10-09T07:55:03+0900",
+      "body": "So, are any of the assets from Ace going to be in MV? If you used standard tilesets from Ace, are there already going to be the \"converted\" versions in MV that would help streamline the conversion? In anticipation, I have been doing maps and place holders with all Ace resources and I'm curious if I should keep working this way to streamline the conversion. Thanks!"
+    },
+    {
+      "post_id": "js-post-457597",
+      "author": "OtakuD50",
+      "date": "2015-10-13T16:58:13+0900",
+      "body": "This sounds awesome.  I just have one concern: How does this work with default animations?  Does it convert animations at all?\nIf so, I assume it will make copies of the graphics (that you have to manually convert), so all your old animations should work fine, but will your imported list of animations overwrite MV's default animation slots?\nNot that big a deal since I'm fine with redoing animations (and I do like playing around with default animations and new animation graphics); I like to mentally prepare how much work I'll have to put in.  Just the fact that I won't have to redo a loooooot of events and retype dialogue and complex branches saves a significant amount of time, so I appreciate that."
+    },
+    {
+      "post_id": "js-post-457600",
+      "author": "Shaz",
+      "date": "2015-10-13T17:08:32+0900",
+      "body": "It does not do anything with resources.\nEVERYTHING will overwrite MV's default stuff. You are porting your project to a new one, not adding to an existing one.\nIf you want to keep MV's animations and not your own from Ace, just don't copy the Animations.json file over. If you want them both, do the port, then create another new MV project and copy the animations over one by one."
+    },
+    {
+      "post_id": "js-post-457609",
+      "author": "OtakuD50",
+      "date": "2015-10-13T17:26:35+0900",
+      "body": "Shaz said:\nIt does not do anything with resources.\nEVERYTHING will overwrite MV's default stuff. You are porting your project to a new one, not adding to an existing one.\nIf you want to keep MV's animations and not your own from Ace, just don't copy the Animations.json file over. If you want them both, do the port, then create another new MV project and copy the animations over one by one.\nClick to expand...\nThanks; exactly what I wanted to know (and thanks for the tip).\nSo from this, my understanding is that it doesn't make copies of the resources, but it maintains the same references to resources... so all I need to do is have correctly-named resources in the appropriate project folders?\nHow does this work regarding RTP files?  If, say, I were using an RTP \"actor1\" in my VX Ace project, would the converted project look for an \"actor1\" in the MV RTP, or an imported \"actor1?\"\nEdit: Probably should've watched the video about the converter before asking questions.  I got used to resources being added automatically to my VX Ace project just by putting them in my project folders, but it seems I'll have to add each resource to the project manually for them to show up."
+    },
+    {
+      "post_id": "js-post-457621",
+      "author": "Shaz",
+      "date": "2015-10-13T17:47:29+0900",
+      "body": "That's right. As Archeia showed in the video, you can just copy your entire resource folders over to your MV project, use the plugin for tile size, and if you have no custom scripts and no script references in event commands, you will be able to run your game.\nYou'll have to do a little bit more to convert the tilesets to 48x48 (after copying the originals to a different folder) if you want to modify your maps in the editor.\nRTP resources - you would need to copy them from the RTP folders if you wanted to use the Ace versions. You can either export through the Ace resource manager, which would be painfully slow, or just go to where the RTP is installed on your computer and copy/paste the whole lot. The manual, slow method might be better if you are only using SOME RTP resources."
+    },
+    {
+      "post_id": "js-post-458024",
+      "author": "HeroicJay",
+      "date": "2015-10-14T06:38:18+0900",
+      "body": "So that's acceptable, then? Using VX Ace RTP files with MV projects?\nThe reason I ask: though I haven't seen the whole MV set, the icons that come with VX Ace fit the style and tone of my project pretty well (MUCH better than what I've so far seen of the MV icons) and, barring me finding an artist willing to redraw every single one (I don't have enough faith in my graphical art skills for that) or MV having similar icons that just haven't been showcased yet, I'd prefer to stick with those or personally-made variants of them."
+    },
+    {
+      "post_id": "js-post-458034",
+      "author": "Shaz",
+      "date": "2015-10-14T06:53:19+0900",
+      "body": "I don't really know how many other ways we can say this.\nIF you have a licensed copy of VX Ace AND a licensed copy of MV, you can use their resources interchangeably.\nIf you do not own Ace, then you cannot use its resources in ANY maker."
+    },
+    {
+      "post_id": "js-post-458038",
+      "author": "HeroicJay",
+      "date": "2015-10-14T06:56:11+0900",
+      "body": "Okay, sorry, I haven't read everything on this forum yet. And that's what I wanted to know, thanks."
+    },
+    {
+      "post_id": "js-post-458058",
+      "author": "Sharm",
+      "date": "2015-10-14T07:18:14+0900",
+      "body": "We're not frustrated with you in particular, don't worry, it just gets asked a lot.  A LOT.  Even more popular than \"why can't I get my character to move?\" and \"how do I make an event image bigger than 32x32?\"  (Sorry, this is only funny if you've been here a bit.  I'll stop joking now.)\nAndar's starting point for new users\nis highly recommended."
+    },
+    {
+      "post_id": "js-post-458063",
+      "author": "HeroicJay",
+      "date": "2015-10-14T07:23:39+0900",
+      "body": "Thanks, and there is some useful stuff there, but while I may not be anything approaching a regular on this forum, I am not exactly new to RPG Maker."
+    },
+    {
+      "post_id": "js-post-458068",
+      "author": "Shaz",
+      "date": "2015-10-14T07:28:41+0900",
+      "body": "see, we don't know that unless you tell us"
+    },
+    {
+      "post_id": "js-post-458328",
+      "author": "NeoSoulGamer",
+      "date": "2015-10-14T20:16:54+0900",
+      "body": "Shaz. Fantastic job! Thank you VERY much for this. I was a little skeptical of how the conversion would work. This is one heck of a time saver. What I'm most excited about is the Class tab and parameter growths. For anyone who has created their own growth charts for multiple characters (Like I've done), this tool is invaluable."
+    },
+    {
+      "post_id": "js-post-464053",
+      "author": "TheOddFellow",
+      "date": "2015-10-22T00:51:28+0900",
+      "body": "From what I've read so far, I should have little problem converting my game to MV. But, I still have a question.\nIf I used code within the common events, would it convert those? Or, will I have to mess with every part of it to get the scripted bits to work?"
+    },
+    {
+      "post_id": "js-post-464066",
+      "author": "DarknessFalls",
+      "date": "2015-10-22T01:03:48+0900",
+      "body": "I dont have any ace games going at the moment so I wont be making any conversions but this does look cool"
+    },
+    {
+      "post_id": "js-post-464088",
+      "author": "GrandmaDeb",
+      "date": "2015-10-22T01:25:39+0900",
+      "body": "So once the game is converted (from 32x32 tiles), can new maps be added with MV tiles (48x48), or is it an all or nothing deal?"
+    },
+    {
+      "post_id": "js-post-464110",
+      "author": "DarknessFalls",
+      "date": "2015-10-22T01:37:10+0900",
+      "body": "GrandmaDeb said:\nSo once the game is converted, can new maps be added with MV tiles, or is it an all or nothing deal?\nClick to expand...\nthats why you convert, to continue building"
+    },
+    {
+      "post_id": "js-post-464256",
+      "author": "GrandmaDeb",
+      "date": "2015-10-22T04:05:35+0900",
+      "body": "DarknessFalls said:\nthats why you convert, to continue building\nClick to expand...\nor maybe you have to use all 32x32 tiles, as opposed to having maps with differing tile sizes, but still you can use your Ace game in MV. =]\nThanks though, I tried to clarify my question."
+    },
+    {
+      "post_id": "js-post-464363",
+      "author": "Shaz",
+      "date": "2015-10-22T06:07:19+0900",
+      "body": "TheOddFellow said:\nFrom what I've read so far, I should have little problem converting my game to MV. But, I still have a question.\nIf I used code within the common events, would it convert those? Or, will I have to mess with every part of it to get the scripted bits to work?\nClick to expand...\nNO scripts or script calls will be converted.\nOP said:\nThe converted version will include any script calls used in Control Variables, Conditional Branch or the Script event command. However, because those script calls will all be RGSS3 commands, you will need to find them all and change them to use JavaScript commands instead.\nClick to expand...\nOn request I have added a list of all commands that use script calls. You can use that to find them, and determine which ones need to be changed. But you will have to make the change yourself.\nGrandmaDeb said:\nSo once the game is converted (from 32x32 tiles), can new maps be added with MV tiles (48x48), or is it an all or nothing deal?\nClick to expand...\nYou can continue development in MV after the conversion. If you convert all your resources to the MV size, you can just continue to work as usual. But if you're going to stick with the 32x32 size and use the Change Tile Size plugin, any new tilesets you add, you'll need to add 2 versions - one for the editor (at 48x48, so you can continue mapping in MV) and one for playing (at 32x32)"
+    },
+    {
+      "post_id": "js-post-464972",
+      "author": "zadck",
+      "date": "2015-10-23T00:59:42+0900",
+      "body": "So I have a concern that will otherwise prevent me from ever transferring to MV. (That said, thank you so much for this converter! I'd never even consider MV otherwise! You're a hero.)\nMy database in VX Ace is already expanded. I need at least 3000 skills for a project I'd love to transfer and go mobile with, but MV has a cap of 2000. I have other content that I'd love to convert that is over the 999 in Ace, but under 2000.\nIf I use this converter, what will happen to those that are over the 2000 limit? If someone made a database breaker for MV, do you think they would properly transfer? And what would happen to things under 2000, but past 999--would those transfer properly?\nThis is incredible work and has me far more excited about MV, but I can't use it if the converter can't handle my already expanded database."
+    },
+    {
+      "post_id": "js-post-465106",
+      "author": "DarknessFalls",
+      "date": "2015-10-23T04:34:02+0900",
+      "body": "zadck said:\nSo I have a concern that will otherwise prevent me from ever transferring to MV. (That said, thank you so much for this converter! I'd never even consider MV otherwise! You're a hero.)\nMy database in VX Ace is already expanded. I need at least 3000 skills for a project I'd love to transfer and go mobile with, but MV has a cap of 2000. I have other content that I'd love to convert that is over the 999 in Ace, but under 2000.\nIf I use this converter, what will happen to those that are over the 2000 limit? If someone made a database breaker for MV, do you think they would properly transfer? And what would happen to things under 2000, but past 999--would those transfer properly?\nThis is incredible work and has me far more excited about MV, but I can't use it if the converter can't handle my already expanded database.\nClick to expand...\n3k skills? Hahaha. thats awesome. you can use javascript to then use ajax to publish the additional skills to a database else where."
+    },
+    {
+      "post_id": "js-post-465168",
+      "author": "zadck",
+      "date": "2015-10-23T05:39:05+0900",
+      "body": "DarknessFalls said:\n3k skills? Hahaha. thats awesome. you can use javascript to then use ajax to publish the additional skills to a database else where.\nClick to expand...\nIt's been an, ah, big project, haha. Created a pretty unique battle system that is sort of like if you took a GCD Tab Targeting MMORPG and made it into a turn based game. It requires, well, a lot of skills, haha.\nI'm going to set aside techy pride to say that I have no experience with Javascript or Ajax and am not entirely sure what you mean. Could you elaborate? I'm very well versed in RPG Maker VX Ace's intricacies, and some Ruby, but MV will be a learning experience for me that I'm excited for. Thank you for your thoughts!\nOn the same note: If this converter can't handle 3000 or more skills, would it still work to convert a database with 1000-2000 skill entries? If I tried it with a database above 2000, will it just drop the rest, or not work at all? I'm looking forward to trying to test this all ASAP when it launches tomorrow, but I'm eager to know if I'll be able to continue some of my larger projects or not.\nThanks again for any insight!"
+    },
+    {
+      "post_id": "js-post-465170",
+      "author": "DarknessFalls",
+      "date": "2015-10-23T05:41:14+0900",
+      "body": "zadck said:\nOn the same note: If this converter can't handle 3000 or more skills, would it still work to convert a database with 1000-2000 skill entries? If I tried it with a database above 2000, will it just drop the rest, or not work at all? I'm looking forward to trying to test this all ASAP when it launches tomorrow, but I'm eager to know if I'll be able to continue some of my larger projects or not.\nClick to expand...\nyes it will drop the rest."
+    },
+    {
+      "post_id": "js-post-465172",
+      "author": "zadck",
+      "date": "2015-10-23T05:44:45+0900",
+      "body": "DarknessFalls said:\nyes it will drop the rest.\nClick to expand...\nBut it should be able to transfer anything under the 2000, then? Like if I had ~1500 or something? That would be very acceptable if that's the case!\nI was so ready to never want to change to MV, but as scripts are recreated over time the appeal of this engine will end up being huge, expecially with this converter."
+    },
+    {
+      "post_id": "js-post-465173",
+      "author": "Andar",
+      "date": "2015-10-23T05:44:51+0900",
+      "body": "zadck said:\nOn the same note: If this converter can't handle 3000 or more skills, would it still work to convert a database with 1000-2000 skill entries? If I tried it with a database above 2000, will it just drop the rest, or not work at all? I'm looking forward to trying to test this all ASAP when it launches tomorrow, but I'm eager to know if I'll be able to continue some of my larger projects or not.\nClick to expand...\nI don't think the export will be a problem - Ace could use larger databases after a database breaker because there was no technical limit but a limit on the editor function to create the entries. And unless there were special problems I don't think that Shaz artificially limited the export.\nUnfortunately no one knows yet if the MV editor can load the additional data, because no one knows where the limit is placed in the MV editor.\nIf it is similiar, then most probably there will be database breaker scripts for MV and this will work.\nIf there is a technical problem and limitation (cause by the mobile export for example), then the larger data would not be usable.\nIt's about 20 hours before someone other than betatesters under NDA can test that..."
+    },
+    {
+      "post_id": "js-post-465187",
+      "author": "Shaz",
+      "date": "2015-10-23T05:51:03+0900",
+      "body": "@Darkness Falls, please do not answer on my behalf. You haven't seen the converter, and your answer is wrong.\nThat means the conversation that's happened over the last 6 posts have all been going down the wrong path and now we have to backtrack to the first of those 6 and go off in a different direction.\nThe converter will convert whatever you have in your database - it is not restricted by the limits in the editor. So YES, it WILL convert your 3000 skills. NO, it will NOT cut them off past the 999 or the 2000.\nWhat MV does with it might be a different story.\nHow do you prevent Ace chopping off the extra 2000 skills? How do you get the extra skills in there, if the editor won't let you do it? If you needed a script in Ace to allow more than 999, you will probably need a plugin in MV to allow more than 2000 - to be honest I've never looked at limit breaker scripts, either for stats OR the database, so I would only be guessing how they work.\n@zadck if you want to send me your Skills.rvdata2 file, I can run it through the converter and pull it into MV and let you know for sure. Or you could wait until tomorrow and try it yourself."
+    },
+    {
+      "post_id": "js-post-465197",
+      "author": "Andar",
+      "date": "2015-10-23T06:00:53+0900",
+      "body": "Shaz said:\nHow do you prevent Ace chopping off the extra 2000 skills? How do you get the extra skills in there, if the editor won't let you do it? If you needed a script in Ace to allow more than 999, you will probably need a plugin in MV to allow more than 2000 - to be honest I've never looked at limit breaker scripts, either for stats OR the database, so I would only be guessing how they work.\nClick to expand...\nI have tried the limit breaker, that's what I based my answer above on.\nThe database itself can handle unlimited numbers, the limit is in the allowed number of the \"Change Maximum\" button.\nYou use a limit breaker script to change the numbers in the files, after that the editor can handle the numbers as long as you never using the change maximum button. The breaker script is then removed again.\nThe question is whether MV does the same or not"
+    },
+    {
+      "post_id": "js-post-465227",
+      "author": "Shaz",
+      "date": "2015-10-23T06:31:54+0900",
+      "body": "Okay, zadck sent me his skills file with 3000 entries. They were all processed by the converter, and are totally all visible and usable in MV.\nSo, not an issue."
+    },
+    {
+      "post_id": "js-post-465233",
+      "author": "zadck",
+      "date": "2015-10-23T06:38:55+0900",
+      "body": "Shaz said:\nOkay, zadck sent me his skills file with 3000 entries. They were all processed by the converter, and are totally all visible and usable in MV.\nSo, not an issue.\nClick to expand...\nThank you so much for the help and confirmation!This also means that this converter should be capable of breaking the database limit for MV if you break it in a VX Ace project and then convert. This may be a good thing to do if you know a project you're starting is going to require more than 2000 of something, until a database breaker for MV comes out. (But do beware that much larger databases can result in load time issues in certain functions in VX Ace, especially developer ones; We'll see how that plays out with the improved MV!)\nThanks again, and looking forward to MV more than ever now!"
+    },
+    {
+      "post_id": "js-post-465831",
+      "author": "zadck",
+      "date": "2015-10-23T13:26:09+0900",
+      "body": "I have some issues to report having had the chance to try it out myself now.\nTLDR:\nIt worked when I didn't transfer my converted system file, system.json. Types is also new (Skills, weapons, elements, ect) as separated from Terms, and as such seem to have to be made remade (Are terms usually held in the system file for VX Ace?)\nI did extensive troubleshooting, and apologize if this is difficult to read. I can clarify anything, and am willing to try anything to fix it as well.  I also learned that maps don't seem to be copying over correctly unless there is already a map of that number in the editor. This causes some issues with map organization, but is there is a simple work around it would seem, and this is how map file transfers work between VX Ace games anyway.\nUpon initial conversion of my project, none of the files seemed to work successfully. I got an \"unable to read file skills.json\" upon opening the game in the editor, and actor one upon opening in HTML, and upon taking any individual file out of the MV project I transferred to it would give me a read error.\nTo verify that the converter was working at all, I made a new VX Ace project and transferred that. This worked!\nTo verify that my skills file would be able to transfer (Because you'd just done that, so it must work!) I dropped it, and only it, into the new RPG VX Ace project, ran the converter again, and then moved the new files over. The skills loaded this time!\nI then tried taking my entire data folder from the old VX Ace project and dumping it into the new VX Ace project, then running the converter again. These .json's did not work, this time alterting me with the system.json. I did this again, and it also told me of failure trying to load system.json.\nI decided to delete my scripts file from the old VX Ace project, and copy in one from a new VX Ace project. My thinking was that this was the only thing different from the old and new VX Ace project that was able to transfer. I then did a transfer again. This did not work, again failing to load system.json.\nIn a last ditch effort to make things work, I began to convert each file one at a time into a new VX Ace project, then transfer them to a new MV project. This was working. I then decided to transfer files that I'd converted before, one-by-one. This worked too! I then decided to transfer several at once--this caused the system.json to fail to be read again. I replaced system.json with the one that had been working before when transferring files individually, as I'd transferred a converted system.json. This made things work again.\nFinally seeing the trend, I decided to transfer all of the converted files I had over to the MV project except for system.json. This worked.\nConclusion:\nBecause of the major changes with the system tab, you'll have to redo that if you edited it extensively in your old VX Ace project. This may be why the brand new VX Ace project worked to transfer, but the old one did not, as I'd done edits to it. But that's all pretty minor stuff anyway. Also maps need to have files made in the editor when transferred to appear properly, but that's how map transferring works between VX Ace games anyway. I don't know why I got errors for actor.json and skills.json and item.json, however.\nOn a potentially unrelated note, I'm working on an older computer, and it seems to be crashing occasionally under the heavy load of my transferred database. Other MV projects work fine."
+    },
+    {
+      "post_id": "js-post-465860",
+      "author": "Shaz",
+      "date": "2015-10-23T13:45:01+0900",
+      "body": "That is interesting - several of us have used the converter successfully, and I have been checking with each new release to see what things might have changed that could require changes to the converter, and have not come across anything.\nWould you consider zipping up your whole Ace project for me so I can run the converter over it myself?  It's always possible that there are issues that we haven't come across simply due to projects being set up differently."
+    },
+    {
+      "post_id": "js-post-465910",
+      "author": "zadck",
+      "date": "2015-10-23T14:16:45+0900",
+      "body": "Shaz said:\nThat is interesting - several of us have used the converter successfully, and I have been checking with each new release to see what things might have changed that could require changes to the converter, and have not come across anything.\nWould you consider zipping up your whole Ace project for me so I can run the converter over it myself?  It's always possible that there are issues that we haven't come across simply due to projects being set up differently.\nClick to expand...\nSure! I'll go ahead and PM it to you."
+    },
+    {
+      "post_id": "js-post-466268",
+      "author": "yoda",
+      "date": "2015-10-23T19:29:48+0900",
+      "body": "Now that the game is out, how do we get acces to this script?"
+    },
+    {
+      "post_id": "js-post-466293",
+      "author": "Shaz",
+      "date": "2015-10-23T19:48:38+0900",
+      "body": "It is in the RPGmakerWebPlugins.zip folder, in the subfolder with my name."
+    },
+    {
+      "post_id": "js-post-466309",
+      "author": "yoda",
+      "date": "2015-10-23T20:02:24+0900",
+      "body": "yoda said:\nNow that the game is out, how do we get acces to this script?\nClick to expand...\nThank you."
+    },
+    {
+      "post_id": "js-post-466972",
+      "author": "Disruption",
+      "date": "2015-10-24T02:51:59+0900",
+      "body": "Shaz said:\nIt is in the RPGmakerWebPlugins.zip folder, in the subfolder with my name.\nClick to expand...\nHi!\nWere is that \"\nRPGmakerWebPlugins.zip folder\"? I'm trying to convert my existing ACE project to MV"
+    },
+    {
+      "post_id": "js-post-466990",
+      "author": "slimmmeiske2",
+      "date": "2015-10-24T02:59:48+0900",
+      "body": "In the mail you got with the download link to MV."
+    },
+    {
+      "post_id": "js-post-467000",
+      "author": "Disruption",
+      "date": "2015-10-24T03:04:34+0900",
+      "body": "I bought the game through steam, so I didn't get any email"
+    },
+    {
+      "post_id": "js-post-467015",
+      "author": "kaukusaki",
+      "date": "2015-10-24T03:10:07+0900",
+      "body": "*does happy dance* I can't wait to upgrade everything! My fellows in the office think something's wrong with my face because I'm actually smiling (I rarely do lolz). Yay"
+    },
+    {
+      "post_id": "js-post-467017",
+      "author": "slimmmeiske2",
+      "date": "2015-10-24T03:11:25+0900",
+      "body": "Disruption said:\nI bought the game through steam, so I didn't get any email\nClick to expand...\nNo worries, I just checked and they're in here: C: Program Files/Steam/SteamApps/common/RPG Maker MV/dlc"
+    },
+    {
+      "post_id": "js-post-467019",
+      "author": "fm2107",
+      "date": "2015-10-24T03:11:36+0900",
+      "body": "the convert is great, got my maps and events in, but for some reason 2 of the maps are crashing MV, its my world map and a map i use for testing different things, i made sure its calling tile sets that available in MV but it still crashing it,  cant delete them either"
+    },
+    {
+      "post_id": "js-post-467022",
+      "author": "Disruption",
+      "date": "2015-10-24T03:12:29+0900",
+      "body": "slimmmeiske2 said:\nNo worries, I just checked and they're in here: C: Program Files/Steam/SteamApps/common/RPG Maker MV/dlc\nClick to expand...\nYay, thanks a lot!"
+    },
+    {
+      "post_id": "js-post-467115",
+      "author": "Jennestia",
+      "date": "2015-10-24T03:47:38+0900",
+      "body": "Tried it in one of my projects and it appears to error out on line 841, which references mapdata battlebacks and being as said project was converted from VX > Ace I wonder if that's the reasoning? Even removing all maps and scripts and certain database entries seems to still produce the error."
+    },
+    {
+      "post_id": "js-post-467159",
+      "author": "BlackswordGames",
+      "date": "2015-10-24T04:02:47+0900",
+      "body": "I am having some issues with the converter.\nI have, as another member here stated, used the converter successfully in a brand new Ace project.\nHowever, when I input the converter into my working project, things change.\nThe main and up front issue that was noted is as follows:\nline 1040:NoMethodError occurred.\nundefined method 'formula' for #<Hash:0x3c2f184>\nFor sanity sake line 1040 is:\nif LOGSCRIPTS && obj.damage.formula.to_i.to_s != obj.damage.formulaif I turn LOGSCRIPTS = false, then I instead run into this error:\nline 1046: NoMethodError occurred.\nundefined method 'critical' for #<Hash:0x3c1db00>\nlin 1046 is as follows:\nres = '{\"critical\":' + dmg.critical.to_s + ','Which is just the next line in the code block bypassing the if check.\nEdit\n:\nSetting LOGGING = true, generates a .txt file name \"_log\" that is unpopulated when receiving this error.\nError occurs during compilation of the game screens via test play from the editor as well as normal, non-editor mode play.\nWith that said, the converter will create the .txt file listing all of the projects skills up to #340 and it stops. For the record, my skill database size is only 450. The .txt files appears to have all the information required.\nI tried following, as someone else has said, converting files 1 by 1 by transferring them to a new project. Skills still has its hangups.\nA similar issue occurs while it is trying to convert my maps.\nline 841: TypeError occurred.\ncan't convert nil into String.\nmap_data += '\"battleback1Name\":\"' + map.battleback1_name + '\",'This is fine and all, but it only gets to map42. map43 can be seen, accessed and editted in RPG Maker Ace just fine, so I'm not sure while this decided to be parse as nil. Based on the information the code is trying to grab, I went and made sure that DirtCave & DirtCave were both in the resources, etc. Changing either one of the battlebacks to a different image still yields the same error. To double check that it was still held up on this particular map, I did check the successfully converted files in the mv-data folder. Still stuck unable to bring over map43.\nEdit 1:\nAs it would seem, I have copied all the data over. MapInfos worked out in the converter just fine, holding all of my events and their positions, etc. which is very nice. That puts all the maps passed map42 in the game, just basically empty except events.\nEverything else, so far, seems to converting as intended? But I have yet to open up all these files in MV to see if that is in fact true. Can I get some help on this? Thanks in advance."
+    },
+    {
+      "post_id": "js-post-467418",
+      "author": "yoda",
+      "date": "2015-10-24T05:39:47+0900",
+      "body": "1. Keep in mind, image and media data must match images/media being transferred. This means for bigger projects, you have to transfer/export media from Ace then transfer to MV or missing media files will bring up errors. In some cases maps are most important where you can just convert the map data and transfer the tile set and then manually update everything else. Depends on what is more important and what you are prepared to update manually.\n2. Make sure you update your tile set sizes as they wont work at their current size if you have custom tiles.\n3. I haven't had any real issues yet with any scripting or errors other than media data. Will post updates.\nThanks for the script Shaz, awesome job."
+    },
+    {
+      "post_id": "js-post-467574",
+      "author": "Shaz",
+      "date": "2015-10-24T06:37:09+0900",
+      "body": "Hey guys, I've just woken up not long ago and working my way through the forum.\nI see there are a few issues with the converter, and I want to help you out with them, but it'll be just a little while before I can sit down and have a close look at what's going on for you all.\nIn the meantime, if you haven't already, could you please jump into the converter script and set those first three LOGGING options to\ntrue\n, run the converter again, and have the log file (not the scripts or comments one) ready to send through to me if/when I request it? I may also need to take a look at the whole project, or at the very least, the maps or database files that are causing the issues.\nIf you are getting errors when you load the project into MV and open it up, can you please state whether the errors are in the editor or when you're playing the game, and what the messages actually say? If you could edit your previous post and add those details, that'll be great!\nThanks for trying it out, and for being patient while we work out the flaws. I want to get you up and running in MV asap"
+    },
+    {
+      "post_id": "js-post-468096",
+      "author": "starcrescendo",
+      "date": "2015-10-24T10:18:47+0900",
+      "body": "I looked through this thread, and from my understanding the converter does NOT automatically convert your resources so they are usable in MV, so are there any instructions on how to do so? Is it as simple as doing some math and stretching out the VX tiles to MV size? I'm still playing with MV but I wondered if anyone else had started converting some of their resources yet?"
+    },
+    {
+      "post_id": "js-post-468205",
+      "author": "WhiteRice369",
+      "date": "2015-10-24T11:02:22+0900",
+      "body": "I appologize for my noobness but I can't figure out where the Ace to MV Converter is. I preordered through the website and I read there should be a link in an email for this thing. I didn't see any links so I downloaded the trial and then activated with my activation code. How can I find the converter?\nI rechecked my emails and even spam folder, I do have emails but none with a link for preorder stuff (I have my preorder email for order confirmation and stuff).\nI also looked in the install directory for the converter but didn't see anything.\nAny clarification is greatly appreciated!"
+    },
+    {
+      "post_id": "js-post-468658",
+      "author": "Shaz",
+      "date": "2015-10-24T15:57:51+0900",
+      "body": "For those who don't have it yet, the converter can be downloaded\nfrom pastebin here\n@starcrescendo, there are several threads around on converting resources.  Please do some searching, and have a good read through each, as several methods have some drawbacks, so you'll need to inform yourself before choosing a method.\n@WhiteRice369, the bonus content was removed temporarily due to issues, but will be readded as soon as they're sorted out.  In the meantime, you can grab the converter from the link above\nI have not had time to look at the issues listed above yet."
+    },
+    {
+      "post_id": "js-post-469631",
+      "author": "yoda",
+      "date": "2015-10-25T01:31:24+0900",
+      "body": "starcrescendo said:\nI looked through this thread, and from my understanding the converter does NOT automatically convert your resources so they are usable in MV, so are there any instructions on how to do so? Is it as simple as doing some math and stretching out the VX tiles to MV size? I'm still playing with MV but I wondered if anyone else had started converting some of their resources yet?\nClick to expand...\nThe process of re-sizing your tilesets are not simple at all. You will lose quality of your original images unless you have the original sizes done in photo shop at the highest quality level. Transparancies will be a pain unless again you have the original art work in high rez. HINT: The tilesets included in the game now are very well done and better than Ace by a long shot. Original art work will be best done from scratch if you don't have them done in high rez.\nMV is great so far as the quality goes, your game will look so much better. I wasn't sure if getting the engine would be worth it at first if I decided against converting but now that I have it it is worth just owning it regardless if you decide against converting your projects."
+    },
+    {
+      "post_id": "js-post-469650",
+      "author": "fm2107",
+      "date": "2015-10-25T01:42:36+0900",
+      "body": "for those that were having the same problem as me where one of their maps was crashing the game, i just made a copy of the map in vx ace and pasted it further down, deleted the maps that were causing the problem and now all my maps work in mv. thanx for the script"
+    },
+    {
+      "post_id": "js-post-469659",
+      "author": "Ludicrousda3ve",
+      "date": "2015-10-25T01:47:40+0900",
+      "body": "I just wanted to chime in and say that the converter has worked beautifully for me. It didn't seem to like it when placing assets with different filenames than were previously associated- (ie the monster \"Crud\" was upscaled and the file was crudmv.png instead of crud.png) no matter what it didn't want to play nice with a new filename, but that's literally a 10 second fix.\nSo, Shaz, thank you again."
+    },
+    {
+      "post_id": "js-post-469933",
+      "author": "Tigrean",
+      "date": "2015-10-25T04:11:31+0900",
+      "body": "A friend just gifted me MV so where can I get the coverter plugin I want to transfer what I got for my VX ace project to MV?"
+    },
+    {
+      "post_id": "js-post-469949",
+      "author": "fm2107",
+      "date": "2015-10-25T04:20:10+0900",
+      "body": "Tigrean said:\nA friend just gifted me MV so where can I get the coverter plugin I want to transfer what I got for my VX ace project to MV?\nClick to expand...\nshaz has a link to it in the page before this in this forum. copy the script into your vxa scripts editor, below everything, play test the game, exit, and there should be an mv data folder created move that over to your new projects data folder in mv, resources wont be ported over so you have to do those things manually"
+    },
+    {
+      "post_id": "js-post-469961",
+      "author": "Tigrean",
+      "date": "2015-10-25T04:30:22+0900",
+      "body": "fm2107 said:\nshaz has a link to it in the page before this in this forum. copy the script into your vxa scripts editor, below everything, play test the game, exit, and there should be an mv data folder created move that over to your new projects data folder in mv, resources wont be ported over so you have to do those things manually\nClick to expand...\nThanks I can't wait to see the game in the new Maker, Already love the mouse interface\nfor play testing."
+    },
+    {
+      "post_id": "js-post-470323",
+      "author": "Tigrean",
+      "date": "2015-10-25T06:53:54+0900",
+      "body": "Ok I converted my game to MV but it won't load a battle test, I had a buch of scripts so do I have to go in data and delet the scripts then to get it to work?"
+    },
+    {
+      "post_id": "js-post-470405",
+      "author": "stefan",
+      "date": "2015-10-25T07:28:48+0900",
+      "body": "Good evening,\nwhere can I download the converter?\nUnfortunality there was no downloadlink in my preorder email."
+    },
+    {
+      "post_id": "js-post-470523",
+      "author": "Archeia",
+      "date": "2015-10-25T08:18:15+0900",
+      "body": "It's in RPG Maker Web plugins.zip"
+    },
+    {
+      "post_id": "js-post-470531",
+      "author": "fm2107",
+      "date": "2015-10-25T08:23:03+0900",
+      "body": "Tigrean said:\nOk I converted my game to MV but it won't load a battle test, I had a buch of scripts so do I have to go in data and delet the scripts then to get it to work?\nClick to expand...\nyour scripts wouldnt have transfered over, just your actors, maps, events, animations, skills what, not your resources. you would have to manually load those into the project folder yourself. what error message are you getting?"
+    },
+    {
+      "post_id": "js-post-470566",
+      "author": "Tigrean",
+      "date": "2015-10-25T08:48:46+0900",
+      "body": "Cause it seems that MVwon't load a picture I transfered over or some of the music.\nSo what format does RPG Maker MV reconised because I'm not seeing any of the MP3s that I loaded in, and how would I convert them to be the proper format?"
+    },
+    {
+      "post_id": "js-post-470578",
+      "author": "fm2107",
+      "date": "2015-10-25T08:53:48+0900",
+      "body": "mp3 formats still work in mv, they would have to be loaded into the audio/bgm if its background music, audio/bgs if its a sound....you get the idea. just copy them from your vx ace audio folder into your mv folder. for the pictures the same thing make sure they are in img/picture or img/parallax depending on what it was"
+    },
+    {
+      "post_id": "js-post-470585",
+      "author": "Tigrean",
+      "date": "2015-10-25T08:57:49+0900",
+      "body": "fm2107 said:\nmp3 formats still work in mv, they would have to be loaded into the audio/bgm if its background music, audio/bgs if its a sound....you get the idea. just copy them from your vx ace audio folder into your mv folder. for the pictures the same thing make sure they are in img/picture or img/parallax depending on what it was\nClick to expand...\nI did do that but when i go into MV  and try to select the music it is missing. I just copied from one file and moved to the other file, did I do that right?\nI just looked and bounced off the the files in MV and the folder and it looks like all MV is seeing is the .ogg files"
+    },
+    {
+      "post_id": "js-post-470627",
+      "author": "fm2107",
+      "date": "2015-10-25T09:34:35+0900",
+      "body": "Tigrean said:\nI did do that but when i go into MV  and try to select the music it is missing. I just copied from one file and moved to the other file, did I do that right?\nI just looked and bounced off the the files in MV and the folder and it looks like all MV is seeing is the .ogg files\nClick to expand...\nhuh..i stand corrected its m4a not mp3, no matter you can get free mp3 to ogg converters free online, just search one for in google and pick one that lets you do files in batch if you have alot. but yea, you just copy it over to the folder and it should work"
+    },
+    {
+      "post_id": "js-post-470642",
+      "author": "Tigrean",
+      "date": "2015-10-25T09:45:49+0900",
+      "body": "fm2107 said:\nhuh..i stand corrected its m4a not mp3, no matter you can get free mp3 to ogg converters free online, just search one for in google and pick one that lets you do files in batch if you have alot. but yea, you just copy it over to the folder and it should work\nClick to expand...\nThanks, I found an ogg converter and I converted the audio files to ogg and MV is seeing them now."
+    },
+    {
+      "post_id": "js-post-470910",
+      "author": "Jackkel Dragon",
+      "date": "2015-10-25T12:11:52+0900",
+      "body": "I feel like this may be the wrong place to post, but I'm not sure where to ask this just yet...\nI used the script to convert my VXAce game's data to MV data, and everything seems to have worked fine. However, I've noticed that some events display odd sprite behavior in MV after the conversion, and I'm not sure what might have changed between VXAce and MV to cause this problem.\nThe problem itself: Events that have no set graphic on the event page that are given a sprite through event code will use the wrong idle frame. The player and some events seem unaffected, but events with normal walk animations will use the first or third frames of the animation as their idle frame (when it is supposed to be the middle frame).\nIt's probably not a fault of the converter, but I figured I'd mention it here until I know the real cause.\nIf anyone knows how I can get the proper sprite behavior back for these events, I'd appreciate the help."
+    },
+    {
+      "post_id": "js-post-470962",
+      "author": "Shaz",
+      "date": "2015-10-25T12:43:25+0900",
+      "body": "Hmmm ... guess I should have put the link to the converter on the first page ...\nfm2107 said:\nfor those that were having the same problem as me where one of their maps was crashing the game, i just made a copy of the map in vx ace and pasted it further down, deleted the maps that were causing the problem and now all my maps work in mv. thanx for the script\nClick to expand...\nI'd like to get to the bottom of this. It really should just work, so I'll still contact those people who were having problems and see if I can figure out what was going on. Thanks for the tip though - it'll help get some people up and running\nLudicrousda3ve said:\nI just wanted to chime in and say that the converter has worked beautifully for me. It didn't seem to like it when placing assets with different filenames than were previously associated- (ie the monster \"Crud\" was upscaled and the file was crudmv.png instead of crud.png) no matter what it didn't want to play nice with a new filename, but that's literally a 10 second fix.\nSo, Shaz, thank you again.\nClick to expand...\nYes - it converts your events exactly as they are, including all the references to resources. So it's expecting the same resources, with the same names - but ignoring the file extension.\nTigrean said:\nOk I converted my game to MV but it won't load a battle test, I had a buch of scripts so do I have to go in data and delet the scripts then to get it to work?\nClick to expand...\nAce scripts will not work in MV. You will need to get plugins written if you still need their functionality. Not sure why it won't load a battle test - does it give you an error message? In addition to copying the data files across, you also need to copy over all of your resources manually - the script does no resource conversion at all. And if you have any scripts in damage formula, Conditional Branch, Control Variables or a Script event command, you will need to look at all of those and possibly change some of them.\nTigrean said:\nCause it seems that MVwon't load a picture I transfered over or some of the music.\nSo what format does RPG Maker MV reconised because I'm not seeing any of the MP3s that I loaded in, and how would I convert them to be the proper format?\nClick to expand...\nYep, mp3 is not a valid format for MV. Not sure about the picture though - are you sure you transferred it over, and into the correct file? Didn't change the name?"
+    },
+    {
+      "post_id": "js-post-470977",
+      "author": "Pots Talos",
+      "date": "2015-10-25T12:54:17+0900",
+      "body": "So how hard would it be to convert normal VX to MV?\nWould the method be the same?"
+    },
+    {
+      "post_id": "js-post-471100",
+      "author": "Nejispira",
+      "date": "2015-10-25T14:03:21+0900",
+      "body": "hi!\nthanks for the great script!\ni got small problem while i am doing the conversion, i got an error saying that  at line 841, it can not convert 'nil to 'string'\ndo anyone have an idea how to fix this?\nthank you for replying!"
+    },
+    {
+      "post_id": "js-post-471116",
+      "author": "Shaz",
+      "date": "2015-10-25T14:10:32+0900",
+      "body": "@Pots Talos, you cannot use this converter AT ALL for VX. I will write one for VX when I have the time, but I'd like to iron out the bugs with this one first, so they don't get duplicated into the VX version.\n@Nejispira, looks like you have a map somewhere that has something wrong with its Autoplay BGS flag. Can you go through your maps (if there aren't too many), and if they don't have the autoplay BGS box checked, go ahead and check it, and then uncheck it again. Let me know if you still have the error after this."
+    },
+    {
+      "post_id": "js-post-471213",
+      "author": "Nejispira",
+      "date": "2015-10-25T15:04:20+0900",
+      "body": "Hi Shaz!\ni did a check and found that i actually got 10 maps with\nAutoplay BGS flag.\nSo i un-check them and tried, but got same error!\ni also remove all scripts i added, and failed!\nthen i compress the game with its rtp data, thinking might because it got empty folders, but also failed!\na little note , the game was converted from rpg maker vx to ace, then i re-created the battle system,  corrected all the errors till it fully works!\ni added 5 different map of era's [time travel],  now the game got 60 maps!\n---\ni think, i might need to re-create the game from scratch!\nThanks for the fast reply! cheers!\n@Pots Talos\nconvert the game to ace version and then tried mv script!"
+    },
+    {
+      "post_id": "js-post-471223",
+      "author": "Pots Talos",
+      "date": "2015-10-25T15:10:58+0900",
+      "body": "Awesome Shaz! I really look forward to the VX converter.\n@Nejispira I actually attempted that already and there were errors"
+    },
+    {
+      "post_id": "js-post-471233",
+      "author": "Shaz",
+      "date": "2015-10-25T15:15:37+0900",
+      "body": "nah, you don't need to do that.\nGo to line 841 and change this:\nmap_data += '\"autoplayBgs\":' + map.autoplay_bgs.to_s + ','to this:\nmap_data += '\"autoplayBgs\":' + (map.autoplay_bgs ? 'true' : 'false') + ','Hopefully that'll be enough."
+    },
+    {
+      "post_id": "js-post-471251",
+      "author": "Nejispira",
+      "date": "2015-10-25T15:25:54+0900",
+      "body": "Shaz said:\nnah, you don't need to do that.\nGo to line 841 and change this:\nmap_data += '\"autoplayBgs\":' + map.autoplay_bgs.to_s + ','to this:\nmap_data += '\"autoplayBgs\":' + (map.autoplay_bgs ? 'true' : 'false') + ','Hopefully that'll be enough.\nClick to expand...\nThanks for the correction!\ni still get the error of line 841!\nmap_data += '\"battleback1Name\":\"' + map.battleback1_name + '\",'any fix for this line?"
+    },
+    {
+      "post_id": "js-post-472090",
+      "author": "EastsideTrouble",
+      "date": "2015-10-26T02:37:34+0900",
+      "body": "Hey, I am getting an error message when I try to do a test game that it \"Failed to load GameFont.\"  It's likely because of some incompatability with my old VXA project, but I'm not sure what I am supposed to update/wipe out in order to get past this.\nThanks for any help.\nEDIT-- Please disregard.  Must have bungled something because I wiped out the font file and I fixed it.  I'm sure it was my own doing.  Thanks anyway and thanks for the converter."
+    },
+    {
+      "post_id": "js-post-472292",
+      "author": "stefan",
+      "date": "2015-10-26T04:34:44+0900",
+      "body": "After finding the script, there is another question.\nI haven't worked with scripts yet, so I don't know how to implement it in the vx ace.\nI have the script downloaded, but dunno what to do next with the files."
+    },
+    {
+      "post_id": "js-post-472409",
+      "author": "Hitman26",
+      "date": "2015-10-26T05:39:04+0900",
+      "body": "Thanks Shaz for the converter but it seems I'm having a bit of problems. I converted everything and copied everything over. The game plays like normal but when I enter certain areas it gives me errors like this. A prompt reply would be much appreciated!"
+    },
+    {
+      "post_id": "js-post-472812",
+      "author": "Shaz",
+      "date": "2015-10-26T09:13:22+0900",
+      "body": "That's saying it's looking for a graphic that isn't there.  Did you copy over all of your resources?  Can you recopy the Actor5.png file?"
+    },
+    {
+      "post_id": "js-post-474260",
+      "author": "Nekomata",
+      "date": "2015-10-27T02:05:43+0900",
+      "body": "Okay, I had a weird thing happen, I was getting an error on line 1281 where it said \"expecting $end\"  and I tried all sorts of different things but nothing really changed, then I just cleared out the code and reentered it below all my other code and it just suddenly worked\nso idk what changed really."
+    },
+    {
+      "post_id": "js-post-474537",
+      "author": "WizzyT",
+      "date": "2015-10-27T04:25:37+0900",
+      "body": "Receiving an error when I try to run the game in VX Ace\nScript 'AceMVConverter' line 10: NameError occurred\nuninitialized constant DEGICA::CONVERT:\nataManager"
+    },
+    {
+      "post_id": "js-post-474980",
+      "author": "StarkinGyra",
+      "date": "2015-10-27T08:43:51+0900",
+      "body": "I tried to check the forums but didn't find a fix to my problem. I converted my VX Ace to MV and I know a few things are not in MV. But when I start a playtest, it comes up a black screen. No music or error code. I noticed some of the NPC's images are not in MV that where in Ace."
+    },
+    {
+      "post_id": "js-post-475108",
+      "author": "Shaz",
+      "date": "2015-10-27T09:47:12+0900",
+      "body": "Did you copy all the resources across?  The converter only converts what's in the Data folder.  You have to do the rest,"
+    },
+    {
+      "post_id": "js-post-475123",
+      "author": "ze1",
+      "date": "2015-10-27T09:55:06+0900",
+      "body": "Not sure if this was reported before, but the script doesn't convert animations properly when they have rotated sprites. Apparently, when you change the angle of an image in the animation, VX Ace rotates it counter-clockwise, while MV rotates it clockwise...\nCan anyone help?"
+    },
+    {
+      "post_id": "js-post-475298",
+      "author": "StarkinGyra",
+      "date": "2015-10-27T11:45:19+0900",
+      "body": "Shaz, I did get it to work. It will take some time to get it all done. I forgot how much I had in the old file. I may just take elements that worked and use them in a new fresh game. Thank you."
+    },
+    {
+      "post_id": "js-post-477935",
+      "author": "TheRealDMac",
+      "date": "2015-10-29T00:22:45+0900",
+      "body": "Looks like I'll be finishing my lazily-delayed-for-years project with maximum possible RTP usage lol. This is actually pretty awesome for being able to make previous projects Mac compatible\n."
+    },
+    {
+      "post_id": "js-post-477971",
+      "author": "Coda",
+      "date": "2015-10-29T00:48:45+0900",
+      "body": "Hey, I just wanna say thanks for making this tool. The fact that MV uses JSON is super convenient; I can pull apart bits of my old Ace projects and move them over to MV."
+    },
+    {
+      "post_id": "js-post-478089",
+      "author": "Kyrom",
+      "date": "2015-10-29T02:11:08+0900",
+      "body": "Please help me when I open my converted game a \" $ game_map is not defined \""
+    },
+    {
+      "post_id": "js-post-478401",
+      "author": "MatrexsVigil",
+      "date": "2015-10-29T04:56:59+0900",
+      "body": "Thank you so much for creating this script!  You've saved me (and many, many others) so much time moving everything over!  You're amazing."
+    },
+    {
+      "post_id": "js-post-478688",
+      "author": "Shaz",
+      "date": "2015-10-29T07:53:01+0900",
+      "body": "Kyrom said:\nPlease help me when I open my converted game a \" $ game_map is not defined \"\nClick to expand...\nYou have used a script call and not replaced the command with a Javascript equivalent."
+    },
+    {
+      "post_id": "js-post-479458",
+      "author": "zake5112",
+      "date": "2015-10-29T18:27:26+0900",
+      "body": "So I ported my game from ace to mv but whenever i try to test run it. It doesn't want to work. any suggestions?"
+    },
+    {
+      "post_id": "js-post-479465",
+      "author": "Andar",
+      "date": "2015-10-29T18:44:14+0900",
+      "body": "zake5112 said:\nSo I ported my game from ace to mv but whenever i try to test run it. It doesn't want to work. any suggestions?\nClick to expand...\nTelling us what happens (error messages or whatever) would help to get an answer.\nBut in most cases the problem is that the user forgot to replace one of the Ace script. As described from the very beginning, anything that uses script commands or scripts in Ace needs to be replaced manually for the game to work on MV."
+    },
+    {
+      "post_id": "js-post-479674",
+      "author": "thanatos2k1",
+      "date": "2015-10-29T22:22:09+0900",
+      "body": "Shaz,\nDo you have any idea when a VX convertor will be available? I've been working on a game now for the past five years and would really like to get this into the new engine.. My team skipped moving to ACE because the features weren't completely necessary, but MV has blown away all my expectations. This would help me tremendously. Thanks!"
+    },
+    {
+      "post_id": "js-post-480605",
+      "author": "heroscratch",
+      "date": "2015-10-30T07:48:13+0900",
+      "body": "Shaz said:\nUpdate:\nFor those who have all the extra files, the converter script is in the RPGMakerWeb_plugins folder, in the Shaz subfolder.\nIf you don't have the extra files yet, you can get it\nfrom my pastebin\n.\n----------------------------------------\nSo I can talk a bit about the converter, but everything else about MV that hasn't yet been announced is still protected by NDA.\nThe converter is a script that you can put into VX Ace.  It is not an MV plug-in.\nWith the script active, when you playtest the game, it will create an mv-data folder.\nIt will convert your database and all your maps and events to MV format and save new files to the mv-data folder (it does not modify your Ace project at all).\nYou can copy all of these files into the data folder of a new MV project and MV will be able to read them.\nIt will NOT convert resources.  You will have to do that manually.\nIt will NOT convert scripts.  You will have to find MV plugin equivalents, see if someone can convert the scripts for you, or use an alternative.\nThe converted version will include all the tags you have added to notes in the database and maps, but as scripts aren't converted, they will do nothing.\nThe converted version will include any script calls used in Control Variables, Conditional Branch or the Script event command.  However, because those script calls will all be RGSS3 commands, you will need to find them all and change them to use JavaScript commands instead.\nA VX converter is a distinct possibility, but likely will not be available prior to MV's release.\nAn XP converter is also on my wish list, but it's going to be quite a bit tougher due to the database, tileset & layering differences.\nI think I've covered everything, but go ahead and ask if you have any more questions.\nClick to expand...\nI mainly used this to transfer over NPC's so I didn't have to keep coming up with random stuff for them to say (I feel once was enough lol), but it worked perfectly for what I wanted."
+    },
+    {
+      "post_id": "js-post-481123",
+      "author": "Shaz",
+      "date": "2015-10-30T14:45:49+0900",
+      "body": "@thanatos2k1?  Is your game Path of Thanatos?  I enjoyed it - was waiting for the next instalment\nThere are a few problems with the Ace - MV converter.  As soon as I get those sorted out, I'll do a converter for VX.\nHey folks, for all of you who are unable to either open your game or play your game after conversion - if you have verified that you've copied over all the resources correctly and have disabled any script calls that might make them not work - if any of you would be prepared to zip up your Ace project and send through to me (load it up on dropbox or something, then PM me a link, along with where you see the problem - when opening, when playing, on a certain map, etc), that would be a HUGE help in tracking down some bugs and sorting them out.  I'd really appreciate it, and of course your game will be kept strictly confidential - I will remove it from my PC after I finish testing, and it will not be shared with anyone."
+    },
+    {
+      "post_id": "js-post-481476",
+      "author": "thanatos2k1",
+      "date": "2015-10-30T21:05:10+0900",
+      "body": "@Shaz. My game is not Path of Thanatos, it's called The Great Gaias, it has about forty hours of gameplay and by the time it's complete, it will be sixty.\nIf the rvdata can be transferred to MV I can do the rest. I pray for your victory over these bugs! Keep us updated.. I'm kind of at a stand still until I can convert.\nGo, Shaz!"
+    },
+    {
+      "post_id": "js-post-482858",
+      "author": "zebaroth",
+      "date": "2015-10-31T14:29:38+0900",
+      "body": "i have converted some prjrojects it remakes the maps with its tlie set i use the premaeds a lot in my prpjects is\ni hate to do mapping"
+    },
+    {
+      "post_id": "js-post-482970",
+      "author": "CriticalGames",
+      "date": "2015-10-31T16:21:39+0900",
+      "body": "Shaz said:\n@thanatos2k1?  Is your game Path of Thanatos?  I enjoyed it - was waiting for the next instalment\nClick to expand...\nOh wow, that one was mine (good memory!) XD Not to go too off-topic, but I was actually working on a sequel at a few different points - just ended up moving on to other things (sorry). Thanks Shaz! =)"
+    },
+    {
+      "post_id": "js-post-483110",
+      "author": "deathsia",
+      "date": "2015-10-31T18:55:37+0900",
+      "body": "Just double checking but i've been hearing rumors that MV has backwards compatibility support for VX Ace scripting, is this true?"
+    },
+    {
+      "post_id": "js-post-485509",
+      "author": "Nejispira",
+      "date": "2015-11-02T13:19:17+0900",
+      "body": "Hi Shaz!\nI fixed the errors , i got with line 841!\nall i did, was to remove line 841 and 842. and it converted all with no problems!\ni got all the maps, except two went blank!\nthanks for your guide!"
+    },
+    {
+      "post_id": "js-post-487149",
+      "author": "Shaz",
+      "date": "2015-11-03T12:37:38+0900",
+      "body": "deathsia said:\nJust double checking but i've been hearing rumors that MV has backwards compatibility support for VX Ace scripting, is this true?\nClick to expand...\nlol - no. There is DEFINITELY no support for VX Ace scripts. It's a completely different language. I think someone is pulling your leg.\n@Nejispira, can you give me info about the two maps that went blank? Could you send them to me (the Ace version) as well as your MapInfos file?"
+    },
+    {
+      "post_id": "js-post-487189",
+      "author": "deathsia",
+      "date": "2015-11-03T13:11:46+0900",
+      "body": "Shaz said:\nlol - no. There is DEFINITELY no support for VX Ace scripts. It's a completely different language. I think someone is pulling your leg.\n@Nejispira, can you give me info about the two maps that went blank? Could you send them to me (the Ace version) as well as your MapInfos file?\nClick to expand...\nI figured but my friend who has a copy insisted it did. Just wishful thinking on my part."
+    },
+    {
+      "post_id": "js-post-494439",
+      "author": "Pots Talos",
+      "date": "2015-11-09T11:21:19+0900",
+      "body": "Any news on the VX converter?\nI'm really looking forward to it"
+    },
+    {
+      "post_id": "js-post-495915",
+      "author": "Shaz",
+      "date": "2015-11-10T18:03:20+0900",
+      "body": "Hey folks, I have posted a new version of the script to pastebin. This takes care of the crashes on lines 841, 842, the issue with the angle animation, and at least one issue with maps being blank after conversion.\nIf any of you have not been able to successfully convert your Ace projects, could you please grab the latest version of the plugin (link is in the first post of this thread) and give it another go? Please report any issues you are still having.\nI am going to start porting this to VX now. If any of you have VX projects you wouldn't mind me using for debugging, could you please zip them up, load them to dropbox or similar, and send me a link via PM? I don't use VX so I would only have the RTP project, which would only take me so far."
+    },
+    {
+      "post_id": "js-post-501972",
+      "author": "thanatos2k1",
+      "date": "2015-11-17T11:39:49+0900",
+      "body": "Hey Shaz,\nHave you had any luck transferring data from vx to mv? maps/events for me are the most important. please let me know if i can help in any way"
+    },
+    {
+      "post_id": "js-post-501981",
+      "author": "Shaz",
+      "date": "2015-11-17T11:50:09+0900",
+      "body": "still working on it\nI forgot that VX and Ace are a bit different in the database, and regions vs areas."
+    },
+    {
+      "post_id": "js-post-502251",
+      "author": "thanatos2k1",
+      "date": "2015-11-17T22:32:46+0900",
+      "body": "Thank you very much! I can't wait to resume work on my project.. been at a stand still trying to transfer everything over.\nkeep me in the loop please!"
+    },
+    {
+      "post_id": "js-post-507820",
+      "author": "Pots Talos",
+      "date": "2015-11-24T08:47:30+0900",
+      "body": "I used a program made by FenixFyreX to convert my VX game to the Ace engine. Now I'm trying to convert that into MV using Shaz's script. I have been successful at transferring over the entire database using Shaz’s script to MV but I can’t get the maps or events to transfer using this method no matter what I try. It consistently comes up with this error.\nDoes anybody know what I could possibly do, I’ve been working on trying to get my VX game into MV since release. This is the only thing holding me up and I’m getting a little disheartened."
+    },
+    {
+      "post_id": "js-post-507871",
+      "author": "Shaz",
+      "date": "2015-11-24T10:14:00+0900",
+      "body": "Someone else had EXACTLY the same problem. They did not mention that they had originally used a converter to port their VX game to Ace.\nThe issue is that one of your skills or items has a hash as the damage formula, and that's not valid in Ace or in MV. Can you go to your skills tab and look at each of them? I expect that you will get an error message on one of them when you move from it to the next one in Ace.\nDo you have a link to the VX to Ace converter?\nI have started on a VX to MV converter, but it's slow going, and tbh I don't know if it's worth completing."
+    },
+    {
+      "post_id": "js-post-508179",
+      "author": "Guileless87",
+      "date": "2015-11-24T21:57:19+0900",
+      "body": "Shaz said:\nSomeone else had EXACTLY the same problem. They did not mention that they had originally used a converter to port their VX game to Ace.\nThe issue is that one of your skills or items has a hash as the damage formula, and that's not valid in Ace or in MV. Can you go to your skills tab and look at each of them? I expect that you will get an error message on one of them when you move from it to the next one in Ace.\nDo you have a link to the VX to Ace converter?\nI have started on a VX to MV converter, but it's slow going, and tbh I don't know if it's worth completing.\nClick to expand...\nHi Shaz,\nI have a vx game I'm working on. It would be cool to see a vx converter out. Is your vx converter in a state where someone can transfer text dialogue and also map tiles? Those are the only two things I need if you ever get around to it. Anyway, thanks for the work."
+    },
+    {
+      "post_id": "js-post-508227",
+      "author": "Nejispira",
+      "date": "2015-11-25T00:05:10+0900",
+      "body": "Shaz said:\nSomeone else had EXACTLY the same problem. They did not mention that they had originally used a converter to port their VX game to Ace.\nThe issue is that one of your skills or items has a hash as the damage formula, and that's not valid in Ace or in MV. Can you go to your skills tab and look at each of them? I expect that you will get an error message on one of them when you move from it to the next one in Ace.\nDo you have a link to the VX to Ace converter?\nI have started on a VX to MV converter, but it's slow going, and tbh I don't know if it's worth completing.\nClick to expand...\nHi!\nThe converter i used for vx to ace project is the same program made by\nFenixFyreX.\nBut after conversion , you need to edit the skills,and do cross-checking between the vx and new vx ace project!\nmy solution , i did is use the vx ace default  skill setting for  new project, and add that formula in the converted project!\nthen check if they work, then edit it as per your choice!\nthe conversion makes errors in the battle system! remove the notes added by the converter!\nwhen the converted project works fine, then convert it to mv project!\nhere the link to the converter :\n[ program] -\nhttps://userscloud.com/lwb92q1ai4ps\n[info] [use firefox] -\nhttps://userscloud.com/m3h8gk4dv50l\nseeya!"
+    },
+    {
+      "post_id": "js-post-508588",
+      "author": "Shaz",
+      "date": "2015-11-25T09:21:30+0900",
+      "body": "Anything that contains scripts will need to be addressed by you - that is why the converter creates a log file with all the script calls.\nIf the error in the battle system is due to something else, please let me know. If it's an issue with the converter, I want to fix it. But as you're saying it's related to notes, that probably means it's something to do with scripts, and those aren't handled. You will need to take care of all the scripts/plugins yourself."
+    },
+    {
+      "post_id": "js-post-510339",
+      "author": "Pots Talos",
+      "date": "2015-11-27T13:49:19+0900",
+      "body": "Edit: Fixed my issue.\nThank you everyone who replied to give me advice, much appreciated."
+    },
+    {
+      "post_id": "js-post-511771",
+      "author": "Shiro117",
+      "date": "2015-11-29T19:02:00+0900",
+      "body": "I just bought quite a few items that were on sale and you stated putting them in manually.\nHow to I put in music manually where it will read it on MV?\nEdited: Never-mind I figured it out but for those who didn't know.... make sure to use both files the MP3 and the OGG so it will work!"
+    },
+    {
+      "post_id": "js-post-513087",
+      "author": "Guileless87",
+      "date": "2015-12-01T08:55:44+0900",
+      "body": "Shaz said:\nI have started on a VX to MV converter, but it's slow going, and tbh I don't know if it's worth completing.\nClick to expand...\nHi Shaz,\nI saw that you were starting to work on a vx to mv converter but you said it might not be worth finishing. I was wondering if you had enough of it done that you could post it if is currently usable? I had just a few simple things that I really wanted to convert from my vx game to mv."
+    },
+    {
+      "post_id": "js-post-513125",
+      "author": "Shaz",
+      "date": "2015-12-01T09:28:07+0900",
+      "body": "I have very little done. I have just been going through all the classes documenting the differences between VX and Ace, so I know which parts of the script will need to most significant changes."
+    },
+    {
+      "post_id": "js-post-535888",
+      "author": "Koneko",
+      "date": "2016-01-07T17:34:25+0900",
+      "body": "I had a problem with one of my maps it crashes mv whenever I try to click on it seams I can play the game using mv to make it into an executeable but if I go to the map to edit it at all it crashes mv does mv have a smaller map limit size or something to vx ace? I for good measure made the world map max size and I could se how that might crash mv if it is trying to load more data then it is limited to or something ^^;;"
+    },
+    {
+      "post_id": "js-post-535906",
+      "author": "Shaz",
+      "date": "2016-01-07T18:17:51+0900",
+      "body": "MV does have a smaller map size. Are you able to zip up your Ace project, load it to dropbox or something, and PM me a link? If you let me know which map (map # and name in the editor list), I can take a look. It's possible you've used a command in an event that hasn't been handled correctly in the converter.\nAlthough ... you say the editor actually crashes? Usually if the converter doesn't handle something, it'll show you the map, often at a default size, but with no events. If it's actually crashing, it may be something else.\nHowever, people have said the way around the map size limit is to just edit the json file and increase it there. There HAVE been a few issues with it, but the editor crashing is not one of them.\nJust how big is your map? And is that the one that's crashing? Or by \"map limit size\" are you just referring to the number of maps? What is the map id of the \"problem\" one, and do you have any issues loading maps with larger map ids?"
+    },
+    {
+      "post_id": "js-post-536260",
+      "author": "Koneko",
+      "date": "2016-01-08T07:13:32+0900",
+      "body": "I think it is because vx ace lets you have 500 by 500 tile maps and it seams mv only lets you do 256 by 256 the map id was 001 and called \"the world\""
+    },
+    {
+      "post_id": "js-post-542245",
+      "author": "H3SO4",
+      "date": "2016-01-19T08:06:02+0900",
+      "body": "Just a question......\nI look has to understand why I have a lot of error messages....\nWe just copy the  Ruby script it is everything?\nNot the \"RAW Paste Data\" ......?"
+    },
+    {
+      "post_id": "js-post-542346",
+      "author": "Shaz",
+      "date": "2016-01-19T10:53:30+0900",
+      "body": "Have you read carefully through all the instructions?  MV is Javascript, not Ruby.  So any scripts that you added will not work - you will have to replace it with an MV script if someone has already written one, or find someone to write it in javascript.  Also, you have to go through and make sure ANY scripts that are in Script event commands, Move Route > Script commands, and damage formulae, also work with MV's javascript format and structure.  The converter would have created a file that lists all of these."
+    },
+    {
+      "post_id": "js-post-542495",
+      "author": "H3SO4",
+      "date": "2016-01-19T18:03:20+0900",
+      "body": "I read everything but apparently I have no good understood J J J\nI am thus going to verify all this"
+    },
+    {
+      "post_id": "js-post-549864",
+      "author": "fjuppen",
+      "date": "2016-02-01T10:37:52+0900",
+      "body": "I just converted my Ace game to MV, but when i try it out the game is much faster, i \"walk\" in same speed as running, and when i run, i run really really fast. everything is going faster, water, waterfalls etc. Does anyone know a solution?"
+    },
+    {
+      "post_id": "js-post-549902",
+      "author": "Shaz",
+      "date": "2016-02-01T12:20:01+0900",
+      "body": "That has nothing to do with the converter (it would be exactly the same if you'd created your game in MV from scratch), so if you need further help, please post in MV Support.  In fact, if you'd searched, you would have already found some threads on the subject."
+    },
+    {
+      "post_id": "js-post-550027",
+      "author": "fjuppen",
+      "date": "2016-02-01T19:58:16+0900",
+      "body": "Shaz said:\nThat has nothing to do with the converter (it would be exactly the same if you'd created your game in MV from scratch), so if you need further help, please post in MV Support.  In fact, if you'd searched, you would have already found some threads on the subject.\nClick to expand...\nOkey, didnt remember it like that when i first started in MV, but anyway, ty so much for your work!!"
+    },
+    {
+      "post_id": "js-post-577132",
+      "author": "Jesso",
+      "date": "2016-03-30T02:34:40+0900",
+      "body": "Shaz said:\nUpdate:\nFor those who have all the extra files, the converter script is in the RPGMakerWeb_plugins folder, in the Shaz subfolder.\nIf you don't have the extra files yet, you can get it\nfrom my pastebin\n.\n----------------------------------------\nSo I can talk a bit about the converter, but everything else about MV that hasn't yet been announced is still protected by NDA.\nThe converter is a script that you can put into VX Ace.  It is not an MV plug-in.\nWith the script active, when you playtest the game, it will create an mv-data folder.\nIt will convert your database and all your maps and events to MV format and save new files to the mv-data folder (it does not modify your Ace project at all).\nYou can copy all of these files into the data folder of a new MV project and MV will be able to read them.\nIt will NOT convert resources.  You will have to do that manually.\nIt will NOT convert scripts.  You will have to find MV plugin equivalents, see if someone can convert the scripts for you, or use an alternative.\nThe converted version will include all the tags you have added to notes in the database and maps, but as scripts aren't converted, they will do nothing.\nThe converted version will include any script calls used in Control Variables, Conditional Branch or the Script event command.  However, because those script calls will all be RGSS3 commands, you will need to find them all and change them to use JavaScript commands instead.\nA VX converter is a distinct possibility, but likely will not be available prior to MV's release.\nAn XP converter is also on my wish list, but it's going to be quite a bit tougher due to the database, tileset & layering differences.\nI think I've covered everything, but go ahead and ask if you have any more questions.\nClick to expand...\nI hope this isn't a necropost. I've tried this conversion  and it seems to work okay as far as converting a game made in RPG VXAce, but when I try to convert a game that was converted from  VX to VX Ace It crashes. Not exactly sure why.\nThis is the Error:"
+    },
+    {
+      "post_id": "js-post-577235",
+      "author": "Shaz",
+      "date": "2016-03-30T06:30:48+0900",
+      "body": "A number of people have had issues with projects that were converted from VX to Ace, and in all the cases I investigated, it was because the VX -> VX Ace conversion put some weird stuff into the database.  I seem to recall it was always skills that had the issue - this message looks like it's the troop allocated to a map, which in VX were set up differently as areas.\nAre you able to zip up your project, load it online and give me a link?  I can take a look to find the cause, and give you a fix."
+    },
+    {
+      "post_id": "js-post-577601",
+      "author": "SrBoromir",
+      "date": "2016-03-31T00:27:29+0900",
+      "body": "I'm having the same error on line 10 that was posted by one person earlier, and yes I did convert from VX to ACE\nEDIT: SOLVED  Okay that was a really stupid mistake on my end... was having the converter script load before the other scripts were loaded, fixed by moving the script to the bottom of the list so it loaded last. (I think)"
+    },
+    {
+      "post_id": "js-post-603674",
+      "author": "andreycout",
+      "date": "2016-05-29T14:27:33+0900",
+      "body": "I'm having a weird bug with this conversion. Everything went fine, but one single event doesn't appear on MV. It's the last event of the game (an invisible auto-start that triggers the epilogue). I can read the whole event by editing Map009.js with notepad++, it's all there, but RPG Maker MV doesn't recognize its existence. The map doesn't have an event and the game crashes when reaching the epilogue.\nEdit: if it matters, the event is very big and full of branches, probably the biggest single tab event in the whole game.\nEdit2: tried copying the whole event to Common Events and re-exporting, now it says \"Unable to read file CommonEvents.json\" when trying to open the project. What sort of cursed black magic have I added to this event?"
+    },
+    {
+      "post_id": "js-post-603676",
+      "author": "Shaz",
+      "date": "2016-05-29T14:45:51+0900",
+      "body": "Can you duplicate the map in Ace, delete all events on the duplicate map except this 'problem' event, save, convert, and then send me the Map... file from both your Ace project and your MV (converted) project?  Just putting them on dropbox and giving me a link will do the trick.\nI suspect there's a command that isn't being converted correctly.  I'm glad to hear the map itself and the other events are showing up though.  Delete that common event and re-export so you get your successful CommonEvents.json conversion back."
+    },
+    {
+      "post_id": "js-post-603699",
+      "author": "andreycout",
+      "date": "2016-05-29T15:52:41+0900",
+      "body": "Shaz said:\nCan you duplicate the map in Ace, delete all events on the duplicate map except this 'problem' event, save, convert, and then send me the Map... file from both your Ace project and your MV (converted) project?  Just putting them on dropbox and giving me a link will do the trick.\nI suspect there's a command that isn't being converted correctly.  I'm glad to hear the map itself and the other events are showing up though.  Delete that common event and re-export so you get your successful CommonEvents.json conversion back.\nClick to expand...\nSent you the link to the files via PM."
+    },
+    {
+      "post_id": "js-post-603724",
+      "author": "Shaz",
+      "date": "2016-05-29T17:27:27+0900",
+      "body": "mmm ... you say other events on the same map convert okay?  Could I please get you to send me the whole (original) map?  I'm having trouble identifying the problem, though I can reproduce the issue easily enough."
+    },
+    {
+      "post_id": "js-post-603726",
+      "author": "andreycout",
+      "date": "2016-05-29T17:35:20+0900",
+      "body": "Shaz said:\nmmm ... you say other events on the same map convert okay?  Could I please get you to send me the whole (original) map?  I'm having trouble identifying the problem, though I can reproduce the issue easily enough.\nClick to expand...\nThat's the whole original map. It's just an empty room with an event. It's supposed to be a black screen that displays text based on the player choices during the game. All the dialogue branches are contained on the event, which is the only thing in the room.\nEdit: just tested adding other random event and converting again. Also didn't show up. Whatever this event has breaks the conversion of other events in the same room.\nEdit2: tried creating a new map, moving the problematic event to it and leaving the previously created test event in the original room, then converting. The test event did show up this time, but the new room is empty (problematic event still isn't recognized by MV)."
+    },
+    {
+      "post_id": "js-post-603728",
+      "author": "Shaz",
+      "date": "2016-05-29T17:41:33+0900",
+      "body": "Sorry - I thought I read that there were other events on the map and they converted correctly.  It's strange, as I'm creating extra events on that map and even they are not converting.  Something to do with the map settings, maybe.  Can you please show me a screenshot of the Map Properties box in Ace?  I should have exactly what you have, but I'm grasping at straws."
+    },
+    {
+      "post_id": "js-post-603732",
+      "author": "andreycout",
+      "date": "2016-05-29T17:53:06+0900",
+      "body": "Shaz said:\nSorry - I thought I read that there were other events on the map and they converted correctly.  It's strange, as I'm creating extra events on that map and even they are not converting.  Something to do with the map settings, maybe.  Can you please show me a screenshot of the Map Properties box in Ace?  I should have exactly what you have, but I'm grasping at straws.\nClick to expand...\nI don't think that's it. As I've said, I created a map from scratch, created a NEW EVENT there, just copied the instructions of the old event and this still happens to the new map. Copying the instructions of the event to Common Events crashes the game. I think it has something to do with the instructions of the event.\nI'll test deleting specific instructions of the event until it works. I have a hunch that it has something to do with the \"Show Message\" command (maybe I've put something in a message that is being incorrectly captured by the conversion script as code to be executed, or maybe the messages are too long).\nEdit: AHA! Managed to isolate the problem. Here's what I did:\n1. I cut part of the Instructions out to a new event at a new map.\n2. Converted. MV still didn't recognize the event, so whatever the problem is, it's still happening to the portion I cut.\n3. Edited said part, removing a long sequence of Show Message commands.\n4. Converted again. This time, the event was correctly recognized by MV.\nThat being said, there are only three possibilities: either the big number of sequential \"show message\" commands, the length of the text or the content of the text are causing the problem. I'll keep investigating."
+    },
+    {
+      "post_id": "js-post-603737",
+      "author": "andreycout",
+      "date": "2016-05-29T18:31:24+0900",
+      "body": "FINALLY! Completely isolated and solved the problem.\nFor some reason, one of the \"Show Message\" dialogues had a paragraph spacing on its second line of text (looked like a bunch of spaces, but a single backspace deleted it entirely). I couldn't see it because it didn't show up on VX Ace at all unless I clicked \"edit message\". On the rvdata2 file, analyzing it with notepad++, that spacing was represented by a \"&\" character.\nOn the *.json file, however, the \"&\" character was converted as a paragraph spacing, just like in the editor. I'm guessing that paragraph spacing broke the javascript syntax. Deleting said spacing character on the .json (directly through notepad++) solved the problem, and the event was correctly recognized.\nAs to how the problematic character/paragraph spacing ended up there, I think I used the \"batch entry\" tool in RMVXAce to make multiple dialogue lines, and sometimes it inserts these unwanted paragraph characters at the beginning of some lines. VX Ace usually ignores those and shows text as if it wasn't there.\nSo there it goes. If anyone else has missing events in their games after a conversion, CHECK YOUR \"SHOW MESSAGE\" BOXES for paragraph spacing characters."
+    },
+    {
+      "post_id": "js-post-604034",
+      "author": "Shaz",
+      "date": "2016-05-30T06:44:00+0900",
+      "body": "Glad you found it.  I'm pretty sure I tested with the batch input text.  But if anyone else posts with a similar problem, I'll know to take another look at it.  Thanks for posting back"
+    },
+    {
+      "post_id": "js-post-608850",
+      "author": "Brein Nathrezim",
+      "date": "2016-06-09T21:02:44+0900",
+      "body": "Hi,\nI was wondering if there is a plan to make a MV plug-in to revert the Javascript files to Ruby, compatible with VXAce?\nThank you."
+    },
+    {
+      "post_id": "js-post-608895",
+      "author": "Andar",
+      "date": "2016-06-09T22:44:00+0900",
+      "body": "@Brein Nathrezim\nDifferent script languages cannot be converted into each other - even this converter only manages maps and database, but no script command. So no, there is no plan to convert scripts automatically."
+    },
+    {
+      "post_id": "js-post-609121",
+      "author": "Shaz",
+      "date": "2016-06-10T07:50:39+0900",
+      "body": "Even if there was, MV being the newest product, the conversion would be from Ace to MV, not the other way around."
+    },
+    {
+      "post_id": "js-post-618389",
+      "author": "CJF",
+      "date": "2016-06-30T05:12:09+0900",
+      "body": "First off, I just wanted to say thanks for creating a converter. Now onto why I am posting - help! I converted my project over and whenever I attempt to load my project it says\n\"Unable to read file CommonEvents.json\"\nIf I replace the CommonEvents.json with a blank new one, the project loads fine in MV and everything else appears to have transferred successfully. I have twice run the converter plugin on my VX Ace project and I get the same error. A google search for the error didn't bring up much of anything. I used the plugin version from this thread, and I have version 1.2.0 of MV. Let me know if you need anything else to help figure this out. Thank you so much.\nSolution:\nSo, I opened a new Ace project. I copied all 234 Common Events into that project. I converted that project, copied the CommonEvent.json over into the MV project and it worked. So there you have it, incase anyone else has this error."
+    },
+    {
+      "post_id": "js-post-618467",
+      "author": "Shaz",
+      "date": "2016-06-30T08:07:58+0900",
+      "body": "Seems strange.  Wonder if you had something weird in one of the unused common events.  Normally I'd ask for your database files so I can reproduce the problem myself (and especially to determine if it's something wrong with the common events or a bug in the converter) but as you've already got it up and running, probably no need.\nI will say though, the majority of post-release \"problems\" found with the conversions have been on projects that have already been converted from VX to Ace.  I know for sure that converter did some funny stuff with with map encounters and with skills that have caused projects not to open in MV.  The other thing that caused issues is when people used a limit breaker script in Ace to expand the database (I think the issue related mostly to switches though, not the database tabs).  I'd be curious if you're in any of those situations."
+    },
+    {
+      "post_id": "js-post-618960",
+      "author": "CyndaBytes",
+      "date": "2016-07-01T06:28:30+0900",
+      "body": "CJF said:\nFirst off, I just wanted to say thanks for creating a converter. Now onto why I am posting - help! I converted my project over and whenever I attempt to load my project it says\n\"Unable to read file CommonEvents.json\"\nIf I replace the CommonEvents.json with a blank new one, the project loads fine in MV and everything else appears to have transferred successfully. I have twice run the converter plugin on my VX Ace project and I get the same error. A google search for the error didn't bring up much of anything. I used the plugin version from this thread, and I have version 1.2.0 of MV. Let me know if you need anything else to help figure this out. Thank you so much.\nSolution:\nSo, I opened a new Ace project. I copied all 234 Common Events into that project. I converted that project, copied the CommonEvent.json over into the MV project and it worked. So there you have it, incase anyone else has this error.\nClick to expand...\nI've got the same problem with Item.json. I'll try your solution.\nEdit:\n@Shaz\nMine ACE project come from ACE not VX."
+    },
+    {
+      "post_id": "js-post-618983",
+      "author": "Shaz",
+      "date": "2016-07-01T07:44:40+0900",
+      "body": "I'd really like it if you guys can send me files when the converter doesn't work.  Not much point in having it available to people if it's not doing the job."
+    },
+    {
+      "post_id": "js-post-619033",
+      "author": "bgillisp",
+      "date": "2016-07-01T10:26:41+0900",
+      "body": "I'd say it's doing it's job. My project converted flawlessly."
+    },
+    {
+      "post_id": "js-post-621884",
+      "author": "zebaroth",
+      "date": "2016-07-07T13:01:34+0900",
+      "body": "i got this error. script line 10 name error\nuninialized constant DEGICA::CONVERT:: DataManger"
+    },
+    {
+      "post_id": "js-post-621896",
+      "author": "Shaz",
+      "date": "2016-07-07T13:52:16+0900",
+      "body": "First thing to do is ensure you pasted the script correctly into your project.  If you made any changes, you might have changed something you shouldn't have.\nCan you please show a screenshot of your script screen, with this script selected, and line 10 showing?  I'm thinking you've either got it in the wrong place, or something's gone wrong when you copied & pasted the script (like some bits have been deleted)."
+    },
+    {
+      "post_id": "js-post-621905",
+      "author": "zebaroth",
+      "date": "2016-07-07T14:24:35+0900",
+      "body": "Shaz said:\nFirst thing to do is ensure you pasted the script correctly into your project.  If you made any changes, you might have changed something you shouldn't have.\nCan you please show a screenshot of your script screen, with this script selected, and line 10 showing?  I'm thinking you've either got it in the wrong place, or something's gone wrong when you copied & pasted the script (like some bits have been deleted).\nClick to expand...\ni found my propblem had to copies if the convert script in the same game i need to work on my projects when i am not half dead tied and don't remember doing the work\non them smacks head in to wall thanks for your help shaz this script is good tool to to have in ones rog maker tool kit"
+    },
+    {
+      "post_id": "js-post-621930",
+      "author": "Shaz",
+      "date": "2016-07-07T15:28:53+0900",
+      "body": "Good find!  Strange kind of error for that reason though - I wouldn't have considered two copies of the script as the culprit."
+    },
+    {
+      "post_id": "js-post-625558",
+      "author": "omgcow1234",
+      "date": "2016-07-16T02:33:37+0900",
+      "body": "im not sure if im doing anything wrong but when i make the new project and put the folder in it nothing happens it just stays the same."
+    },
+    {
+      "post_id": "js-post-625564",
+      "author": "Andar",
+      "date": "2016-07-16T02:44:30+0900",
+      "body": "please describe all steps you did in the order you made them. Most probably you simply skipped a step or so because the converter itself works and has been used by a lot of people."
+    },
+    {
+      "post_id": "js-post-625809",
+      "author": "omgcow1234",
+      "date": "2016-07-17T01:02:11+0900",
+      "body": "well i put the script in the script box and ran the game then i copied the mv data file, made a new game on mv did not playtest it and pasted the data folder in the project with the project closed on mv then when i opened it again it all looked the same."
+    },
+    {
+      "post_id": "js-post-625815",
+      "author": "Andar",
+      "date": "2016-07-17T01:09:15+0900",
+      "body": "then most probably you placed it in the wrong folder - can you tell us which files you copied where?"
+    },
+    {
+      "post_id": "js-post-625823",
+      "author": "omgcow1234",
+      "date": "2016-07-17T01:30:19+0900",
+      "body": "i copied the mv data folder and pasted it into the new project file it then replaced the project file."
+    },
+    {
+      "post_id": "js-post-625835",
+      "author": "Andar",
+      "date": "2016-07-17T02:38:07+0900",
+      "body": "@omgcow1234\nthat doesn't tell us anything. please specify the path where you copied which folder to."
+    },
+    {
+      "post_id": "js-post-625845",
+      "author": "omgcow1234",
+      "date": "2016-07-17T02:51:13+0900",
+      "body": "@Andar\nThere's a games folder in my documents it was created when i installed mv it stores all my mv project folders here i have some screenshots (#1 is blacked out for personal reasons.)"
+    },
+    {
+      "post_id": "js-post-625873",
+      "author": "Andar",
+      "date": "2016-07-17T04:50:39+0900",
+      "body": "A lot of screenshots - and none shows where you copied the files to inside your project folder.\nAre the json files you got from the converter inside the data folder, or did you create a new folder inside that structure? Did you override the files that existed in the MV project when you pasted the files from the Ace project? All files in your data folder should have the same date - the date when the converter was run."
+    },
+    {
+      "post_id": "js-post-625875",
+      "author": "CyndaBytes",
+      "date": "2016-07-17T04:51:22+0900",
+      "body": "In which json file are stored variables and switches names?"
+    },
+    {
+      "post_id": "js-post-625896",
+      "author": "Shaz",
+      "date": "2016-07-17T06:06:44+0900",
+      "body": "can you verify that the files actually did get copied?  You need to copy/paste the\ncontents\nof the folder, not the entire folder itself.  What's in the mv-data folder in your Ace project should go into the data folder in your MV project.\nIf that doesn't help, please take a screenshot of the contents of your MV project's data folder and post it here so we can confirm the files are where they should be."
+    },
+    {
+      "post_id": "js-post-626493",
+      "author": "limiTraveler",
+      "date": "2016-07-19T02:06:39+0900",
+      "body": "I read through the entire thread but didn't see anyone ask this particular question. I have a project I will continue mapping in VX/ACE but will convert to MV so I can use some of the built-in functions that VX/ACE doesn't have. I'm wondering how many times the conversion script can be run. I want to make the maps in VX/ACE and then transfer them over to MV as I complete them rather than all at once. What kind of problems would I run into with the conversion program if I did it this way?"
+    },
+    {
+      "post_id": "js-post-626498",
+      "author": "Andar",
+      "date": "2016-07-19T02:39:15+0900",
+      "body": "@DeviTheHuman\n: there should be none as long as you don't cross-work.\nSo if you make a map, convert it and transfer it there should be no problem.\nHowever, if you change something in MV only, and copy files from the (unchanged) Ace later, that will overwrite changes you did in MV."
+    },
+    {
+      "post_id": "js-post-626506",
+      "author": "limiTraveler",
+      "date": "2016-07-19T02:51:19+0900",
+      "body": "@Andar\nOkay. That makes sense. Thanks for answering\n."
+    },
+    {
+      "post_id": "js-post-629914",
+      "author": "Allerka",
+      "date": "2016-07-28T04:44:29+0900",
+      "body": "CJF said:\nFirst off, I just wanted to say thanks for creating a converter. Now onto why I am posting - help! I converted my project over and whenever I attempt to load my project it says\n\"Unable to read file CommonEvents.json\"\nIf I replace the CommonEvents.json with a blank new one, the project loads fine in MV and everything else appears to have transferred successfully. I have twice run the converter plugin on my VX Ace project and I get the same error. A google search for the error didn't bring up much of anything. I used the plugin version from this thread, and I have version 1.2.0 of MV. Let me know if you need anything else to help figure this out. Thank you so much.\nSolution:\nSo, I opened a new Ace project. I copied all 234 Common Events into that project. I converted that project, copied the CommonEvent.json over into the MV project and it worked. So there you have it, incase anyone else has this error.\nClick to expand...\nI'm getting the same problem with my Armors and Weapons files. I was using an affix system, so most of my weapons and armor have a ton of note tags, that's my guess as to what might be causing the issue. I've attached the database files.\nView attachment Weapons.rvdata2\nView attachment Armors.rvdata2\nEDIT: I tried stripping out note tags from everything, and that seemed to get it to work. Dunno what was up there, if it was formatting thing or what."
+    },
+    {
+      "post_id": "js-post-638264",
+      "author": "Zak",
+      "date": "2016-08-18T00:16:05+0900",
+      "body": "Shaz said:\nA number of people have had issues with projects that were converted from VX to Ace, and in all the cases I investigated, it was because the VX -> VX Ace conversion put some weird stuff into the database.  I seem to recall it was always skills that had the issue - this message looks like it's the troop allocated to a map, which in VX were set up differently as areas.\nClick to expand...\nI know how this feels now.\nIs it really that \"impossible\" to help us VX-users out and make a script for our games?\nI would like to move on with my VX-game to MV too and it's a really frustration experience right now that I can't. Converting from VX > Ace may work but this has to happen when even XP got his converter."
+    },
+    {
+      "post_id": "js-post-638433",
+      "author": "Shaz",
+      "date": "2016-08-18T07:20:41+0900",
+      "body": "It's not \"impossible\" to make a VX-MV converter - nobody ever said that it was.  It just takes a lot of time, and VX has a few serious differences to Ace that it's not just \"doing the same thing in a slightly different language\".  I was never a VX user so that adds extra time.  And it's time I just don't have at the moment.\nXP has a converter because there was an XP scripter around who wanted to take on the project.  Find a VX scripter who wants to take on the project, and you're set"
+    },
+    {
+      "post_id": "js-post-638435",
+      "author": "Schlangan",
+      "date": "2016-08-18T07:34:37+0900",
+      "body": "Yes, I did the XP to MV conversion script(which has many flaws due to the enormous changes in database between XP and MV). I would have tried VX to MV, but I never used RPG Maker VX, so I know nothing about RGSS2"
+    },
+    {
+      "post_id": "js-post-638438",
+      "author": "Shaz",
+      "date": "2016-08-18T07:38:15+0900",
+      "body": "honestly, it's the layout of the database and map data that's a bigger issue than the language.  There really aren't that many significant differences between the three versions of RGSS.  Maps have areas instead of regions, and there's some conversion needed to put database stuff into features/traits, which is where I came undone when I was attempting it, then had to put it aside for other things."
+    },
+    {
+      "post_id": "js-post-732315",
+      "author": "RinkuSonic41",
+      "date": "2017-05-10T01:06:31+0900",
+      "body": "I have a problem,\nI converted a project from vxa and then i took the enemies data to put it on my project,so i substituted the file,but now it don't read the enemies folder images"
+    },
+    {
+      "post_id": "js-post-732387",
+      "author": "Shaz",
+      "date": "2017-05-10T05:33:10+0900",
+      "body": "Did you copy the images over?  MV has two battler image folders, and Ace only has one.  You may need to copy them into both.  And you DO need to copy them - the converter handles the Data folder only."
+    },
+    {
+      "post_id": "js-post-732503",
+      "author": "PhoenixX92",
+      "date": "2017-05-10T16:11:10+0900",
+      "body": "Thanks for this, Shaz.\n(How are you not a developer!? LOL)"
+    },
+    {
+      "post_id": "js-post-753639",
+      "author": "DaneReid",
+      "date": "2017-07-11T02:23:37+0900",
+      "body": "I'm having the same issues as omgcow1234. I inserted the script into my rpg maker vx ace project then play tested the game which created the folder(mv-data0. i copied everything from that folder and pasted it into the data folder of the new rpg maker mv project i created. once I did that i open the rpg maker mv project and nothing has changed. i dont really have much to convert except some graphics which i've already done. now just gotta figure this issue out."
+    },
+    {
+      "post_id": "js-post-753641",
+      "author": "Andar",
+      "date": "2017-07-11T02:30:42+0900",
+      "body": "@DaneReid\nAre you sure that you opened the correct project and copied the files into the correct folders?\nBecause \"nothing changed\" is technically impossible. The files gained from this script replace the files of the MV project, which means even if they don't work, they delete the original database files.\nSo there has to be a change, even if it is only an error message when something went wrong and the files can't be read anymore - but it is technically impossible for the project to still contain the original data if the files were correctly replaced.\nAnd remember that this script only converts the database, converting the resources is done externally and not handled by this script."
+    },
+    {
+      "post_id": "js-post-753644",
+      "author": "DaneReid",
+      "date": "2017-07-11T02:40:52+0900",
+      "body": "@Andar\nYup, I'm 100% sure. Maps wasn't converted, Database wasn't converted, I didn't have any scripts so that's not a problem. It does sound weird especially when you put it like that but none the less nothing changed. When I open the project it still starts up as if I created a new project."
+    },
+    {
+      "post_id": "js-post-753648",
+      "author": "Andar",
+      "date": "2017-07-11T02:47:41+0900",
+      "body": "@DaneReid\nas I said that is technically impossible. It isn't simply weird, it cannot happen that way.\nThe only way that could happen is if either the copy/overwrite was cancelled or if you accidentally opened a different project.\nThere are ways how those mistakes can happen, for example if you have a filewatch or a versioning system active (for example if your project is in a cloudfolder and the synchronisation overwrote the wrong file when sync'ing with the internet cloud).\nOr it could be that the editor didn't open the correct project (for example steam has a problem with transferring opening arguments, if you doubleclick a project file then steam can ignore that project and the editor opens a previously last opened project instead of the doubleclicked one).\nIn the last case, you need to go to the open command in the menu after launching the editor any manually select the correct path again.\nBut it is absolutely impossible to open the old database after the project datafiles have been correctly overwritten."
+    },
+    {
+      "post_id": "js-post-753656",
+      "author": "DaneReid",
+      "date": "2017-07-11T03:10:54+0900",
+      "body": "@Andar\nJust got it to work actually. I just deleted the new rpg maker mv project i made and created a new one.\nThanks for your help!"
+    },
+    {
+      "post_id": "js-post-819068",
+      "author": "Shaz",
+      "date": "2018-01-20T08:31:32+0900",
+      "body": "I have made a couple of small changes to the converter script that might have some big results for anyone who still uses it.\nThe original script put all of the upper layer tiles onto the 'bottom' of MV's two upper layers.  That meant, if you wanted to draw another tile on top in MV, the original one would disappear.  Version 2.0 fixes that - upper tiles are drawn onto the 'top' of the two upper layers, so if you draw another tile over it in MV, the original tile will now shuffle down to the 'bottom' upper layer and not disappear.\nIn addition, version 2.0 converts all those decoration events to tiles.  If you placed an event in Ace and used a tile image, the converter will place the image onto the map as a tile, and remove the event.  This will only be done if the event was created solely to add an extra tile layer.  If the event has more than one page, any event commands, or any conditions, it will still be converted as an event.  But if there is the tile image and absolutely nothing else, it'll be converted as a tile and not an event.\nVersion 2.0 is available\nfrom my pastebin\nand in the first post in this thread.  Version 1.0 is still available from the original post.\nIf you already have an MV project, make a backup of the data folder before you use this script and overwrite the files."
+    },
+    {
+      "post_id": "js-post-836324",
+      "author": "tcb2086",
+      "date": "2018-03-05T04:46:03+0900",
+      "body": "Hi Shaz,\nThanks for making this, it certainly saved me some time in the conversion process however just wanted to let you know I did run into some issues using it. Seems like a problem with common events because that's the only json file that is empty after receiving some error messages. I deleted everything out of my project (copy) leaving only a single map with no events and the common events still fail to convert. Either way it still saved me a lot of time remaking maps and creating variables.\nThanks!\nTcb2086"
+    },
+    {
+      "post_id": "js-post-836363",
+      "author": "Shaz",
+      "date": "2018-03-05T06:39:02+0900",
+      "body": "My guess is that you have something weird in your common events file.  I'd be happy to take a look, if you'd like to zip up your Ace Data file and send to me."
+    },
+    {
+      "post_id": "js-post-837256",
+      "author": "tcb2086",
+      "date": "2018-03-07T15:33:08+0900",
+      "body": "Shaz said:\nMy guess is that you have something weird in your common events file.  I'd be happy to take a look, if you'd like to zip up your Ace Data file and send to me.\nClick to expand...\nOk! I have already converted everything manually that didn't go over automagically, so no need to fix it on my behalf, however I felt I at least owed you some feedback to help improve the converter after it saved me so much time.\nZip File\nis available if you want to check it out.\nIf nothing turns up in those I could send the partial project I was testing the converter with last, it may be the error happens before it reaches common events and thus it is empty, however it seems mostly everything else did convert successfully."
+    },
+    {
+      "post_id": "js-post-837275",
+      "author": "Shaz",
+      "date": "2018-03-07T17:28:11+0900",
+      "body": "That's a bit strange - I put your file into my Ace project, ran the converter, pulled it into MV, and it opened fine.  All the common events have converted perfectly.\nI was making the assumption that your error messages happened when you tried to open the project in MV.  But maybe they happened when you ran the converter in Ace?  Common events are converted towards the end of the database (it does them in the same order as the database tabs) but before the maps.  So there is no reason all the database tabs before would convert, and all the maps would convert, but the common events won't.  I wouldn't mind taking a look at that project with all the maps except one removed.\nI do know there's an issue with skills if you originally started your project in VX and then used a converter (don't recall the name) to convert it to Ace.  It puts a hash into the damage formula which causes an issue (don't recall if the converter crashes, or if it works but you can't open the file in MV).  Is there any chance your project was started in VX and then converted to Ace?"
+    },
+    {
+      "post_id": "js-post-843676",
+      "author": "Poppie360",
+      "date": "2018-03-22T23:27:51+0900",
+      "body": "@Shaz\ni've tried to use this and i had gotten some errors, it wouldn't convert all the way. it would just hang at the scripts part of the conversion. can you possibly help me to figure out what's going on?"
+    },
+    {
+      "post_id": "js-post-843681",
+      "author": "bgillisp",
+      "date": "2018-03-22T23:41:43+0900",
+      "body": "You may have to delete some of your scripts before the conversion will go through. I had to remove Yanfly's enemy levels and Yanfly's doppleganger scripts before it worked for me.\nJust be sure to make a backup of your project before doing this!"
+    },
+    {
+      "post_id": "js-post-843684",
+      "author": "Poppie360",
+      "date": "2018-03-22T23:50:09+0900",
+      "body": "bgillisp said:\nYou may have to delete some of your scripts before the conversion will go through. I had to remove Yanfly's enemy levels and Yanfly's doppleganger scripts before it worked for me.\nJust be sure to make a backup of your project before doing this!\nClick to expand...\nthanks, i'll have to try this when i get the chance. there are a few scripts that i couldn't find equivalents for mv. and not to mention the tons of maps i have that i need to convert XD"
+    },
+    {
+      "post_id": "js-post-843685",
+      "author": "bgillisp",
+      "date": "2018-03-22T23:53:07+0900",
+      "body": "Just remember, this program does NOT convert the scripts. It only converts your maps, database, and events. All scripts you'll have to replace with MV equivalents."
+    },
+    {
+      "post_id": "js-post-843745",
+      "author": "Poppie360",
+      "date": "2018-03-23T02:27:29+0900",
+      "body": "bgillisp said:\nJust remember, this program does NOT convert the scripts. It only converts your maps, database, and events. All scripts you'll have to replace with MV equivalents.\nClick to expand...\nwell crud"
+    },
+    {
+      "post_id": "js-post-843852",
+      "author": "Shaz",
+      "date": "2018-03-23T06:30:17+0900",
+      "body": "Yes.  This program ONLY converts what is in the Data folder, and only what is standard with RTP  (if you have scripts that create their own .rvdata2 files in the Data folder, they will not be converted).\nDoes it give you any error messages?  That would help."
+    },
+    {
+      "post_id": "js-post-844648",
+      "author": "Matt Eagleson",
+      "date": "2018-03-25T07:25:00+0900",
+      "body": "hello im having problems even getting it to run. i get an errror message \" Script '' line 16: NameError occurred. uninitialized constant DEGICA::CONVERT:\nataManager \". i would love to use this to convert my project."
+    },
+    {
+      "post_id": "js-post-844650",
+      "author": "Shaz",
+      "date": "2018-03-25T07:27:46+0900",
+      "body": "Did you put the script below Materials and above Main?"
+    },
+    {
+      "post_id": "js-post-844651",
+      "author": "Matt Eagleson",
+      "date": "2018-03-25T07:31:06+0900",
+      "body": "worked flawlessly thank you. Not only for the reply but it worked all my data"
+    },
+    {
+      "post_id": "js-post-858368",
+      "author": "goldcut",
+      "date": "2018-05-03T06:21:37+0900",
+      "body": "This is a godsend. Now I actually may try converting big projects.\nWhile for obvious reasons script calls won't be converted, I am wondering if you may add options for the user to force a conversion. Say there are script calls for Yanfly Engine and as there are corresponding MV versions of them, it may be directly converted. e.g.  Script call require_actor(1) in Ace is (mostly) the same as plugin command RequireActor 1 in MV with Yanfly party system.\nFor a first step ignore the parameters and treat the entire script call as one single string would suffice. I would like to replace all ats_all(\naragraph_format, false) script call (I added a space between ( and : ) with plugin command DisableWordWrap (and other similar replacements) for now, so it's pointless to keep the parameters.\nThank you for your great contribution anyway."
+    },
+    {
+      "post_id": "js-post-858444",
+      "author": "Shaz",
+      "date": "2018-05-03T11:39:40+0900",
+      "body": "Sorry - that is a no, for many reasons which I won't list unless you really want me to."
+    },
+    {
+      "post_id": "js-post-858554",
+      "author": "goldcut",
+      "date": "2018-05-03T21:02:13+0900",
+      "body": "Shaz said:\nSorry - that is a no, for many reasons which I won't list unless you really want me to.\nClick to expand...\nAh OK, guess I'll run a batch replacement myself."
+    },
+    {
+      "post_id": "js-post-1018213",
+      "author": "slickdeath97",
+      "date": "2019-11-20T06:57:42+0900",
+      "body": "I am getting an error on line 837:\nHow do i fix this?"
+    },
+    {
+      "post_id": "js-post-1018300",
+      "author": "Shaz",
+      "date": "2019-11-20T16:06:54+0900",
+      "body": "It means you have a Map###.rvdata2 in your data folder that is not in your game.  You have copied a map file or saved one from somewhere else.  Get rid of it, and the error should stop happening.\nIf you cannot figure it out, insert the following after line 834:\nCode:\np \"Map \" + filename + \" (\" + map.display_name + \")\"\nand play with the console turned on.  When the error appears, the map it failed on will be the last one printed to the console window."
+    },
+    {
+      "post_id": "js-post-1058310",
+      "author": "marlon1748",
+      "date": "2020-04-25T01:36:05+0900",
+      "body": "I am getting an error on line 10:\nHow do i fix this?"
+    },
+    {
+      "post_id": "js-post-1058396",
+      "author": "Shaz",
+      "date": "2020-04-25T06:37:38+0900",
+      "body": "marlon1748 said:\nHow do i fix this?\nClick to expand...\nYou need to put the script in the correct location.  Scripts go below the Materials section, not at the top of the list."
+    },
+    {
+      "post_id": "js-post-1058460",
+      "author": "marlon1748",
+      "date": "2020-04-25T12:23:32+0900",
+      "body": "Shaz said:\nYou need to put the script in the correct location.  Scripts go below the Materials section, not at the top of the list.\nClick to expand...\nthank you so much. my little angel. S2"
+    },
+    {
+      "post_id": "js-post-1089643",
+      "author": "Archeia",
+      "date": "2020-07-13T13:36:33+0900",
+      "body": "Hi\n@Shaz\n, I was just wondering what does this error mean? I don't have any other scripts but this. I checked and Map81 does exist (I have it on BG) and for some reason it is where the error is happening? The name is Pier(Backup)\n(Deleted Image)\nEDIT:\nFound out the issue! So it happens I deleted a bunch of maps and the converter thinks that they still exists (I have over 162 but I deleted a bunch in between during trimming). So the converter fails."
+    },
+    {
+      "post_id": "js-post-1089685",
+      "author": "Shaz",
+      "date": "2020-07-13T15:26:05+0900",
+      "body": "@Archeia\n, are they still in your data folder?  Was it some error about $dataMapInfos element not being defined, on about line 837?  The converter looks at everything in /data/Map*.rvdata2 and doesn't check to see if they're still in the hierarchy.\nI can help you work through it and get you a solution if you like.  It'll probably be just a one or two line change but I need to be sure what the situation is."
+    },
+    {
+      "post_id": "js-post-1089697",
+      "author": "Archeia",
+      "date": "2020-07-13T15:45:31+0900",
+      "body": "Shaz said:\n@Archeia\n, are they still in your data folder?  Was it some error about $dataMapInfos element not being defined, on about line 837?  The converter looks at everything in /data/Map*.rvdata2 and doesn't check to see if they're still in the hierarchy.\nI can help you work through it and get you a solution if you like.  It'll probably be just a one or two line change but I need to be sure what the situation is.\nClick to expand...\nSo basically, I had 162 maps. And the course of development, I deleted 82-161.  Your plugin throws a null error if I have a case like that so I have to basically enter 82-161 empty maps so it would run properly."
+    },
+    {
+      "post_id": "js-post-1089698",
+      "author": "Shaz",
+      "date": "2020-07-13T15:49:16+0900",
+      "body": "It really shouldn't, because it's perfectly valid to have missing maps.  And you shouldn't have to go and create them all just to avoid it.\nI'm happy to take a look if you want me to."
+    },
+    {
+      "post_id": "js-post-1089701",
+      "author": "Archeia",
+      "date": "2020-07-13T15:55:22+0900",
+      "body": "Shaz said:\nIt really shouldn't, because it's perfectly valid to have missing maps.  And you shouldn't have to go and create them all just to avoid it.\nI'm happy to take a look if you want me to.\nClick to expand...\nAh it's ok. I already did the workaround and finished ;w;"
+    },
+    {
+      "post_id": "js-post-1089709",
+      "author": "Schlangan",
+      "date": "2020-07-13T16:39:18+0900",
+      "body": "This thread makes me wonder if the new layering system coming back from old xp will help map conversions between XP and MZ. Surely we'll be able to work on new converters up to MZ, might be fun... or not ^^'"
+    },
+    {
+      "post_id": "js-post-1090020",
+      "author": "Shaz",
+      "date": "2020-07-14T07:08:14+0900",
+      "body": "Schlangan said:\nThis thread makes me wonder if the new layering system coming back from old xp will help map conversions between XP and MZ.\nClick to expand...\nThe difficulty was never to do with the number of layers, or what went on each layer.  That would be easy to convert.  The difficulty is in the layout of the tileset, where XP's autotiles were in a different format, and an XP tileset included one image that could have hundreds, even thousands of tiles, while later versions were fixed.\nStill, it would not be difficult to do a conversion of the map data itself.  It was really the database changes that made conversion difficult."
+    },
+    {
+      "post_id": "js-post-1107007",
+      "author": "Freakazoid200",
+      "date": "2020-08-22T23:04:22+0900",
+      "body": "Hi, made a game some time ago in VX.\nI Converted it to VX Ace with the converter from\nFenixFyreX.\nAnd then i converted it with your script to MV.\nAfter some troubles with a  \"could not found formula\" and \"nil to string\" error, i managed to convert it to mv.\nBut i could not load skills.json and item.json. Still no problem i took the standard one to open my file.\nAnd i can just remake them, not that much work.\nBut,...\nmy world map did not transfer. The map with its name got transfered but it is an empty 17x13 map.\nAll the other maps with the events transfered without a problem.\nHave you an idea, what i could do?\nThanks in Advance!"
+    },
+    {
+      "post_id": "js-post-1107331",
+      "author": "Shaz",
+      "date": "2020-08-23T07:28:13+0900",
+      "body": "There is a known issue with the VX to VX Ace converter that puts invalid data into the skills.  That was highlighted when any of those projects were converted to MV using my script.  Not sure about items - I suspect there's something invalid in either a name, description or notetag on an item somewhere.\nAnd I can't think of any reason why the world map would not go across.\nDid you make any changes to the script to get around the errors you were having?  Do you have the latest version of the script?\nIf you want to send me your Ace project I can try and run the converter and see what it does.  If you want to do that, let me know the map # for your world map."
+    },
+    {
+      "post_id": "js-post-1121768",
+      "author": "raziel23x",
+      "date": "2020-09-21T22:40:35+0900",
+      "body": "whats the difference between\nAce MV Converter.rb\n<-Link and\nAce to MV Converter.rb\n<-Link as i was going to use it to convert a 5 year old project to mv and confused to which one to use as both show up in my F:\\SteamLibrary\\steamapps\\common\\RPG Maker MV\\dlc\\RPGmakerWeb_plugins\\Shaz"
+    },
+    {
+      "post_id": "js-post-1121892",
+      "author": "Shaz",
+      "date": "2020-09-22T05:33:43+0900",
+      "body": "It looks like the JP team added some documentation in Japanese and made some corrections - wonder why they didn't add the corrections to the original version.  Use the Ace to MV Converter.rb file, with the JP documentation."
+    },
+    {
+      "post_id": "js-post-1156269",
+      "author": "SloppyJoeStudios",
+      "date": "2021-01-19T22:21:40+0900",
+      "body": "What does \"$game_map is not defined\" mean?\nHappens as soon as my intro is over in my now converted mv version and the game starts and the player are about to be controlled."
+    },
+    {
+      "post_id": "js-post-1156296",
+      "author": "Andar",
+      "date": "2021-01-20T00:01:12+0900",
+      "body": "@SkottGaming\ndid you start a new game on the MV version?\nor was the Ace-Project already converted from a regular VX project?\nThat error should not happen on a new game, unless the conversion somehow failed or contained bad data. And in the past all conversions from VXAce were OK, but one of the converters from VX->VXA is known to create bad data that Ace ignores but that causes problem if converting again to MV."
+    },
+    {
+      "post_id": "js-post-1156310",
+      "author": "SloppyJoeStudios",
+      "date": "2021-01-20T00:35:14+0900",
+      "body": "Andar said:\n@SkottGaming\ndid you start a new game on the MV version?\nor was the Ace-Project already converted from a regular VX project?\nThat error should not happen on a new game, unless the conversion somehow failed or contained bad data. And in the past all conversions from VXAce were OK, but one of the converters from VX->VXA is known to create bad data that Ace ignores but that causes problem if converting again to MV.\nClick to expand...\nI found out what the problem was. I needed to put in the yep core plugin afterwards in the mv version. Now it seems to work"
+    },
+    {
+      "post_id": "js-post-1156338",
+      "author": "Andar",
+      "date": "2021-01-20T02:55:49+0900",
+      "body": "SkottGaming said:\nI needed to put in the yep core plugin afterwards in the mv version.\nClick to expand...\nno, a correct conversion works without any plugin.\nmost likely that had nothing to do with your problem and was only accidentally done at the same time as you changed whatever you originally did wrong."
+    },
+    {
+      "post_id": "js-post-1156373",
+      "author": "Shaz",
+      "date": "2021-01-20T05:46:39+0900",
+      "body": "SkottGaming said:\nWhat does \"$game_map is not defined\" mean?\nHappens as soon as my intro is over in my now converted mv version and the game starts and the player are about to be controlled.\nClick to expand...\nSkottGaming said:\nI found out what the problem was. I needed to put in the yep core plugin afterwards in the mv version. Now it seems to work\nClick to expand...\nNo. There is no such thing as $game_map in MV.  If you got that error, it means you did not go through the list of script calls and fix them up.  What plugins you have have nothing to do with it."
+    },
+    {
+      "post_id": "js-post-1156393",
+      "author": "SloppyJoeStudios",
+      "date": "2021-01-20T06:32:08+0900",
+      "body": "Shaz said:\nNo. There is no such thing as $game_map in MV.  If you got that error, it means you did not go through the list of script calls and fix them up.  What plugins you have have nothing to do with it.\nClick to expand...\nThen I really don't know what dixed it but after taking away all script calls and playtested a lot of times.. nothing worked, then I tried adding that plugin and that worked but I know what coder god you are so you are probably right... That is what I did though...\nNow I want to find a new unique battle system for the game. Tired of the sideview and action battle system... Hmmm.."
+    },
+    {
+      "post_id": "js-post-1156419",
+      "author": "stramin",
+      "date": "2021-01-20T07:58:03+0900",
+      "body": "This topic should be pinned"
+    },
+    {
+      "post_id": "js-post-1182555",
+      "author": "Juanita",
+      "date": "2021-04-25T10:10:13+0900",
+      "body": "(And I sure hope Im not necroposting here, unless I misread the rules right now...)\nFor everyone who did the \"\nVX to Ace\"\nand then \"\nAce to MV\"\ntransfer and got problems with Common Events:\nTake the data file from common events from VX and change the \"rvdata\" to \"rvdata2\" manually (you know, by adding 2 in the file). Then transfer your Ace project to MV using this tool. That was what worked for me."
+    },
+    {
+      "post_id": "js-post-1182556",
+      "author": "Shaz",
+      "date": "2021-04-25T10:17:17+0900",
+      "body": "@Juanita Star\nI'm not aware of any issues with common events transferring, unless there was something in a script call that caused an issue.  I'd be happy to take a look at both your VX and Ace CommonEvent files if you want to troubleshoot."
+    },
+    {
+      "post_id": "js-post-1182559",
+      "author": "Juanita",
+      "date": "2021-04-25T10:33:12+0900",
+      "body": "Shaz said:\n@Juanita Star\nI'm not aware of any issues with common events transferring, unless there was something in a script call that caused an issue.  I'd be happy to take a look at both your VX and Ace CommonEvent files if you want to troubleshoot.\nClick to expand...\nThanks! but no worries! The problem was when I transfered from Vx to Ace using a tool for it, then when I tried the Ace to MV here, it would cause me problems for some reason, even when I tred to delete all common events...but I did the change of data to VX manually and the transfer to MV was a breeze. (I did discovered that script calls were a no-no for weapons too)."
+    },
+    {
+      "post_id": "js-post-1298984",
+      "author": "ZephyrLightningheart",
+      "date": "2022-09-05T08:10:19+0900",
+      "body": "When I put the 2.0 script into VXA, I get this error message. I also converted my VXA project from VX. I rarely used any scripting. Any scripts have been since taken out."
+    },
+    {
+      "post_id": "js-post-1299050",
+      "author": "Andar",
+      "date": "2022-09-05T14:48:14+0900",
+      "body": "ZephyrLightningheart said:\nI also converted my VXA project from VX.\nClick to expand...\nthat might be the cause of the problem, but I'm not sure.\nI remember that all double-converted projects caused problems when MV came out.\npure VXA->MV always wworked, but somehow the VX->VXA converter must have entered wrong values that were ignored by VXA but not by the second conversion.\nAnd I don't remember any solution for that case at all, because it was too rare to reproduce where the wrong data was stored.\nThen again that error message suggests a problem with the conversion script itself, like it was improperbly installed. The error described above only caused problems in MV after the conversion, not during it."
+    },
+    {
+      "post_id": "js-post-1299078",
+      "author": "ZephyrLightningheart",
+      "date": "2022-09-05T20:25:47+0900",
+      "body": "Andar said:\nthat might be the cause of the problem, but I'm not sure.\nI remember that all double-converted projects caused problems when MV came out.\npure VXA->MV always wworked, but somehow the VX->VXA converter must have entered wrong values that were ignored by VXA but not by the second conversion.\nAnd I don't remember any solution for that case at all, because it was too rare to reproduce where the wrong data was stored.\nThen again that error message suggests a problem with the conversion script itself, like it was improperbly installed. The error described above only caused problems in MV after the conversion, not during it.\nClick to expand...\nIf I were to create a fresh project in VXA and remake all the events and maps, would that solve the problem of the double conversion? It would only be VXA to MV with one conversion instead of 2 conversions?\nTo add it does create the MV-data folder with the converted files but only skills, characters, and actors were created. When I loaded what I had into fresh MV project, the skills.json was unreadable."
+    },
+    {
+      "post_id": "js-post-1532437",
+      "author": "aLibX",
+      "date": "2025-10-05T22:51:40+0900",
+      "body": "hey i just used\nRPG-Maker-converter\nand converted a game to mz for personal use i was able to port it to mz every seems fine but one thing the player character is passing through walls\nhow can i fix this\nin mz when i placed wall in layer 4 the seems to work?\ni am new to rpg maker in general"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/change-the-sv-actor-position.180399",
+  "title": "MZ Change the SV Actor position",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:34:55.880590+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532267",
+      "author": "Psychoholic42",
+      "date": "2025-10-03T23:04:33+0900",
+      "body": "I'm looking for a way to adjust the X-axis position for specific SV Actors in my game. I have characters that are in the back row, and you can swap out allies in battle. I want it so the back-row characters are a little to the right, no matter what position they are in the formation. I have the SVActorPosition plugin, but that's based on the order of the formation. I need something to put in the character's notes or maybe a script call to get this the way I want it. I know I can use VisuStella's Battle Core to do this, but I don't like that plugin."
+    },
+    {
+      "post_id": "js-post-1532270",
+      "author": "Aerosys",
+      "date": "2025-10-03T23:31:16+0900",
+      "body": "Create a new plugin file with any name, and paste this:\nCode:\n/*:\n * @target MZ\n */\nSprite_Actor.prototype.setHome = function(x, y) {\n    if (this.deltaX()) {\n        x += this.deltaX();\n    }\n    if (this.deltaY()) {\n        y += this.deltaY();\n    }\n    Sprite_Battler.prototype.setHome.call(this, x, y);\n}\nSprite_Actor.prototype.deltaX = function() {\n    return this.notetags() && 'Delta X' in this.notetags()\n        ? Number(this.notetags()['Delta X'])\n        : undefined;\n}\nSprite_Actor.prototype.deltaY = function() {\n    return this.notetags() && 'Delta Y' in this.notetags()\n        ? Number(this.notetags()['Delta Y'])\n        : undefined;\n}\nSprite_Actor.prototype.notetags = function() {\n    return this._actor && this._actor.actor()\n        ? this._actor.actor().meta\n        : undefined;\n}\nNow, you can use the Notetags <Delta X: -50> and <Delta Y: 20> for example.\nI can also change it for class Notetags when that's more useful for you."
+    },
+    {
+      "post_id": "js-post-1532279",
+      "author": "Psychoholic42",
+      "date": "2025-10-04T01:10:11+0900",
+      "body": "Works just the way I want it."
+    }
+  ]
+}

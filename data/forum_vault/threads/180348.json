@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/disable-skill-variance-on-critical.180348",
+  "title": "MV Disable Skill Variance on Critical",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:35:05.715685+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1531900",
+      "author": "ZachJamesGames",
+      "date": "2025-09-29T11:49:00+0900",
+      "body": "Hi hello!\nI was wondering if there is a way to tell RPG Maker MV to disable a skill's \"Variance\" on a crit? I'm totally fine with the swingy degree of min/max damage on a normal hit, but I would love for all crits to be something like \"max damage * 1.5\" without the variance of the skill being involved.\nI'm using most of Yanfly's plugins for MV, and while they do offer a lot of customization of formulas and whatnot, none offer functionality to disable or ignore a skill's variance setting when a crit lands.\nI've tried poking around the forums/reddit/Steam/etc but no one seems to have ever asked about this, or SEO is getting in the way of me coming up with the right combination of words to find anyone who has asked a similar question.\nI'd imagine there's a way via JS to accomplish this, but thought I'd ask folks here first before I continue down this rabbit hole. Do any of you know a way in the damage formula to write an \"if\" statement that says \"if this is a crit, disable variance and do [this new equation]\" or does anyone know of a plugin that addresses this specific issue?\nThanks in advance for your time!"
+    },
+    {
+      "post_id": "js-post-1531911",
+      "author": "Robro33",
+      "date": "2025-09-29T14:40:10+0900",
+      "body": "ZachJamesGames said:\nI'm using most of Yanfly's plugins for MV, and while they do offer a lot of customization of formulas and whatnot, none offer functionality to disable or ignore a skill's variance setting when a crit lands.\nClick to expand...\nif youre using yanfly's damage core, it lets you do that. the damage steps plugin parameters outlines the entire damage calc process and lets you alter it through the editor. you would have to add a conditional towards the end to not apply variance if the current hit was determined to be critical"
+    },
+    {
+      "post_id": "js-post-1531931",
+      "author": "caethyril",
+      "date": "2025-09-29T20:37:06+0900",
+      "body": "Assuming suitable timing, you can check\ntarget.result().critical\n. This assumes that\ntarget\nrefers to the skill's target. (By default the\ncritical\nflag is set immediately before the damage formula is evaluated.)\nTo affect all skills equally,\n@Robro33\n's suggestion seems most convenient. In my old copy of YEP_DamageCore it looks like variance is applied in Damage Step 90 (plugin parameter) by default:\nJavaScript:\nvalue = this.applyVariance(value, item.damage.variance);\nYou could change that to be conditional, e.g.\nJavaScript:\nif (!target.result().critical) value = this.applyVariance(value, item.damage.variance);\nI.e. \"if the result is not (\n!\n) a crit, then apply variance\".\nAlternatively, for a per-skill thing you could set the Variance to 0% and manually apply randomness in the damage formula when appropriate. E.g. for a skill with formula like this:\nJavaScript:\na.mat * 2 - b.mdf\n...you could instead do this:\nJavaScript:\nvar r = a.mat * 2 - b.mdf; b.result().critical ? r : this.applyVariance(r, 20);\nI.e. \"if the result is a crit, return the base formula value; otherwise, apply 20% variance\". The usual modifiers (crit multiplier, element rate, guard reduction, etc) will apply as usual."
+    },
+    {
+      "post_id": "js-post-1533125",
+      "author": "ZachJamesGames",
+      "date": "2025-10-12T01:06:16+0900",
+      "body": "Robro33 said:\nif youre using yanfly's damage core, it lets you do that. the damage steps plugin parameters outlines the entire damage calc process and lets you alter it through the editor. you would have to add a conditional towards the end to not apply variance if the current hit was determined to be critical\nClick to expand...\nI feel very silly for not thinking of utilizing damage steps! Haha, had my brain way too focused on the literal problem of turning on/off variance that I wasn't considering the wealth of options I have with Yanfly's plugins. I'll give this a shot and see if I can get the crit damage I crave\ncaethyril said:\nAssuming suitable timing, you can check\ntarget.result().critical\n. This assumes that\ntarget\nrefers to the skill's target. (By default the\ncritical\nflag is set immediately before the damage formula is evaluated.)\nTo affect all skills equally,\n@Robro33\n's suggestion seems most convenient. In my old copy of YEP_DamageCore it looks like variance is applied in Damage Step 90 (plugin parameter) by default:\nJavaScript:\nvalue = this.applyVariance(value, item.damage.variance);\nYou could change that to be conditional, e.g.\nJavaScript:\nif (!target.result().critical) value = this.applyVariance(value, item.damage.variance);\nI.e. \"if the result is not (\n!\n) a crit, then apply variance\".\nAlternatively, for a per-skill thing you could set the Variance to 0% and manually apply randomness in the damage formula when appropriate. E.g. for a skill with formula like this:\nJavaScript:\na.mat * 2 - b.mdf\n...you could instead do this:\nJavaScript:\nvar r = a.mat * 2 - b.mdf; b.result().critical ? r : this.applyVariance(r, 20);\nI.e. \"if the result is a crit, return the base formula value; otherwise, apply 20% variance\". The usual modifiers (crit multiplier, element rate, guard reduction, etc) will apply as usual.\nClick to expand...\nThank you so much for taking the time to call all of this out and suggest direct actions to take. This is really helpful.\nI'm just now getting to sit back down and work on things again, so I'll see what progress I can make using your suggestions.\nI appreciate both of you for helping me think a little bit deeper here"
+    }
+  ]
+}

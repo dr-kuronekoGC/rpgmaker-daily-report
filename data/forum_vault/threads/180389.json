@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-mz-crashing-when-i-try-to-do-anything.180389",
+  "title": "MZ RPG Maker MZ crashing when I try to do ANYTHING",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:34:45.788618+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532225",
+      "author": "Linthal",
+      "date": "2025-10-03T08:41:50+0900",
+      "body": "So as soon as I start the program, after the splash screen, I get to the main engine screen, but the moment I click on ANYTHING, the program closes. No error, no nothing. I am running Windows 11, I verified the windows integrity with an sfc scan. I have updated my graphics drivers, and disabled antivirus. I am running on multiple monitors.\nIn event viewer, its saying its having an error with d3d11.dll\ndoes anyone have any ideas, or suggestions? This is very frustrating."
+    },
+    {
+      "post_id": "js-post-1532235",
+      "author": "Canned_Dinosaur",
+      "date": "2025-10-03T12:48:43+0900",
+      "body": "No idea. Have you tried reinstalling DirectX? Have you tried reinstalling RMMZ? Which version of RMMZ are you trying to launch and where did you buy it?"
+    },
+    {
+      "post_id": "js-post-1532239",
+      "author": "Linthal",
+      "date": "2025-10-03T13:09:38+0900",
+      "body": "Canned_Dinosaur said:\nNo idea. Have you tried reinstalling DirectX? Have you tried reinstalling RMMZ? Which version of RMMZ are you trying to launch and where did you buy it?\nClick to expand...\nYes, I went to the Microsoft website, got the installer, and ran it. It said I was running the most recent version. I havent tried reinstalling it as its a fresh install. I bought it on Steam, so I am assuming its the latest version. I cant check the about page to verify the exact version number because it crashes before I can do so."
+    },
+    {
+      "post_id": "js-post-1532241",
+      "author": "Canned_Dinosaur",
+      "date": "2025-10-03T13:18:50+0900",
+      "body": "Linthal said:\nI bought it on Steam, so I am assuming its the latest version.\nClick to expand...\nJust to check if you went over the obligatory voodoo:\nHave you tried uninstalling RPG Maker and reinstalling it?\nHave you tried disconnecting your secondary monitor?\nAlso, do you have a screenshot of the event viewer? That might be useful for people here to hunt the internet for possible solutions.\nEDIT: Also, what graphics card are you using?"
+    },
+    {
+      "post_id": "js-post-1532242",
+      "author": "TheAM-Dol",
+      "date": "2025-10-03T13:21:09+0900",
+      "body": "I recommend checking the software's file integrity and not necessarily Window's integrity.\nThough to be honest, it rarely solves the problem, it's always a good starting point. Uninstalling and reinstalling would also effectively do the same, but still doesn't hurt to run the integrity check just in case. You can do it from Steam by right clicking the software in your library -> properties -> Installed Files -> Verify Integrity of Software Files\nIt would also help if you posted your system specs, just so we can make sure you are meeting the hardware requirements.\nI'm on my Linux machine atm, so I don't recall exactly off the top of my head, but I do think it's as simple as right clicking the windows button -> system information.\nthe d3d11.dll has me wondering if you changed graphics card recently at some point? It's a bit of a shot in the dark, so we won't go down troubleshooting that route until we checked other possible sources of the problem."
+    },
+    {
+      "post_id": "js-post-1532254",
+      "author": "Andar",
+      "date": "2025-10-03T16:37:24+0900",
+      "body": "Linthal said:\nI have updated my graphics drivers,\nClick to expand...\nHow did you do that?\nWindows driver update is NOT reliable, the only way to correctly install the graphics driver is to download the setup from the manufacturer's website (either nVidia, AMD or Intel - there are no others left to my knowledge) and run that setup.\nDON'T use the Microsoft-Programmed drivers that are favored by the internal automatic driver update, those are programmed for multiple chips and for general stability, only the manufacturer focuses on the optimal driver for each different graphic card."
+    },
+    {
+      "post_id": "js-post-1532303",
+      "author": "Deleted member 223646",
+      "date": "2025-10-04T05:54:12+0900",
+      "body": "Of course, check GPU drivers are correct and up to date.\nOther ideas to try:\nThis could be a nw.js version issue. RPGMaker ships with an old version and is basically a nw.js/chromium app running through direct3d. (D3D11)\nSo instead of the WebGL rendering over D3D11 we can try force OpenGL to test.\nIf your RPG Maker MZ is the Steam version, try this:\nIn Steam -> right click\nRPG Maker MZ\n-> Properties -> Launch Options, and add:\n--disable-gpu\nTest and see if it is stable. If yes,  you may need to manually update the nw.js runtime in your RPGMaker install.\nOther thoughts:\n- overlays can sometimes cause this behaviour (nvidia experince, discord, etc)"
+    },
+    {
+      "post_id": "js-post-1532313",
+      "author": "Linthal",
+      "date": "2025-10-04T08:09:04+0900",
+      "body": "Thank you all for your responses. I am going to try and respond to all of these:\nI have tried reinstalling RPG maker. I have attached both and event viewer, and my system specs.\nI am running both a GeForce GTX 970, and a GeForce RTX 2060 Super.\nI updated the graphics drive through the Nvidia app. NEVER through the Microsoft one.\nI tried adding the  --disable-gpu command to the program. all with no luck. I still need to try disabling my other monitors. If it makes any difference, I run 2 4k monitors, and 1 1080p monitor.\nThank you all for your assistance. I really appreciate it. I will try disabling some of the other monitors and report back.\nEdit: still crashing with just one monitor"
+    },
+    {
+      "post_id": "js-post-1532358",
+      "author": "Deleted member 223646",
+      "date": "2025-10-04T22:28:11+0900",
+      "body": "So... you've actually possibly got three GPUs going there?\nDoes your processor have Intel UHD 630 iGPU\n?\nHave you got drivers in place for that one?\n(I'd assume likely yes, but always gotta ask\n)\nregarding the two physical GPUs installed:\nA test to try, if you're confident doing so:\nOpen Device Manager, go to Display adapters.\nMake sure your monitors are in the 2060S.\nRight-click the GTX 970, Disable device\n(don’t uninstall)\n.\nLaunch RPGM.\nNo crash - might be a driver conflict at play.\nIf crashing, re-enable 970, apply, plug screens into that one, and disable the 2060S next.\n(Again, don't uninstall)\nLaunch RPGM.\nNo crash, as above, possible a driver conflict.\nIf crashing still, our issue is elsewhere.\nIf it is a driver conflict, we can instruct RPGM to specifically run on a desired GPU and 'not pick for itself' - but let's get tests outta the way.\nOther ideas:\nI see 'App Control for Business policy is enabled in your log also, even if the user mode is off, this might be a culprit - a quick test is boot into safe mode with networking and see if RPGM will run without a crash in that mode - if stable, this might be an indicator and we can look further into that.\nAdditionally, some more steam launch options to try, as\n--disable-gpu\ndidn't yield a useful result:\n1:\n--use-angle=gl --disable-direct-composition\n2:\n--use-angle=d3d9 --disable-direct-composition\n3:\n--disable-gpu-compositing\n4:\n--disable-zero-copy\n5:\n--disable-features=UseSkiaRenderer"
+    },
+    {
+      "post_id": "js-post-1532787",
+      "author": "Linthal",
+      "date": "2025-10-08T10:48:53+0900",
+      "body": "Thank you for your suggestions! I think I have it. It was the 970 it was having trouble running it on. I lost track of which monitor was controlled by which card, and when I moved it to a different monitor the problem went away! thank you!"
+    },
+    {
+      "post_id": "js-post-1532789",
+      "author": "Linthal",
+      "date": "2025-10-08T10:54:26+0900",
+      "body": "Looks like I spoke too soon. It is *more* stable on that card, but still crashes frequently."
+    },
+    {
+      "post_id": "js-post-1532831",
+      "author": "sbloom85",
+      "date": "2025-10-09T01:12:43+0900",
+      "body": "Atramentia said:\nOf course, check GPU drivers are correct and up to date.\nOther ideas to try:\nThis could be a nw.js version issue. RPGMaker ships with an old version and is basically a nw.js/chromium app running through direct3d. (D3D11)\nSo instead of the WebGL rendering over D3D11 we can try force OpenGL to test.\nIf your RPG Maker MZ is the Steam version, try this:\nIn Steam -> right click\nRPG Maker MZ\n-> Properties -> Launch Options, and add:\n--disable-gpu\nTest and see if it is stable. If yes,  you may need to manually update the nw.js runtime in your RPGMaker install.\nOther thoughts:\n- overlays can sometimes cause this behaviour (nvidia experince, discord, etc)\nClick to expand...\nI just tried this and it worked. What do I do to update the nw.js runtime?\nEdit: I tried loading a project and the application crashed.\nEdit 2: Got it working now."
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/parameter-plugin-help.180347",
+  "title": "Parameter Plugin Help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:35:00.506086+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1531895",
+      "author": "Ebon_Maker5",
+      "date": "2025-09-29T10:07:31+0900",
+      "body": "So this is all a new thing for me, I have little to no idea how to officially code besides some very basic stuff, however, I did figure out how to do something that have been bothering me for a while now in RPG maker MZ, I figured out how to make chip damage (sorta)... so in rmmz_objects.js line 1957 to 1971 it says:\n};\nGame_Action.prototype.evalDamageFormula = function(target) {\ntry {\nconst item = this.item();\nconst a = this.subject(); // eslint-disable-line no-unused-vars\nconst b = target; // eslint-disable-line no-unused-vars\nconst v = $gameVariables._data; // eslint-disable-line no-unused-vars\nconst sign = [3, 4].includes(item.damage.type) ? -1 : 1;\nconst value = Math.max(eval(item.damage.formula), 0) * sign;\nreturn isNaN(value) ? 0 : value;\n} catch (e) {\nreturn 0;\n}\n};\nNOW this is good because on line 1966 it says:\nconst value = Math.max(eval(item.damage.formula), 0) * sign;\nif you write in a 1  instead of a 0 such as:\nconst value = Math.max(eval(item.damage.formula), 1) * sign;\nit makes the minimum damage number to 1!\nthis is wonderful as I hate the damage doing 0 (just my preference) but here's why I'm writing this thread as I've already made this into a working plugin and called it Chip_Damage.js\nHOW DO YOU MAKE PARAMETERS!?\nmy goal is to have it so I can change the number not just to a 1... but to ANY number I want using in game parameters to ether\n1. be able to just change it without re-coding the plugin each time OR\n2.be able to use the plugin command to change it on the fly mid game\nso to sum this all up, I just need some tips and advice of how I can make it so the number 0 in the line of code that is:\nconst value = Math.max(eval(item.damage.formula), 0) * sign;\ncan be changed in game with a parameter in the plugin menu.\nif anyone can offer support it would be a TON of help to me!"
+    },
+    {
+      "post_id": "js-post-1532002",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-30T10:34:21+0900",
+      "body": "There's\nthreads that go over the plugin basics\n, so it's recommended to go over those. But to give you the gist, you put this in the header section of the plugin:\n*\n@param\nMinimum_Damage\n* @text Minumum damage on hit\n*\n@desc\nSet the minimum damage on a successful hit\n*\n@min\n0\n*\n@Default\n0\n* @type number\nThen in the code section you define a variable from the parameter:\nJavaScript:\nconst parameters = PluginManager.parameters(PLUGIN_NAME);\nconst pMinimumDamage = Number(parameters[\"Minimum_Damage\"]);\nThen you can use it in your overwrite."
+    },
+    {
+      "post_id": "js-post-1532003",
+      "author": "Ebon_Maker5",
+      "date": "2025-09-30T10:40:46+0900",
+      "body": "Canned_Dinosaur said:\nThere's threads that go over the plugin basics, so it's recommended to go over those. But to give you the gist, you put this in the header section of the plugin:\n*\n@param\nMinimum_Damage\n* @text Minumum damage on hit\n*\n@desc\nSet the minimum damage on a successful hit\n*\n@min\n0\n*\n@Default\n0\n* @type number\nThen in the code section you define a variable from the parameter:\nJavaScript:\nconst parameters = PluginManager.parameters(PLUGIN_NAME);\nconst pMinimumDamage = Number(parameters[\"Minimum_Damage\"]);\nThen you can use it in your overwrite.\nClick to expand...\nThank you! I will try what you have given and go over the general plugin basics!\nIf you have a thread suggestion I'd find that helpful also, however if not, I will find one that just covers the general stuff"
+    },
+    {
+      "post_id": "js-post-1532005",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-30T11:21:23+0900",
+      "body": "Ebon_Maker5 said:\nThank you! I will try what you have given and go over the general plugin basics!\nClick to expand...\nPlease, do it the other way around. FIRST go over the general plugin basics. DO NOT just copy paste what I showed you without understanding the basic structure of a plugin"
+    },
+    {
+      "post_id": "js-post-1532006",
+      "author": "Ebon_Maker5",
+      "date": "2025-09-30T11:42:38+0900",
+      "body": "Canned_Dinosaur said:\nPlease, do it the other way around. FIRST go over the general plugin basics. DO NOT just copy paste what I showed you without understanding the basic structure of a plugin\nClick to expand...\nOh...whoops well I will do that the\nother way around\nnow\nas I wrote all it in and didn't know where to put it haha... yaaa... well thanks for the warning lol\nas for just giving what I have currently (just because it might be painfully obvious what to do) here it is- again thank you for the help! if it's just a simple \"drag it to line (x)\" that would be great, otherwise I'll look up what to do and how the general flow works on a different thread about plugins\nThe one nice thing is that my plugin\nworks\nand does what I want, aside from the parameter functions (what I'm trying coding in)\nEdit: thanks for giving a plugin basics link in the first reply, I didn't see that until now."
+    },
+    {
+      "post_id": "js-post-1532008",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-30T13:05:13+0900",
+      "body": "You need to wrap your code in an IIFE, since otherwise you're creating global variables, eg:\nJavaScript:\n( () => {\n//stuff\n} )();\nAgain, it's better to start with the template in the other thread if you're unsure."
+    },
+    {
+      "post_id": "js-post-1532009",
+      "author": "Ebon_Maker5",
+      "date": "2025-09-30T13:12:22+0900",
+      "body": "Canned_Dinosaur said:\nYou need to wrap your code in an IIFE, since otherwise you're creating global variables, eg:\nJavaScript:\n( () => {\n//stuff\n} )();\nAgain, it's better to start with the template in the other thread if you're unsure.\nClick to expand...\nAh well... I'll definitely read up on plugin basics and some more on JavaScript, because as it stands- I have little to no experience with this all, and I don't really even know how I made my original plugin even work tbh- blind luck maybe? Idk, however thanks for taking the time to help with all this! It's awesome to see how actually helpful this community is!"
+    },
+    {
+      "post_id": "js-post-1532018",
+      "author": "slimmmeiske2",
+      "date": "2025-09-30T17:30:26+0900",
+      "body": "I've moved this thread to Learning Javascript. Thank you."
+    },
+    {
+      "post_id": "js-post-1532021",
+      "author": "Aerosys",
+      "date": "2025-09-30T18:01:25+0900",
+      "body": "Ebon_Maker5 said:\nAh well... I'll definitely read up on plugin basics and some more on JavaScript, because as it stands- I have little to no experience with this all, and I don't really even know how I made my original plugin even work tbh- blind luck maybe? Idk, however thanks for taking the time to help with all this! It's awesome to see how actually helpful this community is!\nClick to expand...\nThat's the tricky thing. Many plugins work fine in your project, but as soon as you or someone else uses your plugin with another plugin, and one of them does not follow common conventions, they will break your game (people start saying that plugin X is not compatible with Y). That means many errors stay undetected. Some concepts are difficult to fully understand for a beginner and require practice to master.\nAn IIFE is a simple tool to make your plugin robust, but it also has its pros and cons. Sooner or later, you should invest some time to understand what they are really doing, but for the beginning, it's okay just to use them, I think."
+    },
+    {
+      "post_id": "js-post-1532022",
+      "author": "ShadowDragon",
+      "date": "2025-09-30T18:56:18+0900",
+      "body": "use it best without IIFE, but you mostly probably require to use \"use strict\".\nanother way is to alias the function if possible, so it wont be a full override,\nor use your own global name (less likely to overwrite).\nyou can check some plugins how they do it though, so you can make your own.\nin my case, I can give it direct parameters without calling them first as global.\nso it has its own parser, to I can avoid JSON.parse in this case, or .map\nin some cased unless required.\nif you know most basics, and understand the core, you can come further,\nbut it isn't always easy as I keep learning too ^^"
+    },
+    {
+      "post_id": "js-post-1532027",
+      "author": "Trihan",
+      "date": "2025-09-30T21:39:08+0900",
+      "body": "For future reference and an alternative viewpoint, I actually prefer using a uniquely-named container object (I generally use TLB to store all of my aliases and variables); the benefit of that over an IIFE is that other plugins can reference them if needed. When you use an IIFE, it completely encapsulates the code, so any new class, variable or property you create can only be accessed by your plugin and nothing else. If you try to reference it outside of that, you'll get a \"not defined\" error."
+    },
+    {
+      "post_id": "js-post-1532065",
+      "author": "Ebon_Maker5",
+      "date": "2025-10-01T12:22:04+0900",
+      "body": "This thread has gotten surprisingly informative lol, I didn't expect this much JavaScript info as Canned_Dinosaur provided a good amount of useful info already!"
+    },
+    {
+      "post_id": "js-post-1532068",
+      "author": "Canned_Dinosaur",
+      "date": "2025-10-01T13:32:12+0900",
+      "body": "As I experienced two years ago when I was struggling with my first tiny plugin, people here seem very very eager to drag the willing into coding hell"
+    },
+    {
+      "post_id": "js-post-1532069",
+      "author": "Ebon_Maker5",
+      "date": "2025-10-01T13:39:31+0900",
+      "body": "Canned_Dinosaur said:\nAs I experienced two years ago when I was struggling with my first tiny plugin, people here seem very very eager to drag the willing into coding hell\nClick to expand...\nKnowledge is power?  Idk but I do find all this fun tbh (even if very complicated), I've never really been into coding or RPGs until recently, so this is all pretty neat ESPECIALLY because of how active this community is and willing to help!\nIf I may ask- what was the function of the first plugin you made?"
+    },
+    {
+      "post_id": "js-post-1532084",
+      "author": "Trihan",
+      "date": "2025-10-01T21:25:33+0900",
+      "body": "Ebon_Maker5 said:\nKnowledge is power?  Idk but I do find all this fun tbh (even if very complicated), I've never really been into coding or RPGs until recently, so this is all pretty neat ESPECIALLY because of how active this community is and willing to help!\nIf I may ask- what was the function of the first plugin you made?\nClick to expand...\nI know I'm not the one you asked, but for me, outside of the work I did with VisuStella, the first MZ plugin I did was my Limited Shop Stock one, which allows you to give shops defined inventory."
+    },
+    {
+      "post_id": "js-post-1532086",
+      "author": "Canned_Dinosaur",
+      "date": "2025-10-01T21:56:21+0900",
+      "body": "Ebon_Maker5 said:\nIf I may ask- what was the function of the first plugin you made?\nClick to expand...\nActually not sure which was the first... I think it was something about making event touch trigger after a jump? (by default there is no check for triggering touch events after a jump) I remember it feeling pretty overwhelming, like being drilled by Gunnery Sergeant Hartman (joke, everyone was very nice and patient)."
+    },
+    {
+      "post_id": "js-post-1532109",
+      "author": "Ebon_Maker5",
+      "date": "2025-10-02T04:16:33+0900",
+      "body": "Canned_Dinosaur said:\nActually not sure which was the first... I think it was something about making event touch trigger after a jump? (by default there is no check for triggering touch events after a jump) I remember it feeling pretty overwhelming, like being drilled by Gunnery Sergeant Hartman (joke, everyone was very nice and patient).\nClick to expand...\nOh that's neat- pretty nice and simple, but I could see how that would be complicated lol, I've only made one functional plugin myself, being just a plugin to move the timer graphic down a few pixels... Not super exiting lmao, not one I have that's a lifesaver is just a plugin that's a description- I put all the script calls info on it so I can use F1 call up plugin help and copy paste stuff like\n$gameMap.event(n).start();\nand not type it every time- prevents mistakes too\nbut this community is pretty awesome, I didn't expect feedback if I'm being honest, I expected me to post my OG post, then have to wait a week or 2 for someone to say.... \"Ya uh just learn JavaScript\" and be done lmao not this explosion of coders!"
+    },
+    {
+      "post_id": "js-post-1532110",
+      "author": "Ebon_Maker5",
+      "date": "2025-10-02T04:18:10+0900",
+      "body": "Trihan said:\nI know I'm not the one you asked, but for me, outside of the work I did with VisuStella, the first MZ plugin I did was my Limited Shop Stock one, which allows you to give shops defined inventory.\nClick to expand...\nAnd also thanks for the name of that shop plugin Trihan! I'm using it currently and it's bomber, exactly what I was looking for a while ago"
+    },
+    {
+      "post_id": "js-post-1532122",
+      "author": "Trihan",
+      "date": "2025-10-02T06:38:50+0900",
+      "body": "Ebon_Maker5 said:\nAnd also thanks for the name of that shop plugin Trihan! I'm using it currently and it's bomber, exactly what I was looking for a while ago\nClick to expand...\nOh, nice! Are there any features it lacks that you need?"
+    },
+    {
+      "post_id": "js-post-1532126",
+      "author": "Ebon_Maker5",
+      "date": "2025-10-02T06:56:31+0900",
+      "body": "Trihan said:\nOh, nice! Are there any features it lacks that you need?\nClick to expand...\nUm wow... well\nAs I only plan on using the limited inventory function, currently nothing that comes to mind, it's pretty much perfect for my project! However if there is something that comes to mind I'll suggest it\nThanks for asking though! I honestly didn't expect that question\nOn average, how long does a plugin update / making a new plug-in with your coding knowledge take? I'm just wondering because I plan on making generic plugins for myself in the future (simple features and stuff) and just want a generic \"good at code\" average\nI understand if that's a vague question and I also know code isn't a 1 size fits all, but I'm just asking from your experience"
+    },
+    {
+      "post_id": "js-post-1532128",
+      "author": "Trihan",
+      "date": "2025-10-02T07:10:39+0900",
+      "body": "Ebon_Maker5 said:\nUm wow... well\nAs I only plan on using the limited inventory function, currently nothing that comes to mind, it's pretty much perfect for my project! However if there is something that comes to mind I'll suggest it\nThanks for asking though! I honestly didn't expect that question\nOn average, how long does a plugin update / making a new plug-in with your coding knowledge take? I'm just wondering because I plan on making generic plugins for myself in the future (simple features and stuff) and just want a generic \"good at code\" average\nI understand if that's a vague question and I also know code isn't a 1 size fits all, but I'm just asking from your experience\nClick to expand...\nIn terms of actual real-person time it can take me a while because I struggle mightily with executive dysfunction. But in terms of the actual time I spend coding, depending on the complexity of the plugin and what it needs to do, it can take anywhere from an hour to 24-40 hours of work."
+    },
+    {
+      "post_id": "js-post-1532129",
+      "author": "Ebon_Maker5",
+      "date": "2025-10-02T07:20:42+0900",
+      "body": "Trihan said:\nIn terms of actual real-person time it can take me a while because I struggle mightily with executive dysfunction. But in terms of the actual time I spend coding, depending on the complexity of the plugin and what it needs to do, it can take anywhere from an hour to 24-40 hours of work.\nClick to expand...\nOh I'm sorry to hear that, but thank you for the info- that seems like a reasonable amount of time tbh, I was hoping you wouldn't say a few hundred hours lol 40 hrs for a entirely new function is fair\nThanks again for the plugin\nand\nwondering how to improve it via community feedback, it's awesome, and I'm surprised your shop options aren't already a feature in the vanilla game as it's such a simple but vital shop option! And also I appreciate how you made it a non invasive plugin as I already had a base shop but could use your plugin for just 1 item being limited stock\nI had a different plugin that was also a limited shop but had to figure out how to make a new show via commands and I just couldn't do it..."
+    },
+    {
+      "post_id": "js-post-1532130",
+      "author": "Trihan",
+      "date": "2025-10-02T07:30:31+0900",
+      "body": "Ebon_Maker5 said:\nOh I'm sorry to hear that, but thank you for the info- that seems like a reasonable amount of time tbh, I was hoping you wouldn't say a few hundred hours lol 40 hrs for a entirely new function is fair\nThanks again for the plugin\nand\nwondering how to improve it via community feedback, it's awesome, and I'm surprised your shop options aren't already a feature in the vanilla game as it's such a simple but vital shop option! And also I appreciate how you made it a non invasive plugin as I already had a base shop but could use your plugin for just 1 item being limited stock\nI had a different plugin that was also a limited shop but had to figure out how to make a new show via commands and I just couldn't do it...\nClick to expand...\nUser-friendliness is one of the most important things I think about when I'm designing new plugins. The whole point of them is being used, so not focusing on making that as easy as possible makes little sense to me."
+    },
+    {
+      "post_id": "js-post-1532131",
+      "author": "Ebon_Maker5",
+      "date": "2025-10-02T07:39:12+0900",
+      "body": "Trihan said:\nUser-friendliness is one of the most important things I think about when I'm designing new plugins. The whole point of them is being used, so not focusing on making that as easy as possible makes little sense to me.\nClick to expand...\nWell that's more than awesome, because lots of the time I download plugins from HimeWorks, or VisuStella they are offen too complex or invasive (change too much) to use properly, so I appreciate it, keep up the good work\n(Not meaning to throw them under the bus lmao they both make AWESOME plugins I've used)"
+    },
+    {
+      "post_id": "js-post-1532171",
+      "author": "ShadowDragon",
+      "date": "2025-10-02T21:25:09+0900",
+      "body": "Ebon_Maker5 said:\nOh I'm sorry to hear that, but thank you for the info- that seems like a reasonable amount of time tbh, I was hoping you wouldn't say a few hundred hours lol 40 hrs for a entirely new function is fair\nClick to expand...\nit would take a few 100 hours for me, if not less, but expert coding, 2-5 days at most.\nas Trihan said, it depends on complexity, and I aim also for user friendly to make\nit clearly understand, but I have fun making them though =)"
+    },
+    {
+      "post_id": "js-post-1532187",
+      "author": "Ebon_Maker5",
+      "date": "2025-10-03T02:26:24+0900",
+      "body": "ShadowDragon said:\nit would take a few 100 hours for me, if not less, but expert coding, 2-5 days at most.\nas Trihan said, it depends on complexity, and I aim also for user friendly to make\nit clearly understand, but I have fun making them though =)\nClick to expand...\nOh well, I guess it would be very situational, I doubt VisuStella is whipping the main Core plugin up in 40 hours lol it's HUGE, but that is neat, what plugins do you make? I'm sorta having to Re-find a catalog of plugins because none of my MV plugins work on MZ *\nshocker*"
+    },
+    {
+      "post_id": "js-post-1532188",
+      "author": "Robro33",
+      "date": "2025-10-03T03:19:01+0900",
+      "body": "ShadowDragon said:\nit would take a few 100 hours for me\nClick to expand...\nThats pretty fast imo. From the shower thought phase to the multiple procrastination phases and then limping towards something id call \"complete\", it averages *checks calendar* about 4 months for me"
+    },
+    {
+      "post_id": "js-post-1532211",
+      "author": "ShadowDragon",
+      "date": "2025-10-03T06:17:10+0900",
+      "body": "Robro33 said:\nThats pretty fast imo. From the shower thought phase to the multiple procrastination phases and then limping towards something id call \"complete\", it averages *checks calendar* about 4 months for me\nClick to expand...\nmaybe a good base for release can work, but compabilitly is still an issue that put\nextra seconds/hours into it, or new features to make it better.\nbut I take my time to make it as stable as possible, but no one is perfect =)\nthe bigger the plugin, the more time it is (specially complexity).\nEbon_Maker5 said:\nOh well, I guess it would be very situational, I doubt VisuStella is whipping the main Core plugin up in 40 hours lol it's HUGE, but that is neat, what plugins do you make? I'm sorta having to Re-find a catalog of plugins because none of my MV plugins work on MZ *\nshocker*\nClick to expand...\nsome MV functions can go to MZ, but MZ most need windows to be rect.\nafter that, it may work or with little more effort.\nbut FOSSIL may be able to get it to work in MZ, else let someone convert it for you.\nsometimes, it isn't to much, but other functions may be rewritten."
+    }
+  ]
+}

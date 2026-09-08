@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/get-map-coordinate-under-cursor.180395",
+  "title": "MZ Get Map Coordinate Under Cursor",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:34:56.516718+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532245",
+      "author": "matthew30903",
+      "date": "2025-10-03T13:39:35+0900",
+      "body": "Issue Summary —\nI've been trying to get the coordinates of the tile the mouse cursor/touch point is hovering over. I plan to use this to get the region ID of the tile the mouse is hovering over for a custom menu.\nDetails —\nI'm very rusty on my math so I'm most definitely going about this wrong, but I've iterated a few times.\nI'm getting the mouse coordinates, dividing them by the tile size, then get the distance between the tiles and the player and then add the value to the player's x and y to get the x and y of the tile.\nSpoiler\nJavaScript:\nlet tile_x = Math.floor(TouchInput.x/48);\nlet tile_y = Math.floor(TouchInput.y/48);\n\nlet true_x = 0;\nlet true_y = 0;\n\ntrue_x = $gamePlayer.x + $gameMap.deltaX(tile_x, $gamePlayer.x);\ntrue_y = $gamePlayer.y + $gameMap.deltaY(tile_y, $gamePlayer.y);\n\n$gameVariables.setValue(10, true_x);\n$gameVariables.setValue(11, true_y);\n$gameVariables.setValue(12, $gameMap.regionId(true_x, true_y));\nThe obvious problem with this is that it is using the tile calculated from screen size so the tiles are off the moment the map is not the same size as the screen.\nI've also tried various ways of adding and subtracting the player's location form the tile value returned by the calculation to correct for the issue, but I've come to the conclusion I don't know what I'm doing.\nFor this one I played around with taking the rough location of the center of the screen (where the player would be on a large map) and used that to add or subtract from where the player was. This is just a scratch pad, I threw out the actual code I used in the engine at some point and can't find it, but is serves as a pseudo-code:\nSpoiler\nJavaScript:\nlet tile_x = Math.floor(TouchInput.x/48);\nlet tile_y = Math.floor(TouchInput.y/48);\n\nlet true_x = 0;\nlet true_y = 0;\n\nlet center_x = 13;\nlet center_y = 7;\n\nif (tile_x < center_x) {\n    tile_x = $gamePlayer.x - tile_x;\n} else if (tile_x > center_x) {\n    tile_x = (tile_x - $gamePlayer.x );\n}\n\n// Do the same for Y\n\ntrue_x = $gamePlayer.x + $gameMap.deltaX(tile_x, $gamePlayer.x);\ntrue_y = $gamePlayer.y + $gameMap.deltaY(tile_y, $gamePlayer.y);\n\n$gameVariables.setValue(10, true_x);\n$gameVariables.setValue(11, true_y);\n$gameVariables.setValue(12, $gameMap.regionId(true_x, true_y));\nI've been running these in a parallel process and displaying the results to the screen as I move the cursor.\nWhat tutorials or previous support threads have you referenced? —\nI looked at the\nScript Call List and\nScript Call Reference\n. I've looked around and could not see any threads that matched my question.\nAre you using any plugins? —\nI am using VisuStella's Message core to display the info I plan to get from the region ID and I am using all the core plugins from them as well, but I've been trying to do this with just vanilla RPG Maker and a script call in an event if possible. If VisuStella's plugins have this functionality already I'm unaware of them.\nThank you for taking your time to read this. Please let me know if there is more information I should give and any suggestions you have."
+    },
+    {
+      "post_id": "js-post-1532246",
+      "author": "Canned_Dinosaur",
+      "date": "2025-10-03T13:52:59+0900",
+      "body": "Not entirely certain what you mean with \"the moment the map is not the same size as the screen\", but in any case there are dedicated functions to change the touch coordinates to tile coordinates. So you might try:\nJavaScript:\nlet tileX = $gameMap.canvasToMapX(TouchInput.x);\nlet tileY = $gameMap.canvasToMapY(TouchInput.y);\nSpoiler:\nrmmz_objects.js; row 6461-6473\nJavaScript:\nGame_Map.prototype.canvasToMapX = function(x) {\n    const tileWidth = this.tileWidth();\n    const originX = this._displayX * tileWidth;\n    const mapX = Math.floor((originX + x) / tileWidth);\n    return this.roundX(mapX);\n};\n\n\nGame_Map.prototype.canvasToMapY = function(y) {\n    const tileHeight = this.tileHeight();\n    const originY = this._displayY * tileHeight;\n    const mapY = Math.floor((originY + y) / tileHeight);\n    return this.roundY(mapY);\n};"
+    },
+    {
+      "post_id": "js-post-1532269",
+      "author": "matthew30903",
+      "date": "2025-10-03T23:28:46+0900",
+      "body": "Canned_Dinosaur said:\nNot entirely certain what you mean with \"the moment the map is not the same size as the screen\", but in any case there are dedicated functions to change the touch coordinates to tile coordinates. So you might try:\nJavaScript:\nlet tileX = $gameMap.canvasToMapX(TouchInput.x);\nlet tileY = $gameMap.canvasToMapY(TouchInput.y);\nSpoiler:\nrmmz_objects.js; row 6461-6473\nJavaScript:\nGame_Map.prototype.canvasToMapX = function(x) {\n    const tileWidth = this.tileWidth();\n    const originX = this._displayX * tileWidth;\n    const mapX = Math.floor((originX + x) / tileWidth);\n    return this.roundX(mapX);\n};\n\n\nGame_Map.prototype.canvasToMapY = function(y) {\n    const tileHeight = this.tileHeight();\n    const originY = this._displayY * tileHeight;\n    const mapY = Math.floor((originY + y) / tileHeight);\n    return this.roundY(mapY);\n};\nClick to expand...\nThank you so much Canned_Dinosaur. That worked amazingly well and is much simpler than what I was trying to do.\nAs for what I meant about the solution only working on maps the exact size of the screen, my coordinates would be off due to how I was calculating them the top left of the screen would always be 0,0 no mater where the player was on the map.\nThis answers my question."
+    },
+    {
+      "post_id": "js-post-1532324",
+      "author": "Canned_Dinosaur",
+      "date": "2025-10-04T11:43:51+0900",
+      "body": "Glad to have been of help! If you haven’t already, please report the thread as solved using the\nReport button!"
+    },
+    {
+      "post_id": "js-post-1532363",
+      "author": "Robro33",
+      "date": "2025-10-04T23:13:59+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

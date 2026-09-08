@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-rolling-damage-between-two-specific-values.180450",
+  "title": "Help with rolling Damage between two specific values",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:34:46.481532+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532617",
+      "author": "King Nothing",
+      "date": "2025-10-07T12:56:03+0900",
+      "body": "Hey there, I was wondering if any one had some insight into an issue I'm having. I'm a total amateur trying to code this so I'll explain best that I can.\nIn combat for attack resolution I first have a hit roll:\nCode:\n<hitformula>\n\nthis._hr = Math.random()  + (a.hit - b.eva);\n\nthis._hr > 0\n\n</hitformula>\nThis part works totally fine but is included because it's value I reference later.\nIf an attack hits then I have the damage roll. For a basic attack I want to roll damage between a minimum value and a maximum value. What I'd like is for the range of the damage roll to be dependent on how successful the attack roll was. The maximum value will always be the users attack stat, but I want the minimum possible value to be based off of the attack roll, so a very accurate character will be rolling maximum damage often.\nSo I'd use the following as a function from my own tiny plugin and put $dmgroll(a, b) in the damage formula box in the database:\nJavaScript:\n/**\n * Random Damage Roll\n */\nfunction $dmgroll(a, b) {\n    // minimum and maximum values.\n    var min = Math.min(this._hr,1.0) * a.atk; //this._hr is the value taken from the to-hit roll, 0-100%\n    var max = a.atk;\n\n\n    if (b.result().critical) {\n        var damage = a.atk; // When Critical calculate damage as maximum\n    } else {\n        var damage = (int)(Math.random() * (max - min + 1) + min); //roll damage from hit roll success * maximum to maximum //This is the issue as I do not actually know how to code\n    }\n    return damage;\n}\nBut I have no idea how to roll between these two values, I could cap the minimum with a math method which is what I initially did but that just takes anything rolled under the min and sets it to the minimum rather than roll between the two defined values no? Maybe I'm totally overlooking something but any one have any ideas on how to do this?\nRelevant plugins include:\nCustom Hit Formula MZ by ATT_Turan\nhttps://forums.rpgmakerweb.com/index.php?threads/custom-hit-formula-mz.156236/\nVisuStella Battlecore\nThank you."
+    },
+    {
+      "post_id": "js-post-1532618",
+      "author": "Canned_Dinosaur",
+      "date": "2025-10-07T13:21:44+0900",
+      "body": "Hi there! Please take the time to read through and follow the template. It has READ in all caps with three exclamations marks for a reason.\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com\nFor example, you are showing a note tag in your post, so you'll need to tell us what plugins you are using, as well as provide a screenshot of where and how you've implemented this.\nJust answering the part about \"rolling between two values\", you could use Math.randomInt(x) for that, a variation of Math.random() that was added in RPG Maker. The damage would be calculated as:\nMath.randomInt(MaxDamage - MinDamage) + MinDamage"
+    },
+    {
+      "post_id": "js-post-1532624",
+      "author": "King Nothing",
+      "date": "2025-10-07T15:05:02+0900",
+      "body": "Canned_Dinosaur said:\nHi there! Please take the time to read through and follow the template. It has READ in all caps with three exclamations marks for a reason.\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com\nFor example, you are showing a note tag in your post, so you'll need to tell us what plugins you are using, as well as provide a screenshot of where and how you've implemented this.\nJust answering the part about \"rolling between two values\", you could use Math.randomInt(x) for that, a variation of Math.random() that was added in RPG Maker. The damage would be calculated as:\nMath.randomInt(MaxDamage - MinDamage) + MinDamage\nClick to expand...\nAlright, thanks. I've updated my original post. I've tried what you've said and it's similar to what I've read elsewhere but it seems to result in 0 damage every time, so i think there is a gap in my understanding to implement it\nHere is my code which I've imported as a plugin:\nJavaScript:\n/**\n * Random Damage Roll\n */\nfunction $dmgroll(a, b) {\n    // minimum and maximum values.\n    var min = Math.min(this._hr,1.0) * a.atk;\n    var max = a.atk;\n\n    if (b.result().critical) {\n        var damage = max; // When Critical calculate damage as maximum\n    } else {\n        var damage = Math.randomInt(max - min) + min\n    }\n    return damage;\n}\nAnd here is what the skill in my database looks like:"
+    },
+    {
+      "post_id": "js-post-1532626",
+      "author": "Canned_Dinosaur",
+      "date": "2025-10-07T15:15:13+0900",
+      "body": "Having a damage of 0 typically means that there is an error in the calculation somewhere (errors in the damage formula are changed to 0 damage). The problem might be that you are using the \"this\" keyword within the function, but I'm not sure if it's the correct context, as \"this\" in the damage formula is Game_Action (you can confirm this through console.log(this) in the damage formula).\nSecondly, for your hitformula, a b user target are all valid references for the plugin, but \"this\" will not refer to the user of the skill. You might be able to make it work by changing all instances of \"this._hr\" to \"a._hr\", but I'm not too sure actually.\nCan do some testing later.\nJavaScript:\n<hitformula>\na._hr = Math.random()  + (a.hit - b.eva);\na._hr > 0\n</hitformula>\nEDIT: confirmed that using \"this\" will neither refer to the user of the skill nor the Game_Action, so that is the cause of your error (and as a result your damage showing up as 0).\nI did some testing with the standard \"Attack\" skill, using a._hr instead of this._hr, and it looks as if it's doing something. Whether it's as you had envisioned, I cannot tell though.\nAdded this line for debugging:\nAnd the result of two turns fighting against two goblins:"
+    },
+    {
+      "post_id": "js-post-1532634",
+      "author": "King Nothing",
+      "date": "2025-10-07T16:25:58+0900",
+      "body": "Canned_Dinosaur said:\nHaving a damage of 0 typically means that there is an error in the calculation somewhere (errors in the damage formula are changed to 0 damage). The problem might be that you are using the \"this\" keyword within the function, but I'm not sure if it's the correct context, as \"this\" in the damage formula is Game_Action (you can confirm this through console.log(this) in the damage formula).\nSecondly, for your hitformula, a b user target are all valid references for the plugin, but \"this\" will not refer to the user of the skill. You might be able to make it work by changing all instances of \"this._hr\" to \"a._hr\", but I'm not too sure actually.\nCan do some testing later.\nJavaScript:\n<hitformula>\na._hr = Math.random()  + (a.hit - b.eva);\na._hr > 0\n</hitformula>\nEDIT: confirmed that using \"this\" will neither refer to the user of the skill nor the Game_Action, so that is the cause of your error (and as a result your damage showing up as 0).\nI did some testing with the standard \"Attack\" skill, using a._hr instead of this._hr, and it looks as if it's doing something. Whether it's as you had envisioned, I cannot tell though.\nAdded this line for debugging:\nView attachment 350825\nAnd the result of two turns fighting against two goblins:\nView attachment 350824\nClick to expand...\nThat's amazing! it does indeed seem to work exactly as I'd hoped for. Thank you so much! And I never knew I could print that type of information to the log, that will be very helpful in the future as well. I appreciate it."
+    },
+    {
+      "post_id": "js-post-1532654",
+      "author": "Canned_Dinosaur",
+      "date": "2025-10-07T19:23:06+0900",
+      "body": "Hooray, happy to have been of help! And yes, console.log() is very important to debugging.\nIf you haven't already, please report the thread as solved using the ⚠\nReport\nbutton!"
+    },
+    {
+      "post_id": "js-post-1532803",
+      "author": "slimmmeiske2",
+      "date": "2025-10-08T15:39:25+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}
