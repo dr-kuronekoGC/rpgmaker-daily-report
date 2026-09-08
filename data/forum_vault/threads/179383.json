@@ -1,0 +1,179 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/moghunters-chrono-engine-need-help-with-adding-own-stuff.179383",
+  "title": "MV Moghunters Chrono Engine - Need help with adding own stuff",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:43:20.903790+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1525335",
+      "author": "LittleLynx",
+      "date": "2025-08-05T14:33:56+0900",
+      "body": "Hi!\nI'm very (VERY!) new to editing plugins, coding and need help with adding my own tool-items (like the hookshot etc that it has already implemented) within Moghunters Chrono Engine.\nI looked and searched within the code if I can make sense of it (at least for my range of understanding so far) but sadly not. How can I write funtioning tools and how and where do I edit the plugin file?\nWhat I would like to have:\n- A Tool-Item that highlights specific events on the map when the item-button is being pressed\n- 3 that starts a ceratin event when the item-button is being pressed while being near it (like listening to ghost-NPCs when the button is pressed while standing in front or beside of them for an example and that for 3 different items for 3 different kinds of events)\nSorry if there is already a thread or guide for that but didn't found one. ^^'\nAnd thanks in advance for the help!"
+    },
+    {
+      "post_id": "js-post-1525341",
+      "author": "AquaEcho",
+      "date": "2025-08-05T15:07:42+0900",
+      "body": "Neither of those require editing the plugin file but they do require you to use a script on the tool event page and maybe another plugin to add a highlight effect to an event.\nCould you be more specific what events you want to be highlighted?"
+    },
+    {
+      "post_id": "js-post-1525388",
+      "author": "LittleLynx",
+      "date": "2025-08-06T01:00:06+0900",
+      "body": "Oh okay that would be awesome of course if it´s possible via eventing!\nItem 1 should highlight events that \"mark\" hidden passages on a map (like illusionary walls and overgrown pathways) when the item-button is pressed\nItem 2 should make tracks (may it via events that become vissible or show-picture-command like a scent-track or ghostly footprints) vissible. (again on button-press/item use)\nItem 3 should trigger on button-press a text-event when standing next to/in front of a specific event (like a shrine for an example) so the player is able to listen to spirits when using this item"
+    },
+    {
+      "post_id": "js-post-1525407",
+      "author": "AquaEcho",
+      "date": "2025-08-06T04:01:21+0900",
+      "body": "This is a template for a script. You will need to make modifications as needed. Put it in the tool event page. All it does is go through every event on the map, if the event's name is NPC, turn on its self switch A. Then on the event's A page, you set up the event to do whatever you want it to do.\nCode:\n$gameMap.events().forEach(event => {\nif (event.event().name == \"NPC\"  && !event._erased && $gameSelfSwitches.value([$gameMap._mapId,event._eventId,'A'])== false)\n{$gameSelfSwitches.setValue([$gameMap.mapId(), event._eventId, 'A'], true)}\n});\nIf you want a glow effect on an event use something like MPP Maplight or Hakuen Studio Char Manager. If you want speech bubbles over an event use Aerosys Gab Windows."
+    },
+    {
+      "post_id": "js-post-1525446",
+      "author": "LittleLynx",
+      "date": "2025-08-06T11:36:04+0900",
+      "body": "Maybe I'm just missing something here?\nWhat I tried:\nCreate an item in the database and insert the script under the notes (where Moghunter also entered his own notes such as abs-mode, etc.). It doesn't work when I use it.\nBut when I create a separate event and run it via script:\n(function() {\n$gameMap.events().forEach(event => {\nif (\nevent.event().name == \"NPC\" &&\n!event._erased &&\n$gameSelfSwitches.value([$gameMap._mapId, event._eventId, 'A']) == false\n) {\n$gameSelfSwitches.setValue([$gameMap.mapId(), event._eventId, 'A'], true);\n}\n});\n})();\nThen it works, but regardless of whether I have the item in the slot (the tools are key items in the plugin that have a tool ID in the notes in the database as well as the addition abs-mode) or not or if the Item-key of the script is being pressed (in my case the A-key). ^^'\n(and honestly sorry if I just don't get it)"
+    },
+    {
+      "post_id": "js-post-1525462",
+      "author": "AquaEcho",
+      "date": "2025-08-06T14:27:17+0900",
+      "body": "You need to put the script in the tool event page (on the tool map). I never said to use the database entry"
+    },
+    {
+      "post_id": "js-post-1525463",
+      "author": "LittleLynx",
+      "date": "2025-08-06T15:02:18+0900",
+      "body": "Oh my gosh, hit me but I just found the tool map... (actually searched through the entire code, item list etc etc to find what you could mean (like a code segment or something) and just didn't notice the named tool map in the demo of the plugin demo... ...\nWorks like a charm now of course, was super easy - thank you so much for the help and template code! ^^'"
+    },
+    {
+      "post_id": "js-post-1525482",
+      "author": "AquaEcho",
+      "date": "2025-08-06T23:04:13+0900",
+      "body": "I recommend you read my beginner's guide to Chrono Engine because you are making it a lot harder on yourself than it needs to be\nMV - MV + MZ : Make an Action Game! Chrono Engine Beginner Guide - On Map Tools and Battles!\nThis is a beginner introductory guide. I also have another guide Advanced Features!  What is Chrono Engine? Chrono Engine is a free, open-source suite of plugins used to make action games by adding on-map tools and battles for MV (and MZ compatible with FOSSIL (see MZ notes at bottom)). It can...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1529342",
+      "author": "nomadmike",
+      "date": "2025-09-09T03:04:52+0900",
+      "body": "Hi, Im also trying to add items here.\nI have them added but its not fully functioning the way I wanted to.\none thing im struggling with is scrolling through the item or skill menus. It works on the default game by pressing Q or pagedown but in my game these buttons don't do anything.\nand one more thing I'm trying to do is instead of pressing the action button for an event that requires that item, i'd want to press the item button (a)"
+    },
+    {
+      "post_id": "js-post-1529359",
+      "author": "AquaEcho",
+      "date": "2025-09-09T05:21:08+0900",
+      "body": "nomadmike said:\none thing im struggling with is scrolling through the item or skill menus. It works on the default game by pressing Q or pagedown but in my game these buttons don't do anything.\nand one more thing I'm trying to do is instead of pressing the action button for an event that requires that item, i'd want to press the item button (a)\nClick to expand...\nThe skill and item menus are new menus added by the Chrono Engine plugin so they work different than the ones built into RPG Maker. As far as I know the new menus don't have scrolling coded into them but I haven't added enough entries to test it.\nThe other issue (changing how events are triggered) would require editing Chrono Engine code in the plugin file."
+    },
+    {
+      "post_id": "js-post-1529436",
+      "author": "nomadmike",
+      "date": "2025-09-09T19:26:49+0900",
+      "body": "I just checked the shield, pressing D. I included the tileset with the shield,\nbut it doesn't do anything. I have those tilesets with default names but nothing. Do you know where I'd look?"
+    },
+    {
+      "post_id": "js-post-1529449",
+      "author": "AquaEcho",
+      "date": "2025-09-09T22:50:14+0900",
+      "body": "The shield filename suffix would be in the database entry of the shield"
+    },
+    {
+      "post_id": "js-post-1529454",
+      "author": "nomadmike",
+      "date": "2025-09-09T23:34:23+0900",
+      "body": "I compared it to the default file, made it all the same, first item with the suffix.\nIt still doesnt show the shield character tileset when pressing D"
+    },
+    {
+      "post_id": "js-post-1529456",
+      "author": "AquaEcho",
+      "date": "2025-09-09T23:44:14+0900",
+      "body": "Post screencap of the actor's database page, the shield page, and the actor's base sprite and shield sprite names"
+    },
+    {
+      "post_id": "js-post-1529463",
+      "author": "nomadmike",
+      "date": "2025-09-10T00:59:43+0900",
+      "body": "here you go,  im just showing the default images because im trying to get it to work before altering. thanks!\nIf I can message you it would help lots\n-maybe im missing a plugin?"
+    },
+    {
+      "post_id": "js-post-1529470",
+      "author": "AquaEcho",
+      "date": "2025-09-10T02:28:22+0900",
+      "body": "You have the shield pose suffix as _Shd01 when the file name is _shd01\nIt's case sensitive"
+    },
+    {
+      "post_id": "js-post-1529479",
+      "author": "nomadmike",
+      "date": "2025-09-10T03:24:15+0900",
+      "body": "my mistake,  I changed it to lowercase but still nothing.\nMaybe it has something to do with Hero01?"
+    },
+    {
+      "post_id": "js-post-1529499",
+      "author": "AquaEcho",
+      "date": "2025-09-10T07:34:53+0900",
+      "body": "Is the shield working functionally? When you press 'D' does it block attacks?"
+    },
+    {
+      "post_id": "js-post-1529565",
+      "author": "nomadmike",
+      "date": "2025-09-10T16:58:30+0900",
+      "body": "no it doesnt"
+    },
+    {
+      "post_id": "js-post-1529580",
+      "author": "AquaEcho",
+      "date": "2025-09-10T23:07:22+0900",
+      "body": "Then this isn't a graphical issue, you changed the key assignment. Check the Chrono Engine plugin settings and any other plugins you have that change keybindings"
+    },
+    {
+      "post_id": "js-post-1529653",
+      "author": "nomadmike",
+      "date": "2025-09-11T17:27:52+0900",
+      "body": "i cant think of any.  I loaded the chrono engine and turned off mog_char_poses  and it doesnt show that anymore. So i added that file, but still nothing.\nthe other buttons work as supposed to..\n2nd edit:\nI got it!\nfor some reason it only works if the player is starting with the shield.. but if I unequip the shield, (even if i drop the item and don't have it in the inventory) he still does this shielding pose when pressing d.."
+    },
+    {
+      "post_id": "js-post-1529678",
+      "author": "AquaEcho",
+      "date": "2025-09-11T23:04:37+0900",
+      "body": "Can you reproduce the issue in the unedited Chrono Engine demo project? I'm pretty sure none of this happens in the stock demo."
+    },
+    {
+      "post_id": "js-post-1529685",
+      "author": "nomadmike",
+      "date": "2025-09-12T00:32:17+0900",
+      "body": "i just checked,\nits normal in the default chrono engine.\nhmmm i dont know..\nthere must be a place where it looks if player wears shield, then uses that graphic.  I didnt change anything,  im just using other plugins.."
+    },
+    {
+      "post_id": "js-post-1529691",
+      "author": "AquaEcho",
+      "date": "2025-09-12T01:03:43+0900",
+      "body": "If the issue is not reproducible in the stock demo then this is just going to be an exercise in \"guess what things you changed in your game to create the problem\".\nIf you think the issue is other plugins, then turn them off one by one, or in batches, to see if it goes away. I would also make sure the plugin order of the MOG plugins is the same as in the Chrono Engine demo."
+    },
+    {
+      "post_id": "js-post-1530011",
+      "author": "nomadmike",
+      "date": "2025-09-14T22:20:08+0900",
+      "body": "i made different shields and blocking graphics.\nwhen i write suffix sh5 for example under the corresponding shield,  the graphics only show the one that is listed in the starting equipment."
+    },
+    {
+      "post_id": "js-post-1530062",
+      "author": "AquaEcho",
+      "date": "2025-09-15T04:38:44+0900",
+      "body": "I would add the second shield and second graphic in the demo project and see if it is an issue there."
+    },
+    {
+      "post_id": "js-post-1530143",
+      "author": "nomadmike",
+      "date": "2025-09-15T18:54:55+0900",
+      "body": "yeah the default works like it should.\nI guess I'll have to dig and see what I find.\njust gonna work on the rest of the game for now\nthanks for your input! it will be much needed in the future once im close to releasing it"
+    },
+    {
+      "post_id": "js-post-1534979",
+      "author": "nomadmike",
+      "date": "2025-10-29T05:03:10+0900",
+      "body": "I found out what it was.  When putting on my character in inventory, it didnt actual equip.  so i have to look in the scripts for that paid plugin.."
+    }
+  ]
+}

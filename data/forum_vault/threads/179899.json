@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-set-movement-route-reset-to-the-first-frame.179899",
+  "title": "MZ [SOLVED] Set Movement Route: Reset to the First Frame",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:43:21.237773+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1528630",
+      "author": "Sarena",
+      "date": "2025-09-02T16:18:35+0900",
+      "body": "I'm working on some longer animations for my game, so I'm trying to switch between multiple charsets and different frames. The issue I'm running into is that when I switch from 1 charset to another (or from 1 direction to another), it continues from the frame the previous charset left off on, making it randomly display frames out of order. For example, if the first animation stopped on frame 2, then it would continue the next on frame 3 instead of restarting on frame 1.\nI used\nthis tutorial\nand\nthis forum thread\nfor troubleshooting so far, but I haven't had any luck, even with the additional script call. I realize those are for MV, so I'm wondering if something changed in MZ that might be causing it to not function the same way. I referred to the\nScript call sheet\n, and it seems to say it's applicable to both MV and MZ, though.\nHere's part of my event for a couple of the Set Movement Route animations:\nThis is the Event it's moving:\nThese are my Charsets:\nAnd this is a visual GIF of what's happening (notice how when it switches to the second charset, it starts on the second frame instead of the first):\nDoes anyone have any ideas on what I might be doing wrong here?"
+    },
+    {
+      "post_id": "js-post-1528677",
+      "author": "Eliaquim",
+      "date": "2025-09-03T02:21:23+0900",
+      "body": "Hi there!\nI tried to mess with it using events once. Mess witht he pattern of the event. I found it kind confusing... If your character is moving or does have step animation(which seems to me that it has, since you checked the walking and stepping box on the event page), the pattern will keep updating according to animation count. I think it's hard to debug something like that with events.\nJavaScript:\nGame_CharacterBase.prototype.updateAnimation = function() {\n    this.updateAnimationCount();\n    if (this._animationCount >= this.animationWait()) {\n        this.updatePattern();\n        this._animationCount = 0;\n    }\n};\n\nGame_CharacterBase.prototype.animationWait = function() {\n    return (9 - this.realMoveSpeed()) * 3;\n};\n\nGame_CharacterBase.prototype.updateAnimationCount = function() {\n    if (this.isMoving() && this.hasWalkAnime()) {\n        this._animationCount += 1.5;\n    } else if (this.hasStepAnime() || !this.isOriginalPattern()) {\n        this._animationCount++;\n    }\n};\n\nGame_CharacterBase.prototype.updatePattern = function() {\n    if (!this.hasStepAnime() && this._stopCount > 0) {\n        this.resetPattern();\n    } else {\n        this._pattern = (this._pattern + 1) % this.maxPattern();\n    }\n};\nSo I guess is better if this is handled by a plugin:\nHakuen Studio Character Manager for RPG Maker MZ by Hakuen Studio\nChange colors, scale, offset, and much more of the character sprites!\nhakuenstudio.itch.io\nYou can have more control of the pattern order the character will follow and also if it will keep updating automatically or not update at all. Hope it helps"
+    },
+    {
+      "post_id": "js-post-1528740",
+      "author": "Sarena",
+      "date": "2025-09-03T15:38:18+0900",
+      "body": "Thank you for linking your plugin and creating one that makes animating easier!\nI just tested the plugin out, and was super straightforward in fixing my issue. I appreciate your help with this!"
+    },
+    {
+      "post_id": "js-post-1528746",
+      "author": "slimmmeiske2",
+      "date": "2025-09-03T17:09:09+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

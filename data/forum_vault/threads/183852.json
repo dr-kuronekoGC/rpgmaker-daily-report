@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/resolved-manually-preserve-assets.183852",
+  "title": "MV [Resolved]Manually Preserve Assets",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:43:17.194367+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1557975",
+      "author": "Jinx Adnix",
+      "date": "2026-05-30T07:51:24+0900",
+      "body": "Turns out what you need to do is:\n1) Go to the plugins folder. ([Game Project]/js/Plugins)\n2) Make an empty document and name it anything you like so long as it ends with .js\n3) Post the following code:\nJavaScript:\n/*:\n\n@requiredAssets path/to/image\n\n*/\nYou will need one line for each file, do include the file's name, do not include the file's extension. I am told it only works with images and audio.\nNote 1: just in case you couldn't tell, these files will be specific to the game you are making. So you will likely need to do a new one for each project.\nNote 2: File names are case sensitive in Linux/Mac systems, but not in Windows. Keep this in mind will you.\nSo first, not 100% sure this is the right place for this, if not, please move it.\nBut as for what I need... I got a few plugins that store their assets in strange places. I do not know why the devs put them there, I do not know why they didn't set the assets to remain when pruned. But I have been told there is a way to make a plugin to manually include them... Could someone please explain to me how to do that? Everyone who has said you can do this seemed to assume everyone knows JavaScript."
+    },
+    {
+      "post_id": "js-post-1557977",
+      "author": "Solar_Flare",
+      "date": "2026-05-30T08:11:38+0900",
+      "body": "It sounds like you want to use the Exclude Unused Assets option when deploying, right? But some plugins aren't playing nice with that feature.\nIf it's a free plugin, provide more information (the plugin name, how the asset is specified; ideally also a link to the plugin), and I can probably help you work out what needs to be done."
+    },
+    {
+      "post_id": "js-post-1557978",
+      "author": "Jinx Adnix",
+      "date": "2026-05-30T08:19:59+0900",
+      "body": "Solar_Flare said:\nIt sounds like you want to use the Exclude Unused Assets option when deploying, right? But some plugins aren't playing nice with that feature.\nIf it's a free plugin, provide more information (the plugin name, how the asset is specified; ideally also a link to the plugin), and I can probably help you work out what needs to be done.\nClick to expand...\nPayed ones. I am not apposed to having them fixed for me, but I would kind of like to learn to do it for myself... I tend to do strange things in RPG Maker.\nBut ya, these are the two that are acting up:\nCard Game Combat - RPG Maker MV/MZ Plugin by MythAtelier\nDeckbuilder Combat System for your games\nmythatelier.itch.io\nSimple Credits Screen | RPG Maker MV/MZ Plugin by Dracky Plugins\nAdd a simple \"Credits\" screen to your game!\ndrackyplugins.itch.io"
+    },
+    {
+      "post_id": "js-post-1557983",
+      "author": "SGHarlekin",
+      "date": "2026-05-30T10:03:57+0900",
+      "body": "I don't think I ever came across a plugin that properly includes its assets when using \"exclude unused files\", so imho the best way to handle the situation is to just keep your project folder clean. It's a once off effort to clean it up and it's easy to just keep it clean instead of just dumping every possible free asset you find in there because \"Maybe you'll need it later\". This ain't no Skyrim!\nAlternatively, you can also have each and every plugin edited so it includes its files of course."
+    },
+    {
+      "post_id": "js-post-1557984",
+      "author": "Jinx Adnix",
+      "date": "2026-05-30T10:06:31+0900",
+      "body": "SGHarlekin said:\nI don't think I ever came across a plugin that properly includes its assets when using \"exclude unused files\", so imho the best way to handle the situation is to just keep your project folder clean. It's a once off effort to clean it up and it's easy to just keep it clean instead of just dumping every possible free asset you find in there because \"Maybe you'll need it later\". This ain't no Skyrim!\nAlternatively, you can also have each and every plugin edited so it includes its files of course.\nClick to expand...\nCan't do that yet mate, game is still a work in progress, I know for a fact that many things not being used yet will be used later, but I did find a work around... It think it's rather specific to me though.\nTried that, it didn't work."
+    },
+    {
+      "post_id": "js-post-1557988",
+      "author": "Solar_Flare",
+      "date": "2026-05-30T10:30:04+0900",
+      "body": "Jinx Adnix said:\nPayed ones. I am not apposed to having them fixed for me, but I would kind of like to learn to do it for myself... I tend to do strange things in RPG Maker.\nBut ya, these are the two that are acting up:\nCard Game Combat - RPG Maker MV/MZ Plugin by MythAtelier\nDeckbuilder Combat System for your games\nmythatelier.itch.io\nSimple Credits Screen | RPG Maker MV/MZ Plugin by Dracky Plugins\nAdd a simple \"Credits\" screen to your game!\ndrackyplugins.itch.io\nClick to expand...\nThat's not enough information to help you, at least in the case of the card game one. I need to know how you specify what images to use in your game – is it a note tag, or something in plugin parameters, or something else?\nThe credits one has its documentation on the itch page. If the issue is that images specified in their special text codes don't work, there's no simple way to fix that. I can think of at least two possible approaches.\nCreate a patch that adds a layer of indirection – instead of\n/img[whatever.png]\nyou'd write\n/img[whatever]\nwhere the actual image pointed to by\nwhatever\nis defined in a plugin parameter. The downside is, this requires seeing at least a bit of the plugin's code to figure out how to patch it; and depending on how the plugin is coded, it might only be possible by editing the plugin itself… which means this is likely off the table, unless comments in the plugin file indicate you're allowed to edit it (nothing on the page indicates that).\nCreate a file that literally just lists all the images you actually use, and add it as a plugin. This is fragile, because you'll need to remember to update it if you add a new image later, but it is pretty much foolproof and not that difficult. It could work for the card game plugin too if no other options are doable.\nThe basic outline for the plugin in point 2 is:\nJavaScript:\n/*:\n\n@requiredAssets path/to/image.png\n\n*/\nJust add a line for each image or audio file between the opener and closer."
+    },
+    {
+      "post_id": "js-post-1557990",
+      "author": "Jinx Adnix",
+      "date": "2026-05-30T10:47:09+0900",
+      "body": "Solar_Flare said:\nThat's not enough information to help you, at least in the case of the card game one. I need to know how you specify what images to use in your game – is it a note tag, or something in plugin parameters, or something else?\nThe credits one has its documentation on the itch page. If the issue is that images specified in their special text codes don't work, there's no simple way to fix that. I can think of at least two possible approaches.\nCreate a patch that adds a layer of indirection – instead of\n/img[whatever.png]\nyou'd write\n/img[whatever]\nwhere the actual image pointed to by\nwhatever\nis defined in a plugin parameter. The downside is, this requires seeing at least a bit of the plugin's code to figure out how to patch it; and depending on how the plugin is coded, it might only be possible by editing the plugin itself… which means this is likely off the table, unless comments in the plugin file indicate you're allowed to edit it (nothing on the page indicates that).\nCreate a file that literally just lists all the images you actually use, and add it as a plugin. This is fragile, because you'll need to remember to update it if you add a new image later, but it is pretty much foolproof and not that difficult. It could work for the card game plugin too if no other options are doable.\nThe basic outline for the plugin in point 2 is:\nJavaScript:\n/*:\n\n@requiredAssets path/to/image.png\n\n*/\nJust add a line for each image or audio file between the opener and closer.\nClick to expand...\nYa... That figures... I went in thinking that...\nThe code you gave me at the end is what I was asking after, but it doesn't seem to have worked... You have a typo?\nYes, I can see I only have the code for the one image, I'm only doing one right now to see if I got it working."
+    },
+    {
+      "post_id": "js-post-1557992",
+      "author": "Solar_Flare",
+      "date": "2026-05-30T11:22:16+0900",
+      "body": "Ah, apparently you have to leave off the file extension – so it'll presumably only work for images and audio. But I don't think there are many plugins that have other kinds of assets, so that should be fine?"
+    },
+    {
+      "post_id": "js-post-1557993",
+      "author": "Jinx Adnix",
+      "date": "2026-05-30T11:32:17+0900",
+      "body": "Solar_Flare said:\nAh, apparently you have to leave off the file extension – so it'll presumably only work for images and audio. But I don't think there are many plugins that have other kinds of assets, so that should be fine?\nClick to expand...\nYes, thank you. That works."
+    },
+    {
+      "post_id": "js-post-1558024",
+      "author": "Robro33",
+      "date": "2026-05-30T22:19:34+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

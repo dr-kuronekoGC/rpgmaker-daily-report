@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/damage-popup-not-showing-up-properly.179707",
+  "title": "MV Damage popup not showing up properly",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:43:23.138708+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1527365",
+      "author": "Jasanimation",
+      "date": "2025-08-22T23:10:28+0900",
+      "body": "For some reason when I use Mog hunger battle hud it makes it so the damage popup shows up before the animation even finishes? I feel like it could be because im also using yanfly's battle core stuff that conflicts with this plugin. Im not sure how to fix this"
+    },
+    {
+      "post_id": "js-post-1527708",
+      "author": "Jasanimation",
+      "date": "2025-08-25T12:31:51+0900",
+      "body": "For some reason when I use Mog hunger battle hud it makes it so the damage popup shows up before the animation even finishes? I feel like it could be because im also using yanfly's battle core stuff that conflicts with this plugin. Im not sure how to fix this\nedit: I tried turning off YEP_battle_core and the damage popups are showing properly now, however it makes my battles not visually good\nsorry i had to repost this, im not getting any attention to the same post i have problems with"
+    },
+    {
+      "post_id": "js-post-1527736",
+      "author": "Robro33",
+      "date": "2025-08-25T22:06:29+0900",
+      "body": "Jasanimation said:\nsorry i had to repost this, im not getting any attention to the same post i have problems with\nClick to expand...\ndont create duplicate threads for the same topic if you havent gotten replies. you can bump your own threads once every 24 hours if you havent gotten any responses in them. ive merged your threads.\nJasanimation said:\nedit: I tried turning off YEP_battle_core and the damage popups are showing properly now, however it makes my battles not visually good\nClick to expand...\nhave you tried playing with the load order of those plugins at all? yanfly's battle engine has skills wait for animations to finish playing before dealing any damage by default. If its not doing that, then something is interfering. have you made sure that the issue is between those 2 plugins and not between yanfly's and another?"
+    },
+    {
+      "post_id": "js-post-1527832",
+      "author": "Jasanimation",
+      "date": "2025-08-26T16:11:07+0900",
+      "body": "Robro33 said:\ndont create duplicate threads for the same topic if you havent gotten replies. you can bump your own threads once every 24 hours if you havent gotten any responses in them. ive merged your threads.\nhave you tried playing with the load order of those plugins at all? yanfly's battle engine has skills wait for animations to finish playing before dealing any damage by default. If its not doing that, then something is interfering. have you made sure that the issue is between those 2 plugins and not between yanfly's and another?\nClick to expand...\nIm not sure what settings is for 'Skills wait' are you talking about 'motion waiting'? Also yes i tried turning off every other plugin thats not the YEP battle engine and the MOGhunter battle hud, the damage popup is still showing up during the animation"
+    },
+    {
+      "post_id": "js-post-1527835",
+      "author": "Robro33",
+      "date": "2025-08-26T16:29:51+0900",
+      "body": "Jasanimation said:\nIm not sure what settings is for 'Skills wait'\nClick to expand...\nits not a setting. its a coded behavior within the plugin. if youre familiar with yanfly's action sequences, its the battle engine core that actually implements the core of it. more importantly, adds the default one which makes skills wait for the animations to end before doing damage popups. the action sequence plugins just add ways to interact with them.\nJasanimation said:\nAlso yes i tried turning off every other plugin thats not the YEP battle engine and the MOGhunter battle hud, the damage popup is still showing up during the animation\nClick to expand...\nhow about just yanfly's battle engine? if it is playing the animations instantly with just that plugin alone, then you might want to try redownloading a new copy of it from the itch.io page."
+    },
+    {
+      "post_id": "js-post-1527836",
+      "author": "Jasanimation",
+      "date": "2025-08-26T16:59:04+0900",
+      "body": "Robro33 said:\nits not a setting. its a coded behavior within the plugin. if youre familiar with yanfly's action sequences, its the battle engine core that actually implements the core of it. more importantly, adds the default one which makes skills wait for the animations to end before doing damage popups. the action sequence plugins just add ways to interact with them.\nhow about just yanfly's battle engine? if it is playing the animations instantly with just that plugin alone, then you might want to try redownloading a new copy of it from the itch.io page.\nClick to expand...\nIf I dont have the Moghunter battle hud on then the damage popup shows up just fine. And If i turn off the battle engine core it also works fine"
+    },
+    {
+      "post_id": "js-post-1527916",
+      "author": "ShadowDragon",
+      "date": "2025-08-27T04:47:38+0900",
+      "body": "can you show the plugin database?\nmaybe a give/screenshot how it collide?\nit may be possible that one override the function of the other plugin\nto be conflicting or did it differently.\nin this case, we can see how to fix it or patch it or give guidance to\nmake the fix for your needs."
+    },
+    {
+      "post_id": "js-post-1527919",
+      "author": "Robro33",
+      "date": "2025-08-27T05:33:09+0900",
+      "body": "ShadowDragon said:\ncan you show the plugin database?\nmaybe a give/screenshot how it collide?\nClick to expand...\ni did look into it a little after the last reply since at that point it seemed like a clear conflict.\nsomething in mog's plugin seems to delete the _battler from the actor sprites, which causes yanfly's battle engine to skip over them when determining if an animation is playing and renders it unable to wait for animations on battlers. i havent really had the time to try to fully resolve it\nEdit:\nsave this as a .js file and load it below the hud plugin\n@Jasanimation\nSpoiler\nCode:\n(() => {\n  Scene_Battle.prototype.actorSprites = function() {\n      return this._spriteset._actorSprites;\n  };\n  Scene_Battle.prototype.updateActors = function() {\n      var members = $gameParty.battleMembers();\n      for (var i = 0; i < this.actorSprites().length; i++) {\n          this.actorSprites()[i].setBattler(members[i]);\n      }\n  };\n\n  Scene_Battle.prototype.updateBattleHud = function() {\n    if ($gameTemp._forceCreateBattleHud) {this.forceCreateBattleHud()};\n    if ($gameTemp._forceRemoveBattleHud) {this.forceRemoveBattleHud()};  \n    if (this._screen_layout) {this.updateBattleHudVisible()};\n    this.updateWindowSlideEffect()\n    this.updateLayoutWindow();\n    if (this.actorSprites()) {this.updateActors()};\n  };\n\n  Scene_Base.prototype.createActorsF = function() {\n    if (this.actorSprites()) {\n      for (var i = 0; i < this.actorSprites().length; i++) {\n          this._hudField.removeChild(this.actorSprites()[i]);\n      };\n    };\n      if (this._spriteset)\n        this._spriteset._actorSprites = [];\n\n      for (var i = 0; i < $gameParty.maxBattleMembers(); i++) {\n          this.actorSprites()[i] = new Sprite_Actor();\n      this.actorSprites()[i].mz = 110;\n          this._hudField.addChild(this.actorSprites()[i]);\n      };\n  };\n})();"
+    },
+    {
+      "post_id": "js-post-1527956",
+      "author": "Jasanimation",
+      "date": "2025-08-27T15:44:03+0900",
+      "body": "Robro33 said:\ni did look into it a little after the last reply since at that point it seemed like a clear conflict.\nsomething in mog's plugin seems to delete the _battler from the actor sprites, which causes yanfly's battle engine to skip over them when determining if an animation is playing and renders it unable to wait for animations on battlers. i havent really had the time to try to fully resolve it\nEdit:\nsave this as a .js file and load it below the hud plugin\n@Jasanimation\nSpoiler\nCode:\n(() => {\n  Scene_Battle.prototype.actorSprites = function() {\n      return this._spriteset._actorSprites;\n  };\n  Scene_Battle.prototype.updateActors = function() {\n      var members = $gameParty.battleMembers();\n      for (var i = 0; i < this.actorSprites().length; i++) {\n          this.actorSprites()[i].setBattler(members[i]);\n      }\n  };\n\n  Scene_Battle.prototype.updateBattleHud = function() {\n    if ($gameTemp._forceCreateBattleHud) {this.forceCreateBattleHud()};\n    if ($gameTemp._forceRemoveBattleHud) {this.forceRemoveBattleHud()}; \n    if (this._screen_layout) {this.updateBattleHudVisible()};\n    this.updateWindowSlideEffect()\n    this.updateLayoutWindow();\n    if (this.actorSprites()) {this.updateActors()};\n  };\n\n  Scene_Base.prototype.createActorsF = function() {\n    if (this.actorSprites()) {\n      for (var i = 0; i < this.actorSprites().length; i++) {\n          this._hudField.removeChild(this.actorSprites()[i]);\n      };\n    };\n      if (this._spriteset)\n        this._spriteset._actorSprites = [];\n\n      for (var i = 0; i < $gameParty.maxBattleMembers(); i++) {\n          this.actorSprites()[i] = new Sprite_Actor();\n      this.actorSprites()[i].mz = 110;\n          this._hudField.addChild(this.actorSprites()[i]);\n      };\n  };\n})();\nClick to expand...\nThank you so much! This works and all the damage popups are now playing after the animation!"
+    },
+    {
+      "post_id": "js-post-1528035",
+      "author": "Robro33",
+      "date": "2025-08-28T16:33:36+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}
