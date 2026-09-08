@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/immunities-do-not-work-with-the-elements-and-status-menu-core-visustella.180799",
+  "title": "MZ Immunities do not work with the Elements and Status Menu Core (VisuStella)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:28:19.140844+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1535410",
+      "author": "NessTor",
+      "date": "2025-11-01T04:14:15+0900",
+      "body": "Hi, so in my project I wanted the earth element to be completely immune to electric attacks. Something I could do without this plugin, but I used it for convenience (of course, without actually having the earth element, just being immune to electric attacks).\nThe thing is, I've noticed that while there is a reduction, there's always a minimum amount of damage. Which I don't want.\nI already tried removing the element core and setting the damage to 0% in vanilla, and then the damage was 0.\nSo... I tried using the notetags to reduce damage of all types (flat, rate, and plus), both individually and all three together, using the weakness manager within the plugin, and using the base element rate from RPG Maker. And it ALWAYS stays at the same number.\nI also tried downloading the plugin again, in case I accidentally changed something I shouldn't have, and reverting to the base settings, but it's still the same, so I guess this is normal for the plugin?\nI even tried changing something here, but I don't know much about it. Does anyone with this plugin have immune enemies? Or can anyone tell me what I can change?\n[ISPOILER]\n[/ISPOILER]"
+    },
+    {
+      "post_id": "js-post-1535416",
+      "author": "Niniann",
+      "date": "2025-11-01T04:46:54+0900",
+      "body": "Greetings,\nI use Visustella's ElementStatusCore, so I will try and help here, but I think I'm going to need you to provide more info.\nJust to be sure, I set an enemy's element rate to 0% as a trait on the enemy, and\nthey take 0 damage,\nas expected.\nI then removed the trait and gave an enemy the notetag\n<Received Element 2 Rate: 0%>\nand\nthey take 0 damage,\nagain as expected.\nSo I don't think there is a bug with the plugin at first glance, it's probably something you have changed in the plugin parameters or entered incorrectly in the notetag box.\nI will need to see the entire panel for your enemy, actor, whatever that has the notetags in order to help you further.\nOr, if you have modified the JS in the plugin parameters, i'll need to see the JS you added or changed. Not just a pic of an open window with the options displayed, but what you\nactually changed\nwithin one of those options.\nCheers,\n-Niniann"
+    },
+    {
+      "post_id": "js-post-1535422",
+      "author": "NessTor",
+      "date": "2025-11-01T05:38:20+0900",
+      "body": "Niniann said:\nGreetings,\nI use Visustella's ElementStatusCore, so I will try and help here, but I think I'm going to need you to provide more info.\nJust to be sure, I set an enemy's element rate to 0% as a trait on the enemy, and\nthey take 0 damage,\nas expected.\nI then removed the trait and gave an enemy the notetag\n<Received Element 2 Rate: 0%>\nand\nthey take 0 damage,\nagain as expected.\nSo I don't think there is a bug with the plugin at first glance, it's probably something you have changed in the plugin parameters or entered incorrectly in the notetag box.\nI will need to see the entire panel for your enemy, actor, whatever that has the notetags in order to help you further.\nOr, if you have modified the JS in the plugin parameters, i'll need to see the JS you added or changed. Not just a pic of an open window with the options displayed, but what you\nactually changed\nwithin one of those options.\nCheers,\n-Niniann\nClick to expand...\nThank you so much! Here's a screenshot of the enemy (some parts are in Spanish, but Electrico is electric). I also tried setting it as ground, but I removed that setting at a certain point.\nAnd what is JS? English isn't my native language, but regarding the configuration, I only used elements and sub-elements. I even tried with just the default plugin activated without any changes, but even then, the default element rate of 0% , still does damage.\nI can still send it to you, I'm just not sure what JS is."
+    },
+    {
+      "post_id": "js-post-1535423",
+      "author": "Robro33",
+      "date": "2025-11-01T06:02:10+0900",
+      "body": "NessTor said:\nAnd what is JS\nClick to expand...\nJavascript. It's the coding language for MV and MZ. Many plugins have parts that let people familiar with code do custom things.\nNessTor said:\nI even tried with just the default plugin activated without any changes, but even then, the default element rate of 0% , still does damage.\nClick to expand...\nThis is a bit of guesswork, but does your actor, or their class/equipment/states have any notetags to increase their electric damage? I don't use VS plugins, but If the VS plugin does the same thing the Yanfly version did in MV then those notetags directly adjust the element rates used in damage calculation and would allow a target immune to an element to still take damage from it."
+    },
+    {
+      "post_id": "js-post-1535424",
+      "author": "NessTor",
+      "date": "2025-11-01T06:08:11+0900",
+      "body": "Robro33 said:\nJavascript. It's the coding language for MV and MZ. Many plugins have parts that let people familiar with code do custom things.\nThis is a git of guesswork, but goes your actor, or their class/equipment/states have any notetags to increase their electric damage? I don't use VS plugins, but If the VS plugin does the same thing the Yanfly version did in MV then those notetags directly adjust the element rates used in damage calculation and would allow a target immune to an element to still take damage from it.\nClick to expand...\nSo you want me to give you the text de elements and sub elements?\nAnd yes, it has one, since it's a tactical role-playing Pokémon fangame, so I use the deal to mimic STAB (in case you didn't know, Electric-type Pokémon increase damage by 50%, but it doesn't affect Ground-type Pokémon regardless)."
+    },
+    {
+      "post_id": "js-post-1535426",
+      "author": "Robro33",
+      "date": "2025-11-01T06:21:02+0900",
+      "body": "NessTor said:\nAnd yes, it has one\nClick to expand...\nYeah, I think that tag might be doing what the MV plugin did and is adding 50% to the target's element rate when calculations are being made. Maybe try\n<Dealt Element id Rate: 150%>\n?"
+    },
+    {
+      "post_id": "js-post-1535429",
+      "author": "NessTor",
+      "date": "2025-11-01T06:32:38+0900",
+      "body": "Robro33 said:\nYeah, I think that tag might be doing what the MV plugin did and is adding 50% to the target's element rate when calculations are being made. Maybe try\n<Dealt Element id Rate: 150%>\n?\nClick to expand...\nYEAH, it works!\nThank you so much <3\nEdit: Well, I entered that and it's not giving a STAB, I probably entered it wrong, but hey, at least the immunities work. I just need to find another notetag or check if I entered it incorrectly."
+    },
+    {
+      "post_id": "js-post-1535430",
+      "author": "Robro33",
+      "date": "2025-11-01T06:51:12+0900",
+      "body": "Robro33 said:\n<Dealt Element id Rate: 150%>\n?\nClick to expand...\nNessTor said:\nEdit: Well, I entered that and it's not giving a STAB, I probably entered it wrong, but hey, at least the immunities work. I just need to find another notetag or check if I entered it incorrectly.\nClick to expand...\nI didn't write the ID in, and you didn't show the notebox afterwards but you did replace the ID with 5 right?\n<Dealt Element 5 Rate: 150%>"
+    },
+    {
+      "post_id": "js-post-1535434",
+      "author": "Niniann",
+      "date": "2025-11-01T07:57:35+0900",
+      "body": "@Robro33\nfigured out what's going on here, so I'll see if I can help get this wrapped up\n.\nYou lost STAB but gained an immunity because you're no longer getting that +50%, so once you add that back in, you're going to lose the immunity again.\n--------------\nI think what you're going to need to do, to have both STAB and immunities using Visustella, is modify the math in JS: Finalize Rate within Element Rulings in the ElementStatusCore ->\n// Declare Constants\nconst target = arguments[0];\nconst action = this;\nconst elements = action.elements();\nconst targetRate = action.calcTargetElementRate(target, elements);\nconst sign = targetRate >= 0 ? 1 : -1;\nconst base = Math.abs(targetRate);\nconst plus = action.calcUserElementDamagePlus(target, elements);\nconst rate = action.calcUserElementDamageRate(target, elements);\nconst flat = action.calcUserElementDamageFlat(target, elements);\n// Determine Return Value\nreturn sign * Math.max((base + plus) * rate + flat, 0);;\nThis is how it looks baseline I believe (I don't think I've made any modifications here, but I did rework some stat calculations elsewhere). If you modify the calculations here, you'll be able to get your elements working how you wish.\nTry changing\nconst sign = targetRate >= 0 ? 1 : -1;\nto this:\nconst sign = targetRate;\nand seeing what happens.\n--------------\nI tested it on my end, and it works just how you would want it.\nCharacters with +50% elemental damage do 0 damage to a character with an immunity, but keep that +50% otherwise.\nNOTE:\nIf you make this change, I believe it\nprobably will\nbreak Absorb Element mechanics (i.e. if something was supposed to absorb Electric damage to heal itself, this change might break that effect). This is because\nsign\nis no longer able to be assigned a -1 to reverse the damage.\nNote2:\nIf you want to know a little more about what I did here, I modified the calculation for\nsign\nso that it equals exactly to the Trait setting in the database, rather than have an if / else statement that was assigning a 1 to\nsign\neven if the Trait was set to 0%."
+    },
+    {
+      "post_id": "js-post-1535535",
+      "author": "NessTor",
+      "date": "2025-11-02T07:10:58+0900",
+      "body": "Robro33 said:\nI didn't write the ID in, and you didn't show the notebox afterwards but you did replace the ID with 5 right?\n<Dealt Element 5 Rate: 150%>\nClick to expand...\nYeah, I hadn't realized I was using the plus tag instead of the rate tag. And well, everyone was using the plus tag,\nI already set the deal to 150% and everything is working as it should.\nI also realized I was using the plus sign on all my characters, so I switched them all to deal. So you also saved me from potentially changing a LOT of notestag in the future.\nNiniann said:\n@Robro33\nfigured out what's going on here, so I'll see if I can help get this wrapped up\n.\nYou lost STAB but gained an immunity because you're no longer getting that +50%, so once you add that back in, you're going to lose the immunity again.\n--------------\nI think what you're going to need to do, to have both STAB and immunities using Visustella, is modify the math in JS: Finalize Rate within Element Rulings in the ElementStatusCore ->\n// Declare Constants\nconst target = arguments[0];\nconst action = this;\nconst elements = action.elements();\nconst targetRate = action.calcTargetElementRate(target, elements);\nconst sign = targetRate >= 0 ? 1 : -1;\nconst base = Math.abs(targetRate);\nconst plus = action.calcUserElementDamagePlus(target, elements);\nconst rate = action.calcUserElementDamageRate(target, elements);\nconst flat = action.calcUserElementDamageFlat(target, elements);\n// Determine Return Value\nreturn sign * Math.max((base + plus) * rate + flat, 0);;\nThis is how it looks baseline I believe (I don't think I've made any modifications here, but I did rework some stat calculations elsewhere). If you modify the calculations here, you'll be able to get your elements working how you wish.\nTry changing\nconst sign = targetRate >= 0 ? 1 : -1;\nto this:\nconst sign = targetRate;\nand seeing what happens.\n--------------\nI tested it on my end, and it works just how you would want it.\nCharacters with +50% elemental damage do 0 damage to a character with an immunity, but keep that +50% otherwise.\nNOTE:\nIf you make this change, I believe it\nprobably will\nbreak Absorb Element mechanics (i.e. if something was supposed to absorb Electric damage to heal itself, this change might break that effect). This is because\nsign\nis no longer able to be assigned a -1 to reverse the damage.\nNote2:\nIf you want to know a little more about what I did here, I modified the calculation for\nsign\nso that it equals exactly to the Trait setting in the database, rather than have an if / else statement that was assigning a 1 to\nsign\neven if the Trait was set to 0%.\nClick to expand...\nAnd thank you for taking the time, and sorry for not writing sooner and that you had to take the time for that."
+    },
+    {
+      "post_id": "js-post-1535543",
+      "author": "Niniann",
+      "date": "2025-11-02T08:57:17+0900",
+      "body": "NessTor said:\nYeah, I hadn't realized I was using the plus tag instead of the rate tag. And well, everyone was using the plus tag,\nI already set the deal to 150% and everything is working as it should.\nI also realized I was using the plus sign on all my characters, so I switched them all to deal. So you also saved me from potentially changing a LOT of notestag in the future.\nAnd thank you for taking the time, and sorry for not writing sooner and that you had to take the time for that.\nClick to expand...\nAll good, I help out because I learn things from helping others on top of it being fun to do so, and I've never messed with those element calculations before. Got some new techniques I can use now\n.\nGlad you got it figured out, and best of luck with your project\n."
+    },
+    {
+      "post_id": "js-post-1535547",
+      "author": "Robro33",
+      "date": "2025-11-02T09:46:57+0900",
+      "body": "NessTor said:\nYeah, I hadn't realized I was using the plus tag instead of the rate tag. And well, everyone was using the plus tag,\nI already set the deal to 150% and everything is working as it should.\nClick to expand...\njust to explain it a little, the default formula is:\nCode:\n(base + plus) * rate + flat\nIncreasing plus works fine if the target's element rate is 100%, but since the plus is added to the base, it stops being accurate in every other scenario.\nA target with 0% base takes 50% of the base damage as that's 0% +50%. Another electric type that should only take half damage from electric would take full damage from STAB as it's 50% + 50% instead of 50% * 150% = 75%, while something like Gyarados that'd have a 400% base would have an effective 450% element rate on STABs instead of 600%.\nWhat you wanted was a multiplicative factor, which was already provided by rate.\nThis thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

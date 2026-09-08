@@ -1,0 +1,239 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/videos-are-played-in-smaller-resolution-than-the-game.180600",
+  "title": "Videos are played in smaller resolution than the game",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:28:21.101843+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1533849",
+      "author": "ElvenNeko",
+      "date": "2025-10-18T18:00:33+0900",
+      "body": "I have a problem -\nAs you can see, when video is being player, screen shifts to a smaller cube, and i don't really understand why.\nI tried the solution offered by Dev_With_Coffee here -\nhttps://forums.rpgmakerweb.com/index.php?threads/show-movie-and-fullscreen.180497/#post-1533514\nIt sort of works, but videos are being stretched vertically a lot, while still being smaller than needed horisontally.\nThe video resolution is actually higher than the game. I tried making a matching one, but still play video command shrinks the observable screen.\nIs there a way to make it match the screen? So there would be no changes when video is played."
+    },
+    {
+      "post_id": "js-post-1533850",
+      "author": "Andar",
+      "date": "2025-10-18T18:17:52+0900",
+      "body": "we need some numbers before we can even guess what's happening.\nwhat is the screen size of the game screen, and what is the screen size of the video?\nwhich player(s) have you tried to use (default or plugin?)\nThe engine cannot display a video that has a greater screen size than the game screen, if that is tried the result is either nothing or a resized video depending on the player code.\nAs a side note, those numbers are always screen sizes, never resolutions. technically a resolution is something with dpi (dots per inch) or ppi (pixels per inch): a single number, never an area of two numbers. And that difference may become important when discussing display- or video formats.\nSo it's better to clear that up in advance."
+    },
+    {
+      "post_id": "js-post-1533901",
+      "author": "DevRPG2k",
+      "date": "2025-10-19T08:25:52+0900",
+      "body": "This doesn't make sense, because the Video Element will always follow the Canvas Element...\nSo using this would adjust it vertically and horizontally:\nCSS:\nvideo {\n    object-fit: fill;\n}\nThe only plausible explanation is that the video has these borders, that is, they are not the borders of the player (HTML tag for video):\nThat's exactly why I explained before about the auto-adjustment of the width, if it were like that we would at least see the sides of the video touching the limit of the Canvas"
+    },
+    {
+      "post_id": "js-post-1534016",
+      "author": "ElvenNeko",
+      "date": "2025-10-20T15:25:41+0900",
+      "body": "Andar said:\nwhat is the screen size of the game screen, and what is the screen size of the video?\nwhich player(s) have you tried to use (default or plugin?)\nClick to expand...\nThe size of the screen is default. Just fullscreened. I haven't changed anything. But i don't know how to say exact numbers, i know only default resolution. Or you want to know the size of my monitor? Because i am not sure about that either, but 1920x1080 is recommended resolution for me.\nVideo size is also 1920x1080\nDev_With_Coffee said:\nThe only plausible explanation is that the video has these borders, that is, they are not the borders of the player (HTML tag for video):\nClick to expand...\nYes, you are correct, that video had borders. And for some reason i cannot remove them in video editor, no matter how i crop the video, the borders still remain...\nHowever, there are other videos without borders i did tests with, and same problem occurs for them as well. Here is, for example, one of the videos without borders at all -\nAnd here how it looks in game when i modify fonts like you suggested -\nAs you can see, vertical borders are removed, but horisontal are still there. So the video is distorted."
+    },
+    {
+      "post_id": "js-post-1534019",
+      "author": "DevRPG2k",
+      "date": "2025-10-20T15:29:16+0900",
+      "body": "So basically your topic is resolved, since it's not a problem in RPG Maker.\nRegarding video editing, I use Movavi 15, but to be honest, I would prefer to create that effect with Pictures or battle animation."
+    },
+    {
+      "post_id": "js-post-1534020",
+      "author": "Andar",
+      "date": "2025-10-20T15:34:59+0900",
+      "body": "ElvenNeko said:\ni know only default resolution.\nClick to expand...\nwhat you call a resolution is the screen size, the term resolution for values like 540x480 is technically wrong.\nand you stilol haven't told the screen size of the video's you're trying to display (right-click the videofile, properties and then details to get the screen width and screen height) or which player you're using (the default play movie event command or a video plugin?)"
+    },
+    {
+      "post_id": "js-post-1534021",
+      "author": "ElvenNeko",
+      "date": "2025-10-20T15:36:23+0900",
+      "body": "Dev_With_Coffee said:\nSo basically your topic is resolved, since it's not a problem in RPG Maker.\nRegarding video editing, I use Movavi 15, but to be honest, I would prefer to create that effect with Pictures or battle animation.\nClick to expand...\nHow is it resolved, if the video without borders is still displayed with borders?\nI also use Movavi. I don't know why i can't edit borders out of that one, but like i said - there are other video without borders that is also displayed incorrectly, so the issue has to be with RM.\nand you stilol haven't told the screen size of the video's you're trying to display (right-click the videofile, properties and then details to get the screen width and screen height) or which player you're using (the default play movie event command or a video plugin?)\nClick to expand...\nThe player is default."
+    },
+    {
+      "post_id": "js-post-1534024",
+      "author": "Andar",
+      "date": "2025-10-20T15:49:41+0900",
+      "body": "ElvenNeko said:\nHow is it resolved, if the video without borders is still displayed with borders?\nClick to expand...\nbecause no form of video editing can change the aspect ratio without distorting the image.\nExample:\nTake a single screenshot of the video, use any image program to increase its horizontal size to the one needed for your screen width without distortions, then try to see it: instead of black borders to the left and right, part of the picture on top and bottom will be cut off because that part (sky and grass) no longer fit the screen completely.\nyou could check the same with windows photo display (or however that program is called in your language: try to find a zoom that fits your screen and you'll see that that is impossible, either the zoom is to low (and and the picture doesn't reach from left to right) or the zoom is too high (and top and bottom are cut off)."
+    },
+    {
+      "post_id": "js-post-1534028",
+      "author": "ElvenNeko",
+      "date": "2025-10-20T16:15:13+0900",
+      "body": "Andar said:\nbecause no form of video editing can change the aspect ratio without distorting the image.\nClick to expand...\nBut the aspect ratio from the video and from my screen are the same?\nAnd in RM it should be even lower due to default resolution. So how it happens that the video that is by default bigger than the RM resolution is actually appear smaller in game?\nTo be clear, i just want the videos displayed in game to cover all playable screen. Don't even mind the borders, but i want it at least to be the same size as the screen with gameplay. Is it possible?"
+    },
+    {
+      "post_id": "js-post-1534030",
+      "author": "Andar",
+      "date": "2025-10-20T16:44:35+0900",
+      "body": "ElvenNeko said:\nBut the aspect ratio from the video and from my screen are the same?\nClick to expand...\nno, they are not.\nWe can see that the video you linked has an aspect ratio of 4:3, that is what causes the black areas to the left and right.\nAnd the RM has a default aspect ratio of 4:3, your monitor does not change that, you would have to change the game screen size with a plugin to solve that."
+    },
+    {
+      "post_id": "js-post-1534035",
+      "author": "ElvenNeko",
+      "date": "2025-10-20T17:15:26+0900",
+      "body": "Andar said:\nno, they are not.\nWe can see that the video you linked has an aspect ratio of 4:3, that is what causes the black areas to the left and right.\nAnd the RM has a default aspect ratio of 4:3, your monitor does not change that, you would have to change the game screen size with a plugin to solve that.\nClick to expand...\nSo there is no way to edit the video to make it match game screen? The only solution is to change the game screen?"
+    },
+    {
+      "post_id": "js-post-1534040",
+      "author": "Andar",
+      "date": "2025-10-20T18:03:41+0900",
+      "body": "ElvenNeko said:\nSo there is no way to edit the video to make it match game screen?\nClick to expand...\nyour choice would be to either create new data to fill the black areas, or to cut away part of the top and bottom after increasing the size to fill everything from left to right.\nthe stretch you've already seen is exactly what will happen if you try to fit everything into the wrong aspect ratio without changing the data."
+    },
+    {
+      "post_id": "js-post-1534044",
+      "author": "ElvenNeko",
+      "date": "2025-10-20T18:24:47+0900",
+      "body": "Andar said:\nyour choice would be to either create new data to fill the black areas, or to cut away part of the top and bottom after increasing the size to fill everything from left to right.\nthe stretch you've already seen is exactly what will happen if you try to fit everything into the wrong aspect ratio without changing the data.\nClick to expand...\nBut can i do that? Stretch it into valid aspect ratio? If yes, then how? And to which one? I would like to at least test it how it will look like.\nI just still not understand it. I made the video based on screenshot that was made in full screen. So it's the same size as game shows it to me. But then when i import it into the game, it is simply smaller than game's screen, both horisontally and vertically. Like the game window became smaller.\nIf i use the screenshot via show picture command, it will work just great. But when it's transformed into a video it becomes smaller? That's just breaks my brain, i don't understand it."
+    },
+    {
+      "post_id": "js-post-1534048",
+      "author": "Andar",
+      "date": "2025-10-20T18:58:09+0900",
+      "body": "you CANNOT stretch a video into a different aspect ratio.\nHow often do we have to write that for you to understand?\nTo change the aspect ratio you either have to create new data (by giving the video/picture to an artist to add new parts to the left and right) or cut away part of it from top and bottom."
+    },
+    {
+      "post_id": "js-post-1534086",
+      "author": "DevRPG2k",
+      "date": "2025-10-21T04:01:35+0900",
+      "body": "Because the problem is only with this video and not with RPG Maker, the video editing was done by you and some software not mentioned in this request. I advised you to use a software I always use...\nIn closing, the issue regarding RPG Maker was resolved in the other thread, meaning the problem isn't with RPG Maker now.\nSo, it's understood that this is the place to ask for help with RPG Maker, and that part has been resolved.\nIf you show me a screenshot of the video editor, maybe I can guide you."
+    },
+    {
+      "post_id": "js-post-1534094",
+      "author": "Andar",
+      "date": "2025-10-21T05:12:13+0900",
+      "body": "by the way - this is where you went wrong:\nElvenNeko said:\nI made the video based on screenshot that was made in full screen. So it's the same size as game shows it to me.\nClick to expand...\nFull screen is NOT the game screen, full screen means \"zoom the smaller window to your monitor screen size\".\nAnd then you commanded your video software to create a video on monitor size despite the screenshot being of a different size and aspect ratio.\nIf you had told the video software to make the video in the game's screen size (which is much smaller than your monitor screen size), then it would have worked exactly like with the screenshot\nElvenNeko said:\nIf i use the screenshot via show picture command, it will work just great.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1534104",
+      "author": "bass2yang",
+      "date": "2025-10-21T06:22:53+0900",
+      "body": "Having the video with the proper width/height is preferable over stretching the video or making changes with it using html/js/css/etc.\n(Not sure if the others covered this already - haven't fully checked out the links/posts)\nIn any case, assuming you are using the normal \"Play Video\" event command or using the basic video player in MV/MZ, one possibility I can think of is running this code in a script call when playing your video (run the script call before playing the video or during the video being played so you can see it - use DevTools to see the difference if it is working):\nJavaScript:\nconst s     = Graphics._video.style;\ns.objectFit = 'cover';\ns.minWidth  = '100%';\ns.minHeight = '100%';\nHope this helps."
+    },
+    {
+      "post_id": "js-post-1534115",
+      "author": "DevRPG2k",
+      "date": "2025-10-21T09:15:17+0900",
+      "body": "bass2yang said:\none possibility I can think of is running this code in a script call when playing your video\nClick to expand...\nIt's actually very simple, changing the game's own CSS without needing to create a plugin that modifies the video player.\nI showed it here in this thread\nDev_With_Coffee said:\nThis doesn't make sense, because the Video Element will always follow the Canvas Element...\nSo using this would adjust it vertically and horizontally:\nCSS:\nvideo {\nobject-fit: fill;\n}\nThe only plausible explanation is that the video has these borders, that is, they are not the borders of the player (HTML tag for video):\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1534151",
+      "author": "ElvenNeko",
+      "date": "2025-10-21T18:01:29+0900",
+      "body": "bass2yang said:\nHaving the video with the proper width/height is preferable over stretching the video or making changes with it using html/js/css/etc.\n(Not sure if the others covered this already - haven't fully checked out the links/posts)\nIn any case, assuming you are using the normal \"Play Video\" event command or using the basic video player in MV/MZ, one possibility I can think of is running this code in a script call when playing your video (run the script call before playing the video or during the video being played so you can see it - use DevTools to see the difference if it is working):\nJavaScript:\nconst s     = Graphics._video.style;\ns.objectFit = 'cover';\ns.minWidth  = '100%';\ns.minHeight = '100%';\nHope this helps.\nClick to expand...\nYou know what? THIS IS WORKING! Exactly as i needed! Hovewer, there are problem.\nAs you can see, at the start of the video green artifact appears. It is always the same. And it also spreads to all other videos played after. Do you know what that is and if there is a way to get rid of it?\nAndar said:\nIf you had told the video software to make the video in the game's screen size\nClick to expand...\nWhat is it? I am a bit lost since you talk about aspect ratios as well and i don't know much about that. Can you  please teall exact parameters of the video that would perefctly fit the RM and will take full screen instead of making picture smaller?\nIt's actually very simple, changing the game's own CSS without needing to create a plugin that modifies the video player.\nClick to expand...\nIt does not give the same effect. Please, compare to the movie above:\nIn this variant the image is stretched upwards.\nBut with solution by Bass2yang it looks exactly as the game. And that is what i need. If only there is a way to remove the artifact..."
+    },
+    {
+      "post_id": "js-post-1534159",
+      "author": "bass2yang",
+      "date": "2025-10-21T18:53:48+0900",
+      "body": "ElvenNeko said:\nAs you can see, at the start of the video green artifact appears. It is always the same. And it also spreads to all other videos played after. Do you know what that is and if there is a way to get rid of it?\nClick to expand...\nYou could try marking it with css instead and forcing a few other attributes of the video to see if it makes a difference (edit: try removing the 'object-fit: fill' if you still have it):\nCSS:\nvideo {\n    min-width: 100%;\n    min-height: 100%;\n    width: 100%;\n    height: 100%;\n    object-fit: cover;\n }\nI am assuming the green artifact is probably an issue with stretching the video that is compressed a certain way. Check your settings as well. Is it an mp4 or a webm file?\nStretching it is most likely the cause since we are doing a lot more to the video now. I am also assuming that your video plays fine before it is used in RPG Maker.\nHopefully there aren't any other plugins affecting it.\nCurrently, this CSS code (and the JS code I gave you) is working fine for my videos - no artifacts or distortion.\nEdit: Do note that if you are using my code and also using the \"object-fit: fill\" code, you might be trying to make it do two things since 'fill' can cause a distortion as well. You will need to remove that part of the css code and see if that helps."
+    },
+    {
+      "post_id": "js-post-1534164",
+      "author": "ElvenNeko",
+      "date": "2025-10-21T19:20:09+0900",
+      "body": "bass2yang said:\nYou could try marking it with css instead and forcing a few other attributes of the video to see if it makes a difference (edit: try removing the 'object-fit: fill' if you still have it):\nCSS:\nvideo {\n    min-width: 100%;\n    min-height: 100%;\n    width: 100%;\n    height: 100%;\n    object-fit: cover;\n }\nI am assuming the green artifact is probably an issue with stretching the video that is compressed a certain way. Check your settings as well. Is it an mp4 or a webm file?\nStretching it is most likely the cause since we are doing a lot more to the video now. I am also assuming that your video plays fine before it is used in RPG Maker.\nHopefully there aren't any other plugins affecting it.\nCurrently, this CSS code (and the JS code I gave you) is working fine for my videos - no artifacts or distortion.\nEdit: Do note that if you are using my code and also using the \"object-fit: fill\" code, you might be trying to make it do two things since 'fill' can cause a distortion as well. You will need to remove that part of the css code and see if that helps.\nClick to expand...\nIf you meant inputting this code into gamefont.css - it does the same effect, and same problem with green artifact (it only appears at the start of the video).\nAnd of course i remove old code modifier, as well as your script, before trying new solution.\nVideos are in WEBM, mp4 are not picked up by the MV, they are not displayed when you get to chose which movie to play. And yes, video plays fine before, and even without the modifications (just smaller, as i showed in the post itself).\nSeems like game seems to have no issues at all with displaying stretched video (apart from green artifact, but when it disappears movies look just fine), maybe there are a way to modify videos instead of maker's code?"
+    },
+    {
+      "post_id": "js-post-1534165",
+      "author": "Andar",
+      "date": "2025-10-21T19:22:47+0900",
+      "body": "ElvenNeko said:\nCan you please teall exact parameters of the video that would perefctly fit the RM\nClick to expand...\nThe default game screen size is 816x624 unless you changed it with a plugin"
+    },
+    {
+      "post_id": "js-post-1534166",
+      "author": "bass2yang",
+      "date": "2025-10-21T19:29:14+0900",
+      "body": "ElvenNeko said:\nSeems like game seems to have no issues at all with displaying stretched video (apart from green artifact, but when it disappears movies look just fine), maybe there are a way to modify videos instead of maker's code?\nClick to expand...\ncan you test with another video? Just want to make sure as well. Maybe one with a better bit rate and not fully compressed.\nI did not encounter any artifacts for my videos but I do think it is because we are doing a lot more to stretch the video.\nAlso try changing the \"cover\" to the word \"fill\" with the other min width and min height values.\nEdit:\nSo like this:\nCSS:\nvideo {\n    min-width: 100%;\n    min-height: 100%;\n    object-fit: cover;\n }\nOr this:\nCSS:\nvideo {\n    min-width: 100%;\n    min-height: 100%;\n    object-fit: fill;\n }"
+    },
+    {
+      "post_id": "js-post-1534171",
+      "author": "ElvenNeko",
+      "date": "2025-10-21T20:00:48+0900",
+      "body": "Andar said:\nThe default game screen size is 816x624 unless you changed it with a plugin\nClick to expand...\nBut is that all? I believe you said that simply changing resolutions of the video is not enough. So i need the other parameter that is important.\nbass2yang said:\nAlso try changing the \"cover\" to the word \"fill\" with the other min width and min height values.\nClick to expand...\nNo, both variants work the same.\nScreenshot to make sure i haven't input it in wrong way -\nIt has the same green artifact on all videos btw."
+    },
+    {
+      "post_id": "js-post-1534174",
+      "author": "bass2yang",
+      "date": "2025-10-21T20:18:47+0900",
+      "body": "In your package.json, put this in under \"main\": \"index.html\":\nCode:\n\"chromium-args\" : \"--disable-accelerated-video\",\nKeep using the same \"cover\" or \"fill\" code I gave you and see if this does anything to it.\nElvenNeko said:\nIt has the same green artifact on all videos btw.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1534183",
+      "author": "ElvenNeko",
+      "date": "2025-10-21T20:47:53+0900",
+      "body": "bass2yang said:\nIn your package.json, put this in under \"main\": \"index.html\":\nCode:\n\"chromium-args\" : \"--disable-accelerated-video\",\nKeep using the same \"cover\" or \"fill\" code I gave you and see if this does anything to it.\nClick to expand...\nLike this?\nChanges nothing.\nI also tried searching for video plugins, but most of them appear to be paid. Found one that is free for non-commercial - i can't link it because this forum automaticly turns it into an entire code link. But the name is VPlayer RPG Maker plugin (MV + MZ)\nIt plays the video fine, but it does seems to have the function to pause the game while doing so, so the rest of the event is playing out in background while it plays the video"
+    },
+    {
+      "post_id": "js-post-1534192",
+      "author": "Andar",
+      "date": "2025-10-21T21:36:51+0900",
+      "body": "ElvenNeko said:\nBut is that all? I believe you said that simply changing resolutions of the video is not enough. So i need the other parameter that is important.\nClick to expand...\nyes\nI asked for other values as well because in the beginning I had no idea what exactly was happening with your video, but you provided that info earlier."
+    },
+    {
+      "post_id": "js-post-1534194",
+      "author": "bass2yang",
+      "date": "2025-10-21T21:42:16+0900",
+      "body": "ElvenNeko said:\nIt plays the video fine\nClick to expand...\nAre you saying that the video works with this plugin?\nHm, I would have to say that there is something else also messing with the video then.\nAs stated earlier, the preferred way is to have the video be the same as the screen so you don't have to do all the stretching/etc stuff with html/css.\nI hope it is not a gpu issue or something else. If you have any other plugins, try turning them off as well if you haven't done so.\nGlad you got some progress at least - the last thing I can think of from here is that the gpu is doing something else with it when you force stretch/fit the video.\nIt is just hard to diagnose since I do not have any of those issues on my side and cannot recreate it, either."
+    },
+    {
+      "post_id": "js-post-1534202",
+      "author": "ElvenNeko",
+      "date": "2025-10-21T22:48:13+0900",
+      "body": "bass2yang said:\nAre you saying that the video works with this plugin?\nHm, I would have to say that there is something else also messing with the video then.\nAs stated earlier, the preferred way is to have the video be the same as the screen so you don't have to do all the stretching/etc stuff with html/css.\nI hope it is not a gpu issue or something else. If you have any other plugins, try turning them off as well if you haven't done so.\nGlad you got some progress at least - the last thing I can think of from here is that the gpu is doing something else with it when you force stretch/fit the video.\nIt is just hard to diagnose since I do not have any of those issues on my side and cannot recreate it, either.\nClick to expand...\nSadly if i can't figure out how to make game pause while video is playing in this plugin. Wait command could do, but since my game will be played via web, it can desynch easily...\nAnd yes, video works, but not in the same way. I do not stretch it, i just input coordinates where it is showed, and it is showing the right size instantly, unlike standard player. So i feel like the issue is in standard rm player, however i still don't understand why this plugin can stretch it bigger without problems, and standard player cant.\nMaybe someone knows other free video plugins i could try?\nAlso, can you please check your code with my video? Just to make sure its not an issue with the video.\nDownload T2.webm | LimeWire\nDownload T2.webm on LimeWire\nlimewire.com"
+    },
+    {
+      "post_id": "js-post-1534210",
+      "author": "bass2yang",
+      "date": "2025-10-21T23:38:52+0900",
+      "body": "Just downloaded it and played it with no artifacts or errors in game. I'm really wondering if it is a computer/graphics card issue when stretching the video.\nEdit: Your video is 940x720 so if your game's canvas is anything else, it will automatically try to size it against the canvas. Try setting your game's canvas to 940x720 and see if that solves it (without all the stretching css/js stuff).\nElvenNeko said:\nAlso, can you please check your code with my video? Just to make sure its not an issue with the video.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1534222",
+      "author": "ElvenNeko",
+      "date": "2025-10-22T00:33:14+0900",
+      "body": "bass2yang said:\nJust downloaded it and played it with no artifacts or errors in game. I'm really wondering if it is a computer/graphics card issue when stretching the video.\nEdit: Your video is 940x720 so if your game's canvas is anything else, it will automatically try to size it against the canvas. Try setting your game's canvas to 940x720 and see if that solves it (without all the stretching css/js stuff).\nClick to expand...\nAlready tried making the video 816x624. Not helped.\nBut the one i send you should not be 940.\nThis is it's properties in windows -\nI downloaded it from my link and it still shows the same number. Where did you get yours?"
+    },
+    {
+      "post_id": "js-post-1534225",
+      "author": "bass2yang",
+      "date": "2025-10-22T00:51:45+0900",
+      "body": "Those are the numbers I got when I checked your video after downloading it with the link you sent.There is nothing for the properties so I had to use a program (Handbrake) to get the dimensions.\nEdit: Whatever is handling the frame width and height is not transferring properly, or, you are trying to render it out as 1280x720 when the display/video itself is set to display at 940x720."
+    },
+    {
+      "post_id": "js-post-1534233",
+      "author": "DevRPG2k",
+      "date": "2025-10-22T01:45:19+0900",
+      "body": "bass2yang said:\nEdit:\nSo like this:\nCSS:\nvideo {\n    min-width: 100%;\n    min-height: 100%;\n    object-fit: cover;\n }\nClick to expand...\nThis makes sense, but perhaps instead of using 100% you should use static pixel sizes capturing directly from the game resolution via the\nGraphics\nobject"
+    },
+    {
+      "post_id": "js-post-1534239",
+      "author": "bass2yang",
+      "date": "2025-10-22T02:58:28+0900",
+      "body": "Dev_With_Coffee said:\nThis makes sense, but perhaps instead of using 100% you should use static pixel sizes capturing directly from the game resolution via the\nGraphics\nobject\nClick to expand...\nGood call - that could really help with it - I'm not as familiar with CSS so this is a new process for me haha. Thanks!"
+    },
+    {
+      "post_id": "js-post-1534241",
+      "author": "DevRPG2k",
+      "date": "2025-10-22T03:11:20+0900",
+      "body": "This would be possible only with Javascript manipulating the element's CSS, basically what you showed here:\nbass2yang said:\nJavaScript:\nconst s     = Graphics._video.style;\ns.objectFit = 'cover';\ns.minWidth  = '100%';\ns.minHeight = '100%';\nClick to expand...\nOr you could copy the information directly from Canvas:\nGraphics._canvas.width\nGraphics._canvas.style.width"
+    },
+    {
+      "post_id": "js-post-1534258",
+      "author": "ElvenNeko",
+      "date": "2025-10-22T05:36:13+0900",
+      "body": "Dev_With_Coffee said:\nThis would be possible only with Javascript manipulating the element's CSS, basically what you showed here:\nOr you could copy the information directly from Canvas:\nGraphics._canvas.width\nGraphics._canvas.style.width\nClick to expand...\nWith this code target video works without artifacts. Basicly perfect result!\nAlmost, because the next video still plays with artifact.\nSo, what i need now is the command to turn this script off. Reverse what is done. I would use it after this video (because the rest are played just fine and i need the solution only for this one). Is it possible? It would finally solve the issue for me.\nI am still curious on what causes the artifacts, and why the new script call fixed the artifact only for this specific video, but not for the rest, but at this point just having a solution would be great.\nbass2yang said:\nEdit: Whatever is handling the frame width and height is not transferring properly, or, you are trying to render it out as 1280x720 when the display/video itself is set to display at 940x720.\nClick to expand...\nThat's weird, because i saved it in video editor with 1280x720. It should not make a mistake.\nAlso when i open it in various programs, for example - AVC, it shows 1280x720.\nMaybe the soft you used to check is incorrect?"
+    },
+    {
+      "post_id": "js-post-1534263",
+      "author": "bass2yang",
+      "date": "2025-10-22T06:06:17+0900",
+      "body": "ElvenNeko said:\nWith this code target video works without artifacts. Basicly perfect result!\nAlmost, because the next video still plays with artifact.\nSo, what i need now is the command to turn this script off. Reverse what is done. I would use it after this video (because the rest are played just fine and i need the solution only for this one). Is it possible? It would finally solve the issue for me.\nI am still curious on what causes the artifacts, and why the new script call fixed the artifact only for this specific video, but not for the rest, but at this point just having a solution would be great.\nThat's weird, because i saved it in video editor with 1280x720. It should not make a mistake.\nAlso when i open it in various programs, for example - AVC, it shows 1280x720.\nMaybe the soft you used to check is incorrect?\nView attachment 351679\nClick to expand...\nThat is interesting - had to go through hoops to just get this info haha. It is correct at 1280x720 - the issue is that all my other videos are the correct resolution too, just not this specific file. I had to convert it to something else (mp4) to see the width and height.\nIn any case, I'm glad the code is starting to work out.\nJust to clarify, is this what you are doing? Or something similar?\nJavaScript:\nconst s = Graphics._video.style;\nconst c = Graphics._canvas.style;\ns.objectFit = 'cover'; // or 'fill'\ns.minWidth  = c.width;\ns.minHeight = c.height;"
+    },
+    {
+      "post_id": "js-post-1534265",
+      "author": "ElvenNeko",
+      "date": "2025-10-22T06:23:49+0900",
+      "body": "bass2yang said:\nThat is interesting - had to go through hoops to just get this info haha. It is correct at 1280x720 - the issue is that all my other videos are the correct resolution too, just not this specific file. I had to convert it to something else (mp4) to see the width and height.\nIn any case, I'm glad the code is starting to work out.\nJust to clarify, is this what you are doing? Or something similar?\nJavaScript:\nconst s = Graphics._video.style;\nconst c = Graphics._canvas.style;\ns.objectFit = 'cover'; // or 'fill'\ns.minWidth  = c.width;\ns.minHeight = c.height;\nClick to expand...\nNope, this -\nconst s     = Graphics._video.style;\ns.objectFit = 'cover';\ns.minWidth  = '100%';\ns.minHeight = '100%';\nClick to expand...\nAnd the script you mentioned both does not work (the video is still smaller with it) and causes the artifacts.\nAlso, yeah... sometimes it is so hard to pinpoint the issue. Especially if it's an area you know nothing about. But i was lucky that your and Dev's combined efforts allowed to find a soliton even without fully knowing the cause. At least i hope so - it would be logically to assume that if there are script to change something, there should be also a call to restore the default parameters. But in any case you both did great job here."
+    }
+  ]
+}

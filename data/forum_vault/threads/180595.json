@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-trigger-an-event-player-transfer-by-pressing-enter-mouse-click-like-a-ppt.180595",
+  "title": "How to trigger an event (player transfer) by pressing enter / mouse click like a PPT",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:28:25.418332+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1533814",
+      "author": "CicakMemasak",
+      "date": "2025-10-18T08:20:44+0900",
+      "body": "I have a tutorial with just image that I set as a parallax background for the map. The idea is the tutorial goes on like a power point. However somehow I can't trigger the action to go to the next map when I press enter , space bar, and even mouse click.\nIs there a plug in for that? Or did I set it up wrong?\nI tried to use Auto Run and it just became automatic, which I don't want.\nSorry if this is a silly question!!"
+    },
+    {
+      "post_id": "js-post-1533816",
+      "author": "TheAM-Dol",
+      "date": "2025-10-18T08:44:15+0900",
+      "body": "I think creating entirely separate maps for each image is a bit overkill.\nWhy don't you just use the \"Show Picture\" Command, and using a blank text box to pause between each picture?"
+    },
+    {
+      "post_id": "js-post-1533817",
+      "author": "Niniann",
+      "date": "2025-10-18T09:08:57+0900",
+      "body": "Hi there,\nI think the best way I can help you out here is to recommend that you check out some RPG Maker tutorials. A little more understanding of the fundamentals of eventing in RPG Maker MV would help you out alot\n.\nHere is one place to start:\nThat being said, I will answer your question as well\n.\n-----------\nYour event isn't working because you have the Trigger set to Action Button. This means the player needs to specifically interact with the event's hitbox.\nEnter and Spacebar don't do anything in RPG Maker MV by default. You would have to create a plugin that changes your game's input code so that \"Enter and Spacebar = a command the game understands\" to make those buttons do anything. I won't get into that here, but you can find threads about it if you want to change your game's accepted input.\nIf you want the player to transfer maps when they press a button, from anywhere on the map ->\nAn easy way with no plugins required is to create a parallel event on the map with a looping command that checks for player input, and then transfers the player to a new map.\nIn MV, it would look like this. Note that this does not work with mouse clicks, but it will with whatever button you have set as [OK]:"
+    },
+    {
+      "post_id": "js-post-1533821",
+      "author": "CicakMemasak",
+      "date": "2025-10-18T10:28:08+0900",
+      "body": "Thank you very much!! It works!! And thank you for the video guide as well!!!"
+    },
+    {
+      "post_id": "js-post-1533823",
+      "author": "TheAM-Dol",
+      "date": "2025-10-18T10:50:20+0900",
+      "body": "While it's appreciated that\n@Niniann\nclarified some points about RPG Maker's internal logic, I want to make further clarifications with the provided suggestion:\nWhile this does accomplish your original intent of transferring maps for each picture, this does not address the fact that it's a very inefficient way of just showing pictures. The reason why you don't want to do this is:\nA minor concern are the map limitations. You can only have so many maps in a single RPG Maker project. While it's a rather high number, it's still unnecessary to eat into that limit when it's not necessary.\nA larger concern is going to be project organization. It will become difficult to organize things when your map tree becomes a mess due to devoting entire maps to pictures.\nThis is why I proposed the blank message box and show picture command. It is simple and elegant and accomplishes exactly what you are attempting to do while being capable of being ran on any map at any time.\nThe second concern with Niniann's recommendation is the use of parallels to track input.\nTo make this clear; there is nothing inherently wrong with using parallel events.\nHowever, since you are new to RPG Maker, it's good to learn some of the basic functions before you start overly relying on less efficient methods to handle things. Once you understand foundational stuff, you can build on it and better utilize parallel events.\nThe other concern with the designed parallel event Niniann proposed is that, in order to check player input, you would ideally want it to check as frequently as possible for input, and at 10 wait frames, this is going to make the event feel unresponsive. This might result in players pressing OK but the input not being registered.\nIf you go about this method I recommend using 3 wait frames or less.\nTo make this clear: the low wait frame time is just for checking input.\nWhen using parallels to update other info, having slower wait times is better (such as 10 frames). But that's outside the scope of this post.\nI once again recommend using show picture commands + a blank text box."
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/can-i-read-values-and-properties-from-txt-files-instead-of-having-to-write-them-in-rpg-maker-events.180529",
+  "title": "Can I read values and properties from .txt files instead of having to write them in RPG Maker events?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:28:25.845873+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1533257",
+      "author": "Annwfn",
+      "date": "2025-10-13T01:33:38+0900",
+      "body": "Hello there, rarely it is that I post questions here, but a request an answer yet again.\nI am working on a massive project, or at least the sheer amount of values that I will be using may reach 100k for sure as the game progresses. I am using Makai's Object Properties plugin and am wondering if there is a way to add these properties in .txt files and read them from those files instead of having to write them in RPG Maker events, because that'll mean a lot of space will be occupied just by the scripts needed to add those values.\nSo, is there a way to read them from .txt files? I know RPG Maker MV reads .txt files converted to .js, or well, the that's how plugins are read. Is there another way, and if not, well, how do I make RPG Maker MV be able to read from external files?\nThank you in advance and happy RPG makin'!\nKind regards,\nAnnwfn"
+    },
+    {
+      "post_id": "js-post-1533269",
+      "author": "szatkus",
+      "date": "2025-10-13T04:39:54+0900",
+      "body": "RPG Maker MV has the `fs` module included which pretty much lets you read any file with a script call. What is the format of that .txt file?"
+    },
+    {
+      "post_id": "js-post-1533421",
+      "author": "slimmmeiske2",
+      "date": "2025-10-14T21:11:13+0900",
+      "body": "I've moved this thread to MV Support. Thank you."
+    },
+    {
+      "post_id": "js-post-1533425",
+      "author": "Trihan",
+      "date": "2025-10-14T22:30:14+0900",
+      "body": "I actually prefer using .json files over .txt for external data because then you can use JSON.parse to turn it into objects you can reference in code."
+    },
+    {
+      "post_id": "js-post-1533546",
+      "author": "Annwfn",
+      "date": "2025-10-16T00:05:56+0900",
+      "body": "szatkus said:\nRPG Maker MV has the `fs` module included which pretty much lets you read any file with a script call. What is the format of that .txt file?\nClick to expand...\nThank you for the reply everyone! Hugs! >\n<\nWhat exactly do you mean by \"What is the format of that .txt file?\" It is a text file with Makai's Object Properties written in it, each for a needed value. There will be thousands of such writings, if not even tens of thousands. I'd rather leave them in well organised files outside of my project than having to write them in the project once so the game knows of them. It's all about having as little of them written in the game itself. That is why I need to learn if I can read them easily from outside sources."
+    },
+    {
+      "post_id": "js-post-1533547",
+      "author": "Trihan",
+      "date": "2025-10-16T00:09:25+0900",
+      "body": "Annwfn said:\nThank you for the reply everyone! Hugs! >\n<\nWhat exactly do you mean by \"What is the format of that .txt file?\" It is a text file with Makai's Object Properties written in it, each for a needed value. There will be thousands of such writings, if not even tens of thousands. I'd rather leave them in well organised files outside of my project than having to write them in the project once so the game knows of them. It's all about having as little of them written in the game itself. That is why I need to learn if I can read them easily from outside sources.\nClick to expand...\nIt's best to respond to replies on the assumption that nobody reading it knows the details of the plugins you're using. \"Makai's Object Properties\" won't mean anything to a lot of people."
+    },
+    {
+      "post_id": "js-post-1533598",
+      "author": "Annwfn",
+      "date": "2025-10-16T11:04:36+0900",
+      "body": "Trihan said:\nIt's best to respond to replies on the assumption that nobody reading it knows the details of the plugins you're using. \"Makai's Object Properties\" won't mean anything to a lot of people.\nClick to expand...\nHello, it is a plugin that allows me to use object properties instead of just the Global Variables that RPG Maker has to offer. To put it shortly, those are too few for me to use. So I use the plugin to allow those same Global Variables to host properties like objects do in JavaScript. Therefore, instead of assigning 1 single value to a Global Variable, I can assign thousands of such values, then call on them with ease.\nExample:\nmaka.objVar.setProp(926,\"_BnvlFmAfár_dmgTaken_Recorded\",0);\nmaka.objVar.setProp(926,\"_BnvlFmAfár_Ally_healing_Ratio\",1.5);\nmaka.objVar.setProp(926,\"_BnvlFmAfár_Chant_turnActive\",\"GraceFromAfár\");\nThis is a snippet from a small ability that allows me to add 3 values to 1 of those Variables, in this case, 926. I will be having dosens of thousands of such written in different text files (.txt extension). Only thing I need is to know a way of convincing RPG Maker MV to be able to read these bunches from those corresponding files as if they were written inside RPG Maker."
+    },
+    {
+      "post_id": "js-post-1533599",
+      "author": "Trihan",
+      "date": "2025-10-16T11:33:34+0900",
+      "body": "The way I do it in my game is to have my plugin inject the file into the database (so that it gets parsed into an object the same way as any other game object does) for example:\nJavaScript:\nDataManager._databaseFiles.push({ name: \"$dataCompendium\", src: \"Compendium.json\" });\nAnd then I can just use $dataCompendium to access any data in the file. The structure looks like this:\nSo then I can do something like $dataCompendium.races_cte and get an array of enemy type strings."
+    },
+    {
+      "post_id": "js-post-1533659",
+      "author": "szatkus",
+      "date": "2025-10-17T00:01:08+0900",
+      "body": "Annwfn said:\nHello, it is a plugin that allows me to use object properties instead of just the Global Variables that RPG Maker has to offer. To put it shortly, those are too few for me to use. So I use the plugin to allow those same Global Variables to host properties like objects do in JavaScript. Therefore, instead of assigning 1 single value to a Global Variable, I can assign thousands of such values, then call on them with ease.\nExample:\nmaka.objVar.setProp(926,\"_BnvlFmAfár_dmgTaken_Recorded\",0);\nmaka.objVar.setProp(926,\"_BnvlFmAfár_Ally_healing_Ratio\",1.5);\nmaka.objVar.setProp(926,\"_BnvlFmAfár_Chant_turnActive\",\"GraceFromAfár\");\nThis is a snippet from a small ability that allows me to add 3 values to 1 of those Variables, in this case, 926. I will be having dosens of thousands of such written in different text files (.txt extension). Only thing I need is to know a way of convincing RPG Maker MV to be able to read these bunches from those corresponding files as if they were written inside RPG Maker.\nClick to expand...\nIt's just JavaScript code. Put it into a JS file, add as a plugin and you're done. Just make sure it's below the Makai's plugin on the list."
+    },
+    {
+      "post_id": "js-post-1533770",
+      "author": "Annwfn",
+      "date": "2025-10-17T23:25:32+0900",
+      "body": "szatkus said:\nIt's just JavaScript code. Put it into a JS file, add as a plugin and you're done. Just make sure it's below the Makai's plugin on the list.\nClick to expand...\nHello and thanks, I'd have to try it like this. Wish it were that simple!\nHugs! >\n<"
+    },
+    {
+      "post_id": "js-post-1533771",
+      "author": "Annwfn",
+      "date": "2025-10-17T23:29:50+0900",
+      "body": "Trihan said:\nThe way I do it in my game is to have my plugin inject the file into the database (so that it gets parsed into an object the same way as any other game object does) for example:\nJavaScript:\nDataManager._databaseFiles.push({ name: \"$dataCompendium\", src: \"Compendium.json\" });\nAnd then I can just use $dataCompendium to access any data in the file. The structure looks like this:\nView attachment 351340\nSo then I can do something like $dataCompendium.races_cte and get an array of enemy type strings.\nClick to expand...\nThanks for the suggestion, sounds good as well. Will try below option first, since it sounds too good to be true. After all, those values have to be changed, not just accessed, there will be calculations that will happen with those for the complex abilities I have. I think it'd be good if I can access that data from my .txt files without any extra code to write to it. Good to know there are easy ways though, what I was hoping for! Hugs to everyone! >\n<"
+    },
+    {
+      "post_id": "js-post-1534512",
+      "author": "Annwfn",
+      "date": "2025-10-24T17:41:53+0900",
+      "body": "szatkus said:\nIt's just JavaScript code. Put it into a JS file, add as a plugin and you're done. Just make sure it's below the Makai's plugin on the list.\nClick to expand...\nHello, I tried that and it doesn't recognise them. Should I try something else? Am I missing something? First time trying something like this."
+    }
+  ]
+}
