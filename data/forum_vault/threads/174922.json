@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rm2k3-sound-on-crit-hit-enemy-ally-names-over-characters.174922",
+  "title": "RM2k3 - Sound on Crit Hit, Enemy+Ally names over characters",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:50:30.273951+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1495546",
+      "author": "ZENWARECO",
+      "date": "2025-01-25T02:23:26+0900",
+      "body": "In RPG Maker 2003, is there a way that I can make a sound when a critical hit lands?  Like Flash2 or Flash1?  There's not really any functions that can do that in the common events.\nThat, and what would be kind of nice, is to have enemy names show up when the System2 cursor is on them, and when the System2 cursor is on an ally, their names would be over their heads.  No functions in common events. :/ I feel like that may not be even possible.\nIs there a way to do it? If not, then oh well.  That seems like a lot of that these days. If not, oh well.  It's a bummer."
+    },
+    {
+      "post_id": "js-post-1495564",
+      "author": "Eternidade_1",
+      "date": "2025-01-25T03:49:18+0900",
+      "body": "You could create your own side battle with this, it would be possible. Since the critical hit is a number of hits until it, for example 30 hits for a critical hit, everything can be defined in variables.\nThe problem I see is in the battle animations, sprites that will be used in the fights, the steam rm2k3 has a demo to show these images, but they would still have to be on top of an event on the map. In the same way, it is possible to display the name on top of the enemy.\nOf course, a custom battle system ignores the standard maker formulas to create its own formulas through variables."
+    },
+    {
+      "post_id": "js-post-1495567",
+      "author": "ZENWARECO",
+      "date": "2025-01-25T03:59:22+0900",
+      "body": "That sounds hard!"
+    },
+    {
+      "post_id": "js-post-1495749",
+      "author": "Eternidade_1",
+      "date": "2025-01-26T03:03:07+0900",
+      "body": "So let's try something easier, I don't know if it will work but do the following:\nCreate a common event that counts the characters' attacks and equals them in a variable.\nFor example, actor 1 made 9 attacks, so the actor 1 critical variable is equal to 9. With 10% the critical would be on the 10th attack, so create a condition for when it is equal to 10.\nIf the actor 1 critical variable is equal to 10, play a sound. After that, reset the variable count to start over.\nRemember that each attack must include the +1 count in the actor 1 critical variable, so every time you attack you must add a value to the variable.\nIn troops there is the Battle command that has attack. Include the addition of the variable here and see if it works."
+    },
+    {
+      "post_id": "js-post-1495888",
+      "author": "Cherry",
+      "date": "2025-01-26T23:20:16+0900",
+      "body": "That's not how random number generation works. What you explained would be deterministic and not random.\n\"approximately once every 10 attacks\" means that it happens on average once every 10 attacks - RM will simply \"roll a 10-sided die\" and if it falls on a 1, it's critical. You won't know in advance when you will land a critical hit (also that would ruin the fun).\nThe only way to achieve what's asked here (with the default battle system) would be by patching in some code that plays such a sound at the point at which the critical damage has been determined."
+    },
+    {
+      "post_id": "js-post-1495901",
+      "author": "Eternidade_1",
+      "date": "2025-01-27T00:53:50+0900",
+      "body": "Cherry said:\nThat's not how random number generation works. What you explained would be deterministic and not random.\n\"approximately once every 10 attacks\" means that it happens on average once every 10 attacks - RM will simply \"roll a 10-sided die\" and if it falls on a 1, it's critical. You won't know in advance when you will land a critical hit (also that would ruin the fun).\nThe only way to achieve what's asked here (with the default battle system) would be by patching in some code that plays such a sound at the point at which the critical damage has been determined.\nClick to expand...\nWell, from what you're saying, I misunderstood how the critical hit works, and I didn't use randomness for the critical hit.\nSo the system remains the same, just by adding this conditional variable.\nAt intervals of 10 attacks a critical hit will be performed, so a variable will be created to control which number it will occur at.\nFor example, the critical hit variable is equal to a random number from 1 to 10, if it is equal to 9 then the critical hit will occur at attack number 9.\nForcing a critical hit would also be useful, as some state or condition where a 100% critical hit occurs, this determines the effectiveness of the system, but does not prevent a critical hit from occurring outside the system.\nOf course this would be arbitrary and would not follow the system's critical standards, it is just a simulation."
+    },
+    {
+      "post_id": "js-post-1495906",
+      "author": "Cherry",
+      "date": "2025-01-27T01:20:27+0900",
+      "body": "Oh sorry I also misunderstood what you said - I thought you wanted to \"follow along\" with what RM calculates and then play a sound every 10th attack, assuming that that will be exactly at the same time that RM also decided a critical hit should occur."
+    },
+    {
+      "post_id": "js-post-1495919",
+      "author": "Eternidade_1",
+      "date": "2025-01-27T03:11:56+0900",
+      "body": "I really thought it was something like the 10th attack is the critical hit, I'm not familiar with the maker's battle window.\nI also don't know exactly how much a critical hit is. For example, for a state to simulate a critical hit, I would put 100% rating and double attack."
+    }
+  ]
+}
