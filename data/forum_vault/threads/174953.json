@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/invisible-wall-despite-no-tiles-in-the-way.174953",
+  "title": "Invisible wall, despite no tiles in the way.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T10:22:38.308368+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1495786",
+      "author": "Mountainy",
+      "date": "2025-01-26T07:49:28+0900",
+      "body": "Hello everyone. A problem I have run into, is when using the carpet tiles, random ones seem to become walls the player cannot walk through. I'll attach a video of my inability to walk through them, and then a screenshot showing my map editor. I genuinely have no idea what the problem is."
+    },
+    {
+      "post_id": "js-post-1495790",
+      "author": "JohnDoeGames",
+      "date": "2025-01-26T07:59:52+0900",
+      "body": "Your video is share privately. You should make it public if you want us to be able to see it.\nThere might be an invisible image being used (like an empty tile in the tileset) that actually blocks your way, but you can't see it. Try to redraw the area where the wall is in place. Erase all layers of that type and just draw it again.\nEven if the tile in a tileset is empty, it will still follow all rules if the tile is (accidentally) used. Or maybe it was used by an item that you later removed from the tileset. Either way, redrawing that part of the map simply solves it.\n(Funny thing, I had the same issue earlier today, but the other way around. I was suddenly able to walk trough walls, because of an invisible tile with the O passage.)"
+    },
+    {
+      "post_id": "js-post-1495791",
+      "author": "Mountainy",
+      "date": "2025-01-26T08:25:25+0900",
+      "body": "The video should be unprivated now, thanks for letting me know. Unfortunately, I HAVE deleted all the floor tiles and then replaced them! the invisible walls still exist in the same place. What's so bizarre about this, is so far, it's only using red or purple carpet tiles.\nJohnDoeNews said:\nYour video is share privately. You should make it public if you want us to be able to see it.\nThere might be an invisible image being used (like an empty tile in the tileset) that actually blocks your way, but you can't see it. Try to redraw the area where the wall is in place. Erase all layers of that type and just draw it again.\nEven if the tile in a tileset is empty, it will still follow all rules if the tile is (accidentally) used. Or maybe it was used by an item that you later removed from the tileset. Either way, redrawing that part of the map simply solves it.\n(Funny thing, I had the same issue earlier today, but the other way around. I was suddenly able to walk trough walls, because of an invisible tile with the O passage.)\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1495792",
+      "author": "Andar",
+      "date": "2025-01-26T08:25:47+0900",
+      "body": "As said above, you simply hzave several impassible tiles through the map.\nas the floor itself is passable, it has to be something else impassable there, and the most likely cause are impassable transparent tiles in your tileset.\nplease check for that\nEDIT: and in MZ, replacing the carpets themselves will not help as the problematic tile is on a different layer. you need to explicitly go through the other layers."
+    },
+    {
+      "post_id": "js-post-1495805",
+      "author": "StultusTemporis",
+      "date": "2025-01-26T09:51:20+0900",
+      "body": "As said above, that's generally something you see if you accidentally replace a tile with an invisible tile, such as the \"empty\" tile in the tilesets tab.  Make a new map and copy an empty tile from it.  Then fill all of the empty layers on your first map with that tile instead of using empty tiles in the tilesets tab."
+    },
+    {
+      "post_id": "js-post-1495806",
+      "author": "DrFreeman",
+      "date": "2025-01-26T09:52:18+0900",
+      "body": "I agree with the floor obstruction too. A long time ago on a different version of RPG Maker, I had replaced the sprite sheet, but forgot to update the pass on the map property. So, I thought it would pass because it looked like it would pass. Took me a bit to find the problem. In MZ, the screen in the database looks like this:\nOff the top of my head, these are general reasons for obstructions:\nMap properties\nUpdating a tileset without updating the map (tileset) properties. You can check in the top left or within the database.\nIf a tile has the same appearance as another tile that is an unpassable. I would consider this for blocking a player or NPC from going to the wrong area such as, \"This area is blocked by a mysterious power.\" Then drop a VFX by it.\nHidden events migrating over there. I had played someone's game and this had happened because (I'm guessing) it was going to be an NPC, but became something like a hidden switch that walked around. Rather poor game design option for many.\nEditing the script file that modifies map properties. This can happen on using parallax with other plugins in the wrong order\nTo find more information about map tileset properties,\nthis is the official resource\n.\nHardly relevant side note that this reminds me of the cats vs invisible wall."
+    },
+    {
+      "post_id": "js-post-1495807",
+      "author": "The_Eerie_One",
+      "date": "2025-01-26T10:11:19+0900",
+      "body": "This has happened to me before, and like others have already stated, the problem was an invisible impassable tile on one of the layers. Just use the delete that space layer by layer and it'll likely be fixed.\nHowever there is a second possibility, although looking at your map it's very unlikely it applies here, but I'll mention it just in case. Some items as you know take up more than one tile, and if you make both halves of the item impassable then both tiles are impassable, even if the bit extending to another tile only takes up an insignificantly small portion of the tile. Again doubt this is your problem but I've run into that before."
+    },
+    {
+      "post_id": "js-post-1495813",
+      "author": "JohnDoeGames",
+      "date": "2025-01-26T10:53:20+0900",
+      "body": "Mountainy said:\nThe video should be unprivated now, thanks for letting me know. Unfortunately, I HAVE deleted all the floor tiles and then replaced them! the invisible walls still exist in the same place. What's so bizarre about this, is so far, it's only using red or purple carpet tiles.\nClick to expand...\nJust select the purple carpet again and draw the carpet anew, your problem will go away.\nIf you prefer you can select a tile on the map where it does work by right-clicking and then place it on a tile where it isn't working by left clicking. (Right-click and drag to select a larger area) This should copy all layers from the frist to the second tile. This should also delete any invisible barriers.\nThere is no use in breaking your brains over how this happened. You did it by accident, it is not that big a problem, it will probably not happen again for the next few years. And now when it happens again, you know you've just placed some invisible object on the map again."
+    },
+    {
+      "post_id": "js-post-1495821",
+      "author": "utunnels",
+      "date": "2025-01-26T12:29:51+0900",
+      "body": "The first tile of B is an empty tile. If you want a layer to have nothing you should rectangle the whole layer with it, is that correct?\nEdit*\nAlso fill unused tiles in the png file with color instead of leaving them blank just in case you select them by accident."
+    },
+    {
+      "post_id": "js-post-1495835",
+      "author": "Andar",
+      "date": "2025-01-26T14:41:18+0900",
+      "body": "JohnDoeNews said:\ndraw the carpet anew, your problem will go away.\nClick to expand...\nwrong, the OP uses MZ and not MV\nMZ has manual layer control, which means that the effect depends on which layer the carpet is placed on - only MV automatically deletes upper layers with a redraw."
+    },
+    {
+      "post_id": "js-post-1495840",
+      "author": "Canned_Dinosaur",
+      "date": "2025-01-26T17:14:48+0900",
+      "body": "Be sure to use the\ntop left of the B tiles\nwhen you want to erase a tile. That is the only tile that works like an eraser. As the guys above have pointed out, other tiles may seem empty (as in, they have no graphic), but they can still have collision.\nWhat I often do is to paint all empty tiles of a tileset red (e.g. 255,255,255). This way you can identify any stray \"seemingly empty\" tiles."
+    },
+    {
+      "post_id": "js-post-1495889",
+      "author": "JohnDoeGames",
+      "date": "2025-01-26T23:27:54+0900",
+      "body": "Andar said:\nwrong, the OP uses MZ and not MV\nMZ has manual layer control, which means that the effect depends on which layer the carpet is placed on - only MV automatically deletes upper layers with a redraw.\nClick to expand...\nSo changing the floor wouldn't change the layers on top? Hmmm... Okay, I did not know that.\nYeah, the erase it before redrawing.\nThe right-click-solution I mentioned in the previous reply would still be best though. Judging off the screenshot, the maps are not that complicated and very repetitive. Something I am not a fan of normally, but in this case it helps: Because it is repetitive, you can easily just copy one part of the map (where there is no invisible wall) and then drop it someplace else."
+    },
+    {
+      "post_id": "js-post-1495933",
+      "author": "DrFreeman",
+      "date": "2025-01-27T04:28:22+0900",
+      "body": "There should be a technical name for this because people have run into it before even in other engines. It should be something like hidden collisions, invisible artifacts, clipping occlusion, or legendary obstructions."
+    }
+  ]
+}

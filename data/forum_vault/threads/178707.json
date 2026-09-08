@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/stop-experience-gain-at-max-level.178707",
+  "title": "Stop experience gain at max level?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T10:22:32.490436+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1520968",
+      "author": "Krosis",
+      "date": "2025-07-04T06:17:33+0900",
+      "body": "Hey guys, I'm creating a chapter based game where each chapter the level cap for all actors increases. The idea is so the player cannot grind levels to beat the optional challenging content in the chapter, and it will be easier to balance knowing his level, skills acquired and access to equipment.\nThe problem - actors continue to gain exp after they reach the max level and once the player eventually proceed to the next chapter and the level cap increases - the actor suddenly gains multiple levels from the stored experience, maybe even reaching the cap again.\nI thought about creating a parallel common event that checks the actor level and if he reaches certain level it sets his SP-parameter EXP to 0%, but it will be quite chunky event because it has to check for chapter # and set a new cap for each one.\nAnd now imagine that with 20 actors and 6-7 chapters.\nWon't having so many parallel events be too demanding on the game's memory?\nAm I on the right track?\nPerhaps some of you guys can think of a more elegant solution."
+    },
+    {
+      "post_id": "js-post-1520969",
+      "author": "ATT_Turan",
+      "date": "2025-07-04T06:27:53+0900",
+      "body": "Set Level Cap\nIs there a plugin that allows a user to set a level cap limit? I want to setup a level cap, so that the player doesn't over level until the area or chapter is cleared.\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1520973",
+      "author": "pawsplay",
+      "date": "2025-07-04T07:00:03+0900",
+      "body": "You could secretly demote everyone  a level, then give them the level back before the start of each chapter."
+    },
+    {
+      "post_id": "js-post-1521020",
+      "author": "Krosis",
+      "date": "2025-07-04T14:21:19+0900",
+      "body": "ATT_Turan said:\nSet Level Cap\nIs there a plugin that allows a user to set a level cap limit? I want to setup a level cap, so that the player doesn't over level until the area or chapter is cleared.\nforums.rpgmakerweb.com\nClick to expand...\nLol, I saw your first reply to this post about setting the level cap from a Js file and I tested it, it worked but it didn't solve my problem. The answer was just two scroll-downs away! Sorry for creating an extra thread.\npawsplay said:\nYou could secretly demote everyone  a level, then give them the level back before the start of each chapter.\nClick to expand...\nI tested this, and it's almost perfect in two commands. change level: Entire party - 1> set variable: level cap 30. (increased from 20) For some reason giving them back a level put them to level 21.\nthe problem - it changes the level even for actors that are not at the level cap, you have to tie a variable to their level and check if it's at the current level cap before the \"change level\" command hit's them. It works but you have to do some extra work for the lower level cases.\nAnyway, thank you guys for the answers, cheers!"
+    },
+    {
+      "post_id": "js-post-1521036",
+      "author": "pawsplay",
+      "date": "2025-07-04T17:53:33+0900",
+      "body": "Instead of making an event for the whole party, you could just test the actors, which in a lot of cases is just four actors. If their level = (whatever the max level is for the chapter they are leaving), THEN change their level -1, then change their level +1. Four tests in one event before you go to the next chapter.\nFor later chapters, just change the level to whatever you are using for that chapter. No reason to write a lot of code."
+    },
+    {
+      "post_id": "js-post-1521069",
+      "author": "ATT_Turan",
+      "date": "2025-07-04T22:28:26+0900",
+      "body": "Krosis said:\nI tested this, and it's almost perfect in two commands.\nClick to expand...\nThe problem with what\n@pawsplay\nsuggested is it literally does not address the question you actually asked - how can you stop the actors from gaining experience when they're at your max level?\nIt provides a workaround for making them not start the next area at too high a level, but it does nothing for the issue of seeing the experience gain after battles and in the menu.\nIf you don't actually care about that and you just want to make sure their level is correct when you start the next area, then you can do that - personally I think it's easier to drop in the plugin code I already provided and no further effort is required\nBut whatever best suits your purposes."
+    },
+    {
+      "post_id": "js-post-1521115",
+      "author": "pawsplay",
+      "date": "2025-07-05T05:36:15+0900",
+      "body": "ATT_Turan said:\nThe problem with what\n@pawsplay\nsuggested is it literally does not address the question you actually asked - how can you stop the actors from gaining experience when they're at your max level?\nClick to expand...\nI don't see why that's a problem. The stated problem is characters gaining multiple levels when a new cap is set. My suggestion makes sure their XP is not above what is needed for their current level. Also, if you simply stop gaining XP, the characters will be at some probably small, but arbitrary, number of XP above the minimum for their level; my suggestion simply caps them at a specific value. I'd rather have consistency.\nFor complete consistency, the ideal would probably be to set a maximum number of XP, rather than a maximum level. You would then not have to adjust anything; actors won't be a small, arbitrary number of XP into the next level; the player can see that they are no longer accumulating XP after a certain number. Triggering a \"stop gaining XP\" behavior seems like a kludge to me."
+    },
+    {
+      "post_id": "js-post-1521123",
+      "author": "ATT_Turan",
+      "date": "2025-07-05T08:09:16+0900",
+      "body": "pawsplay said:\nI don't see why that's a problem.\nClick to expand...\nIt has to do with a polished UX in your game. If the player sees their actors getting experience in one part of the game then suddenly those actors no longer have those experience points, that's janky.\npawsplay said:\nFor complete consistency, the ideal would probably be to set a maximum number of XP, rather than a maximum level.\nClick to expand...\nFor the majority of people that is the same thing. Most people don't have different experience curves between classes; if the OP did and needed help adjusting the code for that, it's easily done.\npawsplay said:\nYou would then not have to adjust anything; actors won't be a small, arbitrary number of XP into the next level\nClick to expand...\nI don't know what you're talking about. Where did \"a small, arbitrary number of XP\" come from anywhere in this thread?"
+    },
+    {
+      "post_id": "js-post-1521124",
+      "author": "Sword_of_Dusk",
+      "date": "2025-07-05T08:16:47+0900",
+      "body": "pawsplay said:\nI don't see why that's a problem.\nClick to expand...\nSeriously? I would think my game is glitchy if my characters earn experience at one point, then suddenly stop. That's poor UI, as well as fairly poor UX. There are times when patch jobs work perfectly well, but why haphazardly patch when a simple, elegant solution exists?"
+    },
+    {
+      "post_id": "js-post-1521127",
+      "author": "pawsplay",
+      "date": "2025-07-05T09:17:34+0900",
+      "body": "ATT_Turan said:\nI don't know what you're talking about. Where did \"a small, arbitrary number of XP\" come from anywhere in this thread?\nClick to expand...\nLet's say it takes 80,000 XP to reach level 6. You have 79,900 XP. If the next thing you defeat gives you 100 experience, you now have 80,000 XP and stop gaining XP. If it gives you 1,500 XP, you now have 80,140 XP and stop gaining XP. It may be inconsequential, but to me that's so unaesthetic I would never do it.\nSword_of_Dusk said:\nSeriously? I would think my game is glitchy if my characters earn experience at one point, then suddenly stop. That's poor UI, as well as fairly poor UX. There are times when patch jobs work perfectly well, but why haphazardly patch when a simple, elegant solution exists?\nClick to expand...\nAgreed!\nIf you can't get a specific XP cap in an elegant fashion, I would definitely prefer my suggestion over the idea of trying to stop XP gain when you reach a certain level. Seriously. XP and level should be in sync."
+    },
+    {
+      "post_id": "js-post-1521128",
+      "author": "ATT_Turan",
+      "date": "2025-07-05T09:40:09+0900",
+      "body": "pawsplay said:\nLet's say it takes 80,000 XP to reach level 6. You have 79,900 XP. If the next thing you defeat gives you 100 experience, you now have 80,000 XP and stop gaining XP. If it gives you 1,500 XP, you now have 80,140 XP and stop gaining XP. It may be inconsequential, but to me that's so unaesthetic I would never do it.\nClick to expand...\nNo, you don't. Have you even looked at or tried the code I provided? That is not how it works, and I don't know why you think it does.\npawsplay said:\nIf you can't get a specific XP cap in an elegant fashion, I would definitely prefer my suggestion over the idea of trying to stop XP gain when you reach a certain level.\nClick to expand...\nWho said you can't get a specific XP cap? That was not what the OP asked for, so it hasn't been addressed - if you have your own mechanic you seem fixated on, you should make a separate plugin request thread for it."
+    },
+    {
+      "post_id": "js-post-1521132",
+      "author": "pawsplay",
+      "date": "2025-07-05T10:07:03+0900",
+      "body": "I was responding to\nI thought about creating a parallel common event that checks the actor level and if he reaches certain level it sets his SP-parameter EXP to 0%, but it will be quite chunky event because it has to check for chapter # and set a new cap for each one.\nClick to expand...\nI didn't say anything was wrong with your code. I was just addressing \"the problem,\" the OP. I was translating the OP's request from a general request to something that is precise in computer logic.\nI don't think we are disagreeing. I just glanced at your code, and it appears to set an XP cap, that cap being set to what is sufficient for the current level. I suggested one solution for \"the problem,\" you suggested another; your code seems to be what I said was the ideal solution. So, hats off to you. If you think I said something else, I apologize for being unclear.\nI always like to present event options, when feasible, in addition to scripted ones. The reason being I think it's worthwhile understanding the game behavior, then applying scripted solutions if that is more elegant. Not everyone reads code well."
+    },
+    {
+      "post_id": "js-post-1521150",
+      "author": "AquaEcho",
+      "date": "2025-07-05T13:16:19+0900",
+      "body": "pawsplay said:\nI always like to present event options, when feasible, in addition to scripted ones. The reason being I think it's worthwhile understanding the game behavior, then applying scripted solutions if that is more elegant. Not everyone reads code well.\nClick to expand...\nI understand the engine plenty fine, and understand how limited it is if you only use event commands (i.e. the limited set of functions the devs decide to make UI buttons for). Scripting gives you access to all the code and lets you add your own.\nBecause RPG Maker is a template-based engine, everything is already designed a certain way to be plug and play and beginner-friendly. This includes how level ups work. If you want to break away from the template you have to overwrite the hard-coded function with a plugin like ATT_Turan did."
+    },
+    {
+      "post_id": "js-post-1521151",
+      "author": "pawsplay",
+      "date": "2025-07-05T13:35:34+0900",
+      "body": "AquaEcho said:\nBecause RPG Maker is a template-based engine, everything is already designed a certain way to be plug and play and beginner-friendly. This includes how level ups work. If you want to break away from the template you have to overwrite the hard-coded function with a plugin like ATT_Turan did.\nClick to expand...\nThe event-based solution I posted above works. The only downside is the aesthetic matter that your EXP can visually continue to go up until the end of the chapter. As soon as you start the new chapter, the two solutions presented look the same."
+    },
+    {
+      "post_id": "js-post-1521152",
+      "author": "Robro33",
+      "date": "2025-07-05T13:56:58+0900",
+      "body": "seeing as how the issue has been solved...\nClosed"
+    }
+  ]
+}
