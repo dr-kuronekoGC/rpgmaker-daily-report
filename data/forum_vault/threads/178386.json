@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/do-you-know-how-to-implement-real-time-in-a-custom-menu.178386",
+  "title": "MZ Do you know how to implement real-time in a custom menu?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:31:07.319388+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1518829",
+      "author": "fujino",
+      "date": "2025-06-17T17:19:42+0900",
+      "body": "Hello, nice to meet you.\nPlease forgive any ambiguity due to the use of translations.\nDo you know of a plugin that displays the current time of the PC on a custom menu screen?\nIt uses RPG MAKER MZ.\nI am using a plugin called SceneCustomMenu.js from Triacontan in Japan.\nI would like to create a custom menu with it and display realtime there.\nHowever, it does not work.\nI tried to write a script in common events to call it and display it, but I can't figure out how to make it display in the triacontant plugin.\nI would like to know if there is a way or js to display the time on the menu screen, even if it is another plugin.\nI would like to display it in hh:mm.\nSorry if this is rude.\nI would appreciate it if you could help me.\njs described in Common Events:\nconst now = new Date();\nconst hours = now.getHours().toString().padStart(2, '0');\nconst minutes = now.getMinutes().toString().padStart(2, '0');\n$gameVariables.setValue(6, `${hours}:${minutes}`);\nTriacontan plug-ins：\nã«ã¹ã¿ã ã¡ãã¥ã¼ä½æãã©ã°ã¤ã³\nã©ã¤ãããã«,éæ¥,ææ,RPGãã¯ã¼ã«,RPGãã¯ã¼ã«MV,ãã¯ã¼ã«MVãã©ã°ã¤ã³\ntriacontane.blogspot.com"
+    },
+    {
+      "post_id": "js-post-1518848",
+      "author": "Artille",
+      "date": "2025-06-17T22:24:20+0900",
+      "body": "Edit, my bad, didn't read it through ^^\nSo, you likely want to use a custom script for this.\nI'm not familiar with their plugin, sorry"
+    },
+    {
+      "post_id": "js-post-1518863",
+      "author": "AquaEcho",
+      "date": "2025-06-18T00:45:30+0900",
+      "body": "You should be able to display it using $gameVariables.value(6) or \\V[6]"
+    },
+    {
+      "post_id": "js-post-1518949",
+      "author": "fujino",
+      "date": "2025-06-18T19:57:07+0900",
+      "body": "Sorry for the late reply from work!\nThanks for your response.\nI will take a look at your plugin as well.\nArtille said:\nEdit, my bad, didn't read it through ^^\nSo, you likely want to use a custom script for this.\nI'm not familiar with their plugin, sorry\nClick to expand...\nAquaEcho said:\nYou should be able to display it using $gameVariables.value(6) or \\V[6]\nClick to expand...\nThank you for your response!\nI was able to display the time if the text display!\nThere is the following item in the plugin, where you fill in the `Text:${$item.name}` with what you want to display.\nthis.drawTextEx(`Text:${$gameVariables.value(6) }`, r.x, r.y, r.width); // any text drawing(with control character conversion)\nIf $$gameVariables.value(6) is specified, the value is 0.\nIs this 0 because the common event is not called?\n\\V[6] is displayed as \\V[6].\nCommon events have a parallel common event setting, which can be used to call common events in parallel....\nIs it possible to call the common event directly in `Text:${$item.name}`? (I'm not sure if my writing style is bad or not, but I get an error:_)\nSorry for asking about Japanese scripts.\nI don't have many people on the Japanese forum..."
+    },
+    {
+      "post_id": "js-post-1519065",
+      "author": "AquaEcho",
+      "date": "2025-06-19T14:42:39+0900",
+      "body": "The default value of a game variable is 0. Your common event isn't running.\nYou could try\nCode:\n`Text:${${new Date().getHours().toString().padStart(2, '0') + \":\" + new Date().getMinutes().toString().padStart(2, '0')}}`"
+    },
+    {
+      "post_id": "js-post-1519081",
+      "author": "fujino",
+      "date": "2025-06-19T19:22:57+0900",
+      "body": "AquaEcho said:\nThe default value of a game variable is 0. Your common event isn't running.\nYou could try\nCode:\n`Text:${${new Date().getHours().toString().padStart(2, '0') + \":\" + new Date().getMinutes().toString().padStart(2, '0')}}`\nClick to expand...\nThanks again for today.\nI have tried it and the console log shows the following\nSyntaxError: Missing } in template expression\nThere doesn't appear to be any }'s in the code that I forgot to close.\nFor reference, I paste the console log and the js at line 2597.\n(The Japanese part is written as any text drawing (with control character conversion))\nThank you for your time.\nPlease help me a little more :-..."
+    },
+    {
+      "post_id": "js-post-1519100",
+      "author": "AquaEcho",
+      "date": "2025-06-19T22:13:01+0900",
+      "body": "If it's saying it's missing a } just add another one at the end. I tried that expression as is in SRD HUDMaker and it worked for me."
+    },
+    {
+      "post_id": "js-post-1519101",
+      "author": "Wisepot",
+      "date": "2025-06-19T22:19:26+0900",
+      "body": "check out my free plugin it have every thing almost all real time you just have to put your timezone in plugin comand manger\nand if you dont understand all of the pluign have video tutorial in fourm likn\nMZ - [Plugin Release] WisePot Free Plugins RPG MAKER MZ\n[Plugin Release] WisePot Free Plugins for RPG MAKER MZ   Hey RPG Makers!   I'm thrilled to announce the WisePot Free Plugins Series — a growing collection of powerful, flexible, and completely free utility plugins built specifically for RPG Maker MZ!   Whether you're crafting a rich offline...\nforums.rpgmakerweb.com\nWisePot Plugins - RPG MAKER MZ by WisePot^\nWisePot Plugins - RPG MAKER MZ\nwisepot.itch.io"
+    },
+    {
+      "post_id": "js-post-1519209",
+      "author": "fujino",
+      "date": "2025-06-20T21:14:11+0900",
+      "body": "AquaEcho said:\nIf it's saying it's missing a } just add another one at the end. I tried that expression as is in SRD HUDMaker and it worked for me.\nClick to expand...\n!!! It's done! I was able to display the time!\nAnd Thank you! Thank you so much!\nThank you so much for sticking with me for the past few days for my poor question!\nThanks to you, I was able to solve it.\nI don't know how to thank you, but please let me credit your name when the game is finished!\nThank you so much!（；ω；）\nP.S.\nI watched your youtube channel!\nThey were all great videos.\nI especially liked the one where you use only scripts and no plug-ins to control the game!\nWisepot said:\ncheck out my free plugin it have every thing almost all real time you just have to put your timezone in plugin comand manger\nand if you dont understand all of the pluign have video tutorial in fourm likn\nMZ - [Plugin Release] WisePot Free Plugins RPG MAKER MZ\n[Plugin Release] WisePot Free Plugins for RPG MAKER MZ   Hey RPG Makers!   I'm thrilled to announce the WisePot Free Plugins Series — a growing collection of powerful, flexible, and completely free utility plugins built specifically for RPG Maker MZ!   Whether you're crafting a rich offline...\nforums.rpgmakerweb.com\nWisePot Plugins - RPG MAKER MZ by WisePot^\nWisePot Plugins - RPG MAKER MZ\nwisepot.itch.io\nClick to expand...\nThank you for your answer!\nIt looks like a very useful plugin, and it's great that you can display the current time!\nI'm also interested in the custom UI feature, I may have to use it."
+    },
+    {
+      "post_id": "js-post-1519212",
+      "author": "Wisepot",
+      "date": "2025-06-20T21:54:14+0900",
+      "body": "fujino said:\nThank you for your answer!\nIt looks like a very useful plugin, and it's great that you can display the current time!\nI'm also interested in the custom UI feature, I may have to use it.\nClick to expand...\ngo ahed feel free to use, in real time you can use any time zone you want , if you want you can also change time zone from event let say you want to change america to europe or africa or asia you can do it by event any time\nfeel free to use my plugins , dont forge to credits"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-inquiry-can-an-mz-event-tile-write-to-an-ini-file.178363",
+  "title": "MZ [SOLVED] Inquiry: Can an MZ Event Tile write to an INI File?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:31:07.658101+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1518701",
+      "author": "SenorCrouch",
+      "date": "2025-06-17T01:26:33+0900",
+      "body": "This is probably one of the stranger inquiries on the forum, but I'm wondering if there is a way for MZ to write to a custom INI file?  Specifically off an Event Tile activation?  I've been searching for any plugin or tutorial that can help me out, but haven't been lucky yet.\nMy idea on how I wish to use RPG Maker MZ is both creative and clever.  I'm a streamer by trade and the streaming bot I use for my streams can read INI files and trigger certain events during stream based on key values that are saved in INI files I have set up.  Then it got me wondering, \"If RPG Maker MZ had a plugin that could allow me to write to an INI file, my streams could become even more of a community game/adventure than they already are!\"  Since at that point I'd have a direct communicative Rosetta Stone (if you will) between RPG Maker, the streamer bot, and my community to go on even crazier immersive adventures of my design.\nAny help to shed some light on this inquiry would be greatly appreciative.  I'm not too well versed in programming nor RPG Maker MZ's inner workings, but I'm willing to learn if pointed in the right direction.\nANSWER FOR FUTURE CURIOUS MINDS:\nJavaScript:\nconst fs = require('fs');\n\nconst iniContent ='[Test Section]\\n' + 'Test Key = \"1.000000\"';\nconst filePath = \"C:/RPG Maker Folder/Test.ini\";\n\nfs.writeFile(filePath, iniContent, (err) => {\n  if (err) {\n    console.error(\"Error writing file:\", err);\n    return;\n  }\n  console.log(\"File written successfully!\");\n});\nPlease take note:\nThe names \"iniContent\" and \"filePath\" are variable names, they can theoretically be named anything you want.\nThe \"writeFile\" command will overwrite any and all data in the INI file and replace it with the variable \"iniContent\" so make sure that you are not having RPG Maker write to a well populated INI File.\nIn my testing, and this might just be my inexperience, but I have found leaving out the Error catch \"(err)\" section of the \"fs.writeFile\" function will not successfully write your data to the INI File.\nWhen copying a file path from File Explorer the slashes will be in the wrong direction for js, you will have to manually change all the \"\\\" to \"/\"\nTo utilize this code above, simply copy and paste the above into a \"Script\" Command in RPG Maker MZ's Event Commands Menu.\nTo do this first start by toggling to the Event editing mode.  Find a tile and double click on it to open up the Event Editor window.\nDouble click on a blank line within the \"Contents\" section.\nFind your way to page 3 in the \"Event Commands\" window and locate the section labeled \"Advance\" and click \"Script\"\nFinally copy/paste the above into the Script Window, edit the variables as needed and you should be good to go!\nEDIT: For those seeking how to have RPG Maker MZ read from an INI and compare the result in a Conditional Branch, take a look at my other inquiry:\nhttps://forums.rpgmakerweb.com/index.php?threads/solved-inquiry-can-mz-read-from-an-ini-file-and-compare-the-value-in-a-conditional-branch.178418/"
+    },
+    {
+      "post_id": "js-post-1518723",
+      "author": "Solar_Flare",
+      "date": "2025-06-17T03:23:22+0900",
+      "body": "Yes, it's possible, as long as you don't need to support a web deployment of your game. It would look something like this:\nJavaScript:\nlet fs = require('fs');\nlet file = fs.open('something.ini');\nfile.writeLine('[SomeSection'])\nfile.writeLine('someKey=someValue');\nfile.close();\nThat's untested, so there might be a few errors in it. It's definitely close. You can probably search for \"node.js fs\" for more precise documentation, though you have to be careful since that documentation will be for the latest version (v24 as of the time of this writing) but you probably only have a very old version (you can find out by pasting\nprocess.version\ninto the F8 console and pressing enter; I think it was v9 in MV but I'm not sure about MZ)."
+    },
+    {
+      "post_id": "js-post-1518798",
+      "author": "SenorCrouch",
+      "date": "2025-06-17T11:15:28+0900",
+      "body": "Awesome, thank you.  I will try it out when I can and see if it works!"
+    }
+  ]
+}
