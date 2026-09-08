@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/any-way-to-full-screen-parallax-backgrounds-without-losing-quality.179754",
+  "title": "Any way to full screen parallax backgrounds without losing quality?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:41:17.686807+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1527661",
+      "author": "Ambiguous",
+      "date": "2025-08-25T03:43:46+0900",
+      "body": "Hello, I am using a parallax background for my map that I created in Photoshop. When I run the game, it looks great in the default windowed size, however if I make it full screen the background image looses quality.\nAre there any solutions, plugins, or work arounds for this? The size of my map is 1200 x 750 pixels. If I use a larger parallax image, the size ratio to the player character is off.\nThank you!"
+    },
+    {
+      "post_id": "js-post-1527681",
+      "author": "DevRPG2k",
+      "date": "2025-08-25T06:42:55+0900",
+      "body": "Why is it necessary for the parallax to be larger than the map in pixels?\nThe correct value would be a multiple of 48, which is the standard tile size, for example:\n50x40 -> 2400x1920 pixels\nAlso consider using this solution presented by\n@sateliteixeira\n:\nTileset Gaps on Android\nHi, everyone!  Does anyone have a fix for the gap issue in tilesets when you deploy MZ games to Android? In MV I was able to fix it setting \"canvas\" rendering in Community_Basic.js plugin.  I noticed that SceneManager.preferableRendererType method doesn't exist anymore in MZ rpg_managers file...\nforums.rpgmakerweb.com\nGood luck"
+    },
+    {
+      "post_id": "js-post-1527684",
+      "author": "unikadas",
+      "date": "2025-08-25T06:58:46+0900",
+      "body": "I've seen a number of posts about \"handling\" MV's rendering. May I ask if you're deploying to web or desktop? I may have something I could dig up depending on that. (When testing deployments I've had the solutions not always work cross-platform.)"
+    },
+    {
+      "post_id": "js-post-1527687",
+      "author": "Andar",
+      "date": "2025-08-25T07:29:17+0900",
+      "body": "Ambiguous said:\nhowever if I make it full screen the background image looses quality.\nClick to expand...\nthere is always only one size where a 2D screen has full quality, any resize will cause a loss of quality.\nso you'll have to make your game's screen size fit to your monitor's full screen size to have that quality.\nand if the game is transferred to a different computer with a larger monitor, the fullscreen will be blurry again on that other computer."
+    },
+    {
+      "post_id": "js-post-1527711",
+      "author": "unikadas",
+      "date": "2025-08-25T14:02:16+0900",
+      "body": "Right, you can't really make a universal deployment, huh?\nBut it's worth discussing. Is it Pixi that handles it all? Is there not a way to make Pixi use \"crunchy pixels\" (like force nearest neighbor) with a plugin? It may lose quality in a different way but it might be nice to have nearest neighbor.\nA sorta solution to keep \"perfect pixels\" could be to rely on only multiplying the display by whole numbers. It seems unlikely to be able to do that for 2400x1500 and even less likely for 3600x2250.\nSo if you could have nearest neighbor make the 1200x750 display go to 1:1.44 pixels for a display that's at least a \"common\" height like 1080, then you'd have 1728x1080 which with black bars would fit snugly in 1920x1080. That's just one way to think about it. But even if you figured out how to force nearest neighbor, whenever you use fractions of pixels it's going to be creating weird shifts, and if you go cubic or some other translation, it will lose crispness.\nSo OP it really depends how important it is for you to avoid blur. 1200x750 is a fine windowed display size. Can you just keep it? Or you really want a full screen that's not a common screen resolution?"
+    }
+  ]
+}

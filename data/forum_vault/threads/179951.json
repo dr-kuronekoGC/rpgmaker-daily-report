@@ -1,0 +1,167 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/smarter-pathfinding-plugin.179951",
+  "title": "MV Smarter pathfinding plugin?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:40:48.012882+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1529040",
+      "author": "Solar_Flare",
+      "date": "2025-09-06T07:49:34+0900",
+      "body": "Has anyone made a plugin that improves the pathfinding used when clicking on the map?\nThe only plugin I can find on the forums that does anything with pathfinding is Shaz's Smart Pathfinding plugin; but, as far as I can tell, all it does is makes events use the same pathfinding as touch movement. It doesn't alter how touch movement behaves in any way.\nThe following is a list of things I'd like to change about the pathfinding. It's just the things I've thought of and is probably not comprehensive. (Feel free to suggest other things if you think of them.)\nBetter pathing around obstacles. Currently, if you click on the other side of a wall, the player walks up to the wall and stops – even if there's a viable path around it.\nAvoidance of damage terrain.\nPrefer moving horizontally in sloped regions (eg when using Cae_SlopeMove).\nAvoidance of events, or at least some types of events – map transfers in particular. Possibly others, I'd have to think on it more.\nContrarily, understanding of \"teleporters\" – events that transfer you to another point on the same map.\nI'm thinking of creating such a plugin myself if it doesn't already exist, but I thought I may as well search and ask around first, just in case it has already been done."
+    },
+    {
+      "post_id": "js-post-1529055",
+      "author": "AquaEcho",
+      "date": "2025-09-06T10:27:34+0900",
+      "body": "Unfortunately pathfinding options in RPG Maker are severely lacking. They're pretty much all based on A* and I can't think of any that avoid events.\nYour best options are Muki's plugin or the paid Rosedale collision plugin.\nBetter pathfinding is one of the reasons I picked up another engine (which has navmeshes, boids, the ability to mark any object as a pathfinding obstacle, etc)."
+    },
+    {
+      "post_id": "js-post-1529062",
+      "author": "Solar_Flare",
+      "date": "2025-09-06T11:08:57+0900",
+      "body": "AquaEcho said:\nThey're pretty much all based on A*\nClick to expand...\nYou say that like you think it's a problem…?\nDo you know where I can find Muki's plugin? I think I should at least see what it's liked even if I still decide to make my own…"
+    },
+    {
+      "post_id": "js-post-1529063",
+      "author": "AquaEcho",
+      "date": "2025-09-06T11:09:34+0900",
+      "body": "[RMMV Plugin] Advanced Movement\nGames & Resources\nmiyuki-maker.blogspot.com\nEdit: companion plugin\n[RMMV Plugin] Pathfinding Extras\nGames & Resources\nmiyuki-maker.blogspot.com"
+    },
+    {
+      "post_id": "js-post-1529064",
+      "author": "Solar_Flare",
+      "date": "2025-09-06T11:21:58+0900",
+      "body": "Hmm, I see.\nIt looks like half of that plugin is along the lines of Galv's Move Route Extras (though only slightly overlapping – that is, they both provide more move route options but mostly not the same ones), but then it also overrides\nfindDirectionTo\n, which is the key to the touch movement, and it also has an option to use that pathfinding for event movement like Shaz's Smart Pathfinding does.\nSeeing that actually makes me wonder if the bad pathing around obstacles is a direct result of the search limit. Perhaps just increasing the search limit would let it properly get to the other side of a wall when there's a path.\nThat doesn't help with the other requirements though… and μ'ki's plugin indeed doesn't do anything to modify the guts of the A* (cost function and neighbours).\nUnless someone else comes up with another option, it looks like I'll probably have to roll my own after all.\nAlso, as an aside: I just thought of another thing that would be nice to have in a pathfinding plugin: the ability to path through \"teleporters\" – that is, map transfer commands that don't transfer you to another point on the same map."
+    },
+    {
+      "post_id": "js-post-1529065",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-06T11:22:56+0900",
+      "body": "AquaEcho said:\nThey're pretty much all based on A* ...\nClick to expand...\nAs with\n@SolarFlare\n, I'm also missing why this is a problem. What algorithm would you suggest instead?\nSolar_Flare said:\nAvoidance of damage terrain.\nClick to expand...\nThis probably is just a matter of processing damage tiles as impassable?"
+    },
+    {
+      "post_id": "js-post-1529067",
+      "author": "AquaEcho",
+      "date": "2025-09-06T11:41:59+0900",
+      "body": "Canned_Dinosaur said:\nAs with\n@SolarFlare\n, I'm also missing why this is a problem. What algorithm would you suggest instead?\nClick to expand...\nDepends on the use case, but algorithms like boids and flowfields are better when there are multiple things pathfinding at once, e.g. mobs and rts behavior."
+    },
+    {
+      "post_id": "js-post-1529068",
+      "author": "Solar_Flare",
+      "date": "2025-09-06T11:50:00+0900",
+      "body": "I'm not sure what those are (I found boids on Wikipedia, but not as a pathfinding algorithm per se, more as swarm simulation), but I think A* should be good enough for my purposes, at least.\nThe existing\nfindDirectionTo\nfunction is actually A* already. Unfortunately it's not very customizable, so I would have to replace the entire function just to slot in any kind of custom neighbour determination (which is required by pretty much all of the points noted in my first point, I think – except the first, which is likely just increasing the search limit)."
+    },
+    {
+      "post_id": "js-post-1529094",
+      "author": "caethyril",
+      "date": "2025-09-06T21:16:19+0900",
+      "body": "Spoiler:\nabout A*\nA* uses a heuristic to score any given node. The idea is to move from one node to the next until obtaining the best score, e.g. 0 (if using a \"distance to goal\" heuristic). Then you have a path!\nA* is not the most efficient algorithm, but it is guaranteed to find a path if:\nThe heuristic is \"perfect\", e.g. it accurately predicts the distance to the goal.\nThis condition is met by default, but may break if using certain plugins.\nAnd all available tiles are checked before giving up.\nBy default it searches only up to 12 tiles away.\nThe default search limit is aimed to work accurately and efficiently with the default screen size: 17x13 tiles. If you're using a larger screen size, or your maps are particularly complex, then failure can be expected.\nIn case it helps, here's an interactive demo to help visualise how A* works:\nhttps://qiao.github.io/PathFinding.js/visual/\nTo emulate RPG Maker's default pathfinding, choose Heuristic: Manhattan and uncheck all Options. For further technical details, I generally recommend\nthis site\n.\nLike you've said, I think that realistically you'd need 1 big plugin for all the pathfinding stuff, since the core\nfindDirectionTo\nis almost entirely just one big black box: it outsources the search limit, but basically nothing else.\nEverything you've mentioned seems feasible~\nSpoiler:\nthoughts\nSolar_Flare said:\nBetter pathing around obstacles. Currently, if you click on the other side of a wall, the player walks up to the wall and stops – even if there's a viable path around it.\nClick to expand...\nThis might just be a matter of increasing the node search limit, e.g.\nJavaScript:\n/*:\n * @target MV MZ\n * @plugindesc Make pathfinding check further away before giving up.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/179951/\n * @help Free to use and/or modify for any project, no credit required.\n */\n// Override - check up to 18 tiles away (default 12).\nGame_CharacterBase.prototype.searchLimit = function() { return 18; };\nNote that this would make all pathfinding potentially check 50% further away. Depending on map layout, this quadratically increases the number of tiles available for checking: it will be particularly noticeable on open-plan maps, much less so in narrow corridors.\nAlso, note that the search limit need not be sufficient to reach the goal, except in the most contrived situations. Typically it just needs to be enough to get you (heuristically)\nnearer\nto the goal.\nSolar_Flare said:\nAvoidance of damage terrain.\nClick to expand...\n\"Avoidance\" typically involves applying movement costs, e.g. make travelling over certain tiles, such as damage floors or specific regions, contribute more than 1 point of \"distance travelled\" to the heuristic, making it a less optimal path.\nSolar_Flare said:\nPrefer moving horizontally in sloped regions (eg when using Cae_SlopeMove).\nClick to expand...\nThis could be done by changing the order of directional checks (e.g. <- -> ↑ ↓ instead of ↓ <- -> ↑) or with movement costs. Specific plugins/mechanics will likely need their own specific approaches.\nSolar_Flare said:\nAvoidance of events, or at least some types of events – map transfers in particular. Possibly others, I'd have to think on it more.\nClick to expand...\nMovement costs again, e.g. via event notetag.\nSolar_Flare said:\nContrarily, understanding of \"teleporters\" – events that transfer you to another point on the same map.\nClick to expand...\nThe pathfinding algorithm would have to have to be changed so it generates neighbouring tiles appropriately when situated appropriately relative to a \"transfer\" event. Feasible, but more complex if you want to accommodate other features like a moving entry/exit, randomised exit, etc."
+    },
+    {
+      "post_id": "js-post-1529208",
+      "author": "AquaEcho",
+      "date": "2025-09-07T22:57:44+0900",
+      "body": "The biggest problems with pathfinding in RPG Maker is massive lag, especially with multiple events pathfinding, getting stuck on walls all the time, and poor response to dynamic maps with moving events.\nThe pathfinding options all seem to go by the 48x48 tile grid for node calculations too. My research says some of these issues are inherent to A*.\nI personally got tired of dealing with it in RPG Maker when other engines have multiple pathfinding options that let you adjust node granularity, give you far more control over the size and shape of collision masks of objects with WYSIWYG editors built directly into the engine, and simply work better straight out of the box."
+    },
+    {
+      "post_id": "js-post-1529225",
+      "author": "Solar_Flare",
+      "date": "2025-09-08T02:21:40+0900",
+      "body": "I'm not sure how you'd get massive lag if it's only used by touch movement… I could maybe see that happening if every moving event on the map was calling A* on every frame.\nWhich issues do you think are inherent to A*? Getting stuck on walls shouldn't be an issue of A*. I think A* probably isn't good at dealing with moving obstacles though.\nI don't think collision masks have much to do with pathfinding at all…"
+    },
+    {
+      "post_id": "js-post-1529226",
+      "author": "AquaEcho",
+      "date": "2025-09-08T02:33:42+0900",
+      "body": "Solar_Flare said:\nI'm not sure how you'd get massive lag if it's only used by touch movement\nClick to expand...\nBy default it's only used by touch movement but if you use Shaz, Muki, or other plugins to have events pathfind it lags. I am not the only one to experience this, especially when plugins like KOTC's pathfinder promise to reduce lag as a selling point (his one is buggy and crashes).\nLag, poor response to moving obstscles, and getting stuck (this is a function of not enough search length, but extending the length also increases lag) were cited as issues with A* in my research.\nCustom collision masks are just another nice bonus feature other engines have that RPG Maker doesn't, when you have say, large enemies that take up more than 48x48 area that you want to pathfind or an unusual shape like a long car, in an environment made up of more than rigid 48x48 tile and event blocks."
+    },
+    {
+      "post_id": "js-post-1529235",
+      "author": "Solar_Flare",
+      "date": "2025-09-08T03:12:55+0900",
+      "body": "If you have a twenty or thirty or a hundred events all pathfinding on every frame, I could maybe see it lagging. My use-case is primarily for touch movement though – I think there are few if any events that I'd want to use pathfinding for.\nWith moving obstacles, I think in many cases it's good enough to just ignore them – that is, treat their location as passable. They're going to move anyway, so by the time you actually get there, chances are they'll be gone. And if not, then there's a pretty good chance they'll move out of the way right after you get there.\nAnd it seems you meant custom collision masks for the\nagent\nof pathfinding? I think that could actually be done in A* even on a square grid, as A* at its core is an algorithm on\ngraphs\n, not a square grid, but it would be tricky."
+    },
+    {
+      "post_id": "js-post-1529237",
+      "author": "AquaEcho",
+      "date": "2025-09-08T03:26:10+0900",
+      "body": "Solar_Flare said:\nIf you have a twenty or thirty or a hundred events all pathfinding on every frame, I could maybe see it lagging\nClick to expand...\nNo it will lag even with only one event pathfinding if the search length is long enough. The issue compounds exponentially with every pathfinding event. It's noticable with only two or three.\nI think you are narrowly focused on only your own use case of using pathfinding for only the player (one agent) when clicking to a location.\nI am thinking bigger, with extremes like RTS gameplay where armies of units are pathfinding simultaneously.\nCustom collision masks matter with the pathfinding agents, obstacles (e.g. other moving events) and environment, unless everything is comprised strictly of 48x48 blocks."
+    },
+    {
+      "post_id": "js-post-1529242",
+      "author": "Solar_Flare",
+      "date": "2025-09-08T03:54:51+0900",
+      "body": "I have used A* pathfinding in another project with several agents at a time, and I don't recall any lag (though I think there was lag when I had added twenty or thirty agents as a test). Though, that project isn't even in JavaScript, so perhaps it's just more optimized at a low level…\nIncidentally, A* is perfectly fine for armies in a\nturn-based\nstrategy game… but I guess that's because it's turn-based, so they're not all pathfinding simultaneously.\nBut in any case: yes, I'm somewhat narrowly focused on my own use-case of better pathfinding for touch movement. Though my game does have a few events that approach the player, I don't think any of them require better pathfinding than the game already does (which is, if I'm not mistaken, not even A* by default); and even if they were to use A*, I bet they could work well enough at an even lower search limit than the player uses."
+    },
+    {
+      "post_id": "js-post-1529263",
+      "author": "AquaEcho",
+      "date": "2025-09-08T10:05:58+0900",
+      "body": "Solar_Flare said:\nIncidentally, A* is perfectly fine for armies in a\nturn-based\nstrategy game… but I guess that's because it's turn-based, so they're not all pathfinding simultaneously.\nClick to expand...\nIt's fine for SRPGs because only one unit is pathfinding at a time and the unit movement range is usually limited to a certain number of tiles, keeping computational load low. It's why I specified RTS. The real time component matters.\nAnother issue that I just discovered the term for is A*'s inability to do \"any angle\" pathfinding, which is considered more fluid and natural than moving strictly along gridlines. This is what I am interested in for my games."
+    },
+    {
+      "post_id": "js-post-1529264",
+      "author": "Solar_Flare",
+      "date": "2025-09-08T10:19:01+0900",
+      "body": "AquaEcho said:\nA*'s inability to do \"any angle\" pathfinding, which is considered more fluid and natural than moving strictly along gridlines. This is what I am interested in for my games.\nClick to expand...\nAre you talking about any angle with free movement and no grid? I don't think A* would be good for that, certainly. Or, are you talking about a case where you have a grid, but you'd like the chosen path to follow a straight line between the points as closely as possible, rather than going as far as possible along one axis and then as far as possible along the other axis? Sort of like asking for the path with as many changes of direction as possible, while still being as short as possible. I think you could probably fudge A* into handling that, but I'm not 100% sure…"
+    },
+    {
+      "post_id": "js-post-1529266",
+      "author": "AquaEcho",
+      "date": "2025-09-08T10:25:40+0900",
+      "body": "Solar_Flare said:\nAre you talking about any angle with free movement and no grid? I don't think A* would be good for that, certainly\nClick to expand...\nYes, I personally am interested in grid free movement, or an approximation using triangular or polygonal navmeshes."
+    },
+    {
+      "post_id": "js-post-1529267",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-08T10:26:08+0900",
+      "body": "AquaEcho said:\nI think you are narrowly focused on only your own use case of using pathfinding for only the player (one agent) when clicking to a location.\nClick to expand...\nTo be fair, this\nis\n@Solar_Flare\n's thread with the intent of discussing the use case within\nhis\nproject. So this is kind of a moot point.\nAquaEcho said:\nI am thinking bigger, with extremes like RTS gameplay where armies of units are pathfinding simultaneously.\nClick to expand...\nSir, this is RMW."
+    },
+    {
+      "post_id": "js-post-1529268",
+      "author": "AquaEcho",
+      "date": "2025-09-08T10:30:37+0900",
+      "body": "Canned_Dinosaur said:\nTo be fair, this\nis\n@Solar_Flare\n's thread with the intent of discussing the use case within\nhis\nproject. So this is kind of a moot point.\nClick to expand...\nI answered in my first reply what I thought the best RPG Maker pathfinding plugins were. You also asked me what the issue with A* was so we went on that tangent."
+    },
+    {
+      "post_id": "js-post-1529276",
+      "author": "Solar_Flare",
+      "date": "2025-09-08T11:13:35+0900",
+      "body": "AquaEcho said:\nYes, I personally am interested in grid free movement, or an approximation using triangular or polygonal navmeshes.\nClick to expand...\nYeah, RPGMaker definitely isn't the best engine for a grid free game (though I've heard there are plugins that do it to some degree)."
+    },
+    {
+      "post_id": "js-post-1529354",
+      "author": "Solar_Flare",
+      "date": "2025-09-09T04:56:41+0900",
+      "body": "Okay, I've got the neighbour and cost determination factored out into separate functions. Already have avoidance of damage terrains working.\nShould I request for this to be moved to JS Plugins In Development? Or open a new thread there?"
+    },
+    {
+      "post_id": "js-post-1529356",
+      "author": "AquaEcho",
+      "date": "2025-09-09T05:00:29+0900",
+      "body": "Maybe make a new thread for the plugin release since this is kinda already a general pathfinding discussion thread."
+    },
+    {
+      "post_id": "js-post-1529361",
+      "author": "Solar_Flare",
+      "date": "2025-09-09T05:23:43+0900",
+      "body": "Come to think of it, I wonder if one of the reasons the pathfinding lags so much if a lot of events are using it is because it\nrecalculates the path on every frame\n. A* as an algorithm produces a complete path from one node to another, but\nfindDirectionTo\nonly grabs the first step in the path. Perhaps it would be faster if it cached the path for subsequent frames (as long as the goal point hasn't moved and something hasn't gone terribly wrong, like a step in the path turning out to be impossible once you get there)."
+    },
+    {
+      "post_id": "js-post-1529363",
+      "author": "caethyril",
+      "date": "2025-09-09T05:39:56+0900",
+      "body": "Generally RM will involve dynamic maps, so you may want to read up on D* (Lite). It determines a path up-front via A*, then recalculates blocked segments when appropriate."
+    },
+    {
+      "post_id": "js-post-1529364",
+      "author": "Solar_Flare",
+      "date": "2025-09-09T05:43:53+0900",
+      "body": "I'll think about that later. In my current project I only need it for the player (event movement is mostly either random or simple patrols in this project, and when the player is unexpectedly blocked I think it's better to stop and let the user decide what to do next), but that sounds like it would be worth exploring if I want more complex pathfinding for events in some other project."
+    }
+  ]
+}

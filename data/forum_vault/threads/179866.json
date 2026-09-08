@@ -1,0 +1,167 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/conditional-branch-skill.179866",
+  "title": "Conditional branch skill",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:40:45.645362+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1528355",
+      "author": "GoldExperienceR",
+      "date": "2025-08-31T13:24:14+0900",
+      "body": "Hi everyone, I'm just starting out using conditional branches, this skill being my first, and this is what I'm trying to do.\nI want to add a state to the player (it gives anyone one specific element of their choosing and applies it to the player). If the opponent is of a opposite element, say I'm fire and they're earth, then there is a 1% chance, per shot, to instant kill them.\nI'd like the state to last for 3 turns and within that time, ANY attack the user does has a chance to kill the enemy by 1% chance.\nHow would I set this up?"
+    },
+    {
+      "post_id": "js-post-1528510",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-01T18:25:17+0900",
+      "body": "Hello and welcome! Please make sure to use the template as a guide when asking questions, it helps a lot in preventing back-and-forth to find out what you need exactly:\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com\nWith that out of the way... are you using any plugins? What you describe can be done through common events (I think) and some scripting, but just checking as there might be an easier way depending on what you are already using."
+    },
+    {
+      "post_id": "js-post-1528598",
+      "author": "GoldExperienceR",
+      "date": "2025-09-02T06:40:11+0900",
+      "body": "Canned_Dinosaur said:\nHello and welcome! Please make sure to use the template as a guide when asking questions, it helps a lot in preventing back-and-forth to find out what you need exactly:\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com\nWith that out of the way... are you using any plugins? What you describe can be done through common events (I think) and some scripting, but just checking as there might be an easier way depending on what you are already using.\nClick to expand...\nI have quite a few. Some of the standard battle core ones, and gameplay ones like this one. Is there a specific one you're looking for?"
+    },
+    {
+      "post_id": "js-post-1528624",
+      "author": "Sword_of_Dusk",
+      "date": "2025-09-02T12:18:40+0900",
+      "body": "GoldExperienceR said:\nI have quite a few. Some of the standard battle core ones, and gameplay ones like this one. Is there a specific one you're looking for?\nClick to expand...\nJust show a picture of your plugin list. Far easier to do that than to have others guessing."
+    },
+    {
+      "post_id": "js-post-1528628",
+      "author": "Andar",
+      "date": "2025-09-02T14:37:49+0900",
+      "body": "GoldExperienceR said:\nI'm just starting out using conditional branches, this skill being my first,\nClick to expand...\nOK, let's clear up a few things.\nthe conditional branch is an event command, not a skill. All regular skills will always have a more or less fixed result without any options.\nThat said, there are several different ways around that limitation. One way is to use a common event that is called by the skill, but that (while being the simplest way) has a number of limitations, and you'll need plugins to work around some of those limitations.\nFor example by default all common events called by skills are processed at the end of the battleturn unless you have a plugin with action sequences to tell the engine when else to process the common event.\nBut there are several plugins providing action sequences, and you can only use one of them - which means the above mentioned screenshot of your plugin manager is easier than us listing one or two dozen possible plugins.\nGoldExperienceR said:\none specific element of their choosing\nClick to expand...\nThen you can't use conditional branches but need to use show choices - a conditional branch can only select between two options and most games have more than two elements."
+    },
+    {
+      "post_id": "js-post-1528636",
+      "author": "GoldExperienceR",
+      "date": "2025-09-02T19:01:35+0900",
+      "body": "I tried to send it from the first message, but it said the file was too big. I changed this format of the picture and it works now."
+    },
+    {
+      "post_id": "js-post-1528642",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-02T20:21:30+0900",
+      "body": "Assuming you're using Windows, you can just hit Win+Shift+S to take a screenshot. This will be much more compact and also maximize readability.\nIn any case, judging from your plugins, can we assume that you are familiar with action sequences? In that case you should be able to create a common event that does checks the state of the target using\nBattleManager._target.isStateAffected(N)\nand if yes checks for the attack element of the user using\nBattleManager._subject.attackElements()\n... or so I thought. It seems to return 1 no matter what the attack is. Let me check what's going on."
+    },
+    {
+      "post_id": "js-post-1528653",
+      "author": "GoldExperienceR",
+      "date": "2025-09-02T22:16:53+0900",
+      "body": "Canned_Dinosaur said:\nAssuming you're using Windows, you can just hit Win+Shift+S to take a screenshot. This will be much more compact and also maximize readability.\nIn any case, judging from your plugins, can we assume that you are familiar with action sequences? In that case you should be able to create a common event that does checks the state of the target using\nBattleManager._target.isStateAffected(N)\nand if yes checks for the attack element of the user using\nBattleManager._subject.attackElements()\n... or so I thought. It seems to return 1 no matter what the attack is. Let me check what's going on.\nClick to expand...\nYes, this is Windows, and the quality of the picture sucks, but I had to take it real quick before getting back to dad duties, otherwise you're right a screenshot would've been better, next time. Also thanks in advance for the help, as I'm fair at common events, like 4/10, but don't think I'd have been able to figure this out with any level of expedience."
+    },
+    {
+      "post_id": "js-post-1528844",
+      "author": "GoldExperienceR",
+      "date": "2025-09-04T12:16:59+0900",
+      "body": "Canned_Dinosaur said:\nAssuming you're using Windows, you can just hit Win+Shift+S to take a screenshot. This will be much more compact and also maximize readability.\nIn any case, judging from your plugins, can we assume that you are familiar with action sequences? In that case you should be able to create a common event that does checks the state of the target using\nBattleManager._target.isStateAffected(N)\nand if yes checks for the attack element of the user using\nBattleManager._subject.attackElements()\n... or so I thought. It seems to return 1 no matter what the attack is. Let me check what's going on.\nClick to expand...\nWere you able to figure out what was going wrong?"
+    },
+    {
+      "post_id": "js-post-1528846",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-04T12:53:34+0900",
+      "body": "GoldExperienceR said:\nWere you able to figure out what was going wrong?\nClick to expand...\nYes... but at the same time I came to the realization that it's gonna be too wonky anyway. So... after consulting with some Jedi Masters behind the scenes... let's check on some mechanics.\nFor the attackers element, you basically want to have a state that says \"I AM FIRE\" or something (iow just a state to flag that doesn't really do anything)? And the element of the target is likewise a state? Or is it the element rate that you want to look at for the target?\nIf it's just a state on the target you could probably do something like the below in a state notetag.\nFrom\nBattle Core\nJavaScript:\n<JS Pre-Damage as User>\nif (target.isStateAffected(N) && Math.randomInt(100) < 1)    value = target.hp;\n</JS Pre-Damage as User>\nIf it's the target's element rate you want to look at, something like:\nJavaScript:\n<JS Pre-Damage as User>\nif (target.elementRate(N) > 1 && Math.randomInt(100) < 1)    value = target.hp;\n</JS Pre-Damage as User>\nNaturally this will snuff your allies too if they are of the specified element (like when you try to heal someone), so you would have to put in some logic to prevent that."
+    },
+    {
+      "post_id": "js-post-1528907",
+      "author": "GoldExperienceR",
+      "date": "2025-09-05T09:01:09+0900",
+      "body": "Canned_Dinosaur said:\nYes... but at the same time I came to the realization that it's gonna be too wonky anyway. So... after consulting with some Jedi Masters behind the scenes... let's check on some mechanics.\nFor the attackers element, you basically want to have a state that says \"I AM FIRE\" or something (iow just a state to flag that doesn't really do anything)? And the element of the target is likewise a state? Or is it the element rate that you want to look at for the target?\nIf it's just a state on the target you could probably do something like the below in a state notetag.\nFrom\nBattle Core\nJavaScript:\n<JS Pre-Damage as User>\nif (target.isStateAffected(N) && Math.randomInt(100) < 1)    value = target.hp;\n</JS Pre-Damage as User>\nIf it's the target's element rate you want to look at, something like:\nJavaScript:\n<JS Pre-Damage as User>\nif (target.elementRate(N) > 1 && Math.randomInt(100) < 1)    value = target.hp;\n</JS Pre-Damage as User>\nNaturally this will snuff your allies too if they are of the specified element (like when you try to heal someone), so you would have to put in some logic to prevent that.\nClick to expand...\nFortunately the character using it is just an archer type so shouldn't be healing too much, however if it makes it easier for you I can just change the system to make it so the character does that insta kill if the target is under the influence of an effect (say, on fire). However, if you've ironed out the kinks I'll GLADLY take it. I hope to one day be able to do this myself, but until then I greatly appreciate the help.\nCanned_Dinosaur said:\nYes... but at the same time I came to the realization that it's gonna be too wonky anyway. So... after consulting with some Jedi Masters behind the scenes... let's check on some mechanics.\nFor the attackers element, you basically want to have a state that says \"I AM FIRE\" or something (iow just a state to flag that doesn't really do anything)? And the element of the target is likewise a state? Or is it the element rate that you want to look at for the target?\nIf it's just a state on the target you could probably do something like the below in a state notetag.\nFrom\nBattle Core\nJavaScript:\n<JS Pre-Damage as User>\nif (target.isStateAffected(N) && Math.randomInt(100) < 1)    value = target.hp;\n</JS Pre-Damage as User>\nIf it's the target's element rate you want to look at, something like:\nJavaScript:\n<JS Pre-Damage as User>\nif (target.elementRate(N) > 1 && Math.randomInt(100) < 1)    value = target.hp;\n</JS Pre-Damage as User>\nNaturally this will snuff your allies too if they are of the specified element (like when you try to heal someone), so you would have to put in some logic to prevent that.\nClick to expand...\nJust to make sure I'm reading this right, in the second one I replace element rate with the specified element of the thing to check for, but what do I switch out if I say want to increase the chance to insta kill? Is the 1 after math random int?"
+    },
+    {
+      "post_id": "js-post-1528915",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-05T11:16:05+0900",
+      "body": "GoldExperienceR said:\nIs the 1 after math random int?\nClick to expand...\nYes. Math.randomInt is a RM-unique function that is defined in RMMZ_core, as follows:\nJavaScript:\nMath.randomInt = function(max) {\n    return Math.floor(max * Math.random());\n};\nYou can review the original Math.random() function here:\nW3Schools.com\nW3Schools offers free online tutorials, references and exercises in all the major languages of the web. Covering popular subjects like HTML, CSS, JavaScript, Python, SQL, Java, and many, many more.\nwww.w3schools.com"
+    },
+    {
+      "post_id": "js-post-1528922",
+      "author": "GoldExperienceR",
+      "date": "2025-09-05T12:59:14+0900",
+      "body": "Canned_Dinosaur said:\nYes. Math.randomInt is a RM-unique function that is defined in RMMZ_core, as follows:\nJavaScript:\nMath.randomInt = function(max) {\n    return Math.floor(max * Math.random());\n};\nYou can review the original Math.random() function here:\nW3Schools.com\nW3Schools offers free online tutorials, references and exercises in all the major languages of the web. Covering popular subjects like HTML, CSS, JavaScript, Python, SQL, Java, and many, many more.\nwww.w3schools.com\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1528923",
+      "author": "GoldExperienceR",
+      "date": "2025-09-05T13:01:39+0900",
+      "body": "Thanks for the help, and sorry for asking so many questions (my coding is rusty, and in rpg maker it's basically non existent at the moment).\n<JS Pre-Damage as User>\nif (target.isStateAffected(\nN\n) && Math.randomInt(100) <\n1\n)    value = target.hp;\n</JS Pre-Damage as User>\nThese are the variables I change?\nAnd I need to make states for all elements, independently, that I want to attach this to?"
+    },
+    {
+      "post_id": "js-post-1528930",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-05T13:36:01+0900",
+      "body": "GoldExperienceR said:\nThese are the variables I change?\nAnd I need to make states for all elements, independently, that I want to attach this to?\nClick to expand...\nYes and yes.\nN\nis the state ID (a number) and\n1\nis (in this case) equal to the percentage chance the enemy will be snuffed."
+    },
+    {
+      "post_id": "js-post-1528980",
+      "author": "GoldExperienceR",
+      "date": "2025-09-05T22:11:15+0900",
+      "body": "Canned_Dinosaur said:\nYes and yes.\nN\nis the state ID (a number) and\n1\nis (in this case) equal to the percentage chance the enemy will be snuffed.\nClick to expand...\nPerfect. The only thing I'm still confused on is, if I use this in the note tag of the new stats, what do I add to that character's ability to make it it also checks for that?"
+    },
+    {
+      "post_id": "js-post-1529256",
+      "author": "GoldExperienceR",
+      "date": "2025-09-08T08:53:24+0900",
+      "body": "Canned_Dinosaur said:\nYes and yes.\nN\nis the state ID (a number) and\n1\nis (in this case) equal to the percentage chance the enemy will be snuffed.\nClick to expand...\nI've been breaking my brain trying to figure this out and it doesn't seem to work. I don't know what I'm doing wrong. I've made a state and put this code in it. I've also put it in the fire status, and the burn status and nothing has helped. Were you able to get it to work? If so what did you do, outside of what I did, that helped?"
+    },
+    {
+      "post_id": "js-post-1529275",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-08T11:04:24+0900",
+      "body": "GoldExperienceR said:\nI've been breaking my brain trying to figure this out and it doesn't seem to work.\nClick to expand...\nI'd need a little more context so please do share screenshots of the state and the skills that apply the state. Please\ndo\ntry to follow the template!\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1529388",
+      "author": "GoldExperienceR",
+      "date": "2025-09-09T08:58:05+0900",
+      "body": "Canned_Dinosaur said:\nI'd need a little more context so please do share screenshots of the state and the skills that apply the state. Please\ndo\ntry to follow the template!\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com\nClick to expand...\nThe picture on the left is trying to apply it to the created state \"I am Fire\", and the picture on the right is applying the same latter code for applied state. I cranked the 1 integer up to 100 to see if it works first, then will revert it back to 1% once I'm sure it does."
+    },
+    {
+      "post_id": "js-post-1529389",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-09T09:20:02+0900",
+      "body": "As per\nthe documentation\n, the <JS Pre-Damage as User> does not work as a skill note tag. You'd want to use <JS Pre-Damage> for skills.\nIn any case, let's check what we're doing here. Is my understanding correct that you want:\n1. target acquires \"I am Fire\" state\n2. target is attacked by Firecrit\n3. target has a chance of dying\nIn that case, I think that either\na. the \"I am Fire\" state should have a <JS Pre-Damage as Target> note tag and not the \"as user\" variant\nb.  the \"Firecrit\" skill should have a <JS Pre-Damage> note tag\nAlso, and this may be because of the way the code is truncated in the screenshot, but I can't see the code that actually OHKO's the target. Could you double check if that is in place?"
+    },
+    {
+      "post_id": "js-post-1529400",
+      "author": "GoldExperienceR",
+      "date": "2025-09-09T10:17:13+0900",
+      "body": "Canned_Dinosaur said:\nAs per\nthe documentation\n, the <JS Pre-Damage as User> does not work as a skill note tag. You'd want to use <JS Pre-Damage> for skills.\nIn any case, let's check what we're doing here. Is my understanding correct that you want:\n1. target acquires \"I am Fire\" state\n2. target is attacked by Firecrit\n3. target has a chance of dying\nIn that case, I think that either\na. the \"I am Fire\" state should have a <JS Pre-Damage as Target> note tag and not the \"as user\" variant\nb.  the \"Firecrit\" skill should have a <JS Pre-Damage> note tag\nAlso, and this may be because of the way the code is truncated in the screenshot, but I can't see the code that actually OHKO's the target. Could you double check if that is in place?\nClick to expand...\nThis is currently what I have for my state and skill, respectively.\n(State)\n<JS Pre-Damage as Target>\nif (target.isStateAffected(141) && Math.randomInt(100) < 99)    value = target.hp;\n</JS Pre-Damage as Target>\n(Skill)\n<JS Pre-Damage>\nif (target.isStateAffected(141) && Math.randomInt(100) < 100)    value = target.hp;\n</JS Pre-Damage>"
+    },
+    {
+      "post_id": "js-post-1529409",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-09T11:27:55+0900",
+      "body": "I honestly don't know what to say except that it just works on my end (with just the <JS Pre-Damage> note tag btw, no need for the as target variant). Very simple test in which the first cast will apply the thunder state, and the second cast will OHKO the target as a result."
+    },
+    {
+      "post_id": "js-post-1529410",
+      "author": "GoldExperienceR",
+      "date": "2025-09-09T11:53:48+0900",
+      "body": "Canned_Dinosaur said:\nI honestly don't know what to say except that it just works on my end (with just the <JS Pre-Damage> note tag btw, no need for the as target variant). Very simple test in which the first cast will apply the thunder state, and the second cast will OHKO the target as a result.\nClick to expand...\nI see what you've done, so it seems it WILL work. I was more posting my code to make sure I had it input properly, so you could see the code. I'll test this again tomorrow and let you know if it works."
+    },
+    {
+      "post_id": "js-post-1529431",
+      "author": "GoldExperienceR",
+      "date": "2025-09-09T18:36:50+0900",
+      "body": "Canned_Dinosaur said:\nI honestly don't know what to say except that it just works on my end (with just the <JS Pre-Damage> note tag btw, no need for the as target variant). Very simple test in which the first cast will apply the thunder state, and the second cast will OHKO the target as a result.\nClick to expand...\nYup, just tested it and it works. Thank you SO much for this."
+    },
+    {
+      "post_id": "js-post-1529435",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-09T19:04:23+0900",
+      "body": "Happy to hear it works!\nPlease use the report button to report the topic as solved!"
+    },
+    {
+      "post_id": "js-post-1529552",
+      "author": "Robro33",
+      "date": "2025-09-10T14:02:15+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

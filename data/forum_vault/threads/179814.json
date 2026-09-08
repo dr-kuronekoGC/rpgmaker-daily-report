@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/spikes-on-the-floor-with-a-certain-order.179814",
+  "title": "Spikes on the floor with a certain order.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:41:16.081014+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1528005",
+      "author": "SakuraMiya",
+      "date": "2025-08-28T05:53:00+0900",
+      "body": "For my game, I'm making a room that has your typical spikes on the floor. I know that you have to use region ids for the player to take damage, but how can I do it when the spikes move like this?"
+    },
+    {
+      "post_id": "js-post-1528008",
+      "author": "Solar_Flare",
+      "date": "2025-08-28T08:23:37+0900",
+      "body": "SakuraMiya said:\nI know that you have to use region ids for the player to take damage\nClick to expand...\nI think\nnot\ndoing that might work better in this case, actually.\nI threw together a quick proof of concept for you in MV.\nSet up your event like this:\nFor that script call to work, you'll need the following code in a plugin. If you don't want to use a plugin, you could make an autorun event on the map and put it in a script call, followed by a Control Self Switch A = ON command.\nJavaScript:\nGame_Interpreter.prototype.checkPlayerHere = function() {\n\tvar ev = $gameMap.event(this.eventId());\n\tif(!ev) return false;\n\treturn $gamePlayer.x == ev.x && $gamePlayer.y == ev.y;\n};\nThe key points on the left-hand side are the custom move route and the Parallel type. The move route should look like this:\nYou'll probably want to change the wait values both in the move route and the event contents – I set it to 5 for testing, but that's quite slow. If it's best with no wait at all in the move route, you might need to fiddle with the event commands to avoid lag (possibly move the wait into the inner conditional and figure out what value works).\nAgain, this works in MV, and would probably work in MZ as well. The concept probably works in other makers as well, but the JS code would need to be translated into Ruby."
+    },
+    {
+      "post_id": "js-post-1528011",
+      "author": "SakuraMiya",
+      "date": "2025-08-28T09:12:37+0900",
+      "body": "Solar_Flare said:\nI think\nnot\ndoing that might work better in this case, actually.\nI threw together a quick proof of concept for you in MV.\nSet up your event like this:\nView attachment 348465\nFor that script call to work, you'll need the following code in a plugin. If you don't want to use a plugin, you could make an autorun event on the map and put it in a script call, followed by a Control Self Switch A = ON command.\nJavaScript:\nGame_Interpreter.prototype.checkPlayerHere = function() {\n    var ev = $gameMap.event(this.eventId());\n    if(!ev) return false;\n    return $gamePlayer.x == ev.x && $gamePlayer.y == ev.y;\n};\nThe key points on the left-hand side are the custom move route and the Parallel type. The move route should look like this:\nView attachment 348466\nYou'll probably want to change the wait values both in the move route and the event contents – I set it to 5 for testing, but that's quite slow. If it's best with no wait at all in the move route, you might need to fiddle with the event commands to avoid lag (possibly move the wait into the inner conditional and figure out what value works).\nAgain, this works in MV, and would probably work in MZ as well. The concept probably works in other makers as well, but the JS code would need to be translated into Ruby.\nClick to expand...\nI tried to replicate it, but when the player steps, nothing happens.\nDid I do something wrong?"
+    },
+    {
+      "post_id": "js-post-1528012",
+      "author": "Solar_Flare",
+      "date": "2025-08-28T09:17:36+0900",
+      "body": "You could try removing the wait in the event contents. I think that might cause some other problems (in my testing, spikes are getting out of sync with each other when offscreen), but it should make it trigger every time the spikes are up."
+    },
+    {
+      "post_id": "js-post-1528034",
+      "author": "Robro33",
+      "date": "2025-08-28T16:29:11+0900",
+      "body": "you could have also had one parallel event increment a variable, use a modulus so that its values can ever only be 1-5, and then set each of those events as player touch with page conditions for each being specific variable values.\nyou wouldnt need to check the pattern or set up movement routes. youd just have 2 pages where the default is that the spikes are down and an active page where theyre up"
+    },
+    {
+      "post_id": "js-post-1528044",
+      "author": "Solar_Flare",
+      "date": "2025-08-28T21:11:35+0900",
+      "body": "I don't think that works without a plugin? You can only check if a variable is\ngreater than or equal to\na specified value, but for this use-case you need to check\nexactly equal to\n. It would probably work with something like HIME_CustomPageConditions though… but I'm not sure how the two intermediate frames of the animation would fit in with that model. (The original poster appears to have chosen not to use them, but personally I would prefer to use them.)"
+    },
+    {
+      "post_id": "js-post-1528057",
+      "author": "ShadowDragon",
+      "date": "2025-08-28T23:00:02+0900",
+      "body": "the loop of the 4 rows,  the top 3 (start in middle has those wait.\n30, 45  // row 1\n25, 40 // row 2\n20, 35 // row 3\n15, 55 // row 4\n5, 50 // row 5\nnumbers are wait, so you have a move route of 30 wait, same moveroute\nbelow it, but with 45 wait in between, 4/5 frames per turning (down/left/right/up)\nand back down.\nso you have the effect like:  1,2,3,4,5,3,4,5,1,2,3,4,5,3,4,5 in repeat session."
+    },
+    {
+      "post_id": "js-post-1528062",
+      "author": "Robro33",
+      "date": "2025-08-28T23:22:30+0900",
+      "body": "Solar_Flare said:\nYou can only check if a variable is\ngreater than or equal to\na specified value, but for this use-case you need to check\nexactly equal to\nClick to expand...\nah, forgot there wasnt a choice there, but it just means the logic just needs a slight adjustment. since the variables are integers, you can make equal cases by using equal to or greater than comparisons.\nbase case is the spikes are disabled, theres an active case where the spikes are up and its requirement is the variable is of equal or greater value to something, and then an additional active case to disable the spikes again for the value above the previous one\nSpoiler:\nspikes\nSpoiler:\ncontroller\nI had forgotten that touch events arent triggered when the event is activated while a player is already on them, so the activated spike pages are parallel and just check if the player is on them. it didnt need script, but its easier for me to type that than to event it\nCode:\n$gamePlayer.x === $gameMap.event(this.eventId()).x && $gamePlayer.y === $gameMap.event(this.eventId()).y\nSwitches could have also been used instead of variables, but depending on how many possibilities of active spikes there should be it might take a bit more to set up."
+    },
+    {
+      "post_id": "js-post-1528063",
+      "author": "Solar_Flare",
+      "date": "2025-08-28T23:57:10+0900",
+      "body": "Robro33 said:\nit didnt need script, but its easier for me to type that than to event it\nClick to expand...\nYeah, I just think it's clearer to put it in a function like I did in my previous post.\nI ended up with something pretty similar to robro33's solution, but using HIME_CustomPageConditions and my custom checkPlayerHere() script:\nSpoiler:\nController\nSpoiler:\nSpikes Page 1\nSpoiler:\nSpikes Page 2\nNote that the move routes are set not to repeat. Then the only thing I needed to change on individual spikes is the frame I'm checking for in the conditional statement (on both pages)."
+    },
+    {
+      "post_id": "js-post-1528070",
+      "author": "Robro33",
+      "date": "2025-08-29T00:55:57+0900",
+      "body": "found out it can be done without the active spikes being parallel. they can be changed to player touch and the controller can use a base engine script call to run the spike event if the player is on it when it changes. I thought it hadnt worked earlier, but it seems to have just needed a minor delay.\nSpoiler\nSpike\nController"
+    },
+    {
+      "post_id": "js-post-1528084",
+      "author": "Solar_Flare",
+      "date": "2025-08-29T02:21:28+0900",
+      "body": "That seems like it would trigger any event the player happens to be standing on, not just the spikes. It might be fine if you don't have any other events the player would stand on, though."
+    },
+    {
+      "post_id": "js-post-1528086",
+      "author": "Robro33",
+      "date": "2025-08-29T02:33:18+0900",
+      "body": "Solar_Flare said:\nThat seems like it would trigger any event the player happens to be standing on, not just the spikes\nClick to expand...\nany player touch event the player is standing on. other trigger types wont count, and if the map has other player touch events that arent spikes that may be stood on, a conditional branch that checks the region the player is in can be used to filter them out"
+    },
+    {
+      "post_id": "js-post-1528122",
+      "author": "SakuraMiya",
+      "date": "2025-08-29T05:33:29+0900",
+      "body": "Robro33 said:\nah, forgot there wasnt a choice there, but it just means the logic just needs a slight adjustment. since the variables are integers, you can make equal cases by using equal to or greater than comparisons.\nbase case is the spikes are disabled, theres an active case where the spikes are up and its requirement is the variable is of equal or greater value to something, and then an additional active case to disable the spikes again for the value above the previous one\nSpoiler:\nspikes\nView attachment 348496\nView attachment 348497\nView attachment 348498\nSpoiler:\ncontroller\nView attachment 348499\nI had forgotten that touch events arent triggered when the event is activated while a player is already on them, so the activated spike pages are parallel and just check if the player is on them. it didnt need script, but its easier for me to type that than to event it\nCode:\n$gamePlayer.x === $gameMap.event(this.eventId()).x && $gamePlayer.y === $gameMap.event(this.eventId()).y\nView attachment 348495\nSwitches could have also been used instead of variables, but depending on how many possibilities of active spikes there should be it might take a bit more to set up.\nClick to expand...\nYes! This is exactly how I wanted it! The variables do make it work better.\nThere was a problem with the game over sequence, but that was a mistake on my part, fixed now."
+    }
+  ]
+}

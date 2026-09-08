@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-how-do-i-resize-the-opening-main-menu-window.179906",
+  "title": "MZ [SOLVED] How do i resize the opening main menu window?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:40:49.396119+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1528678",
+      "author": "TheRamenGirl",
+      "date": "2025-09-03T02:23:14+0900",
+      "body": "Hello! i wanted to remove the options commands from the opening main menu.\ni used this code i found here\nCode:\nWindow_TitleCommand.prototype.makeCommandList = function() {\n    this.addCommand(TextManager.newGame,   'newGame');\n    this.addCommand(TextManager.continue_, 'continue', this.isContinueEnabled());\n    // this.addCommand(TextManager.options,   'options');\n};\n\nWindow_MenuCommand.prototype.addOptionsCommand = function() {\n};\nit worked but it leaved an empty space on the window.. how i edit/fix this?\nis there any plugin that let you adjust those coordinates or something?\nit would be nice idea for custom menus..\nthanks!\nSpoiler"
+    },
+    {
+      "post_id": "js-post-1528681",
+      "author": "caethyril",
+      "date": "2025-09-03T02:57:56+0900",
+      "body": "This should work to reduce the height of the title menu:\nJavaScript:\n;void (alias => {\n  const ROWS = -1;  // increase height by this many rows\n  Scene_Title.prototype.commandWindowRect = function() {\n    const rect = alias.apply(this, arguments);\n    rect.height += ROWS * Window_Selectable.prototype.itemHeight();\n    return rect;\n  };\n})(Scene_Title.prototype.commandWindowRect);\nYou can change its position via\nDatabase -> System 1 -> Title Screen: Command Window\n."
+    },
+    {
+      "post_id": "js-post-1528693",
+      "author": "TheRamenGirl",
+      "date": "2025-09-03T04:16:47+0900",
+      "body": "Thank you very much!!\nWorks perfectly!\nEdit: can i ask another thing?.. can i alternatively add at the missing spot an \"close game\" option?"
+    },
+    {
+      "post_id": "js-post-1528763",
+      "author": "caethyril",
+      "date": "2025-09-03T20:16:45+0900",
+      "body": "There are various plugins for that, e.g.\nLuna Quit to Desktop:\nLunaTechs MV/MZ Plugins & Tools\nLunaTechs MV/MZ Plugins & Tools  This is the official LunaTechs plugin and tools thread. You can expect to find links to a variety of our plugins and tools that we'll be creating for both MV and MZ using our custom tooling. You can expect updates from us every Wednesday regarding new plugins and...\nforums.rpgmakerweb.com\nThe ExitToDesktop plugin here:\nUtility Plugin Pack for RPG Maker MZ\n~ Utility Plugin Pack for RPG Maker MZ ~ Hi!  A bit of backstory: I used to play around with RPGM 2K3 and XP a lot back in the day, but I didn't know anything about programming then. After many years out of touch with RPGM I got RPGM MZ in this Christmas sale. There were a bunch of little things...\nforums.rpgmakerweb.com\nFeature Q12 of my plugin Cae_Tweaks:\nMZ - Cae_Tweaks - lots of little features\nCae_Tweaks v19 updated 2026-06-16 (UTC+0)  Terms of Use MIT License: https://opensource.org/licenses/mit-license.html  Description The plugin file must be named Cae_Tweaks.js.  This plugin contains a bunch of different things. It's mostly just me slowly making a game and coding some more stuff...\nforums.rpgmakerweb.com\nProbably many more, I just found the first two with a quick search~\n(I've noticed that many MZ plugins for adding/removing commands often don't adjust the height of the corresponding window, which can cause scrolling or empty space. But if you're basically replacing \"Options\" with \"Quit\" then the total number of commands remains the same, so that's not a problem.)"
+    },
+    {
+      "post_id": "js-post-1528778",
+      "author": "TheRamenGirl",
+      "date": "2025-09-03T22:45:59+0900",
+      "body": "Thank you once again!!"
+    },
+    {
+      "post_id": "js-post-1528781",
+      "author": "slimmmeiske2",
+      "date": "2025-09-03T23:26:45+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

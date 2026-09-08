@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/show-tilted-images.179731",
+  "title": "MV Show tilted images",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:41:18.039203+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1527514",
+      "author": "JohnDoeGames",
+      "date": "2025-08-24T03:49:23+0900",
+      "body": "Many of you have seen the card games I made in the past. There is one thing I never liked here: Every picture is perfectly straight up.\nSo, there is 2 things I would like to achieve:\nI want to show a picture in a certain angle. Lets say 30 degrees. Normally I would use the default script call to show images, but how do I make them tilted?\nI would love to be able to turn them from 0 degrees to 30 degrees, or 0 degrees to 330 (a.k.a -30) degrees and back.\nIs it possible with RPG maker? Any help is welcome.\n(I know about the rotate function in MV, but that doesn't allow me to go for 0 degrees to X degrees and back.)"
+    },
+    {
+      "post_id": "js-post-1527519",
+      "author": "bass2yang",
+      "date": "2025-08-24T04:08:24+0900",
+      "body": "Use the Show Picture Command and then use a script call below it - change it to the number you want in degrees (not radians - some functions/properties use radians):"
+    },
+    {
+      "post_id": "js-post-1527520",
+      "author": "DrFreeman",
+      "date": "2025-08-24T04:17:57+0900",
+      "body": "Something like this?\nhttps://forums.rpgmakerweb.com/inde...e-characters-during-move-routes-mv-mz.149633/"
+    },
+    {
+      "post_id": "js-post-1527521",
+      "author": "alasth",
+      "date": "2025-08-24T04:21:32+0900",
+      "body": "As\n@bass2yang\nsays, you can use\n$gameScreen._pictures[1]._angle\n,\nbut if, for example, you set\n$gameScreen._pictures[1]._angle = 90 ,\nit will instantly change the angle to 90°.\nIf you want a gradual rotation, you can use rotate:\nyou say :\n(I know about the rotate function in MV, but that doesn't allow me to go for 0 degrees to X degrees and back.)\nClick to expand...\nBut that's not entirely true:\nThe rotate speed in the event corresponds to the rotation in degrees per frame. So by initializing a rotate and stopping it at the right moment, you can use it:\nFor example, if you set a speed of 2 and wait 16 frames = 32 degrees.\nIf you don't want to use it in an event, you can also use it in a script, exemple :\n◆ Loop\n◆ Script :\nCode:\nvar pic = $gameScreen.picture(1);\n  if (pic._angle < 180) {\n      $gameScreen.rotatePicture(1, 5); // vitesse\n  } else {\n      $gameScreen.rotatePicture(1, 0); // stop\n      break;\n  }\n◆ Wait: 1 frame\n◆ Repeat"
+    },
+    {
+      "post_id": "js-post-1527522",
+      "author": "JohnDoeGames",
+      "date": "2025-08-24T04:42:53+0900",
+      "body": "Wow. I kinda thought the static imaged was one of the limitations of RPG maker... This is helping me move forward so much. $gameScreen._pictures(1)._angle is exactly what I was looking for.\nI'm not so sure about the loop though, since I want to use it in a plugin. I mean, I could use it in a loop still... In a\nfor (n = pic._angle ; n < 30 ; n++)\nor something.\nYou guys have given me a lot to play with. Thank you very much."
+    },
+    {
+      "post_id": "js-post-1527563",
+      "author": "bass2yang",
+      "date": "2025-08-24T10:19:10+0900",
+      "body": "JohnDoeGames said:\nWow. I kinda thought the static imaged was one of the limitations of RPG maker... This is helping me move forward so much. $gameScreen._pictures(1)._angle is exactly what I was looking for.\nI'm not so sure about the loop though, since I want to use it in a plugin. I mean, I could use it in a loop still... In a\nfor (n = pic._angle ; n < 30 ; n++)\nor something.\nYou guys have given me a lot to play with. Thank you very much.\nClick to expand...\nWhen using a plugin, your loop will run the code immediately and return to you the final result instantly. You will need to tie it into the Game_Picture.prototype.update() method which updates the code every frame. This allows you to process it frame by frame rather than all of it together within one frame.\nThis is why event commands are popular because you can event the code, use wait frames, and update it within the Game_Interpreter (the event commands and script calls that reference \"this\").\nAn example to look at is the updateRotation() method (and the other update methods like updateMove() or updateTone()) that can help you establish a baseline for your plugin/script call:\nJavaScript:\nGame_Picture.prototype.updateRotation = function() {\n    if (this._rotationSpeed !== 0) {\n        this._angle += this._rotationSpeed / 2;\n    }\n};\nThis code is updated every frame in the Game_Picture.prototype.update() method (which is updated by Game_Screen, etc.):\nJavaScript:\nGame_Picture.prototype.update = function() {\n    this.updateMove();\n    this.updateTone();\n    this.updateRotation();\n};\nAlias the .update() method and it should process it frame by frame along with everything else.\nEdit:\nIf you are eventing, it would look like this:\n- Show Picture 1\n- Loop 1:\n- Wait 1 frame, increase the angle of picture 1 by 1 degree\n- Check for when the angle of picture 1 is 30 degrees and if it is, break the loop\n- Loop 2:\n- Wait 1 frame, decrease the angle of picture by 1 degree\n- Check for when the angle of picture 1 is 0 degrees and if it is, break the loop"
+    },
+    {
+      "post_id": "js-post-1527566",
+      "author": "JohnDoeGames",
+      "date": "2025-08-24T11:31:48+0900",
+      "body": "Okay, that sounds certainly more complicated."
+    },
+    {
+      "post_id": "js-post-1527619",
+      "author": "bass2yang",
+      "date": "2025-08-24T22:10:58+0900",
+      "body": "JohnDoeGames said:\nOkay, that sounds certainly more complicated.\nClick to expand...\nIn a sense, it may feel that way at first. I didn't even know what alias (or an interpreter) was until just a few years ago and even then, I didn't fully understand it until just this year.\nIt just takes a bit of getting used to the syntax and the flow of it. I'd be more than happy to share with you my approach for a quick plugin if you would like.\n(This is what I usually do when I am working through code in the first few stages. I patch things and see if it needs improvement and if it is something I can really use. If it is, I'll port it to my main .js document and give it a better name space, parameters, etc.).\nAnd, like other things, it is not the only way to do it."
+    },
+    {
+      "post_id": "js-post-1527782",
+      "author": "DrFreeman",
+      "date": "2025-08-26T04:09:45+0900",
+      "body": "I came across this card plugin that might interest you. It said it worked for MV & MZ. It is a card combat plugin and it has the cards slightly rotated.\nhttps://mythatelier.itch.io/card-game-combat"
+    },
+    {
+      "post_id": "js-post-1527848",
+      "author": "JohnDoeGames",
+      "date": "2025-08-26T19:11:07+0900",
+      "body": "DrFreeman said:\nI came across this card plugin that might interest you. It said it worked for MV & MZ. It is a card combat plugin and it has the cards slightly rotated.\nhttps://mythatelier.itch.io/card-game-combat\nView attachment 348293\nClick to expand...\nThanks. But uhm... A plugin is not the solution for me. I am making a poker plugin. And I don't want my plugins require other plugins."
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/running-from-battle-as-a-character-command.178694",
+  "title": "VXAce Running from battle as a character command.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:41:20.392214+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1520885",
+      "author": "TheGreatAeonXII",
+      "date": "2025-07-03T16:04:50+0900",
+      "body": "So, lemme get straight to the point. In RPG Maker VX Ace you have the escape option which may make all the characters flee from battle. Personally however, I think only allowing the whole party to be able to flee is overly punitive, since failing to escape battle leaves the party completely at mercy to enemies. Which is why I want a system where other characters are able to do other actions in case the running attempt fails. An example of such a system can be seen in the first Final Fantasy.\nWhile I could request for a script, I want to know if I can actually do a system like this by just using events (And maybe changing the Windows scripts a little?) Hopefully it can work well enough.\nAlso, just in case this matters, I'm using CP's Battle Engine v1.2b"
+    },
+    {
+      "post_id": "js-post-1520906",
+      "author": "Andar",
+      "date": "2025-07-03T19:13:22+0900",
+      "body": "the escape skill intended for enemies works on actors as well, but there is a problem with that:\nsometimes when using the escape skill, the engine does not register all actors having escaped, staying in a eternal loop of only enemies"
+    },
+    {
+      "post_id": "js-post-1520911",
+      "author": "EntangledPear",
+      "date": "2025-07-03T20:38:23+0900",
+      "body": "I made my own escape skill for the actors. First, I got rid of the Fight/Escape party command. I don't remember how I did that, but\nthis\nis a thread that deals with it (there may be more, if you search). Then I made a skill which called a common event, in which I set up when escape is successful. I messed it up, and once there was one preemptive battle (for which I wanted a 100% success rate), every escape attempt was successful\n. I haven't corrected it yet, since it's useful to me when I playtest to be able to escape straight away. Otherwise it was checking the actor's agility against the enemy's, checking how many escape attempts there were already and calculating whether the party will ecape or not (I think I based this on the engine's original formula, you can find it in the help files). If the escape attempt succeded, the battle was aborted."
+    },
+    {
+      "post_id": "js-post-1520961",
+      "author": "TheGreatAeonXII",
+      "date": "2025-07-04T05:49:10+0900",
+      "body": "EntangledPear said:\nI made my own escape skill for the actors. First, I got rid of the Fight/Escape party command. I don't remember how I did that, but\nthis\nis a thread that deals with it (there may be more, if you search). Then I made a skill which called a common event, in which I set up when escape is successful. I messed it up, and once there was one preemptive battle (for which I wanted a 100% success rate), every escape attempt was successful\n. I haven't corrected it yet, since it's useful to me when I playtest to be able to escape straight away. Otherwise it was checking the actor's agility against the enemy's, checking how many escape attempts there were already and calculating whether the party will ecape or not (I think I based this on the engine's original formula, you can find it in the help files). If the escape attempt succeded, the battle was aborted.\nClick to expand...\nWhat is the formula if I may ask? And do you know how you can fix it for that matter?\nUPDATE: Decided to do figure out things myself, decided to work around the enemies' escape skill issue by making it so the spell targets all of the group. It works fine, it seemed like this fixed the problem you mentioned as of yet\n@Andar\nas it hasn't happened yet. Do you know if there's a specific trigger to it?\nOnly issue as of now is that escaping always works. Dunno how can I implement the escape formula :/ also need to figure out a way to make this one of the battle commands instead of a skill."
+    },
+    {
+      "post_id": "js-post-1520991",
+      "author": "Andar",
+      "date": "2025-07-04T11:59:46+0900",
+      "body": "TheGreatAeonXII said:\nDunno how can I implement the escape formula\nClick to expand...\neither reduce the success chance for the skill, or if you want to implement your own formula you would have to do so in a common event, only using force-action on the escape skill if successfull.\nTheGreatAeonXII said:\nneed to figure out a way to make this one of the battle commands instead of a skill.\nClick to expand...\nCommand Manager\nThe command manager is a framework that changes the way commands are handled in RPG Maker. It provides developers with an intuitive way to customize each and every actor's commands from the basic\nhimeworks.com"
+    },
+    {
+      "post_id": "js-post-1520995",
+      "author": "TheGreatAeonXII",
+      "date": "2025-07-04T12:15:30+0900",
+      "body": "Andar said:\nif you want to implement your own formula you would have to do so in a common event, only using force-action on the escape skill if successfull.\nClick to expand...\nI was thinking of simply using VX Ace's formula. I tried doing it, but simply copy-pasting it on \"Script\" didn't quite work."
+    },
+    {
+      "post_id": "js-post-1520998",
+      "author": "Andar",
+      "date": "2025-07-04T12:22:13+0900",
+      "body": "no it won't because that is an entirely different handling.\nyou can use the original formula by recreating it with a lot of control variable commands, (the values of enemies and actors are in the game data section that defaults to map id)\nand after you calculate the percentage for success, make a random variable and conditional branch to compare the success chance with the random percentage."
+    },
+    {
+      "post_id": "js-post-1521002",
+      "author": "TheGreatAeonXII",
+      "date": "2025-07-04T12:34:54+0900",
+      "body": "Andar said:\n(the values of enemies and actors are in the game data section that defaults to map id)\nClick to expand...\nJust to be sure, it's this one right?"
+    },
+    {
+      "post_id": "js-post-1521003",
+      "author": "Andar",
+      "date": "2025-07-04T12:38:36+0900",
+      "body": "TheGreatAeonXII said:\nJust to be sure, it's this one right?\nClick to expand...\nalmost - I guided you to find that window, but the AGI-values you need are not under character but scattered under actor and enemy instead"
+    },
+    {
+      "post_id": "js-post-1521005",
+      "author": "TheGreatAeonXII",
+      "date": "2025-07-04T12:48:23+0900",
+      "body": "Damn, but wouldn't that mean the formula would only take into consideration a specific character's agility instead of checking the agility of whoever is using the skill?"
+    },
+    {
+      "post_id": "js-post-1521011",
+      "author": "Andar",
+      "date": "2025-07-04T12:56:33+0900",
+      "body": "TheGreatAeonXII said:\nbut wouldn't that mean the formula would only take into consideration a specific character's agility instead of checking the agility of whoever is using the skill?\nClick to expand...\nonly if you limit the formula to that - there is a reason why I mentioned \"a lot of control variable commands\".\nThe default formula takes the average of the entire party AGI and compares it to the average of all enemy AGI, so you'll need four control variable commands to load all actor AGI, then a few more to calculate the average, then do the same for an unknown number of enemies. Then combine both averages to the percentage created by the original formula before checking that escape chance."
+    },
+    {
+      "post_id": "js-post-1521018",
+      "author": "TheGreatAeonXII",
+      "date": "2025-07-04T14:00:29+0900",
+      "body": "Okay, I'm almost certain I'm doing all of this wrong. But my attempt here has the same issue of before despite my use of the control variable thingies. I made some test enemies with 999 AGI and my LV 1 chars can still somehow escape from them.\nHere's what the common event looks like, what is wrong with it?"
+    },
+    {
+      "post_id": "js-post-1521025",
+      "author": "Andar",
+      "date": "2025-07-04T14:51:53+0900",
+      "body": "most of your control variable commands are useless because you overwrite the previous value without using it.\nthat is NOT how you calculate the average AGI, your mathematics are completely wrong.\nunfortunately I don't have time to explain that for you atm"
+    },
+    {
+      "post_id": "js-post-1521062",
+      "author": "EntangledPear",
+      "date": "2025-07-04T21:57:12+0900",
+      "body": "If you want to use a specific actor's (the user's) AGI to calculate the escape chance, you can do it like this (I think there is a script call that would get you the \"user\" stuff, and maybe someone will provide it, but this is how I do it):\n- in the escape skill, in the damage formula, put in v[N]=a.id (since escape doesn't have any damage, I'd recommend using\nHime's Formula Effects\nscript, which allows you to add this in the note window), which will remember the user's ID in variable N\n- set the skill to call the common event\n- in the common event, set enemy agility, however you wish it (I had it as always the first enemy's agility, but I'm not sure how it would work if that enemy was already dead - haven't had any crashes, but maybe I didn't try to escape in later rounds), then character agility as the user's one (this can be done by assigning the variable using a script: $game_actors[$game_variables[N]].param(6), where param(6) is AGI)\n- then do the escape chance calculations - my formula was 150 - (enemy AGI*100 / actor AGI) - which is what you have there as the escape ratio\n- decide when the chance is high enough to be successful, if it is, abort battle (mine is higher than 50)\n- I also count escape attempts and add something to the escape chance if there had been more\nNow, I haven't tested it yet with the user's AGI (just like with enemy AGI, I originally had it set to one specific actor), but it should work.\nAs Andar said, in your common event, you assign variable 1, Char Agi, a certain number, then immediately another number, which overwrites the first number, and so on, so you're essentially only getting Ming's AGI worked with in the end.\nI'll be happy to explain further if you need it (I'm not an expert by any means, but I'll do what I can)."
+    },
+    {
+      "post_id": "js-post-1521064",
+      "author": "Zahawk",
+      "date": "2025-07-04T22:12:09+0900",
+      "body": "No idea what the flee formula is but heres your fixed variables,"
+    },
+    {
+      "post_id": "js-post-1521102",
+      "author": "TheGreatAeonXII",
+      "date": "2025-07-05T04:01:53+0900",
+      "body": "Well I got it fixed, and even managed to add \"Flee\" as a command instead of a skill. Problem is that Hime's Customizable Item Menu isn't compatible with CP's Battle Engine v1.2b. So some mechanics I want to include (i.e. switching members in battles) are not gonna be in there for now. Oh well, this is out of the scope of this thread so I'll be seeing this later"
+    }
+  ]
+}
