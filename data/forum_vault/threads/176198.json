@@ -1,0 +1,155 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/weapon-on-top-of-actor-sprite.176198",
+  "title": "Weapon on top of actor sprite",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T10:32:03.322799+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1504081",
+      "author": "chrismumu",
+      "date": "2025-03-14T00:47:00+0900",
+      "body": "In side view battle, MZ is displaying the weapon of the actor below the actor sprite, so it looks weird when the actor is wielding a long rifle type weapon, half of the gun is hidden behind the actor. Please help me find a way to display the weapon above the actor instead. I am using most Visustella plugins such as core, battle core, weapon animation and more. Thank you."
+    },
+    {
+      "post_id": "js-post-1504128",
+      "author": "rpgLord69",
+      "date": "2025-03-14T04:22:18+0900",
+      "body": "Show it as a picture in the action sequence."
+    },
+    {
+      "post_id": "js-post-1504204",
+      "author": "chrismumu",
+      "date": "2025-03-14T11:38:10+0900",
+      "body": "Thanks so much for your answer. Could I trouble a little further please? I am experiencing the visual problem when using the standard \"attack\" command, for which I don't have an action sequence set. How should I proceed with setting the weapon as a picture in the action sequence as you suggested? Should my standard attack be connected to an action sequence common event? Please provide more details if possible, I'm a little confused still. Thank you"
+    },
+    {
+      "post_id": "js-post-1504205",
+      "author": "Canned_Dinosaur",
+      "date": "2025-03-14T12:13:01+0900",
+      "body": "You could set an action sequence for the attack command, but this will affect all cases in which \"attack\" is used. I would personally just change the attack skill of the actor that is using the big gun:"
+    },
+    {
+      "post_id": "js-post-1504207",
+      "author": "chrismumu",
+      "date": "2025-03-14T12:27:41+0900",
+      "body": "Thanks so much! I'm also using the visustella weapon swap plugin, so each character of mine is using two weapons that they can swap between, including the big gun wielder. How should I set the attack skill if my actor has the possibility of wielding two different weapon types?"
+    },
+    {
+      "post_id": "js-post-1504209",
+      "author": "utunnels",
+      "date": "2025-03-14T12:39:26+0900",
+      "body": "You can also make a plugin that move the weapon sprite 1 layers above the main sprite.\nFor example if the weapon type is 12 or 13.\nYou can edit the code or someone just make a full plugin with parameters.\nJavaScript:\n(function (alias) {\n  Sprite_Actor.prototype.setupWeaponAnimation = function () {\n    if ([12, 13].includes(this._actor.weaponImageId())) {\n      this.addChildAt(this._weaponSprite, this.getChildIndex(this._mainSprite)+1);\n    }\n    alias.apply(this, arguments);\n  };\n})(Sprite_Actor.prototype.setupWeaponAnimation);"
+    },
+    {
+      "post_id": "js-post-1504222",
+      "author": "chrismumu",
+      "date": "2025-03-14T14:38:30+0900",
+      "body": "Thanks! I don't have experience with editing code or making plugins. Is there anyone able and willing to create it or guide me further in how to achieve it myself? I would be very grateful, it's quite annoying having the weapon graphic hiding behind the actor. Thanks for all the suggestions so far"
+    },
+    {
+      "post_id": "js-post-1504223",
+      "author": "Canned_Dinosaur",
+      "date": "2025-03-14T14:53:19+0900",
+      "body": "I suggest you help yourself on that. It's honestly quite an ask to have someone make a guide for you!\nFirstly, have you done the tutorials that come with RPG Maker? Secondly, have you looked at the tutorials on this site?\nRecommended reading when making support requests.\nREAD!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com\nTutorial on plugins.\nRPG Maker MZ Plugin Creation Tutorial\nRPG Maker MZ Plugin Creation Tutorial  The aim of this tutorial is to assist users in utilizing and developing scripts and plugins. These elements are essential for achieving advanced and efficient game development using RPG Maker MZ (abbreviated hereafter as \"MZ\").  It is intended for users...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1504225",
+      "author": "chrismumu",
+      "date": "2025-03-14T15:01:38+0900",
+      "body": "I understand perhaps I'm asking a lot. Thank you for your tolerance and understanding. I've been through many tutorials but have not found one providing a clear answer to my question about the weapon layer problem. I'm not sure which tutorials you are suggesting I review. Every problem I've encountered so far had other threads previously explaining and providing a complete solution. I have no JS experience and am intimated by the idea of creating my own plugin. After viewing the above solutions it seemed like the fix wouldn't be extremely complex.. so I'm just looking for a little bit more guidance.\nIf it's a matter of copying something into a JS file or making a small change to one of the game files then perhaps I would be able to solve it myself with just another push in the right direction? I know my lack of ability may be lead to frustrations for those willing to help me, but I mean no harm. Just want to learn from you all that I'm able and solve this little problem I've got. Thanks so much everyone!"
+    },
+    {
+      "post_id": "js-post-1504226",
+      "author": "Canned_Dinosaur",
+      "date": "2025-03-14T15:04:58+0900",
+      "body": "I just edited my post and pointed you to a tutorial on plugins. Hope it helps!\nIf you want to have a more elaborate plugin, you can request one in the\nPlugin Requests\nforum. Otherwise, I think\n@utunnels\nplugin might be a good starting point."
+    },
+    {
+      "post_id": "js-post-1504229",
+      "author": "utunnels",
+      "date": "2025-03-14T15:16:30+0900",
+      "body": "Yeah, just copy the test and save it as whatevername.js in your plugins folder.\nYou only need to change the\n[12, 13]\npart. For the numbers you can check weapon types in your database settings. You can add your weapons separated by commas."
+    },
+    {
+      "post_id": "js-post-1504231",
+      "author": "chrismumu",
+      "date": "2025-03-14T15:28:02+0900",
+      "body": "Thanks so much for the concise effective response! I have copied the data and made the changes to match my weapon type like you suggested. I placed it in my plugins folder and activated it but the weapons still appear behind the actor. I tried placing the plugin at the top of the plugins list, and then on the bottom, the result was the same. Do you mind looking over the .js I uploaded for errors I may have made? Thanks again!"
+    },
+    {
+      "post_id": "js-post-1504238",
+      "author": "utunnels",
+      "date": "2025-03-14T15:57:44+0900",
+      "body": "Your code seems fine.\nI wonder if you have other plugins that affect weapon animations.\nI've only tested it on an empty project."
+    },
+    {
+      "post_id": "js-post-1504239",
+      "author": "chrismumu",
+      "date": "2025-03-14T15:59:58+0900",
+      "body": "I am using dozens of visustella plugins to name a few.. battle core, weapon animation, weapon swap system and more. Perhaps there is incompatibility there. Thanks for checking it out."
+    },
+    {
+      "post_id": "js-post-1504241",
+      "author": "rpgLord69",
+      "date": "2025-03-14T16:28:38+0900",
+      "body": "chrismumu said:\nThanks so much! I'm also using the visustella weapon swap plugin, so each character of mine is using two weapons that they can swap between, including the big gun wielder. How should I set the attack skill if my actor has the possibility of wielding two different weapon types?\nClick to expand...\nIf you don't get the plugin working (VisuStella changes those functions), you can make your attack skill action sequence check if the user has certain weapon type and make conditional branches.\nLike conditional script (replace X with weapon type Id):\nBattleManager._subject.isWtypeEquipped(X)\nOr you can just give your weapons the trait to change attack skill, instead of the actor."
+    },
+    {
+      "post_id": "js-post-1504242",
+      "author": "chrismumu",
+      "date": "2025-03-14T16:34:16+0900",
+      "body": "The plugin idea wasn't working so I want to try this idea. How does changing the attack skill on the weapon make the weapon appear above the actor?"
+    },
+    {
+      "post_id": "js-post-1504243",
+      "author": "rpgLord69",
+      "date": "2025-03-14T16:44:48+0900",
+      "body": "chrismumu said:\nThe plugin idea wasn't working so I want to try this idea. How does changing the attack skill on the weapon make the weapon appear above the actor?\nClick to expand...\nI meant it ties with the idea in the first reply in this thread of showing a picture(s), instead of the standard weapon animation."
+    },
+    {
+      "post_id": "js-post-1504244",
+      "author": "utunnels",
+      "date": "2025-03-14T16:59:24+0900",
+      "body": "It looks like visustella rewrite their battle scene so weaponImageId is not used anymore."
+    },
+    {
+      "post_id": "js-post-1504255",
+      "author": "chrismumu",
+      "date": "2025-03-14T18:23:38+0900",
+      "body": "So far the plugins have not worked for me, thank you for the attempts! Now I am using the idea to create a new attack skill for the weapon and create an action sequence for it and I have comprehended the process up until there. I'm not sure how to go about displaying the picture of the weapon through the action sequence, is there a certain plugin command I need to be looking for? Thanks for all the help so far!"
+    },
+    {
+      "post_id": "js-post-1504256",
+      "author": "utunnels",
+      "date": "2025-03-14T18:26:43+0900",
+      "body": "Have you tried the one above the post? I made some adjustment for visustella."
+    },
+    {
+      "post_id": "js-post-1504258",
+      "author": "chrismumu",
+      "date": "2025-03-14T18:39:08+0900",
+      "body": "I did try the adjusted plugin, unfortunately it still didn't fix the issue."
+    },
+    {
+      "post_id": "js-post-1504259",
+      "author": "rpgLord69",
+      "date": "2025-03-14T18:42:58+0900",
+      "body": "chrismumu said:\nSo far the plugins have not worked for me, thank you for the attempts! Now I am using the idea to create a new attack skill for the weapon and create an action sequence for it and I have comprehended the process up until there. I'm not sure how to go about displaying the picture of the weapon through the action sequence, is there a certain plugin command I need to be looking for? Thanks for all the help so far!\nClick to expand...\nEvent command show picture. Or make (MV style) animation and show it.\nI think you can get coordinates for the pictures (these scripts in control variable and show pic at the variable x,y coordinates):\nBattleManager._subject.battler().x\nBattleManager._subject.battler().y\nYou may need to add/subtract to the variables (with control variables event command) a bit to position the weapon correctly."
+    },
+    {
+      "post_id": "js-post-1504264",
+      "author": "utunnels",
+      "date": "2025-03-14T18:49:32+0900",
+      "body": "Yeah it is a bit strange because I tried in vs sample project with the default rtp battlers.\nAnyway it is a bit hard to write things based on vs because it is obfuscated."
+    },
+    {
+      "post_id": "js-post-1504265",
+      "author": "rpgLord69",
+      "date": "2025-03-14T18:52:14+0900",
+      "body": "utunnels said:\nYeah it is a bit strange because I tried in vs sample project with the default rtp battlers.\nAnyway it is a bit hard to write things based on vs because it is obfuscated.\nClick to expand...\nVisuStella Weapon Animation plugin changes some things. Don't know if it's the reason, but at least it changes:\nSprite_Weapon loadBitmap function Change\nSprite_Weapon updateFrame function Change"
+    }
+  ]
+}
