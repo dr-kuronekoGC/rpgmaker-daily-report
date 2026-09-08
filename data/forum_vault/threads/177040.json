@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/i-have-trouble-making-a-battle-tutorial.177040",
+  "title": "I have trouble making a battle tutorial ...",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:47:17.862949+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1509789",
+      "author": "isaac3000",
+      "date": "2025-04-18T20:25:03+0900",
+      "body": "Hello again,\nthis feels like it should have been so easy to make yet I have difficulties.\nMy problem is, the event processing is not waiting for the player to choose a command but skips this entirely\nand goes to the next page. This is what I tried to do:\netc.\nBut after page 1 is done, page 2 does not allow for the player to do anything then it goes to page 3 which gets skipped since the player didn't get a chance to attack hence the enemy is at full HP and the condition for the page isn't met.\nAfter all the 9 pages speed through, then the player can attack.\nI tried to find an option like: wait for input but this doesn't exist, so how would I go about this?\nThanks in advance as always!"
+    },
+    {
+      "post_id": "js-post-1509790",
+      "author": "Andar",
+      "date": "2025-04-18T20:53:03+0900",
+      "body": "you failed to understand the battle sequence.\nskill selection and skill execution are two different parts of the sequence, and the troop events are always processed on skill execution, never on skill selection.\nthat said, nothing in there should stop the player from selecting commands or using items in the selection phase. so if that is skipped, then something else is interfering as well."
+    },
+    {
+      "post_id": "js-post-1509794",
+      "author": "isaac3000",
+      "date": "2025-04-18T21:04:08+0900",
+      "body": "Andar said:\nyou failed to understand the battle sequence.\nskill selection and skill execution are two different parts of the sequence, and the troop events are always processed on skill execution, never on skill selection.\nthat said, nothing in there should stop the player from selecting commands or using items in the selection phase. so if that is skipped, then something else is interfering as well.\nClick to expand...\nWhen is the selection phase? Page 2 for example?"
+    },
+    {
+      "post_id": "js-post-1509807",
+      "author": "Andar",
+      "date": "2025-04-18T22:35:26+0900",
+      "body": "as I already said, the selection phase is outside the scope of the events - you CANNOT have an event run or trigger on selection.\nwhat you can do is have a troop event on turn 0 (before everything) give instructions and apply a state that seals unwanted skills, then have the player make the selection for turn 1, and then run an event on the execution of turn 1 that sets different state for the turn 2 selection and so on.\nas such your second troop event is useless because it doesn't do anything at all.\nAnd sealing skills by state is a much better way than removing them with the change skill command for a lot of reasons. For example removing attack and/or guard is useless because the two buttons are hardcoded overrides that are always available.\nAnd some battle plugins do not update the battlers on changes to the actor data, so it is not clear if those commands even take effect. The states however will work in battle.\nyou just need to make the states sealing the skills to have a duration of 2 because the first turn is the current turn, and they need to be there for effects on the selection phase of the next turn.\nBut again, you need to find out why the selection phase is skipped because the troop events above cannot do this."
+    },
+    {
+      "post_id": "js-post-1509812",
+      "author": "isaac3000",
+      "date": "2025-04-18T23:10:10+0900",
+      "body": "Andar said:\nas I already said, the selection phase is outside the scope of the events - you CANNOT have an event run or trigger on selection.\nwhat you can do is have a troop event on turn 0 (before everything) give instructions and apply a state that seals unwanted skills, then have the player make the selection for turn 1, and then run an event on the execution of turn 1 that sets different state for the turn 2 selection and so on.\nas such your second troop event is useless because it doesn't do anything at all.\nAnd sealing skills by state is a much better way than removing them with the change skill command for a lot of reasons. For example removing attack and/or guard is useless because the two buttons are hardcoded overrides that are always available.\nAnd some battle plugins do not update the battlers on changes to the actor data, so it is not clear if those commands even take effect. The states however will work in battle.\nyou just need to make the states sealing the skills to have a duration of 2 because the first turn is the current turn, and they need to be there for effects on the selection phase of the next turn.\nBut again, you need to find out why the selection phase is skipped because the troop events above cannot do this.\nClick to expand...\nI am sorry I really have trouble understanding what to do.\nRight now I do have a troop event on turn 0 which gives instructions before everything else and I added a state like you mentioned but the player turn gets skipped.\nI don't have a way to figure out why since this game is basically 3 maps long and has like 3 events running I did nothing to make the game skip the player. I doubt it's a certain plugin unless it has to do with the battle ticks or something.\nI can't even find a guide online with examples, like I see posts from other people over the years but not a single guide on any site"
+    },
+    {
+      "post_id": "js-post-1509816",
+      "author": "Andar",
+      "date": "2025-04-18T23:23:19+0900",
+      "body": "isaac3000 said:\nbut the player turn gets skipped.\nClick to expand...\nand I already said that this has nothing to do with your troop events, but is caused by something else.\nand no matter what, you need to find out why.\nhow did you start the battle? it is by battletest, by an event in a new playtest or an event after loading a saved game?\nplease post a screenshot of your plugin manager with all your plugins and their order - because yes, a wrong order of plugins has caused problems before, especially with yanfly plugins who can react very strangely to a wrong order.\nHave you changed the state #1 or modified the skill lists anywhere?\nwhat is the setting for the battle in the database/system tab?"
+    },
+    {
+      "post_id": "js-post-1509835",
+      "author": "isaac3000",
+      "date": "2025-04-19T00:38:34+0900",
+      "body": "Andar said:\nand I already said that this has nothing to do with your troop events, but is caused by something else.\nand no matter what, you need to find out why.\nhow did you start the battle? it is by battletest, by an event in a new playtest or an event after loading a saved game?\nplease post a screenshot of your plugin manager with all your plugins and their order - because yes, a wrong order of plugins has caused problems before, especially with yanfly plugins who can react very strangely to a wrong order.\nHave you changed the state #1 or modified the skill lists anywhere?\nwhat is the setting for the battle in the database/system tab?\nClick to expand...\nI started it in all of the above. I did try the battletest first wasn't working, I tried in a new playtest wasn't working, even event after loading a saved game and again it wasn't loading.\nI didn't modify state 1 or any of these skills.\nNot sure I understand the question, in the database/system tab I see only 1 battle relevant option which is to have a side view battle or not, which I have enabled. Or did you mean something else maybe?\nI did find a way to get it to work, I created 3 switches, 4 battle troops with the same enemy and i am aborting the battle each time with a new switch opening up and processing a new battle.\nA bit annoying cause the player basically gets thrown into a \"new\" battle again to choose one command and then the battle get's aborted.\nI don't think it's possible to have all these take place in one battle through eventing, the engine skips the event pages. Quite unfortunate.\nRegardless thank you very much for trying to help my incompetent self"
+    },
+    {
+      "post_id": "js-post-1509843",
+      "author": "Showsni",
+      "date": "2025-04-19T02:08:08+0900",
+      "body": "isaac3000 said:\nI started it in all of the above. I did try the battletest first wasn't working, I tried in a new playtest wasn't working, even event after loading a saved game and again it wasn't loading.\nClick to expand...\nFirst thing to do is change the order of your plugins. The Yanfly plugins should be in the order listed here:\nhttp://www.yanfly.moe/wiki/Yanfly_Engine_Plugins\nAnd for testing purposes, you can just turn all your plugins off and see if things work as expected. If they do, you'll know it's a plugin causing your issues and can work on narrowing down which one."
+    },
+    {
+      "post_id": "js-post-1509860",
+      "author": "Andar",
+      "date": "2025-04-19T03:40:15+0900",
+      "body": "As I already mentioned above the yanfly plugins can cause strange errors if installed in the wrong order - and your order of them is a mess. Please follow the advice of the poster above to re-sort them.\nPlease be aware that resorting them will make all previous saves incompatible, you'll have to start a new playtest after that.\nAnother question: which troop did you define as the base troop for the base troop events?\nand which events are in that troop?\nBecause if I had known that you use that plugin, I would have asked for that info long ago as it could cause such problems as well if there are conflicting troop events."
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/renaming-sv-attack-motions.178308",
+  "title": "Renaming SV Attack Motions",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:47:12.131232+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1518301",
+      "author": "Nirriti",
+      "date": "2025-06-14T11:21:17+0900",
+      "body": "In RMMZ, you can set weapon animations for side-view battles party members. Initially, I thought you affixed those to weapons individually. But no, its in the System tab\n(forgot about it)\n. So I had to start splitting some wep. subtypes. Then it hit me as I was editing: I want to rename these animations.\nNow, Its easy to edit the sprite sheets. But the selection in the dropdown menu\n(Dagger/sword/flail/axe...)\nis natively\nSET IN STONE\n. I could\n(but shouldnt)\nedit it somewhere in the main files, but I fear Ill miss something and cause issues. I rather not run off a chart on the side to remind myself which is which\n(ex: Club = actually is a rapier)\ndown the line. Worse case scenario, Ill default to that. My RPG will have classical weapons and some splitting a few subtypes. So, I dont need StunGun/Chainsaw/RailGun/etc.\nI would like to rename these\n, basically\n(added a screenshot to clarify).\nWhat would be the simplest way to achieve that?\nI do not want to resort to V.S. plugins\n(personal reasons).\nThanks in advance! ^^"
+    },
+    {
+      "post_id": "js-post-1518311",
+      "author": "sunhihi",
+      "date": "2025-06-14T15:11:25+0900",
+      "body": "I've always felt that\nRPG Maker\nhas design issues in this area, so I wrote a plugin to address it. It allows you to set a separate image for each weapon individually—but you'll need to slice the weapon images beforehand.\nSince I also created two other weapon formats, if you're not using them, don't enable them.\nSunMZ武器紙娃娃 v3.3.0 by sunhihi\nsunhihi.itch.io"
+    },
+    {
+      "post_id": "js-post-1518312",
+      "author": "Solar_Flare",
+      "date": "2025-06-14T15:42:45+0900",
+      "body": "Nirriti said:\nI would like to rename these\n, basically\n(added a screenshot to clarify).\nWhat would be the simplest way to achieve that?\nClick to expand...\nThere is absolutely no way within our means to alter that listing. (At least, not without violating the EULA.) Your only option would be to use a plugin that\nignores\nthat particular setting in the System tab and introduces a different way to set the same data. I assume the plugin in the above post satisfies this criteria."
+    },
+    {
+      "post_id": "js-post-1518364",
+      "author": "Nirriti",
+      "date": "2025-06-15T02:19:17+0900",
+      "body": "sunhihi said:\nI've always felt that\nRPG Maker\nhas design issues in this area, so I wrote a plugin to address it. It allows you to set a separate image for each weapon individually—but you'll need to slice the weapon images beforehand.\nSince I also created two other weapon formats, if you're not using them, don't enable them.\nSunMZ武器紙娃娃 v3.3.0 by sunhihi\nsunhihi.itch.io\nClick to expand...\nIm sure its a good plugin, but I have trouble wrapping my head around all the diff parameters. Like whats the diff. between <Weapon Type Data List> and <Weapon Image Data List>? Why is there 2 lines of <weapon customize image> and <weapon SV image>\n(and the same is identical in the two before mentionned categories\n)? After trials and errors, I somehow got it to display but I would have to adjust sprite alignment by making a lot of tests, as its misaligned. All of this (need 3 plugins to use) is a bit beyond me, a bit ashamed to admit. I think Ill resort to using the default SV Motion Types and just make myself a legend/chart on the side to remember which is which, plus edit the sprites, based off what ill place/rename.\nThe <show armor> customization option is a neat addition! Neat idea, Sunhihi."
+    },
+    {
+      "post_id": "js-post-1518370",
+      "author": "Solar_Flare",
+      "date": "2025-06-15T02:53:11+0900",
+      "body": "Nirriti said:\nI think Ill resort to using the default SV Motion Types and just make myself a legend/chart on the side to remember which is which, plus edit the sprites, based off what ill place/rename.\nClick to expand...\nAnd maybe make sure to place the sprites in the same place as the default version whenever they happen to represent the same thing. That should make your life a\nlittle\neasier, I'd think."
+    },
+    {
+      "post_id": "js-post-1518379",
+      "author": "Holder",
+      "date": "2025-06-15T04:31:26+0900",
+      "body": "Akea Animated Battle system\nis free and lets you have individual action motions for each weapon and their type. I'm working my way through getting lots of different weapon types completed for people to use, currently I have 20 different types but will have 45 when finished.\nThe Demo there is an open MZ project that you can look through or even just build upon."
+    },
+    {
+      "post_id": "js-post-1518422",
+      "author": "sunhihi",
+      "date": "2025-06-15T09:44:56+0900",
+      "body": "Nirriti said:\nIm sure its a good plugin, but I have trouble wrapping my head around all the diff parameters. Like whats the diff. between <Weapon Type Data List> and <Weapon Image Data List>? Why is there 2 lines of <weapon customize image> and <weapon SV image>\n(and the same is identical in the two before mentionned categories\n)? After trials and errors, I somehow got it to display but I would have to adjust sprite alignment by making a lot of tests, as its misaligned. All of this (need 3 plugins to use) is a bit beyond me, a bit ashamed to admit. I think Ill resort to using the default SV Motion Types and just make myself a legend/chart on the side to remember which is which, plus edit the sprites, based off what ill place/rename.\nThe <show armor> customization option is a neat addition! Neat idea, Sunhihi.\nClick to expand...\nI think you’ve already figured out the difference between <Weapon Type Data List> and <Weapon Image Data List>. If you’re willing to set up each weapon individually, the <Weapon Type Data List> can be ignored.\nThere are two lines of settings because the layers distinguish between before and after the character.\nThe settings for SV images are actually based on the following template.\nBut I actually don't recommend using this, as it requires handling a large amount of assets. The images provided in my example are meant for <weaponCustImage>.\nYou can set custom action modules in . By default, I have only created a slashing module, and I haven't made any other modules.\nThe alignment parameters for SV images can be set in . The reason for placing them here is to allow you to configure different settings for each character.\nI finished this plugin a while ago, but since I've assigned myself a lot of other tasks, I haven't created the supporting templates. However, everything should function properly."
+    }
+  ]
+}

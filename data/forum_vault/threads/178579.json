@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-porting-mog_charposes-into-mz.178579",
+  "title": "MZ Help porting MOG_CharPoses into MZ",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:47:09.452527+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1520096",
+      "author": "AmeerAshourDraws",
+      "date": "2025-06-27T20:31:27+0900",
+      "body": "Hey everyone, I currently need some help with the MOG_CharPoses plugin. For those unaware, this is an MV plugin made by MogHunter, who also made the Chrono Engine, which allowed characters to have different animations during certain states. I've been working on a project called the Schala Z System which is a port of the Chrono Engine to MZ, particularly Chrono Mode (I have on interest in ABS mode).\nI've been porting a lot of other MOG plugins alongside it to make sure they work with the system, but now I'm currently stumped with the CharPoses plugin. Anytime I tried to use it after renaming the files appropriately, I would get this. I tried it on an empty project to double check if the Schala Z System was doing something wrong, but no, the same result happens.\nI figured it could be because it's taking the Actor 1's dashing sprite and treating it like a giant one, you know the one where it has multiple actors grouped into one, but get this, whenever I try putting the $ sign to make it read it as a single character sprite sheet, it errors out completely. And whenever I set the actor to the character those sheets are based on, whether I added the $ or not, it would still crash and say it failed \"%24Actor1_dash.png\", even when adding the %24 part.\nI have no clue what the problem could be other than MZ having a different method of rendering and managing sprite sheets than MV, in which I don't know exactly where to look since I'm still somewhat an amateur when it comes to JavaScript in RPG Maker. If anyone knows any answers or hints, do let me know"
+    },
+    {
+      "post_id": "js-post-1520121",
+      "author": "AquaEcho",
+      "date": "2025-06-28T00:53:09+0900",
+      "body": "I don't remember having any issue with MOG_CharPoses in MZ but I was using FOSSIL and Cross Engine. Do you still get issues when you use those? If not maybe there's a fix you can copy from.them."
+    },
+    {
+      "post_id": "js-post-1520133",
+      "author": "AmeerAshourDraws",
+      "date": "2025-06-28T02:23:13+0900",
+      "body": "AquaEcho said:\nI don't remember having any issue with MOG_CharPoses in MZ but I was using FOSSIL and Cross Engine. Do you still get issues when you use those? If not maybe there's a fix you can copy from.them.\nClick to expand...\nOddly enough, I also didn't get any issues when using the Cross Engine. It probably has the fix, but I'll check it out at a different time, and it's gonna be a bit tricky since it's mostly designed with Altimit in mind, so it's definitely gonna take me a while"
+    },
+    {
+      "post_id": "js-post-1520134",
+      "author": "AquaEcho",
+      "date": "2025-06-28T02:27:37+0900",
+      "body": "Just ctrl+f the Cross Engine file and look for the CharPoses sections."
+    },
+    {
+      "post_id": "js-post-1520150",
+      "author": "AmeerAshourDraws",
+      "date": "2025-06-28T04:29:42+0900",
+      "body": "AquaEcho said:\nJust ctrl+f the Cross Engine file and look for the CharPoses sections.\nClick to expand...\nI did start at a part of it, it's not gonna be that straightforward as it seems, I will have to tinker with it more at a different time"
+    },
+    {
+      "post_id": "js-post-1520180",
+      "author": "Crim_T",
+      "date": "2025-06-28T15:02:57+0900",
+      "body": "If it helps, The fix is likely in Fossil.  As I can use MOG_CharPoses with MOG_ChronoEngine in MZ as long as fossil is being used.\nBelow is a pic of the included idle pose in action\nEdit: Forgot to disable the extra plugins, GALV_CamControl and CrossGraphicsFix, but upon re checking with them disabled it still worked as expected."
+    },
+    {
+      "post_id": "js-post-1520324",
+      "author": "AmeerAshourDraws",
+      "date": "2025-06-29T18:42:18+0900",
+      "body": "Okay, I tried screwing around a little with the scripts and also the Chrono Engine directly ported to MZ, and I think I found the culprit, which is not something I expected. Whenever I try the plugin in the ported Chrono Engine regardless if I have Fossil on or off, it works just fine. However, this is because it's still an MV project and that it's running off of MV's corescript. If at any point you update the corescript to any of MZ's versions (which is the case by default with all of my tests in blank MZ projects), the plugin will break entirely. I confirmed that by making a duplicate of the ported Chrono Engine and updated the corescript from \"Unknown\" (definitely MV's) to 1.9.0, and the entire project would barely boot up, even when I was using Fossil (which I just learned it was updated recently).\nSo, my solution here is to rewrite the plugin's syntax and code to make it work with MZ's corescript, which is gonna be tricky."
+    },
+    {
+      "post_id": "js-post-1520350",
+      "author": "Crim_T",
+      "date": "2025-06-29T23:42:31+0900",
+      "body": "The project I showed above was one that was started in MZ, and then the Cross engine resources were transferred in.\nJust to check,  I started a new project in MZ and added just the MOG_CharPoses.js and related img\\characters files ($Hero01.png, etc).  Also worked there, even without Fossil.  So looks like I was wrong about Fossil being the key, sorry.\nI then added the modified to work in MZ, MOG_ChronoEngine.js and the Fossil.js from\nhttps://github.com/Aesica/fossil-MV-MZ\n.  Then a quick transfer over of the rest of the ChronoEngine img folder.  Finally copied over the Database and Toolmap.\nQuick Fight with some imps.  You can see the Victory Pose in Action.\nSo not sure why you're having issues with MOG_CharPoses.js.   Maybe try a new MZ project?  Wouldn't think it's any different than updating core scripts, but as you can see this is working for me."
+    },
+    {
+      "post_id": "js-post-1520353",
+      "author": "AmeerAshourDraws",
+      "date": "2025-06-30T00:53:18+0900",
+      "body": "Crim_T said:\nThe project I showed above was one that was started in MZ, and then the Cross engine resources were transferred in.\nView attachment 343887\nJust to check,  I started a new project in MZ and added just the MOG_CharPoses.js and related img\\characters files ($Hero01.png, etc).  Also worked there, even without Fossil.  So looks like I was wrong about Fossil being the key, sorry.\nView attachment 343888\nI then added the modified to work in MZ, MOG_ChronoEngine.js and the Fossil.js from\nhttps://github.com/Aesica/fossil-MV-MZ\n.  Then a quick transfer over of the rest of the ChronoEngine img folder.  Finally copied over the Database and Toolmap.\nView attachment 343890\nQuick Fight with some imps.  You can see the Victory Pose in Action.\nSo not sure why you're having issues with MOG_CharPoses.js.   Maybe try a new MZ project?  Wouldn't think it's any different than updating core scripts, but as you can see this is working for me.\nClick to expand...\nOkay... believe it or not, I managed to get it to work, and it is a quirk I noticed with the plugin. Basically, the issue was the fact that the base MZ characters that I was using were part of MZ's default Actors sheet, those are one of the big sprite sheets that have 8 sprite sheets in one. Turns out, if you have one of them selected for your character(s), the plugin then starts considering the other states as part of a big sprite sheet and only goes for what it thinks is the first sprite sheet.\nThe only way I fixed it was to make sure I selected the standard ones that had a $ at the start. This never happened to me before when I was testing the battles with the Schala Z System, but I guess that makes sense now that I know what's happening. I still don't know why the battles wouldn't activate, though, probably screwed something up in my end"
+    },
+    {
+      "post_id": "js-post-1520384",
+      "author": "AmeerAshourDraws",
+      "date": "2025-06-30T04:23:55+0900",
+      "body": "Okay last update here as I finally got everything working including the battles, and I figured I'd mention it here.\nThe reason why the battles wouldn't start was because the Chrono Engine was\nabove\nthe CharPoses, and it didn't take me until porting the CharPoses before the Chrono Engine for it to work. I've never seen anyone document this, so I'm gonna do it now"
+    },
+    {
+      "post_id": "js-post-1520390",
+      "author": "AquaEcho",
+      "date": "2025-06-30T05:17:22+0900",
+      "body": "Cross Engine does say you have to have the plugins in a specific order. I don't think Chrono Engine vanilla ever explicitly mentions it but the demo project does have all the plugins in a specific order."
+    },
+    {
+      "post_id": "js-post-1520395",
+      "author": "AmeerAshourDraws",
+      "date": "2025-06-30T05:28:22+0900",
+      "body": "AquaEcho said:\nCross Engine does say you have to have the plugins in a specific order. I don't think Chrono Engine vanilla ever explicitly mentions it but the demo project does have all the plugins in a specific order.\nClick to expand...\nCross Engine didn't mention anything about ordering the CharPoses, it just mentioned putting it between Altimit and Chrono Engine, so I assumed where CharPoses was put didn't matter as long as it's active.\nAnd sure, you could argue that the demo project has a specific order made, but say someone didn't use the demo project as a basis and started off with a relatively blank project (like I did just so I can get a better idea of how the plugins worked) and someone else got a similar issue to mine. I never found anyone saying that the plugins needed to be in a specific order, so I feel like it should be known and mentioned at least."
+    },
+    {
+      "post_id": "js-post-1520412",
+      "author": "AquaEcho",
+      "date": "2025-06-30T07:34:18+0900",
+      "body": "AmeerAshourDraws said:\nCross Engine didn't mention anything about ordering the CharPoses, it just mentioned putting it between Altimit and Chrono Engine, so I assumed where CharPoses was put didn't matter as long as it's active.\n...\nI never found anyone saying that the plugins needed to be in a specific order, so I feel like it should be known and mentioned at least.\nClick to expand...\nThe first post in the Cross Engine thread has a section called Plugin Order with a screencap of the plugins in order. Granted, Moghunter never mentions a plugin order for vanilla Chrono Engine probably because they assumed everyone would build off the demo project (even though it's not required)\nCROSS ENGINE: Combining Chrono Engine with Altimit Movement\nLatest Version: Cross Engine Alpha 0.20.06.26 Demo Project     What is Cross Engine?  Over the course of the last few months I've been working on my game, and I decided I wanted to combine Altimit Movement and Mog's Chrono Engine.  Cross Engine is what I call the big pile of functions that makes...\nforums.rpgmakerweb.com\nI will update my Chrono Engine guide to emphasize the plugin order matters."
+    }
+  ]
+}
