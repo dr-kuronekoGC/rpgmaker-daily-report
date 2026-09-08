@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/stop-showing-text-event-when-player-moves-away-from-event.178207",
+  "title": "XP Stop showing text event when player moves away from event",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:09:21.355936+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1517605",
+      "author": "RachelB",
+      "date": "2025-06-09T12:11:27+0900",
+      "body": "Hi,\nI'm new to RPG Maker XP and I couldn't find how to make event \"show text\" stop showing text when player moves away from event (without the need to press the action button first), similar to sign posts in later generation Pokemon games."
+    },
+    {
+      "post_id": "js-post-1517614",
+      "author": "kyonides",
+      "date": "2025-06-09T14:09:47+0900",
+      "body": "You'd need to add a check that terminates the message window. IIRC, there is a way to do it via event commands, but I don't remember anything specific right now. :S\nIf using a custom script, you might need a Window_Message mod.\nWARNING: It might clash with other custom scripts.\nDISCLAIMER: I won't be held responsible for ANY disaster that might take place while implementing this scriptlet.\nRuby:\n# * Hide Message XP - Move the Booty Version\n#   2025-06-08\n\nclass Window_Message\n  def update\n    super\n    # If fade in\n    if @fade_in\n      self.contents_opacity += 24\n      if @input_number_window != nil\n        @input_number_window.contents_opacity += 24\n      end\n      if self.contents_opacity == 255\n        @fade_in = false\n      end\n      return\n    end\n    # If inputting number\n    if @input_number_window != nil\n      @input_number_window.update\n      # Confirm\n      if Input.trigger?(Input::C)\n        $game_system.se_play($data_system.decision_se)\n        $game_variables[$game_temp.num_input_variable_id] =\n          @input_number_window.number\n        $game_map.need_refresh = true\n        # Dispose of number input window\n        @input_number_window.dispose\n        @input_number_window = nil\n        terminate_message\n      end\n      return\n    end\n    # If message is being displayed\n    if @contents_showing\n      # If choice isn't being displayed, show pause sign\n      if $game_temp.choice_max == 0\n        self.pause = true\n      end\n      # Cancel\n      if Input.trigger?(Input::B)\n        if $game_temp.choice_max > 0 and $game_temp.choice_cancel_type > 0\n          $game_system.se_play($data_system.cancel_se)\n          $game_temp.choice_proc.call($game_temp.choice_cancel_type - 1)\n          terminate_message\n        end\n      end\n      # Confirm ## Or Just Move Away from NPC\n      if Input.trigger?(Input::C) or Input.dir4 > 0\n        if $game_temp.choice_max > 0\n          $game_system.se_play($data_system.decision_se)\n          $game_temp.choice_proc.call(self.index)\n        end\n        terminate_message\n      end\n      return\n    end\n    # If display wait message or choice exists when not fading out\n    if @fade_out == false and $game_temp.message_text != nil\n      @contents_showing = true\n      $game_temp.message_window_showing = true\n      reset_window\n      refresh\n      Graphics.frame_reset\n      self.visible = true\n      self.contents_opacity = 0\n      if @input_number_window != nil\n        @input_number_window.contents_opacity = 0\n      end\n      @fade_in = true\n      return\n    end\n    # If message which should be displayed is not shown, but window is visible\n    if self.visible\n      @fade_out = true\n      self.opacity -= 48\n      if self.opacity == 0\n        self.visible = false\n        @fade_out = false\n        $game_temp.message_window_showing = false\n      end\n      return\n    end\n  end\nend"
+    },
+    {
+      "post_id": "js-post-1517617",
+      "author": "RachelB",
+      "date": "2025-06-09T14:21:55+0900",
+      "body": "Thank you for replying!\nThat's quite a bit above my skill level but it's good to know there might be a way to do it via an event command. I just wonder what it is.\nThe only scripts I have are from the default Pokemon Essentials v21 files, if that matters."
+    }
+  ]
+}

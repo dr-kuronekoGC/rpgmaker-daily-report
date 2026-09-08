@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/checking-player-proximity-to-an-event.178002",
+  "title": "Checking Player Proximity to an Event",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:09:23.497898+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1516169",
+      "author": "St4rG0re",
+      "date": "2025-05-29T12:38:51+0900",
+      "body": "Ohmygatos said:\nI really appreciate all the helpful tips!!\nThis is what I found that was simplest and accomplished exactly what I was looking to do:\nView attachment 241469\nClick to expand...\nReferenced thread:\nhttps://forums.rpgmakerweb.com/index.php?threads/how-to-check-player-proximity-to-event.146996/post-1302915\nThis is exactly what I was looking for, and I translated it into XP's commands. Unfortunately It isn't running for me. No errors appear when starting up, but the sound does not cue when I approach the event, and the self switch doesn't happen. Am i missing something? Does a significant change have to happen to work in XP?\nPlease let me know if this is in the wrong place, this is my first time posting to the rpg maker forums."
+    },
+    {
+      "post_id": "js-post-1516200",
+      "author": "Ms Littlefish",
+      "date": "2025-05-29T20:09:08+0900",
+      "body": "This thread was moved from RPG Maker MV Support to RPG Maker XP Support.\nWelcome to the forum, have fun and good luck!"
+    },
+    {
+      "post_id": "js-post-1516502",
+      "author": "schM0ggi",
+      "date": "2025-05-31T23:12:38+0900",
+      "body": "@St4rG0re\nDon't know if you already solved your problem but if not, here is your solution:\nYou have 3 errors in your code.\n1. After assigning the player's X/Y coordinates to your variables (\"0010 - Player X\" and \"0011 - Player Y\"), you immediately assign the current event's X/Y coordinates to the same variables. Instead, you need to subtract your variables with the current event's X/Y coordinates.\n2. In your first 2 conditional branches, you are checking if your variables are equal to 0. Instead, you need to check if your variables are lower (<) than 0. Otherwise, the \"multiply by -1\"command doesn't make sense. The whole point of it is to transform a negative number to a positive one, in case the coordinates of your player are lower than the ones of your current event (player is on the left to and/or above the event on the map). Because in the last conditional branches, only a positive number is checked. If you wouldn't make the steps with the \"multiplay by -1\", then the code, without additional checks for negative numbers, would only work if the player is on the right to and/or below the event on the map.\n3. In your last conditionals branches, you check if your variables are equal to 3. You have to check if they are lower or \"equal or lower\" than 3, depending on what your goal is. Otherwise, your code will only work if the player has a distance of 3 tiles (X and Y) to the event. This is bad because it will not work in some constellations like if the player approaches the event with an already smaller distance than 3 tiles on one axis.\nHope that helps."
+    },
+    {
+      "post_id": "js-post-1516527",
+      "author": "DevRPG2k",
+      "date": "2025-06-01T05:06:30+0900",
+      "body": "I didn't find any script for RMXP that has the terms of use included, so I'll just pass on the method made by events:\nHow to Make an Event Detect Player Proximity\nWhat I want: To make an enemy that will patrol the map on their set route until the player gets within a few tiles, at which point they switch to approaching.  What I have: Variables that match the current location of the event, and a variable for the detection radius. A branch that will flip a...\nforums.rpgmakerweb.com\nHere is the same logic, but applied to Rm2k/2k3, so just redo it on RMXP:\nParallel Process to check if the player is in an event’s line of sight?\nHiya, so I want to make a stealth section in my game. Very simple, like the Deku Palace in Majora’s Mask.   I just want an event to play out whenever the player in within an event’s line of sight. So, if the event is facing to the right, every tile in a straight line in front of them would be...\nforums.rpgmakerweb.com\nHere is a method made with RMVXAce events, also just redo it in RMXP:\nProximity/Distance Check\nI am Vectra. I've gotten a request from a friend to do this. I did this for someone else a long time ago so i figured I'll make a tutorial for all who wants to know how.  Here's what you need: 4 Variables 4 Conditional Branches  What are the 4 variables?: X-Coord1 Y-Coord1 X-Coord2 Y-Coord2...\nforums.rpgmakerweb.com"
+    }
+  ]
+}

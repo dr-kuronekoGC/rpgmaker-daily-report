@@ -1,0 +1,359 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/mv-mz-make-an-action-game-chrono-engine-beginner-guide-on-map-tools-and-battles.168047",
+  "title": "MV MV + MZ : Make an Action Game! Chrono Engine Beginner Guide - On Map Tools and Battles!",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:09:23.178250+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1439704",
+      "author": "AquaEcho",
+      "date": "2024-04-25T03:20:23+0900",
+      "body": "This is a beginner introductory guide. I also have another guide\nAdvanced Features\n!\nWhat is Chrono Engine?\nChrono Engine is a free, open-source suite of plugins used to make action games by adding on-map tools and battles for MV (and MZ compatible with\nFOSSIL\n(see MZ notes at bottom)). It can be confusing and overwhelming for beginners, especially since all the instructions are in Portuguese. This guide will simplify it.\nChrono Engine has two modes:\nABS\n(Action Battle System) and\nChrono Mode\n.\nABS mode\nallows you to make a game like 2D Zelda where you fight enemies on the map and use tools or weapons to solve puzzles.\nChrono Mode\nallows you to have a battle system like Chrono Trigger: an ATB or turn-based battle system on the map instead of cutting to the battle scene for battles.\nWhat else can I make in Chrono Engine?\nChrono Engine can be used to make any game that has on-map battles. Think tower defense games, RTSes, top-down shooters, etc.\nCan I still use the regular battle scene as well as the on-map battles?\nYes, the regular battle scene is still usable, so you can have both in your game.  You could have different sections of the game use different systems, or just use Chrono Engine for the map tools while using the regular battle scene for battles.\nCan I use both the ABS and Chrono modes in the same game?\nYes, it's toggleable with the plugin command chrono_mode : true or false\nWhere do I get it?\nhttps://mogplugins.com/mv-chrono-engine/\nYou can also get stock Chrono Engine as part of\nCross Engine\n(basically Chrono Engine on steroids)\nOnce downloaded, open the demo project. Go to Master_MV_23_1 > ChronoEngine> Game\n(Note: There is another demo project in the download showcasing the rest of Moghunter's plugins, which you can look at later to see if there's anything you want to use).\nYou will want to play the demo first (press the green play button in the top right in the editor) to see all the features in action.\nChrono Mode\nwill showcase a Chrono Trigger clone.\nABS Mode (Stage 1)\nwill showcase a Zelda clone with an emphasis on puzzles and some light combat.\nABS Mode (Stage 2)\nwill showcase a more action/battle-heavy ABS system with advanced features like combos and charged attacks.\nPlugin Commands (Debug)\nis simply a testing map to show what the different plugin commands do.\nOnce you've played enough, go back to the project file.\nThis is the Tool Map. Even though it is a map, the player never goes to it. It is simply to store event templates for the tools, spells, and items the player uses on the active map.  If you have used an event spawner plugin, this works much the same way. Whenever you use a tool, spell or item in game, its event is temporarily called from this template map and spawned on the active map the player is on, then unspawned when finished. After all, you only need an arrow, bomb or spell to show briefly after using it. Some of the events here are for ABS mode, some for Chrono Mode. Depending on the type of game you want to make, you only need some of them.\nSpoiler:\nOverview of all the tool events\nThe first five events are non-ABS items.\nThe next six events are the Zelda tools.\nThe last four are the basic attacks of Ash and his party members in Chrono Mode. (However if you add the party members in ABS mode and switch the leader they'll use them there too.)\nLines 3 and 4 are Chrono mode spells. Note it's possible to use these in ABS mode, but you will have to add the note ABS mode in the database note box for them to show up in the skill list.\nLine 6 is Chrono mode double and triple techs.\nThe last two lines are ABS mode skills used by the player, enemy and bosses.\nLet's look at the tool event pages.\nEach tool event will have a number of properties in its event page, like how long it takes to use it, how long it stays on the map, and what item/skill/weapon database entry to get its damage numbers/effects from.  The tool willl also have a move route defining how the tool event moves, what sound it makes, etc when its spawned onto the current map. You can see this arrow just moves straight ahead. If there is no move route the tool may not move from the user's position and may not see it.\nYou'll notice on every event on the tool map there is a comment for tool_item_id, tool_skill_id, or tool_weapon_id. That id refers to the database ID and allows that event to use its corresponding database stats. Likewise, the entry in the database will have a Tool Id : X note in the note section to link it back to its tool map event so that when you select that item/skill/weapon from a menu, it knows which tool event to spawn when you use it.\nThe explanation of every comment can be found in the MOG_ChronoEngine plugin file.\nTranslation of the Comments instructions from ChatGPT\nSpoiler:\nTranslation\ntool_item_id : ITEM_ID\n- Defines damage based on the Item ID.\ntool_skill_id : SKILL_ID\n- Defines damage based on the Skill ID.\ntool_item_cost : ITEM_ID\n- Activates an item cost for the action. (*Bow and arrow)\ntool_duration : X\n- Definition of action duration.\ntool_pose_suffix : NAME\n- Definition of the suffix of the character image when using the action.\ntool_pose_duration : X\n- Definition of the duration of the action pose.\ntool_area : MODE\n- Definition of the type of action impact area.\n- square             (Square)\n- front_square       (Half of square)\n- rhombus            (Rhombus)\n- front_rhombus      (Half of rhombus)\n- line               (Frontal Line)\n- wall               (Lateral Line)\n- cross              (Cross)\ntool_range : X\n- Definition of the collision area size of the action.\ntool_disable_collision\n- Disables event collision.\ntool_wait_collision : X\n- Defines a time to activate action collision.\ntool_disable_piercing\n- Disables piercing mode through the target.\ntool_damage_all\n- Causes damage to all targets, enemies, and allies.\ntool_position : MODE\n- Defines the initial position of the action.\ntarget             - Target selection through cursor.\nuser               - User's position.\nmove_to_target     - Makes the character move to the target in Chrono mode.\ntool_multihit : LAG_TIME\n- Activates multi-hit mode, where X is the time between hits.\ntool_action_times : TIMES : LAG_TIME\n- Triggers the action X times.\ntool_chain_action : ACTION_ID\n- Activates an action after the character finishes the first action.\ntool_chain_action_hit : ACTION_ID\n- Activates an action when the first action hits the target.\ntool_three_directions\n- The action is activated in three directions.\ntool_four_directions\n- The action is activated in four directions.\ntool_all_directions\n- The action is activated in all directions.\ntool_knockback_duration : X\n- Time the target remains paralyzed after the hit.\ntool_ignore_shield\n- Collision ignores whether the target is using a shield.\ntool_shield_reflect\n- The action is reflected when the user is using a shield.\ntool_unique\n- The action is activated only once.\ntool_diagonal\n- Allows the action to be activated diagonally.\ntool_diagonal_angle\n- The sprite angle will be based on the event's direction.\ntool_user_animation_id : X\n- Defines an animation on the user when activating the action.\ntool_cast_animation_id : X\n- Defines an animation on the user during the action invocation phase.\ntool_shake\n- Makes the screen shake when hitting the target.\ntool_boomerang : X\n- Activates boomerang mode, where X is the action distance.\ntool_hookshot : X\n- Activates hookshot mode, where X is the action distance.\ntool_user_zoom_effect\n- Activates zoom animation when using the action. (Requires MOG_Character_Motion plugin)\ntool_ignore_knockback\n- Allows the action to hit the target regardless of the knockback state.\ntool_combo : ACTION_ID : COMMAND_TYPE\n- Activates the combo system for this action, where a different action will be activated each time the player presses the required button.\n- COMMAND TYPE - Command type.\n- 0 Weapon Command/Button\n- 1 Skill Command/Button\n- 2 Item Command/Button\ntool_charge_attack : ACTION_ID : CHARGE_TIME\n- Activates the charge system for this action, where the action will be activated when the player holds down the normal attack button (Weapon Command) for a certain CHARGE_TIME.\nNext let's look at the database. The tabs we're interested in are Skills, Items, Weapons, and Armors:\nThe database stores all the battle data for the items, skills, weapons and enemies. The icon is what will show in your inventory or skill list and the tool item HUD in ABS Mode, or when it's obtained from a treasure chest or enemy loot drop. The image on the tool's event on the tool map is what shows up when you use the tool on the active map.\nAdding your own tools/skills\nTo create a new tool or skill, the best way is to copy and paste the event of a similar existing tool on the tool map. Here I create a new skill on the tool map (in an empty water tile).\nI called the skill event Teleport and gave it the tool_skill_id : 5 as it was the first empty slot in the skill database. Then I copied some of the comment tags from the other self-cast magic spells since they were the most similar to what I wanted to do and tweaked the duration numbers so it wouldn't take long to cast. Then I put in an event command that will transfer the player to the starting map of ABS Mode 1 (where you get the sword).  Make note of the event ID in the top left (70 here).\nNext I create a new database entry for the skill under skills. In the notebox I type in Tool Id: 70 to link it back to the tool map event and put abs mode so it shows up for use in the ABS mode skill menu.\nFinally, have a way to add the tool or skill to your actor in game. I like to make a treasure chest on the starting map to test it right away.\nThe change skill command will add it to the actor's list of selectable skills. The set_actor_skill command will make it his active skill and show it in the Tool HUD.\nNow, in my playtest, I got the skill from the chest, it shows up in my skill list, and is set as my skill in the tool HUD at the bottom of the screen.\nHow do tool collisions work (on non-enemy events)?\nIf you want events to react to tools, simply use collision_id comments on their event page. Anything below the collision_id comments will only happen if the event is hit with a tool with that corresponding event id from the tool map. In the case of this grass, it will only play the leaf flying animation and be erased if hit with the knife tool (6) or the crystal sword tool (51).\nHow do enemies work?\nTo designate an event as an enemy, you will need to put an enemy_id comment on its event page. This will link the event to an enemy's stats in the database. This slime has enemy_id : 5, so it would use that enemy database entry for its stats.\nEnemies in ABS Mode\nIn ABS mode, there will also be a comment for event sensor. The number will designate how many tiles away the player has to be before the enemy reacts. If the player is within X tiles, that enemy's self switch turns on. By default this is self switch D, but you can change this in the plugin settings for MOG_EventSensor\nThe slime's first event page has Autonomous Movement> Move at random. However, when the player is within 3 tiles, it switches to the self switch D event page and its Autonomous Movement sequence changes\nTo make an enemy use an attack from the tool map put this.act(TOOLID) in its moveroute. This ghost will shoot fireballs (tool ID 53)\nLet's look at the plugins.\nDo I need all of these plugins to use Chrono Engine?\nNo, the bulk of the code is in MOG_ChronoEngine, which is almost 12,000 lines long. Everything else is a smaller feature you may or may not need depending on what you want in your game. All of them are showcased in the demo project.\nNOTE:\nThe order of the plugins matter! Keep the plugins in the order they are in the demo, or follow the order below! If you are using Cross Engine, follow the order in the plugins section in the first post of the Cross Engine thread.\nA quick rundown of every plugin:\nSpoiler:\nPlugins\nAnything that doesn't start with MOG is just an empty file used as a placeholder to organize the plugin list. They're all turned off because they do nothing and you can safely delete them if you'd like.\nMOG_TitleSplashScreen: Shows images before the title screen. It's used in the demo to show credits\nMOG_ActionName: Shows a banner at the top of the screen with the name of the action when you use it.\nMOG_BattleHUD: This is used in Chrono Mode\nMOG_BossHP: Creates a large HP bar for the boss\nMOG_ComboCounter: Shows combo count for attacks\nMOG_DmgPopupEffects: Makes the damage numbers rise or bounce. The damage numbers themselves are created by the main ChronoEngine plugin.\nMOG_CharacterMotion: Gives various effects to the map events, like breathing and floating.\nMOG_DizzyEffect:\nMOG_EventIndicators: Shows small text and icons above events.\nMOG_TreasurePopup: Shows small icons and item names whenever you open a treasure chest or pick up an item\nMOG_Weather_EX: Creates weather effects. It's used for the floating leaves in the demo.\nMOG_PickupThrow: Allows you to create throwable events. This is used for the bomb tool in the demo, but can also be used to make events throwable like the pots, bushes and chickens in Zelda\nMOG_ActorHud: Creates a HUD element showing the party leader's stats\nMOG_GoldHud: Creates a HUD element showing the amount of gold you have on the map\nMOG_CharPoses: Allows you to use different character spritesheets for idling, jumping, and dashing\nMOG_EventSensor: Turns on a self switch in an event if it is within X tiles of the player. This is used in the demo to trigger changes in enemy event behavior or start battles\nMOG_ChronoEngine: The meat of the project that contains all the code for on map battles and collisions\nMOG_ChronoATBHud: Creates the ATB gauge in Chrono Mode\nMOG_ChronoEnemyHP: Shows the enemy HP bar\nMOG_ChronoCT: Creates the stamina/charge bar system and display. Needs MOG_ActorHUD turned on to work\nMOG_ChronoToolHud: Creates the four tool icons you see at the bottom of the screen in the ABS mode demo\nHow do I build on top of the Chrono Engine demo project?\nIt's widely recommended to build a game on top of the Chrono Engine demo project since everything is already set up for you, but it can be added to an existing project with a little work.\nIf you do use the demo project as a base, make sure to update the core RPG Maker Engine files to at least 1.6.2 as the demo comes with v1.5.0. A lot of other MV plugins are designed for v1.6.2 so if you don't update it other plugins may not work.\nTo update the core files, start a new project then copy that project's core files over to the Chrono Engine demo project at \\Master_MV_23_1\\ChronoEngine\\js.\nHow do I add Chrono Engine to my existing project?\nIf you already have an existing project, the easiest way to add it is have your game and the Chrono Engine demo open in separate windows at the same time so you can easily copy and paste what you need from the demo project into your project.\nThe two things you'll need to copy over is the\ntool map\nand the\ndatabase entries\nof the skills, items, and weapons you want. The entire tool map can be copied over easily by selecting the tool map from the map list in the demo, right click>copy, then pasting it (Ctrl+V) into the map list in your project. From there you can easily delete any events you don't need.\nYou'll also need to update the Tool Map ID parameter in the MOG_ChronoEngine plugin to the map ID it is in your existing project.\nDon't forget to update the images and animations in the tool events for your project. For example, the lantern tool uses animation 128 in the demo project. Animation 128 may not exist, or be something completely different in your project.\nCopying over the database entries may be more difficult if you already have existing items, skills, and weapons in your project. You can copy and paste entries from the demo project into the next available slots in your game's database, but you'll need to update what ids the tool map events are pointing to to match the item, skill and weapon ids in your project's database.\nFinally, you'll need to add the plugins to your project's plugin list. The only absolutely necessary one is MOG_ChronoEngine, but you probably want some of the other features in the demo project, so refer to the plugin list above to see which ones you need.\nNOTES for Chrono Engine in MZ:\nMOG_DmgPopupEffects will throw a this.digitWidth is not a function error. You can download a\npatched MZ version here\nYou may get an error after an attack is used \"cannot read property length of undefined\".\nTo fix it, go to the End Animation section in MOG_ChronoEngine plugin file, and add ? after the first this._animationSprites as seen below\nSo the line should read\nCode:\nif (this._animationSprites?.length > 0) {\nThis guide is regularly updated!\nWant to do  more with Chrono Engine? Check out the\nAdvanced Features\nguide"
+    },
+    {
+      "post_id": "js-post-1446645",
+      "author": "MiguelRPG",
+      "date": "2024-05-25T06:09:44+0900",
+      "body": "Congratulations on the initiative, this system is my favorite and exactly why I stayed at MV, it is always possible to learn something new.\nHe's one of the Brazilian makers I like the most, years of expanding his ABS, it's a shame he didn't take it to MZ."
+    },
+    {
+      "post_id": "js-post-1446717",
+      "author": "AquaEcho",
+      "date": "2024-05-25T13:28:19+0900",
+      "body": "Chrono Engine is extremely powerful and allows you to create a larger variety of games (Action RPGs, shooters, Tower Defense, RTS, etc) than the stock RPG Maker engines which is I want I wanted to create a guide to simplify it. While MOGHunter didn't update it, Restart did with his\nCross Engine\nwhich added pixel movement and\nFOSSIL\nwhich allows you to use it in MZ."
+    },
+    {
+      "post_id": "js-post-1497451",
+      "author": "Deleted member 222036",
+      "date": "2025-02-06T06:16:43+0900",
+      "body": "Could you explain a bit more about skill creation? Are there any requirements for them to work? I know you hook up the event in the tool map to the one In the database (for example if it were event 7 there hooked up to skill 17. It would be tool_skill_id : 17 and tool_Id_7) but are there any other requirements? Thank you"
+    },
+    {
+      "post_id": "js-post-1497488",
+      "author": "AquaEcho",
+      "date": "2025-02-06T13:24:25+0900",
+      "body": "The tool event page is what event is spawned onto the map when you use that skill or an enemy uses this.act(ID) in a move route. You can also call $gamePlayer.act(ID) in a script. All of those comments are properties of that event : how long it stays on the map, what character pose is called when someone uses it, its area of effect, etc. How many you need depends on what you want the skill to do. Its possible to have no comments and just make using that skill call a common event or something else.\nThe database has data the skill needs like its damage formula, what animation is played when you use it, its icon in the skill menu, etc. You need to put abs mode in the notebox if you want it to show up in the skill menu.\nIf you want to test if a skill \"works\" open the console log (press F8 or F12) and type in  $gamePlayer.act(ID)."
+    },
+    {
+      "post_id": "js-post-1501208",
+      "author": "AquaEcho",
+      "date": "2025-02-26T04:32:18+0900",
+      "body": "Make your own HUDs in Chrono Engine!\nI will be posting scripts here to use with\nSRD HUDMaker\n(MV) or\nSRD HUDMaker Ultra (MZ)\n(or if you have some other HUD plugin like\nAerosys Gab Windows\n)\nTo reference party members use:\n$gameParty.members()[x]\nwhere x is the position of the member in the party lineup, starting at 0. So the player would be $gameParty.members()[0]. You can also use $gameParty.leader() for the player\nNOTE: The Player is always in the party so you can leave the condition blank. However, for other party members use the condition\n$gameParty.members()[X] so their HUD only shows when they are in the party.\nActor HP:\nCurrent HP: $gameParty.members()[X].hp\nMax HP: $gameParty.members()[X].mhp\ncurrent HP/max HP text:\n${$gameParty.members()[X].hp}/${$gameParty.members()[X].mhp}\nActor MP\nCurrent MP: $gameParty.members()[X].mp\nMax MP: $gameParty.members()[X].mmp\ncurrent MP/max MP text:\n${$gameParty.members()[X].mp}/${$gameParty.members()[X].mmp}\nIf using MOG_ChronoCT (the stamina plugin)\nCurrent CT/Stamina: $gameParty.leader()._chrono.ct\nMax CT/Stamina: $gameParty.leader()._chrono.maxct\nTo show the attack charge values\nCurrent charge: $gamePlayer.battler()._ras.charge.time\nMax charge: $gamePlayer.battler()._ras.charge.maxtime\nIn-depth explanation on CT/Stamina bar here\nActor State Icons:\nYou will need\nWAY_Core and WAY_EvalText\nfor the icon to be a variable, and both plugins placed above the SRD plugins\nUse TextEx element and the following in the Value Field:\n\\\\I[${$gameParty.members()[X].allIcons()[Y] || 0}]\nReplace X with the actor's position in the party lineup, starting at 0, and Y with which state you want to show, starting at 0. If you want to be able display more than one state icon (i.e. the battler is affected by more than one state) you will have to create a new HUD Element for the number of states you want to be able to display.\nRecreating MOG_ChronoToolHUD in SRD_HUDMaker\nUse the following codes to draw the ToolHUD icons:\nItem: \\\\I[${$dataItems[$gameParty.leader()._toolItemId].iconIndex}]\nSkill: \\\\I[${$dataSkills[$gameParty.leader()._toolSkillId].iconIndex}]\nWeapon: \\\\I[${$dataWeapons[$gameParty.leader()._equips[0]._itemId].iconIndex}]\nShield: \\\\I[${$dataArmors[$gameParty.leader()._equips[1]._itemId].iconIndex}]\nEnd result using only SRD_HUDMaker and no MOG HUDs"
+    },
+    {
+      "post_id": "js-post-1505128",
+      "author": "AquaEcho",
+      "date": "2025-03-19T04:24:25+0900",
+      "body": "I added a section for MZ fixes for Chrono Engine"
+    },
+    {
+      "post_id": "js-post-1513884",
+      "author": "Midona018",
+      "date": "2025-05-14T20:27:09+0900",
+      "body": "Is it possible to mix ABS and Chrono mode easily? For example, if I want to create map challenge in Zelda style and use the Chrono mode in battle?\nEDIT: I want to use the cross engine because of its compatibiliy"
+    },
+    {
+      "post_id": "js-post-1513887",
+      "author": "Slaughty",
+      "date": "2025-05-14T20:49:49+0900",
+      "body": "Midona018 said:\nIs it possible to mix ABS and Chrono mode easily? For example, if I want to create map challenge in Zelda style and use the Chrono mode in battle?\nEDIT: I want to use the cross engine because of its compatibiliy\nClick to expand...\nYes, you can switch between modes using a plugin command"
+    },
+    {
+      "post_id": "js-post-1513960",
+      "author": "AquaEcho",
+      "date": "2025-05-15T03:19:09+0900",
+      "body": "Midona018 said:\nIs it possible to mix ABS and Chrono mode easily? For example, if I want to create map challenge in Zelda style and use the Chrono mode in battle?\nEDIT: I want to use the cross engine because of its compatibiliy\nClick to expand...\nIn vanilla Chrono Engine you can but Chrono mode doesn't fully work in Cross Engine because it messes up the party member movement during Chrono mode battles. If you just want the patches/bug fixes you can edit the Cross Engine file to delete everything but the bugfixes."
+    },
+    {
+      "post_id": "js-post-1513976",
+      "author": "Midona018",
+      "date": "2025-05-15T04:32:00+0900",
+      "body": "Thanks!"
+    },
+    {
+      "post_id": "js-post-1514771",
+      "author": "Crim_T",
+      "date": "2025-05-21T00:29:05+0900",
+      "body": "Any thoughts on what could be triggering an endless animation loop when preforming a tech in Chrono mode when using MZ?\nI've noticed it only occurs with\nCode:\nShow Animation: This Event, nameOfAnimation\nNot\nCode:\nComment: tool_animation_id : #OfAnimation\nHowever, things like dual techs seem to need the Show Animation version unless one could work around it by calling multiple events.\nI've tried:\nUsing it in both Crono and Cross Engine(using the MZ AltimitMovement) with the same results.\nUpdating the animation javascript as found in this thread (though I had to switch const for var):\nhttps://forums.rpgmakerweb.com/index.php?threads/solved-help-with-chrono-engine-animations.176510/\nOverwriting the core scripts to the ones from 1.81b and using the 1.0.12 fossil.js as opposed to the newer one from Aesica designed for 1.9\nThanks for your time!"
+    },
+    {
+      "post_id": "js-post-1514773",
+      "author": "AquaEcho",
+      "date": "2025-05-21T00:33:20+0900",
+      "body": "Crim_T said:\nAny thoughts on what could be triggering an endless animation loop when preforming a tech in Chrono mode when using MZ?\nI've noticed it only occurs with\nCode:\nShow Animation: This Event, nameOfAnimation\nNot\nCode:\nComment: tool_animation_id : #OfAnimation\nHowever, things like dual techs seem to need the Show Animation version unless one could work around it by calling multiple events.\nClick to expand...\nI would ask in the Schala thread which is dedicated to Chrono mode in MZ. My MZ trial ran out so I can't test in MZ anymore.\nMZ - Schala Z System Progress Blog (MZ Port of Moghunter's Chrono Engine)\nI randomly decided to try and port Moghunter's Chrono Engine into MZ, no, I'm not joking. I've been in an RPG Maker mood again as of yesterday, and I was wondering \"What if I can port the Chrono Engine into MZ without the use of Fossil, and also translate the Portuguese text into English?\". So...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1514774",
+      "author": "Crim_T",
+      "date": "2025-05-21T01:02:02+0900",
+      "body": "AquaEcho said:\nI would ask in the Schala thread which is dedicated to Chrono mode in MZ. My MZ trial ran out so I can't test in MZ anymore.\nMZ - Schala Z System Progress Blog (MZ Port of Moghunter's Chrono Engine)\nI randomly decided to try and port Moghunter's Chrono Engine into MZ, no, I'm not joking. I've been in an RPG Maker mood again as of yesterday, and I was wondering \"What if I can port the Chrono Engine into MZ without the use of Fossil, and also translate the Portuguese text into English?\". So...\nforums.rpgmakerweb.com\nClick to expand...\nAh yes, not having access to MZ would put a damper on testing.\nLooking at the Schala thread, that project looks promising!\nThanks!"
+    },
+    {
+      "post_id": "js-post-1515349",
+      "author": "Crim_T",
+      "date": "2025-05-25T01:48:42+0900",
+      "body": "Hope you don't mind, but I thought I'd post an update in this thread as you've already put together a fantastic guide for getting Chrono Engine to work in MZ and others may find this information useful.\nSo after playing around with Chrono Engine in MZ a bit more, it looks like the animation bug that causes the engine to lock up and stutter is less a bug with animation and more to do with any built in RPG maker command that targets the spawned event from the Tool Map.\nI noticed this after realizing that the ice sword tech will get stuck after changing the spawned event's image to that of an ice crystal.\nThankfully, this is actually pretty easy to work around, as Moghunter's built in script calls do actually work without locking things up.\nIf the tech is a relatively simple event with just the \"Show Animation: This Event, [nameOfAnimation]\" in the script (after the notetags), you can replace it with a comment notetag of \"tool_animation_id : [#OfAnimation]\"\nIf the event is more complicated with the scripting, in that you want the animations to appear at different times, then using the script calls from the help file will work.\nSpecifically: \"SUBJECT.requestAnimation(X)\"\nWhere SUBJECT is either \"this.target()\" or \"this.toolEvent()\" depending on how the script is written. \"X\" is of course the animation # as listed in the database.\nLet's use the ice sword tech as an example:\nThere are 3 calls where this event targets itself that need to be replaced.\nSet Movement Route: This Event (Wait)  Image: $Tool_Ice02(0)\nSet Movement Route: This Event (Wait)  Image: None\nShow Animation: This Event, Ice Sword\nThese should be replaced on a one to one basis by the following script calls:\nthis.toolEvent().setCharacterName(\"$Tool_Ice02\")\nthis.toolEvent().setCharacterName(\"\")\nthis.toolEvent().requestAnimation(131)\nFor another example, the skill Delta Force is interesting as it's the only included tech that makes use of (Wait) in the animation call:\nShow Animation: This Event, Delta Force 1 (Wait)\nShow Animation: This Event, Delta Force 2 (Wait)\nShow Animation: This Event, Delta Force 3 (Wait)\nNow as the SUBJECT.requestAnimation(X) does not wait, we need to look up the amount of frames in the database that each animation uses and then replace Show animation with right script call and add the built in \"Wait\" command for the correct amount of frames thereafter.\nthis.target().requestAnimation(135)\nWait: 45 frames\nthis.target().requestAnimation(136)\nWait: 45 frames\nthis.target().requestAnimation(137)\nWait: 45 frames\nAt this point, the only included demo tech that isn't working as intended for me is the Plasma Wave.  This makes use of the notetag: tool_angle_animation.  Which is supposed to change the direction of the animation to the direction the user of the tech is facing.  However, it isn't doing that and is just playing the animation as normal."
+    },
+    {
+      "post_id": "js-post-1515362",
+      "author": "AquaEcho",
+      "date": "2025-05-25T04:09:25+0900",
+      "body": "You could ask\n@bass2yang\nto look at it if he has time since he solved the other animation issue."
+    },
+    {
+      "post_id": "js-post-1515380",
+      "author": "bass2yang",
+      "date": "2025-05-25T05:59:53+0900",
+      "body": "Crim_T said:\nHope you don't mind, but I thought I'd post an update in this thread as you've already put together a fantastic guide for getting Chrono Engine to work in MZ and others may find this information useful.\nSo after playing around with Chrono Engine in MZ a bit more, it looks like the animation bug that causes the engine to lock up and stutter is less a bug with animation and more to do with any built in RPG maker command that targets the spawned event from the Tool Map.\nI noticed this after realizing that the ice sword tech will get stuck after changing the spawned event's image to that of an ice crystal.\nThankfully, this is actually pretty easy to work around, as Moghunter's built in script calls do actually work without locking things up.\nIf the tech is a relatively simple event with just the \"Show Animation: This Event, [nameOfAnimation]\" in the script (after the notetags), you can replace it with a comment notetag of \"tool_animation_id : [#OfAnimation]\"\nIf the event is more complicated with the scripting, in that you want the animations to appear at different times, then using the script calls from the help file will work.\nSpecifically: \"SUBJECT.requestAnimation(X)\"\nWhere SUBJECT is either \"this.target()\" or \"this.toolEvent()\" depending on how the script is written. \"X\" is of course the animation # as listed in the database.\nLet's use the ice sword tech as an example:\nThere are 3 calls where this event targets itself that need to be replaced.\nSet Movement Route: This Event (Wait)  Image: $Tool_Ice02(0)\nSet Movement Route: This Event (Wait)  Image: None\nShow Animation: This Event, Ice Sword\nThese should be replaced on a one to one basis by the following script calls:\nthis.toolEvent().setCharacterName(\"$Tool_Ice02\")\nthis.toolEvent().setCharacterName(\"\")\nthis.toolEvent().requestAnimation(131)\nFor another example, the skill Delta Force is interesting as it's the only included tech that makes use of (Wait) in the animation call:\nShow Animation: This Event, Delta Force 1 (Wait)\nShow Animation: This Event, Delta Force 2 (Wait)\nShow Animation: This Event, Delta Force 3 (Wait)\nNow as the SUBJECT.requestAnimation(X) does not wait, we need to look up the amount of frames in the database that each animation uses and then replace Show animation with right script call and add the built in \"Wait\" command for the correct amount of frames thereafter.\nthis.target().requestAnimation(135)\nWait: 45 frames\nthis.target().requestAnimation(136)\nWait: 30 frames\nthis.target().requestAnimation(137)\nWait: 30 frames\nAt this point, the only included demo tech that isn't working as intended for me is the Plasma Wave.  This makes use of the notetag: tool_angle_animation.  Which is supposed to change the direction of the animation to the direction the user of the tech is facing.  However, it isn't doing that and is just playing the animation as normal.\nClick to expand...\nWhen dealing with the wait mode, you can actually do:\nJavaScript:\nthis.target().requestAnimation(135);\nthis.setWaitMode('animation');\nThis will wait for the animation to complete before proceeding to the next event command. You will need a separate script call for every request+waitmode set.\nThe notetag tool_angle_animation sets the chrono animation property to true which is checked inside of Sprite_Animation and updated along with the update() function. I see in the MZ corescripts online that there is the fallback Sprite_AnimationMV for MV style animations. I'm guessing that this part is not updated/aliased properly.\nThis would be my guess since I don't use MZ:\nJavaScript:\nvar _mog_chrono_SprAnimeMV_update = Sprite_AnimationMV.prototype.update;\nSprite_AnimationMV.prototype.update = function() {\n    _mog_chrono_SprAnimeMV_update.call(this);\n    if (this._target && this._target._character) {this.updateChronoAnimation(this._target)}\n};\n//==============================\n// * update Chrono Animation\n//==============================\nSprite_AnimationMV.prototype.updateChronoAnimation = function(sprite) {\n      var character = sprite._character;\n      if (character._chrono.animation.directionMode) {\n          if (character._direction === 2) {\n              this.y -= 32;\n             this.rotation = character._chrono.animation.rotationP[2];\n          } else if (character._direction === 4) {\n             this.rotation = character._chrono.animation.rotationP[3];\n             this.y -= 32;\n          } else if (character._direction === 6) {\n             this.rotation = character._chrono.animation.rotationP[1];\n             this.y -= 32;\n          } else {\n             this.rotation = character._chrono.animation.rotationP[0];\n          }\n      };\n      if (character._user.rotation[1] === 180) {\n          this.y += sprite.patternHeight();\n      } else if (character._user.rotation[1] === 90) {\n          this.x += sprite.patternWidth() / 2;\n          this.y += sprite.patternHeight() / 2;\n      } else if (character._user.rotation[1] === 270) {\n          this.x -= sprite.patternWidth() / 2;\n          this.y += sprite.patternHeight() / 2;      \n      };\n};\nNot sure how much more I can help in this area.\nEdit: one error, fixed (Sprite Animation MV alias.)"
+    },
+    {
+      "post_id": "js-post-1515389",
+      "author": "Crim_T",
+      "date": "2025-05-25T07:35:24+0900",
+      "body": "@bass2yang\nThanks for looking at this!\nAlas, switching to the:\nCode:\nthis.target().requestAnimation(135);\nthis.setWaitMode('animation');\nDoesn't seem to allow Delta Force to give damage during the animation, so for now I'll stick with the waiting on animation frames work around.  I did also try a couple variations as well where I tried assigning this._character to the chrono animation before calling this.SetWaitMode('animation'), but didn't have much success.  Then again, my knowledge of Javascript is pretty new at this point, so I could have been making any number of errors.\nI hadn't thought about the chrono animation referencing the wrong Sprite Animation, so that makes quite a bit of sense why it doesn't work.  I did try your code in a plugin.  It caused a\nCode:\nRange Error\nMaximum Stack Size Exceeded\nThe debugger had the error at 11645 _mog_chrono_SprAnime_update.call(this);"
+    },
+    {
+      "post_id": "js-post-1515393",
+      "author": "bass2yang",
+      "date": "2025-05-25T07:54:00+0900",
+      "body": "Crim_T said:\n@bass2yang\nThanks for looking at this!\nAlas, switching to the:\nCode:\nthis.target().requestAnimation(135);\nthis.setWaitMode('animation');\nDoesn't seem to allow Delta Force to give damage during the animation, so for now I'll stick with the waiting on animation frames work around.  I did also try a couple variations as well where I tried assigning this._character to the chrono animation before calling this.SetWaitMode('animation'), but didn't have much success.  Then again, my knowledge of Javascript is pretty new at this point, so I could have been making any number of errors.\nI hadn't thought about the chrono animation referencing the wrong Sprite Animation, so that makes quite a bit of sense why it doesn't work.  I did try your code in a plugin.  It caused a\nCode:\nRange Error\nMaximum Stack Size Exceeded\nThe debugger had the error at 11645 _mog_chrono_SprAnime_update.call(this);\nClick to expand...\nSorry, updated the wrong one - edited the code above to include the proper alias.\nAlso, it is this.setWaitMode('animation') not this.SetWaitMode('animation') which should behave exactly like the event command."
+    },
+    {
+      "post_id": "js-post-1515417",
+      "author": "Crim_T",
+      "date": "2025-05-25T12:06:26+0900",
+      "body": "bass2yang said:\nSorry, updated the wrong one - edited the code above to include the proper alias.\nClick to expand...\nThanks again for taking the time to look at this.\nThat fixes the Range Error - Maximum Stack Size Exceeded.  But the animation still doesn't rotate, so there must be some other reason hiding in the code.\nI imagine that it could probably be worked around with a script to determine character direction and separate animations for each direction in the tool event if it becomes an absolute must to have that type of technique, though.\nAlso, it is this.setWaitMode('animation') not this.SetWaitMode('animation') which should behave exactly like the event command.\nClick to expand...\nSorry, that was my mistake.  I properly copied and pasted the full 2 lines of code directly into the event(replacing the animations calls as needed), but wrote it improperly when describing it in the paragraph.  Alas, it still doesn't seem to work.  Even if I create a new event on the field and switch the SUBJECT to this.actor(ID).  The animation plays, but it doesn't wait for it to finish before it moves on to the next part of the script.\nWhen one considers that in this case FOSSIL is being used and that Chrono Engine is run on an RPG Maker it's not intended for, I'm thankful that there are so many amazing people on this site who have figured out modifications to the Javascript to both make it functional in MZ and better in MV.  Thanks again.\nFor me now, I think I'll start focusing on making the small game I imagined for this project.\n(Hopefully it stays small without too much feature creep)"
+    },
+    {
+      "post_id": "js-post-1515418",
+      "author": "bass2yang",
+      "date": "2025-05-25T12:19:57+0900",
+      "body": "I just remembered MZ uses a different line of code for animations - did you try:\nJavaScript:\n$gameTemp.requestAnimation([this.target()], 135);\nthis.setWaitMode('animation');\nIn any case, it might work with this. Converting things over can be as easy as copy and paste or as crazy as having to rewrite all the functions haha."
+    },
+    {
+      "post_id": "js-post-1515429",
+      "author": "Crim_T",
+      "date": "2025-05-25T13:55:20+0900",
+      "body": "bass2yang said:\nI just remembered MZ uses a different line of code for animations - did you try:\nJavaScript:\n$gameTemp.requestAnimation([this.target()], 135);\nthis.setWaitMode('animation');\nIn any case, it might work with this. Converting things over can be as easy as copy and paste or as crazy as having to rewrite all the functions haha.\nClick to expand...\nUnfortunately in this case it's probably a rewrite that's needed.\nI had tried the above or at least a variation on it before.  Trying it again gave the same results.  It seems anytime I use any of Moghunters SUBJECT script calls the wait animation function doesn't register.\nEven using the animation script call from one the MZ Schala Engine threads\nCode:\n$gameTemp.requestAnimation([this.user().battler()._chrono.targets[0]], 135);\nthis.setWaitMode('animation');\nDoesn't allow it to wait.\nIn any case, thanks for your time in looking at this"
+    },
+    {
+      "post_id": "js-post-1516358",
+      "author": "Merancapeman",
+      "date": "2025-05-30T18:01:58+0900",
+      "body": "If it's recommended to build on top of the demo, how can you do this in MZ if the demo is made in RMMV?"
+    },
+    {
+      "post_id": "js-post-1516378",
+      "author": "AquaEcho",
+      "date": "2025-05-30T22:49:56+0900",
+      "body": "Merancapeman said:\nIf it's recommended to build on top of the demo, how can you do this in MZ if the demo is made in RMMV?\nClick to expand...\nYou can open MV projects in MZ. Look at the FOSSIL thread. It has a picture of Chrono Engine in MZ in the first post.\nProject FOSSIL (v1.0): Use MV plugins in MZ! 300+ plugins Fossilized!\nProject FOSSIL V1.0 By: FOSSIL TEAM   Introduction  Project FOSSIL (Fixing Old Software / Script Interoperability Layer) is a single RPG Maker MZ plugin designed to expand the use and usefulness of RPG MAKER MV plugins, by allowing them to work in RPG MAKER MZ projects. FOSSIL doesn't port...\nforums.rpgmakerweb.com\nYou will have to copy over all the assets (music, pictures, icons, etc) into the right folders."
+    },
+    {
+      "post_id": "js-post-1516446",
+      "author": "Merancapeman",
+      "date": "2025-05-31T10:42:49+0900",
+      "body": "AquaEcho said:\nYou can open MV projects in MZ. Look at the FOSSIL thread. It has a picture of Chrono Engine in MZ in the first post.\nProject FOSSIL (v1.0): Use MV plugins in MZ! 300+ plugins Fossilized!\nProject FOSSIL V1.0 By: FOSSIL TEAM   Introduction  Project FOSSIL (Fixing Old Software / Script Interoperability Layer) is a single RPG Maker MZ plugin designed to expand the use and usefulness of RPG MAKER MV plugins, by allowing them to work in RPG MAKER MZ projects. FOSSIL doesn't port...\nforums.rpgmakerweb.com\nYou will have to copy over all the assets (music, pictures, icons, etc) into the right folders.\nClick to expand...\nApologies, and not to say I didn't screw anything up (I'm very capable of that lol) but that's what I originally thought you should do. I can open it, but I can't playtest it as it doesn't leave the black screen, and I have title disabled in case that could have helped. Is it so that I need to config the scripting in the demo to call through FOSSIL? Or is it 100% PEBCAK and I'm just being a doofus..."
+    },
+    {
+      "post_id": "js-post-1516447",
+      "author": "AquaEcho",
+      "date": "2025-05-31T10:45:53+0900",
+      "body": "Do you have all the plugins listed in the order in the screenshot in the FOSSIL thread?\nTurn off MOG_TitleSplashScreen if it's on"
+    },
+    {
+      "post_id": "js-post-1516448",
+      "author": "Merancapeman",
+      "date": "2025-05-31T10:53:13+0900",
+      "body": "Hmmmm... Using the link for the MV version of the Mog pack does not produce what the FOSSIL screenshot shows.\nBecause I'm an idiot and didn't see the spoiler for what plugins you can dispose of... I'm assuming THAT'S the problem.."
+    },
+    {
+      "post_id": "js-post-1516449",
+      "author": "AquaEcho",
+      "date": "2025-05-31T11:01:29+0900",
+      "body": "Merancapeman said:\nHmmmm... Using the link for the MV version of the Mog pack does not produce what the FOSSIL screenshot shows.\nBecause I'm an idiot and didn't see the spoiler for what plugins you can dispose of... I'm assuming THAT'S the problem..\nClick to expand...\nYou have to use the plugins in the Chrono Engine folder in that download. You could also get it from Cross Engine."
+    },
+    {
+      "post_id": "js-post-1516450",
+      "author": "Merancapeman",
+      "date": "2025-05-31T11:03:14+0900",
+      "body": "AquaEcho said:\nYou have to use the plugins in the Chrono Engine folder in that download. You could also get it from Cross Engine.\nClick to expand...\nWell, either way I'm an idiot and I missed a basic step. Sorry for the waste of your time, and I appreciate your response. You guys are doing amazing work and it is helping shape a lot of these engines into what makes them worth it."
+    },
+    {
+      "post_id": "js-post-1516453",
+      "author": "AquaEcho",
+      "date": "2025-05-31T11:46:30+0900",
+      "body": "Merancapeman said:\nSorry for the waste of your time, and I appreciate your response.\nClick to expand...\nIt is not a problem. If anything is unclear or confusing let me know."
+    },
+    {
+      "post_id": "js-post-1516486",
+      "author": "Merancapeman",
+      "date": "2025-05-31T18:30:24+0900",
+      "body": "AquaEcho said:\nIt is not a problem. If anything is unclear or confusing let me know.\nClick to expand...\nActually, I've probably continued to be ignorant about this but there's definitely something strange about what I've got set up. I'm in the process of figuring out what can be compatible with this system (already found out that the dot movement plugin addition throws a \"allCharacters.has is not a function\" error) now that I got the demo working in MZ. In that process I noticed something very weird: FOSSIL was not installed as a plugin and it was working. When I threw FOSSIL in there, it stopped working. Did I misread something again?"
+    },
+    {
+      "post_id": "js-post-1516511",
+      "author": "AquaEcho",
+      "date": "2025-05-31T23:55:55+0900",
+      "body": "If you want pixel movement use\nCross Engine\nwhich uses Altimit Pixel Movement. Cross Engine also has a ton of other features. For MZ, you may want to swap the stock Altimit with\nTyrusWoo's MZ port of Altimit\n."
+    },
+    {
+      "post_id": "js-post-1516589",
+      "author": "Merancapeman",
+      "date": "2025-06-01T14:32:24+0900",
+      "body": "I appreciate the response, I did download it to test it but the plugin I'd really like to get working with an ABS/ARPG system is MZ3D, which I understand is probably a tall order for someone still fairly inexperienced like me. As it stands, it throws \"Cannot read property of 'clearColor' of undefined\" with MZ3D. I was also expecting to need FOSSIL as it's what I'm going to use to try and get some plugin collections I bought a long time ago to work again, but trying to load the Chrono demo with it installed at the top of the list results in a black screen. I understand it's most certainly something I'm doing, but I'm not going to bug you with a million questions because then I should be paying you, haha. Thank you for your work."
+    },
+    {
+      "post_id": "js-post-1516590",
+      "author": "AquaEcho",
+      "date": "2025-06-01T15:17:06+0900",
+      "body": "You'll have to look at YoraeRasantae's work as I know he has stuff for FOSSIL, MV3D and MZ3D and mentioned making Chrono Engine patches.  Also check the MV3D/MZ3D\nDiscord\nhttps://forums.rpgmakerweb.com/index.php?threads/mv3d-and-chrono-engine-compatibility.121424\nI'm gonna be honest though. If I want to make a 3D game I'd just use another engine where that kind of thing is already built in."
+    },
+    {
+      "post_id": "js-post-1516592",
+      "author": "Merancapeman",
+      "date": "2025-06-01T15:49:09+0900",
+      "body": "Thanks for the point in the right direction, you're too kind. I will check those out immediately.\nI'd agree with you if I didn't really like how RPG Maker looks with MZ3D, but I also realize that's going to limit the plugins that will work. I'm going to do my best to get what I can together and make something as unique as I can, but I also just want to tell a story and score it myself; at best to have a decent game that speaks to the message I want to convey, at worst I'll have a playable resume to give to indie teams as an example of my ability to create themes with my music. I've attempted to use the more recent versions of UE and Unity for the last year or so, and a lot of that I can't process that well either because of my weird brain or I'm just stupid. I\nhave\n, however, used RM2003, XP, Ace, and MV over many years and as much as I've forgotten I remember always enjoying making games in it as well as feeling validated when I get things working correctly and get in that frame of mind. I feel if I have any success at all before either old age or my illness gets me killed, this engine is probably going to be my best chance. I'm far too jaded to trust other people with my ideas and story, and I don't like commanding others to do something I can't do, so my forray into solo dev work is already being hindered by myself. I at least want to try.\nSorry, this isn't the place for me to find therapy, so I'll stop blabbering. TLDR: thank you for your kindness. I'll try to do better at searching for this information."
+    },
+    {
+      "post_id": "js-post-1516624",
+      "author": "AquaEcho",
+      "date": "2025-06-02T01:22:46+0900",
+      "body": "Merancapeman said:\nI've attempted to use the more recent versions of UE and Unity for the last year or so, and a lot of that I can't process that well either because of my weird brain or I'm just stupid\nClick to expand...\nI use both RPG Maker and GDevelop and I know most types of games are easier to make in that engine (yes, including action games like this thread) and it has basic 3D support built in. RPG Maker is specialized for RPGs as its name implies and has a lot of systems built in for RPGs, but the further away you get from RPG Maker's template systems the less support there is. Pandako who has a 3D plugin for RPG Maker makes 3D plugins for both engines.\nPANDAKO - itch.io\nThat said, I am still here to help anyone who wants to do this in RPG Maker but it has required a lot of scripting, workarounds, and overwriting engine functions with plugin patches.. Personally I am too far along in my project to switch and I know there are other people in the same boat.\nYoraeRasantae is active on the MV/MZ3D Discord so he's the one to ask on how to use Chrono Engine for 3D games. I can only give you advice based on what I know but he would know more about the specific implementation you want to do."
+    },
+    {
+      "post_id": "js-post-1516642",
+      "author": "Merancapeman",
+      "date": "2025-06-02T04:27:23+0900",
+      "body": "I guess the biggest hurdle would then be the fact that I've purchased multiple plugins and assets for RMMZ/MV as well as the engine, and switching to something like GDevelop - even thought it's free -would mean starting again with not only no assets and no experience, but a mostly blank slate that I'd have to build the entire foundation for before I can even think about any creative aspects. I'm sure they have a lot of free stuff (well, I assume anyway) to work with, but there was a reason I paid for the ones I did. The ones in GDevelops shop don't look all that good to me, or at the very least they don't fit with the style that I may be able to achieve with the plugins and assets I've already accumulated for MZ/MV. I looked up how to make an ARPG using GDevelop and the first thing that pops up is a tutorial on how to make a grid so you can program your character to walk, which already concerns me. Further searching online indicates that not many people are aware of how to achieve an ARPG with GDevelop, although Google is showing me questions from a year ago and there doesn't seem to be much else. The available templates for Gdevelop in their shop don't seem to have anything for an ARPG (the closest they have is a roguelike and that's definitely not my style either) and while Pandako's plugins look useful, they illustrate further how each feature that a basic RPG has (dialogue boxes, grid movement, menus, etc) needs to be built from the ground up. According to one comment on the few posts asking about making an ARPG for GDevelop, this can be cumbersome, which is why I'm trying to minimize that stress with MZ. Pandako's plugins for MZ look pretty neat too, but they also don't fit for my vision. But different strokes for different folks.\nRegardless, it's good to still look at alternatives. I appreciate your dedication as I know it's incredibly frustrating and feels thankless. Sorry for being a windbag and writing an unneccessary novel. Thank you for being a part of the community that's making MZ worth it for people like me."
+    },
+    {
+      "post_id": "js-post-1516647",
+      "author": "AquaEcho",
+      "date": "2025-06-02T04:57:41+0900",
+      "body": "Merancapeman said:\nno assets and no experience,\nClick to expand...\nYou can import your own assets into the engine. You don't have to use the ones from their library or shop. Same as RPG Maker. You're not limited to only using DLC assets you buy. Unless the assets you bought say Maker use only you can use them in any engine.\nMerancapeman said:\nbut a mostly blank slate that I'd have to build the entire foundation for before I can even think about any creative aspects.\nClick to expand...\nYes, this is true for pretty much every engine. You have to build the game you want from the ground up or start with one of their templates and edit it. GDevelop has over 100 templates including for top down shooters and action games, most of which are free.\nMerancapeman said:\nthe first thing that pops up is a tutorial on how to make a grid so you can program your character to walk\nClick to expand...\nYes, because they let you build just about any type of game. A platformer is going to have different movement controls than top down or 3D. It wouldn't be helpful if it just gave you top down by default if you want to make a platformer. RPG Maker just gives you top down tile based movement and if you want something different, it's up to you to find the 3rd party plugin for it and any support is not their problem.\n\"ARPG\" is also vague and just a collection of mechanics. TWEWY and Ys are both ARPGs but have different controls and mechanics. ARPG mechanics are also found in other genres. You probably are using melee and projectile combat, which is also used in platformers, roguelites, beat em ups, etc. which there are a lot of templates and tutorials for.\nRPG Maker comes with prebuilt RPG-specific systems like the inventory. menus and battle system. That is its strength. If you like those template systems, great, the work has been done for you. If you want something different or want to radically change it is a lot of work and not much better than building it from the ground up how you want.\nFor me specifically, RPG Maker is weak when it comes to pathfinding, custom collisions, and performance. Its menu customization options are also weak. If you're making the typical 2D menu based RPG, it is fine, but you start running into problems when you want more.\nThis is what the RPG Maker devs themselves said about making an action game in RPG Maker and why they had to make a new engine (Action Game Maker) instead of just using RPG Maker\n\"The processing requirements for RPGs and action games differ significantly. Action games, in particular, demand high-performance collision detection and fast response times, which made our RPG-specialized in-house engine insufficient for this genre.\"\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1527660",
+      "author": "taylorjeff",
+      "date": "2025-08-25T03:39:11+0900",
+      "body": "Hello, your plugin is amazing and I really enjoy using it.\nI have a question: is there a way to disable mouse click-to-move?\nThese past few days I’ve been trying to find a solution, but nothing worked.\nMy goal is to use WASD keys for movement and keep the mouse for attacking.\nI even tried using other plugins to disable mouse movement, but they all failed… obviously your plugin is too powerful.\nI’ve also tried changing some parameters to false, but it didn’t have any effect.\nI’ve searched a lot and even tried different methods, but none of them worked, which made me a bit discouraged.\nCould you please tell me if there is a way to achieve this? Thank you very much!"
+    },
+    {
+      "post_id": "js-post-1527759",
+      "author": "AquaEcho",
+      "date": "2025-08-26T01:14:22+0900",
+      "body": "Another plugin that disables mouse movement would work. I use this with QJ Bullet / Map Projectiles that has a disable mouse movement option\nBullet/Map Projectiles/Afterimage Plugin RMMV by qiujiu\nShoot Your Projectiles Or Show Afterimage For RMMV!\nqiujiu.itch.io"
+    },
+    {
+      "post_id": "js-post-1527812",
+      "author": "taylorjeff",
+      "date": "2025-08-26T10:13:33+0900",
+      "body": "AquaEcho said:\nAnother plugin that disables mouse movement would work. I use this with QJ Bullet / Map Projectiles that has a disable mouse movement option\nBullet/Map Projectiles/Afterimage Plugin RMMV by qiujiu\nShoot Your Projectiles Or Show Afterimage For RMMV!\nqiujiu.itch.io\nClick to expand...\nThank you very much for your explanation!"
+    },
+    {
+      "post_id": "js-post-1529638",
+      "author": "vampy_graveyard",
+      "date": "2025-09-11T14:26:52+0900",
+      "body": "Is there a way to make\nnon-party member\nnpcs (as events) to fight an enemy using this plugin?"
+    },
+    {
+      "post_id": "js-post-1529679",
+      "author": "AquaEcho",
+      "date": "2025-09-11T23:07:48+0900",
+      "body": "vampy_graveyard said:\nIs there a way to make\nnon-party member\nnpcs (as events) to fight an enemy using this plugin?\nClick to expand...\nTheir data would have to come from either the actor or enemy database, but yes, you can set them as enemies and make enemies fight each other without any additional plugins. You would have to use scripts though."
+    },
+    {
+      "post_id": "js-post-1529692",
+      "author": "vampy_graveyard",
+      "date": "2025-09-12T01:19:22+0900",
+      "body": "AquaEcho said:\nTheir data would have to come from either the actor or enemy database, but yes, you can set them as enemies and make enemies fight each other without any additional plugins. You would have to use scripts though.\nClick to expand...\nWhat scripts would be useful for this?"
+    },
+    {
+      "post_id": "js-post-1530750",
+      "author": "Gl4ss0nyx",
+      "date": "2025-09-20T23:21:30+0900",
+      "body": "How would I hide the actor hud and the gold hud? I tried using the plugin commands (hide_actor_hud)  that are apart of the plugin but I couldn’t get them to work. Can someone help me figure it out so I can hide the huds for cutscenes in my game?"
+    },
+    {
+      "post_id": "js-post-1530801",
+      "author": "AquaEcho",
+      "date": "2025-09-21T05:23:46+0900",
+      "body": "vampy_graveyard said:\nWhat scripts would be useful for this?\nClick to expand...\nYou would have to adapt the code I used to make the followers fight into the event's page instead.\nGl4ss0nyx said:\nHow would I hide the actor hud and the gold hud? I tried using the plugin commands (hide_actor_hud) that are apart of the plugin but I couldn’t get them to work\nClick to expand...\nAre you using MZ?"
+    },
+    {
+      "post_id": "js-post-1530821",
+      "author": "Gl4ss0nyx",
+      "date": "2025-09-21T08:22:33+0900",
+      "body": "I'm using MV.\nAlso how would you make followers fight on an event page?"
+    },
+    {
+      "post_id": "js-post-1530978",
+      "author": "AquaEcho",
+      "date": "2025-09-22T07:47:04+0900",
+      "body": "If you're using MV there shouldn't be any issue with the plugin commands. You'll have to post a screencap of how you're using them if they're not working.\nI made a guide on how to make the followers fight in the advanced features thread\nPost in thread 'MV + MZ Make an Action Game! Chrono Engine Advanced Features and Scripts (gamepad, status effects, fighting followers)!'\nhttps://forums.rpgmakerweb.com/inde...ffects-fighting-followers.168094/post-1499791"
+    },
+    {
+      "post_id": "js-post-1532143",
+      "author": "AquaEcho",
+      "date": "2025-10-02T09:53:40+0900",
+      "body": "Moghunter has updated their site with a makeover and new Chrono Engine guide\nMV – Chrono Engine\nMog Chrono Engine Version 0.2b (2021/05/01) Este plugin permite criar sistemas avançados utilizando eventos, tais como sistema de batalha em tempo real no mapa ou puzzles complexos de interação com…\nmogplugins.com"
+    },
+    {
+      "post_id": "js-post-1534195",
+      "author": "rianez3",
+      "date": "2025-10-21T21:45:20+0900",
+      "body": "I'm still new with this engine. Can a common event be run when the enemy hits the player in Abs Mode?"
+    },
+    {
+      "post_id": "js-post-1534221",
+      "author": "AquaEcho",
+      "date": "2025-10-22T00:32:57+0900",
+      "body": "rianez3 said:\nI'm still new with this engine. Can a common event be run when the enemy hits the player in Abs Mode?\nClick to expand...\nIt depends on HOW the enemy is \"hitting\" the player. The tool events use a different function from the enemy touching player."
+    },
+    {
+      "post_id": "js-post-1534251",
+      "author": "rianez3",
+      "date": "2025-10-22T04:50:57+0900",
+      "body": "AquaEcho said:\nIt depends on HOW the enemy is \"hitting\" the player. The tool events use a different function from the enemy touching player.\nClick to expand...\ni want to make a custom game over, so I ended up making the event on tool map like this. Since using tool_skill_id makes the player instantly die when their HP is gone.\nSpoiler"
+    },
+    {
+      "post_id": "js-post-1534254",
+      "author": "AquaEcho",
+      "date": "2025-10-22T05:06:01+0900",
+      "body": "rianez3 said:\ni want to make a custom game over, so I ended up making the event on tool map like this. Since using tool_skill_id makes the player instantly die when their HP is gone.\nSpoiler\nView attachment 351674\nView attachment 351676\nClick to expand...\nDoes SRD's Game Over core work?\nGame Over Core – MV Plugin – RPG Maker MZ Plugins\nsumrndm.site"
+    },
+    {
+      "post_id": "js-post-1534299",
+      "author": "rianez3",
+      "date": "2025-10-22T11:51:02+0900",
+      "body": "AquaEcho said:\nDoes SRD's Game Over core work?\nGame Over Core – MV Plugin – RPG Maker MZ Plugins\nsumrndm.site\nClick to expand...\nI already tried it. My game got stuck because I had movement route when the player died"
+    },
+    {
+      "post_id": "js-post-1534310",
+      "author": "AquaEcho",
+      "date": "2025-10-22T16:02:58+0900",
+      "body": "You need to put the script to run a common event in the death function either through using a plugin like SRD's one or making a plugin aliasing the death function yourself.\nThere are multiple ways a player can die (an attack, touch damage, poison, map tile damage, an event subtracting from their HP, etc) that it doesn't make sense to edit all those functions.\nIf you're having trouble with SRD's plugin I recommend you make a new thread explaining the issue in detail and how youre using it"
+    },
+    {
+      "post_id": "js-post-1534314",
+      "author": "rianez3",
+      "date": "2025-10-22T17:38:56+0900",
+      "body": "AquaEcho said:\nYou need to put the script to run a common event in the death function either through using a plugin like SRD's one or making a plugin aliasing the death function yourself.\nThere are multiple ways a player can die (an attack, touch damage, poison, map tile damage, an event subtracting from their HP, etc) that it doesn't make sense to edit all those functions.\nIf you're having trouble with SRD's plugin I recommend you make a new thread explaining the issue in detail and how youre using it\nClick to expand...\nThanks for the suggestions. It really helped me get an idea and was able to solve the problem. I forgot that when the player at 0 hp, it will trigger a game-over scene. So I used a script on enemy attack tool to make that no matter how much damage the enemy does, the player will not die and will only have 1 HP left.\nvar r = 50 + Math.randomInt(5);\nGame_Interpreter.prototype.changeHp.call(this, $gameParty.leader(), -r, false);\n$gameParty.leader().startDamagePopup();\nThen I created a conditional branch: if a player's HP is less than or equal to 1, it will trigger my custom game over."
+    },
+    {
+      "post_id": "js-post-1534337",
+      "author": "AquaEcho",
+      "date": "2025-10-23T02:29:26+0900",
+      "body": "That isn't a good solution for the reason I stated earlier, unless you want the common event to only trigger when the enemy uses that specific attack, and not the multiple other ways the player can die."
+    },
+    {
+      "post_id": "js-post-1536271",
+      "author": "rianez3",
+      "date": "2025-11-08T16:01:06+0900",
+      "body": "Hello again, I want to try creating an NPC that can talk but can also be attacked depending on the player's mode. I used the 'Command_Attack' to change the player's mode, but the results aren't what I expected. When you first enter the map, the dialog appears, but when you change the mode again, the dialog doesn't appear.\nI try to transfer the player to the same coordinate when the mode changes, but it doesn't work either.\nDo you have any suggestions on how I can fix this?\nSpoiler"
+    }
+  ]
+}
