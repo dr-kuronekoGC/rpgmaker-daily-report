@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/making-monsters-move-randomly-in-a-set-area.179243",
+  "title": "Making monsters move randomly in a set area?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:41.443883+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524515",
+      "author": "The_Eerie_One",
+      "date": "2025-07-30T13:07:46+0900",
+      "body": "I would like to have two slimes move randomly under a glass display, but I'm having trouble figuring out how. I have the sides of the glass tiles set as impassable so the player can't walk through it, but it makes it so the monsters unable to move within it. I remember reading that events can't move through other events, so I set up some blank events to try and cage them in...but they walked through those so I guess I read that wrong. Any way I can give them random movement and keep them within a specific 6 tile space?"
+    },
+    {
+      "post_id": "js-post-1524522",
+      "author": "SGHarlekin",
+      "date": "2025-07-30T13:44:35+0900",
+      "body": "Could use region restrictions to set the glass boss passable for events, but not the player and similarly around the box use a region that blocks events but not the player.\nEvents and Movement Core VisuStella MZ - Yanfly.moe Wiki\nwww.yanfly.moe"
+    },
+    {
+      "post_id": "js-post-1524528",
+      "author": "The_Eerie_One",
+      "date": "2025-07-30T15:00:50+0900",
+      "body": "SGHarlekin said:\nCould use region restrictions to set the glass boss passable for events, but not the player and similarly around the box use a region that blocks events but not the player.\nEvents and Movement Core VisuStella MZ - Yanfly.moe Wiki\nwww.yanfly.moe\nClick to expand...\nJust making sure - these instructions only work with the linked plugin?"
+    },
+    {
+      "post_id": "js-post-1524532",
+      "author": "caethyril",
+      "date": "2025-07-30T16:22:47+0900",
+      "body": "By default, an event can only move through another event if at least one of them is marked \"Through\", because that disables passability checks. (A plugin might change that in some cases, e.g. if I recall correctly Yanfly's Core Engine for MV disables it entirely for some reason. Maybe VisuStella have carried over that behaviour.)\nCould you just use\ndirectional passability\nfor the sides of the glass? That should allow the slimes to move around inside without escaping. The glass itself may be star-passable, but you could put other tiles, either outside the terrarium or layered on top of its glass edges, that are O-passable except in the relevant direction(s).\nAnother plugin option is\nEventMovableLimitation\nby triacontane:\nRPGMakerMV/EventMovableLimitation.js at mz_master · triacontane/RPGMakerMV\nRPGツクールMV、MZで動作するプラグインです。. Contribute to triacontane/RPGMakerMV development by creating an account on GitHub.\ngithub.com\nIt does require PluginCommonBase, which ships with RPG Maker MZ under:\n<MZ install folder>/dlc/BasicResources/plugins/official/\nPluginCommonBase\n.js\n(Standalone version might be organised differently.)"
+    },
+    {
+      "post_id": "js-post-1524533",
+      "author": "The_Eerie_One",
+      "date": "2025-07-30T16:31:57+0900",
+      "body": "caethyril said:\nBy default, an event can only move through another event if at least one of them is marked \"Through\", because that disables passability checks. (A plugin might change that in some cases, e.g. if I recall correctly Yanfly's Core Engine for MV disables it entirely for some reason. Maybe VisuStella have carried over that behaviour.)\nCould you just use\ndirectional passability\nfor the sides of the glass? That should allow the slimes to move around inside without escaping. The glass itself may be star-passable, but you could put other tiles, either outside the terrarium or layered on top of its glass edges, that are O-passable except in the relevant direction(s).\nAnother plugin option is\nEventMovableLimitation\nby triacontane:\nRPGMakerMV/EventMovableLimitation.js at mz_master · triacontane/RPGMakerMV\nRPGツクールMV、MZで動作するプラグインです。. Contribute to triacontane/RPGMakerMV development by creating an account on GitHub.\ngithub.com\nIt does require PluginCommonBase, which ships with RPG Maker MZ under:\n<MZ install folder>/dlc/BasicResources/plugins/official/\nPluginCommonBase\n.js\n(Standalone version might be organised differently.)\nClick to expand...\nI'm not sure how changing the passability would allow them to move without escaping, except as you said by putting other things all around the...slime terrarium(?) - and I don't want to do that.\nThanks for the plugin link, I'll check it out along with the one Harlekin posted."
+    },
+    {
+      "post_id": "js-post-1524537",
+      "author": "caethyril",
+      "date": "2025-07-30T17:09:01+0900",
+      "body": "In case you're unaware: directional passability is one of the tile data options available on the right-hand side of the Tilesets tab in the database:\nYou can set certain tiles to be (im)passable only in specific directions. The directional blocks could be something innocuous like carpet trim, or just invisible tiles with specific passability settings~\n(Note that directional passability doesn't work if the tile is set to Passage = star, because star means that tile is ignored for passability checks.)"
+    },
+    {
+      "post_id": "js-post-1524582",
+      "author": "The_Eerie_One",
+      "date": "2025-07-31T01:34:19+0900",
+      "body": "caethyril said:\nIn case you're unaware: directional passability is one of the tile data options available on the right-hand side of the Tilesets tab in the database:\nView attachment 346274\nYou can set certain tiles to be (im)passable only in specific directions. The directional blocks could be something innocuous like carpet trim, or just invisible tiles with specific passability settings~\n(Note that directional passability doesn't work if the tile is set to Passage = star, because star means that tile is ignored for passability checks.)\nClick to expand...\nOh my god I can't believe I forgot that function! To be fair I only ever used it once for a ladder over a year ago now, but still kind of embarrassing I forgot. That worked, thank you!"
+    },
+    {
+      "post_id": "js-post-1524591",
+      "author": "caethyril",
+      "date": "2025-07-31T02:40:21+0900",
+      "body": "Good thing I thought to mention it! No worries, it's easy to forget a detail here and there~"
+    },
+    {
+      "post_id": "js-post-1524606",
+      "author": "AquaEcho",
+      "date": "2025-07-31T04:29:48+0900",
+      "body": "Galv Move Route Extras also has a move random on region function"
+    }
+  ]
+}

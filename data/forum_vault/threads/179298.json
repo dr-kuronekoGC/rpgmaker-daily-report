@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/acting-next-addon-to-yep_battleaicore.179298",
+  "title": "MV \"Acting Next\" Addon to YEP_BattleAICore",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:49.331649+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524853",
+      "author": "firestalker",
+      "date": "2025-08-02T00:31:06+0900",
+      "body": "I was hoping there is someone out there that can make a little addon to YEP_BattleAICore. I would like for a new target indicator to be added to the list of indicators. The actor, or enemy, who is making an action next in the rotation.\nSomething like \"Next Actor\" or something.\nI have a skill that stops the target from taking action, essentially skipping their turn. I would like it be more targeted than what is given in the plugin at the moment."
+    },
+    {
+      "post_id": "js-post-1524861",
+      "author": "Robro33",
+      "date": "2025-08-02T01:09:51+0900",
+      "body": "if you use either\nTuran's\nor\nDreamX's\nextensions to the battle ai plugin's target eval, then you should be able to use something like\nCode:\ntarget == BattleManager._actionBattlers.find(b => b.isActor()) || !BattleManager._actionBattlers.find(b => b.isActor())\nas the eval condition and then use the highest agi setting.\nit should make it so that the target is the the next actor to act that turn, and if there isnt an actor remaining in the turn order, itd target the fastest one as theyd be the first to act the next."
+    },
+    {
+      "post_id": "js-post-1524941",
+      "author": "firestalker",
+      "date": "2025-08-02T11:58:02+0900",
+      "body": "Robro33 said:\nif you use either\nTuran's\nor\nDreamX's\nextensions to the battle ai plugin's target eval, then you should be able to use something like\nCode:\ntarget == BattleManager._actionBattlers.find(b => b.isActor()) || !BattleManager._actionBattlers.find(b => b.isActor())\nas the eval condition and then use the highest agi setting.\nit should make it so that the target is the the next actor to act that turn, and if there isnt an actor remaining in the turn order, itd target the fastest one as theyd be the first to act the next.\nClick to expand...\nThanks for this, but it didn't work I get an error....  \"target not defined\""
+    },
+    {
+      "post_id": "js-post-1524943",
+      "author": "Robro33",
+      "date": "2025-08-02T12:25:16+0900",
+      "body": "Which of the two plugins did you use? And if its DreamX's, share the exact line for the skill in the ai notetag"
+    },
+    {
+      "post_id": "js-post-1525005",
+      "author": "firestalker",
+      "date": "2025-08-03T04:32:15+0900",
+      "body": "I also use Olivia's OTB Battle System so that might be interfering. But for now here is the error screen and the enemy's notetag.\nThe Enemy's Notetag is this (I bolded the line in question):\n<JP: 50>\n<HideEnemyHPBar>\n<HideEnemyMPBar>\n<DragonBone Battler: MimicCommon>\n<DragonBone Replace Sprite>\n<DragonBone ScaleX: -0.7>\n<attack animation: 2>\n<Element Absorb: 9, 11>\n<Battle Select Cursor Position Y: Top>\n<Custom Enemy Parameters>\nmaxhp = Math.min(Math.max($gameVariables.value(228), $gameVariables.value(273) * $gameVariables.value(124)), 2500);\nmaxmp = Math.min(Math.max($gameVariables.value(229), $gameVariables.value(274) * $gameVariables.value(123)), 2000);\natk = Math.min($gameVariables.value(230) + $gameVariables.value(122), 400);\ndef = Math.min($gameVariables.value(231) + $gameVariables.value(125), 400);\nmat = Math.min($gameVariables.value(232) + $gameVariables.value(126), 400);\nmdf = Math.min($gameVariables.value(233) + $gameVariables.value(127), 400);\nagi = Math.min($gameVariables.value(234) + $gameVariables.value(128), 400);\nluk = $gameVariables.value(280);\nexp = 0\ngold = 50 * $gameVariables.value(129);\n</Custom Enemy Parameters>\n<AI Level: 100>\n<AI Priority>\nUSER HP% param <= 50% +++ STATE !== State 12 +++ Random 50%: Skill 124, RANDOM\nVariable 61 >= 1 +++ USER HP% param <= 40% +++ Always: SKILL 136, Lowest HP%\nRANDOM 40% +++ STATE !== State 6 +++ USER HP% param <= 90%: Skill 142, RANDOM\nUSER HP% param <= 90% +++ Random 85% +++ EVAL target == BattleManager._actionBattlers.find(b => b.isActor()) || !BattleManager._actionBattlers.find(b => b.isActor()): Skill 162, Highest AGI\n</AI Priority>\n<Item 36 - 39: 25%>\n<Enemy Drops>\nSkill Points: 1%\nCure-All: 3%\nElixir: 3%\nPanacea: 3%\nAngel Feather: 5%\n</Enemy Drops>\n<Item 15 - 23: 2%>\n<enemy drop>\nitem_code: \"i1\",\namount: $gameVariables.value(61)\n</enemy drop>\n<enemy drop>\nitem_code: \"i4\",\namount: $gameVariables.value(80),\nchance: \"2 * v.value(216)\"\n</enemy drop>\n<enemy drop>\nitem_code: \"i7\",\namount: $gameVariables.value(80),\nchance: \"2 * v.value(216)\"\n</enemy drop>\n<enemy drop>\nitem_code: \"i193\",\namount: $gameVariables.value(80),\nchance: \"2 * v.value(216)\"\n</enemy drop>\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1525007",
+      "author": "Robro33",
+      "date": "2025-08-03T05:05:38+0900",
+      "body": "you still have to follow the instructions for the dreamX plugin\n* Use AIManager.targetCondition(\"x\") when using an eval condition.\n* Examples:\n* AIManager.targetCondition(\"target.name() === \\\"Harold\\\"\")\n* AIManager.targetCondition(\"target.actorId() === 2\")\n*\n* If you're using quotes in your condition, you need to escape them with \\\n* like I did for Harold (\\\"Harold\\\")\n*\n* Example of a whole ai pattern:\n* <AI Priority>\n* Eval user.name() === 'Bat' && AIManager.targetCondition(\"target.name() === \\\"Harold\\\"\"): Skill 25, Highest HP%\n* </AI Priority>\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1525010",
+      "author": "firestalker",
+      "date": "2025-08-03T06:03:24+0900",
+      "body": "Robro33 said:\nyou still have to follow the instructions for the dreamX plugin\nClick to expand...\nI'll admit that I have no idea what I'm doing... How do I use that plugin to do what i want? Maybe if I could get the EVAL code and an explanation of what each part of it does? So, I can possibly try and comprehend better and maybe do it myself in the future?"
+    },
+    {
+      "post_id": "js-post-1525032",
+      "author": "Robro33",
+      "date": "2025-08-03T08:09:53+0900",
+      "body": "firestalker said:\nHow do I use that plugin to do what i want?\nClick to expand...\nper the instructions and examples, put the code within quotations to make it a string and then use AIManager.targetCondition(\"x\") to run it. it also has examples of it\nfirestalker said:\nMaybe if I could get the EVAL code and an explanation of what each part of it does?\nClick to expand...\nThe help section had an example of it in use inside of an ai pattern notetag"
+    },
+    {
+      "post_id": "js-post-1525069",
+      "author": "firestalker",
+      "date": "2025-08-03T12:42:53+0900",
+      "body": "Robro33 said:\nper the instructions and examples, put the code within quotations to make it a string and then use AIManager.targetCondition(\"x\") to run it. it also has examples of it\nThe help section had an example of it in use inside of an ai pattern notetag\nClick to expand...\nI was not reading the instruction right...  I thought you only put a STRING in the quotes not the whole thing. I have fixed that mistake and it's working like it should be now.\nThank you for helping me out."
+    }
+  ]
+}

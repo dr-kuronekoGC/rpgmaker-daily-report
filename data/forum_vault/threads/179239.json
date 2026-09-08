@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-there-a-way-to-make-an-attack-go-for-a-different-target-if-one-is-dead.179239",
+  "title": "MV Is there a way to make an attack go for a different target if one is dead?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:51.825036+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524496",
+      "author": "bg400",
+      "date": "2025-07-30T08:18:55+0900",
+      "body": "I know it's kind of a confusing title, but I'm looking to see if something like this can be recreated in MV (not the actual system and timing stuff as I already got that down; just the bits where an enemy dies early before the attack fully finishes, and another enemy gets targeted for the rest of the attack when they do)\n- YouTube\nEnjoy the videos and music you love, upload original content, and share it all with friends, family, and the world on YouTube.\nyoutube.com\nthe youtube link is a clip showing what I'm looking for"
+    },
+    {
+      "post_id": "js-post-1524551",
+      "author": "rpgLord69",
+      "date": "2025-07-30T19:37:16+0900",
+      "body": "Not an expert on MV action sequences, but maybe something like this, a conditional after action effect:\nif (target.hp <= 0 && $gameTroop.aliveMembers().length > 0)\neval: BattleManager._targets.unshift($gameTroop.aliveMembers()[0])\nmove user: target, front base, 20\nwait for movement\nend"
+    },
+    {
+      "post_id": "js-post-1524644",
+      "author": "bg400",
+      "date": "2025-07-31T09:34:39+0900",
+      "body": "This doesn't seem to be working very well...\nI know you say you're not an expert, but should I still show you my skill code?"
+    },
+    {
+      "post_id": "js-post-1524687",
+      "author": "rpgLord69",
+      "date": "2025-07-31T15:29:46+0900",
+      "body": "Well, it would increase the chances of someone helping you above zero."
+    },
+    {
+      "post_id": "js-post-1524909",
+      "author": "bg400",
+      "date": "2025-08-02T04:55:24+0900",
+      "body": "well here's my code\nCode:\n<target action>\nmotion thrust: user\nwait for movement\nmove user: target, FRONT BASE, 20\nwait for movement\nmotion walk: user\nwait: 10\nOPACITY user: 0, 0\nanimation 123: target\nwait: 64\naction effect: target\nwait for animation\nOPACITY user: 255, 2\n\nstart sequence input: ok, 1\nwait for sequence input: 60\n\nif $gameVariables.value(1) > 0\n    animation 125: user, mirror\n    wait for animation\n    OPACITY user: 0, 0\n    animation 123: target\n    wait: 64\n    action effect: target\n    wait for animation\n    OPACITY user: 255, 2\n    move user: HOME, 15\n    motion thrust: user\n    wait: 19\nelse\n   move user: HOME, 15\n   motion thrust: user\n   wait: 19\nend\n</target action>"
+    },
+    {
+      "post_id": "js-post-1526532",
+      "author": "Nox_Aeternae",
+      "date": "2025-08-15T15:33:19+0900",
+      "body": "I'm also not an expert on Action Sequences, only been trying them out lately, but I see that you're using the action effect command to do your skill's damage. I assume your skill does damage multiple times (otherwise, there's no reason to do what you're trying to do) and I'm not sure if it's possible to check if the target is dead while the action effect command is going off. How I've handled this in my sequences is that I use Eval commands to deal my skill's damage and resolve its effects, and in between instances of damage, I can check if the enemy is dead and if it is, get a new random target for the rest of the sequence to go on.\nThere would be different ways of doing that depending on how your skill is supposed to work, but here's how I made it work for mine.\nSpoiler:\nAction\nCode:\n<setup action>\n\n\n\nclear battle log\n\n\n\nEval: user.lockOn = target\n\naction animation: target\n\nwait for animation\n\n\n\n</setup action>\n\n\n\n\n<target action>\n\nEval: user.group1 = $gameTroop.aliveMembers()\n\n\n\n\nif user.orbs.length > 2 && user.orbs[2].type == \"plasma\" && user.group1.includes(user.lockOn)\n\n    Eval: user.lockOn.startAnimation(152)\n    Eval: user.lockOn.gainHp(-8)\n    Eval: user.lockOn.startDamagePopup()\n    wait: 20\n    Eval: user.orbs[2].duration = user.orbs[2].duration -1\n    Eval:   if ($gameActors.actor(2).orbs.length > 2 && $gameActors.actor(2).orbs[2].duration == 0) {$gameActors.actor(2).orbs.splice(2,1);}\n\n\n\nelse if user.orbs.length > 2 && user.orbs[2].type == \"plasma\" && !user.group1.includes(user.lockOn)\n\n    Eval: user.targeted = user.group1[Math.floor(Math.random() * user.group1.length)]\n    Eval: user.targeted.startAnimation(152);\n        Eval: user.targeted.gainHp(-8)\n    Eval: user.targeted.startDamagePopup()\n    wait: 20\n    Eval: user.orbs[2].duration = user.orbs[2].duration -1\n    Eval:   if ($gameActors.actor(2).orbs.length > 2 && $gameActors.actor(2).orbs[2].duration == 0) {$gameActors.actor(2).orbs.splice(2,1);}\n\nend\n.\n.\n.\nYou can ignore most of the weird stuff in there as they pertain to my specific skill, but what I basically do is I save the skill's target, check the alive members of the enemy troop before each instance of damage, see if my target is still in there (they won't be if they're dead), and if they are, deal damage to that target and if they're not, then choose a random target from amongst the remaining members of the enemy troop."
+    }
+  ]
+}

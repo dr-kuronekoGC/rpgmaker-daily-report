@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/state-chance-when-using-action-effect-more-than-once.179316",
+  "title": "MV State chance when using action effect more than once",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:48.571000+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524977",
+      "author": "Vyndicate",
+      "date": "2025-08-02T22:31:07+0900",
+      "body": "When using action effect, it will give a double action, including buff and debuff\nFor buff and debuff, there's a add command to do it, but how to make it add buff when the it's not miss?\nFor state also have it, but how to make it apply state with a chance of certain percentage?\nI was using YEP Action Sequences\nEdit:\nAdditional question, how to make buff/debuff/state apply only once even multiple action effect occurs?"
+    },
+    {
+      "post_id": "js-post-1524981",
+      "author": "Robro33",
+      "date": "2025-08-02T22:47:29+0900",
+      "body": "Vyndicate said:\nFor buff and debuff, there's a add command to do it, but how to make it add buff when the it's not miss?\nClick to expand...\nAre you saying that you want the skill to buff the user and debuff the target, but the buff should happen even if it misses and the debuff requires it to hit? Since you're already using AS, you can just use the command and specify the user\nVyndicate said:\nFor state also have it, but how to make it apply state with a chance of certain percentage?\nClick to expand...\nUse an IF statement and have the state be the result of the check or just use the engine's built in effects and itll run any time the action effect is triggered\nCode:\nif Math.random() < .80\n  add state 42: target\nend"
+    },
+    {
+      "post_id": "js-post-1525044",
+      "author": "Vyndicate",
+      "date": "2025-08-03T09:27:52+0900",
+      "body": "Robro33 said:\nAre you saying that you want the skill to buff the user and debuff the target, but the buff should happen even if it misses and the debuff requires it to hit? Since you're already using AS, you can just use the command and specify the user\nClick to expand...\nThis one cause the debuff keep applied even all the attack missed, maybe I go enhance the plugin to apply only when enemy get hit at least once\nRobro33 said:\nUse an IF statement and have the state be the result of the check or just use the engine's built in effects and itll run any time the action effect is triggered\nClick to expand...\nah I once using this and didn't work, maybe I use a wrong logic. This one works well\nBut the issue still same regarding if it's hit the enemy or all miss\nMost of issue pretty much solved since I didn't mention any double apply buff and state when multiple action effect used in first place. Probably I'll enhance a bit from yanfly plugins, or ask again in another thread\nThank you for the answer! I'll close it for now and open another thread if necessary"
+    },
+    {
+      "post_id": "js-post-1525049",
+      "author": "Robro33",
+      "date": "2025-08-03T10:13:31+0900",
+      "body": "Vyndicate said:\nThis one cause the debuff keep applied even all the attack missed, maybe I go enhance the plugin to apply only when enemy get hit at least once\nClick to expand...\nIt depends on what specifically you want. Anything done within the effects box will be done to the target if the skill hit, so if there's a thing you want done to the target and requires a hit, put it there.\nWithin an AS, you can specify effects to go on either the user or the target, but anything done in an AS will be done regardless of if the skill hit or not. At that point, you will need to use an IF statement after the\naction effect\ncommand to see if the skill hit and to do the AS effects if it did.\nCode:\nif target.result().isHit()\n  add state 42: user\nend"
+    },
+    {
+      "post_id": "js-post-1525066",
+      "author": "Vyndicate",
+      "date": "2025-08-03T12:17:32+0900",
+      "body": "Robro33 said:\nIt depends on what specifically you want. Anything done within the effects box will be done to the target if the skill hit, so if there's a thing you want done to the target and requires a hit, put it there.\nClick to expand...\nI might explain more detail, it's more like\nA skill that has 4 action effect\nIf between action effect has at least 1 isHit(), apply debuff/state. Otherwise, no apply\nLike example\naction effect (miss)\naction effect (miss)\naction effect (hit)\naction effect (miss)\nsince on 3rd try enemy got hit, debuff/state will be applied\nbut this one looks simpler than what I want to do in plugins\nRobro33 said:\nWithin an AS, you can specify effects to go on either the user or the target, but anything done in an AS will be done regardless of if the skill hit or not. At that point, you will need to use an IF statement after the\naction effect\ncommand to see if the skill hit and to do the AS effects if it did.\nClick to expand...\nthanks a lot! now it works perfectly\nI was doing like this for testing\nCode:\n<setup action>\n   clear battle log\n   display action\n   eval: SceneManager._scene._logWindow.addText(\"<CENTER>\\\"Come!\\\"\")\n   opacity user: 0%\n   animation 128: user, mirror\n   wait for animation\n   immortal: targets, true\n</setup action>\n\n<whole action>\n   animation 157: user, mirror\n   wait: 176\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   wait: 6\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   wait: 6\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   action effect\n   if target.result().isHit()\n      eval: target.applyEffect = true\n   end\n   if target.applyEffect\n      add hp debuff: target, 5\n      eval: target.applyEffect = false\n   end\n   immortal: targets, false\n   wait for animation\n</whole action>\n\n<target action>\n</target action>\n\n<finish action>\n   clear battle log\n   opacity user: 100%\n   motion standby: user\n</finish action>\nthis one works as intended"
+    },
+    {
+      "post_id": "js-post-1525068",
+      "author": "Robro33",
+      "date": "2025-08-03T12:34:38+0900",
+      "body": "You got it working so you could leave it there if you like, but as a suggestion for later skills - You could have cut down out most of that by using\nSerge's loop extension\nor by using Yanfly's skill core's <Post-Damage Eval> notetag to set that applyEffect property automatically on any successful hit and only check for it at the end, or by using both plugins.\nIn any case, the issue has been solved. I'll be closing the thread now. No need for another report unless you want to re-open it for any reason"
+    }
+  ]
+}

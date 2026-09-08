@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/looking-for-a-plugin-that-gives-enemies-dice-roll-hp-ranges.179228",
+  "title": "MV Looking for a plugin that gives enemies dice roll HP ranges.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:52.469165+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524407",
+      "author": "Starsmooth",
+      "date": "2025-07-29T14:24:49+0900",
+      "body": "Is there a plugin for RPG maker MV that replicates how HP is handled in games like Wizardry where all enemies have HP ranges based on a dice roll.\nThe way it works is that every enemy has a dice roll assigned to them, for example, an enemy that has 20-110 HP will have the dice roll formula: (10d10+10).\nthis formula represents: Ten ten sided dice + 10\nI imagine that you could put this formula into an enemy's notes area if there is no plugin like this exists."
+    },
+    {
+      "post_id": "js-post-1524409",
+      "author": "caethyril",
+      "date": "2025-07-29T15:47:10+0900",
+      "body": "This might work (untested):\nSpoiler:\nplugin code\nJavaScript:\n/*:\n * @target MV MZ\n * @plugindesc Dice roll formula support for enemy max HP.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/posts/1524409/\n * @help Tag enemies like this:\n *         <HP dice: formula>\n *    e.g. <HP dice: 10d10 + 10>\n *    e.g. <HP dice: 1d12 + 5d8 - 2>\n *\n * Free to use and/or modify for any project, no credit required.\n */\n;void (function() {\n\"use strict\";\n  const TAG_NAME = \"HP dice\";\n\n  const P = \"_maxHpCache\";\n\n  const RX = /(\\d+)d(\\d+)/gi;\n\n  const xdy = function(m, a, b) {\n    a |= 0;\n    b |= 0;\n    let r = 0;\n    for (let n = a; n--;)\n      r += 1 + Math.randomInt(b);\n    return r;\n  };\n\n  const parse = function(formula) {\n    if (formula && typeof formula === \"string\")\n      return eval(formula.replace(RX, xdy)) | 0;\n    return 0;\n  };\n\n  void (function(alias) {\n    Game_Enemy.prototype.setup = function() {\n      alias.apply(this, arguments);\n      const mhp = parse(this.enemy()[TAG_NAME]);\n      if (mhp > 0)\n        this[P] = mhp;\n      else\n        delete this[P];\n    };\n  })(Game_Enemy.prototype.setup);\n\n  void (function(alias) {\n    Game_Enemy.prototype.paramBase = function(paramId) {\n      if (paramId === 0 && this[P])\n        return this[P];\n      return alias.apply(this, arguments);\n    };\n  })(Game_Enemy.prototype.paramBase);\n\n})();\n[Edit: description changed from\n...support for enemies.\n->\n...support for enemy max HP.\n. Code unchanged.]"
+    }
+  ]
+}

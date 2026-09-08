@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/trying-to-code-compare-counters-for-mini-game.179290",
+  "title": "MZ Trying to code compare & counters for mini-game",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:39.132352+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524811",
+      "author": "Elith",
+      "date": "2025-08-01T13:31:02+0900",
+      "body": "Issue Summary —\nIn my first game jam right now and trying to do a small little game with MZ, that mimics the old MasterMind tabletop game from ~1980. What I'm trying to do is via script in an event (instead of doing oodles of nested if statements in the event) is to, for two different sets of 4 variables, cycle through and record how many of each color code I've got. One set for the player colors & one for the hidden, goal colors. Then compare those two sets and see how many matches I've got for each color pair.\nDetails —\nI have 4 crystals that successfully cycle through 5 colors (each w/ their own variable with color codes 0-4) and switches that keep the crystals from moving whenever the room re-draws. There's also the hidden (to the player) goal series of 4 variables w/ their own randomly generated color sequence. The point of the game is to, through logic, get your color sequence to match the hidden one. This part all works, including tracking & reporting perfect matches. For testing, the goal colors are at the top.\nI tried setting up the first part of the script (testing via interaction w/ the pig-butt instead of auto cycling w/ the room) but it's throwing a \"SyntaxError, Unexpected token ')'\" message. I hadn't written the second part, the comparing yet to test. I did check and there's no floating brackets or () so thinking it may be something not-obvious in the syntax.\nHere's what I have so far, that's breaking:\nvar bookmark = 0;\nfor (var g = 5; g <=8; g++) {\nbookmark = $gameVariables.value(g);\nfor (var i = 0; i<=4; i++) {\nif (bookmark === i) {\n$gameVariables.setValue(30+i,++);\n$gameMessage.add($gameVariables(30+i));\n}\n}\n}\nThe goal colors are stored in variables 5-8, player colors in 10-13.\nI've got the counter variables for recording # of each color in 24-28 for the goal, and 30-34 for the player. Trying for each color for goal & player, to count how many of each color there are. So far the above is only testing the player bit, if I get it working I'd add a second identical bit for the goal series variables #'s 24-28.\nAlso have a counter to track #'s of colors matching (what I'll increment in the later compare bit).\nHere's what I was going to try for the compare & count colors in both part, will this work right or am I messing up the syntax somewhere? Basically for each previously added up color tracker variable in the previous section, I want to increment the global color counter variable (#3) for each matching set. So example, if goal has 2 blues and player has 3 blues, it'll add 2 to the color counter. If goal has 2 yellows, player 1 yellow, then 1 gets added to the counter.\nfor (var c = 0; c <= 4; c++) {\nif ($gameVariables.value(24+c) > 0 && $gameVariables.value(30+c) > 0) {\n$gameVariables.setValue(3,++);\n$gameVariables.setValue(24+c,--);\n$gameVariables.setValue(30+c,--);\n}\n}\nWhat tutorials or previous support threads have you referenced? —\nTried hunting the forums but didn't quite find anything like this. I've been searching through the\nMV/MZ Script Calls google doc sheet\n(which is awesome)! which is where I found all the commands and syntax I thought I was using right. Though those two lines in the if(...) loop I'm guessing on how those commands might work in the .setValue(,) and .add()\nGot the compare bit inspiration from this one, but that was switches and these are variables so hope I've altered them right.\nCheck switches post\nAre you using any plugins? —\nNone, just base MZ\nAttach any illustrative screenshots,\nfull\nevent pages with no cropping, mock ups, etc. —\nSee attached, hope these are sufficient.\nThanks for all your help!"
+    },
+    {
+      "post_id": "js-post-1524814",
+      "author": "Robro33",
+      "date": "2025-08-01T13:54:28+0900",
+      "body": "Elith said:\n$gameVariables.setValue(3,++);\nClick to expand...\n++ and -- by themselves arent values, so the game is still looking for one after it and crashes when it gets to the closing parenthesis.\nif you want to increase and decrease a game variable by 1, then calling the value function within the setValue function and adding/subtracting 1 there is enough (you could use ++ and -- on the variable _data directly, but you need to be sure you're handling it properly). assuming all else is correct, change your setValue calls to do as mentioned\nCode:\n$gameVariables.setValue(3, $gameVariables.value(3)+1);\nalso...\nI've moved this thread to Javascript/Plugin Support. Thank you."
+    },
+    {
+      "post_id": "js-post-1524847",
+      "author": "Elith",
+      "date": "2025-08-01T23:37:39+0900",
+      "body": "Thank you, that makes sense. Will try that."
+    },
+    {
+      "post_id": "js-post-1524940",
+      "author": "Elith",
+      "date": "2025-08-02T11:55:20+0900",
+      "body": "Yup, all works now, yay! Here's what I ended up having in the end (for reference).\nvar bookmark = 0;\nfor (var g = 10; g <=13; g++) {\nbookmark = $gameVariables.value(g);\nfor (var i = 0; i<=4; i++) {\nif (bookmark === i) {\n$gameVariables.setValue(30+i,$gameVariables.value(30+i)+1);\n}\n}\n}\nAnd for the compare/counter:\nfor (var c = 0; c <= 4; c++) {\nif ($gameVariables.value(24+c) > 0 && $gameVariables.value(30+c) > 0) {\n$gameVariables.setValue(3,$gameVariables.value(3)+1);\n$gameVariables.setValue(24+c,$gameVariables.value(24+c)-1);\n$gameVariables.setValue(30+c,$gameVariables.value(30+c)-1);\n}\n}"
+    },
+    {
+      "post_id": "js-post-1525858",
+      "author": "Robro33",
+      "date": "2025-08-10T02:25:14+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

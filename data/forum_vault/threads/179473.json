@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yep_buffsstatescore-and-dot-formula-misunderstanding.179473",
+  "title": "MV YEP_BuffsStatesCore and DoT formula misunderstanding",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:45.719834+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1525869",
+      "author": "Prostovich",
+      "date": "2025-08-10T05:06:21+0900",
+      "body": "So, formula looks like this\na.level * (v[x] / 5 + 1) * (v[y] * v[y] / 100 + 1)\nAnd I need it to be DoT damage dealt by state in JS code\nv[x] is a variable for state's counter which applies to an Enemy by Actor's skills\nv[y] is a variable for collected items of certain type\nI tried method from\nYanfly's DoT video\nbut messed up with variables. Can't figure out what to put in here instead of v[x] and v[y].\nFor now it looks like this\n<Custom Apply Effect>\n// Calculate the damage to be dealt by the formula.\ntarget._newSpace = Math.ceil(origin.level * 1 * 1);\n</Custom Apply Effect>\n<Custom Remove Effect>\n// Remove the damage effect.\ntarget._newSpace = undefined;\n</Custom Remove Effect>\n<Custom Regenerate Effect>\n// Default the DoT formula.\ntarget._newSpace = target._newSpace || Math.ceil(origin.level * 1 * 1);\n// Reduce the target's HP\ntarget.gainHp(-target._newSpace);\n// Start the damage popup.\ntarget.startDamagePopup();\n// Check if the target is dead.\nif (target.isDead()) {\n// Make the target collapse.\ntarget.performCollapse();\n}\n// Clear the target's results.\ntarget.clearResult();\n</Custom Regenerate Effect>\n1's are placeholder for missing parts of original formula."
+    },
+    {
+      "post_id": "js-post-1525877",
+      "author": "Robro33",
+      "date": "2025-08-10T07:03:58+0900",
+      "body": "Prostovich said:\nv[x] is a variable for state's counter which applies to an Enemy by Actor's skills\nClick to expand...\ntarget.getStateCounter(stateId)\nProstovich said:\nv[y] is a variable for collected items of certain type\nClick to expand...\na specific item's count? or multiple items?"
+    },
+    {
+      "post_id": "js-post-1526181",
+      "author": "Prostovich",
+      "date": "2025-08-13T03:36:34+0900",
+      "body": "Robro33 said:\ntarget.getStateCounter(stateId)\na specific item's count? or multiple items?\nClick to expand...\nSorry for late respond.\nIt's specific. Variable which is count of one certain key item (yes, I need it as variable)\n+I tried\ntarget.getStateCounter(stateID)\nand encountered another problem.\nLets set up that\norigin.level\nis 1 and\ntarget.getStateCounter(10)\nis \"0\" (there is no state on the target)\nAccording to formula, it should go like this:\n1 * (0 / 5 + 1) * 1\nwhich is\n1 * (0 + 1) * 1\nwhich is\n1 * 1 * 1\nwhich is 1 damage in the end.\nBut game gives me double 0 as the result damage, which doesn't happen when there IS some count of state's stacks\nPicture. First enemy have 6 stacks, other's 0 and there are these results of calculating.\nLog says 6 stacks for the first enemy and \"unidentified\" for others (\"black hole\" state is that one DoT effect which takes a number of stacks of other effect). I guess I have to tell the game if there are no any of this effect - the value is 0. Maybe it will fix the problem? Or not?\nEDIT: I fixed it."
+    },
+    {
+      "post_id": "js-post-1526209",
+      "author": "Robro33",
+      "date": "2025-08-13T06:06:12+0900",
+      "body": "Prostovich said:\nIt's specific. Variable which is count of one certain key item (yes, I need it as variable)\nClick to expand...\n$gameParty.numItems($dataItems[x])\nshould do then. replace x with the item's id\nProstovich said:\nEDIT: I fixed it.\nClick to expand...\nyou did fix it, but just to note in the future, I would need to see your code to be able to say anything about whats happening there."
+    },
+    {
+      "post_id": "js-post-1526212",
+      "author": "Prostovich",
+      "date": "2025-08-13T06:23:28+0900",
+      "body": "Robro33 said:\n$gameParty.numItems($dataItems[x])\nshould do then. replace x with the item's id\nyou did fix it, but just to note in the future, I would need to see your code to be able to say anything about whats happening there.\nClick to expand...\nLets resolve it right away.\nI linked\ntarget.getStateCounter(stateID)\nto a variable in a way it becomes 0 instead of NaN\nAnd just to be sure, I did the same for the key item because there potentially might be the situation when player don't have any of these (idk if it will result NaN or 0 instead).\n<Custom Apply Effect>\n// Calculate the damage to be dealt by the formula.\nvar shards = target.getStateCounter(10) || 0;\nvar flowers = $gameParty.numItems($dataItems[2]) || 0;\ntarget._newSpace = Math.ceil(origin.level * (shards / 5 + 1) * (flowers / 100 + 1));\n</Custom Apply Effect>\n<Custom Remove Effect>\n// Remove the damage effect.\ntarget._newSpace = undefined;\n</Custom Remove Effect>\n<Custom Regenerate Effect>\n// Default the DoT formula.\ntarget._newSpace = target._newSpace || Math.ceil(origin.level * (shards / 5 + 1) * (flowers / 100 + 1));\n// Reduce the target's HP\ntarget.gainHp(-target._newSpace);\n// Start the damage popup.\ntarget.startDamagePopup();\n// Check if the target is dead.\n// Make the target collapse.\nif (target.isDead()) {\ntarget.performCollapse();\n}\n// Clear the target's results.\ntarget.clearResult();\n</Custom Regenerate Effect>\nWorks as intended at least"
+    },
+    {
+      "post_id": "js-post-1526217",
+      "author": "Robro33",
+      "date": "2025-08-13T06:39:03+0900",
+      "body": "Prostovich said:\nidk if it will result NaN or 0 instead\nClick to expand...\nFor your apply effect. the issue if any would be shards. if the target doesnt have state 10, then itd be undefined and any math used with it would be NaN. you were right in adding the || 0 to it. the numItems doesnt need it, but its just not going to do anything. it wont cause a problem\nthe issue in your regenerate effect is that neither shards nor flowers would be defined. variables dont exist outside the notetag you made them in. you would have to redefine them there, or else your damage will be NaN if the battler has the state but didnt get a _newSpace written onto them"
+    },
+    {
+      "post_id": "js-post-1526224",
+      "author": "Prostovich",
+      "date": "2025-08-13T07:03:35+0900",
+      "body": "Robro33 said:\nFor your apply effect. the issue if any would be shards. if the target doesnt have state 10, then itd be undefined and any math used with it would be NaN. you were right in adding the || 0 to it. the numItems doesnt need it, but its just not going to do anything. it wont cause a problem\nthe issue in your regenerate effect is that neither shards nor flowers would be defined. variables dont exist outside the notetag you made them in. you would have to redefine them there, or else your damage will be NaN if the battler has the state but didnt get a _newSpace written onto them\nClick to expand...\nNow I did put shards/flowers there BUT\nFor some reason, when I apply more stacks of shards while DoTstate still exists, damage doesn't update\nf.e. It deals X damage when Enemy have 6 shards\nIn the end of next turn, it still deals X damage instead of Y damage though Enemy have 12 shards on self now.\n<Custom Apply Effect>\n// Calculate the damage to be dealt by the formula.\nvar shards = target.getStateCounter(10) || 0;\nvar flowers = $gameParty.numItems($dataItems[2]) || 0;\ntarget._newSpace = Math.ceil(origin.level * (shards / 5 + 1) * (flowers / 100 + 1));\n</Custom Apply Effect>\n<Custom Remove Effect>\n// Remove the damage effect.\ntarget._newSpace = undefined;\n</Custom Remove Effect>\n<Custom Regenerate Effect>\nvar shards = target.getStateCounter(10) || 0;\nvar flowers = $gameParty.numItems($dataItems[2]) || 0;\n// Default the DoT formula.\ntarget._newSpace = target._newSpace || Math.ceil(origin.level * (shards / 5 + 1) * (flowers / 100 + 1));\n// Reduce the target's HP\ntarget.gainHp(-target._newSpace);\n// Start the damage popup.\ntarget.startDamagePopup();\n// Check if the target is dead.\n// Make the target collapse.\nif (target.isDead()) {\ntarget.performCollapse();\n}\n// Clear the target's results.\ntarget.clearResult();\n</Custom Regenerate Effect>"
+    },
+    {
+      "post_id": "js-post-1526225",
+      "author": "Robro33",
+      "date": "2025-08-13T07:13:06+0900",
+      "body": "Prostovich said:\nFor some reason, when I apply more stacks of shards while DoTstate still exists, damage doesn't update\nClick to expand...\nyes. that is what youve done here\nProstovich said:\ntarget._newSpace = target._newSpace || Math.ceil(origin.level * (shards / 5 + 1) * (flowers / 100 + 1));\nClick to expand...\nthat line makes it so that if _newSpace exists, it cannot be overwritten. if you want it to actively update, then you would want to remove the first portion (which would then remove the need for having _newSpace entirely)\nCode:\n// Default the DoT formula.\nvar shards = target.getStateCounter(10) || 0;\nvar flowers = $gameParty.numItems($dataItems[2]);\n\nvar dmg = Math.ceil(origin.level * (shards / 5 + 1) * (flowers / 100 + 1));\n// Reduce the target's HP\ntarget.gainHp(-dmg);\n..."
+    },
+    {
+      "post_id": "js-post-1526230",
+      "author": "Prostovich",
+      "date": "2025-08-13T07:23:27+0900",
+      "body": "Robro33 said:\nyes. that is what youve done here\nthat line makes it so that if _newSpace exists, it cannot be overwritten. if you want it to actively update, then you would want to remove the first portion (which would then remove the need for having _newSpace entirely)\nCode:\n// Default the DoT formula.\nvar shards = target.getStateCounter(10) || 0;\nvar flowers = $gameParty.numItems($dataItems[2]);\n\nvar dmg = Math.ceil(origin.level * (shards / 5 + 1) * (flowers / 100 + 1));\n// Reduce the target's HP\ntarget.gainHp(-dmg);\n...\nClick to expand...\nSo, Yanfly's tutorial was just about applying, not updating xddd\nNow, variant below works 100% clearly as intended\nAnd I also removed Custom Apply Effect because there was no real need.\n<Custom Remove Effect>\n// Remove the damage effect.\ntarget._newSpace = undefined;\n</Custom Remove Effect>\n<Custom Regenerate Effect>\n// Default the DoT formula.\nvar shards = target.getStateCounter(10) || 0;\nvar flowers = $gameParty.numItems($dataItems[2]) || 0;\nvar dmg = Math.ceil(origin.level * (shards / 5 + 1) * (flowers / 100 + 1));\n// Reduce the target's HP\ntarget.gainHp(-dmg);\n// Start the damage popup.\ntarget.startDamagePopup();\n// Check if the target is dead.\n// Make the target collapse.\nif (target.isDead()) {\ntarget.performCollapse();\n}\n// Clear the target's results.\ntarget.clearResult();\n</Custom Regenerate Effect>\nguess I should learn the basics of JS first before getting into this.\noops. Accidentally replied instead of editing\nWell... I also wanted to say I deleted Custom Remove Effect too"
+    },
+    {
+      "post_id": "js-post-1526232",
+      "author": "Robro33",
+      "date": "2025-08-13T07:28:41+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

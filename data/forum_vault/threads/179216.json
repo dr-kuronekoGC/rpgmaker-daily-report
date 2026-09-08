@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-critical-hit-effects-animation-not-entirely-working-plus-questions-about-other-effects.179216",
+  "title": "MV Yanfly Critical Hit Effects, animation not entirely working (plus questions about other effects)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:54.381332+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524307",
+      "author": "VinegarDude",
+      "date": "2025-07-28T23:20:19+0900",
+      "body": "so i looked up how to make an animation play when an attack triggers critical and found that you can use yanfly's Auto Passive States and the Buff State Core plugins in conjunction to do so, i did and the effect works good for the most part, but i've noticed some skills just don't trigger the animation for some reason, i was wondering if it was due to the \"Physical\" in the code but some skills with that trait just also don't trigger the animation like in this gif, is there something causing this?\nHere's the code i put in the note tags for the state that gets applied to both actors and enemies.\n<Custom Establish Effect>\nif (this.isPhysical() && target.result().hpDamage > 0 && target.result().critical) {\ntarget.startAnimation(6);\n}\n</Custom Establish Effect>\nan additional but not necessary question is if i could use a variant of this code to also make it play animations whenever weaknesses or resistances are triggered."
+    },
+    {
+      "post_id": "js-post-1524310",
+      "author": "Robro33",
+      "date": "2025-07-29T00:10:28+0900",
+      "body": "VinegarDude said:\ni was wondering if it was due to the \"Physical\" in the code but some skills with that trait just also don't trigger the animation like in this gif, is there something causing this?\nClick to expand...\nmind sharing a screenshot of myria's skill? the check for isPhysical is just if the skill's hit type is set to physical instead of certain or magical. the only thing i could think of after seeing the gif is that the skill doesnt have crits enabled or isn't physical.\nVinegarDude said:\nan additional but not necessary question is if i could use a variant of this code to also make it play animations whenever weaknesses or resistances are triggered.\nClick to expand...\nCode:\n<Custom Establish Effect>\nif (this.calcElementRate(target) > 1 && value > 0){\n  target.startAnimation(x);\n}\n</Custom Establish Effect>\nalthough depending on if you want both popups being able to show and how to show them, you might want the checks adjusted so that only either one or the other can show at a time, both the crit and weakness animations are positioned to not overlap when used together, or to make a critical weakness popup to be used in the event both happen\nEdit: dropped parenthesis"
+    },
+    {
+      "post_id": "js-post-1524312",
+      "author": "VinegarDude",
+      "date": "2025-07-29T00:35:10+0900",
+      "body": "Robro33 said:\nmind sharing a screenshot of myria's skill? the check for isPhysical is just if the skill's hit type is set to physical instead of certain or magical. the only thing i could think of after seeing the gif is that the skill doesnt have crits enabled or isn't physical.\nClick to expand...\nof course\nwith that comment i just realized that yes, a lot of her skills are certain hits, since she's the support and applies statuses i made most of her skills certain so the chance to miss isnt from the physical hit but the status not proccing, there is also more party members that use magical hits as their hit type, i assume i would also have to add another custom establish that checks for this type of hits then?\nRobro33 said:\nalthough depending on if you want both popups being able to show and how to show them, you might want the checks adjusted so that onle either one or the other can show at a time, both the crit and weakness animations are positioned to not overlap when used together, or to make a critical weakness popup to be used in the event both happen\nClick to expand...\nno worries i plan to pretty much them having animations in different positions so they dont overlap each other, one thing i forgot to mention is that id ask and assume this could also apply to resistances, all in all they are not meant to be that intrusive since they last just like 6 frames but wanted some cool visual rewarding flair whenever you hit crits and weaknesses correctly"
+    },
+    {
+      "post_id": "js-post-1524318",
+      "author": "Robro33",
+      "date": "2025-07-29T01:05:57+0900",
+      "body": "VinegarDude said:\ni assume i would also have to add another custom establish that checks for this type of hits then?\nClick to expand...\nif you end up with skills of all types being able to crit, then IMO the better solution is to remove the hit type check entirely and just leave it as\ntarget.result().hpDamage > 0 && target.result().critical\n.\nVinegarDude said:\nthis could also apply to resistances\nClick to expand...\nyeah, just reverse the one I gave earlier to so that it checks if the element rate is less than 1 instead of greater than.\nCode:\nthis.calcElementRate(target) < 1"
+    },
+    {
+      "post_id": "js-post-1524319",
+      "author": "VinegarDude",
+      "date": "2025-07-29T01:18:49+0900",
+      "body": "Robro33 said:\nif you end up with skills of all types being able to crit, then IMO the better solution is to remove the hit type check entirely and just leave it as\ntarget.result().hpDamage > 0 && target.result().critical\n.\nClick to expand...\nRobro33 said:\nyeah, just reverse the one I gave earlier to so that it checks if the element rate is less than 1 instead of greater than.\nClick to expand...\ngot it, will prolly post the end result in my profile post in a bit, thank you very much for the help!"
+    }
+  ]
+}

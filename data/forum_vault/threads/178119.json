@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/party-follower-diamond-formation.178119",
+  "title": "MZ Party Follower diamond formation",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:57.137553+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1517000",
+      "author": "Kald",
+      "date": "2025-06-04T05:22:15+0900",
+      "body": "Hello, back in the day, I found a way to have interesting followers on RPG Maker VX Ace.\nToday, I tried to recreate this on MZ, but the result wasn't very convincing.\nCode:\nconst formation = [\n  [-1, 0], // Follower 1 à gauche\n  [1, 0],  // Follower 2 à droite\n  [0, -1], // Follower 3 en haut\n  [0, 1],  // Follower 4 en bas\n];\n\nconst dir = $gamePlayer.direction();\n\nfor (let i = 0; i < $gamePlayer.followers()._data.length; i++) {\n  const follower = $gamePlayer.followers().follower(i);\n\n  if (!follower._formationTarget) {\n    follower._formationTarget = {x: $gamePlayer.x, y: $gamePlayer.y};\n  }\n\n  let dx = formation[i][0], dy = formation[i][1];\n  let offsetX = dx, offsetY = dy;\n  if (dir === 2) { offsetX = dx; offsetY = dy; }\n  else if (dir === 4) { offsetX = -dy; offsetY = dx; }\n  else if (dir === 6) { offsetX = dy; offsetY = -dx; }\n  else if (dir === 8) { offsetX = -dx; offsetY = -dy; }\n  const newTargetX = $gamePlayer.x + offsetX;\n  const newTargetY = $gamePlayer.y + offsetY;\n\n\n  if (follower.x === follower._formationTarget.x && follower.y === follower._formationTarget.y) {\n    follower._formationTarget = {x: newTargetX, y: newTargetY};\n  $gamePlayer._followers.updateMove = function() {};\n}\n\n\n  let direction = 0;\n  if (follower.x < follower._formationTarget.x) direction = 6;\n  else if (follower.x > follower._formationTarget.x) direction = 4;\n  else if (follower.y < follower._formationTarget.y) direction = 2;\n  else if (follower.y > follower._formationTarget.y) direction = 8;\n\n  if (direction && follower.direction() !== direction) {\n    follower.setDirection(direction);\n  } else if (direction) {\n    follower.moveStraight(direction);\n  }\n}\nIt might not be obvious in the gif, but the followers move jerkily, and they also walk on tiles that are supposed to be impassable...\nAs you can see, I don't know how to code.\nIf a kind soul could help me, I’d really appreciate it.\nThanks in advance"
+    },
+    {
+      "post_id": "js-post-1517237",
+      "author": "punitdh89",
+      "date": "2025-06-07T04:35:37+0900",
+      "body": "Personally, I think you're very close. You just need to check for tile passability before you do the \"moveStraight\" command. RPG Maker already comes with default:\nJavaScript:\n$gameMap.isPassable(x, y, direction)\nThe \"direction\" in this case refers to the tile's passability direction, not the character's. (Like passable only from above, below, etc.)"
+    }
+  ]
+}

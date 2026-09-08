@@ -1,0 +1,509 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/enemy-hp-bars.697",
+  "title": "Enemy HP Bars",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:49:01.439187+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-6386",
+      "author": "Vlue",
+      "date": "2012-03-20T15:32:25+0900",
+      "body": "Basic Enemy HP Bars v2.1\nBasic Enemy HP Bars Lite v1.0.2\nby V.M.\n​\nIntroduction\nProvides basic hp gauges over enemies in battle with options for displaying percentage or absolute value of remaining hp, as well as customizing color, size, and position. And now with the option to use a custom image from file!\nNew Lite version without the option for a customizable gauge, for use with Sleek Gauges\nFeatures\n- Plug and play with default settings\n- Customizable colors, size, position\n- Can display remaining hp as percentage or absolute value\n- Can use custom image from file\nScreenshots\nSpoiler\nHow to Use\nPlug and play, no editing required for default bars.\nCustomization can be found right in the script with comments explaining the values.\nScript\nConvenient pastebin right... over there >>\nHere\n!\nAnd to play around, a image file I made for the custom image feature:\nLite version:\nhttp://pastebin.com/dEkBwmPw\nFAQ\nNone Available\nCredit and Thanks\n- By V.M. of D.T.\n- Free to use in any project with credit given"
+    },
+    {
+      "post_id": "js-post-17243",
+      "author": "DarkWaker",
+      "date": "2012-04-28T11:37:04+0900",
+      "body": "This is a great script! Awesome!"
+    },
+    {
+      "post_id": "js-post-17287",
+      "author": "amerk",
+      "date": "2012-04-28T13:09:28+0900",
+      "body": "Very simple but effective. I like the setup with the rats (2nd screenshot) the best, mainly because it's based on a percentage of remaining health."
+    },
+    {
+      "post_id": "js-post-17368",
+      "author": "Chaos17",
+      "date": "2012-04-28T23:29:29+0900",
+      "body": "Hi,\nHow can I move the percentage to be at the same level as the bar ?\nI want like to put the percentage at the right of the bar, next to it."
+    },
+    {
+      "post_id": "js-post-17374",
+      "author": "Vlue",
+      "date": "2012-04-29T00:00:10+0900",
+      "body": "Chaos17 said:\nHi,\nHow can I move the percentage to be at the same level as the bar ?\nI want like to put the percentage at the right of the bar, next to it.\nClick to expand...\nGet the newest version and play with the values under XT_OFFSET and YT_OFFSET to move the percentage to wherever you want to."
+    },
+    {
+      "post_id": "js-post-17420",
+      "author": "Chaos17",
+      "date": "2012-04-29T02:32:28+0900",
+      "body": "It's good and now how can I change the font size, please ?\nI tried to change the number 24 in the script but it didn't change the size and the number was cut in half."
+    },
+    {
+      "post_id": "js-post-17424",
+      "author": "Vlue",
+      "date": "2012-04-29T02:42:53+0900",
+      "body": "Chaos17 said:\nIt's good and now how can I change the font size, please ?\nI tried to change the number 24 in the script but it didn't change the size and the number was cut in half.\nClick to expand...\nBelow the line \"percentage =  enemy.hp_rate * 100\" Add \"self.contents.font.size = ##\" Where ## is equal to the font size you want."
+    },
+    {
+      "post_id": "js-post-17432",
+      "author": "Chaos17",
+      "date": "2012-04-29T03:02:38+0900",
+      "body": "Thank you very much."
+    },
+    {
+      "post_id": "js-post-17630",
+      "author": "Megablackdragon31",
+      "date": "2012-04-30T04:03:46+0900",
+      "body": "This is a great script! Thanks you very much Vlue."
+    },
+    {
+      "post_id": "js-post-21607",
+      "author": "Kaiser",
+      "date": "2012-05-16T22:26:14+0900",
+      "body": "I got scared by the spider screenshot\nbut this is a really good script, been wanting to show enemy health bars so players (or even myself) has that sense of \"is it dead yet!?\""
+    },
+    {
+      "post_id": "js-post-23007",
+      "author": "Morpheus",
+      "date": "2012-05-22T22:38:25+0900",
+      "body": "How do I make it display the actual HP of the enemy and not percentages?\nNevermind."
+    },
+    {
+      "post_id": "js-post-39894",
+      "author": "deilin",
+      "date": "2012-08-02T12:38:30+0900",
+      "body": "I modified the script to do some extra stuff.\nif interested...\nScreens:\nSpoiler\nScript:\nSpoiler\n## Basic Enemy HP Bars (DeiLin mod)\n### Adds slightly customizable hp bars to enemies in battle. See configuration\n#  below for more detail.\n## Usage: Plug and play, no editing required.\n#------\n##-- Script by: V.M of D.T\n#--- Free to use in any project with credit given\n#Edited by DeiLin\n#no outside bars anymore\n#Now can do MP and TP as well\n#----------------------------------\n#can exclude enemy id to show none on certain enemies by changing the 0 in\n#  \" and enemy.enemy_id != 0\"\n# to a specific enemy id to have no bars appear\n#in my troops, this ID is what spawns, then on turn 0,\n#they morph to other enemies, and the bars appear.\n#the morph script is in the troop event to randomize troop encounter\n#also, it says \"enemy\" appears then what will actually appear until they do like\n#the half hide option.\n#-------------------------------\n#This script also colors your bars with similar colors.\n#--------------------------------\nclass Window_HPBar < Window_Base\n#-----#\n#Sets the colors for the frame and hp bars: (Values in RGB mode, 0-255)\n#-----#\n$COLOR_OUTSIDE = Color.new(  0,  0,  0)  #Border of guage\n$COLOR_INSIDE  = Color.new(255,255,255)  #Base of guage(between hp and border)\n$COLOR_BACK    = Color.new(  50,  0,  0)  #Back of guage(behind hp)\n$COLOR_HP\t    = Color.new(250, 50, 50)  #Color of HP bar\n$COLOR_HP2\t  = Color.new(250, 200, 200)  #Second HP bar color, for gradient\n$COLOR_BACK2    = Color.new(  0,  0,  50)  #Back of guage(behind mp)\n$COLOR_MP\t    = Color.new(50, 50, 250)  #Color of MP bar\n$COLOR_MP2\t  = Color.new(200, 200, 250)  #Second MP bar color, for gradient\n$COLOR_BACK3    = Color.new(  0,  50,  0)  #Back of guage(behind hp)\n$COLOR_TP\t    = Color.new(50, 250, 50)  #Color of TP bar\n$COLOR_TP2\t  = Color.new(200, 255, 200)  #Second TP bar color, for gradient\n#-----#\n#Sets the parameters of the bar\n#-----#\nWITH_BORDER = true\nBAR_HEIGHT    = 8\t\t\t #Sets the height of the bar(Value of 5 or greater)\nBAR_WIDTH\t  = 75\t  #Sets the width of the bar(Value of 5 or greater)\n#-----#\n#Sets the location of the bar\n#-----#\nX_OFFSET\t    = -35   #Offsets location of bar on the x-axis\nY_OFFSET\t    = -35\t\t   #Offsets location of bar on the y-axis\nABOVE_MONSTER = false   #Sets whether to draw bar above or below monster\n#-----#\n#Deals with displaying hp numbers with the bar\n#-----#\nWITH_MP = true #Displays enemies MP bar\nWITH_TP = true #Displays enemies TP bar. will be right under hp if mp isn't active\nDISPLAY_NUMBER = true  #True to display enemy's hp in number\nSHOW_ABSOLUTE = true #True for absolute hp, false for percentage hp\nDISPLAY_ABOVE = true   #Display number above or below the hp bar\nTHRESHOLD\t  = 20  #Only show number if hp below this percentage\n#(101 to disable)\n#-----#\ndef initialize\nsuper(0,0,544,416)\nself.z = 0\nself.opacity = 0\nend\ndef update\nrefresh\nend\ndef refresh\nself.contents.clear\nfor enemy in $game_troop.members\nif enemy.hp_rate != 0 and enemy.enemy_id != 3\n$bh = BAR_HEIGHT\n$bh = $bh + 5 if WITH_MP\n$bh = $bh + 5 if WITH_TP\nhpwidth = ((BAR_WIDTH - 4) * enemy.hp_rate).to_i\nmpwidth = ((BAR_WIDTH - 4) * enemy.mp_rate).to_i\ntpwidth = ((BAR_WIDTH - 4) * enemy.tp_rate).to_i\nif ABOVE_MONSTER\ntmpbit = Cache.battler(enemy.battler_name, 0)\nyy = (enemy.screen_y - tmpbit.height) - 35 + Y_OFFSET\nyyy = enemy.screen_y + Y_OFFSET + 4\nyyyy = enemy.screen_y + Y_OFFSET + 4 #no mp bar\nyyyy = enemy.screen_y + Y_OFFSET + 8 if WITH_MP #mp bar active\nif yy < BAR_HEIGHT + 24 then yy = BAR_HEIGHT + 24 end\nelse\nyy = enemy.screen_y + Y_OFFSET\nyyy = enemy.screen_y + Y_OFFSET + 4\nyyyy = enemy.screen_y + Y_OFFSET + 4 #no mp bar\nyyyy = enemy.screen_y + Y_OFFSET + 8 if WITH_MP #mp bar active\nend\nxx = enemy.screen_x + X_OFFSET\n$bh = BAR_HEIGHT\n$bh = $bh + 4 if WITH_MP\n$bh = $bh + 4 if WITH_TP\nself.contents.fill_rect(xx, yy, BAR_WIDTH, $bh, $COLOR_OUTSIDE) if WITH_BORDER\nself.contents.fill_rect(xx+1,yy+1, BAR_WIDTH-2, $bh - 2, $COLOR_INSIDE) if WITH_BORDER\nself.contents.fill_rect(xx+2,yy+2, BAR_WIDTH-4, BAR_HEIGHT-4, $COLOR_BACK)\nself.contents.gradient_fill_rect(xx+2,yy+2, hpwidth, BAR_HEIGHT-4, $COLOR_HP, $COLOR_HP2)\nif WITH_MP\nself.contents.fill_rect(xx+2,yyy+2, BAR_WIDTH-4, BAR_HEIGHT-4, $COLOR_BACK2)\nself.contents.gradient_fill_rect(xx+2,yyy+2, mpwidth, BAR_HEIGHT-4, $COLOR_MP, $COLOR_HP2)\nend\nif WITH_TP\nself.contents.fill_rect(xx+2,yyyy+2, BAR_WIDTH-4, BAR_HEIGHT-4, $COLOR_BACK3)\nself.contents.gradient_fill_rect(xx+2,yyyy+2, tpwidth, BAR_HEIGHT-4, $COLOR_TP, $COLOR_HP2)\nend\nif DISPLAY_NUMBER\npercentage = enemy.hp_rate * 100\nif DISPLAY_ABOVE then yy -= BAR_HEIGHT + 24 end\nif SHOW_ABSOLUTE\ndraw_text(xx,yy+BAR_HEIGHT,width,24,enemy.hp)\nelsif percentage < THRESHOLD\ndraw_text(xx,yy+BAR_HEIGHT,width,24,percentage.to_i.to_s + \"%\")\nend\nend\nend\nend\nCode:\nEDIT: Re added the outside border option, and it will adjust to wether or not MP and TP are shown"
+    },
+    {
+      "post_id": "js-post-39919",
+      "author": "Vlue",
+      "date": "2012-08-02T15:29:21+0900",
+      "body": "Cool beans"
+    },
+    {
+      "post_id": "js-post-50770",
+      "author": "Jetstopia",
+      "date": "2012-09-08T13:23:15+0900",
+      "body": "I had trouble getting the\nBasic Enemy HP Bars v1.1\nby V.M.\n(First script) to work as a Plug and Play script (I also have ZERO scripting experience and don't plan on getting involved anytime soon).\nI got a dynamic constant assignment error for line 51: for Enemy in $game_troop.members\nI did a quick look on the net and found someting about capital letters and dynamic constant assignment errors so changed it to this:\n51: for enemy in $game_troop.members\nsimple matter of chaning the 'E' in Enemy to a 'e' and it worked fine after that.\nI can't get the\nDeiLin\n(second script) to work though. It has the same Enemy/enemy change that needs to be made (Line 71)\nAfter that I get a syntax error on line 118. After a little search I found that it is because the 'end' terms are not right or something but I haven't got it to work.\nAll I wanted was an energy bar for enemies though, and the first one by V.M works fine now after that line 51 fix.\nThanks\nEDIT:\nI have also found that when V.M's script is on you can not cancel an action in a battle window. Such as selecting 'Magic' then wanting to go back a menu screen.\nI got around this by copying the entire Scene_Battle script and pasting it above V.M's script. Far from an elegant solution but it got the job done for now."
+    },
+    {
+      "post_id": "js-post-52810",
+      "author": "Chickan117",
+      "date": "2012-09-17T11:55:28+0900",
+      "body": "This script is fantastic\nSo nice and simple.\nI was wondering; is it possible to make the enemy HP display as current / max. So 37/150 for example?\nI'm new to scripting and tried a couple of things that seemed logical without success. I couldn't even get it to add a string to the end of the number displayed! Lol"
+    },
+    {
+      "post_id": "js-post-52811",
+      "author": "Vlue",
+      "date": "2012-09-17T12:07:10+0900",
+      "body": "Change the line that reads:\ndraw_text(xx + XT_OFFSET,yy+YT_OFFSET+BAR_HEIGHT,width,24,enemy.hp)\nTo read:\ndraw_text(xx + XT_OFFSET,yy+YT_OFFSET+BAR_HEIGHT,width,24,enemy.hp.to_s + \"/\" + enemy.mhp.to_s)"
+    },
+    {
+      "post_id": "js-post-52818",
+      "author": "Chickan117",
+      "date": "2012-09-17T13:06:02+0900",
+      "body": "Looks like I'd done all the code right... except adding .to_s (which I assume converts the values to a string).\nThank you so much! This really helps make the game look that much better"
+    },
+    {
+      "post_id": "js-post-69301",
+      "author": "Jonathang",
+      "date": "2012-11-25T03:54:42+0900",
+      "body": "Does this script work for the Side battle system? (Showing HP % left)\nHm it doesn't seem to work because of an error in line 80....\nIs there a script like this for the Side battle system script?"
+    },
+    {
+      "post_id": "js-post-69327",
+      "author": "Vlue",
+      "date": "2012-11-25T06:11:58+0900",
+      "body": "That was a weird coincidence, I spend the morning rewriting the entire thing and someone posts! Oh well.\nNew version up, 2.0, that I've completely rewritten. Just all around better and easier (hopefully) to use, as well as a nice little feature to use a custom image file as an hp bar!\nAnd just as it happens I made a very simple one just for random use:\nhttp://i1175.photobu...e/Custom_HP.png\nAs for your error Jonathang, I'm not sure. If you tell me what the error says however, I can tell you if it's fixable or not (Or you can grab the new version and see if that helps)"
+    },
+    {
+      "post_id": "js-post-69427",
+      "author": "Jonathang",
+      "date": "2012-11-25T18:11:53+0900",
+      "body": "Whoops, used it in the wrong RPM engine..... I used it in XP, sorry, it worked for ace BTW. Love the script\n, and sorry for my carelessness....\nEDIT: Hello Vlue, I think I can think of a new feature for the script (Sorry if it has been implemented). You see, in my game when an enemy dies, they can revive. I want the revived enemies to have the bar, but the bar doesn't appear... Again, I'm sorry if it was actually a feature already, but if its not, I'd appreciate it if you added the feature. Thank you for your attention."
+    },
+    {
+      "post_id": "js-post-79924",
+      "author": "newuser",
+      "date": "2012-12-27T05:31:09+0900",
+      "body": "Hey, I modified the script just a bit to enable the use of simple critical HP display (the bar change's color when the enemy's hp is under certain threshold). Still, 99.9% of the script is V.M.'s original, and I don't claim credit or need to be credited in anyway ever. Hope someone gets benefitted.\nhttp://pastebin.com/CyskpRTJ\nThanks for that script, V.M., helped my a lot."
+    },
+    {
+      "post_id": "js-post-82492",
+      "author": "Faikar",
+      "date": "2013-01-02T15:22:03+0900",
+      "body": "First, thanks for this nice script.\nBut, i only want to show enemy HP bars in Bossbattles. can someone tell me, how to use with scan state ?"
+    },
+    {
+      "post_id": "js-post-82823",
+      "author": "Vlue",
+      "date": "2013-01-03T07:33:28+0900",
+      "body": "Set Scane state to say.. 20 and make a dummy state on state id 20 in the database that is applied to all bosses."
+    },
+    {
+      "post_id": "js-post-84939",
+      "author": "latenight7dusk",
+      "date": "2013-01-08T18:07:57+0900",
+      "body": "can you make a scrip like that but the enemy in maps... i'm using khas battle engine ... please.."
+    },
+    {
+      "post_id": "js-post-85176",
+      "author": "Vlue",
+      "date": "2013-01-09T10:10:09+0900",
+      "body": "That should be something you ask of the author of that script."
+    },
+    {
+      "post_id": "js-post-88732",
+      "author": "Nosleinad",
+      "date": "2013-01-19T21:03:43+0900",
+      "body": "Hi Vlue,\nIs there a way to only show the HP bars when the enemy is selected and being attacked? It would work much like Yanfly enemy HP bars\nhttp://yanflychannel.wordpress.com/rmvxa/battle-scripts/ace-battle-engine/enemy-hp-bars/\n.\nI am asking for this as i am using Battle Symphony from Yami, and your script doesn't have any compability issues with it as far as i know. But in this battle system there's an option to fade the other monsters that are not the target of a skill. what happens is that the enemy hp bar still stays there."
+    },
+    {
+      "post_id": "js-post-88833",
+      "author": "Vlue",
+      "date": "2013-01-20T04:42:19+0900",
+      "body": "Try the more recent version I got up on the pastebin, might work. It's set to make the hp bar the same opacity as the battler sprite."
+    },
+    {
+      "post_id": "js-post-88838",
+      "author": "Nosleinad",
+      "date": "2013-01-20T05:15:14+0900",
+      "body": "Vlue said:\nTry the more recent version I got up on the pastebin, might work. It's set to make the hp bar the same opacity as the battler sprite.\nClick to expand...\nThanks again Vlue, it work as intended when the battler disappear. The only thing that didn't disappeared is the number of HP. I don't use it at all, but maybe someone else does (if you're interested to make it's opacity to 0 of course\n)."
+    },
+    {
+      "post_id": "js-post-96631",
+      "author": "ct_bolt",
+      "date": "2013-02-10T19:13:18+0900",
+      "body": "Awesome, thanks for this!   BD   It's just what I've been looking for. I do have a couple of questions though...\nAs mentioned above... how would I set it to show the HP bar for only the selected enemy(s)?\nIs there an easy way to \"auto-center\" the text?\nThanks again for everything."
+    },
+    {
+      "post_id": "js-post-110100",
+      "author": "AmberRei",
+      "date": "2013-03-20T18:38:21+0900",
+      "body": "Hello, very nice script. I'm using Enu's sideview, and I have a small issue... the camera moves, but the HP bar doesn't, so, when the game \"focuses\" on the monster, its sprite moves but the HP bar stands still..."
+    },
+    {
+      "post_id": "js-post-110543",
+      "author": "Vlue",
+      "date": "2013-03-22T00:26:34+0900",
+      "body": "Link to the script and I'll take a look."
+    },
+    {
+      "post_id": "js-post-111649",
+      "author": "AmberRei",
+      "date": "2013-03-24T22:14:10+0900",
+      "body": "Here:\nhttp://www.rpgmakervxace.net/topic/4337-rmvxa-tankentai-v100-update-fully-functioning-english-version-installation-instructions/\nI think the only solution would be to eliminate the 'camera' script..."
+    },
+    {
+      "post_id": "js-post-138784",
+      "author": "Vox Novus",
+      "date": "2013-06-05T01:18:24+0900",
+      "body": "This is great Vlue, it adds a little bit to the default battle system without altering it like crazy.\nJust one question: Did you want to be credited as V.M, V.M of D.T. or Vlue?"
+    },
+    {
+      "post_id": "js-post-138856",
+      "author": "Vlue",
+      "date": "2013-06-05T05:31:48+0900",
+      "body": "Vox Novus said:\nThis is great Vlue, it adds a little bit to the default battle system without altering it like crazy.\nJust one question: Did you want to be credited as V.M, V.M of D.T. or Vlue?\nClick to expand...\nWhichever works, with Vlue being preferable."
+    },
+    {
+      "post_id": "js-post-138860",
+      "author": "Vox Novus",
+      "date": "2013-06-05T05:43:44+0900",
+      "body": "@Vlue You got it, if Vlue is what you prefer by all means I will credit you as such."
+    },
+    {
+      "post_id": "js-post-142324",
+      "author": "Vlue",
+      "date": "2013-06-15T12:02:18+0900",
+      "body": "Added a Scan Once option that when combined with scan state skills will let you have the player scan a monster once and their hp bar will remain visible throughout the game."
+    },
+    {
+      "post_id": "js-post-148352",
+      "author": "Vlue",
+      "date": "2013-07-02T09:18:13+0900",
+      "body": "Updated to allow setting custom width/height, border_width/border_height, for bosses hp bars."
+    },
+    {
+      "post_id": "js-post-166895",
+      "author": "Zevia",
+      "date": "2013-08-21T17:54:57+0900",
+      "body": "ct_bolt said:\nAwesome, thanks for this!   BD   It's just what I've been looking for. I do have a couple of questions though...\nAs mentioned above... how would I set it to show the HP bar for only the selected enemy(s)?\nClick to expand...\nI would also be greatly interested in this feature. I'd like it so the health bars aren't always displaying, but just when you have the enemy targeted. Is that a simple addition to the script?"
+    },
+    {
+      "post_id": "js-post-167417",
+      "author": "Vlue",
+      "date": "2013-08-23T04:08:21+0900",
+      "body": "Mmmmmmmmhmmm, updated the script on the pastebin with a new option that reads... ONLY_ON_TARGET which will have the hp bar only be visible on the monster selected in the enemy select window, when it's up."
+    },
+    {
+      "post_id": "js-post-167508",
+      "author": "Zevia",
+      "date": "2013-08-23T09:09:59+0900",
+      "body": "Vlue said:\nMmmmmmmmhmmm, updated the script on the pastebin with a new option that reads... ONLY_ON_TARGET which will have the hp bar only be visible on the monster selected in the enemy select window, when it's up.\nClick to expand...\nFantastic, this is greatly appreciated! Thanks very much.\nEDIT: I have a battle with some event scripting in it, where the enemy has a resist death state attached to it, and simply displays a text box upon reaching 1% or less health, then calls an abort battle command. However, I'm getting the following error right when abort battle is called:\nNoMethodError occurred. undefined method 'enemy_window' for nil:NilClass\nIt occurs on this line of code: return unless SceneManager.scene.enemy_window\nAny thoughts?"
+    },
+    {
+      "post_id": "js-post-170746",
+      "author": "ShinGamix",
+      "date": "2013-09-02T04:42:30+0900",
+      "body": "A few things\nAll my HP bars are at the very top of the screen\nWhen I have 8 enemies it only shows three bars up at the top of the screen (near the very edge of the top) and the rest are stacked up behind those almost to where they can't be seen.\nI can't get the text to show when I turn the text to true.\nI am trying to get my enemy bars to look like this and use Neo Gauge Ultimate Ace script with it.\nIts an inverted color scene of my character menu and show the last targeted enemy\n~~~\nThese next pics do not show Vlue's Enemy HP Bars Script\nthis is an add on request~\nSpoiler\nThis is what I am trying to do. I mocked this up myself.\n*First mock up done without button features\n(Mock up A)\nEnemy HP Menu and Button Features Request\nby ShinGamix\nEnemy Display Menu at top of screen\nHave menu, text, and bar colors inverted from the default colors for enemy menu.\nHave it only show the last target enemy or the first one at the start of the battle.\nMaybe L/R buttons (Q/W by default) could cycle through multiple enemies. (Need to make another mockup display pic for that too)\nNeed the menu to be shift to the right side of the screen (as in mock up) to allow for my at Delay and Bonus gauges.\nBoss options would be appreciated but not totally needed.\nI would also like it to use the Neo Gauge Ultimate Ace script to show gradients.\nA mock up with the button features\nL button to scroll through the enemies left ( I use two icons for it in the mock up)\nR Button To Scroll Right through the enemies (I use two icons for this in the mock up also)\nSH Shift button to turn display on or off?\n(Mock Up\n#Note _ I can make or provide the needed Icons (Shown above in Mock Up\nand can even merge the Button and Arrow Icons into one Icon if needed.\nNEO Gauge Ultimate Script (the one I am using)\n#===============================================================================## Neo Gauge Ultimate Ace (1.1a)# 21/02/2012# Ported to Ace by Pacman (original script by Woratana and edited by Pacman)# This script changes the way gauges are drawn. This script supports drawing# gauges horizontally and vertically, uses a 3-colour gradient, has a very# simple setup and two brilliant methods to change the bitmap.# Note that much of this work is Woratana's, you should credit him the same as# (if not more than) me. I do not claim writing this script entirely, I edited# the VX version a while back, and this is the VXA port of that.## Detailed instructions on the configuration are below.##=============================================================================== class Window_Base < Window  # DO NOT TOUCH THIS   #==========================================================================  # NEO GAUGE SETTING #  # Color: Color.new(Red, Green, Blue) # Each number you can put integer 0-255  # * You can use this site to get RGB color:  #\nhttp://web.njit.edu/~kevin/rgb.txt.html\n#==========================================================================  GAUGE_GLOW_EFFECT = true # Use glow effect?  GAUGE_GLOW_COLOR = Color.new(0,0,0) # Glow color   GAUGE_OUTSIDE_BORDER = true # Use outside border?  GAUGE_OUTSIDE_BORDER_COLOR = Color.new(255,255,255)  GAUGE_OUTSIDE_BORDER_COLOR2 = Color.new(255,255,255)  GAUGE_CLEAR_CORNER_OUTSIDE_BORDER = true   GAUGE_INSIDE_BORDER = false # Use inside border?  GAUGE_INSIDE_BORDER_COLOR = Color.new(255, 255, 255)  GAUGE_INSIDE_BORDER_COLOR2 = Color.new(0, 0, 0)  #=============================================================  # NEO HP/MP/TP/STATS GAUGE SETTING #  #=============================================================  # Note: The HPMP options also apply to the TP gauge.  HPMP_GAUGE_HEIGHT = 8 # gauge height (minumum: 6)  # Recommend to use HPMP_GAUGE_HEIGHT at least 8,  # if you're using GAUGE_INSIDE_BORDER in Neo-Gauge  HPMP_GAUGE_X_PLUS = 0 # Move gauge horizontally (+,-)  HPMP_GAUGE_Y_PLUS = ((-1)*(HPMP_GAUGE_HEIGHT - 6)) # (+,-)  # Change '((-1)*(HPMP_GAUGE_HEIGHT - 6))' to number to move gauge vertically   # BACK GAUGE COLORS  BACK_GCOLOR_1 = Color.new(0, 0, 0) # Black [Color1]  BACK_GCOLOR_2 = Color.new(100, 100, 100) # Dark Gray [Color2]  BACK_GCOLOR_3 = Color.new(200, 200, 200) # Light Gray [Color3]   USE_HP_GAUGE = true # Use HP Gauge? (true/false)  USE_MP_GAUGE = true # Use MP Gauge?  USE_TP_GAUGE = true # Use TP Gauge?  USE_STATS_GAUGE = true # Use Attack/Defense/Spirit/Agility/Luck Gauge?   # HP GAUGE COLORS  HP_GCOLOR_1 = Color.new(139,0,0) # Dark Red  HP_GCOLOR_2 = Color.new(255,0,0) # Pure Red  HP_GCOLOR_3 = Color.new(255,193,37) # Goldenrod   # MP GAUGE COLORS  MP_GCOLOR_1 = Color.new(0,0,128) # Dark Blue  MP_GCOLOR_2 = Color.new(0,191,255) # Blue  MP_GCOLOR_3 = Color.new(46,139,87) # Light Green   # TP GAUGE COLORS  TP_GCOLOR_1 = Color.new(0, 100, 0)  # Dark Green  TP_GCOLOR_2 = Color.new(191, 255, 0)  # Lime Green  TP_GCOLOR_3 = Color.new(173, 255, 47) # Yellow Green   # STAT GAUGE COLORS  STAT_GCOLOR_1 = Color.new(0,0,128)  STAT_GCOLOR_2 = Color.new(0,191,255)  STAT_GCOLOR_3 = Color.new(152,251,152) #===============================================================================## END CONFIGURATION##=============================================================================== #==============================================================================# ■ Window_Base#------------------------------------------------------------------------------# 　ゲーム中の全てのウィンドウのスーパークラスです。#==============================================================================  #--------------------------------------------------------------------------  # * Get Gauge Back Colours  #--------------------------------------------------------------------------  def neo_gauge_back_color    return BACK_GCOLOR_1, BACK_GCOLOR_2, BACK_GCOLOR_3  end  #--------------------------------------------------------------------------if USE_HP_GAUGE  #--------------------------------------------------------------------------  # * Draw Actor HP  #--------------------------------------------------------------------------  def draw_actor_hp(actor, x, y, width = 124)    gwidth = width * actor.hp / actor.mhp    cg = neo_gauge_back_color    c1, c2, c3 = cg[0], cg[1], cg[2]    draw_neo_gauge(x + HPMP_GAUGE_X_PLUS, y + line_height - 8 +      HPMP_GAUGE_Y_PLUS, width, HPMP_GAUGE_HEIGHT, c1, c2, c3)    (1..3).each {|i| eval(\"c#{i} = HP_GCOLOR_#{i}\")}    draw_neo_gauge(x + HPMP_GAUGE_X_PLUS, y + line_height - 8 +      HPMP_GAUGE_Y_PLUS, gwidth, HPMP_GAUGE_HEIGHT, c1, c2, c3, false, false,      width, 30)    change_color(system_color)    draw_text(x, y, 30, line_height, Vocab::hp_a)    draw_current_and_max_values(x, y, width, actor.hp, actor.mhp,      hp_color(actor), normal_color)  end  #--------------------------------------------------------------------------endif USE_MP_GAUGE  #--------------------------------------------------------------------------  # * Draw Actor MP  #--------------------------------------------------------------------------  def draw_actor_mp(actor, x, y, width = 124)    gwidth = width * actor.mp / [actor.mmp, 1].max    cg = neo_gauge_back_color    c1, c2, c3 = cg[0], cg[1], cg[2]    draw_neo_gauge(x + HPMP_GAUGE_X_PLUS, y + line_height - 8 +      HPMP_GAUGE_Y_PLUS, width, HPMP_GAUGE_HEIGHT, c1, c2, c3)    (1..3).each {|i| eval(\"c#{i} = MP_GCOLOR_#{i}\")}    draw_neo_gauge(x + HPMP_GAUGE_X_PLUS, y + line_height - 8 +      HPMP_GAUGE_Y_PLUS, gwidth, HPMP_GAUGE_HEIGHT, c1, c2, c3, false, false,      width, 40)    change_color(system_color)    draw_text(x, y, 30, line_height, Vocab::mp_a)    draw_current_and_max_values(x, y, width, actor.mp, actor.mmp,      mp_color(actor), normal_color)  end  #--------------------------------------------------------------------------endif USE_TP_GAUGE  #--------------------------------------------------------------------------  # * Draw Actor TP  #--------------------------------------------------------------------------  def draw_actor_tp(actor, x, y, width = 124)    gwidth = width * actor.tp / 100    cg = neo_gauge_back_color    c1, c2, c3 = cg[0], cg[1], cg[2]    draw_neo_gauge(x + HPMP_GAUGE_X_PLUS, y + line_height - 8 +      HPMP_GAUGE_Y_PLUS, width, HPMP_GAUGE_HEIGHT, c1, c2, c3)    (1..3).each {|i| eval(\"c#{i} = TP_GCOLOR_#{i}\")}    draw_neo_gauge(x + HPMP_GAUGE_X_PLUS, y + line_height - 8 +      HPMP_GAUGE_Y_PLUS, gwidth, HPMP_GAUGE_HEIGHT, c1, c2, c3, false, false,      width, 40)    change_color(system_color)    draw_text(x, y, 30, line_height, Vocab::tp_a)    change_color(tp_color(actor))    draw_text(x + width - 42, y, 42, line_height, actor.tp.to_i, 2)  end  #--------------------------------------------------------------------------endif USE_STATS_GAUGE  #--------------------------------------------------------------------------  # * Draw Actor Stats  #--------------------------------------------------------------------------  def draw_actor_param(actor, x, y, param_id)    param_name = Vocab:\naram(param_id)    param_value = actor.param(param_id)    param_max = actor.neo_param_max(param_id)    width = 156    gwidth = width * param_value / [param_max, 1].max    cg = neo_gauge_back_color    draw_neo_gauge(x + HPMP_GAUGE_X_PLUS, y + line_height - 8 +      HPMP_GAUGE_Y_PLUS, width, HPMP_GAUGE_HEIGHT, cg[0], cg[1], cg[2])    c1, c2, c3 = STAT_GCOLOR_1, STAT_GCOLOR_2, STAT_GCOLOR_3    draw_neo_gauge(x + HPMP_GAUGE_X_PLUS, y + line_height - 8 +      HPMP_GAUGE_Y_PLUS, gwidth, HPMP_GAUGE_HEIGHT, c1, c2, c3, false, false,      width, 40)    change_color(system_color)    draw_text(x, y, 120, line_height, param_name)    change_color(normal_color)    draw_text(x + 120, y, 36, line_height, param_value, 2)  end  #--------------------------------------------------------------------------end  #--------------------------------------------------------------------------  # * Draw Neo Gauge  #     c1, c2, c3  : 3 Colours in the gradient  #     vert  : Whether the gauge is vertical or not.  #     outline   : Draw an outline of the gauge?  #     max_width : Maximum width the gauge can reach.  #     c2_spot   : Point where the second colour is drawn.  #--------------------------------------------------------------------------  def draw_neo_gauge(x, y, width, height, c1, c2, c3, vert = false,      outline = true, max_width = nil, c2_spot = 50)      if max_width.nil? # Get Max Width      max_width = vert ? height : width    end    glow = GAUGE_GLOW_EFFECT    dx = x; dy = y    x = y = 0    bitmap = Bitmap.new(max_width, height)    if glow # If drawing glow      if outline  # If drawing outline        if vert; rect = Rect.new(x, y, width, max_width)  # Make vertical gauge        else; rect = Rect.new(x, y, max_width, height)  # Make horizontal gauge        end        bitmap.fill_rect(rect, GAUGE_GLOW_COLOR)  # Make glow        bitmap.neo_clear_corner(rect.x, rect.y, rect.width, rect.height) # Clear      else  # No outline        height -= 2; width -= 2; x += 1; y += 1        if GAUGE_INSIDE_BORDER          height -= 2; width -= 2; x += 1; y += 1        end      end    end  #--------------------------------------------------------------------------  # I'm not going to comment every line. There's a lot of stuff here. It may  # look daunting, but it's actually not that diffciult to get your head  # around. If you really want to figure this all out, just look at it a lot.  # Failing that, you could probably just ask a more experienced scripter or  # myself.  #--------------------------------------------------------------------------    if vert      if glow; gx = gx2 = x + 1; gy = y      else; gx = gx2 = x; gy = y      end      gy2 = gy - 1 + ((c2_spot * max_width) / 100)      gw = gw2 = width - 2; gh = ((c2_spot * max_width) / 100)      gh2 = max_width - gh - 2      bitmap.gradient_fill_rect(gx, gy, gw, gh, c1, c2, true)      bitmap.gradient_fill_rect(gx2, gy2, gw2, gh2, c2, c3, true)      gh = (gh + gh2)    else      if glow; gx = x; gy = gy2 = y        gx = x + 1; gy = gy2 = y + 1      else; gx = x; gy = gy2 = y      end      gx2 = gx - 1 + ((c2_spot *  max_width) / 100)      gw = ((c2_spot * max_width) / 100); gh = gh2 = (height - 2)      gw2 = max_width - gw - 2      bitmap.gradient_fill_rect(gx, gy, gw, gh, c1, c2)      bitmap.gradient_fill_rect(gx2, gy2, gw2, gh2, c2, c3)      gw = (gw + gw2)    end    if outline      if GAUGE_OUTSIDE_BORDER        bitmap.draw_neo_border(gx, gy, gw, gh, GAUGE_OUTSIDE_BORDER_COLOR,          GAUGE_OUTSIDE_BORDER_COLOR2)        if GAUGE_CLEAR_CORNER_OUTSIDE_BORDER          bitmap.neo_clear_corner(gx, gy, gw, gh)        end      end      if GAUGE_INSIDE_BORDER        gx += 1; gy += 1; gw -= 2; gh -= 2        bitmap.draw_neo_border(gx, gy, gw, gh, GAUGE_INSIDE_BORDER_COLOR,          GAUGE_INSIDE_BORDER_COLOR2)      end    end    rect = Rect.new(0, 0, width, bitmap.height)    self.contents.blt(dx, dy, bitmap, rect)    bitmap.dispose  endend #==============================================================================# ■ Bitmap#------------------------------------------------------------------------------# 　かわいいですね。#============================================================================== class Bitmap  #--------------------------------------------------------------------------  # * Draw border of Neo Gauge  #--------------------------------------------------------------------------  def draw_neo_border(x, y, width, height, color, color2 = color, size = 1)    gradient_fill_rect(x, y, width, size, color, color2)    fill_rect(x, y, size, height, color)    fill_rect(x + width - size, y, size, height, color2)    gradient_fill_rect(x, y + height - size, width, size, color, color2)  end  #--------------------------------------------------------------------------  # * Clear Corner of Neo Gauge  #--------------------------------------------------------------------------  def neo_clear_corner(x, y, width, height, size = 1)    clear_rect(x, y, size, size)    clear_rect(x + width - size, y, size, size)    clear_rect(x, y + height - size, size, size)    clear_rect(x + width - size, y + height - size, size, size)  endend #==============================================================================# ■ Game_Battler#------------------------------------------------------------------------------# 　スプライトや行動に関するメソッドを追加したバトラーのクラスです。このクラス# は Game_Actor クラスと Game_Enemy クラスのスーパークラスとして使用されます。#============================================================================== class Game_Battler < Game_BattlerBase  #--------------------------------------------------------------------------  # * Get class (simpler method)  #--------------------------------------------------------------------------  def klass    self.class if self.is_a?(Game_Actor)  end  #--------------------------------------------------------------------------  # * Get Neo Parameter Max  #--------------------------------------------------------------------------  def neo_param_max(param_id)    case param_id    when 2; maxatk    when 3; maxdef    when 4; maxspi    when 5; maxmdef    when 6; maxagi    when 7; maxluk    end  end  #--------------------------------------------------------------------------  # * Max attack  #--------------------------------------------------------------------------  def maxatk    n = atk    if self.is_a?(Game_Actor)      n = n - klass.params[2, @level] + klass.params[2, 99]    end    return n  end  #--------------------------------------------------------------------------  # * Max defense  #--------------------------------------------------------------------------  def maxdef    n = atk    if self.is_a?(Game_Actor)      n = n - klass.params[3, @level] + klass.params[3, 99]    end    return n  end  #--------------------------------------------------------------------------  # * Max magic  #--------------------------------------------------------------------------  def maxspi    n = atk    if self.is_a?(Game_Actor)      n = n - klass.params[4, @level] + klass.params[4, 99]    end    return n  end  #--------------------------------------------------------------------------  # * Max magic defense  #--------------------------------------------------------------------------  def maxmdef    n = atk    if self.is_a?(Game_Actor)      n = n - klass.params[5, @level] + klass.params[5, 99]    end    return n  end  #--------------------------------------------------------------------------  # * Max agility  #--------------------------------------------------------------------------  def maxagi    n = atk    if self.is_a?(Game_Actor)      n = n - klass.params[6, @level] + klass.params[6, 99]    end    return n  end  #--------------------------------------------------------------------------  # * Max luck  #--------------------------------------------------------------------------  def maxluk    n = atk    if self.is_a?(Game_Actor)      n = n - klass.params[7, @level] + klass.params[7, 99]    end    return n  endend $imported ||= {}$imported[:neo_gauge_ultimate] #===============================================================================## END OF SCRIPT##===============================================================================\nThis is the way they look now using Ventig's Enemy HP Bars script and its a jumbled mess."
+    },
+    {
+      "post_id": "js-post-170949",
+      "author": "Vlue",
+      "date": "2013-09-02T11:12:38+0900",
+      "body": "Well, the jumbled mess of bars would have to be uh... whatever battle script you have to show battlers. So which is it?"
+    },
+    {
+      "post_id": "js-post-171164",
+      "author": "ShinGamix",
+      "date": "2013-09-03T07:12:33+0900",
+      "body": "The core is symphony"
+    },
+    {
+      "post_id": "js-post-185880",
+      "author": "Diretooth",
+      "date": "2013-10-26T19:31:38+0900",
+      "body": "*Laughs like a maniac* This is exactly what I needed! Nothing too complex, it looks nice, functions well, and is simple enough that a script illiterate game maker like me can use it."
+    },
+    {
+      "post_id": "js-post-201182",
+      "author": "Leah Prime",
+      "date": "2013-12-18T05:19:48+0900",
+      "body": "I don't suppose you could add an option too ONLY show MP bars.\nFor my game, I don't want the player too know the enemies HP, but for a few specific enemies,\nI want their MP too be visible, as the enemy is to gradually charge up his MP, and if the enemy gets his MP too full,\nhe unleashes a devastating attack, which the player has to stop by draining his MP before it gets to high.\nGreat script tho!\nThanks!"
+    },
+    {
+      "post_id": "js-post-201812",
+      "author": "Vlue",
+      "date": "2013-12-19T02:01:06+0900",
+      "body": "Easy, updated the pastebin with the newer version which has a USE_HP_BAR option that you can turn off."
+    },
+    {
+      "post_id": "js-post-203498",
+      "author": "Syyougo",
+      "date": "2013-12-22T19:19:22+0900",
+      "body": "Thank you very much for the script !\nSyyougo."
+    },
+    {
+      "post_id": "js-post-233095",
+      "author": "McTone",
+      "date": "2014-03-02T13:12:05+0900",
+      "body": "Would there be any way to use this script where it only shows the HP bar after you've killed one of the enemies?\nLike the first time you fight a slime, no HP bar. But then you kill one and voila! Shows up.\nMaybe something with the scan state...I don't know.\nSorry if somebody already answered this.\nAlso, your user pic looks like mine but as an engineer. Just sayin."
+    },
+    {
+      "post_id": "js-post-233152",
+      "author": "Vlue",
+      "date": "2014-03-02T16:54:08+0900",
+      "body": "My long lost brother! Brother!! Erm... *cough* moving on.\nIf you grab the latest version (I just posted a new one) and chance SCAN_STATE to 1 and SCAN_ONCE to true, then that should be what you want."
+    },
+    {
+      "post_id": "js-post-233222",
+      "author": "McTone",
+      "date": "2014-03-02T22:37:01+0900",
+      "body": "Awesome! Thanks!"
+    },
+    {
+      "post_id": "js-post-233398",
+      "author": "McTone",
+      "date": "2014-03-03T08:36:15+0900",
+      "body": "That worked perfectly like you said! I do have two issues though:\nIf I set the HP bar to only show when I'm targeting the enemy, it shows whether or not I've inflicted the state (in this case death) before. Any way to get these two features to work together?\nIs there any way to make the HP bar always show on top? Like if it overlaps another enemy?\nThanks again!"
+    },
+    {
+      "post_id": "js-post-248329",
+      "author": "Vlue",
+      "date": "2014-04-08T04:05:44+0900",
+      "body": "Updated the original post to include lite version of the script, without the gauges customization options, for use with Sleek Gauges.\nAnd as for @McTone... I have no idea why I never replied to your questions, but hopefully these newer versions have corrected your problems!"
+    },
+    {
+      "post_id": "js-post-266557",
+      "author": "ShadowShine57",
+      "date": "2014-06-04T00:07:12+0900",
+      "body": "Hello, I tried your script and when going into a battle I got this error:\nScript 'Health Bars' line 12: NameError occurred.\nuninitialized constant Sprite_Battler:\nTP_HP\nEdit: Nevermind, I am a stupid noob"
+    },
+    {
+      "post_id": "js-post-270164",
+      "author": "zer0ne",
+      "date": "2014-06-10T16:48:22+0900",
+      "body": "Hello,\nI am trying to find out where to edit the text display size above the hp bars.\n#Size of the displayed text      TEXT_SIZE = Font.default_sizeDo I edit this section? I played with it a bit, but I keep crashing. I've tried a few ways..  such as...\n#Size of the displayed text      TEXT_SIZE = 5Thanks!"
+    },
+    {
+      "post_id": "js-post-270549",
+      "author": "Vlue",
+      "date": "2014-06-11T07:19:27+0900",
+      "body": "5 if pretty small, the default size is 24, anything less then 8-12 is unreadable depending on the resolution."
+    },
+    {
+      "post_id": "js-post-270717",
+      "author": "zer0ne",
+      "date": "2014-06-11T13:28:58+0900",
+      "body": "Vlue said:\n5 if pretty small, the default size is 24, anything less then 8-12 is unreadable depending on the resolution.\nClick to expand...\nReplaced the script and tried to change the text to ; text_size = 15 , worked like a charm this time. I'll just blame it on the keyboard goblins...\nFantastic script by the way, Vlue. Thank you for sharing your works."
+    },
+    {
+      "post_id": "js-post-271648",
+      "author": "xStarPointx",
+      "date": "2014-06-13T09:18:51+0900",
+      "body": "I set the display for php%\nAnd I set show mp to false\nBut neither of these changes are showing during a fight. It still shows chp and mp is still acting as true.\nWut do"
+    },
+    {
+      "post_id": "js-post-271897",
+      "author": "Vlue",
+      "date": "2014-06-14T01:19:58+0900",
+      "body": "Just tested it. It works fine.\nMake sure that after editing the script, that you save the project before you do a battle test in the database, or else changes won't be reflected.\n(Just a guess on what's going on.)"
+    },
+    {
+      "post_id": "js-post-271955",
+      "author": "xStarPointx",
+      "date": "2014-06-14T05:01:01+0900",
+      "body": "Wow that was a simple fix thanks. Great script."
+    },
+    {
+      "post_id": "js-post-374302",
+      "author": "Mirsa",
+      "date": "2015-03-11T07:51:45+0900",
+      "body": "Question,\nWould there be a way to make the enemy HP bar display only when a specific character is in the team?  I have a character who will have a SCAN skill, and it would be cool if there was visual representation while he is in the team."
+    },
+    {
+      "post_id": "js-post-396141",
+      "author": "Braydon5523",
+      "date": "2015-05-11T11:32:10+0900",
+      "body": "Why isn't it working?\nI need help................"
+    },
+    {
+      "post_id": "js-post-396185",
+      "author": "Andar",
+      "date": "2015-05-11T14:48:16+0900",
+      "body": "Braydon5523 said:\nWhy isn't it working?\nI need help................\nClick to expand...\nAnd we need to know what you've done and what happens in your games, before we can help you.\nAs many people have used this, the problem has to be in your project and not in the script itself, so we need to know more about it to be able to look for the problem."
+    },
+    {
+      "post_id": "js-post-414122",
+      "author": "ACE RyanAnayaMc",
+      "date": "2015-07-02T05:07:09+0900",
+      "body": "Hello. I am having an error with the lite version of this script, where the following error is displayed:\nScript 'Enemy HP Bars' line 169: NoMethodError occurred.\nundefined method `[]' for nil:NillClass\nThe error shows up when the battle loads and the battle contains an enemy set to \"Appear Halfway\".\nI am also using your \"Sleek Gauge\" script.\nCould you help?"
+    },
+    {
+      "post_id": "js-post-437774",
+      "author": "ZServ",
+      "date": "2015-08-28T04:55:31+0900",
+      "body": "Apologies if this is a necro-post, however I'm struggling to find where in this to change the Y axis of State icons.\nif DTP_HP::USE_STATES          xx = 24           yy += 12 if @battler.boss?          @battler.states.each do |state|            @hp_bar.draw_icon(state.icon_index,xx,yy)            xx += 24           end        endThis is where it's determined, I'm fairly certain, but it's in an if statement I'm not really comprehending, as yy is declared before the if statement.\nBut.. If you change YY, it has no effect. What am I doing wrong here?\nEdit: I added the following:\nyy += 12and adjusted the if statement's yy value proportionally to my own. Just in case someone Googles this with the same question. Additionally, there doesn't seem to be a way to change the xx values individually between normal enemies and bosses, so that's my next goal to tackle.\nEdit 2: I recall reading either here or on a Sleek Gauges thread that someone was having issues with the frame rate tanking using these scripts. I can confirm this happens, and to be upfront, there doesn't appear to be anything on Vlue's end wrong with either script (regarding that issue, anyway). So, in case someone ever Googles THIS or comes in to complain, here's the issue and what causes it:\nThe text engine sucks. That's it. You're drawing too many characters on screen. So, if you have characters named after adjectives for some reason, that will impact things. Or, if you have a mob named Werewolf, and you have 8 of em, that's Werewolf 1-8 + their health numbers. Compare to something like \"Imp,\" you'll notice a huge change in performance. There's an INCREDIBLY easy fix though! The text cache script here:\nhttp://forums.rpgmakerweb.com/index.php?/topic/1001-text-cache/"
+    },
+    {
+      "post_id": "js-post-439325",
+      "author": "FireDusterStudios",
+      "date": "2015-09-01T15:48:19+0900",
+      "body": "Is there a way for the Light Versions feature to show the enemy name, to be incorperated into the other version?\nI'm currently making a \"Sword Art Online\" based game and I thought adding the names of the Bosses would be cool.\nThanks for the script btw thing works great lol"
+    },
+    {
+      "post_id": "js-post-537298",
+      "author": "BowlettaCackowser",
+      "date": "2016-01-10T04:43:13+0900",
+      "body": "How do i make it like in the 3rd photo with the demon, where it shows the overall health?"
+    },
+    {
+      "post_id": "js-post-549852",
+      "author": "DanielVixen",
+      "date": "2016-02-01T10:10:49+0900",
+      "body": "heya. i have no scripting skills, so can you inform me on how to get this to work.\nthanks."
+    },
+    {
+      "post_id": "js-post-616582",
+      "author": "varishtg",
+      "date": "2016-06-26T15:12:12+0900",
+      "body": "I tried adding the script as is to my game. When I inserted it in sprites section I get a superclass error in Scene_Battle. When I inserted it at the bottom of all the scripts the bars weren't visible for any enemy. I haven't done any modifications other than the basic scripts that are required to run the game. What should I do? What is the proper way of implementing the script."
+    },
+    {
+      "post_id": "js-post-616587",
+      "author": "Andar",
+      "date": "2016-06-26T15:32:34+0900",
+      "body": "varishtg said:\nWhat should I do? What is the proper way of implementing the script.\nClick to expand...\nI suggest you follow the link \"how to use a script\" in my signature, it explains the procedure and all possible configuration options yoiu may need."
+    },
+    {
+      "post_id": "js-post-773293",
+      "author": "SloppyJoeStudios",
+      "date": "2017-09-08T17:27:54+0900",
+      "body": "Hello!\nScript looks nice.\nWill it work for sapphire action system iv? Or do you know of any enemy hp bar script that does work with it? <3"
+    },
+    {
+      "post_id": "js-post-782212",
+      "author": "Cougarmint",
+      "date": "2017-10-08T12:32:05+0900",
+      "body": "I've got a question.\nI'm doing a sort of horror-esque version of a chapter in my game. There are some ghosts and such to fight, but every once in a while you will get a battle here there is nothing there and you get the message, \"There's nothing here. Were you just seeing things?\" And the battle aborts. The only problem I have is that the HP bars still show on my \"Null_Battler.\" Is there a way to disable the HP bars just for that one monster? I'm using both the normal and Boss HP bars otherwise, it's just this one monster I want not to have the bars for."
+    },
+    {
+      "post_id": "js-post-917835",
+      "author": "DiegoArancibia",
+      "date": "2018-11-23T13:55:22+0900",
+      "body": "Hi, I'm a novice. They explain to me how to use this formula from where I copy and assemble .js how do I work in RPG Mv I do not understand this goes in the plugins folder or is it only used in events?"
+    },
+    {
+      "post_id": "js-post-917839",
+      "author": "Kes",
+      "date": "2018-11-23T14:31:24+0900",
+      "body": "@DiegoArancibia\nThis is an English language site, and public posts must be in English and only in English.  Please edit your post and translate it; use Google translate if necessary"
+    },
+    {
+      "post_id": "js-post-917870",
+      "author": "DiegoArancibia",
+      "date": "2018-11-23T15:55:20+0900",
+      "body": "[QUOTE = \"Vlue, post: 6386, miembro: 219\"]\nBasic Enemy HP Bars v2.1\nBasic Enemy HP Bars Lite v1.0.2\npor VM\n​\nIntroducción\nProporciona indicadores de hp básicos sobre los enemigos en batalla con opciones para mostrar el porcentaje o el valor absoluto del hp restante, así como la personalización del color, el tamaño y la posición. ¡Y ahora con la opción de usar una imagen personalizada desde archivo!\nNueva versión Lite sin la opción de un calibre personalizable, para usar con Sleek Gauges\nCaracteristicas\n- Plug and play con la configuración predeterminada\n- Colores personalizables, tamaño, posición.\n- Puede mostrar hp restantes como porcentaje o valor absoluto\n- Puede usar una imagen personalizada de un archivo\nCapturas de pantalla\nSpoiler\n[/ SPOILER]\nCómo utilizar\nPlug and play, no se requiere edición para las barras predeterminadas.\nLa personalización se puede encontrar directamente en el script con comentarios que explican los valores.\nGuión\nPráctico pastebin a la derecha ... allí >> ¡\nAquí\n!\nY para jugar, un archivo de imagen que hice para la función de imagen personalizada:\nVersión Lite:\nPreguntas más frecuentes\nNinguno disponible\nCrédito y gracias\n- Por VM de DT\n- Gratis para usar en cualquier proyecto con crédito otorgado [/ QUOTE]\nHola perdon por molestar pero no entiendo nada como hago para usar esto y que me quede como las ratas ?"
+    },
+    {
+      "post_id": "js-post-917871",
+      "author": "Engr. Adiktuzmiko",
+      "date": "2018-11-23T16:00:41+0900",
+      "body": "@diego\nthis thread here is for an RMVXAce script not an MV plugin. You cannot use this on MV. You need to find an MV version if you want to use it on MV"
+    },
+    {
+      "post_id": "js-post-920403",
+      "author": "DiegoArancibia",
+      "date": "2018-12-01T05:30:54+0900",
+      "body": "[QUOTE = \"Engr. Adiktuzmiko, post: 917871, miembro: 1742\"] [USER = 81284]\n@diego\n[/ USER] este hilo aquí es para un script RMVXAce no para un plugin de MV. No puedes usar esto en MV. Necesitas encontrar una versión de MV si quieres usarla en MV [/ QUOTE]\nDe acuerdo gracias si ya logre darle vida a los moustros gracias a una pagina de plugins yanfly"
+    },
+    {
+      "post_id": "js-post-920487",
+      "author": "slimmmeiske2",
+      "date": "2018-12-01T09:55:06+0900",
+      "body": "@DiegoArancibia\nThis is an English forum, so please translate your post. If your English isn't good enough, then please use Google Translate."
+    },
+    {
+      "post_id": "js-post-1259644",
+      "author": "RedRaydr",
+      "date": "2022-03-14T03:11:24+0900",
+      "body": "Would there be a way to make the health bar work in percentage, and appear at full every time they attack then show the percentage of health left compared to that attack, then disappear?\nSimilar to MegaMan X: Command Mission's health bar if anyone has played that"
+    },
+    {
+      "post_id": "js-post-1303692",
+      "author": "Kirino-7",
+      "date": "2022-10-03T03:21:19+0900",
+      "body": "Is there a way to make a exception for certain enemies? Lifebar should work on most of enemies, but I want some enemies to not show it."
+    },
+    {
+      "post_id": "js-post-1303697",
+      "author": "Roninator2",
+      "date": "2022-10-03T03:43:30+0900",
+      "body": "Kirino-7 said:\nIs there a way to make a exception for certain enemies? Lifebar should work on most of enemies, but I want some enemies to not show it.\nClick to expand...\nVTS Enemy HP Bars By Ventwig has this built in. I would suggest you use that instead.\nUnless it really doesn't look like how you want."
+    },
+    {
+      "post_id": "js-post-1511096",
+      "author": "MonkEL1V3",
+      "date": "2025-04-27T01:33:58+0900",
+      "body": "I ran into an error on line 214 as reads\nScript line 214: NoMethodError occurred.\nundefined method `alive?' for #<Game_Enemy:0x4eb6208\nDoes anyone know how to resolve this?"
+    },
+    {
+      "post_id": "js-post-1511103",
+      "author": "Roninator2",
+      "date": "2025-04-27T02:39:38+0900",
+      "body": "MonkEL1V3 said:\nI ran into an error on line 214 as reads\nScript line 214: NoMethodError occurred.\nundefined method `alive?' for #<Game_Enemy:0x4eb6208\nDoes anyone know how to resolve this?\nClick to expand...\nAre you using this in RPG Maker VX or RPG Maker VX Ace?\nIn VX Ace there is a method called alive? in Game_BattlerBase which would be found by Game_Enemy unless you have a script that somehow removes the inheritance, which would be very weird.\nOr unless you deleted that method."
+    },
+    {
+      "post_id": "js-post-1511154",
+      "author": "MonkEL1V3",
+      "date": "2025-04-27T11:02:09+0900",
+      "body": "Roninator2 said:\nAre you using this in RPG Maker VX or RPG Maker VX Ace?\nIn VX Ace there is a method called alive? in Game_BattlerBase which would be found by Game_Enemy unless you have a script that somehow removes the inheritance, which would be very weird.\nOr unless you deleted that method.\nClick to expand...\nMy apologies, I thought I stated previously but I am on VX and I have since done a good amount of tweaking to this code and my buddy and I were able to get the errors to stop but the hp bar still wont show."
+    }
+  ]
+}

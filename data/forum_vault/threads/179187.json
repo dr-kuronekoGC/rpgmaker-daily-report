@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/animations-crash-the-program.179187",
+  "title": "MZ Animations Crash the Program",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:48:42.635819+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1524127",
+      "author": "atolmasoff",
+      "date": "2025-07-27T09:36:53+0900",
+      "body": "Hi all! Been working on a game, so far so good. Recently I'm getting to a point where I'd like to focus on animations. In the process of seeing how to get in custom ones, I've found an issue:\nWhenever I go into animations tab, maybe 30% of the time it'll lock up and crash. Other times it loads, but if I click on other animations to quickly, or scroll around too fast, it freezes and crashes.  Happens with this project, or brand new one. Re-installed GFX drivers, re-installed MZ, but still crashing.\nThe goal is to replace RTP animations with ones for my game, so they've not been touched. Using Visuastella_base and _combat, but happens with or without the plugins."
+    },
+    {
+      "post_id": "js-post-1524140",
+      "author": "Andar",
+      "date": "2025-07-27T14:04:48+0900",
+      "body": "what is your editor version, and what is your project core version?\nit might be that your project core is an older version than the editor, and there was an update to include MV-style animations that will cause problems if it is not present in both editor and core.\nwhere did you store the project?\nthat behaviour can also be caused if the editor has problems accessing and loading the animation file, for example if it was stored in a cloud folder and you currently have a slow internet.\nor a few other causes that can usually be seen in the full folderpath to the project (the one beginning with the drive letter, usually \"c:\\users\\user\\....\""
+    },
+    {
+      "post_id": "js-post-1524198",
+      "author": "atolmasoff",
+      "date": "2025-07-28T01:18:03+0900",
+      "body": "1.91 is the RPG Maker Version. and 1.90 is the project core.\n//=============================================================================\n// rmmz_core.js v1.9.0\n//=============================================================================\nThat's the file from the core file in C:\\Users\\atolm\\Documents\\RMMZ\\newdata\nFoldiers are are located in C:\\Users\\atolm\\Documents\\RMMZ. Tried re-naming my existing one to a different file name, and replacing it with the one from the newdata folder.  But same thing, worked for a minute. Scrolled through a few and it worked like normal, but about 3 seconds in, it locked up and crashed again.\nI've tried to keep all downloaded content in it's own folder in my documents, and only imported tile and character sets mostly as of now. Might try just gutting everything today and re-import needed fines, but issue sems to persist regardless of project.\nAnimation tab works, but as soon as I click the '...' to choose a different animation file, it'll crash after I click a file or two, or scrolling seems to crash it.   If I manage to be super fast, hit a key for image name and try to arrow select and enter  quick enough, but has about a 1 / 25 success ratio! lol\nI did also verify all installed files for application through steam."
+    },
+    {
+      "post_id": "js-post-1524253",
+      "author": "Andar",
+      "date": "2025-07-28T11:32:49+0900",
+      "body": "atolmasoff said:\nI did also verify all installed files for application through steam.\nClick to expand...\nthat does not check for files added to a folder, and with your previous answers that is most likely that cause:\nat one time in the past you added a damaged or otherwise wrong file to that folder, and now the editor crashes as soon as it tries to read that file.\nif you make a new project, does the animation tab work in that project? do not add anything custom to it.\nif yes, close the editor and compare the two animation folders of both projects. Move all files that are in the damaged project folder but not in the new project folder to a backup folder anywhere else.\nthen test. if it works, move the files from the backup folder back one after another, testing after each file if that is the damaged one.\nif it does not work, one of the base files must have become damaged, simply copy everything from the working project folder into the damaged project folder and test again."
+    },
+    {
+      "post_id": "js-post-1524263",
+      "author": "atolmasoff",
+      "date": "2025-07-28T13:16:55+0900",
+      "body": "No luck\nCompletely removed my Project files and folder, put on C elsewhere. Deleted all DLC, Plugins, Addons etc. Uninstalled program, and deleted any lingering folders in Program Files or Documents.\nRe-installed 100% fresh copy of game. But still crashing any time I click the ...\nI submitted a short video. Results are the same regardless of the animations I leave. Removing all effects files/folders does the same. Might let me browse it for a second, but then crashes again.\nProblem is getting it to do the same thing twice. Crash when I click the same image, or re-add a new file, but it just seems to be that window process itself or something. Kind of a head scratcher.   Running as admin didn't make any difference.\nAlso, thanks for you're helping. Easy to scroll past these, so thanks again."
+    },
+    {
+      "post_id": "js-post-1524264",
+      "author": "Erif",
+      "date": "2025-07-28T13:30:02+0900",
+      "body": "MV had a weird issue with memory that caused a similar crash. It also ocurred with the animations tab. So, Investigating, there's a fix that expands MV's virtual memory limit from 2GB to 4GB (It's the easiest I can explain without going into more technical aspects). I don't know if this is fixed with MZ, so you can try it anyways.\n4GB Patch – NTCore\nntcore.com\nThe instructions are included in the post of the tool, I have used it myself and a few close friends with MV. Perhaps it may be useful?\nPD: If you have MZ in Steam you have to patch the executable in the steamapps/common/RPG Maker MZ folder, not the direct access."
+    },
+    {
+      "post_id": "js-post-1524266",
+      "author": "Andar",
+      "date": "2025-07-28T13:37:14+0900",
+      "body": "atolmasoff said:\nCompletely removed my Project files and folder, put on C elsewhere. Deleted all DLC, Plugins, Addons etc. Uninstalled program, and deleted any lingering folders in Program Files or Documents.\nRe-installed 100% fresh copy of game. But still crashing any time I click the ...\nClick to expand...\nwhile you list a lot of things you have done, you completely missed the most important step of my instructions:\nAndar said:\nif you make a new project, does the animation tab work in that project?\nClick to expand...\nHave you made a new project and tested there, without adding anything?\nby the way - if it is about the RAM-Limit, then the error will not happen in a new project - because the new project will be far below the critical limits."
+    },
+    {
+      "post_id": "js-post-1524272",
+      "author": "atolmasoff",
+      "date": "2025-07-28T13:56:37+0900",
+      "body": "Andar said:\nwhile you list a lot of things you have done, you completely missed the most important step of my instructions:\nHave you made a new project and tested there, without adding anything?\nby the way - if it is about the RAM-Limit, then the error will not happen in a new project - because the new project will be far below the critical limits.\nClick to expand...\nYes. After every re-install, I've verified all old project folders and files aren't still there.\nEvery new project does the same exact thing, with nothing but RTP files. Whether there is files in the effects folders or not. I've eliminated every possible outside influence that might be affecting this. It is 100% stock with only files included in product distribution. As the video shows, the animation tab isn't the problem. Its the effects viewer brought up by the '...'.\nErif said:\nMV had a weird issue with memory that caused a similar crash. It also ocurred with the animations tab. So, Investigating, there's a fix that expands MV's virtual memory limit from 2GB to 4GB (It's the easiest I can explain without going into more technical aspects). I don't know if this is fixed with MZ, so you can try it anyways.\n4GB Patch – NTCore\nntcore.com\nThe instructions are included in the post of the tool, I have used it myself and a few close friends with MV. Perhaps it may be useful?\nPD: If you have MZ in Steam you have to patch the executable in the steamapps/common/RPG Maker MZ folder, not the direct access.\nClick to expand...\nThanks for the info. I did try applying it to the .exe, but no difference. Thank you for the suggestion though! Appreciate it\natolmasoff said:\nThanks for the info. I did try applying it to the .exe, but no difference. Thank you for the suggestion though! Appreciate it\nClick to expand...\nHowever it does seem to have helped! I've noticed memory does jump up once using the viewer, but it seems to at least give me time to find an animation before it craps out! Lol. Thanks again for the suggestion!"
+    },
+    {
+      "post_id": "js-post-1524280",
+      "author": "Andar",
+      "date": "2025-07-28T17:03:04+0900",
+      "body": "how big is a new project for you? (Right-click on its folder, properties and then size on harddrive)\nAnd how much RAM does your computer have as hardware?"
+    },
+    {
+      "post_id": "js-post-1524854",
+      "author": "DismasRichter",
+      "date": "2025-08-02T00:34:42+0900",
+      "body": "I was having this issue some time ago, and after doing some research, in my case I found out it was caused by a faulty DLL:\n\"C:\\Windows\\System32\\DriverStore\\FileRepository\\uXXXXXXX.inf_amd64_XXXXXXXXXXXX\\BXXXXXX\\atio6axx.dll\"\nThis DLL is related to OpenGL, and the only way I found to fix the problem was by reverting to an older driver version. In my case, I rolled back to WHQL version 24.7.1.\nMy recommendation, (especially if your GPU is from AMD) is doing the same. Since then, I haven't had any crashes at all. Comparing it to the video you posted, the issue on my end happened in exactly the same way."
+    }
+  ]
+}
