@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/creating-set-screen-tone-from-rpg-2k-in-rpg-maker-mv.172619",
+  "title": "Creating \"Set Screen Tone\" from RPG 2K in RPG Maker MV",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-08T22:43:24.148853+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1475753",
+      "author": "theunknownserenityleer",
+      "date": "2024-10-16T06:38:34+0900",
+      "body": "Hello, this is a weird question that I couldn't find any information about. Essentially, I have been using RPG Maker MV to develop my game, and I would like to set screen tone like in RPG Maker 2000. The problem is, they don't remotely work the same, it's as if MV has a default blending mode of overlay that cannot be switched off. (Yes when testing this I properly translated the percentages to factors of 255.) Is there any way to mimic 2K's effect in MV? or does anyone understand exactly what 2k is doing so that I may find some alternative way to replicate it in MV?\nThis kind of overlay effect is used frequently in games like Yume 2kki, so I thought this may have some modern solution, aside from completely switching engines.\nThe following image shows 2k (left, desired) and MV (right) so you can see how the same values differ. I have attempted to recreate the left with other values, but it seems the \"blending mode\" problem always has one factor looking wrong (saturation, lightness, etc). Thanks in advance!"
+    },
+    {
+      "post_id": "js-post-1475757",
+      "author": "TheAM-Dol",
+      "date": "2024-10-16T08:08:50+0900",
+      "body": "So a few things...\n1) Just cause we're all on the RM forums, we might not be intimately familiar with how other engines worked, so it might help to describe the differences between the 2 engines more clearly.\n2) I noticed that you are not using the same pictures for the comparison. inherently, color values will affect both images differently. To really confirm differences in color mixing, it would be better that you use the same image for A/B comparison.\n3) It's not totally relevant to the main problem so a description isn't entirely necessary, but to assume we all know about 2 Yume 2 ikki is a poor assumption, so if the game in question is relevant to what you are trying to achieve, please describe it's function clearly and include pictures of it if it's relevant.\n4) Is it absolutely imperative that the color mixing is EXACTLY identical as someone else's game?"
+    },
+    {
+      "post_id": "js-post-1475778",
+      "author": "utunnels",
+      "date": "2024-10-16T10:47:04+0900",
+      "body": "Yes you are right. They are complete different.\nRM2k (or maybe 2k3?) uses percentage, but MV just adds the rgb value directly.\nMV:\nnewcolor = oldcolor + tintcolor\n2K:\nif percentage<100%\nnewcolor = oldcolor * percentage\nif percentage>100%\nnewcolor = oldcolor + (255 - oldcolor) * (percentage-100%)\nEdit*\nThis should simulate the RM2k styled screen tone.\nJavaScript:\nToneFilter.prototype.adjustTone = function(r, g, b) {\n    r = (r || 0).clamp(-255, 255) / 255;\n    g = (g || 0).clamp(-255, 255) / 255;\n    b = (b || 0).clamp(-255, 255) / 255;\n\n\n    var R=1,G=1,B=1;\n    //rm 2k tint\n    R = r<0?(1+r):(1-r);\n    r = r<0?0:r;\n    G = g<0?(1+g):(1-g);\n    g = g<0?0:g;\n    B = b<0?(1+b):(1-b);\n    b = b<0?0:b;\n\n\n    if (r !== 0 || g !== 0 || b !== 0||R !== 1 || G !== 1 || B !== 1) {\n        var matrix = [\n            R, 0, 0, r,  0,\n            0, G, 0, g, 0,\n            0, 0, B, b, 0,\n            0, 0, 0, 1, 0\n        ];\n\n\n        this._loadMatrix(matrix, true);\n    }\n};"
+    },
+    {
+      "post_id": "js-post-1475798",
+      "author": "theunknownserenityleer",
+      "date": "2024-10-16T16:51:01+0900",
+      "body": "utunnels said:\nYes you are right. They are complete different.\nRM2k (or maybe 2k3?) uses percentage, but MV just adds the rgb value directly.\nMV:\nnewcolor = oldcolor + tintcolor\n2K:\nif percentage<100%\nnewcolor = oldcolor * percentage\nif percentage>100%\nnewcolor = oldcolor + (255 - oldcolor) * (percentage-100%)\nEdit*\nThis should simulate the RM2k styled screen tone.\nJavaScript:\nToneFilter.prototype.adjustTone = function(r, g, b) {\n    r = (r || 0).clamp(-255, 255) / 255;\n    g = (g || 0).clamp(-255, 255) / 255;\n    b = (b || 0).clamp(-255, 255) / 255;\n\n\n    var R=1,G=1,B=1;\n    //rm 2k tint\n    R = r<0?(1+r):(1-r);\n    r = r<0?0:r;\n    G = g<0?(1+g):(1-g);\n    g = g<0?0:g;\n    B = b<0?(1+b):(1-b);\n    b = b<0?0:b;\n\n\n    if (r !== 0 || g !== 0 || b !== 0||R !== 1 || G !== 1 || B !== 1) {\n        var matrix = [\n            R, 0, 0, r,  0,\n            0, G, 0, g, 0,\n            0, 0, B, b, 0,\n            0, 0, 0, 1, 0\n        ];\n\n\n        this._loadMatrix(matrix, true);\n    }\n};\nClick to expand...\nYou are a lifesaver, thank you. I don't know why i didn't think of comparing the code myself but you made this so easy to understand. It is working perfectly now!"
+    }
+  ]
+}
