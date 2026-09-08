@@ -1,0 +1,773 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/learn-skill-from-equipment.125659",
+  "title": "Learn Skill from Equipment",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:07:34.294880+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1106570",
+      "author": "Fomar0153",
+      "date": "2020-08-22T08:38:59+0900",
+      "body": "Equipment Skill System\nVersion 1.1\nby Fomar0153\n​\nDescription\nAllows you to learn skills from your equipment.\nPlease note this plugin requires an AP system.\nClick here\nfor my AP System.\nFeatures\nWith this plugin you can pernamently learn skills from your equipment.\nScreenshots\nHow to Use\nPlace the plugin in your project's js/plugins/ folder.\nInside RPG Maker MZ's editor, open the Plugin Manager.\nCreate a new entry and select this plugin from the list.\nPlease note that in order to work this plugin must be placed below the AP System in the plugin list.\nCustomise the options to your liking and then click ok.\nSkills that you wish to be learnable from equipment must be notetagged with: <ap: n> where n is the AP to learn.\nTo add the skills to the equipment you can either add them via traits which will let the players use the skills prior to being mastered, like Final Fantasy IX.\nOr you can add them via notetags: <skills: x;y;z>\nSeperate the skill ids with a semicolon, there is only room on the menu to display 3 skills.\nIf you want a piece of equipment to teach a skill faster than that the normal rate then do: skillid:learnrate e.g. <skills: x:2;y;z>\nDownload\nClick here.\nFAQ\nQ: My skills don't gain the AP displayed in battle.\nA: Please double check you have this plugin below the AP System in your plugin manager.\nCredits\nFomar0153\nTerms of Use\nAs long as I am credited, you may use this plugin in your projects both commercial and non-commercial.\nVersion History\n1.0 -> 1.1 - 29/08/20\nNew feature added: You can now restrict who can learn which skills from equipment."
+    },
+    {
+      "post_id": "js-post-1106715",
+      "author": "Knightmare",
+      "date": "2020-08-22T11:54:10+0900",
+      "body": "I didn't expect a plugin like this for quite a while yet and you did it almost immediately.  Thank you so much for this Fomar!"
+    },
+    {
+      "post_id": "js-post-1107887",
+      "author": "Swish",
+      "date": "2020-08-24T03:24:09+0900",
+      "body": "I have a little request for next release:\nCould you make option in plugin configuration to move X/Y offset of bar/text in equip status file? I am using Visustella additional stats, and text is overwritten with your script. I think that option could be also helpful with other custom menus.\nSpoiler:\nImage\nAlso, thanks for quick patch to your Passive Skills script. Im grateful for all the good work you do for community, and good luck with all your projects!"
+    },
+    {
+      "post_id": "js-post-1107898",
+      "author": "Fomar0153",
+      "date": "2020-08-24T03:39:18+0900",
+      "body": "If you open my plugin and find these lines (148-150):\nJavaScript:\nthis.drawGauge(4, this.lineHeight() * (8.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, (this._actor._ap[skills[i].id] / skills[i].meta[\"ap\"]));\n        this.drawMinMaxValue(4, this.lineHeight() * (8.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, skills[i], mults[skills[i].id]);\n        this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\nAnd change it to:\nJavaScript:\nthis.drawGauge(4, this.lineHeight() * (11.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, (this._actor._ap[skills[i].id] / skills[i].meta[\"ap\"]));\n        this.drawMinMaxValue(4, this.lineHeight() * (11.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, skills[i], mults[skills[i].id]);\n        this.drawItemName(skills[i], 4, this.lineHeight() * (10.5 + 1.5 * i));\nThen that should work. You might find 3 skills don't fit and have to stick to 2 skills on each piece though.\nHope that helps."
+    },
+    {
+      "post_id": "js-post-1107899",
+      "author": "Swish",
+      "date": "2020-08-24T03:40:50+0900",
+      "body": "Fomar0153 said:\nIf you open my plugin and find these lines (148-150):\nJavaScript:\nthis.drawGauge(4, this.lineHeight() * (8.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, (this._actor._ap[skills[i].id] / skills[i].meta[\"ap\"]));\n        this.drawMinMaxValue(4, this.lineHeight() * (8.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, skills[i], mults[skills[i].id]);\n        this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\nAnd change it to:\nJavaScript:\nthis.drawGauge(4, this.lineHeight() * (11.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, (this._actor._ap[skills[i].id] / skills[i].meta[\"ap\"]));\n        this.drawMinMaxValue(4, this.lineHeight() * (11.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, skills[i], mults[skills[i].id]);\n        this.drawItemName(skills[i], 4, this.lineHeight() * (10.5 + 1.5 * i));\nThen that should work. You might find 3 skills don't fit and have to stick to 2 skills on each piece though.\nHope that helps.\nClick to expand...\nOkay thanks, solved it\nEDIT: I thought of something, which part of the code is for y position? I might disable some Equip slots instead, then 3 skills would fit this."
+    },
+    {
+      "post_id": "js-post-1107932",
+      "author": "Fomar0153",
+      "date": "2020-08-24T04:16:33+0900",
+      "body": "Swish said:\nEDIT: I thought of something, which part of the code is for y position? I might disable some Equip slots instead, then 3 skills would fit this.\nClick to expand...\nThe numbers that changed:\n8.5 -> 11.5\n7.5 -> 10.5\nAre the bit of the y that you'll want to change."
+    },
+    {
+      "post_id": "js-post-1107936",
+      "author": "Swish",
+      "date": "2020-08-24T04:21:30+0900",
+      "body": "Fomar0153 said:\nThe numbers that changed:\n8.5 -> 11.5\n7.5 -> 10.5\nAre the bit of the y that you'll want to change.\nClick to expand...\nArgh wrote y, and thought about x (or is there code for sub-window? so Your text appears below equipment slots, instead of parameters)"
+    },
+    {
+      "post_id": "js-post-1108152",
+      "author": "Fomar0153",
+      "date": "2020-08-24T08:22:55+0900",
+      "body": "Swish said:\nArgh wrote y, and thought about x (or is there code for sub-window? so Your text appears below equipment slots, instead of parameters)\nClick to expand...\nReally sorry but it's not as simple as changing the x-cordinate. You'd need to move the drawing code to the other window and then have it refresh when you change the index."
+    },
+    {
+      "post_id": "js-post-1108655",
+      "author": "Swish",
+      "date": "2020-08-24T23:41:34+0900",
+      "body": "Fomar0153 said:\nReally sorry but it's not as simple as changing the x-cordinate. You'd need to move the drawing code to the other window and then have it refresh when you change the index.\nClick to expand...\nOh I see. I'll remove one of visustella Attributes then, to fit all my needs. Thanks for help and little info about javascripting."
+    },
+    {
+      "post_id": "js-post-1110500",
+      "author": "TheSoulBlade",
+      "date": "2020-08-27T13:05:04+0900",
+      "body": "Quick question, is there a way that I can limit what players can learn skills? Much like FF9, I wanted my mages to learn magic, but some equipment may teach abilities to other classes as well. I believe in the one I was using for MV (Moogle_X i believe) was able to have you limit that via a note tag for the actor or class, showing what abilities could be learned. Thanks for the plugins!"
+    },
+    {
+      "post_id": "js-post-1110508",
+      "author": "TheSoulBlade",
+      "date": "2020-08-27T13:20:56+0900",
+      "body": "TheSoulBlade said:\nQuick question, is there a way that I can limit what players can learn skills? Much like FF9, I wanted my mages to learn magic, but some equipment may teach abilities to other classes as well. I believe in the one I was using for MV (Moogle_X i believe) was able to have you limit that via a note tag for the actor or class, showing what abilities could be learned. Thanks for the plugins!\nClick to expand...\nAlso to add to this, I'm getting an error after setting it up. I did everything that the plugin said in terms of tags, as well as ensuring that the AP plugin is above this one and I'm getting this error;"
+    },
+    {
+      "post_id": "js-post-1110929",
+      "author": "Fomar0153",
+      "date": "2020-08-28T04:50:22+0900",
+      "body": "TheSoulBlade said:\nQuick question, is there a way that I can limit what players can learn skills? Much like FF9, I wanted my mages to learn magic, but some equipment may teach abilities to other classes as well. I believe in the one I was using for MV (Moogle_X i believe) was able to have you limit that via a note tag for the actor or class, showing what abilities could be learned. Thanks for the plugins!\nClick to expand...\nI guess I could add that feature. I'll look into it tomorrow.\nTheSoulBlade said:\nAlso to add to this, I'm getting an error after setting it up. I did everything that the plugin said in terms of tags, as well as ensuring that the AP plugin is above this one and I'm getting this error;\nClick to expand...\nYou haven't changed the plugin name have you?"
+    },
+    {
+      "post_id": "js-post-1110969",
+      "author": "HoofedEar",
+      "date": "2020-08-28T05:26:12+0900",
+      "body": "Not sure if this has been asked or requested, but is there a way to make the skill names appear as \"????\" until they are learned? I think it would be neat to hide information like that from the player, gives them a bit more incentive to find out what it is!\nOk I took a shot at adding it myself just from looking at the code, no idea if it even works but I'll test it when I get home:\nJavaScript:\nFomar.EquipmentSkills.hidden = (Fomar.EquipmentSkills.parameters[\"Hide Skills before Learning\"] == \"false\")\n\n...\n\nthis.drawMinMaxValue(4, this.lineHeight() * (8.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, skills[i], mults[skills[i].id]);\nif (Fomar.EquipmentSkills.hidden == \"false\")\n{\n    this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\n}\nelse\n{\n    if (this._ap[skillId] != $dataSkills[skillId].meta[\"ap\"])\n        {\n            this.drawItemName(\"????\", 4, this.lineHeight() * (7.5 + 1.5 * i));\n        }\n    else\n        {\n            this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\n        }\n}\nAny additions or modifications to code provided by me within this thread automatically become intellectual property of Fomar0153."
+    },
+    {
+      "post_id": "js-post-1110989",
+      "author": "TheSoulBlade",
+      "date": "2020-08-28T05:55:25+0900",
+      "body": "Fomar0153 said:\nI guess I could add that feature. I'll look into it tomorrow.\nYou haven't changed the plugin name have you?\nClick to expand...\nThanks for looking into adding that! It would be a great help, and i belueve the name is \"Fomar0153_EquipmentSkills.js\"\nWhen i clicked the \"click here\" for download it didnt take me to a download, it just showed me the script, so i right clicked and downloaded the link. Idk if that has anything to do with it or not. I did the same with the APsystem."
+    },
+    {
+      "post_id": "js-post-1111012",
+      "author": "Fomar0153",
+      "date": "2020-08-28T06:25:28+0900",
+      "body": "TheSoulBlade said:\nThanks for looking into adding that! It would be a great help, and i belueve the name is \"Fomar0153_EquipmentSkills.js\"\nWhen i clicked the \"click here\" for download it didnt take me to a download, it just showed me the script, so i right clicked and downloaded the link. Idk if that has anything to do with it or not. I did the same with the APsystem.\nClick to expand...\nNo it's named correctly, I just wanted to check that first - it seems to be the most common form of error people come to me with). If you upload a copy of your data and js folders, I'll take a look and see why you're getting that error."
+    },
+    {
+      "post_id": "js-post-1111096",
+      "author": "TheSoulBlade",
+      "date": "2020-08-28T08:52:09+0900",
+      "body": "Fomar0153 said:\nNo it's named correctly, I just wanted to check that first - it seems to be the most common form of error people come to me with). If you upload a copy of your data and js folders, I'll take a look and see why you're getting that error.\nClick to expand...\nThank you, currently at work but i will do that when i get home. Appreciate all your help!"
+    },
+    {
+      "post_id": "js-post-1111182",
+      "author": "blade911",
+      "date": "2020-08-28T11:25:50+0900",
+      "body": "Good Job on the plugin, also looking forward to limiting skills to certain actors like ff9"
+    },
+    {
+      "post_id": "js-post-1111230",
+      "author": "TheSoulBlade",
+      "date": "2020-08-28T13:47:09+0900",
+      "body": "Fomar0153 said:\nNo it's named correctly, I just wanted to check that first - it seems to be the most common form of error people come to me with). If you upload a copy of your data and js folders, I'll take a look and see why you're getting that error.\nClick to expand...\nSo I just got home, and I checked my files, when I saved this plugin, apparently I deleted part of the name. It's working properly now though!"
+    },
+    {
+      "post_id": "js-post-1111231",
+      "author": "TheSoulBlade",
+      "date": "2020-08-28T13:48:07+0900",
+      "body": "HoofedEar said:\nNot sure if this has been asked or requested, but is there a way to make the skill names appear as \"????\" until they are learned? I think it would be neat to hide information like that from the player, gives them a bit more incentive to find out what it is!\nOk I took a shot at adding it myself just from looking at the code, no idea if it even works but I'll test it when I get home:\nJavaScript:\nFomar.EquipmentSkills.hidden = (Fomar.EquipmentSkills.parameters[\"Hide Skills before Learning\"] == \"false\")\n\n...\n\nthis.drawMinMaxValue(4, this.lineHeight() * (8.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, skills[i], mults[skills[i].id]);\nif (Fomar.EquipmentSkills.hidden == \"false\")\n{\n    this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\n}\nelse\n{\n    if (this._ap[skillId] != $dataSkills[skillId].meta[\"ap\"])\n        {\n            this.drawItemName(\"????\", 4, this.lineHeight() * (7.5 + 1.5 * i));\n        }\n    else\n        {\n            this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\n        }\n}\nAny additions or modifications to code provided by me within this thread automatically become intellectual property of Fomar0153.\nClick to expand...\nDid this end up working? Also where do you add it into the script? Just at the end?"
+    },
+    {
+      "post_id": "js-post-1111468",
+      "author": "HoofedEar",
+      "date": "2020-08-28T23:58:42+0900",
+      "body": "TheSoulBlade said:\nDid this end up working? Also where do you add it into the script? Just at the end?\nClick to expand...\nWhen I tested it out, I tried doing the note tag method of assigning skills to the items, and I was having some trouble because it kept throwing an error that it doesn't recognize the skill ID's\nFor instance, I typed \"<skills: 12;13;14>\" into the note section and I would get a skill ID error. I made sure that the skill itself was set up with the <ap: 10> tag as well. I'll have to do some testing once I get home, I'm at work at the moment so I can't check here sadly.\nAs for where the code goes, the Fomar.EquipmentSkills part goes near the top with the others, and the second part of the code, it goes beneath the line I included \"this.drawMinMaxValue(4....)\". If you do Ctrl+F and paste that line in, put the If-else part right beneath it"
+    },
+    {
+      "post_id": "js-post-1111530",
+      "author": "Fomar0153",
+      "date": "2020-08-29T02:07:27+0900",
+      "body": "Did you add the param in the comment block at the top to get it to appear in the plugin manager?\nAlso:\nJavaScript:\nif (this._ap[skillId] != $dataSkills[skillId].meta[\"ap\"])\nYou need a parseInt() around the second half. You're trying to compare an integer with a string.\nHoofedEar said:\nAny additions or modifications to code provided by me within this thread automatically become intellectual property of Fomar0153.\nClick to expand...\nNo they don't. If you share a modified section of my code then if someone was to use it they should credit both of us. If you share some code that builds on my existing code but doesn't use any of my existing code in it, then just you would be credited for that code.\nSorry been busy, will try and get the only learn certain skill implemented soon."
+    },
+    {
+      "post_id": "js-post-1111533",
+      "author": "HoofedEar",
+      "date": "2020-08-29T02:12:14+0900",
+      "body": "Fomar0153 said:\nNo they don't. If you share a modified section of my code then if someone was to use it they should credit both of us. If you share some code that builds on my existing code but doesn't use any of my existing code in it, then just you would be credited for that code.\nSorry been busy, will try and get the only learn certain skill implemented soon.\nClick to expand...\nThat's mighty kind of you! That part that was basically me saying that I would willingly give any modifications to the code to you since this ultimately was your brainchild and it doesn't make sense (to me) to be credited for such a small contribution. I appreciate your kindness!\nI did add the comment section to the version I have at home, that's important for being able to toggle it.\nAnd good call on the parseInt! I'll give that a shot once I get home.\nNo worries on being busy either! We all appreciate these useful plugins you've made!"
+    },
+    {
+      "post_id": "js-post-1111536",
+      "author": "TheSoulBlade",
+      "date": "2020-08-29T02:16:18+0900",
+      "body": "HoofedEar said:\nWhen I tested it out, I tried doing the note tag method of assigning skills to the items, and I was having some trouble because it kept throwing an error that it doesn't recognize the skill ID's\nFor instance, I typed \"<skills: 12;13;14>\" into the note section and I would get a skill ID error. I made sure that the skill itself was set up with the <ap: 10> tag as well. I'll have to do some testing once I get home, I'm at work at the moment so I can't check here sadly.\nAs for where the code goes, the Fomar.EquipmentSkills part goes near the top with the others, and the second part of the code, it goes beneath the line I included \"this.drawMinMaxValue(4....)\". If you do Ctrl+F and paste that line in, put the If-else part right beneath it\nClick to expand...\nAwesome, thanks. Update us here if you get it working"
+    },
+    {
+      "post_id": "js-post-1112215",
+      "author": "Fomar0153",
+      "date": "2020-08-30T08:06:08+0900",
+      "body": "New Version Available\n1.0 -> 1.1 - 29/08/20\nNew feature added: You can now restrict who can learn which skills from equipment.\nIf you are using the Restrict Learning option use the following notetag on either the Actor or Class tab of the database.\n<skillsrestrict: n1,n2,n3>\nReplace n1,n2,n3 with the skill ids from the database of the skills want that actor or class to learn. Seperate ids with a comma."
+    },
+    {
+      "post_id": "js-post-1112587",
+      "author": "blade911",
+      "date": "2020-08-31T03:11:45+0900",
+      "body": "Is there a way to set ap gained by enemy?"
+    },
+    {
+      "post_id": "js-post-1112595",
+      "author": "Fomar0153",
+      "date": "2020-08-31T03:18:57+0900",
+      "body": "I'm guessing you didn't see the bit about needing an AP System?\nFomar0153 said:\nDescription\nAllows you to learn skills from your equipment.\nPlease note this plugin requires an AP system.\nClick here\nfor my AP System.\nClick to expand...\nOnce added, notetag the enemies:\n<ap: 5>\nor whatever number you'd like."
+    },
+    {
+      "post_id": "js-post-1112610",
+      "author": "blade911",
+      "date": "2020-08-31T03:53:34+0900",
+      "body": "just tried it but for some reason, it's not working, turned off all other plugins except the two and ap wasn't being gained from the notetag setting, the default from the param is what is being gained."
+    },
+    {
+      "post_id": "js-post-1112612",
+      "author": "Fomar0153",
+      "date": "2020-08-31T03:55:28+0900",
+      "body": "Just to check, the AP System should be above the Equipment Skills and the two plugins have their original names?\nFomar0153_APSystem.js\nFomar0153_EquipmentSkills.js"
+    },
+    {
+      "post_id": "js-post-1112619",
+      "author": "blade911",
+      "date": "2020-08-31T04:00:34+0900",
+      "body": "Yes and yes, saved the file names exactly and ap is above equipment skills, i will try with a blank project to make sure its not something else."
+    },
+    {
+      "post_id": "js-post-1112626",
+      "author": "blade911",
+      "date": "2020-08-31T04:10:09+0900",
+      "body": "The notetag to gain AP works on a blank project, so I will have to figure out a workaround."
+    },
+    {
+      "post_id": "js-post-1112728",
+      "author": "HoofedEar",
+      "date": "2020-08-31T07:23:13+0900",
+      "body": "TheSoulBlade said:\nAwesome, thanks. Update us here if you get it working\nClick to expand...\nAlright so I got this working after some tweaking.\nHere are the code snippets and where to add them:\nThis section should be added to the comments to allow for toggling. Be mindful of the formating based on the other params.\nJavaScript:\n*\n* @param Hide skills\n* @type boolean\n* @desc Do you want to hide skill names before they are learned?\n* @default false\n*\nScroll down and add this line with the other parameters:\nJavaScript:\nFomar.EquipmentSkills.hidden = (Fomar.EquipmentSkills.parameters[\"Hide Skills before Learning\"] == \"false\")\nNext, Ctrl-F and find this line of code\n\"this.drawMinMaxValue(4, this.lineHeight() * (8.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, skills\n,\nmults[skills.id]);\"\nAnd put this right beneath it, erasing the line that was there before:\nJavaScript:\nif (Fomar.EquipmentSkills.hidden == \"false\")\n        {\n            this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\n        }\n        else\n        {\n            if (this._actor._ap[skills[i].id] != skills[i].meta[\"ap\"])\n            {\n                this.drawText(\"????\", 4, this.lineHeight() * (7.5 + 1.5 * i));\n            }\n            else\n            {\n                this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\n            }\n        }\nI didn't feel comfortable linking a modified version here so you gotta make the changes manually.\nFomar, please feel free to add this to your original script you would like!"
+    },
+    {
+      "post_id": "js-post-1113382",
+      "author": "TheSoulBlade",
+      "date": "2020-09-01T14:17:55+0900",
+      "body": "HoofedEar said:\nAlright so I got this working after some tweaking.\nHere are the code snippets and where to add them:\nThis section should be added to the comments to allow for toggling. Be mindful of the formating based on the other params.\nJavaScript:\n*\n* @param Hide skills\n* @type boolean\n* @desc Do you want to hide skill names before they are learned?\n* @default false\n*\nScroll down and add this line with the other parameters:\nJavaScript:\nFomar.EquipmentSkills.hidden = (Fomar.EquipmentSkills.parameters[\"Hide Skills before Learning\"] == \"false\")\nNext, Ctrl-F and find this line of code\n\"this.drawMinMaxValue(4, this.lineHeight() * (8.5 + 1.5 * i), this.itemLineRect(0).width, this.lineHeight() / 2, skills\n,\nmults[skills.id]);\"\nAnd put this right beneath it, erasing the line that was there before:\nJavaScript:\nif (Fomar.EquipmentSkills.hidden == \"false\")\n        {\n            this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\n        }\n        else\n        {\n            if (this._actor._ap[skills[i].id] != skills[i].meta[\"ap\"])\n            {\n                this.drawText(\"????\", 4, this.lineHeight() * (7.5 + 1.5 * i));\n            }\n            else\n            {\n                this.drawItemName(skills[i], 4, this.lineHeight() * (7.5 + 1.5 * i));\n            }\n        }\nI didn't feel comfortable linking a modified version here so you gotta make the changes manually.\nFomar, please feel free to add this to your original script you would like!\nClick to expand...\nSo, I believe that I entered everything correctly. However, when I went to test the game out, I can see the \"???\" but it is overlapping with the skill name. Not sure if I did something wrong."
+    },
+    {
+      "post_id": "js-post-1113505",
+      "author": "HoofedEar",
+      "date": "2020-09-01T22:31:22+0900",
+      "body": "TheSoulBlade said:\nSo, I believe that I entered everything correctly. However, when I went to test the game out, I can see the \"???\" but it is overlapping with the skill name. Not sure if I did something wrong.\nClick to expand...\nSorry for the confusing instructions\nReplace the highlighted line with my if-else code. This screenshot uses the new version of Fomar's plugin btw so this should still work"
+    },
+    {
+      "post_id": "js-post-1113670",
+      "author": "TheSoulBlade",
+      "date": "2020-09-02T06:05:37+0900",
+      "body": "HoofedEar said:\nSorry for the confusing instructions\nView attachment 158879\nReplace the highlighted line with my if-else code. This screenshot uses the new version of Fomar's plugin btw so this should still work\nClick to expand...\nNot a problem at all! I appreciate your assistance and your instructions werent confusing, its just the first time ive manually added script in an actual plugin system and i am not proficient in it at all. Definitely wanting to get a better grasp on it!"
+    },
+    {
+      "post_id": "js-post-1118762",
+      "author": "Knightmare",
+      "date": "2020-09-13T03:02:53+0900",
+      "body": "Hi.  I am using VisuStella Victory Aftermath and I was wondering if there was some JS snippet or a way to get this plugin to work better with Victory Aftermath.  Basically to get the \"learned skills\" to pop up with Victory Aftermath screen instead of the default text box after a battle.   It would just look cleaner that way.  Hopefully it can be done with just a JS snippet."
+    },
+    {
+      "post_id": "js-post-1118978",
+      "author": "PixelMister",
+      "date": "2020-09-13T17:33:59+0900",
+      "body": "Lovely work! I just wish I could get it to work with other Plugins.\nI use all of the Visustella Plugins (I'm not a coder in the slightest), and I'm struggling to even get the skills to appear in the equip menu."
+    },
+    {
+      "post_id": "js-post-1119125",
+      "author": "Knightmare",
+      "date": "2020-09-14T01:51:04+0900",
+      "body": "PixelMister said:\nLovely work! I just wish I could get it to work with other Plugins.\nI use all of the Visustella Plugins (I'm not a coder in the slightest), and I'm struggling to even get the skills to appear in the equip menu.\nClick to expand...\nIf I remember right you have to use a certain setting for the VisuStella equip menu and also make sure the Equipment Skills plugin is below all the VisuStella plugins."
+    },
+    {
+      "post_id": "js-post-1119131",
+      "author": "PixelMister",
+      "date": "2020-09-14T02:01:40+0900",
+      "body": "Knightmare said:\nIf I remember right you have to use a certain setting for the VisuStella equip menu and also make sure the Equipment Skills plugin is below all the VisuStella plugins.\nClick to expand...\nI thought that was the plugin which would hold the parameters for it. I'll keep looking into it. Thank you!"
+    },
+    {
+      "post_id": "js-post-1119240",
+      "author": "Fomar0153",
+      "date": "2020-09-14T07:38:34+0900",
+      "body": "Knightmare said:\nHi.  I am using VisuStella Victory Aftermath and I was wondering if there was some JS snippet or a way to get this plugin to work better with Victory Aftermath.  Basically to get the \"learned skills\" to pop up with Victory Aftermath screen instead of the default text box after a battle.   It would just look cleaner that way.  Hopefully it can be done with just a JS snippet.\nClick to expand...\nIt's a paid plugin so I don't have access to it, does it have any built in options for displaying custom stuff?\nPixelMister said:\nLovely work! I just wish I could get it to work with other Plugins.\nI use all of the Visustella Plugins (I'm not a coder in the slightest), and I'm struggling to even get the skills to appear in the equip menu.\nClick to expand...\nSorry I don't have any experience using the VisuStella plugins."
+    },
+    {
+      "post_id": "js-post-1119301",
+      "author": "Knightmare",
+      "date": "2020-09-14T11:30:52+0900",
+      "body": "Fomar0153 said:\nIt's a paid plugin so I don't have access to it, does it have any built in options for displaying custom stuff?\nClick to expand...\nActually I looked through it again and it doesn't.  I thought there was a customizable JS section in it for after victories but there is not, I know I looked into a lot of plugins all at once and just assumed it had a section for it like pretty much all other VisuStella plugins.\nI MIGHT be able to find a way to do it through VisuStella Battle Core since it lets you run common events after battle.  What code snippet do I use to show if someone has learned a skill with your plugin?  If I can just get that I think I can fenaggle (sp?) something to make it work.  Thanks for the reply."
+    },
+    {
+      "post_id": "js-post-1119339",
+      "author": "PixelMister",
+      "date": "2020-09-14T14:13:48+0900",
+      "body": "Fomar0153 said:\nSorry I don't have any experience using the VisuStella plugins.\nClick to expand...\nNot a problems, I dont expect instant support and knowledge of the systems.\nI'll figure it out.\nIf I may suggest a feature, could this be linked with traits or passive abilities which can be assigned through points like in FF9?\nFor example in FF9, Zidane could have 40 points to allot to passive skills such as Maneater, Gillionaire etc."
+    },
+    {
+      "post_id": "js-post-1119510",
+      "author": "Fomar0153",
+      "date": "2020-09-15T01:20:47+0900",
+      "body": "Knightmare said:\nActually I looked through it again and it doesn't.  I thought there was a customizable JS section in it for after victories but there is not, I know I looked into a lot of plugins all at once and just assumed it had a section for it like pretty much all other VisuStella plugins.\nI MIGHT be able to find a way to do it through VisuStella Battle Core since it lets you run common events after battle.  What code snippet do I use to show if someone has learned a skill with your plugin?  If I can just get that I think I can fenaggle (sp?) something to make it work.  Thanks for the reply.\nClick to expand...\nLook for the following line:\nJavaScript:\n$gameMessage.add(TextManager.obtainSkill.format($dataSkills[skillId].name));\nThat's the actual display output. Maybe you can store the output in another location or something?\nPixelMister said:\nNot a problems, I dont expect instant support and knowledge of the systems.\nI'll figure it out.\nIf I may suggest a feature, could this be linked with traits or passive abilities which can be assigned through points like in FF9?\nFor example in FF9, Zidane could have 40 points to allot to passive skills such as Maneater, Gillionaire etc.\nClick to expand...\nAlready done:\nPassive Skills\nPassive Skills Version 1.4 by Fomar0153  Description Implements a passive skill system, where you can equip and unequip passive skills from the Skills menu.  Features Customise how many points you have to equip passive skills. Replace skill icons to indicate if a passive skill is equipped or...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1125180",
+      "author": "PixelMister",
+      "date": "2020-10-03T00:23:50+0900",
+      "body": "Just thought I'd post a reply - I managed to get it working with Visustella - must've been the plugin order or something.\nA possible suggestion\n@Fomar0153\nCould we have equipment learning happen at specific levels?\nSo for example:\nThe item: Essence of Fire, will have to bestow all fire skills. However, I would like the player until level 15, to be able to only learn Fire One. Once player has reached Level 15, the new skill becomes available to learn from the equipment."
+    },
+    {
+      "post_id": "js-post-1125690",
+      "author": "Fomar0153",
+      "date": "2020-10-04T22:42:31+0900",
+      "body": "PixelMister said:\nA possible suggestion\n@Fomar0153\nCould we have equipment learning happen at specific levels?\nSo for example:\nThe item: Essence of Fire, will have to bestow all fire skills. However, I would like the player until level 15, to be able to only learn Fire One. Once player has reached Level 15, the new skill becomes available to learn from the equipment.\nClick to expand...\nSorry it's not a feature I intend to add."
+    },
+    {
+      "post_id": "js-post-1126000",
+      "author": "PixelMister",
+      "date": "2020-10-05T23:35:04+0900",
+      "body": "Fomar0153 said:\nSorry it's not a feature I intend to add.\nClick to expand...\nNo problem, thanks for replying."
+    },
+    {
+      "post_id": "js-post-1139677",
+      "author": "cchmaster",
+      "date": "2020-11-24T13:07:01+0900",
+      "body": "PixelMister said:\nCould we have equipment learning happen at specific levels?\nSo for example:\nThe item: Essence of Fire, will have to bestow all fire skills. However, I would like the player until level 15, to be able to only learn Fire One. Once player has reached Level 15, the new skill becomes available to learn from the equipment.\nClick to expand...\nMaybe you can do it in other way. Like if you mastered Fire One, you have to go to a shrine to raise your power/wash your mind or whatever, and you can secretly swap your weapon with another same one but with Fire Two to learn. It would look like what you want to achieve. Just a though."
+    },
+    {
+      "post_id": "js-post-1157743",
+      "author": "af2390",
+      "date": "2021-01-25T10:40:34+0900",
+      "body": "Plugin was working last night i saved felt good went to sleep. wake up and tried opening again and it does this now."
+    },
+    {
+      "post_id": "js-post-1166494",
+      "author": "Ophiucus Games",
+      "date": "2021-02-26T08:31:38+0900",
+      "body": "Fomar0153 said:\nLook for the following line:\nJavaScript:\n$gameMessage.add(TextManager.obtainSkill.format($dataSkills[skillId].name));\nThat's the actual display output. Maybe you can store the output in another location or something?\nAlready done:\nPassive Skills\nPassive Skills Version 1.4 by Fomar0153  Description Implements a passive skill system, where you can equip and unequip passive skills from the Skills menu.  Features Customise how many points you have to equip passive skills. Replace skill icons to indicate if a passive skill is equipped or...\nforums.rpgmakerweb.com\nClick to expand...\n@Knightmare\ndid you ever get the victory screen to show skills learned from equipment at the end of battle? I am trying to implement this so would be grateful to hear how you managed it if so!"
+    },
+    {
+      "post_id": "js-post-1166548",
+      "author": "Knightmare",
+      "date": "2021-02-26T13:22:20+0900",
+      "body": "Ophiucus Games said:\n@Knightmare\ndid you ever get the victory screen to show skills learned from equipment at the end of battle? I am trying to implement this so would be grateful to hear how you managed it if so!\nClick to expand...\nSorry I gave up on that and swithced to the VisuStella Skill Learn System for Skill Learning.  The last thing I tried was editing some of the Settings in the VisuStella Victory Aftermath but to no avail.  I think your best bet would be to add that JS snippet that Fomar gave you and try plugging it in in some of the strips in Victory Aftermath.  You might be able to do a workaround of sorts another way with events if you can't get it to show with the Victory Aftermath.  Sorry I couldn't be more help."
+    },
+    {
+      "post_id": "js-post-1195158",
+      "author": "Willibab",
+      "date": "2021-06-19T12:07:11+0900",
+      "body": "FF9 plugins\n''drools''"
+    },
+    {
+      "post_id": "js-post-1232589",
+      "author": "MGGEDev",
+      "date": "2021-11-29T00:56:23+0900",
+      "body": "Love this plugin, currently implementing it into my project for the foreseeable future. I loved FFIX and collecting the equipment to see which cool skills they had. I'm also gonna use this to add passive skills."
+    },
+    {
+      "post_id": "js-post-1296676",
+      "author": "Puppet Knight",
+      "date": "2022-08-24T23:48:29+0900",
+      "body": "Morning all!\nCouple of plugin requests if anyone has the time or already worked/seen solutions:\nA way to get this plug in to recognize the AP gained from VisuStellas Learn System? I prefer AP gain being tied directly to Equipment\nA way for a skill to learn AP on use only, with a max per battle (Think FF7 materia system). This would allow skills added by traits to be used prior to mastery, and then permanently added to the characters list once the AP meter is filled\nAdding prerequisites for spells within the equipment:\nEx : Skills X & Y must be mastered/completed AP before Skill Z is able to start being learned/used. Essentially required for skills that would be combos of 2 other skills\nSkill X = Water\nSkill Y = Fire\nSkill Z = Boil (Water + Fire)\nFor this request, I've developed a slight work around in using Caspers Skill Shop with skill prerequisites for purchasing, but would be great if it could happen independently as well\nUpdated with strike through for things I've received solutions for. Still looking to incorporate a prerequisite learning system within this plugin\nPS> Absolutely love this plugin, its a staple of my game so far"
+    },
+    {
+      "post_id": "js-post-1297047",
+      "author": "fishdogcat",
+      "date": "2022-08-26T16:57:23+0900",
+      "body": "Great work! trying this out in my mini game now"
+    },
+    {
+      "post_id": "js-post-1299318",
+      "author": "Oggy",
+      "date": "2022-09-07T01:29:23+0900",
+      "body": "Good morning!\nLove the concept of this plugin.  It will really round out my skill system.  However, I have encountered an issue and am uncertain on how to solve it.  The AP System plugin seems to be working fine and is above the Equipment Skills plugin. The equipment skills isn't working for me for some reason. Everything is in place and note tagged, but the learnable skills don't show up on the equipment screen to be learned. I also removed all my plugins and still nothing.\nAny idea what might be wrong?\nThanks in advance,\nOggy"
+    },
+    {
+      "post_id": "js-post-1299319",
+      "author": "Puppet Knight",
+      "date": "2022-09-07T01:36:14+0900",
+      "body": "Oggy said:\nThe equipment skills isn't working for me for some reason. Everything is in place and note tagged, but the learnable skills don't show up on the equipment screen to be learned. I also removed all my plugins and still nothing.\nClick to expand...\nCould you post a screenshot of your Plugins list and also a screenshot of the Traits/Notetags of the equipment you are using for the skills?"
+    },
+    {
+      "post_id": "js-post-1299325",
+      "author": "Oggy",
+      "date": "2022-09-07T02:08:03+0900",
+      "body": "Here is the Skill, Weapon, Equipment screen, and Plugins.  I had to blot out the icons to avoid repost rules."
+    },
+    {
+      "post_id": "js-post-1299327",
+      "author": "ATT_Turan",
+      "date": "2022-09-07T02:17:00+0900",
+      "body": "Oggy said:\nI had to blot out the icons to avoid repost rules.\nClick to expand...\nIf you're talking about authors restricting you from reposting their artwork...that pertains to actually reposting the artwork in a usable form. It's not talking about the art simply being present in screenshots of your games.\nAs far as the setup goes, it looks like it was done correctly. So the two questions are:\n1 - Does the actor in the game have access to the Ability skill category?\n2 - Are you correctly saving your project and starting a new game when you make changes? You can't load a save and see changes reflected."
+    },
+    {
+      "post_id": "js-post-1299328",
+      "author": "Oggy",
+      "date": "2022-09-07T02:21:06+0900",
+      "body": "ATT_Turan said:\nIf you're talking about authors restricting you from reposting their artwork...that pertains to actually reposting the artwork in a usable form. It's not talking about the art simply being present in screenshots of your games.\nAs far as the setup goes, it looks like it was done correctly. So the two questions are:\n1 - Does the actor in the game have access to the Ability skill category?\n2 - Are you correctly saving your project and starting a new game when you make changes? You can't load a save and see changes reflected.\nClick to expand...\nThe character has access to the ability category.  The skill shows up in combat under the abilities tab. And yes, I am saving everything correctly and always start a new game when testing. Thats why its perplexing me."
+    },
+    {
+      "post_id": "js-post-1299329",
+      "author": "ATT_Turan",
+      "date": "2022-09-07T02:24:00+0900",
+      "body": "And you said it's still like that if you turn off all the other plugins except the AP and learn skills, right?\nNext thing to do would be to start a new project, include only those two plugins, and test it. If it works there, then there's something wrong or conflicting in your original project. If it\ndoesn't\nwork there, you're likely making a mistake in the plugin parameters or something."
+    },
+    {
+      "post_id": "js-post-1299332",
+      "author": "Oggy",
+      "date": "2022-09-07T02:27:16+0900",
+      "body": "Yeah ill try the fresh project, because with everything turned off but those two it still doesnt work.\nEDIT:  Even on a new project its not showing up.  It does change the size of the equip window to accommodate the learn skills list but they are still not showing up.\nI also tested killing things to see if it would still add the learned skill when the ap req was meet just incase it was a display error and the skill never gets learned so its just not registering the tag on the skill i think."
+    },
+    {
+      "post_id": "js-post-1299337",
+      "author": "Sword_of_Dusk",
+      "date": "2022-09-07T02:37:58+0900",
+      "body": "@Oggy\nSo your notetags look right, but when I look at your plugin list, I think I see your problem. The plugin is supposed to be called EquipmentSkills, but you've seemingly renamed it to ItemSkills. Renaming plugins is generally not advised. Try changing the name back to EquipmentSkills and see if it still doesn't work."
+    },
+    {
+      "post_id": "js-post-1299342",
+      "author": "Puppet Knight",
+      "date": "2022-09-07T02:56:21+0900",
+      "body": "Sword_of_Dusk said:\n@Oggy So your notetags look right, but when I look at your plugin list, I think I see your problem. The plugin is supposed to be called EquipmentSkills, but you've seemingly renamed it to ItemSkills. Renaming plugins is generally not advised. Try changing the name back to EquipmentSkills and see if it still doesn't work.\nClick to expand...\nThis\nBut also. You are also missing notetags needed on the Equipment itself to call the AP bar.\n@Oggy"
+    },
+    {
+      "post_id": "js-post-1299343",
+      "author": "ATT_Turan",
+      "date": "2022-09-07T02:59:44+0900",
+      "body": "Puppet Knight said:\nYou are also missing notetags needed on the Equipment itself to call the AP bar.\nClick to expand...\nThat's not what the plugin instructions say.\nFomar0153 said:\nTo add the skills to the equipment you can\neither\nadd them via traits...\nOr\nyou can add them via notetags: <skills: x;y;z>\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1299345",
+      "author": "Sword_of_Dusk",
+      "date": "2022-09-07T03:02:47+0900",
+      "body": "Yeah, the plugin supports both notetags or simply adding the skill through traits."
+    },
+    {
+      "post_id": "js-post-1299354",
+      "author": "Puppet Knight",
+      "date": "2022-09-07T03:27:57+0900",
+      "body": "@ATT_Turan\n/\n@Sword_of_Dusk\nBoth correct instruction wise. However for whatever reason (in my own use at least). Unless the skills notetag is\nalso\nadded in, the bars will\nNOT\nappear in the equipment screen.\nAs opposed to:\n@Oggy\nspecifically the plugin name should be\nFomar0153_EquipmentSkills.js\nRename and see if that fixes."
+    },
+    {
+      "post_id": "js-post-1299361",
+      "author": "ATT_Turan",
+      "date": "2022-09-07T03:33:56+0900",
+      "body": "Puppet Knight said:\nUnless the skills notetag is\nalso\nadded in, the bars will\nNOT\nappear in the equipment screen.\nClick to expand...\nHave you reported that to\n@Fomar0153\nas a bug? It's either a bug in the plugin or a mistake in the instructions, which can be easily edited.\nPuppet Knight said:\nspecifically the plugin name should be\nFomar0153_EquipmentSkills.js\nClick to expand...\nGood info. Similarly,\n@Oggy\nappears to also have renamed the AP plugin, which should be Fomar0153_APSystem. You should always leave plugins with the names from the authors."
+    },
+    {
+      "post_id": "js-post-1299364",
+      "author": "Puppet Knight",
+      "date": "2022-09-07T03:47:33+0900",
+      "body": "ATT_Turan said:\nHave you reported that to @Fomar0153 as a bug? It's either a bug in the plugin or a mistake in the instructions, which can be easily edited.\nClick to expand...\nNo. Mainly because Im not fully convinced its the plugin thats the issue. My project is oversaturated with plugins atm. Lol\nWill try on a blank project and see"
+    },
+    {
+      "post_id": "js-post-1299367",
+      "author": "ATT_Turan",
+      "date": "2022-09-07T03:52:10+0900",
+      "body": "Puppet Knight said:\nNo. Mainly because Im not fully convinced its the plugin thats the issue. My project is oversaturated with plugins atm.\nClick to expand...\nThat seems unlikely to me. If this plugin is correctly checking for both the trait\nand\nthe notetag to then draw the AP bar, it would all be happening in the same function (probably even on the same line of code).\nThat means if there was a problem from a plugin conflict, neither method should work - plugin conflicts happen when another plugin overwrites the same function as this one. So all of the new code or all of the old code would be getting used, not half and half."
+    },
+    {
+      "post_id": "js-post-1299371",
+      "author": "Oggy",
+      "date": "2022-09-07T04:44:47+0900",
+      "body": "@ATT_Turan\n@Sword_of_Dusk\nIll try the rename.  The download for this plugin was just a copy this code into a js file, so i just slapped a name on it so i knew what it was.\nEDIT:\nThe rename worked. Also it is it is now reading notetag or trait independently. As in if i have both the notetag and the trait for one skill on the same weapon it shows two in the list."
+    },
+    {
+      "post_id": "js-post-1299373",
+      "author": "ATT_Turan",
+      "date": "2022-09-07T04:54:12+0900",
+      "body": "Oggy said:\nThe download for this plugin was just a copy this code into a js file, so i just slapped a name on it so i knew what it was.\nClick to expand...\nWhere did you download it from? The link in the first post of the thread goes to a .js file with the name given above.\nIf you right-click the link and select Save As, or if you click the link to the page and do File -> Save Page As, it should already have the correct name and extension filled out for you.\nAlso make sure you add the notetag, as Puppet Knight described it might not function correctly without it (and worst case it doesn't hurt anything to add it)."
+    },
+    {
+      "post_id": "js-post-1299374",
+      "author": "Oggy",
+      "date": "2022-09-07T04:55:24+0900",
+      "body": "Ah I didnt know you could do a save as. I though I had to copy it to a js file. Thanks for the info though that will make it loads easier in the future."
+    },
+    {
+      "post_id": "js-post-1299376",
+      "author": "ATT_Turan",
+      "date": "2022-09-07T05:01:06+0900",
+      "body": "Yeah, if you look at the actual URL in your Web browser, you should see the .js extension at the end of the path.\nGenerally speaking, you only ever need to copy/paste and make your own file if something is in a forum post."
+    },
+    {
+      "post_id": "js-post-1299384",
+      "author": "Oggy",
+      "date": "2022-09-07T05:57:16+0900",
+      "body": "@Puppet Knight\nDid you ever get a standalone skill restriction by mastery for this plugin?"
+    },
+    {
+      "post_id": "js-post-1299389",
+      "author": "Sword_of_Dusk",
+      "date": "2022-09-07T06:20:32+0900",
+      "body": "Oggy said:\nThe rename worked. Also it is it is now reading notetag or trait independently. As in if i have both the notetag and the trait for one skill on the same weapon it shows two in the list.\nClick to expand...\nDoes it show the AP gauge if you're just using the trait then? Because if it does, something is off with the version of the plugin that\n@Puppet Knight\nhas."
+    },
+    {
+      "post_id": "js-post-1299396",
+      "author": "Oggy",
+      "date": "2022-09-07T06:47:47+0900",
+      "body": "Sword_of_Dusk said:\nDoes it show the AP gauge if you're just using the trait then? Because if it does, something is off with the version of the plugin that\n@Puppet Knight\nhas.\nClick to expand...\nYep. It shows it as it should with just the trait. If i use both for the same skill it shows the name and gauge twice."
+    },
+    {
+      "post_id": "js-post-1299412",
+      "author": "Puppet Knight",
+      "date": "2022-09-07T09:57:11+0900",
+      "body": "Tested on blank project:\nAs Oggy and everyone has said and per the instructions it only needs 1 or the other to show the AP bar.\nSo why did I have both?:\nI was racking my brain on this and then realized I'm not using this System as designed...\nIntentionally! lol\nI'm using an Actor-Only Passive state via VisuStellas SkillStatesCore:\n<JS Post-Damage as User>\nif (this.isSkill())\nuser.gainSkillAP(this.item().id, 1);\n</JS Post-Damage as User>\nThat should look familiar\n@ATT_Turan\nAnd then there is this EquipmentSkill parameter setting:\nWhen set to ON, the skill attached to a piece of equipment provides the AP bar as designed. I had this set to OFF to make sure that the Skills Traited would be available to the player to be able to train up the AP bar (adding to notetag alone doesn't make the skill usable). However, when set to ON the skill is both usable and able to be tracked using ATTs script ^.\nAlso of note, this Learning only occurs using the Passive State if VisuStellas Battle Core plugin is also enabled. (because of course it does)\nIn the future I will likely still use a combo of the traits and notetags across more than one piece of equipment to encourage learning skills via dope combos. But for now. I can keep it simple ^_^\nFor anyone that finds this down the line. My set up (with regards to Fomars EquipmentSkill + VisuStella SkillStates)  is meant to slightly mimic the Materia System of Final Fantasy VII where skill use leads to mastery for that Actor.\nFeel free to give me a shout if you have any questions and if you do also decide to utilize this system, be sure to also credit\n@ATT_Turan\nespecially if you use the Passive State JS provided ^\nSorry for the added fluff to this thread that would've just been a simple help to\n@Oggy\nbut it coincidentally helped me learn more about this plug in myself!"
+    },
+    {
+      "post_id": "js-post-1299797",
+      "author": "Oggy",
+      "date": "2022-09-10T04:30:52+0900",
+      "body": "I am having an issue with this applying to a in slot 5 (in equipment types). It applies to the first four equipment slots not after for some reason. Can anyone help with this?"
+    },
+    {
+      "post_id": "js-post-1299802",
+      "author": "Puppet Knight",
+      "date": "2022-09-10T04:55:06+0900",
+      "body": "Oggy said:\nI am having an issue with this applying to a in slot 5. It applies to the first four equipment slots not after for some reason. Can anyone help with this?\nClick to expand...\nCan you expand on this? What isnt working exactly"
+    },
+    {
+      "post_id": "js-post-1299867",
+      "author": "Oggy",
+      "date": "2022-09-10T13:21:27+0900",
+      "body": "@Puppet Knight\nNM I was too tired for my own good. Forgot to add the ap tag to the skill"
+    },
+    {
+      "post_id": "js-post-1299918",
+      "author": "Puppet Knight",
+      "date": "2022-09-10T23:01:31+0900",
+      "body": "Oggy said:\n@Puppet Knight\nNM I was too tired for my own good. Forgot to add the ap tag to the skill\nClick to expand...\nBe prepared for that to happen at least once a day. xD. I had a whole moment thinking that something was wrong with the weapon I created somehow, nope! Didn't add the ap tag in the skill xD"
+    },
+    {
+      "post_id": "js-post-1302119",
+      "author": "Vuono87",
+      "date": "2022-09-23T09:15:34+0900",
+      "body": "is there a way to make it so you have to learn the skills 1 at a time? mastering 1 unlocks learning another, or just learning them in the order listed?"
+    },
+    {
+      "post_id": "js-post-1302121",
+      "author": "ATT_Turan",
+      "date": "2022-09-23T09:44:43+0900",
+      "body": "Vuono87 said:\nis there a way to make it so you have to learn the skills 1 at a time? mastering 1 unlocks learning another, or just learning them in the order listed?\nClick to expand...\nYou can use something like the VisuStella Skills and States to set custom requirements on a skill so you can't start accessing it until you've learned other skills.\nI feel like this was just asked within the past few weeks for this plugin. Take a poke."
+    },
+    {
+      "post_id": "js-post-1302129",
+      "author": "Puppet Knight",
+      "date": "2022-09-23T10:52:18+0900",
+      "body": "ATT_Turan said:\nYou can use something like the VisuStella Skills and States to set custom requirements on a skill so you can't start accessing it until you've learned other skills.\nClick to expand...\nIf the plugin is being used as intended it will calculate AP as designed all the same separate of Skills and States.\nHiding the skill doesn't prevent learning it through EquipmentSkills, just removes the visual in menus until those prereqs are met by the actor.\n@Vuono87\nwalk us through your intentions with the plugin overall? How does it impact your project"
+    },
+    {
+      "post_id": "js-post-1302130",
+      "author": "Vuono87",
+      "date": "2022-09-23T11:35:49+0900",
+      "body": "Puppet Knight said:\nIf the plugin is being used as intended it will calculate AP as designed all the same separate of Skills and States.\nHiding the skill doesn't prevent learning it through EquipmentSkills, just removes the visual in menus until those prereqs are met by the actor.\n@Vuono87\nwalk us through your intentions with the plugin overall? How does it impact your project\nClick to expand...\ni was just typing out what you said about hiding the skill from use but still gaining ap towards it.\ni don't want to gain ap for the other skills until the one above is mastered. kind of like how materia works. mastering fire 1 unlocks the ability to learn fire 2 and so on. if it cant be done i might try and commission an \"addon\" if Fomar allows that sort of thing.\njust a side thought, but being able to select which spell or skill to focus on learning would be handy too."
+    },
+    {
+      "post_id": "js-post-1302134",
+      "author": "ATT_Turan",
+      "date": "2022-09-23T11:53:25+0900",
+      "body": "Puppet Knight said:\nHiding the skill doesn't prevent learning it through EquipmentSkills, just removes the visual in menus until those prereqs are met by the actor.\nClick to expand...\nThat should be a pretty trivial edit.\nOpen the plugin in a text editor, go to line 108. Hit enter to make a new line and put in:\nCode:\nif (!this.canUse($dataSkills[skillId])) return;\nIf a given actor doesn't meet the requirements to use a certain skill, they won't gain AP in it."
+    },
+    {
+      "post_id": "js-post-1302146",
+      "author": "Vuono87",
+      "date": "2022-09-23T13:09:21+0900",
+      "body": "ATT_Turan said:\nThat should be a pretty trivial edit.\nOpen the plugin in a text editor, go to line 108. Hit enter to make a new line and put in:\nCode:\nif (!this.canUse($dataSkills[skillId])) return;\nIf a given actor doesn't meet the requirements to use a certain skill, they won't gain AP in it.\nClick to expand...\nsorry for being a pain in the ass, im not sure if i did it right? it's still giving ap to both."
+    },
+    {
+      "post_id": "js-post-1302148",
+      "author": "ATT_Turan",
+      "date": "2022-09-23T13:33:02+0900",
+      "body": "Vuono87 said:\nsorry for being a pain in the ass, im not sure if i did it right?\nClick to expand...\nYou put the code in the right place. But that code is asking whether the actor can use the skill, not whether they can see it.\nTry using\nCode:\n<JS Skill Enable>\nenabled=user.isLearnedSkill(99);\n</JS Skill Enable>\nThat\nshould\ncause the canUse() check to return false on that skill if they don't know skill 99.\nOf course, with VisuStella's obfuscated code I can't confirm that, I can only presume they used the most sensible course of action with tying it into existing functions.\nAlso, just in case you don't know, any time you change plugins or your database you need to check it by starting a new play test - you can't load a save game."
+    },
+    {
+      "post_id": "js-post-1302150",
+      "author": "Vuono87",
+      "date": "2022-09-23T13:52:01+0900",
+      "body": "ATT_Turan said:\nYou put the code in the right place. But that code is asking whether the actor can use the skill, not whether they can see it.\nTry using\nCode:\n<JS Skill Enable>\nenabled=user.isLearnedSkill(99);\n</JS Skill Enable>\nThat\nshould\ncause the canUse() check to return false on that skill if they don't know skill 99.\nOf course, with VisuStella's obfuscated code I can't confirm that, I can only presume they used the most sensible course of action with tying it into existing functions.\nAlso, just in case you don't know, any time you change plugins or your database you need to check it by starting a new play test - you can't load a save game.\nClick to expand...\nit works! thank you very much"
+    },
+    {
+      "post_id": "js-post-1302168",
+      "author": "Puppet Knight",
+      "date": "2022-09-23T17:25:49+0900",
+      "body": "ATT_Turan said:\nThat should be a pretty trivial edit.\nClick to expand...\n90% of my games skill system features are going to be credited as \"Well I challenged ATT on the forums and they made it work in 90 minutes\"\nxD.\n@Vuono87\nI'm going to hit you up on the side in the morning morning to learn more about your project. Seems we're doing pretty similar things with this plugin ^_^. Albeit with a few tweaks"
+    },
+    {
+      "post_id": "js-post-1303846",
+      "author": "Puppet Knight",
+      "date": "2022-10-04T01:55:59+0900",
+      "body": "Vuono87 said:\nit works! thank you very much\nClick to expand...\nHey, can you screen how this looks working. I want to integrate it if I can visually prevent skills from showing on the grims until prereqs are met\nTo clarify, Im looking to hide or maybe even replace the name of the skill with\n????\nfor the skills associated with a piece of equipment whos learning prereqs arent yet met"
+    },
+    {
+      "post_id": "js-post-1303851",
+      "author": "Trihan",
+      "date": "2022-10-04T02:41:51+0900",
+      "body": "ATT_Turan said:\nAlso, just in case you don't know, any time you change plugins or your database you need to check it by starting a new play test - you can't load a save game.\nClick to expand...\nThat is not strictly true. It's *almost always* true for plugins *which add new properties to game objects created when a new game starts*, but if that isn't happening you're usually okay. And database changes are reflected in saves, there's no need to start a new game for that.\nIt is possible to code plugins in such a way that this is mitigated as well; for my UI programming work on [redacted], I've had to make it so that some notetag-based stuff defaults to the notetag value even if you load a save where it didn't previously exist."
+    },
+    {
+      "post_id": "js-post-1303867",
+      "author": "ATT_Turan",
+      "date": "2022-10-04T04:42:23+0900",
+      "body": "Trihan said:\nThat is not strictly true.\nClick to expand...\nYou're not wrong. I just think it's easier to give the advice to start new games than it is to list what can and can't transfer, and try to keep track of exactly what you've changed, and...\nParticularly for people who aren't actually doing the coding."
+    },
+    {
+      "post_id": "js-post-1303869",
+      "author": "Puppet Knight",
+      "date": "2022-10-04T04:44:29+0900",
+      "body": "ATT_Turan said:\nYou're not wrong. I just think it's easier to give the advice to start new games than it is to list what can and can't transfer, and try to keep track of exactly what you've changed, and...\nParticularly for people who aren't actually doing the coding.\nClick to expand...\nThis is exactly why Ive set up a debug room and debug switch for playtesting lol. Skip the long intro and first quest and get right to the testing now xD"
+    },
+    {
+      "post_id": "js-post-1305523",
+      "author": "Puppet Knight",
+      "date": "2022-10-13T00:40:10+0900",
+      "body": "Morning fellow nerds. Any way we can think to have the drawn equip skill window\nthat appears when the associated equipment is highlighted, automatically be drawn instead just as the stats are?\nI know traditionally this would be buggy if more than one piece of equipment has skills associated, but for my project only a single equipment type\nGrimoire,\nhas skills attached. The use case is just to act as a quality of life improvement for the player.\nAdditionally if there is a way to draw the AP bar on the skill menu itself under the skills stats (bottom right in picture)\nand maybe even with the option of a mastered skill saying \"Mastered\" instead of showing the bar. would be an a great addition and further QoL help.\nThoughts?"
+    },
+    {
+      "post_id": "js-post-1305536",
+      "author": "Oggy",
+      "date": "2022-10-13T02:13:27+0900",
+      "body": "Yeah, I don't use the shop/skill status window but i agree if there was a way to show it in that window or make a window (for those who done use Visustella) that showed the ap status of skills that would be great. Having it in the equipment window is nice and functional but having it in the skill window would be great."
+    },
+    {
+      "post_id": "js-post-1305538",
+      "author": "Silenity",
+      "date": "2022-10-13T02:38:22+0900",
+      "body": "I wonder if you could use\nYEP's Skill Mastery\nplugin and tie the AP from Fomar to the mastery exp from YEP. So mastering the skill via YEP SM would make it so you can then learn the next skill in line."
+    },
+    {
+      "post_id": "js-post-1305723",
+      "author": "mobiusclimber",
+      "date": "2022-10-14T06:39:22+0900",
+      "body": "I can't for the life of me get the skills to require more than 1 AP to learn. Any idea what I might be doing wrong? I've literally tried everything I can think of. The AP gain in the AP System plugin has been set to 1, 0, and 20, to no effect. The <AP: x> on the weapon has been set to 1 or 20 with no effect. Also, only one skill shows up. I have this in the notetag:  <skills: 100;107;115> Can anyone tell me what I'm doing wrong?"
+    },
+    {
+      "post_id": "js-post-1305727",
+      "author": "Oggy",
+      "date": "2022-10-14T07:03:09+0900",
+      "body": "@mobiusclimber\n<ap: x> needs to be on the skill not the weapon."
+    },
+    {
+      "post_id": "js-post-1305728",
+      "author": "mobiusclimber",
+      "date": "2022-10-14T07:05:15+0900",
+      "body": "Thank you! That makes a lot more sense. XD"
+    },
+    {
+      "post_id": "js-post-1305966",
+      "author": "Puppet Knight",
+      "date": "2022-10-15T07:16:32+0900",
+      "body": "We'll see you in a week when this happens again! This happens, a lot xD"
+    },
+    {
+      "post_id": "js-post-1311976",
+      "author": "Vuono87",
+      "date": "2022-11-21T15:04:22+0900",
+      "body": "i didn't know if i should start a new thread or post this here... i'm using this plugin with the ability to learn the skills 1 at a time...\nATT_Turan said:\nOpen the plugin in a text editor, go to line 108. Hit enter to make a new line and put in:\nCode:\nif (!this.canUse($dataSkills[skillId])) return;\nIf a given actor doesn't meet the requirements to use a certain skill, they won't gain AP in it.\nClick to expand...\ni encountered a problem and was wondering if anyone would know or be will to make a fix.\nif a skill needs 2 ap left to learn and you get 10 from a battle, not only do you master the skill but 10 ap is carried over to the next skill. would there be a way to either subtract the 2 ap that the previous skill required and give the 8 to the next skill, or set the ap to 0 after learning a skill and nothing gets carried over to the next."
+    },
+    {
+      "post_id": "js-post-1316676",
+      "author": "Puppet Knight",
+      "date": "2022-12-19T03:14:51+0900",
+      "body": "Hey all,\nTrying to incorporate a \"Skip Training\" common event. Part of this involves auto learning skills associated with equipment of this plugin. Been at it for a day or so and cant work out how to manually gain the AP needed to visually complete the bars in the equipment window.\nI know I can force learn the skills, but this does not address the visual and thus can be confusing for the player\nWhat I need?\n\"Skip Training?\" > Yes > Gain AP needed for X skill of equipment > Learn Skill; (player checks equip menu and sees that the bar is full for Skill associated)"
+    },
+    {
+      "post_id": "js-post-1377735",
+      "author": "Paradajz",
+      "date": "2023-09-01T07:02:12+0900",
+      "body": "ATT_Turan said:\nYou put the code in the right place. But that code is asking whether the actor can use the skill, not whether they can see it.\nTry using\nCode:\n<JS Skill Enable>\nenabled=user.isLearnedSkill(99);\n</JS Skill Enable>\nThat\nshould\ncause the canUse() check to return false on that skill if they don't know skill 99.\nOf course, with VisuStella's obfuscated code I can't confirm that, I can only presume they used the most sensible course of action with tying it into existing functions.\nAlso, just in case you don't know, any time you change plugins or your database you need to check it by starting a new play test - you can't load a save game.\nClick to expand...\nhello,\ni am trying to set this up but i cant get it to work...\nwhere do i put this  code in:\nCode:\n<JS Skill Enable>\nenabled=user.isLearnedSkill(99);\n</JS Skill Enable>\nin the notetag from the  skill i guess ?\nsorry for the dumb  question."
+    },
+    {
+      "post_id": "js-post-1377755",
+      "author": "ATT_Turan",
+      "date": "2023-09-01T09:04:08+0900",
+      "body": "paradajz said:\nwhere do i put this  code in:\nin the notetag from the  skill i guess ?\nClick to expand...\nThat's what the instructions say."
+    },
+    {
+      "post_id": "js-post-1378769",
+      "author": "Puppet Knight",
+      "date": "2023-09-05T21:56:38+0900",
+      "body": "Morning all.\nI'm thinking of going the independent items route and thing it would make better sense if\nActor A uses Weapon B to track Fire 1\nthey shouldn't also gain AP for  Weapon D to also track Fire 1 since that weapon wasn't equipped at the time.\nAnyone have any luck having the gauges/ap tracking specific to individual equipment when using Independent Items (YEP Item Core)?\nTLDR, how to make this into materia. lol"
+    },
+    {
+      "post_id": "js-post-1403346",
+      "author": "Puppet Knight",
+      "date": "2023-12-06T07:41:16+0900",
+      "body": "Hey all,\nI'm running into a really weird bug of sorts.\nI manually call the\ngainSkillAP\nfunction on skill Use and whenn users are targeted by a skill that they are currently tracking.\nSo if this Actor Uses Ember or is targeted by Ember in battle:\nUntil the meter is maxed out and then the skill can be used without any Equipment.\nThe weird bug is this.\nSay Actor B only has a max MP of 1 (\"Pages\" in this example)\nIf they use the skill in battle, they don't accrue the skills AP. But they still get the AP gain if they are targetted.\nI am using my own function hooked into Game_Action.apply to give skillAp (see my attached version of the plugin Lines 151 -> 188) and below\n///////////////////////////////////////////////\n// Puppet Knight Add-in For Use and Targetted by skill\n///////////////////////////////////////////////\n\n// Function to check if an actor has a specific skill\nfunction actorHasSkill(actor, skillId) {\n    return actor.skills().some(function(skill) {\n        return skill.id === skillId;\n    });\n}\n\n// Alias the Game_Action apply function to gain skill AP when an actor is targeted\nconst _Game_Action_prototype_apply = Game_Action.prototype.apply;\nGame_Action.prototype.apply = function(target) {\n    _Game_Action_prototype_apply.call(this, target);\n   \n    // Call the custom function to gain skill AP\n    this.gainSkillAPOnTarget(target);\n    this.gainSkillAPOnUser();\n};\n\n// Function to gain skill AP on the target of skill\nGame_Action.prototype.gainSkillAPOnTarget = function(target) {\n    const skill = this.item();\n    const ap = 1; // Adjust the AP value as needed\n   \n    if (target.isActor() && skill && actorHasSkill(target, skill.id)) {\n        target.gainSkillAP(skill.id, ap);\n    }\n};\n\n\n// Function to gain skill AP on the user of skill\nGame_Action.prototype.gainSkillAPOnUser = function() {\n    const user = this.subject(); // Get the user of the skill\n    const skill = this.item();\n    const ap = 1; // Adjust the AP value as needed\n   \n    if (user.isActor() && skill && actorHasSkill(user, skill.id)) {\n        user.gainSkillAP(skill.id, ap);\n    }\n};\n\n\n///////////////////////////////////////////////\n\n///////////////////////////////////////////////"
+    },
+    {
+      "post_id": "js-post-1410935",
+      "author": "Shampignac",
+      "date": "2024-01-02T00:58:22+0900",
+      "body": "Good morning! I was wandering around the topic and I was wondering if this plugin was still usable and if it was also usable under MV?\nTHANKS !"
+    },
+    {
+      "post_id": "js-post-1410978",
+      "author": "Puppet Knight",
+      "date": "2024-01-02T03:34:17+0900",
+      "body": "Shampignac said:\nGood morning! I was wandering around the topic and I was wondering if this plugin was still usable and if it was also usable under MV?\nTHANKS !\nClick to expand...\nUsable yes. I can't verify MV compatibility. Wouldnt hurt to jsut try and see? lol"
+    },
+    {
+      "post_id": "js-post-1411394",
+      "author": "Shampignac",
+      "date": "2024-01-03T05:04:11+0900",
+      "body": "so I tried to use the equipment and AP plugin and the AP one works (I gain some in any case when I kill a monster) but when I activate the equipment one this is what it gives me."
+    },
+    {
+      "post_id": "js-post-1411406",
+      "author": "Puppet Knight",
+      "date": "2024-01-03T05:34:13+0900",
+      "body": "Shampignac said:\nso I tried to use the equipment and AP plugin and the AP one works (I gain some in any case when I kill a monster) but when I activate the equipment one this is what it gives me.\nView attachment 290533\nClick to expand...\nThats because oh how MV handles windows vs MZ. You'll have to look into how to convert those functions over. It shouldnt be terribly hard tho"
+    },
+    {
+      "post_id": "js-post-1411679",
+      "author": "Shampignac",
+      "date": "2024-01-04T05:45:08+0900",
+      "body": "the problem is that my limits of code knowledge are html and scss so I still have a lot of trouble with js\nEDIT: I thank moogle for the work\nEquip Skill System\nEquip Skill System v1.46     by Moogle_X          Introduction     This plugin adds equip skill mechanic to all actors. Each time an actor learn a new skill, that skill will be added to his/her \"Skill Pool\". That actor can access all the skills in their Skill Pool and equip some of those skills...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1429302",
+      "author": "Lomaxient",
+      "date": "2024-03-12T10:14:11+0900",
+      "body": "As a complete newbie to RMMZ I found the instructions a little tricky to follow at first, but now that I get it, I'm very chuffed and excited to put this feature in my game.\nYours is the first battle plugin I've tried. My imagination is running wild now. Thank you so much!"
+    },
+    {
+      "post_id": "js-post-1435910",
+      "author": "BR5555",
+      "date": "2024-04-08T14:18:28+0900",
+      "body": "Hey everybody.\nIs it possible to display more than 3 learnable skills in the equips window, and if so how would one do this? I took a look through the .js file to see if anything jumped out at me for maybe a simple edit, but unsurprisingly nothing did."
+    },
+    {
+      "post_id": "js-post-1441303",
+      "author": "atem93",
+      "date": "2024-05-02T03:30:16+0900",
+      "body": "Hola, recibo este error. ¿Alguien podría ayudarme?\nHello, I am getting this error. Could anyone help me?"
+    },
+    {
+      "post_id": "js-post-1441592",
+      "author": "BR5555",
+      "date": "2024-05-03T04:02:37+0900",
+      "body": "Make sure you didn't change the name of the plugin. It should be Fomar0153_EquipmentSkills.js"
+    },
+    {
+      "post_id": "js-post-1475007",
+      "author": "Oggy",
+      "date": "2024-10-11T13:50:28+0900",
+      "body": "I was wondering if it would be possible to gain ap at half rate if they actor is not a BattleMember?"
+    },
+    {
+      "post_id": "js-post-1475091",
+      "author": "Puppet Knight",
+      "date": "2024-10-12T02:12:25+0900",
+      "body": "Oggy said:\nI was wondering if it would be possible to gain ap at half rate if they actor is not a BattleMember?\nClick to expand...\nprobably need to update the 'gainSkillAP' function to check if the battleMemebers includes `this`"
+    },
+    {
+      "post_id": "js-post-1513257",
+      "author": "MTPlayer",
+      "date": "2025-05-11T06:03:46+0900",
+      "body": "I love the idea of this plugin, but I can't for the life of me figure out the reason for a specific error.\nI've tried everything from making sure the name was right, putting the plugin at the top of the list, putting the appropriate tags on the weapons and skills, but nothing I try works. If anybody has any information on how to fix this, please let me know! I feel like I'm losing my mind!"
+    },
+    {
+      "post_id": "js-post-1513275",
+      "author": "Puppet Knight",
+      "date": "2025-05-11T07:33:40+0900",
+      "body": "MTPlayer said:\nI love the idea of this plugin, but I can't for the life of me figure out the reason for a specific error.\nView attachment 340059\nI've tried everything from making sure the name was right, putting the plugin at the top of the list, putting the appropriate tags on the weapons and skills, but nothing I try works. If anybody has any information on how to fix this, please let me know! I feel like I'm losing my mind!\nClick to expand...\nCan you share what prints to the console when you get this error?\nHit F8 to bring the console up if its not coming up by default"
+    },
+    {
+      "post_id": "js-post-1513282",
+      "author": "Robro33",
+      "date": "2025-05-11T07:43:12+0900",
+      "body": "also if it helps, one of the easiest ways to get that error is making a mistake in handling a battler's hp, mp or tp. if youve done something that'd impact either your actors' current or max gauge values, doublecheck them.\nYou would have to show us screenshots of what youve done for anyone to say much more"
+    },
+    {
+      "post_id": "js-post-1534640",
+      "author": "Blackfield",
+      "date": "2025-10-26T04:15:36+0900",
+      "body": "Is there a plugin command hidden somewhere where I can manually add AP to a character? I don't want them to only learn skills based on killing enemies but also by doing different other tasks and that would help a lot"
+    },
+    {
+      "post_id": "js-post-1534641",
+      "author": "Puppet Knight",
+      "date": "2025-10-26T04:26:55+0900",
+      "body": "Blackfield said:\nIs there a plugin command hidden somewhere where I can manually add AP to a character? I don't want them to only learn skills based on killing enemies but also by doing different other tasks and that would help a lot\nClick to expand...\nI have not run to my computer to help so fast!\nThere isn't a plugin command but there are 2 functions you can call easily enough using `Script`  in an event:\ngainAP\n&&\ngainSkillAP\nSpoiler:\nUsing gainAP\nIf your goal is to simply award AP to an Actor altogether you can use\nactor.gainAP(ap)\nReplacing\nap\nwith the amount of AP to give that actor.\nSpoiler:\nUsing gainSkillAP\nIf you want the actor to gain AP only in a\nspecific\nSkill you would use:\nactor.gainSkillAP(skilIId, ap)\nreplacing skillId with what skill is being learned and ap with the amount of AP to gain\nLet me know if you run intto any troubles!"
+    },
+    {
+      "post_id": "js-post-1534642",
+      "author": "Blackfield",
+      "date": "2025-10-26T04:33:59+0900",
+      "body": "Puppet Knight said:\nI have not run to my computer to help so fast!\nThere isn't a plugin command but there are 2 functions you can call easily enough using `Script`  in an event:\ngainAP\n&&\ngainSkillAP\nSpoiler:\nUsing gainAP\nIf your goal is to simply award AP to an Actor altogether you can use\nactor.gainAP(ap)\nReplacing\nap\nwith the amount of AP to give that actor.\nSpoiler:\nUsing gainSkillAP\nIf you want the actor to gain AP only in a\nspecific\nSkill you would use:\nactor.gainSkillAP(skilIId, ap)\nreplacing skillId with what skill is being learned and ap with the amount of AP to gain\nLet me know if you run intto any troubles!\nClick to expand...\nHehe thank you, but it doesn't work (yet) - instructions unclear. No matter if I use \"actor\", replace it with an ID or the name of the actor - plus I would probably also want it for the whole party."
+    },
+    {
+      "post_id": "js-post-1534645",
+      "author": "Puppet Knight",
+      "date": "2025-10-26T04:50:54+0900",
+      "body": "Blackfield said:\nHehe thank you, but it doesn't work (yet) - instructions unclear. No matter if I use \"actor\", replace it with an ID or the name of the actor - plus I would probably also want it for the whole party.\nClick to expand...\nactor is a place holder in this case  for a  Game_Actor object.\nI'll ggive you both\nFor a single Actor Gaining:\n$gameActors.actor(acotorId).gainAP(ap)\n$gameActors.actor(acotorId).gainSkillAP(skillId, ap)\nFor the Entire Party to gain AP you can throw this functtion att tthe  bottom of the equipment  skills plugin:\nSpoiler:\ngainPartyAP Function\nGame_Party.prototype.gainPartyAP = function(ap) {\nfor (const actor of this.members()) {\nif (actor && actor.isActor()) {\nactor.gainAP(ap);\n}\n}\n};\nThen  call\n$gameParty.gainPartyAP(x);\nusing whattever  number  in place of x\nFor the same thing but with a specific  skill:\nSpoiler:\ngainPartySkillAP Function\nGame_Party.prototype.gainPartySkillAP = function(skillId, ap) {\nfor (const actor of this.members()) {\nif (actor && actor.isActor()) {\nactor.gainSkillAP(skillId, ap);\n}\n}\n};\nThen  call\n$gameParty.gainPartySkillAP (x, y)\n; using whatever  your skill id to replace x and tthe amount of ap for y\nYou add these to their own JS file  after fomars plugin or just throw them at the bottttom of  thte existing plugin. Either way you'd be calling the script call gainPartyAP OR gainPartySkillAP from witthin and event"
+    },
+    {
+      "post_id": "js-post-1534661",
+      "author": "doller554",
+      "date": "2025-10-26T08:03:45+0900",
+      "body": "Fomar0153 said:\nEquipment Skill System\nVersion 1.1\nby Fomar0153\n​\nDescription\nAllows you to learn skills from your equipment.\nPlease note this plugin requires an AP system.\nClick here\nfor my AP System.\nFeatures\nWith this plugin you can pernamently learn skills from your equipment.\nScreenshots\nHow to Use\nPlace the plugin in your project's js/plugins/ folder.\nInside RPG Maker MZ's editor, open the Plugin Manager.\nCreate a new entry and select this plugin from the list.\nPlease note that in order to work this plugin must be placed below the AP System in the plugin list.\nCustomise the options to your liking and then click ok.\nSkills that you wish to be learnable from equipment must be notetagged with: <ap: n> where n is the AP to learn.\nTo add the skills to the equipment you can either add them via traits which will let the players use the skills prior to being mastered, like Final Fantasy IX.\nOr you can add them via notetags: <skills: x;y;z>\nSeperate the skill ids with a semicolon, there is only room on the menu to display 3 skills.\nIf you want a piece of equipment to teach a skill faster than that the normal rate then do: skillid:learnrate e.g. <skills: x:2;y;z>\nDownload\nClick here.\nFAQ\nQ: My skills don't gain the AP displayed in battle.\nA: Please double check you have this plugin below the AP System in your plugin manager.\nCredits\nFomar0153\nTerms of Use\nAs long as I am credited, you may use this plugin in your projects both commercial and non-commercial.\nVersion History\n1.0 -> 1.1 - 29/08/20\nNew feature added: You can now restrict who can learn which skills from equipment.\nClick to expand...\nWait? So you actually made a plugin that can do the same thing Espers in FF6 can do. That is awesome. I mean it's more like FF9, but you could use it with accessories as Espers too. Still, awesome."
+    },
+    {
+      "post_id": "js-post-1542130",
+      "author": "AgataSain",
+      "date": "2025-12-28T05:32:55+0900",
+      "body": "I encountered this error when using plugin.\nWhat should i do?"
+    },
+    {
+      "post_id": "js-post-1542553",
+      "author": "Kashkha",
+      "date": "2026-01-01T09:11:11+0900",
+      "body": "Is there a way to learn traits permanently using AP? Similar to learning skills\nThanx"
+    }
+  ]
+}

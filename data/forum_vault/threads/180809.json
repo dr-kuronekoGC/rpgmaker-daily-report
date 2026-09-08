@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/options-on-title-screen-cancel-out-bgs-bgm-when-leaving.180809",
+  "title": "MZ Options on Title Screen cancel out BGS/BGM when leaving",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:07:21.453927+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1535484",
+      "author": "Jobhob",
+      "date": "2025-11-01T22:29:17+0900",
+      "body": "I'm using a plugin that allows to setup title screen on map, and at the same time I'm turning on music via the map events, which causes it to cancel itself if player opens and closes the Options menu. This is really annoying, and I'd like to know if there's any way to fix this. Thanks."
+    },
+    {
+      "post_id": "js-post-1535487",
+      "author": "SGHarlekin",
+      "date": "2025-11-01T23:17:18+0900",
+      "body": "READ!!! RPG Maker MZ Support Template\nThis template will give an idea of what basic support information can help others quickly answer a request.   The more information you provide in the original post, the sooner it can get solved.   A Topical and Meaningful Thread Title  Titles such as “help me” and “it’s broken” are not...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1535489",
+      "author": "Jobhob",
+      "date": "2025-11-01T23:27:55+0900",
+      "body": "P.S. Here's the additional context. The main common event from the Title Screen triggers \"Play BGS\" command. It goes well, but if you decide to open and close the Options Menu it's just ended instantly, which is jarring."
+    },
+    {
+      "post_id": "js-post-1535590",
+      "author": "rpgLord69",
+      "date": "2025-11-02T19:08:40+0900",
+      "body": "Are you talking about VS plugin? I don't think it should stop/change unless the map autoplays or events that run again try to change it when it reloads when you return from the options scene.\nAnyway, would probably be annoying trying to edit that plugin. If you're using it, try making a plugin file and add at the beginning of AudioManager.playBgm and AudioManager.playBgs (or alias them):\nif (SceneManager._scene instanceof Scene_EventedTitleMap && AudioManager._doNotPlay) {\nreturn\n}\nThen in the event that puts you into options menu set\nAudioManager._doNotPlay = true;\nWhen you come back set\nAudioManager._doNotPlay = false;\nEDIT: Or you have to set it to false in your autorun event, as it gets reloaded when you return from the options scene.\nEDIT2: Or depending how it's set up, you might not want to turn it to false at all."
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/stuck-on-now-loading.180666",
+  "title": "Stuck on \"Now Loading...\"",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:07:47.501132+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1534367",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-23T14:00:53+0900",
+      "body": "I'm trying to release a demo for my game so I can get some feedback from other players, but I deploy it from RPG Maker MV, open up the folder, everything looks fine, then click on the exe to load the game, and it's just stuck on \"Now Loading...\" I've already tried looking around online but answers on how to fix it are mixed, so if anybody could help me I would really appreciate the help"
+    },
+    {
+      "post_id": "js-post-1534373",
+      "author": "firestalker",
+      "date": "2025-10-23T16:29:40+0900",
+      "body": "Have you tried to delete the deployed folder and retry deploying it? It might have been just a glitch when deploying."
+    },
+    {
+      "post_id": "js-post-1534374",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-23T16:30:56+0900",
+      "body": "firestalker said:\nHave you tried to delete the deployed folder and retry deploying it? It might have been just a glitch when deploying.\nClick to expand...\nYour timing is perfect lol, I just tried that. Unfortunately, it didn't work :/"
+    },
+    {
+      "post_id": "js-post-1534378",
+      "author": "Andar",
+      "date": "2025-10-23T17:10:09+0900",
+      "body": "that usually means the engine has problems finding or loading one or more files.\nwhat is the full folderpath to your exe?\nBeginning with the drive letter (usually c:\\), not the one that uses the \"this PC\" shortcut.\ndoes your game use a non-standard font?"
+    },
+    {
+      "post_id": "js-post-1534380",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-23T17:13:46+0900",
+      "body": "Andar said:\nthat usually means the engine has problems finding or loading one or more files.\nwhat is the full folderpath to your exe?\nBeginning with the drive letter (usually c:\\), not the one that uses the \"this PC\" shortcut.\ndoes your game use a non-standard font?\nClick to expand...\nMy game should use the font that comes with RPG Maker MV, nothing special. Folder path is \"\nC:\\Users\\robbi\\Documents\\Output\""
+    },
+    {
+      "post_id": "js-post-1534382",
+      "author": "Andar",
+      "date": "2025-10-23T17:21:15+0900",
+      "body": "Is your game called \"output\"?\nIf not your path is missing one folder name....\nI asked for the full path because MV creates HTML5-based games, and originally if a number of special (and forbidden) signs or letters are in the foldername then the browser can't load them.\nAnd the Windows-Override that forces a browsers (like the exe of your project) to accept spaces doesn't always work..."
+    },
+    {
+      "post_id": "js-post-1534384",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-23T17:25:46+0900",
+      "body": "Andar said:\nIs your game called \"output\"?\nIf not your path is missing one folder name....\nI asked for the full path because MV creates HTML5-based games, and originally if a number of special (and forbidden) signs or letters are in the foldername then the browser can't load them.\nAnd the Windows-Override that forces a browsers (like the exe of your project) to accept spaces doesn't always work...\nClick to expand...\nMy game is definitely not called Output. Whenever I deploy the game out of RPG Maker MV, it automatically sends it to a folder called Output and I didn't even have it before so it just created that folder to put my game in, so whats that mean?"
+    },
+    {
+      "post_id": "js-post-1534386",
+      "author": "firestalker",
+      "date": "2025-10-23T17:54:48+0900",
+      "body": "KaineTheSlayer said:\nMy game is definitely not called Output. Whenever I deploy the game out of RPG Maker MV, it automatically sends it to a folder called Output and I didn't even have it before so it just created that folder to put my game in, so whats that mean?\nClick to expand...\nI'm pretty sur4e he means that the game is deployed to the OUTPUT Folder, but it has it's own named folder...\nSomething like:\nC:\\Users\\???\\Documents\\Output\\YourGameNameHere\\\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1534401",
+      "author": "ElvenNeko",
+      "date": "2025-10-23T21:47:52+0900",
+      "body": "Did you encrypt the assets, or exclude unused ones? The second option will miss out some of the files almost every time, i don't know why. If you used it, try deploying without it.\nAlso, it might be an option to turn plugins off and see if it works without them. I have an issue with one of the plugins having the same problem in web version of the game, idk why. Maybe it can happen in regular as well."
+    },
+    {
+      "post_id": "js-post-1534410",
+      "author": "Andar",
+      "date": "2025-10-23T22:39:59+0900",
+      "body": "ElvenNeko said:\nThe second option will miss out some of the files almost every time, i don't know why.\nClick to expand...\nbecause the editor has no knowledge of what files the plugins use, unless said plugins register them with the javascript function (which most plugin programmers do not use at al).\na workaround is to make a hidden and unused map where you use all the resource files from plugins with event commands, that way the editor knows them as well.\nAs for the encryption problem, it is again a plugin issue - there are two different functions, one to load encrypted files and one for regular files. Plugins that use the function to load regular files directly will fail to load encrypted files. The entire engine itself uses the correct load if encrypted and has no problems there.\nSo the problem can be caused by plugins as well if the OP uses encryption, but that is more difficult to solve (I started with the more common causes above)"
+    },
+    {
+      "post_id": "js-post-1534416",
+      "author": "ElvenNeko",
+      "date": "2025-10-23T23:25:59+0900",
+      "body": "Andar said:\nbecause the editor has no knowledge of what files the plugins use, unless said plugins register them with the javascript function (which most plugin programmers do not use at al).\na workaround is to make a hidden and unused map where you use all the resource files from plugins with event commands, that way the editor knows them as well.\nAs for the encryption problem, it is again a plugin issue - there are two different functions, one to load encrypted files and one for regular files. Plugins that use the function to load regular files directly will fail to load encrypted files. The entire engine itself uses the correct load if encrypted and has no problems there.\nSo the problem can be caused by plugins as well if the OP uses encryption, but that is more difficult to solve (I started with the more common causes above)\nClick to expand...\nIt is indeed a case, but not always. Sometimes game excluded totally random files, like certain VO line. It's all SE, so out of, maybe, hundred SE files it just randomly excluded one all the time, the one that was used just like the rest (not in a plugin)."
+    },
+    {
+      "post_id": "js-post-1534425",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-24T01:05:42+0900",
+      "body": "firestalker said:\nI'm pretty sur4e he means that the game is deployed to the OUTPUT Folder, but it has it's own named folder...\nSomething like:\nClick to expand...\nYeah sorry, my game is in there in folder. The very first time I deployed it where I discovered the issue, I did not exclude or encrypt anything, but times trying again after that I did and the problem still persisted. As of right now, still not fixed"
+    },
+    {
+      "post_id": "js-post-1534426",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-24T01:07:47+0900",
+      "body": "ElvenNeko said:\nDid you encrypt the assets, or exclude unused ones? The second option will miss out some of the files almost every time, i don't know why. If you used it, try deploying without i\nAlso, it might be an option to turn plugins off and see if it works without them. I have an issue with one of the plugins having the same problem in web version of the game, idk why. Maybe it can happen in regular as well.\nClick to expand...\nThe very first time I deployed it where I discovered the issue, I did not exclude or encrypt anything, but times trying again after that I did and the problem still persisted. As of right now, still not fixed... not sure what else to try"
+    },
+    {
+      "post_id": "js-post-1534431",
+      "author": "ElvenNeko",
+      "date": "2025-10-24T01:32:49+0900",
+      "body": "I would try to copy everything to a new project.\nOr copy all files from data folders to the project and see if it will run.\nOr, try to pinpoint the issue. If now loading appears before main menu loads, it's probably plugin fault. If after game start - try to move starting location and see if anything will change."
+    },
+    {
+      "post_id": "js-post-1534433",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-24T01:35:54+0900",
+      "body": "ElvenNeko said:\nI would try to copy everything to a new project.\nOr copy all files from data folders to the project and see if it will run.\nOr, try to pinpoint the issue. If now loading appears before main menu loads, it's probably plugin fault. If after game start - try to move starting location and see if anything will change.\nClick to expand...\nIt does appear before the main menu, but I don't know what plugin could be causing it. I already tried getting rid of a couple just to see if it did anything but it didn't"
+    },
+    {
+      "post_id": "js-post-1534439",
+      "author": "ElvenNeko",
+      "date": "2025-10-24T01:45:43+0900",
+      "body": "Control+a on plugin list, right click, turn off. If it will work, you know where to look."
+    },
+    {
+      "post_id": "js-post-1534440",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-24T01:51:12+0900",
+      "body": "ElvenNeko said:\nControl+a on plugin list, right click, turn off. If it will work, you know where to look.\nClick to expand...\nIt didn't work even after turning the plugins off"
+    },
+    {
+      "post_id": "js-post-1534449",
+      "author": "ElvenNeko",
+      "date": "2025-10-24T03:03:54+0900",
+      "body": "Then i'm out of ideas, except for fully reinstall the maker and copy project to the fresh one. Or even just deploy it from fresh maker, maybe it will work like that.\nYou can also check if the stuff that should load in main menu are present - basicly copy entire img and music folders from the project to deployed game. But somehow doubt that will help, it feels like something broken in your maker."
+    },
+    {
+      "post_id": "js-post-1534461",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-24T04:18:59+0900",
+      "body": "ElvenNeko said:\nThen i'm out of ideas, except for fully reinstall the maker and copy project to the fresh one. Or even just deploy it from fresh maker, maybe it will work like that.\nYou can also check if the stuff that should load in main menu are present - basicly copy entire img and music folders from the project to deployed game. But somehow doubt that will help, it feels like something broken in your maker.\nClick to expand...\nI found out the issue! It was a plugin, the Lux_TitleScreen plugin to be exact. I literally just went through my plugins one by one, turning them off and figured out that was the issue. Thanks to all of you for the help!"
+    },
+    {
+      "post_id": "js-post-1534468",
+      "author": "ElvenNeko",
+      "date": "2025-10-24T05:58:46+0900",
+      "body": "That is why i suggested to turn off all of them. It instantly shows if issue is with plugin. And takes only few clicks."
+    },
+    {
+      "post_id": "js-post-1534470",
+      "author": "KaineTheSlayer",
+      "date": "2025-10-24T06:01:43+0900",
+      "body": "ElvenNeko said:\nThat is why i suggested to turn off all of them. It instantly shows if issue is with plugin. And takes only few clicks.\nClick to expand...\nYeah I just tried the wrong plugins I guess, my fault. Thanks for your help"
+    }
+  ]
+}

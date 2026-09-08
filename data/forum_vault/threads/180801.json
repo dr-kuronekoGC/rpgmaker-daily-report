@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/change-sprite-for-following-characters.180801",
+  "title": "Change sprite for following characters",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:07:21.135772+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1535421",
+      "author": "Truant99",
+      "date": "2025-11-01T05:22:19+0900",
+      "body": "So I am working on some swimming stuff on my maps, and it's all working well. All my characters have a walking and swimming sprite sheet and they are set to transition between the two as they enter the water region. The problem is that as soon as the leading character touches the water tile, all the characters switch to the swimming animation even though they are still \"on land.\" I've fixed this by having them clump up on entrance and exit to water, but that's a little awkward. Is there a way to have the characters transition one by one as they enter the water region? Thanks!"
+    },
+    {
+      "post_id": "js-post-1535425",
+      "author": "DevRPG2k",
+      "date": "2025-11-01T06:10:29+0900",
+      "body": "I assume you are using region or terrain ID to define what is deep water, shallow water, etc... I made a similar system a few years ago, but I don't have it working as a plugin, so I'll give you the methods:\nComplete Tutorial Event + Sample video:\nFollowers walking in water (MV)\nHi! I managed to make a walking-in-water sprite work for the player as well as the follower when crossing a river, but the problem with how I made it is when the player steps in the water and the follower is still on land, the follower also gets the water sprite when he's not yet in the water...\nforums.rpgmakerweb.com\nWhy did I use Javascript to change the follower graphics? Simple, to make the code dynamic and independent of the follower or the current sprite graphic it's using, so I wouldn't need to create dozens of\nConditional Branches\n.\nPlayer:\nJavaScript:\n$gamePlayer // Object\n$gamePlayer.regionId() // Region ID\n$gamePlayer._characterName // filename (String)\nCheck the number of members in the team, as attempting to modify objects that do not currently exist will cause errors in the game:\nJavaScript:\n$gameParty.members().length // Method with IF\nFollower 1 (Party 2):\nJavaScript:\n$gamePlayer._followers.follower(0) // Object\n$gamePlayer._followers.follower(0).regionId() // Region ID (Number)\n$gamePlayer._followers.follower(0)._characterName // filename (String)\nFollower 2 (Party 3):\nJavaScript:\n$gamePlayer._followers.follower(1) // Object\n$gamePlayer._followers.follower(1).regionId() // Region ID (Number)\n$gamePlayer._followers.follower(1)._characterName // filename (String)\nFollower 3 (Party 4):\nJavaScript:\n$gamePlayer._followers.follower(2) // Object\n$gamePlayer._followers.follower(2).regionId() // Region ID (Number)\n$gamePlayer._followers.follower(2)._characterName // String"
+    },
+    {
+      "post_id": "js-post-1535490",
+      "author": "Truant99",
+      "date": "2025-11-01T23:33:43+0900",
+      "body": "This looks really promising! To which js file should I add this code?"
+    },
+    {
+      "post_id": "js-post-1535494",
+      "author": "DevRPG2k",
+      "date": "2025-11-02T00:19:21+0900",
+      "body": "Please click on the link I sent you...\nDev_With_Coffee said:\nComplete Tutorial Event + Sample video:\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1535515",
+      "author": "Truant99",
+      "date": "2025-11-02T03:11:38+0900",
+      "body": "I see! Apologies. I got this working to an extent, but now I'm running into a new complication. It may be that your code allows for this, but I'm not familiar enough with js to get it working. The game allows for actors to join in various orders, so any actor could theoretically occupy any follower position. Is there a way to read which actor is in the position and change the sprite sheet accordingly?"
+    },
+    {
+      "post_id": "js-post-1535517",
+      "author": "Truant99",
+      "date": "2025-11-02T03:43:28+0900",
+      "body": "I took care of this using variables! I'm sure there is a more elegant way to do it, but after all this time the swimming is working as intended! Thanks for your help, I wouldn't have been able to figure this out without you."
+    },
+    {
+      "post_id": "js-post-1535518",
+      "author": "DevRPG2k",
+      "date": "2025-11-02T03:45:31+0900",
+      "body": "There's no need for double posting in a short period of time if your message can be edited...\nYes, it's much simpler than everything I've shown before. You'll know the actor's ID, and this simple number will be the pointer to all the data of that particular actor:\nJust analyze this using F8 or F12:\nCode:\n$gameParty // return Object ({})\nList:\nJavaScript:\n$gameParty._actors // return Array like [1,4,2,3]\nExample:\nJavaScript:\n$gameParty._actors[0] // return 1 (ID in database)\nReturn name:\nJavaScript:\n$gameActors._data[$gameParty._actors[0]]._name // return String \"Harold\" (In a new project, if the player keeps him as the leader...)\nRead this:\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com"
+    }
+  ]
+}

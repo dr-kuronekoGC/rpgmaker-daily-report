@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-there-a-way-to-disable-mouse-function-on-certain-maps-for-different-minigames.180865",
+  "title": "Is there a way to disable mouse function on certain maps for different minigames?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:07:39.979613+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1535781",
+      "author": "elang_S",
+      "date": "2025-11-04T18:13:40+0900",
+      "body": "I researched a bit into how rpg maker as an engine could do with point and click mechanics and I found that point and click features can only be done via plugins, even then it isn't 100% pure point and click as it uses the player characters that are present in game as the \"cursor\"\nAfter experimenting with the native mouse controls in MV, I find it less than ideal for a usual point and click mechanic as it requires each click to be instantaneously while I found after clicking with MV native mouse controls there's an initial lag, I try putting impassable tiles to even adjusting the speed of the character to force a pseudo point and click but found the response not consistent as sometimes the click immediately shows text while sometimes it either doesn't show text or even show the event text even though I'm clicking on other places (I think the character model and the area that's not the event actually share's a trajectory and that's why the other points show text where it shouldn't), it's also frustrating that the mouse clicks at times ignore the impassable objects and moved the character around anyways\nI want to use plugins to fix this issue but unfortunately Yanfly's point and click plugin is paid to use while I myself don't have the means to purchase the plugin\nThere is this Mouse System Ex by Tor Damian Design that seems promising, but I see the documentation site is broken, the one download link contains a setup which I find very suspicious as what I understood javascript files don't require a setup (do correct me if I'm mistaken)\nAfter moments of contemplation, I think I have no choice but to compromise the design as I save money for Yanfly's plugin (to this day I'm sad that my currency is so weak\n), I think I'm not going to make a fully point and click game, instead I'm going to make the keyboard the main control while the mouse is only used for certain minigames like puzzles and the like.\n(I will be beyond happy if there's an easier and more effective way to implement point and click elements in MV)\nBut I'm kind of at a loss in how I can disable the mouse controls in only certain points in the game without outright disabling mouse controls fully. How can I readjust mouse controls if I may ask?"
+    },
+    {
+      "post_id": "js-post-1535784",
+      "author": "Aerosys",
+      "date": "2025-11-04T19:24:18+0900",
+      "body": "Create a new plugin file with any name and import it as a plugin. Paste this:\nCode:\n(function() {\nfunction condition() {\n    return !(SceneManager._scene instanceof Scene_Map && $gameSwitches.value(1)) // <--\n}\nconst _isPressed = TouchInput.isPressed;\nTouchInput.isPressed = function() {\n    return condition() && _isPressed.call(this);\n}\nconst _isTriggered = TouchInput.isTriggered;\nTouchInput.isTriggered = function() {\n    return condition() && _isTriggered.call(this);\n}\nconst _isRepeated = TouchInput.isRepeated;\nTouchInput.isRepeated = function() {\n    return condition() && _isRepeated.call(this);\n}\nconst _isLongPressed = TouchInput.isLongPressed;\nTouchInput.isLongPressed = function() {\n    return condition() && _isLongPressed.call(this);\n}\nconst _isReleased = TouchInput.isReleased;\nTouchInput.isReleased = function() {\n    return condition() && _isReleased.call(this);\n}\n})()\nReplace the 1 with a Switch ID of your choice. Once the Switch is ON, all Touch Inputs are ignored."
+    },
+    {
+      "post_id": "js-post-1535786",
+      "author": "elang_S",
+      "date": "2025-11-04T19:30:40+0900",
+      "body": "Aerosys said:\nCreate a new plugin file with any name and import it as a plugin. Paste this:\nCode:\n(function() {\nfunction condition() {\n    return typeof $gameSwitches === 'undefined' || !$gameSwitches.value(1) // <--\n}\nconst _isPressed = TouchInput.isPressed;\nTouchInput.isPressed = function() {\n    return condition() && _isPressed.call(this);\n}\nconst _isTriggered = TouchInput.isTriggered;\nTouchInput.isTriggered = function() {\n    return condition() && _isTriggered.call(this);\n}\nconst _isRepeated = TouchInput.isRepeated;\nTouchInput.isRepeated = function() {\n    return condition() && _isRepeated.call(this);\n}\nconst _isLongPressed = TouchInput.isLongPressed;\nTouchInput.isLongPressed = function() {\n    return condition() && _isLongPressed.call(this);\n}\nconst _isReleased = TouchInput.isReleased;\nTouchInput.isReleased = function() {\n    return condition() && _isReleased.call(this);\n}\n})()\nReplace the 1 with a Switch ID of your choice. Once the Switch is ON, all Touch Inputs are ignored.\nClick to expand...\nOhhhh, this might work\nwhat's your terms as I use your plugin? Are you fine with me using your plugin in a commercial r rated project?"
+    },
+    {
+      "post_id": "js-post-1535788",
+      "author": "Aerosys",
+      "date": "2025-11-04T20:13:39+0900",
+      "body": "It's too small to call it a \"plugin\"; you can do with it what you want"
+    },
+    {
+      "post_id": "js-post-1535791",
+      "author": "elang_S",
+      "date": "2025-11-04T20:34:36+0900",
+      "body": "Odd, the plugin broke the game (image 1)\nIs it because I copied and pasted it in visual studio code and saved it as javascript? (Image 2)\nThere's no way the plugin widow is supposed to be this empty (Image 3)\nWhat did I do wrong?"
+    },
+    {
+      "post_id": "js-post-1535794",
+      "author": "Aerosys",
+      "date": "2025-11-04T20:47:25+0900",
+      "body": "Avoid spaces in the plugin's filename"
+    },
+    {
+      "post_id": "js-post-1535809",
+      "author": "Solar_Flare",
+      "date": "2025-11-04T22:23:57+0900",
+      "body": "I actually recommend Mouse System Ex – I'm using it myself, though I don't personally use the point-and-click functionality. You can find the documentation\nin the WayBack Machine\n, and the latest version of the plugin at\nGitHub\n(click the plugin, right-click Raw, save as)."
+    },
+    {
+      "post_id": "js-post-1535820",
+      "author": "elang_S",
+      "date": "2025-11-05T00:23:28+0900",
+      "body": "Solar_Flare said:\nI actually recommend Mouse System Ex – I'm using it myself, though I don't personally use the point-and-click functionality. You can find the documentation\nin the WayBack Machine\n, and the latest version of the plugin at\nGitHub\n(click the plugin, right-click Raw, save as).\nClick to expand...\nThe github doesn't support download though\nShould I manually tweak it?\nPs. Nevermind the site actually supports downloads!"
+    },
+    {
+      "post_id": "js-post-1535822",
+      "author": "elang_S",
+      "date": "2025-11-05T00:24:01+0900",
+      "body": "Aerosys said:\nAvoid spaces in the plugin's filename\nClick to expand...\nI'll try that after this, thanks!"
+    },
+    {
+      "post_id": "js-post-1535966",
+      "author": "elang_S",
+      "date": "2025-11-06T04:21:35+0900",
+      "body": "Aerosys said:\nAvoid spaces in the plugin's filename\nClick to expand...\nUhhh, I'm so sorry to bother you but even when I typed the filename with no spaces, my game still refuse to run"
+    },
+    {
+      "post_id": "js-post-1535971",
+      "author": "Aerosys",
+      "date": "2025-11-06T05:02:21+0900",
+      "body": "I've updated the code from my previous post; now it should work!\nI also extended it so that the plugin only forbids TouchInput when you are on the map and not in any menus."
+    },
+    {
+      "post_id": "js-post-1536022",
+      "author": "elang_S",
+      "date": "2025-11-06T10:19:11+0900",
+      "body": "Aerosys said:\nI've updated the code from my previous post; now it should work!\nI also extended it so that the plugin only forbids TouchInput when you are on the map and not in any menus.\nClick to expand...\nI'll take a quick look after this, thanks!"
+    },
+    {
+      "post_id": "js-post-1536036",
+      "author": "elang_S",
+      "date": "2025-11-06T11:24:57+0900",
+      "body": "Aerosys said:\nI've updated the code from my previous post; now it should work!\nI also extended it so that the plugin only forbids TouchInput when you are on the map and not in any menus.\nClick to expand...\nI'll take a quick look after this, thanks"
+    },
+    {
+      "post_id": "js-post-1536072",
+      "author": "elang_S",
+      "date": "2025-11-06T17:28:59+0900",
+      "body": "Update, the plugin didn't break the game this time\nAnd I managed to fix my initial problem with this particular plugin\nIt turns out I didn't set the self-switch properly, now it works"
+    }
+  ]
+}

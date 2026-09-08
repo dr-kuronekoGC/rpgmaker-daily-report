@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-can-i-load-a-game-from-the-start-menu-into-during-a-massage-without-triggering-auto-run-or-parallel-event.180806",
+  "title": "MV How can I load a game from the start menu into during a massage without triggering auto-run or parallel event",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:07:43.517908+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1535475",
+      "author": "Shrimp0ster",
+      "date": "2025-11-01T20:01:05+0900",
+      "body": "Hi, I made a Visual Novel on RPG Maker MV for my Thailand horror jam submission. The thing is, when you save the game and exit to the main menu, or you return via bad endings and try to load from where you saved the game, it loops back to the very beginning, which is not intentional. I try to make the event erase itself after it triggers the message via a common event, which works fine, but when you save and load back in, the event stops playing.\nI really want to fix this in the after-jam version. The game itself is still playable, but it is very tedious to restart everything from the beginning every time you get a bad ending.\nGame link:\nhttps://shrimp0ster.itch.io/dont-hurry"
+    },
+    {
+      "post_id": "js-post-1535507",
+      "author": "Andar",
+      "date": "2025-11-02T01:46:03+0900",
+      "body": "The default engine and savefile cannot remember the executing point of an event, that is why it is always restarted on map load. That is even the case with parallel common events on a map transfer.\nThe only workaround is to reduce the size or process time for the event code itself.\nFor example in an evented time system based on a parallel common event, you don't have the common event wait for 600 frames before counting time up, you'll have it wait for 20 frames before counting a different variable up and then check if that different variable is at 30 before counting the time itself up.\nIn the first case a reset could lose up to 599 frames, but in the second case it can only lose up to 19 frames.\nIn the case of a story event where you can save during the event, you'll basically have to split it into several chained events.\nUsually I advice against chaining events in cutscenes because that can become problematic, but in this case I see no other way, not unless you use plugins to completely overhaul both event- and save-engine of the RM. And I don't know of any existing plugin doing that."
+    },
+    {
+      "post_id": "js-post-1535526",
+      "author": "Solar_Flare",
+      "date": "2025-11-02T05:20:41+0900",
+      "body": "Andar said:\nThe default engine and savefile cannot remember the executing point of an event, that is why it is always restarted on map load.\nClick to expand...\nI am confused by this statement. Am I misunderstanding? It seems to suggest that this toy event won't work as expected:\nCode:\n◆Text：None, Window, Bottom\n：    ：This is a test. This is the first message.\n◆Open Save Screen\n◆Text：None, Window, Bottom\n：    ：This is a test. This is the second message.\n◆Open Save Screen\n◆Text：None, Window, Bottom\n：    ：This is a test. This is the third message.\nThat gives you two points during the event where you can save. Taking your words at face value would seem to imply that loading either save would start you back at \"This is the first message.\", but that is not in fact what happens – the event resumes from the point you saved at, like you'd expect.\nAm I missing something? Is the issue maybe related to the use of common events? Or perhaps there's an issue with parallel events specifically I don't really get what's wrong here…"
+    },
+    {
+      "post_id": "js-post-1535584",
+      "author": "Shrimp0ster",
+      "date": "2025-11-02T16:52:48+0900",
+      "body": "Solar_Flare said:\nI am confused by this statement. Am I misunderstanding? It seems to suggest that this toy event won't work as expected:\nCode:\n◆Text：None, Window, Bottom\n：    ：This is a test. This is the first message.\n◆Open Save Screen\n◆Text：None, Window, Bottom\n：    ：This is a test. This is the second message.\n◆Open Save Screen\n◆Text：None, Window, Bottom\n：    ：This is a test. This is the third message.\nThat gives you two points during the event where you can save. Taking your words at face value would seem to imply that loading either save would start you back at \"This is the first message.\", but that is not in fact what happens – the event resumes from the point you saved at, like you'd expect.\nAm I missing something? Is the issue maybe related to the use of common events? Or perhaps there's an issue with parallel events specifically I don't really get what's wrong here…\nClick to expand...\nYeah, I do believe it's the problem with parallel event. The save point is work but when player loaded in and the text massage end the event replays itself. I think maybe I need to change it to button trigger. I'll try that to see if it's fixed or not."
+    },
+    {
+      "post_id": "js-post-1535586",
+      "author": "Shrimp0ster",
+      "date": "2025-11-02T17:21:53+0900",
+      "body": "Okay, turns out it's because both the parallel event and the common event are making it bug. I have found a way to fix it now. Basically, I need to copy and paste all the dialog from common events to the action button event.\nThanks, everyone."
+    }
+  ]
+}
