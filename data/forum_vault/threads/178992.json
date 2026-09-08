@@ -1,0 +1,179 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/self-switch-parallel-process-chrono-engine.178992",
+  "title": "MV self switch parallel process (Chrono Engine)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:37:53.952541+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1522832",
+      "author": "stprod",
+      "date": "2025-07-18T05:13:31+0900",
+      "body": "Good day.\nI'm using the\nChrono Engine\nplugin for\nRPG Maker MV\n(real-time battle).\nI've already set everything up. Everything works great.\nI'm having a problem using self-switches for enemies.\nI set up self-switch C (notetag on database) so that when an enemy dies, a new event page with its death sprite is displayed.\nThe problem is that I want that new event page to be in a parallel process to switch to two more graphics (death animation), but nothing ever happens. It's as if the event remains completely inactive (even though it's in a parallel process).  It also doesn't work to put all those instructions in the movement routes of that event page.\nIs there any way to fix this?\nThanks."
+    },
+    {
+      "post_id": "js-post-1522836",
+      "author": "Andar",
+      "date": "2025-07-18T05:35:57+0900",
+      "body": "Please show us a screenshot of that event page, and do NOT crop away any part of the event window.\nthere are several things that you could have done wrong when setting it up."
+    },
+    {
+      "post_id": "js-post-1522837",
+      "author": "stprod",
+      "date": "2025-07-18T05:38:34+0900",
+      "body": "Andar said:\nPlease show us a screenshot of that event page, and do NOT crop away any part of the event window.\nthere are several things that you could have done wrong when setting it up.\nClick to expand...\nHere's a screenshot of the event.\nIt doesn't matter if it's in a parallel process, none of those instructions are ever executed.\nI think maybe the plugin disables an enemy's event somehow after it dies."
+    },
+    {
+      "post_id": "js-post-1522841",
+      "author": "Andar",
+      "date": "2025-07-18T05:48:40+0900",
+      "body": "stprod said:\nI think maybe the plugin disables an enemy's event somehow after it dies.\nClick to expand...\nIt might be - I don't know that plugin, never having used it.\nBut such a possibility doesn't really make sense to me, because nothing on that event page tells the engine that it is an enemy event, and other event pages are not processed. That's why I considered but dismissed that possibility before my first post.\nBut I admit, my focus was on checking if you had an error in the page priority or something like that.\nI suppose you now have to wait for the answer of someone who uses that plugin."
+    },
+    {
+      "post_id": "js-post-1522852",
+      "author": "Slaughty",
+      "date": "2025-07-18T07:41:02+0900",
+      "body": "If I'm not mistaken, when a battler dies in chrono engine, the event is erased similar to the event erase command. So any of the event commands following its death never run because the event is erased. Using the death self switch is more for when the map is re-entered/reloaded to not have the enemy \"respawn\".\nHope this helps, good luck."
+    },
+    {
+      "post_id": "js-post-1522857",
+      "author": "stprod",
+      "date": "2025-07-18T08:56:48+0900",
+      "body": "I commented out this line so the enemy event doesn't disappear when it's defeated.\nJavaScript:\nGame_CharacterBase.prototype.setDeadEnemy = function(char,battler) {\n\nvar mapId = $gameMap.mapId(); // Current player map\nvar eventId = this._eventId; // Current event (enemy)\n\nthis.setDeadSwitch(battler);\nthis.setDeadVariable(battler);\nthis.setDeadSelfSwitch(char,battler);\nthis.makeTreasure(char,battler);\nthis.prepareDeadSprite(char,battler);\n\nif (!char._user.treasure[0]) {\n//this.executeCollapse(char,battler) // Don't remove the enemy sprite upon death\n\nThe event is still there (the death sprite is shown)\nBut it still doesn't execute the instructions on the page (self switch C), even if it's in a parallel process."
+    },
+    {
+      "post_id": "js-post-1522868",
+      "author": "AquaEcho",
+      "date": "2025-07-18T11:14:52+0900",
+      "body": "What does the enemy database page look like?\nThis is what my enemy death pages look like but I do use an event spawner to spawn them in and unspawn them after death."
+    },
+    {
+      "post_id": "js-post-1522947",
+      "author": "stprod",
+      "date": "2025-07-19T02:03:59+0900",
+      "body": "Database page my enemy:\nI noticed something very curious.\nThe page with the self switch C (event in parallel process) doesn't execute any instructions when the enemy dies.\nBut if I exit the map and re-enter, those instructions are executed.\nBut that doesn't work anymore. I need them to execute once the enemy dies. Do I have to refresh the event or something? How would I do that?\nThis is the method in the\nMOG_ChronoEngine.js\nplugin where the enemy dies.\nJavaScript:\nGame_CharacterBase.prototype.setDeadEnemy = function(char,battler) {\n   \n    var mapId = $gameMap.mapId(); // Current player map\n    var eventId = this._eventId;  // Current event (enemy)\n   \n   this.setDeadSwitch(battler);\n   this.setDeadVariable(battler);\n   this.setDeadSelfSwitch(char,battler);\n   this.makeTreasure(char,battler);\n   this.prepareDeadSprite(char,battler);\n \n   if (!char._user.treasure[0]) {\n       //this.executeCollapse(char,battler) // Do not remove enemy sprite upon death\n         \n    var enemyId = char.battler().enemyId();  /\n\n    if (enemyId >= 1) {\n   \n        var enemy = $dataEnemies[enemyId];\n        var match = enemy.note.match(/<enemigo:\\s*(\\d+)>/);\n\n        if (match) {\n         \n           $gameVariables.setValue(14, parseInt(match[1]));\n         \n        } else {\n         \n           $gameVariables.setValue(14, 0);\n        }\n    }\n   \n   } else {;\n      if ($gameSystem.isChronoMode()) {char.jump(0,0)};\n   };\n   char._chrono.deadChecked = false;\n   char.battler().performCollapse();\n   char._user.rotation = [0,0];\n \n};"
+    },
+    {
+      "post_id": "js-post-1522988",
+      "author": "AquaEcho",
+      "date": "2025-07-19T08:12:45+0900",
+      "body": "Could you put this script followed by an Erase Event on the C page and let me know what happens?\nCode:\n$gameSelfSwitches.setValue([$gameMap.mapId(), this.character(0)._eventId, 'C'], false);"
+    },
+    {
+      "post_id": "js-post-1522990",
+      "author": "stprod",
+      "date": "2025-07-19T08:17:29+0900",
+      "body": "AquaEcho said:\nCould you put this script followed by an Erase Event on the C page and let me know what happens?\nCode:\n$gameSelfSwitches.setValue([$gameMap.mapId(), this.character(0)._eventId, 'C'], false);\nClick to expand...\nWhat happens with that line of script is that the event resets when I re-enter the map, the enemy revives.\nI don't want that. I just want to set some animations (change enemy's graphics) and play a sound on the page (self switch C). But it doesn't work.\nIt only executes those instructions when I exit the map and re-enter.\nSorry if I can't express myself well, I don't know English, I use a translator XD"
+    },
+    {
+      "post_id": "js-post-1522991",
+      "author": "AquaEcho",
+      "date": "2025-07-19T08:31:51+0900",
+      "body": "What happens if you just put a wait 5 frames at the end of the move route?"
+    },
+    {
+      "post_id": "js-post-1522992",
+      "author": "stprod",
+      "date": "2025-07-19T08:40:12+0900",
+      "body": "AquaEcho said:\nWhat happens if you just put a wait 5 frames at the end of the move route?\nClick to expand...\nnothing happens, it stays the same."
+    },
+    {
+      "post_id": "js-post-1522993",
+      "author": "AquaEcho",
+      "date": "2025-07-19T08:48:42+0900",
+      "body": "Could you restore the lines you commented out? I think you are stopping the sequence of triggers that should be happening by commenting out code."
+    },
+    {
+      "post_id": "js-post-1522994",
+      "author": "stprod",
+      "date": "2025-07-19T08:51:14+0900",
+      "body": "AquaEcho said:\nCould you restore the lines you commented out? I think you are stopping the sequence of triggers that should be happening by commenting out code.\nClick to expand...\nJavaScript:\n//this.executeCollapse(char,battler)\nThis line I commented out is to delete the event from the map, so it disappears completely, and I don't want that.\nI'm displaying the enemy's corpse on the page (self switch C).\nIf I uncomment that line, the event is deleted and disappears from the map. And when I re-enter the map, it revives, as if it had never been defeated."
+    },
+    {
+      "post_id": "js-post-1522995",
+      "author": "AquaEcho",
+      "date": "2025-07-19T09:02:31+0900",
+      "body": "What happens if you set that page to action trigger instead of parallel?"
+    },
+    {
+      "post_id": "js-post-1522996",
+      "author": "stprod",
+      "date": "2025-07-19T09:14:11+0900",
+      "body": "AquaEcho said:\nWhat happens if you set that page to action trigger instead of parallel?\nClick to expand...\nnothing happens, it stays the same."
+    },
+    {
+      "post_id": "js-post-1522997",
+      "author": "AquaEcho",
+      "date": "2025-07-19T09:18:36+0900",
+      "body": "Well I will just say that your copy of Chrono Engine is working different than mine because mine runs whatever commands are on the page even if set to action trigger."
+    },
+    {
+      "post_id": "js-post-1523001",
+      "author": "stprod",
+      "date": "2025-07-19T09:37:10+0900",
+      "body": "Which plugin are you using? Chrono Engine (original) Or a modified version (\nCross Engine\n)?\nI'm using Cross Engine. Also, could you show all three pages of your enemy's event? And if they have a Dead Self Switch in the database?"
+    },
+    {
+      "post_id": "js-post-1523081",
+      "author": "ShadowDragon",
+      "date": "2025-07-20T06:05:55+0900",
+      "body": "your notetag is wrong (which I consume its a comment tag.\nnotetags are probably set on the event and not database,\nas notetags uses\n<\nand\n>\nto set tags in between, not without them.\nso where did you read the notetag\nDead Selfswitch : C\n?"
+    },
+    {
+      "post_id": "js-post-1523083",
+      "author": "AquaEcho",
+      "date": "2025-07-20T06:12:18+0900",
+      "body": "The OP's notetag is not wrong. That's what it looks like in Chrono Engine. Since OP said the page does execute entering the map again, the self switch is being toggled, but it happened after the enemy died, and the OP commenting out that line of code doesn't stop it from dying.\nWhen an enemy dies ChronoEngine automatically drops its opacity to 0 then erases the event."
+    },
+    {
+      "post_id": "js-post-1523232",
+      "author": "stprod",
+      "date": "2025-07-21T06:17:02+0900",
+      "body": "The weird thing is, I just tried all this in the (cross engine) demo, and it still happens.\nI set an enemy's event page (self switch C) to play a sound (parallel process) on that page, and nothing happens when the enemy dies.\n(Obviously, I commented out the plugin line so the event doesn't disappear.)\nThe enemy stays stuck in its corpse sprite. But if I leave the map and re-enter, the sound plays.\nDemo\nhere\n."
+    },
+    {
+      "post_id": "js-post-1523236",
+      "author": "AquaEcho",
+      "date": "2025-07-21T06:33:33+0900",
+      "body": "There is some automated Chrono Engine process to erase the event before your C page kicks in. However the C self switch still gets toggled, so when you re-enter the map the C page plays."
+    },
+    {
+      "post_id": "js-post-1523237",
+      "author": "stprod",
+      "date": "2025-07-21T06:42:43+0900",
+      "body": "AquaEcho said:\nThere is some automated Chrono Engine process to erase the event before your C page kicks in. However the C self switch still gets toggled, so when you re-enter the map the C page plays.\nClick to expand...\nYes, I know, but don't you understand that I already commented out the line that prevents the event from being deleted?\nThe line is this:\nJavaScript:\n//this.executeCollapse(char,battler)\n// Do not remove enemy sprite upon death\nIf the event is no longer deleted by commenting out that line, which it is (because the event remains fixed on the corpse sprite), it should execute all the instructions on that page in parallel, which it doesn't.\nIt only does this if I re-enter the map (which doesn't help). I need the instructions to execute once the enemy is on page 3 (its corpse)."
+    },
+    {
+      "post_id": "js-post-1523239",
+      "author": "AquaEcho",
+      "date": "2025-07-21T06:44:59+0900",
+      "body": "Yes and I told you commenting out that line wasn't enough.\nChanging what happens when an enemy dies is going to require a patch plugin."
+    },
+    {
+      "post_id": "js-post-1523240",
+      "author": "stprod",
+      "date": "2025-07-21T06:54:37+0900",
+      "body": "Here's a video of what happens.\nThe page (self switch C) has the corpse sprite with a simple instruction: a message that says \"test,\" which only executes when I exit the map and re-enter.\nDoes anyone know how to fix this? There must be a way to refresh the event so it executes the instructions on that page again."
+    },
+    {
+      "post_id": "js-post-1523243",
+      "author": "AquaEcho",
+      "date": "2025-07-21T07:08:46+0900",
+      "body": "The easiest way to do what you want is find the line of code responsible for decreasing the enemy's opacity then erasing it on death and replace it with a line of code to change the enemy's character sheet to a dead one instead."
+    },
+    {
+      "post_id": "js-post-1523244",
+      "author": "stprod",
+      "date": "2025-07-21T07:14:39+0900",
+      "body": "AquaEcho said:\nThe easiest way to do what you want is find the line of code responsible for decreasing the enemy's opacity then erasing it on death and replace it with a line of code to change the enemy's character sheet to a dead one instead.\nClick to expand...\nWhat does opacity have to do with it? Did you watch the full video?\nThere you can see that the monster corpse sprite is displayed on the third page of the event with maximum opacity.\nWhat you need to find is the line that disables the event so that no instructions are executed (once self-switch C is activated), regardless of whether it's in a parallel process or not."
+    },
+    {
+      "post_id": "js-post-1523245",
+      "author": "AquaEcho",
+      "date": "2025-07-21T07:24:59+0900",
+      "body": "Because you need to change the section of code that is executing when an enemy dies to play your custom death animation instead, and dropping opacity is part of that section of code."
+    }
+  ]
+}

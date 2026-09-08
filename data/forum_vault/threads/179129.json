@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-does-monster-summoning-work-in-mz.179129",
+  "title": "MZ How does monster summoning work in MZ?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:37:52.300538+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1523759",
+      "author": "james5272",
+      "date": "2025-07-24T11:35:13+0900",
+      "body": "I am working on a project, and I want one of the characters to be able to summon monsters. Ideally it works the way it did in SNES Final Fantasy game, where when the summon is used, the party disappears, the summon appears and does an attack, then the summon disappears and the party reappears.\nIs there a way to do this? I found DLC on Steam that says it adds summoning - Wizards Pack 8 Elements - but it doesn't go into detail.\nI also found a free plugin, but it summons things as small pets I think you have control, which is not exactly what I'm after."
+    },
+    {
+      "post_id": "js-post-1523766",
+      "author": "Sword_of_Dusk",
+      "date": "2025-07-24T12:58:23+0900",
+      "body": "james5272 said:\nIs there a way to do this? I found DLC on Steam that says it adds summoning - Wizards Pack 8 Elements - but it doesn't go into detail.\nClick to expand...\nCorrection, it adds summoning magic effects.\nAnyway, that type of summoning is rather easy to implement. All they are are just flashy attacks. You can easily set up an animation showing a creature being summoned, combined with a standard magic animation  and boom! You have your summon attack.\nIf you hit up Google, you can probably find several threads going over this technique."
+    },
+    {
+      "post_id": "js-post-1523774",
+      "author": "pawsplay",
+      "date": "2025-07-24T14:54:48+0900",
+      "body": "You'll need a plugin for the party vanishing, then reappearing effect."
+    },
+    {
+      "post_id": "js-post-1523777",
+      "author": "rpgLord69",
+      "date": "2025-07-24T16:33:55+0900",
+      "body": "Make it in common event or VS action sequence, turn party battlers' opacity to 0, show a pic of the giant chicken and move it toward enemies (or make animation), then show big hit animation, deal damage to enemies and turn party battlers' opacity back."
+    },
+    {
+      "post_id": "js-post-1523794",
+      "author": "jshunter",
+      "date": "2025-07-24T19:36:46+0900",
+      "body": "Here's some sample summon code from my game. It requires the\nVisuStella Battle Core\nfor the action animations. I have a range of Summon skills which call custom Common Events. Each Common Event calls other Common Events for the setup animations and housekeeping.\nIn my case, each summon hides the party, swaps my summoner for the summoned creature, does an action animation, applies damage, then does housekeeping. I imagine you could do it with with projectiles or Show Picture commands; this is just a method which worked for me.\nSpoiler:\nSummon Example\n\"Summon Start\" Common Event\nCode:\n◆Plugin Command：VisuMZ_1_BattleCore, ACSET: Setup Action Set\n：Plugin Command：Display Action = true\n：Plugin Command：Immortal: On = true\n：Plugin Command：Battle Step = true\n：Plugin Command：Wait For Movement = true\n：Plugin Command：Cast Animation = true\n：Plugin Command：Wait For Animation = true\n◆Comment：------Party leaves\n◆Play SE：Fog1 (100, 80, 0)\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Opacity\n：Plugin Command：Targets = [\"alive friends\"]\n：Plugin Command：Desired Opacity = 0\n：Plugin Command：Duration = 90\n：Plugin Command：Opacity Easing = Linear\n：Plugin Command：Wait For Opacity? = true\n◆Comment：------Summon appears\n◆Change Actor Images：Liz, Actor_Liz(0), Liz_Walking(0), Doorstop_Battler\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Opacity\n：Plugin Command：Targets = [\"user\"]\n：Plugin Command：Desired Opacity = 255\n：Plugin Command：Duration = 60\n：Plugin Command：Opacity Easing = Linear\n：Plugin Command：Wait For Opacity? = true\n◆Comment：------Summon performs attack animation\n◆Play SE：Knock (100, 50, 0)\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Jump\n：Plugin Command：Targets = [\"user\"]\n：Plugin Command：Desired Height = 50\n：Plugin Command：Duration = 30\n：Plugin Command：Wait For Jump? = true\n◆Play SE：Knock (100, 50, 0)\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Jump\n：Plugin Command：Targets = [\"user\"]\n：Plugin Command：Desired Height = 150\n：Plugin Command：Duration = 30\n：Plugin Command：Wait For Jump? = true\n◆Play SE：Knock (100, 50, 0)\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Move To Target(s)\n：Plugin Command：Targets (Moving) = [\"user\"]\n：Plugin Command：Targets (Destination) = [\"all targets\"]\n：Plugin Command：Target Location = middle center\n：Plugin Command：Melee Distance = 48\n：Plugin Command：Offset Adjustment = horz\n：Plugin Command：Offset: X = 0\n：Plugin Command：Offset: Y = 0\n：Plugin Command：Duration = 60\n：Plugin Command：Face Destination? = true\n：Plugin Command：Movement Easing = Linear\n：Plugin Command：Movement Motion = walk\n：Plugin Command：Wait For Movement? = false\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Jump\n：Plugin Command：Targets = [\"user\"]\n：Plugin Command：Desired Height = 600\n：Plugin Command：Duration = 60\n：Plugin Command：Wait For Jump? = true\n◆Shake Screen：5, 5, 60 frames\n\"Summon End\" Common Event\nCode:\n◆Comment：------Return Tint to normal\n◆Tint Screen：(0,0,0,0), 60 frames (Wait)\n◆Comment：------Summon returns to home position\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Home Reset\n：Plugin Command：Targets = [\"alive battlers\"]\n：Plugin Command：Wait For Movement? = true\n◆Comment：------Summon disappears\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Opacity\n：Plugin Command：Targets = [\"user\"]\n：Plugin Command：Desired Opacity = 0\n：Plugin Command：Duration = 60\n：Plugin Command：Opacity Easing = Linear\n：Plugin Command：Wait For Opacity? = true\n◆Change Actor Images：Liz, Actor_Liz(0), Liz_Walking(0), Liz_Battler\n◆Comment：------Party returns\n◆Play SE：Fog1 (100, 100, 0)\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Opacity\n：Plugin Command：Targets = [\"alive friends\"]\n：Plugin Command：Desired Opacity = 255\n：Plugin Command：Duration = 90\n：Plugin Command：Opacity Easing = Linear\n：Plugin Command：Wait For Opacity? = true\n◆Plugin Command：VisuMZ_1_BattleCore, ACSET: Finish Action\n：Plugin Command：Immortal: Off = true\n：Plugin Command：Wait For New Line = true\n：Plugin Command：Wait For Effects = true\n：Plugin Command：Clear Battle Log = true\n：Plugin Command：Home Reset = true\n：Plugin Command：Wait For Movement = true\n\"Summon Physical\" Common Event\nCode:\n◆Common Event：Summon Start\n◆Comment：Attack animation and damage\n◆Comment：----Replace Doorstop with Jacked Rabbit\n◆Plugin Command：VisuMZ_1_BattleCore, MOVE: Opacity\n：Plugin Command：Targets = [\"user\"]\n：Plugin Command：Desired Opacity = 0\n：Plugin Command：Duration = 1\n：Plugin Command：Opacity Easing = Linear\n：Plugin Command：Wait For Opacity? = false\n◆Common Event：Battle Epicentre\n◆Show Picture：#1, Jacked Rabbit, Center ({Battle Centre X},{Battle Centre Y}), (100%,100%), 255, Normal\n◆Plugin Command：VisuMZ_1_BattleCore, ANIM: Show Animation\n：Plugin Command：Targets = [\"all targets\"]\n：Plugin Command：Animation ID = 23\n：Plugin Command：Mirror Animation = false\n：Plugin Command：Wait For Animation? = true\n◆Erase Picture：#1\n◆Plugin Command：VisuMZ_1_BattleCore, MECH: Action Effect\n：Plugin Command：Targets = [\"all targets\"]\n◆Common Event：Summon End"
+    },
+    {
+      "post_id": "js-post-1523808",
+      "author": "ZombieKidzRule",
+      "date": "2025-07-24T21:10:56+0900",
+      "body": "Check out this thread. It might be helpful if you are looking for a plugin.\nPet Summon Plugin\nPet Summon Plugin        Non-RTP sprites by Hidden One  Inspired by RPGs such as „Pokemon“, „Nights of Azure,“ and other MMORPGs, I made a Plugin to enable summoning of Pets in battle.  Available for free, compatible with both MV & MZ  Features  Any Actor from the Database can be converted into...\nforums.rpgmakerweb.com\nEDIT: Actually, reading your post again, maybe this is the plugin you already found."
+    },
+    {
+      "post_id": "js-post-1523809",
+      "author": "Robro33",
+      "date": "2025-07-24T21:16:46+0900",
+      "body": "ZombieKidzRule said:\nCheck out this thread. It might be helpful if you are looking for a plugin.\nPet Summon Plugin\nPet Summon Plugin        Non-RTP sprites by Hidden One  Inspired by RPGs such as „Pokemon“, „Nights of Azure,“ and other MMORPGs, I made a Plugin to enable summoning of Pets in battle.  Available for free, compatible with both MV & MZ  Features  Any Actor from the Database can be converted into...\nforums.rpgmakerweb.com\nClick to expand...\na neat plugin in general, but OP did specify that they wanted summoning like it is is the SNES FFs. Those were essentially fancy skills, not summonable party members like in 10, 11, and 13. Visustella action sequences afaik would be the closest to it."
+    },
+    {
+      "post_id": "js-post-1523863",
+      "author": "james5272",
+      "date": "2025-07-25T03:35:22+0900",
+      "body": "Yeah I did get it working, I did not look back at this thread until figuring it out lol, I forgot about the notification I got about post 2 last night. Basically I have it set up as much like FFIV SNES as possible. Party flickers 9 times then is out of the scene, summon fades in (I took an enemy sprite and flipped it horizontally), fire all magic goes off on enemies, summon fades out, party flickers 9 times then is solid and back in (the 9 flickers is what is done in FFIV SNES, I slowed down a YouTube summon vid to count).\nOnly thing is, with BattleCore plugin commands, whether I have it set to play the animation on all enemy targets or user, it puts the animation in the center. I *think* that's because I made the animation in RPG Maker MZ (figured out how to use the MV style animation creator inengine rather than learning Effekseer). I copypasted my animation to test, it's weird, the copypaste mirrors all commands for some reason. Like in the animation screen, I set it to X 200 to get it more to the right ingame, and in the animation creation screen the sprite is facing left. But then ingame testing, the sprite is acting like it is X -200 and the sprite is facing right. Mirror is not turned on so I don't know why it's mirroring. I need a break so will have to look later, this took me a while to figure out how to get to work as well as it does now.\nNow I kind of want to find asset packs that are art like MZ style, so I 1) have more enemies in my game and 2) have more summons to pick from that aren't just clones of enemies I'm using. I am finding it difficult to find decent sideview art that fits this criteria though.\nThanks for the responses, I see one went into a lot of detail about how to do this, I may try that method to see if it's easier for positioning stuff than what I've done (making an animation)."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/setting-up-a-state-that-heals-attackers.178156",
+  "title": "MZ Setting up a state that heals attackers",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:37:58.702489+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1517285",
+      "author": "barrelospam",
+      "date": "2025-06-07T12:13:09+0900",
+      "body": "I'm definitely in well over my head for a first-time RPG Maker project, especially since it's been over a decade since I used Javascript, but here goes...\nI would like to make a State that, when applied to an enemy, causes allies to heal when attacking that enemy. If you know the character Luocha from Honkai Star Rail, the concept is pretty similar - character uses skill, all allies regain HP when attacking based on that character's stats, and the effect ends after a few turns.\nI've tried to explore a few ways of doing this, but from what I can tell the \"simplest\" would be to have a Common Event tied to all the skills the party has. My idea is that the Common Event would check if the target has this \"Healing Sigil\" State, and if they do, would heal the attacker based on the applying character's Attack (as an example). Problem is, for the life of me I can't figure out how to get it to heal whoever is currently attacking. And that's leaving alone all kinds of logic, like \"did the attack hit?\" and \"What happens if a confused enemy attacks their ally?\" Plus there's the tedium of adding the Common Event to every action the party can take, but that's definitely a lower priority problem...\nMy current (and failed) attempt is me trying to adapt the code from\nthis tutorial on Leech Attacks\n, and looks like this:\nSpoiler:\nCommon Attempt\nKnowing myself there's a non-zero chance it's all down to a stupid syntax error, but also I feel like I'm going insane so I figure there's no harm in asking. Any help would be appreciated, and if anyone can think of a better way to handle this I'm all ears!"
+    },
+    {
+      "post_id": "js-post-1517307",
+      "author": "Robro33",
+      "date": "2025-06-07T18:03:49+0900",
+      "body": "barrelospam said:\nKnowing myself there's a non-zero chance it's all down to a stupid syntax error, but also I feel like I'm going insane so I figure there's no harm in asking\nClick to expand...\ndoes it crash, or does it just give the wrong console output? just a glance - youd want to be using actor($gamevariables.value(2)) in your conditional branch instead of 1, no? you have variable 1 the index of the enemy, not the id of the actor. then youd want to be checking if the enemy has the state, not the actor?\nbut also, if youve followed the guide and have the VS battle core installed, you can use one of their JS notetags to make the state heal the attacker of whoever has the state on.\nbarrelospam said:\nI would like to make a State that, when applied to an enemy, causes allies to heal when attacking that enemy. If you know the character Luocha from Honkai Star Rail, the concept is pretty similar - character uses skill, all allies regain HP when attacking based on that character's stats, and the effect ends after a few turns.\nClick to expand...\nTry putting this notetag into the notebox of the heal sigil state.\nCode:\n<JS Post-Damage As Target>\n  if (this.isDamage() && value > 0) {\n    user.gainHp(origin.atk);\n    user.startDamagePopup();\n  }\n</JS Post-Damage As Target>\nit should make it so that when a battler puts that state on a target and that target is attacked, the attacker will be healed by the atk of the battler that applied the state"
+    },
+    {
+      "post_id": "js-post-1517393",
+      "author": "barrelospam",
+      "date": "2025-06-08T07:35:35+0900",
+      "body": "I knew it was a\nstupid\nsimple error, it was throwing the wrong console output - lesson learned, don't trust yourself to code when sick!\nAnd your solution worked perfectly! I didn't know the VS Battle Core stored so much information, this will be perfect for other skill ideas going forward. Thank you very much, and consider this solved!"
+    },
+    {
+      "post_id": "js-post-1517396",
+      "author": "Robro33",
+      "date": "2025-06-08T07:52:50+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

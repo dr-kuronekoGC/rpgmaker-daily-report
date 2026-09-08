@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/game-dev-having-sprite-size-issues.178784",
+  "title": "MV Game Dev having sprite size issues",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:37:56.116137+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1521436",
+      "author": "Maindesinge",
+      "date": "2025-07-07T19:58:41+0900",
+      "body": "What's the game?\nI'm attempting to make a game that is a 1v1 martial-arts inspired RPG, possibly with the player controlling each of the player's limbs in order to fight. These body parts are: left arm, right arm, left leg, right and 'body and soul' (which is control of the torso and head, in which if this actor is defeated; you would lose the fight).\nSo, what are my problems?\nThis could easily change but I was thinking of maybe having sideview battles however there seems to be some issues. For one, my sprites are 256x256; which I know is far bigger than what RPG Maker MV would like. This seems to cause issues like the player sprite being so big that the left and right sides of the sprite are cut off completely. Any fix for that?\nAlso, with the sideview battles, it always puts my character in the top right corner when I'd rather they be lower down on the screen so they're on the same plain as the opponent. I'll provide a ss below.\nObviously, I know I could ignore this problem entirely if I used the traditional first-person battle view but I was wondering if there's any way to fix this issue."
+    },
+    {
+      "post_id": "js-post-1521447",
+      "author": "caethyril",
+      "date": "2025-07-07T23:09:40+0900",
+      "body": "By default a sideview actor spritesheet has 9 columns (3 poses, 3 frames each) and 6 rows (6 poses). So if 1 cell/frame of your sprite is 256x256 px then the entire sheet should be 2304x1536 px. Is that the case?\nYou might want to shrink that a little, horizontally, to keep the sheet dimensions at or under 2048x2048 px. However, most non-mobile systems now should be fine with 4096 px and PIXI will try to fill any spare space, so that might not matter. (I'm not sure whether PIXI/Canvas have built-in support for subdividing textures that are otherwise too large for the system's GPU, so it might fail to show on systems with GPU texture units that are only 2048 px.)"
+    },
+    {
+      "post_id": "js-post-1521448",
+      "author": "Maindesinge",
+      "date": "2025-07-07T23:24:16+0900",
+      "body": "caethyril said:\nBy default a sideview actor spritesheet has 9 columns (3 poses, 3 frames each) and 6 rows (6 poses). So if 1 cell/frame of your sprite is 256x256 px then the entire sheet should be 2304x1536 px. Is that the case?\nYou might want to shrink that a little, horizontally, to keep the sheet dimensions at or under 2048x2048 px. However, most non-mobile systems now should be fine with 4096 px and PIXI will try to fill any spare space, so that might not matter. (I'm not sure whether PIXI/Canvas have built-in support for subdividing textures that are otherwise too large for the system's GPU, so it might fail to show on systems with GPU texture units that are only 2048 px.)\nClick to expand...\nI've just rechecked and resized the sprite sheet, I haven't made a full sheet yet until I can make sure it's possible to actually have sprites that large. However, it's still cutting off the sprite. I could make the sprites smaller but I just wanna see if it's possible first.\nBelow is the new issue I'm having with the fixed sprite sheet size."
+    },
+    {
+      "post_id": "js-post-1521470",
+      "author": "Andar",
+      "date": "2025-07-08T02:49:47+0900",
+      "body": "Maindesinge said:\nI haven't made a full sheet yet\nClick to expand...\nthat is most likely the problem.\nsprites in all RM's are not fixed size, they are calculated based on the full spritesheet.\nso the sprite is NOT 256x256 pixel, but total picture size divided by 9 (width) or 6(height) in pixels.\nand you need to calculate the total picture size BEFORE placing your sprite in a cell in a way that it is centered in a place fitting for 256x256 sprites.\nYou don't need every pose made, but the sheet has to be prepared to take every pose into account.\nI once wrote a tutorial for this:\nHow to create your own templates (any sprite or battler sheet)\nTime and time again people who want to create their own sprites are asking for pre-made empty/framed templates because they can't work without them. And they don't even understand how limiting that is.  Templates are crutches - bad crutches to be precise, because if you need a premade template...\nforums.rpgmakerweb.com"
+    }
+  ]
+}
