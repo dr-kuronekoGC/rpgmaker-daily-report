@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/blind-for-magic-attacks.180269",
+  "title": "MZ Blind for Magic Attacks?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:10:58.637526+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1531272",
+      "author": "rue669",
+      "date": "2025-09-24T10:34:07+0900",
+      "body": "Regular blind works on Hit Rate which works on attack and physical attacks.\nI'm trying to create a Blind State that affects only Magic Attacks. Anyone know how to do this? I have the plugin library from VisustellaMZ if that helps. I'm sure there is a way, but can't find it! Thanks!"
+    },
+    {
+      "post_id": "js-post-1531277",
+      "author": "ATT_Turan",
+      "date": "2025-09-24T11:01:58+0900",
+      "body": "You can use my Custom Hit Formula plugin.\nCustom Hit Formula MZ\nCustom Hit Formula 1.4 ATT_Turan  Introduction As far as I know, there's still no plugin written with the ability to provide a custom hit formula in MZ, and I got tired of telling people that :wink:  (apparently caethyril actually had one and I didn't know about it! Well, now you can try both...\nforums.rpgmakerweb.com\nYou'd make a hit formula that references the magic blind state and paste it into your magic skills.\nFor example, if your magic blind state is ID 42, the below will make you 50% less likely to hit with that state on.\nCode:\n<hitformula>\nMath.random() < item.successRate * 0.01 - (user.isStateAffected(42) ? .5 : 0)\n</hitformula>"
+    },
+    {
+      "post_id": "js-post-1531278",
+      "author": "Ludovinsky",
+      "date": "2025-09-24T11:39:16+0900",
+      "body": "Another way you can achieve this without using a plug in. First, create a new state. Call it like \"magic blind\" or something like that.\n(Then, In the \"features\" section of this state, you'll want to reduce the character's magic attack or magic accuracy. Unfortunately, MZ doesn't have a built in feature to reduce magic accuracy specifically. However, you can achieve a similar effect by reducing the character's magic attack. This will make their magic attacks less effective, simulating the effect of being \"blind\".)\nSo to do this, add a new feature: \"parameter - m.atk - Rate- [x]%\". Replace [x] with the percentage you want to reduce the character's magic attack by. for example, if you want to reduce it by 50%, you would put 50%.\nNow, viola, whenever a character is in the \"magic blind\" state, their magic attacks will be less effective."
+    },
+    {
+      "post_id": "js-post-1531279",
+      "author": "ATT_Turan",
+      "date": "2025-09-24T11:44:16+0900",
+      "body": "Ludovinsky said:\nThen, In the \"features\" section of this state\nClick to expand...\nThere is no such thing as a \"features\" section.\nLudovinsky said:\nyou'll want to reduce the character's magic attack or magic accuracy.\nClick to expand...\nThere is also no such thing as magic accuracy.\nLudovinsky said:\nHowever, you can achieve a similar effect by reducing the character's magic attack. This will make their magic attacks less effective, simulating the effect of being \"blind\".\nClick to expand...\nHow is doing less damage simulating the effect of not hitting? Those are two hugely different things. A game may have many other mechanics that are triggered on whether or not a skill hits - simply reducing its damage is not at all the same thing."
+    },
+    {
+      "post_id": "js-post-1531286",
+      "author": "Ludovinsky",
+      "date": "2025-09-24T12:32:39+0900",
+      "body": "Haha long day, yeah you're right, but making it 0 does  in a way simulate a miss if it does no damage. I'm not sure how that isn't clear? I still have it going in the correct direction, but it could be more crystal. Let me correct this. In MZ, to simulate a \"blind\" effect for magic, you could create a state that increases the target's Magic Evasion.\nFirst, create a new state In your database, go to the \"states\" tab and create a new state. Let's call it \"Magic Blind\".\nIncrease Magic Evasion In the \"Traits/Features\" section of the \"Magic Blind\" state, add a new trait: \"Ex-Parameter-Magic Evasion\". Set the rate to a value that suits your game's balance. This will make the affected character more likely to evade magic attacks, simulating the effect of being \"blind\".\nNow apply the state\n.\nYou can apply the \"Magic Blind\" state to characters using skills, items, or other game mechanics. While I was writing this, I just thought of another way to achieve this. A sort of workaround since MZ doesn't have a default magic blind state like the default physical.\nFirst, create a new state in your database, go to the \"States\" tab and call it \"Magic Blind\".\nNext, create a conditional branch in each magic skill. Go to the \"Skills\" tab and open each magic skill. In the \"effects\" section, add a \"conditional branch\" that checks if the user is affected by the \"Magic Blind\" state.\nNext, go ahead and change the hit rate, If the user is affected by the \"Magic Blind\" state, reduce the hit rate of the skill. You can do this by adding a \"Change Skill\" command in the \"Conditional Branch\" and setting the hit rate to a lower value.\nA final touch up to the idea is to reset the hit rate, If the user is not affected by the \"Magic Blind\" state, reset the hit rate of the skill to its original value. You do this by adding another \"change skill\" command outside the conditional branch. This way, when a character is affected by the \"magic blind\" state, their magic skills will have a lower hit rate, simulating the effect of being \"blind\". Really many ways to skin this cat\n. Hope something helps."
+    },
+    {
+      "post_id": "js-post-1531290",
+      "author": "Robro33",
+      "date": "2025-09-24T13:11:58+0900",
+      "body": "Ludovinsky said:\nbut making it 0 does in a way simulate a miss if it does no damage\nClick to expand...\nnot quite. a spell that misses cannot apply any of its effects. a fire spell that does damage and burns the target would still be able to cause a burn if the damage was reduced to 0.\nLudovinsky said:\nIncrease Magic Evasion In the \"Traits/Features\" section of the \"Magic Blind\" state, add a new trait: \"Ex-Parameter-Magic Evasion\". Set the rate to a value that suits your game's balance. This will make the affected character more likely to evade magic attacks, simulating the effect of being \"blind\".\nClick to expand...\nalso not quite. the magic blind is to reduce the accuracy of a single battler. if theres multiple actors and one enemy, blinding an actor reduces the odds of that actor hitting. a magic evasion state on the enemy reduces the odds of all actors hitting\nLudovinsky said:\nNext, create a conditional branch in each magic skill. Go to the \"Skills\" tab and open each magic skill. In the \"effects\" section, add a \"conditional branch\" that checks if the user is affected by the \"Magic Blind\" state.\nClick to expand...\nskill effects do not have a conditional branch option. those are reserved for events and common events. and although you can attach a common event to a skill...\nLudovinsky said:\nNext, go ahead and change the hit rate, If the user is affected by the \"Magic Blind\" state, reduce the hit rate of the skill. You can do this by adding a \"Change Skill\" command in the \"Conditional Branch\" and setting the hit rate to a lower value\nClick to expand...\nIm having trouble finding the setting to change the hit rate of the skill inside the change skill command. can you show me a screenshot of it?"
+    },
+    {
+      "post_id": "js-post-1531354",
+      "author": "rue669",
+      "date": "2025-09-25T01:25:10+0900",
+      "body": "ATT_Turan said:\nYou can use my Custom Hit Formula plugin.\nCustom Hit Formula MZ\nCustom Hit Formula 1.4 ATT_Turan  Introduction As far as I know, there's still no plugin written with the ability to provide a custom hit formula in MZ, and I got tired of telling people that :wink:  (apparently caethyril actually had one and I didn't know about it! Well, now you can try both...\nforums.rpgmakerweb.com\nYou'd make a hit formula that references the magic blind state and paste it into your magic skills.\nFor example, if your magic blind state is ID 42, the below will make you 50% less likely to hit with that state on.\nCode:\n<hitformula>\nMath.random() < item.successRate * 0.01 - (user.isStateAffected(42) ? .5 : 0)\n</hitformula>\nClick to expand...\nThanks for this! Does the plugin work with visustella’s plugins?\nAnd does the custom hit formula add to the hit formula I already have or I’d have to add all of what I already have together with this new line of code?"
+    },
+    {
+      "post_id": "js-post-1531384",
+      "author": "rue669",
+      "date": "2025-09-25T08:13:15+0900",
+      "body": "Apologies for the double post.\n@ATT_Turan\n, your plugin worked wonders. Thank you very much.\nThis thread can be closed. Resolved."
+    },
+    {
+      "post_id": "js-post-1531399",
+      "author": "ATT_Turan",
+      "date": "2025-09-25T12:25:29+0900",
+      "body": "Ludovinsky said:\nmaking it 0 does  in a way simulate a miss if it does no damage. I'm not sure how that isn't clear?\nClick to expand...\nIt isn't clear because it\nisn't correct\n. As I said in my first response, there are more things that trigger from a skill hitting or not beyond the sheer damage.\nIn fact, pretty much everything you've said in your post is either wrong or flat out doesn't exist in RPG Maker. This - and several other of your posts - read very much like you're taking garbage made up by an AI and dumping it into a reply.\nYou're not helping anyone by answering questions with wrong information.\nrue669 said:\n@ATT_Turan\n, your plugin worked wonders. Thank you very much.\nClick to expand...\nYou're welcome, glad to help. If you have any questions, feel free to post in its thread."
+    },
+    {
+      "post_id": "js-post-1531401",
+      "author": "AquaEcho",
+      "date": "2025-09-25T12:44:53+0900",
+      "body": "Ludovinsky said:\nI still have it going in the correct direction, but it could be more crystal. Let me correct this. In MZ, to simulate a \"blind\" effect for magic, you could create a state that increases the target's Magic Evasion.\nFirst, create a new state In your database, go to the \"states\" tab and create a new state. Let's call it \"Magic Blind\".\nIncrease Magic Evasion In the \"Traits/Features\" section of the \"Magic Blind\" state, add a new trait: \"Ex-Parameter-Magic Evasion\". Set the rate to a value that suits your game's balance. This will make the affected character more likely to evade magic attacks, simulating the effect of being \"blind\".\nNow apply the state\n.\nYou can apply the \"Magic Blind\" state to characters using skills, items, or other game mechanics. While I was writing this, I just thought of another way to achieve this. A sort of workaround since MZ doesn't have a default magic blind state like the default physical.\nFirst, create a new state in your database, go to the \"States\" tab and call it \"Magic Blind\".\nNext, create a conditional branch in each magic skill. Go to the \"Skills\" tab and open each magic skill. In the \"effects\" section, add a \"conditional branch\" that checks if the user is affected by the \"Magic Blind\" state.\nNext, go ahead and change the hit rate, If the user is affected by the \"Magic Blind\" state, reduce the hit rate of the skill. You can do this by adding a \"Change Skill\" command in the \"Conditional Branch\" and setting the hit rate to a lower value.\nA final touch up to the idea is to reset the hit rate, If the user is not affected by the \"Magic Blind\" state, reset the hit rate of the skill to its original value. You do this by adding another \"change skill\" command outside the conditional branch. This way, when a character is affected by the \"magic blind\" state, their magic skills will have a lower hit rate, simulating the effect of being \"blind\".\nClick to expand...\nIf the OP wanted an AI response they could've just asked it themselves."
+    },
+    {
+      "post_id": "js-post-1531404",
+      "author": "Ludovinsky",
+      "date": "2025-09-25T13:34:21+0900",
+      "body": "AquaEcho said:\nIf the OP wanted an AI response they could've just asked it themselves.\nClick to expand...\nThey asked, I helped. Don't Ping me unless you need some help with a script."
+    },
+    {
+      "post_id": "js-post-1531511",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-26T10:27:30+0900",
+      "body": "Ludovinsky said:\nThey asked, I helped. Don't Ping me unless you need some help with a script.\nClick to expand...\nHi there. You really should not post responses to help threads if, you know, you're not gonna provide concrete help. What you have posted reads like AI-generated bullocks, is neither funny or helpful, and wastes the OP's time."
+    },
+    {
+      "post_id": "js-post-1531518",
+      "author": "Robro33",
+      "date": "2025-09-26T10:45:45+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

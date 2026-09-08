@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/support-with-level-up-message.180280",
+  "title": "Support with \"Level Up\" Message",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:10:58.928274+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1531365",
+      "author": "TheSaladus",
+      "date": "2025-09-25T02:48:13+0900",
+      "body": "Hello RPG Makers!\nDisclaimer: This is my first post, so any feedback is welcome. I have searched for this issue in the forums and haven't found a person with the same problem, so I'll be glad if someone can help me out with this:\nContext:\nA)\nMy levels have names, they aren't numbers. For example:\nLevel 1 is \"Novice\"\nLevel 2 is \"Knight\"\nB )\nI have achieved that with the following Plug-In:\nSpoiler\nCode:\nWindow_StatusBase.prototype.drawActorLevel = function(actor, x, y) {\n    let levelName = null;\n    if(actor.level == 1){\n      levelName = \"Novice\"\n    }\n    if(actor.level == 2){\n      levelName = \"Knight\"\n\n    this.drawText(levelName, x, y, 36, \"right\");\n};\nC)\nMy Level Up Message in Terms is the following:\nCode:\n%1 is now %2: %3!\nIssue/Problem:\nThe return message when I level up to Level 2 reads: \"Actor is now Rank: 2\"\nAnd I want the message to read: \"Actor is now Rank: Knight\"\nthanks in advance!"
+    },
+    {
+      "post_id": "js-post-1531395",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-25T10:39:01+0900",
+      "body": "Hello and welcome! If you haven't already, please read through the\nSupport Template\n, it will help others help you more effectively. In this case, what plugins you are using is relevant.\nIn any case, the code that you showed should throw an error (you're missing a closing curly for the second if clause). So if you say that the level up message hasn't changed (meaning that it didn't crash on load) my first suspicion is that the plugin hasn't been loaded at all.\nEDIT: also, the code you showed is for the status window. So it won't affect how the level shows up in the level up message. To tweak the message, one way of doing it is to tweak the displayLevelUp function, for example:\nJavaScript:\nGame_Actor.prototype.displayLevelUp = function(newSkills) {\n    const text = TextManager.levelUp.format(\n        this._name,\n        TextManager.level,\n//Array with ranks, pick the index equal to numerical level minus one\n        ['Novice','Knight'][this._level-1]\n//Original code\n//        this._level\n        );\n    $gameMessage.newPage();\n    $gameMessage.add(text);\n    for (const skill of newSkills) {\n        $gameMessage.add(TextManager.obtainSkill.format(skill.name));\n    }\n};\nIt will work if you just add more ranks to the array like ['Novice','Squire','Knight','Hero'], but do note that it's probably better to make it read a class note tag."
+    },
+    {
+      "post_id": "js-post-1531423",
+      "author": "TheSaladus",
+      "date": "2025-09-25T21:28:47+0900",
+      "body": "Hello Canned_Dinosaur,\nThanks for the fast reply and clear answer. I'll definitely read the Support Post Template for future posts.\n___\nFirst of all, yes, you are right, the code I pasted on the post is missing a \"{\".\nThat was, in fact, an error of mine when posting this thread. Because the plug-in actually has much more ranks, it goes up to 10 ranks. But I didn't want to paste the whole code here, so I trimmed it for simplicity; and in the trimming I missed the \"{\". Nice catch.\nThe plug-in I'm using for this is actually a text given to me by a kind stranger in a Discord channel. I don't believe the plug-in has a name or something. I don't have any other plug-ins at the moment.\n____\nSecondly, thanks for the solution. I will try it out and report on the results. I hope this post helps people in the future with the same problem."
+    },
+    {
+      "post_id": "js-post-1531428",
+      "author": "Canned_Dinosaur",
+      "date": "2025-09-25T22:10:26+0900",
+      "body": "Hope it works! If you need a notetagged version (basically you list the level names in the notes in the class and the plugin will pick up the list from there), I can add that in and combine this one and the kind stranger plugin into a single plugin.\nAs with the code that I showed above, the kind stranger plugin can also be condensed as follows:\nJavaScript:\nWindow_StatusBase.prototype.drawActorLevel = function(actor, x, y) {\n    const levelName = ['Novice','Knight'][actor._level-1];\n    this.drawText(levelName, x, y, 36, \"right\");\n};"
+    }
+  ]
+}

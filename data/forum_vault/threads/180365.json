@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/random-battle-events-doubt-do-events-lag-the-game.180365",
+  "title": "MZ Random Battle Events Doubt. Do Events Lag the game?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:10:57.455564+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1532047",
+      "author": "Gatamandra",
+      "date": "2025-10-01T04:30:14+0900",
+      "body": "Hi! so I've been using the normal random encounter system of the engine on terrain tags, but I wanted to try and make the floor you step on have a little \"stepped in\" animation when player steps in it, and looking around I saw you can make it by making the grass or floor an event using variables to make \"battle commands\" act like \"random encounters\" so I was just wondering if having lots of these copypasted events on a different maps (let's say 50-100 on a big map) would cause lag and performance issues and if I should just stick to the normal way of making random encounters.\nI wanted to consult it with you guys as even though these wouldn't be set to parallel or autorun (the ones according to the internet, would indeed lag a lot the game) and they would be activated with touching the player, if they could still lag the game just for the sake of being sooo many of them copypasted on many maps (30?).\nThanks a mil!"
+    },
+    {
+      "post_id": "js-post-1532049",
+      "author": "SGHarlekin",
+      "date": "2025-10-01T04:37:44+0900",
+      "body": "Having 30 events with no graphic that are touch triggered will not lag your game, however, I'm fairly sure there are more elegant ways to go about this than spamming events on the floor."
+    },
+    {
+      "post_id": "js-post-1532050",
+      "author": "Gatamandra",
+      "date": "2025-10-01T04:50:11+0900",
+      "body": "SGHarlekin said:\nHaving 30 events with no graphic that are touch triggered will not lag your game, however, I'm fairly sure there are more elegant ways to go about this than spamming events on the floor.\nClick to expand...\nWell they would indeed have a graphic, so when the player steps in the grass it changes to the \"stepped in\" graphic, would that make it lag?\nBefore this I tried making so an animation (of grass moving or dust) played on top of the player when he touched the terrain tag of the random encounters, but when the player ran on it, it ended up not looking very good, so I was looking for other options ^^"
+    },
+    {
+      "post_id": "js-post-1532052",
+      "author": "DevRPG2k",
+      "date": "2025-10-01T05:01:02+0900",
+      "body": "You could use the same formula from the RPG Maker API functions to recreate the entire system with events and then animate it however you like.\nMaybe I'll find time to do this over the weekend, or simply create a plugin that lets you call a Common Event when starting a random encounter battle."
+    },
+    {
+      "post_id": "js-post-1532053",
+      "author": "SGHarlekin",
+      "date": "2025-10-01T05:33:44+0900",
+      "body": "Gatamandra said:\nWell they would indeed have a graphic, so when the player steps in the grass it changes to the \"stepped in\" graphic, would that make it lag?\nBefore this I tried making so an animation (of grass moving or dust) played on top of the player when he touched the terrain tag of the random encounters, but when the player ran on it, it ended up not looking very good, so I was looking for other options ^^\nClick to expand...\nThat would just be one event changing the graphic. The point is that only one event would ever process anything at the same time (the one stepped in), there fore no lag.\nBut looks like you might get some free code from\n@Dev_With_Coffee"
+    },
+    {
+      "post_id": "js-post-1532066",
+      "author": "Piyan Glupak",
+      "date": "2025-10-01T12:32:13+0900",
+      "body": "I believe that the following (in no particular order) are more likely to cause games to slow down:\nLight plugins, if you are not economical when using their features. For instance, if you have 2 windows in a dark room next to each other, have just one be a light source.\nAnimations, if used excessively. (You should be able to have a lot on a map without problems.)\nParallel events that are badly designed, for instance, no \"Wait\" command, or doing a lot of un-necessary things.\nLots of big graphics changes during play.\nOthers may disagreed, or have more to add."
+    },
+    {
+      "post_id": "js-post-1532096",
+      "author": "DevRPG2k",
+      "date": "2025-10-02T01:42:55+0900",
+      "body": "I guess I didn't even think about it that day, so I apologize.\nThis could easily be done through events using Javascript to check if the player is moving. In this example, you can simply see that the player will play footstep sounds while moving.\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Play SE：Move1 (90, 150, 0)\n  ◆Wait：30 frames\n  ◆\n：End\nSo by recording the terrain tag with Javascript in a variable you can create different animations for different situations:\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0015 = $gamePlayer.terrainTag()\n  ◆If：#0015 = 1\n    ◆\n  ：End\n  ◆If：#0015 = 2\n    ◆\n  ：End\n  ◆If：#0015 = 3\n    ◆\n  ：End\n  ◆\n：End\nIf the animation is a map event you can call it for the player's position like this:\nCode:\n◆Control Variables：#0013 = Map X of Player\n◆Control Variables：#0014 = Map Y of Player\n◆Set Event Location：EV TERRAIN, ({#0013},{#0014})\nIt would probably look like this, and each event page would be called by the Variable that checks the\nTerrain Tag\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0015 = $gamePlayer.terrainTag()\n  ◆Control Variables：#0013 = Map X of Player\n  ◆Control Variables：#0014 = Map Y of Player\n  ◆Set Event Location：EV TERRAIN, ({#0013},{#0014})\n  ◆\n：End"
+    },
+    {
+      "post_id": "js-post-1532120",
+      "author": "Gatamandra",
+      "date": "2025-10-02T06:24:44+0900",
+      "body": "Dev_With_Coffee said:\nI guess I didn't even think about it that day, so I apologize.\nThis could easily be done through events using Javascript to check if the player is moving. In this example, you can simply see that the player will play footstep sounds while moving.\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Play SE：Move1 (90, 150, 0)\n  ◆Wait：30 frames\n  ◆\n：End\nSo by recording the terrain tag with Javascript in a variable you can create different animations for different situations:\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0015 = $gamePlayer.terrainTag()\n  ◆If：#0015 = 1\n    ◆\n  ：End\n  ◆If：#0015 = 2\n    ◆\n  ：End\n  ◆If：#0015 = 3\n    ◆\n  ：End\n  ◆\n：End\nIf the animation is a map event you can call it for the player's position like this:\nCode:\n◆Control Variables：#0013 = Map X of Player\n◆Control Variables：#0014 = Map Y of Player\n◆Set Event Location：EV TERRAIN, ({#0013},{#0014})\nIt would probably look like this, and each event page would be called by the Variable that checks the\nTerrain Tag\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0015 = $gamePlayer.terrainTag()\n  ◆Control Variables：#0013 = Map X of Player\n  ◆Control Variables：#0014 = Map Y of Player\n  ◆Set Event Location：EVSX001, ({#0013},{#0014})\n  ◆\n：End\nClick to expand...\nWow that is amazing!!! thanks a million! I'll try it out as soon as I can but it sounds just like the perfect solution! thanks a mil for your time and generosity!!\n️"
+    },
+    {
+      "post_id": "js-post-1532256",
+      "author": "Gatamandra",
+      "date": "2025-10-03T16:52:42+0900",
+      "body": "Dev_With_Coffee said:\nI guess I didn't even think about it that day, so I apologize.\nThis could easily be done through events using Javascript to check if the player is moving. In this example, you can simply see that the player will play footstep sounds while moving.\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Play SE：Move1 (90, 150, 0)\n  ◆Wait：30 frames\n  ◆\n：End\nSo by recording the terrain tag with Javascript in a variable you can create different animations for different situations:\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0015 = $gamePlayer.terrainTag()\n  ◆If：#0015 = 1\n    ◆\n  ：End\n  ◆If：#0015 = 2\n    ◆\n  ：End\n  ◆If：#0015 = 3\n    ◆\n  ：End\n  ◆\n：End\nIf the animation is a map event you can call it for the player's position like this:\nCode:\n◆Control Variables：#0013 = Map X of Player\n◆Control Variables：#0014 = Map Y of Player\n◆Set Event Location：EV TERRAIN, ({#0013},{#0014})\nIt would probably look like this, and each event page would be called by the Variable that checks the\nTerrain Tag\nCode:\n◆If：Script：$gamePlayer.isMoving()\n  ◆Control Variables：#0015 = $gamePlayer.terrainTag()\n  ◆Control Variables：#0013 = Map X of Player\n  ◆Control Variables：#0014 = Map Y of Player\n  ◆Set Event Location：EV TERRAIN, ({#0013},{#0014})\n  ◆\n：End\nClick to expand...\nIt worked like a charm! and also thank you everyone for all the info on what lags or not the game!, thanks a mil!"
+    },
+    {
+      "post_id": "js-post-1532257",
+      "author": "caethyril",
+      "date": "2025-10-03T16:54:17+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

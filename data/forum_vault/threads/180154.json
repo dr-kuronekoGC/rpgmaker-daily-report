@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-visustella-run-common-event-in-menu.180154",
+  "title": "MZ [SOLVED]Visustella - Run Common Event in Menu",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T09:10:59.823327+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1530547",
+      "author": "Agentpdx",
+      "date": "2025-09-19T14:43:17+0900",
+      "body": "Using Visustella's Items and Equips Core, I'm creating a system where certain Armors can dynamically affect the number of Accessory (a different type of Armor) slots you have. Unfortunately, Plugin Commands are the only way to do so with this particular plugin, and while it technically works with standard Common Event functionality, it comes with an obnoxious QOL issue. The player has to equip an Armor, exit the Equip Menu, and then reenter the menu to see the number of equip slots actually change.\nI've heard there are ways to run Common Events without exiting the Menu Scene in RPG Maker MV, and I've even found such a plugin for RGSS3, but I haven't found anything I can actually use. If someone could point me in the right direction, or even make something on the fly, that would be much appreciated."
+    },
+    {
+      "post_id": "js-post-1530737",
+      "author": "rpgLord69",
+      "date": "2025-09-20T22:23:30+0900",
+      "body": "Did that waynee equipeval stuff work in RPG Maker MZ?\nIf yes, try running the plugin commands in script form with that. You can google here how to run them like that (it's shown in the Ultimate New User Manual also, I think).\nEDIT: Check post 8 for better info."
+    },
+    {
+      "post_id": "js-post-1530762",
+      "author": "Agentpdx",
+      "date": "2025-09-21T00:59:48+0900",
+      "body": "As useful as that plugin would be under most circumstances, I don't think it'll work here. I'd have to find the actual code that the Plugin Command is based off of, which normally wouldn't be too hard, but most of Visustella's code is heavily obfuscated. If there is a way to run a Plugin Command in Javascript, or a way to de-obfuscate the code with relative ease, then it'd work out."
+    },
+    {
+      "post_id": "js-post-1530764",
+      "author": "rpgLord69",
+      "date": "2025-09-21T01:07:09+0900",
+      "body": "Yeah but that's why I said that run the code through the plugin command script. And mentioned where you'll find an example (in my signature).\nEDIT: Though now that I think about it, it probably won't work LOL, my bad. EDIT 2: Because I guess it'd need that event list syntax?"
+    },
+    {
+      "post_id": "js-post-1530767",
+      "author": "Agentpdx",
+      "date": "2025-09-21T01:15:28+0900",
+      "body": "Oh! It was all the way at the bottom, but it's there alright. Thank you very much."
+    },
+    {
+      "post_id": "js-post-1530771",
+      "author": "rpgLord69",
+      "date": "2025-09-21T01:30:25+0900",
+      "body": "Yeah, but did you see my edit. I don't think it works like that, because as I understand it's made to run like that in that event list format. So, can't offer you any advice, other than use the console to try to check what kinds of functions there are and guess stuff the parameters, LOL."
+    },
+    {
+      "post_id": "js-post-1530774",
+      "author": "Agentpdx",
+      "date": "2025-09-21T01:44:57+0900",
+      "body": "Ough. Well, there is a HIME plugin that works around this problem entirely, but I'm not sure if it'll work well with Visustella's plugins."
+    },
+    {
+      "post_id": "js-post-1530775",
+      "author": "rpgLord69",
+      "date": "2025-09-21T01:49:59+0900",
+      "body": "I actually figured out something by checking console and guessing. Seemed to do something (that array is like the equipment type ids, also you need to change the actor reference to the menuActor or whatever):\n$gameActors.actor(1).forceChangeEquipSlots([1,2,3,4,5,5,5]);\n$gameActors.actor(1).updateChangedSlots();\nSceneManager._scene._slotWindow.refresh();\nEDIT: You need to be in the Scene_Equip for that last line to work."
+    },
+    {
+      "post_id": "js-post-1530776",
+      "author": "Agentpdx",
+      "date": "2025-09-21T02:00:34+0900",
+      "body": "Well the HIME plugin didn't work out, but this works like a charm. Again, thank you very much."
+    }
+  ]
+}
