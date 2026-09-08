@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-make-96x48-actor-sprite-front-half-trigger-events.180222",
+  "title": "How to make 96x48 actor sprite front half trigger events?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T06:54:10.311998+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1531022",
+      "author": "dangoito",
+      "date": "2025-09-22T14:48:03+0900",
+      "body": "Hello everyone! This is my first time making a game with RPG Maker MZ and posting on the forum. I am currently working on a game where the player is a cat! Since cats are long, I made the sprite 96x48 pixels. If I were to put the character as 48x48, it looks stupid and lacks detail. I didn't have any issues until I started eventing, and well... I realized the game registers only the back tile as the \"actual\" character, not the head. When I attempt for the main cat to speak to the other cat NPCS, the player, currently visualized as the calico, the back half of the player has to trigger the event with the action button.\nThis is how I want the cats to interact.\nThis is what has to happens in order to trigger the event like talking.\nI tried to get around this by adding a blank tile in front of the NPC black cat to create a barrier in the npc's sprite sheet, but that didn't work.\nI noticed this happens with regions as well when I tried making the player be able to swim. The tail half of the player must hit the region to register as the player hitting the region. As a result, the player is seen standing on the water for a second before the tail half registers and\nthen\nthe character sprite changes to swimming. Is there a way to work around this or do I have to take the L and make the cat fit in the 48x48? Thank you!\nThank you!"
+    },
+    {
+      "post_id": "js-post-1531064",
+      "author": "caethyril",
+      "date": "2025-09-22T23:51:52+0900",
+      "body": "By default, a map character has 1 collision tile that determines passability etc. The character's sprite is positioned on that tile such that:\nThe sprite is horizontally centred in the tile; and\nThe bottom of the sprite is level with the bottom of the tile.\nIt will also be offset by +6 px upwards unless the image filename has a\n!\nat the start.\nThis means you can centre a large character horizontally by adding empty space to each frame of their character sheet. However, I think you'll need a plugin if you want to handle the vertical position.\nIn terms of plugins, you might want to look for stuff that can offset map sprite position and/or change character collision size. Maybe someone will have specific suggestions~"
+    },
+    {
+      "post_id": "js-post-1531091",
+      "author": "dangoito",
+      "date": "2025-09-23T03:58:02+0900",
+      "body": "caethyril said:\nBy default, a map character has 1 collision tile that determines passability etc. The character's sprite is positioned on that tile such that:\nThe sprite is horizontally centred in the tile; and\nThe bottom of the sprite is level with the bottom of the tile.\nIt will also be offset by +6 px upwards unless the image filename has a\n!\nat the start.\nThis means you can centre a large character horizontally by adding empty space to each frame of their character sheet. However, I think you'll need a plugin if you want to handle the vertical position.\nIn terms of plugins, you might want to look for stuff that can offset map sprite position and/or change character collision size. Maybe someone will have specific suggestions~\nClick to expand...\nThanks so much! I wasn't thinking critically about what was triggering the event. I thought it was the tail half that was triggering the events, but it does look like to be the middle. I reworked my sprite sheet and I made sure the head was the center to be the collision tile. In conclusion, it works! For reference for others, this was my sprite sheet before and after.\nBefore:\nAfter:\nThat way now its a 3x3 with a direct center, instead of 2x2 without a middle tile. I first had the up sprite's head in the middle and it caused some weird disconnect when going up from going side to side. Making the tail half be the collision tile gets rid of that wonky transition and doesn't cause too much of an issue when interacting with events.\nAgain, thanks so much! <3"
+    },
+    {
+      "post_id": "js-post-1531116",
+      "author": "caethyril",
+      "date": "2025-09-23T08:08:41+0900",
+      "body": "Oh nice! You're welcome, happy RPG Making~"
+    },
+    {
+      "post_id": "js-post-1531147",
+      "author": "Robro33",
+      "date": "2025-09-23T14:41:14+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

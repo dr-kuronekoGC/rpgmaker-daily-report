@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-living-world-for-the-player.180216",
+  "title": "MV A living world for the player",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T06:54:09.961664+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1530999",
+      "author": "Juaxen Said",
+      "date": "2025-09-22T10:00:23+0900",
+      "body": "Hello, I have been working on this idea for a few months and I have started to run into serious problems. The idea I have is that in the different maps, similar to how it happens in Harvest Moon, the different NPCs follow their own routines without needing the player to be on the same map.\nI'm not referring to something simple like 'if you enter at a certain time you will see the NPCs in a specific place.' Rather, what I am looking for is for it to look like the NPCs walk to their seats/workplaces.\nHowever, alongside that happening, I would like to maintain a certain schedule to see those things taking place. For example, in my game in a tavern, the NPCs enter the map at 5:54 in the game, which gives them time to be seated by 6:00 and a waiter comes to serve the NPC's dishes.\nThis is where the problems start, because if the player enters the place at any time before or exactly at 5:54 in this case, the event occurs normally, and you can see the NPCs enter through the door and take their seats in their designated places, and if you stay until 8:00 you can see how everyone gets up and leaves.\nBut, if for whatever reason you enter between 5:55 and 6:00, the player will be alone, and the waiter (who comes on stage at 5:58) will serve the dishes for all the NPCs that do not appear until exactly 6:00 because they are designed to be in those positions precisely in case the player does not enter before that hour.\nThat's why I would like to see if there is a way to make events move at the set times without the player being physically present on the map that requires them to move. I have already tried using variables, switches, common events, but I haven't achieved what I'm looking for. However, before I start improperly mixing code, I would like to check if anyone has managed to create this before, or if they have an idea of how to do it."
+    },
+    {
+      "post_id": "js-post-1531060",
+      "author": "ZombieKidzRule",
+      "date": "2025-09-22T21:28:14+0900",
+      "body": "I'm sure others can explain this better, but I'm going to try to channel some of what I have seen before in the best way I can.\nTo my knowledge, Events on maps aren't doing anything until that specific map is active, meaning the player has been transferred to that map. So, it isn't like Events on maps (NPCs for instance) are continuously moving around when the player isn't on that map.\nOne of the things I had to wrap my head around early on was that there aren't any NPCs in the game. There are only Events on the map that represent NPCs.\nTo my knowledge, what you have to do is set up your Events on each map to do some sort of check that tells the Event where it should be and what it should be doing the moment the player transfers to the map. You could give your Events time to be properly placed by having a slightly longer transfer delay (screen fade in or something).\nI have experimented with having Events off the map with no sprite and then move the Event to where it needs to be and then making sure to save that location for when the player returns to the map.\nI suggest doing an internet search for something like \"rpg maker mv plugins that mimic NPC daily schedules\" or something similar. You should see results that provide possible plugins to explore as well as non-plugin options.\nSo, in your example, if the player transfers to the map at one time Events might still be \"arriving\" to sit down BUT if the player transfers to the map at a different time some Events might already be seated.\nThe most important thing to remember (to my knowledge) is that nothing is happening on maps when the map is not active (meaning the player isn't on that map). Instead, Events need to \"update\" where they are and what they are supposed to be doing when the player transfers to the map.\nIf I'm incorrect in anything I wrote here, I'm sure other more knowledgeable folks with come along and correct me.\nGood luck on your project and remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1532950",
+      "author": "Banana_Duck",
+      "date": "2025-10-10T04:46:17+0900",
+      "body": "Quick tip: Randomize the NPCs' dialogue with a variable, so talking with them won't be too samey."
+    },
+    {
+      "post_id": "js-post-1532993",
+      "author": "ElvenNeko",
+      "date": "2025-10-10T18:18:37+0900",
+      "body": "I was having simillar idea, but even more advanced - where player's actions change npc sheulde, like, someone dies at car crash at 17-00, but if you will keep them busy, that event will not happen and instead they will have new sheuldes in the future.\nBut i came to the conclusion that the concept is too much for RM unless someone will write very specific plugin for that purpose. Instead, something more simplistic could be done, like, if you visit location between 16 and 17, then event X occurs, triggering corresponding switches to the future events. If you do not visit the location - switches still trigger as if it would occur. By doing that you cannot catch even in the middle of the process, but it's still a simple and doable way to simulate activity that happens even when the player is absent."
+    }
+  ]
+}
