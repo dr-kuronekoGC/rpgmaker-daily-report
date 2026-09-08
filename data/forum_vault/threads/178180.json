@@ -1,0 +1,113 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/are-there-any-resources-available-on-running-windows-2003-xp-and-or-vxace-on-linux.178180",
+  "title": "XP Are there any resources available on running Windows 2003, XP , and/or VXAce on Linux?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:21:05.962705+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1517432",
+      "author": "0gits",
+      "date": "2025-06-08T11:45:53+0900",
+      "body": "To clarify, I'm not referring to running games made in these engines. I looked online but couldn't find much. That's why I'm asking here. Are there any launch commands (brought them on Steam), external tools, or patches that would help the process of making games in them? I don't want to necessarily rely on anything that would break compatibility when running the exported project natively on Windows. Any suggestions, answers, or links to forum posts related to this would be appreciated."
+    },
+    {
+      "post_id": "js-post-1517710",
+      "author": "kyonides",
+      "date": "2025-06-10T03:53:46+0900",
+      "body": "You'd need either a Ruby script to implement Win32api on Linux that should be ignored if running natively on Windows OR use a custom engine like mkxp, mkxp-z or hiddenchest, and others."
+    },
+    {
+      "post_id": "js-post-1517715",
+      "author": "0gits",
+      "date": "2025-06-10T04:18:24+0900",
+      "body": "kyonides said:\nYou'd need either a Ruby script to implement Win32api on Linux that should be ignored if running natively on Windows OR use a custom engine like mkxp, mkxp-z or hiddenchest, and others.\nClick to expand...\nWhich one do you recommend?"
+    },
+    {
+      "post_id": "js-post-1517717",
+      "author": "kyonides",
+      "date": "2025-06-10T04:25:18+0900",
+      "body": "That depends on you but mkxp-z has been kept uptodate AFAIK.\nIf you meant the script instead, then I gotta say I've got no idea."
+    },
+    {
+      "post_id": "js-post-1517721",
+      "author": "0gits",
+      "date": "2025-06-10T05:01:17+0900",
+      "body": "kyonides said:\nThat depends on you but mkxp-z has been kept uptodate AFAIK.\nIf you meant the script instead, then I gotta say I've got no idea.\nClick to expand...\nI'll admit that, after looking at the GitHub repository and its wiki, I'm not sure where to start. Is it something like running the engine itself on Wine and compiling it in MKXP-Z?"
+    },
+    {
+      "post_id": "js-post-1517724",
+      "author": "kyonides",
+      "date": "2025-06-10T05:06:44+0900",
+      "body": "I know that mkxp-z has its own discord channel. There you should be able to ask all of your questions on how to deploy it on Linux boxes. I know first hand that To the Moon used a Linux mkxp-related port to let you play it on Steam."
+    },
+    {
+      "post_id": "js-post-1517727",
+      "author": "0gits",
+      "date": "2025-06-10T05:17:09+0900",
+      "body": "kyonides said:\nI know that mkxp-z has its own discord channel. There you should be able to ask all of your questions on how to deploy it on Linux boxes. I know first hand that To the Moon used a Linux mkxp-related port to let you play it on Steam.\nClick to expand...\nThe one on the README?"
+    },
+    {
+      "post_id": "js-post-1517977",
+      "author": "schM0ggi",
+      "date": "2025-06-12T01:55:45+0900",
+      "body": "To clarify:\nAre you looking for using RPG Maker XP in Linux? If so, then yes... it does work with the help of Wine.\nI can provide you a guide if you are interested."
+    },
+    {
+      "post_id": "js-post-1518166",
+      "author": "0gits",
+      "date": "2025-06-13T14:57:42+0900",
+      "body": "schM0ggi said:\nTo clarify:\nAre you looking for using RPG Maker XP in Linux? If so, then yes... it does work with the help of Wine.\nI can provide you a guide if you are interested.\nClick to expand...\nI am interested."
+    },
+    {
+      "post_id": "js-post-1518376",
+      "author": "schM0ggi",
+      "date": "2025-06-15T04:06:43+0900",
+      "body": "0gits said:\nI am interested.\nClick to expand...\nCool. So here are the steps you need to go through. As I understand it, you bought RPG Maker through Steam, correct? If so, then you can just use Proton, which is Wine on steroids and customized for gaming. I assume you know the basics of usage regarding Wine/Proton. If not, please say so.\nSet the current Proton version for RPG Maker in the compatibility settings. It's 9.0.4 at the moment.\nInstall RPG Maker\nThat's it, to be honest. Now... the actual difficulty people have is playing midi files. There are two options for you. You can convert all RTP midi files into ogg or mp3 and not use any midi files in your project and be done with it. Alternatively, if you want to use midi files, follow the next steps.\nFor simplicity, install Protontricks and open your terminal.\nType\nCode:\nprotontricks -l\nThis will give you a list of all installed Steam games with their specific APPID. Make a note of the APPID from your installed RPG Maker.\nType\nBash:\nprotontricks your-rpgmaker-appid -q directmusic dsdmo\nThis will download and install needed components to get audio with midi working correctly.\nDownload this old DirectX redistributable package from Microsoft.\nhttps://web.archive.org/web/20060509081637/http://download.microsoft.com/download/4/7/5/475cc4c2-09bb-4d7f-b7c9-b11750b45604/directx_9c_Aug05sdk_redist.exe\nExtract the redistributable package with e.g. 7z. You can do this in the terminal like so:\nBash:\n7z e your-redistributable-package o./extracted-package\nThis will extract it into the newly created directory \"extracted-package\" in the same working directory.\nGo into the extracted package. There you will se a bunch of files. We need the \"DirectX.cab\" one. Open it with the archive app of your choice and extract the \"gm16.dls\" file. Alternatively, you can also do this with e.g. 7z in the terminal. Like so:\nBash:\n7z e DirectX.cab gm16.dls\nRename the extracted \"gm16.dls\" file into \"gm.dls\".\nCopy the \"gm.dls\" file into\nFor 32 bit - > drive_c/Windows/system32/drivers/\nFor 64 bit - > drive_c/Windows/syswow64/drivers/\nin your specific prefix. Create the \"drivers\" directory if necessary.\nYou are good to go."
+    },
+    {
+      "post_id": "js-post-1518380",
+      "author": "0gits",
+      "date": "2025-06-15T04:36:06+0900",
+      "body": "schM0ggi said:\nCool. So here are the steps you need to go through. As I understand it, you bought RPG Maker through Steam, correct? If so, then you can just use Proton, which is Wine on steroids and customized for gaming. I assume you know the basics of usage regarding Wine/Proton. If not, please say so.\nSet the current Proton version for RPG Maker in the compatibility settings. It's 9.0.4 at the moment.\nInstall RPG Maker\nThat's it, to be honest. Now... the actual difficulty people have is playing midi files. There are two options for you. You can convert all RTP midi files into ogg or mp3 and not use any midi files in your project and be done with it. Alternatively, if you want to use midi files, follow the next steps.\nFor simplicity, install Protontricks and open your terminal.\nType\nCode:\nprotontricks -l\nThis will give you a list of all installed Steam games with their specific APPID. Make a note of the APPID from your installed RPG Maker.\nType\nBash:\nprotontricks your-rpgmaker-appid -q directmusic dsdmo\nThis will download and install needed components to get audio with midi working correctly.\nDownload this old DirectX redistributable package from Microsoft.\nhttps://web.archive.org/web/20060509081637/http://download.microsoft.com/download/4/7/5/475cc4c2-09bb-4d7f-b7c9-b11750b45604/directx_9c_Aug05sdk_redist.exe\nExtract the redistributable package with e.g. 7z. You can do this in the terminal like so:\nBash:\n7z e your-redistributable-package o./extracted-package\nThis will extract it into the newly created directory \"extracted-package\" in the same working directory.\nGo into the extracted package. There you will se a bunch of files. We need the \"DirectX.cab\" one. Open it with the archive app of your choice and extract the \"gm16.dls\" file. Alternatively, you can also do this with e.g. 7z in the terminal. Like so:\nBash:\n7z e DirectX.cab gm16.dls\nRename the extracted \"gm16.dls\" file into \"gm.dls\".\nCopy the \"gm.dls\" file into\nFor 32 bit - > drive_c/Windows/system32/drivers/\nFor 64 bit - > drive_c/Windows/syswow64/drivers/\nin your specific prefix. Create the \"drivers\" directory if necessary.\nYou are good to go.\nClick to expand...\nThank you! Two questions:\nHow do you install the run-time package?\nWould people on Windows or Linux have issues running the exported project?"
+    },
+    {
+      "post_id": "js-post-1518386",
+      "author": "schM0ggi",
+      "date": "2025-06-15T05:47:10+0900",
+      "body": "0gits said:\nThank you! Two questions:\nHow do you install the run-time package?\nWould people on Windows or Linux have issues running the exported project?\nClick to expand...\nUhh... isn't the RTP installed automatically in Steam? For me, it is, but I have the standalone installer (ver 1.05), bought from Degica directly. If you really have a separate RTP installer, you can install it through Protontricks via the \"uninstaller\" in the GUI\nNo, not at all. But people on Linux need to go through the same steps in order to play any RPG Maker (XP) game. Meaning, they need to use Wine/Proton.\nLike kyonides mentioned, there is also the alternative of using community replacement projects like mkxp-z that enable natives Linux support for RPG Maker games."
+    },
+    {
+      "post_id": "js-post-1518387",
+      "author": "0gits",
+      "date": "2025-06-15T05:50:18+0900",
+      "body": "schM0ggi said:\nUhh... isn't the RTP installed automatically in Steam? For me, it is, but I have the standalone installer (ver 1.05), bought from Degica directly. If you really have a separate RTP installer, you can install it through Protontricks via the \"uninstaller\" in the GUI\nNo, not at all. But people on Linux need to go through the same steps in order to play any RPG Maker (XP) game. Meaning, they need to use Wine/Proton.\nLike kyonides mentioned, there is also the alternative of using community replacement projects like mkxp-z that enable natives Linux support for RPG Maker games.\nClick to expand...\nI see. Thank you. Would you recommend the community replacements?"
+    },
+    {
+      "post_id": "js-post-1518394",
+      "author": "kyonides",
+      "date": "2025-06-15T06:41:09+0900",
+      "body": "schM0ggi said:\nUhh... isn't the RTP installed automatically in Steam? For me, it is, but I have the standalone installer (ver 1.05), bought from Degica directly. If you really have a separate RTP installer, you can install it through Protontricks via the \"uninstaller\" in the GUI\nNo, not at all. But people on Linux need to go through the same steps in order to play any RPG Maker (XP) game. Meaning, they need to use Wine/Proton.\nLike kyonides mentioned, there is also the alternative of using community replacement projects like mkxp-z that enable natives Linux support for RPG Maker games.\nClick to expand...\nIf you're working on a PC, the RTP will be installed automatically as intended. On laptops the story might be a bit different. Especially on (very) old laptops or ones with low free RAM. There it might install, yet, Steam might not recognize it immediately, even after reinstall. There you'd have to rely on some manual tricks, not proton related AFAIK, to let it find the RTP directory path it picked during install.\nPossible compatibility issues if using community-made replacements\ncase\nstatement syntax might fail because they include stuff like\nwhen 1 : call_method\nIn that case you'd need to replace : with keyword then or keep\nwhen 1\nand\ncall_method / an algorithm\non separate lines.\nmethod_name[white space][parenthesis]argument[parenthesis] like hi! (set_name)\nYou'd have to remove the white space ASAP.\nIssues with Win32API calls that are Windows-exclusive, they just don't exist on Linux."
+    },
+    {
+      "post_id": "js-post-1518414",
+      "author": "schM0ggi",
+      "date": "2025-06-15T08:58:53+0900",
+      "body": "0gits said:\nI see. Thank you. Would you recommend the community replacements?\nClick to expand...\nDepends on the use case. For you as a developer, I'd recommend it if you are not scared of digging a bit into documentation to fully understand how to use all the new stuff it offers. Of course, you can always just use it for the updated backend and its performance boost, but even for only that it doesn't hurt to read some of the documentation. The wiki on the github repo is very informative and a good place to start. Their Discord is also a nice place to get some support and ask questions if needed.\nIn the end, it all comes down to your planned scale. The underlying hood of the older RPG Maker products is old... very old. While it's fine to do games with it, you can run fast into performance problems and/or limits when trying to get \"ambiguous\" due to old ruby version and some bad coded standard scripts (like collision checking). Using community replacements like mkxp-z gives you a lot more performance, hardware acceleration, modern resolutions and features from newer Makers (like blur background etc.). Though, the bad coded standard scripts remain, the performance hit is not noticeable in general because of the great performance gain you get. But I still suggest, if one is skilled enough in coding, to invest time improving some of the standard code or use ready to use scripts from the community to tackle this problems. But I digress, I guess.\nIs a community replacement recommended for someone just wanting to play games, especially on other systems than Windows? Depends if the game is leaning on some Win32 API calls or not. If yes, go for Wine/Proton to be on the safe side, otherwise just through in mkxp(-z) and be done with it.\nkyonides said:\nIf you're working on a PC, the RTP will be installed automatically as intended. On laptops the story might be a bit different. Especially on (very) old laptops or ones with low free RAM. There it might install, yet, Steam might not recognize it immediately, even after reinstall. There you'd have to rely on some manual tricks, not proton related AFAIK, to let it find the RTP directory path it picked during install.\nPossible compatibility issues if using community-made replacements\ncase\nstatement syntax might fail because they include stuff like\nwhen 1 : call_method\nIn that case you'd need to replace : with keyword then or keep\nwhen 1\nand\ncall_method / an algorithm\non separate lines.\nmethod_name[white space][parenthesis]argument[parenthesis] like hi! (set_name)\nYou'd have to remove the white space ASAP.\nIssues with Win32API calls that are Windows-exclusive, they just don't exist on Linux.\nClick to expand...\nI see, strange. Never encountered such installation problems with the RTP. And I'm using RPG Maker for around 25 years now. I guess something like that can be easily tackled with checking the registry as, if I remember correctly, the path is stored there.\nAnd great hints for possible, even if rare, compatibilty issues that can happen when using stuff like mkxp(-z)."
+    },
+    {
+      "post_id": "js-post-1518416",
+      "author": "0gits",
+      "date": "2025-06-15T09:14:50+0900",
+      "body": "schM0ggi said:\nDepends on the use case. For you as a developer, I'd recommend it if you are not scared of digging a bit into documentation to fully understand how to use all the new stuff it offers. Of course, you can always just use it for the updated backend and its performance boost, but even for only that it doesn't hurt to read some of the documentation. The wiki on the github repo is very informative and a good place to start. Their Discord is also a nice place to get some support and ask questions if needed.\nIn the end, it all comes down to your planned scale. The underlying hood of the older RPG Maker products is old... very old. While it's fine to do games with it, you can run fast into performance problems and/or limits when trying to get \"ambiguous\" due to old ruby version and some bad coded standard scripts (like collision checking). Using community replacements like mkxp-z gives you a lot more performance, hardware acceleration, modern resolutions and features from newer Makers (like blur background etc.). Though, the bad coded standard scripts remain, the performance hit is not noticeable in general because of the great performance gain you get. But I still suggest, if one is skilled enough in coding, to invest time improving some of the standard code or use ready to use scripts from the community to tackle this problems. But I digress, I guess.\nIs a community replacement recommended for someone just wanting to play games, especially on other systems than Windows? Depends if the game is leaning on some Win32 API calls or not. If yes, go for Wine/Proton to be on the safe side, otherwise just through in mkxp(-z) and be done with it.\nI see, strange. Never encountered such installation problems with the RTP. And I'm using RPG Maker for around 25 years now. I guess something like that can be easily tackled with checking the registry as, if I remember correctly, the path is stored there.\nAnd great hints for possible, even if rare, compatibilty issues that can happen when using stuff like mkxp(-z).\nClick to expand...\nThank you.\nIs the Discord server you're talking about in the README\n?"
+    },
+    {
+      "post_id": "js-post-1518462",
+      "author": "schM0ggi",
+      "date": "2025-06-15T18:06:25+0900",
+      "body": "Yes, there is a link in the readme\nGitHub - mkxp-z/mkxp-z: Open-source cross-platform player for (some) RPG Maker XP / VX / VX Ace games. A very heavily modified fork of mkxp. RGSS on steroids with a stupid name.\nOpen-source cross-platform player for (some) RPG Maker XP / VX / VX Ace games. A very heavily modified fork of mkxp. RGSS on steroids with a stupid name. - mkxp-z/mkxp-z\ngithub.com"
+    }
+  ]
+}

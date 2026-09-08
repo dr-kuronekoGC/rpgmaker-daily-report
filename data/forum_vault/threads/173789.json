@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/custom-title-screen-in-rm2k3.173789",
+  "title": "Custom Title Screen in Rm2k3",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:21:13.009999+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1486604",
+      "author": "ZENWARECO",
+      "date": "2024-12-10T02:34:56+0900",
+      "body": "I am the question.\nI post a lot of questions.  And thoughts.z\nThough something I want to implement in a game is a  custom Title Screen, with \"Begin\" and \"Continue\" as selections.  Though I know to do this, requires Loops, Labels, Conditional Branches, Enter Password, Teleporting the player around, and Variables.  I think I've done it before but I need a refresher on it.\nAny pointers where I can start.  I was trying it for a bit.  Though I got lost.  I dunno.  I was smart enough to make a screen where you could flip through 3 main characters as one character.  I have done it.\nNAT AGAIN LITTLEFISH.\nWell thanks!"
+    },
+    {
+      "post_id": "js-post-1486608",
+      "author": "Ms Littlefish",
+      "date": "2024-12-10T02:44:39+0900",
+      "body": "This thread was moved from Game Mechanics Design to RPG Maker 2000/2003 Support\n."
+    },
+    {
+      "post_id": "js-post-1492169",
+      "author": "Cherry",
+      "date": "2025-01-06T22:22:56+0900",
+      "body": "Well, you could start basic, by just using the \"Show Choice\" event command:\nDisable the default title screen in the database (uncheck the \"Use\" checkbox next to the title screen graphic in the \"System\" tab).\nSet the initial party to empty so no player character is visible when the game starts.\nCreate a map to serve as your custom title screen, for example make it empty and set a panorama image. Set the map as starting point.\nCreate an autostart event on that map which uses \"Show Choice\" to ask the player whether to start a new game, load a saved game or quit.\nIn the \"start a new game\" branch, teleport the player to the map on which the real game should start and add the relevant actor(s) to the party.\nIn the \"load game\" branch, use the \"Open Load Menu\" event command.\nIn the \"exit game\" branch, use the \"Exit Game\" event command.\nOnce you see these things working, you could improve it by replacing the choice window with some picture-based menu. You would use a variable to store which menu item is currently selected and use the \"Key Input Processing\" event command to wait for up/down/enter presses and respond to them by checking what the currently selected menu item (based on your variable) is and then selecting another item (also updating your pictures to reflect the selection change) or executing the desired action on enter press, respectively."
+    },
+    {
+      "post_id": "js-post-1492174",
+      "author": "ZENWARECO",
+      "date": "2025-01-06T22:59:48+0900",
+      "body": "Nice, not bad.  I was trying that with pictures, with a Begin picture, and a Continue picture, and then trying a transfer map method between them.  I didn't even think of using choices. Hmm.\nGuess when I get my computer back I'll have to experiment. Fun!"
+    },
+    {
+      "post_id": "js-post-1492908",
+      "author": "Cherry",
+      "date": "2025-01-10T21:15:05+0900",
+      "body": "Well you can (and probably will want to, eventually) use pictures. The choice idea was just as a simple solution to get the logic working and then continue from there. But I am a bit confused why you meant by using \"transfer map\" between the two choices... you just need to update your variable to the current choice and update the pictures displayed to reflect it. You should need to transfer the player to a new map only in the case of \"begin\" when the actual game should start."
+    },
+    {
+      "post_id": "js-post-1492953",
+      "author": "ZENWARECO",
+      "date": "2025-01-11T01:23:29+0900",
+      "body": "Well, the transfer would be on the same map, though the player would hop around from the location of the begin text and the continue text."
+    },
+    {
+      "post_id": "js-post-1493158",
+      "author": "Cherry",
+      "date": "2025-01-11T22:55:51+0900",
+      "body": "Ah. Yes that works, same-map teleports don't reset the map events if I remember correctly."
+    },
+    {
+      "post_id": "js-post-1493991",
+      "author": "DevRPG2k",
+      "date": "2025-01-16T04:47:53+0900",
+      "body": "If you are interested, you can check if there are Savefiles in the game to make the menu accessible only in this situation:\nIt would be something like this:\nCode:\n@> Display Text Options: Normal, Middle, Fixed, Stop Event Movement\n@> Conditional Branch: Savestate is available\n  @> Show Choices: New Game, Load, Exit\n   : When [New Game]\n    @> Display Text Options: Normal, Middle, Automatic, Stop Event Movement\n    @> Hide Screen: Default\n    @> Change Party Member: Add [Zack]\n    @> Transfer Player: [0002:MAP0002] (009,004), Retain\n    @> Show Screen: Default\n    @>\n   : When [\\c[3]Load]\n    @> Open Load Menu\n    @>\n   : When [\\c[0]Exit]\n    @> Exit Game\n    @>\n   : Branch End\n  @>\n : Else\n  @> Show Choices: New Game, \\c[3]Load, \\c[0]Exit\n   : When [New Game]\n    @> Display Text Options: Normal, Middle, Automatic, Stop Event Movement\n    @> Hide Screen: Default\n    @> Change Party Member: Add [Zack]\n    @> Transfer Player: [0002:MAP0002] (009,004), Retain\n    @> Show Screen: Default\n    @>\n   : When [\\c[3]Load]\n    @> Play SE: 'Buzzer1', 100, 100, 50\n    @>\n   : When [\\c[0]Exit]\n    @> Exit Game\n    @>\n   : Branch End\n  @>\n : Branch End\nbut there are ways to improve and reduce this and include transition effects:\nCode:\n@> Display Text Options: Normal, Middle, Fixed, Stop Event Movement\n@> Conditional Branch: Savestate is available\n  @> Show Choices: New Game, Load, Configurations, Exit\n   : When [New Game]\n    @> Control Variables: [0001:Title-Choice] = 1\n    @>\n   : When [Load]\n    @> Control Variables: [0001:Title-Choice] = 2\n    @>\n   : When [Configurations]\n    @> Control Variables: [0001:Title-Choice] = 3\n    @>\n   : When [Exit]\n    @> Control Variables: [0001:Title-Choice] = 4\n    @>\n   : Branch End\n  @>\n : Else\n  @> Show Choices: New Game, \\c[3]Load, \\c[0]Configurations, Exit\n   : When [New Game]\n    @> Control Variables: [0001:Title-Choice] = 1\n    @>\n   : When [\\c[3]Load]\n    @> Play SE: 'Buzzer1', 100, 100, 50\n    @> Control Variables: [0001:Title-Choice] = 0\n    @>\n   : When [\\c[0]Configurations]\n    @> Control Variables: [0001:Title-Choice] = 3\n    @>\n   : When [Exit]\n    @> Control Variables: [0001:Title-Choice] = 4\n    @>\n   : Branch End\n  @>\n : Branch End\n@> Conditional Branch: Variable [0001:Title-Choice] == 1\n  @> Display Text Options: Normal, Middle, Automatic, Stop Event Movement\n  @> Hide Screen: Default\n  @> Change Party Member: Add [Zack]\n  @> Transfer Player: [0002:MAP0002] (009,004), Retain\n  @> Show Screen: Default\n  @>\n : Branch End\n@> Conditional Branch: Variable [0001:Title-Choice] == 2\n  @> Open Load Menu\n  @>\n : Branch End\n@> Conditional Branch: Variable [0001:Title-Choice] == 3\n  @> Open Video Options\n  @>\n : Branch End\n@> Conditional Branch: Variable [0001:Title-Choice] == 4\n  @> Exit Game\n  @>\n : Branch End"
+    },
+    {
+      "post_id": "js-post-1494023",
+      "author": "Cherry",
+      "date": "2025-01-16T07:42:31+0900",
+      "body": "Dev_With_Coffee said:\nCode:\n@> Show Choices: New Game, \\c[3]Load, \\c[0]Exit\n...\n   : When [\\c[3]Load]\n...\n\n  @> Show Choices: New Game, \\c[3]Load, \\c[0]Exit\n...\n   : When [\\c[3]Load]\nClick to expand...\nThis probably shouldn't be \\c[3] twice..."
+    },
+    {
+      "post_id": "js-post-1494025",
+      "author": "DevRPG2k",
+      "date": "2025-01-16T07:47:05+0900",
+      "body": "It really is an error, I had already corrected it but forgot to update the Clipboard (\nCtrl\n+\nC\n)"
+    },
+    {
+      "post_id": "js-post-1494180",
+      "author": "ZENWARECO",
+      "date": "2025-01-17T02:08:25+0900",
+      "body": "What's cool about this is that if you take that message and turn it to transparent, then you can add a picture in the background with Show Picture. Then Delete the picture when it's done.\nProgress."
+    }
+  ]
+}

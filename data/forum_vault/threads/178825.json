@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/script-game_character-1-line-274-nomethoderror-occurred-undefined-method-for-nil-nilclass.178825",
+  "title": "Script 'Game_Character 1' line 274: NoMethodError occurred.    undefined method `*' for nil:NilClass",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T07:21:04.784892+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1521769",
+      "author": "Egg-Murderer",
+      "date": "2025-07-10T05:03:04+0900",
+      "body": "So I was making an escape room in RPG Maker XP but when I tried to pick up a specific item it gives me the error\nScript 'Game_Character 1' line 274: NoMethodError occurred.    undefined method `*' for nil:NilClass\nCan someone help me why this is this happening ?\nEvrything else in the game worked so far so I don't know what it going wrong\nHere are all the event pages in my game:"
+    },
+    {
+      "post_id": "js-post-1521789",
+      "author": "Andar",
+      "date": "2025-07-10T09:43:40+0900",
+      "body": "Unless you changed something in the script editor, or used the script command in some places (neither is mentioned in your post or any screenshot), this error means that the engine was given a reference to a data object that does not exist.\nand the only way that could happen without script manipulation is if you deleted a reference in the database that is still used somewhere in the game.\nLike a chest containing a dagger will cause a NIL-error if you delete the dagger in the database and then open the chest ingame.\nSometimes it also happens when trying to continue an incompatible savefile (where a reference from a later stage does not yet exists), so make sure that all your playtests start a new game when encountering a nilclass error."
+    },
+    {
+      "post_id": "js-post-1521796",
+      "author": "kyonides",
+      "date": "2025-07-10T12:47:50+0900",
+      "body": "It's a tileset related object that doesn't exist. That's why there's no Z coordinate for it.\nEither @tile_id is nil or Game_Map#priorities was not uploaded. Perhaps it's because the tileset is too short..."
+    },
+    {
+      "post_id": "js-post-1521806",
+      "author": "Egg-Murderer",
+      "date": "2025-07-10T18:15:19+0900",
+      "body": "kyonides said:\nIt's a tileset related object that doesn't exist. That's why there's no Z coordinate for it.\nEither @tile_id is nil or Game_Map#priorities was not uploaded. Perhaps it's because the tileset is too short...\nClick to expand...\nI don't think it becouse the tileset is too short since it's 13 rows\nI think it's beecouse it's too long since if I set it to another tile it works"
+    },
+    {
+      "post_id": "js-post-1521808",
+      "author": "Egg-Murderer",
+      "date": "2025-07-10T18:48:13+0900",
+      "body": "I  changed it so the tiles are in the chracter graphic and it works now"
+    }
+  ]
+}
