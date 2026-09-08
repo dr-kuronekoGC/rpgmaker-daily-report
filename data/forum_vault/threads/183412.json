@@ -1,0 +1,113 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/interesting-unique-ways-you-utilized-the-core-scripts-for-your-projects.183412",
+  "title": "Interesting / unique ways you utilized the core scripts for your projects.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T10:21:20.938572+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1554712",
+      "author": "StandardEnemy",
+      "date": "2026-04-28T02:30:59+0900",
+      "body": "Hello!\nI'm currently working on writing a new scene type for my MV project that handles point and click adventure style interactions. It made me think about other interesting ways people have extended or utilized the core scripts to do cool things, like the various 3D rendering integrations across the different engines or all the different contextual menus many plugins create for various things.\nMine isn't anywhere near as cool as those, but I wanna hear about the ways you all have personalized your projects through code!\nIf you have any examples of awesome things you wrote - be it UI, game mechanics, new scenes, or even an implementation of a programming technique - and are willing to talk about it, please do so!\nThanks"
+    },
+    {
+      "post_id": "js-post-1554726",
+      "author": "ShadowDragon",
+      "date": "2026-04-28T04:47:26+0900",
+      "body": "I use my MouseControlEx (former MouseHover) to drag the map,\nthis because of DrawBetweenLines for making a nice skill tree.\nso dragging the mouse is a nice way in here.\nI didn't add picture check ability, but have mamusaMouseCursorPro for this\nor something made by Chaucer, which has picture detection and event detection\nprobably too nicely done.\nanother cool way is to use HTML which I have 2 menu's built and work with the mouse,\nso it can go far deeper than JS menu I have, as html + css has far more control\nover those images as they are more pixel precise detection =)"
+    },
+    {
+      "post_id": "js-post-1554727",
+      "author": "StandardEnemy",
+      "date": "2026-04-28T05:03:30+0900",
+      "body": "ShadowDragon said:\nI use my MouseControlEx (former MouseHover) to drag the map,\nthis because of DrawBetweenLines for making a nice skill tree.\nso dragging the mouse is a nice way in here.\nI didn't add picture check ability, but have mamusaMouseCursorPro for this\nor something made by Chaucer, which has picture detection and event detection\nprobably too nicely done.\nanother cool way is to use HTML which I have 2 menu's built and work with the mouse,\nso it can go far deeper than JS menu I have, as html + css has far more control\nover those images as they are more pixel precise detection =)\nClick to expand...\nThat's awesome! I haven't dabbled with utilizing the DOM in a project yet, but I bet you can do some really inventive things with it like you mentioned"
+    },
+    {
+      "post_id": "js-post-1554733",
+      "author": "ShadowDragon",
+      "date": "2026-04-28T05:39:46+0900",
+      "body": "check my HTML menu's, I utilize it with my base to create them nicely.\nwhile CSS can hold images, the only disadvance I found is that the images\ncan't be decrypted.\nbut css knowledge can go really far, test one, mess with it if you like.\nthere is a demo to try all the html plugins I build, there may be 1 that isn't.\nso you can see how it works.\nJS otherwise can have more control if target the website (online playing).\nI didn't test those with my html plugins or android target, but the cool thing\nis that MV and MZ runs on a chronium emveroment.\nso android maybe."
+    },
+    {
+      "post_id": "js-post-1554742",
+      "author": "StandardEnemy",
+      "date": "2026-04-28T06:09:44+0900",
+      "body": "ShadowDragon said:\ncheck my HTML menu's, I utilize it with my base to create them nicely.\nwhile CSS can hold images, the only disadvance I found is that the images\ncan't be decrypted.\nbut css knowledge can go really far, test one, mess with it if you like.\nthere is a demo to try all the html plugins I build, there may be 1 that isn't.\nso you can see how it works.\nJS otherwise can have more control if target the website (online playing).\nI didn't test those with my html plugins or android target, but the cool thing\nis that MV and MZ runs on a chronium emveroment.\nso android maybe.\nClick to expand...\nI'll check out your plugins, thanks! From the screenshots you shared in their release threads they look really snappy. Does the render mode affect the css at all, like are these exclusive to canvas rendering or is it also usable for webgl mode? I did at one point add a background image to replace the black pillar boxes that are present due to my games resolution, but they only seem to work in canvas mode."
+    },
+    {
+      "post_id": "js-post-1554749",
+      "author": "RCXGaming",
+      "date": "2026-04-28T07:30:08+0900",
+      "body": "@StandardEnemy\nI don't know if you count messing with plugins as modifying \"core scripts\", but I've done quite a few things and plan to do even more to help customize the feel of my games so they don't look or more importantly play the same as other RM games. I'll put them in spoiler tags for readability:\nSpoiler:\n#1: Quick Inputs for Menuing\nSomething that bugged me about other RM games is how stiff they are. Scroll through a list of options to pick Guard for every character, scroll through a long list of items to find the one potion you need, rinse and repeat.\nInput fatigue is the number one killer of JRPGs, so I had to do something about that.\nI rigged it by overwriting\nWindow_Selectable.prototype.processCursorMove\nso pressing 1-9 on the keyboard on any menu instantly snaps the cursor to their corresponding item.\nEX. Blue Salve is item 1 in a list. Pressing 1 will take you instantly to the Blue Salve even if you're at item 15 in the list.\nI have a very specific flow in mind for this system, and I think speedrunners will love it because I can see them going: [open main menu] -> [press 1 to go to items & click] -> [press 2 to go to medicine & click] -> [press 6 to go to Miracle Salve item and use it]\nSpoiler:\n#2: Quick Inputs for Combat\nSimilar to what I did for general menuing, but specialized for combat instead. I modified Yanfly's Battle Status Window after noticing I could directly rig the inputs there too.\nOne thing lead to another, and now pressing specific buttons in combat will instantly do certain actions depending on what's pressed, regardless of where the cursor was before. The closest example of what I mean is how Persona 5 or Super Mario RPG handle their inputs.\nIn order:\n* 1 - Attack (Select an enemy with the normal attack)\n* 2 - Guard (Skip a turn by defending)\n* 3 - Skills (Opens the character's primary Tech menu)\n* 4 - Inventory (Opens the combat inventory menu)\n* 5 - Character Specific 1 (Quick-utilizes the character's unique skill without having to go into any menu)\n* 6 - Character Specific 2 (Quick-utilizes the character's unique skill without having to go into any menu)\n* 7 - Delay Action (Voluntarily slows down the highlighted player's speed by cutting it in half. Can be toggled on and off without taking up a turn.)\n* 8 - Mid-Battle Equip Change (Allows you to change the highlighted actor's equipment. Once the cooldown is applied, it defaults to Normal Attack selection.)\n* R - Analyze (Scans all enemies on the field by showing their weaknesses and status vulnerabilities. Doesn't take a turn and everyone can use it, unless they own a proper Scan ability which shows more.)\nSpoiler:\n#3: Vertical Yanfly Turn Order\nThis was a big one for me because I kind of despised the default horizontal version. Now I have it working like this - fastest at the bottom, slowest at the top/off-screen. Getting it vertical was a not-so-simple case of flipping how the X and Y coordinates were being calculated.\nBut there's some other improvements:\n* I added a turn counter (which was inspired by how you did it for At Week's End!)\n* The colors of the borders change if a character is charmed (pink for allies, green for enemies which is also green for NPC helpers), yellow for confused, and gray for \"can't move at all\".\nSpoiler:\n#4: HUD Upgrades\nSo due to using Moghunter's HP and HUDs, I couldn't rely on using Yanfly's default functions to show when a character has Absorption Barrier active:\nA graphic is overlaid the current HP bar to signify the character is shielded - this applied for both actors and enemies.\nLikewise, when a character is under any status that drains their HP, their HP bar turns from red to purple.\nOn top of each combat menu looking different thanks to modifying Mog's Battle HUD (skills menu has a blue color, the limit gauge menu is green with Burst at the corner, etc.), the inventory itself is upgraded.\nThese four buttons are categories that open to different item types via a combination of SomeRandomDude's skill extension system and well... making skill versions of existing items so this can work."
+    },
+    {
+      "post_id": "js-post-1554751",
+      "author": "StandardEnemy",
+      "date": "2026-04-28T07:36:33+0900",
+      "body": "RCXGaming said:\n@StandardEnemy\nI don't know if you count messing with plugins as modifying \"core scripts\", but I've done quite a few things and plan to do even more to help customize the feel of my games so they don't look or more importantly play the same as other RM games.\nClick to expand...\nI think it counts! I probably could've worded the title a bit differently to include plugin modifications, but these are really cool examples. I've had a bit of issues with getting instant button commands in battle to work with the combination of plugins my game uses, but I'm glad to hear you were able to get something going in that regard"
+    },
+    {
+      "post_id": "js-post-1554775",
+      "author": "Kenen",
+      "date": "2026-04-28T13:37:33+0900",
+      "body": "One of my weirder rewrites involved disabling the default windowskin and icons and instead directly drawing the window borders manually, and rendering the icon glyphs using an icon font. The main benefit being that I could get a corner radius that wasn't possible with the default windowskin and being able to directly tune HUD elements like gauges and icons based on the window border radius.\nSpoiler:\nRounded\nSpoiler:\nSquare"
+    },
+    {
+      "post_id": "js-post-1554776",
+      "author": "StandardEnemy",
+      "date": "2026-04-28T13:44:44+0900",
+      "body": "Kenen said:\nOne of my weirder rewrites involved disabling the default windowskin and icons and instead directly drawing the window borders manually, and rendering the icon glyphs using an icon font. The main benefit being that I could get a corner radius that wasn't possible with the default windowskin and being able to directly tune HUD elements like gauges and icons based on the window border radius.\nClick to expand...\nNice! I like how sleek it looks in both examples. Since you aren't relying on window skins, does that mean you're drawing the borders with PIXI's built in primitive drawing?"
+    },
+    {
+      "post_id": "js-post-1554790",
+      "author": "TobyYasha",
+      "date": "2026-04-28T16:11:57+0900",
+      "body": "I'm currently in the middle of designing a semi-random dungeon generation system(while using Tiled).\nBasically, I design the layout first and then add the elements of interest in specific rooms.\nThis data is then exported in a JSON, which I can then use to determine what maps will be used from the game.\nAs well as what events may appear in a room.\nThe events in the room will be further tweaked in another JSON dedicated to generation rules(ex: Guarantee 2 chests out of 4 possible spots).\nThe system is still work in progress, but I've got most ideas noted down as to how it will work.\nSpoiler:\nSee Images"
+    },
+    {
+      "post_id": "js-post-1554801",
+      "author": "ShadowDragon",
+      "date": "2026-04-28T18:43:32+0900",
+      "body": "StandardEnemy said:\nFrom the screenshots you shared in their release threads they look really snappy. Does the render mode affect the css at all, like are these exclusive to canvas rendering or is it also usable for webgl mode?\nClick to expand...\nthe gifs are compressed, in testing they are way smoother as gif render colors\ndifferently, and should be no issue in webgl or gpu mode.\nif you check the demo, you see how smooth it is, and original color setup.\ngif always has something that the color render with noise to look bad, but it isnt.\neach plugin came with a default setup, so altering the css to match your style\nis up to them, its just that the names of classes are visible, and what you can style\ninside, while its more simplified, as giving more stuff, you can go wild, so in this\ncase, I kept it the simple style to get started.\nso don't look at the snappy part of the gif's"
+    },
+    {
+      "post_id": "js-post-1554809",
+      "author": "StandardEnemy",
+      "date": "2026-04-28T21:50:43+0900",
+      "body": "ShadowDragon said:\nso don't look at the snappy part of the gif's\nClick to expand...\nSorry, I meant \"snappy\" as in the visual feedback on the menus looked really nice and responsive, not that they were lagging or anything. Miscommunication on my part, they look really cool!"
+    },
+    {
+      "post_id": "js-post-1554813",
+      "author": "ShadowDragon",
+      "date": "2026-04-28T22:44:55+0900",
+      "body": "StandardEnemy said:\nSorry, I meant \"snappy\" as in the visual feedback on the menus looked really nice and responsive, not that they were lagging or anything. Miscommunication on my part, they look really cool!\nClick to expand...\nit can mean things, and I may interpret it differently, because my brain works different XD\nso I need more detail or more explanation to understand it correctly."
+    },
+    {
+      "post_id": "js-post-1554814",
+      "author": "StandardEnemy",
+      "date": "2026-04-28T22:49:39+0900",
+      "body": "TobyYasha said:\nI'm currently in the middle of designing a semi-random dungeon generation system(while using Tiled).\nBasically, I design the layout first and then add the elements of interest in specific rooms.\nThis data is then exported in a JSON, which I can then use to determine what maps will be used from the game.\nAs well as what events may appear in a room.\nThe events in the room will be further tweaked in another JSON dedicated to generation rules(ex: Guarantee 2 chests out of 4 possible spots).\nThe system is still work in progress, but I've got most ideas noted down as to how it will work.\nClick to expand...\nThat's awesome! [EDIT] I had a question that you already explained in your post I somehow missed lol gotcha you use Tiled as the room editor for this system that's really cool. I haven't used Tiled before but I do appreciate how flexible it is"
+    },
+    {
+      "post_id": "js-post-1554818",
+      "author": "TobyYasha",
+      "date": "2026-04-28T23:29:41+0900",
+      "body": "StandardEnemy said:\nThat's awesome! [EDIT] I had a question that you already explained in your post I somehow missed lol gotcha you use Tiled as the room editor for this system that's really cool. I haven't used Tiled before but I do appreciate how flexible it is\nClick to expand...\nTiled is a game changer when it comes to mapping, at least for me.\nIt is very flexible and you can easily create maps, while also being able to change the layout, decorations and such in an instant.\nYou can create lots of layers, group them, duplicate and hide...\nThen there's the tilesets, honestly, I've never been a fan of how RPG Maker handles its tileset system.\nIn Tiled you can use as many tilesets as you want, while not being locked in into a specific spritesheet size limitation.\nOne thing to be aware of is that you'll lose the ability to automap stuff.\nYou can bring in back, but it involves setting up yourself(I personally haven't looked too much into it).\nMaking animations in Tiled is also very flexible in easy.\nIn the tileset's data(opened in Tiled) you can designate certain tiles as animation containers.\nThat tile can then be used to construct an animation out of other tiles in the tileset.\nAnd of course, you can also use Tiled as a data layer too(you can even add custom properties to stuff which you can find in the exported JSON).\nI personally use Visustella's Tiled plugin to handle the Tiled integration in RPG Maker.\nThere is also an MV version, although I haven't used that one before."
+    },
+    {
+      "post_id": "js-post-1554822",
+      "author": "Kenen",
+      "date": "2026-04-29T00:43:49+0900",
+      "body": "StandardEnemy said:\nNice! I like how sleek it looks in both examples. Since you aren't relying on window skins, does that mean you're drawing the borders with PIXI's built in primitive drawing?\nClick to expand...\nThanks. Canvas, so not super primitive, but yeah, all of the window details and UI elements are manually drawn rather than bitmapped from image files. PIXI would be useful for blurring the background behind windows or similar stuff which I've played around with."
+    },
+    {
+      "post_id": "js-post-1554827",
+      "author": "StandardEnemy",
+      "date": "2026-04-29T01:05:29+0900",
+      "body": "Kenen said:\nThanks. Canvas, so not super primitive, but yeah, all of the window details and UI elements are manually drawn rather than bitmapped from image files. PIXI would be useful for blurring the background behind windows or similar stuff which I've played around with.\nClick to expand...\nNice, I might try something similar with PIXI's Graphics class to replace the nine sliced menu cursor in my project. I wanted to add some interpolated animation to the cursor, but since the nine slicing method they use for the cursor is so heavy by redrawing each segment every time the cursor gets refreshed it impacts performance way more than I think is necessary. I didn't even think to just draw the borders myself with lines. Btw the PIXI shape drawing methods, especially the ones within the Graphics class implement proper pixel lines without anti aliasing via an algorithm I cant remember the name of off the top of my head. Canvas drawing can't natively do pixel perfect lines from what I found so if that ever becomes a problem I would recommend poking around and looking into the shape drawing functions PIXI has.\n[EDIT]\nFound the name of that algorithm I mentioned: its called the Bresenham Line algorithm. Heres a stack overflow response that has a short summary of what it does and a link to a demo site showcasing it in action if you're curious!\nhttps://stackoverflow.com/a/25279040"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/questions-about-tilesets.183560",
+  "title": "Questions about TileSet s",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-08T10:21:20.013237+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1555983",
+      "author": "kitsujigoku",
+      "date": "2026-05-11T00:17:05+0900",
+      "body": "Sorry, I'm a noob. So, I don't create \"tiles\", I texture the old school based on a 48x48x grid in PS in order to achieve a seamless tileset.\nI have questions. Sorry I explain poorly.\n1. My project is 1920x1080p. Should I not do this? I want my game to be fullscreen but pixel perfect, no pixel blurring. So what's the best resolution for RPG MAKER MZ?\n2. When I create my textures in PS, I used what it told me, 768x576 but when I load it, its cut off, and half my texture is missing making it unusable. It says using different letters uses different tileset resolutions? But even the largest still cuts off my textures bottom.\n3. What is the best resolution size to use for a Fullscreen tileset (not to be tiled) but that is made in PS to take up the entire screen at once.\n5. How do I make my custom scene texture in PS for it to fill the entire screen in RPG MAKER MZ?\n6. Fullscreen or not in RPG MAKER, my textures arent pixelated even though in PS they look right. Is this due to my eternal res set at 1920?\n7. What is the best resolution to make fully rendered tile sets in PS to fit the screen, and be pixel perfect with no black bars, etc?\nI'm thinking I should just get rid of the 1920x1080 eternal res in order to make things easier. Below is a sample picture of my wip BG_tileset, but I have no way to easily make it the Fullscreen like it should be.\nTY for all your help! love you all. Trying to learn so i can become a master like all of you. <3"
+    },
+    {
+      "post_id": "js-post-1555985",
+      "author": "Andar",
+      "date": "2026-05-11T00:32:21+0900",
+      "body": "2&3) please go to the help file and read the asset standards there.\nthere are six different tilesheet formats, and they not only differ in size but additionally in structure as to what type of tile goes where.\nAside from regular 48x48 pixel tiles, MZ uses autotiles of 96x96 pixel, 96x144 pixel and 288x144 pixel in size. and you cannot mix those formats - A1 animated autotiles have to be placed into slot A1 and so on, only the B-E slots are interchangable.\n1) pixel perfect at full screen means that you have to set the game screen size to the same numbers as your physical pixel numbers of your monitor - which additionally means that someone with a smaller monitor cannot play the game at all, while people with larger monitors will NOT be pixel perfect at fullscreen.\nsorry, there is absolutely no way in any 2D game to be pixel perfect at multiple screen sizes, not without having different tileset settings  for every different screen size.\n7) as part of the explanation to 2&3, you can only make tilesets in the specific size described in the help file."
+    },
+    {
+      "post_id": "js-post-1555986",
+      "author": "kitsujigoku",
+      "date": "2026-05-11T00:43:45+0900",
+      "body": "Ty. I am using 48x48 on 1920x1080p. I just found two plugins called Pixel Perfect and Game Resolution which fixes the bilinear effect caused by warping pixels from its natural viewpoint. So, when I import a large tileset in B-E slots it will always cut the image in halves and never remain fully intact? for example, when I load in my tileset its all there, but it ends halfway and the other end is beneath it, rather than all together naturally."
+    },
+    {
+      "post_id": "js-post-1555987",
+      "author": "Andar",
+      "date": "2026-05-11T01:06:46+0900",
+      "body": "that is why I told you to check the help file for the details on the tilesheets.\njust go to help - contents in the editor.\nbecause the correct format for B-E tiles is 786x786 pixel."
+    },
+    {
+      "post_id": "js-post-1555996",
+      "author": "kitsujigoku",
+      "date": "2026-05-11T02:06:17+0900",
+      "body": "Andar said:\nthat is why I told you to check the help file for the details on the tilesheets.\njust go to help - contents in the editor.\nbecause the correct format for B-E tiles is 786x786 pixel.\nClick to expand...\nI did. I made a seamless tile in 786x786 (rpg maker says 768x768) and no matter what letter I import it in, it either cuts it off width wise, shows no portion bottom. or shows the texture in a really really long mish mashed image which makes it impossible for me to tell where the seems are. why is it not displaying how I have it in PS? this is so annoying. I followed the tile res and still no avail.\nI dont understand why the engine refuses to let me load in a tileset in full unless its a parallax map. I have to be doing something wrong. No way this engine does not allow you to use full tilesets  and instead cuts them up and mashes them all over.\n1. My tileset in PS, 2. A5 cuts off my image 3. D, what even is this? my tileset is a square yet not one of these displays my texture in a square."
+    },
+    {
+      "post_id": "js-post-1555999",
+      "author": "Andar",
+      "date": "2026-05-11T02:56:07+0900",
+      "body": "You're mixing up several different things.\na single tile in MZ is 48x48 pixel.\nWhich means that a 786x786 tilesheet actually contains 16x16 tiles.\nBut since the editor has limited space, those 16x16 tiles are displayed as 8x32 tiles in the editor window only.\nif you want to display larger tiles, especially single tiles of 786x786 pixel, then it is better to go to parallax mapping and don't use the tilesets at all.\nSome people like PVG have made tilesheets that are oversized, but that additionally means that you're wasting a lot of space.\nand anyway, B to E are tilesheets for decoration - ground tiles should be made as autotiles in the A#-slots."
+    },
+    {
+      "post_id": "js-post-1556002",
+      "author": "Solar_Flare",
+      "date": "2026-05-11T03:08:02+0900",
+      "body": "I'm not completely sure, but it kind of sounds to me that you're doing the wrong thing entirely. You may want to look into \"parallax mapping\". Roughly, this means you don't save your image as a tileset (and have no size restrictions) – instead, you save it as something like \"!MapName.png\" in the parallaxes folder, then select it as a parallax in map settings. Note the initial\n!\n– that's required.\nOne downside of this is that you can't specify passability sections for each tile on the result – you'll need to separately handle passability using a special \"parallax tileset\" which is basically a blank tileset with all the settings (but, you'd substitute a tileset with symbols indicating the type of passability so you can see what you're doing while mapping).\nIt\nis\ncertainly possible to do what you're doing as a standard tileset, mind you. Just remember that, as Andar said, the display of the tiles in the editor divides your image in half and stacks the two halves vertically. So, when painting it on the map, you'd have to paint the left half, then the right half.\n(Also note: you can only use a tileset of that size in B through E – the A tilesets all have different sizes and are cut up in very different ways.)"
+    },
+    {
+      "post_id": "js-post-1556003",
+      "author": "kitsujigoku",
+      "date": "2026-05-11T03:19:38+0900",
+      "body": "Solar_Flare said:\nI'm not completely sure, but it kind of sounds to me that you're doing the wrong thing entirely. You may want to look into \"parallax mapping\". Roughly, this means you don't save your image as a tileset (and have no size restrictions) – instead, you save it as something like \"!MapName.png\" in the parallaxes folder, then select it as a parallax in map settings. Note the initial\n!\n– that's required.\nOne downside of this is that you can't specify passability sections for each tile on the result – you'll need to separately handle passability using a special \"parallax tileset\" which is basically a blank tileset with all the settings (but, you'd substitute a tileset with symbols indicating the type of passability so you can see what you're doing while mapping).\nIt\nis\ncertainly possible to do what you're doing as a standard tileset, mind you. Just remember that, as Andar said, the display of the tiles in the editor divides your image in half and stacks the two halves vertically. So, when painting it on the map, you'd have to paint the left half, then the right half.\n(Also note: you can only use a tileset of that size in B through E – the A tilesets all have different sizes and are cut up in very different ways.)\nClick to expand...\nOmg yes. This is what I am trying to do. This is what PSX/PS2/NDS, etc did. I am an old school GFX designer who got started in prerendered environments. Basically, we make a cake. Base layer, and we keep adding layers which combine together and the end result looks like something made entirely by hand at once. Each layer corresponds, ground, passable, blocked, go behind, etc. Everyone is saying to use \"MZ Layer Graphics\"? do you know of any other plugins or tutorials that could help me with making parallax maps, and not tileset maps."
+    },
+    {
+      "post_id": "js-post-1556004",
+      "author": "Andar",
+      "date": "2026-05-11T03:35:36+0900",
+      "body": "parallax mapping in MZ does not need a plugin, only for overlay mapping you'll need a plugin.\nthe important rule is the correlation between map size in tiles and picture size in pixel:\nmap size (in tiles) multiplied with 48 pixel/tile needs to equal the picture size in pixel.\nand the filename of the picture has to start with a ! to disable the parallax (movement) and make it a static background map."
+    },
+    {
+      "post_id": "js-post-1556013",
+      "author": "kitsujigoku",
+      "date": "2026-05-11T05:19:38+0900",
+      "body": "Andar said:\nparallax mapping in MZ does not need a plugin, only for overlay mapping you'll need a plugin.\nthe important rule is the correlation between map size in tiles and picture size in pixel:\nmap size (in tiles) multiplied with 48 pixel/tile needs to equal the picture size in pixel.\nand the filename of the picture has to start with a ! to disable the parallax (movement) and make it a static background map.\nClick to expand...\nIdk people said if you want a game based on many parallax and large ones, you should use that plugin. my game is going to be fully prerendered maps, not tilesets. Also ty for that info. Didnt know that and copied it."
+    },
+    {
+      "post_id": "js-post-1556020",
+      "author": "Andar",
+      "date": "2026-05-11T07:08:36+0900",
+      "body": "MZ can handle any number of parallaxes without a plugin.\nyou only need a plugin if you want to use overlay mapping.\nthat means that the parallax background is always a background, but if you want a picture layer above the player - that is an overlay and needs a plugin\nonly in the older makers (XP, VX and VXA) there is no support for parallax mapping, those will always require a script to disable the parallax movement.\nBut MV and MZ support parallax mapping natively without scripts/plugins.\nThe only problem with large parallaxes is the RAM requirements, and no plugin can change those either. Older computers sometimes have problems if the parallax map is larger than 100x100 tiles, but a modern computer with at least 16GB RAM should have no problems handling a 200x200 tiles map or larger.\n(Just to understand: a parallax map needs about one or two thousand times the RAM of a tileset map)"
+    }
+  ]
+}
