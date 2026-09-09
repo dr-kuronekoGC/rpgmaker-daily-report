@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-there-a-selection-window-anti-stretch.177598",
+  "title": "MZ Is there a Selection Window Anti-Stretch?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:22.587462+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1513358",
+      "author": "Etrogade_",
+      "date": "2025-05-12T05:25:54+0900",
+      "body": "I'm trying to have the selection window (yellow) be this:\nbut it comes out as this:\nIs there a plugin that can fix this?"
+    },
+    {
+      "post_id": "js-post-1513386",
+      "author": "Catsumi",
+      "date": "2025-05-12T07:12:54+0900",
+      "body": "Could\nthis\nwork for you? I've used it before for overworld anti-stretch, but never for battles. I imagine it's the same thing, though."
+    },
+    {
+      "post_id": "js-post-1513401",
+      "author": "Ms Littlefish",
+      "date": "2025-05-12T09:22:56+0900",
+      "body": "This thread was moved from RPG Maker MZ Support to JS Plugin Requests."
+    },
+    {
+      "post_id": "js-post-1513418",
+      "author": "Etrogade_",
+      "date": "2025-05-12T11:07:06+0900",
+      "body": "Catsumi said:\nCould\nthis\nwork for you? I've used it before for overworld anti-stretch, but never for battles. I imagine it's the same thing, though.\nClick to expand...\nThat was my first thought, but it didn't work. I think it's because that applies to windows and not selection screens."
+    },
+    {
+      "post_id": "js-post-1513420",
+      "author": "utunnels",
+      "date": "2025-05-12T11:38:32+0900",
+      "body": "I think the area uses 4x4 grids for its corners. So even if the plugin works, the rest of the parts still looks off.\nThe part is called cursor area, in the source code:\nJavaScript:\nWindow.prototype._refreshCursor = function() {\n    const drect = this._cursorRect.clone();\n    const srect = { x: 96, y: 96, width: 48, height: 48 };\n    const m = 4;\n    for (const child of this._cursorSprite.children) {\n        child.bitmap = this._windowskin;\n    }\n    this._setRectPartsGeometry(this._cursorSprite, srect, drect, m);\n};\nWhat you need to do is create a plugin with the code that chages m to a bigger value.\nJavaScript:\nWindow.prototype._refreshCursor = function() {\n    const drect = this._cursorRect.clone();\n    const srect = { x: 96, y: 96, width: 48, height: 48 };\n    const m = 20;\n    for (const child of this._cursorSprite.children) {\n        child.bitmap = this._windowskin;\n    }\n    this._setRectPartsGeometry(this._cursorSprite, srect, drect, m);\n};"
+    },
+    {
+      "post_id": "js-post-1513422",
+      "author": "Etrogade_",
+      "date": "2025-05-12T11:51:11+0900",
+      "body": "utunnels said:\nI think the area uses 4x4 grids for its corners. So even if the plugin works, the rest of the parts still looks off.\nView attachment 340149\nThe part is called cursor area, in the source code:\nJavaScript:\nWindow.prototype._refreshCursor = function() {\n    const drect = this._cursorRect.clone();\n    const srect = { x: 96, y: 96, width: 48, height: 48 };\n    const m = 4;\n    for (const child of this._cursorSprite.children) {\n        child.bitmap = this._windowskin;\n    }\n    this._setRectPartsGeometry(this._cursorSprite, srect, drect, m);\n};\nWhat you need to do is create a plugin with the code that chages m to a bigger value.\nJavaScript:\nWindow.prototype._refreshCursor = function() {\n    const drect = this._cursorRect.clone();\n    const srect = { x: 96, y: 96, width: 48, height: 48 };\n    const m = 20;\n    for (const child of this._cursorSprite.children) {\n        child.bitmap = this._windowskin;\n    }\n    this._setRectPartsGeometry(this._cursorSprite, srect, drect, m);\n};\nClick to expand...\nThank you so much! It worked! ;D"
+    }
+  ]
+}

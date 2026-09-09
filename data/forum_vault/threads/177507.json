@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-animated-sv-enemies-and-action-sequence-not-animating-properly.177507",
+  "title": "MV Yanfly Animated SV Enemies and Action Sequence not animating properly",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:40.708755+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1512801",
+      "author": "Seda",
+      "date": "2025-05-08T16:08:12+0900",
+      "body": "Hello all, I am using Yanfly's SVEnemies and Action Sequences 1-3 plugins and am having difficulties getting certain animations to run in my attack animation. Another plugin worth noting is Yanfly's CTB combat system.\nI've checked 3 different discord channels for support, as well as watched Yanfly's videos on the plugins, checked around Reddit and tried to modify someone elses animation sequence, and even went to Vibrato's site (From the Yanfly \"Beautiful Vibrato Battlers\" post on his site) to see how they animate their characters to see if I was missing something and I cannot seem to figure out this issue (though, I did learn a few new tricks\n).\nThe Action Sequence I am trying to work out is my basic \"Attack\" action. The attacker is supposed to move to their target using their walk animation, perform their swing animation and deal damage, then return home while performing their \"Evade\" animation.\nThe problem I am running into is when I try to force the walking animation (Motion walk: user), the character does the walk animation, but then goes back into their neutral animation before moving to the targets base.  The rest of the animation plays out perfectly though.\nHow do I get it so that the walking animation plays WHILE the character is moving to the target's base?\nHere is my current sequence (Copy and pasted from the notes section of my \"Attack\" skills tab\nEdit: Changed code from Screenshot to actual text.\nCode:\nSkill #1 will be used when you select\nthe Attack command.\n\n<setup action>\ndisplay action\nimmortal: targets, true\n</setup action>\n\n<whole action>\n</whole action>\n\n<target action>\nMotion walk: user\nmove user: target, front base, 10\nwait for movement\nmotion swing: user\nwait: 12\naction animation\nwait for animation\naction effect\ndeath break\nMotion Evade: user\nWait: 4\nJump User: 10%, 20\nMotion Evade: user\nWait: 1\nFace User: Target, Front Base\nMove User: Home, 8\nMotion Evade: user\nFace User: Forward\n</target action>\n\n<follow action>\n</follow action>\n\n<finish action>\nimmortal: targets, false\nwait for movement\nwait for effect\nclear battle log\naction common event\n</finish action>\nAnd here is what it looks like:\nI have been stuck on this issue for 3 weeks now and I feel like I am going insane at this point. Please help!"
+    },
+    {
+      "post_id": "js-post-1512813",
+      "author": "Robro33",
+      "date": "2025-05-08T17:32:55+0900",
+      "body": "imo its more helpful copy pasting the notebox contents when asking for skills. It makes it easy to be on the same page when I can copy paste what you gave into a project.\nSeda said:\nHow do I get it so that the walking animation plays WHILE the character is moving to the target's base?\nClick to expand...\nthat should already be the case. I know I usually have to add waits if i need a motion to end because the sprites will slide mid motion if I don't.\nhave you tried using a manual wait instead of the wait for movement, and does the issue still happen when you increase the movement time or add a wait that's longer than the movement time? 10 frames is very quick. i imagine that between the scripting and the rendering, the battler might already at the enemy and ready to cancel the walk motion with the swing motion before they've visually moved"
+    },
+    {
+      "post_id": "js-post-1512833",
+      "author": "Seda",
+      "date": "2025-05-08T20:05:19+0900",
+      "body": "Robro33 said:\nimo its more helpful copy pasting the notebox contents when asking for skills. It makes it easy to be on the same page when I can copy paste what you gave into a project.\nthat should already be the case. I know I usually have to add waits if i need a motion to end because the sprites will slide mid motion if I don't.\nhave you tried using a manual wait instead of the wait for movement, and does the issue still happen when you increase the movement time or add a wait that's longer than the movement time? 10 frames is very quick. i imagine that between the scripting and the rendering, the battler might already at the enemy and ready to cancel the walk motion with the swing motion before they've visually moved\nClick to expand...\nEdited the post as per your request for the code to be text rather than screen shot.\nI just tried using manual waits instead of animation waits and also tried slowing down the time it takes to get to the targets base. I am still having the problem of the character going into the walk animation and not moving, then going into neutral pose then moving.\nEdited Code:\nCode:\nSkill #1 will be used when you select\nthe Attack command.\n\n<setup action>\ndisplay action\nimmortal: targets, true\n</setup action>\n\n<whole action>\n</whole action>\n\n<target action>\nMotion walk: user\nmove user: target, front base, 30\nwait: 30\nmotion swing: user\nwait: 12\naction animation\nwait for animation\naction effect\ndeath break\nMotion Evade: user\nWait: 4\nJump User: 10%, 20\nMotion Evade: user\nWait: 1\nFace User: Target, Front Base\nMove User: Home, 8\nMotion Evade: user\nFace User: Forward\n</target action>\n\n<follow action>\n</follow action>\n\n<finish action>\nimmortal: targets, false\nwait for movement\nwait for effect\nclear battle log\naction common event\n</finish action>"
+    },
+    {
+      "post_id": "js-post-1512836",
+      "author": "Ms Littlefish",
+      "date": "2025-05-08T20:21:21+0900",
+      "body": "This thread was moved from RPG Maker MV Support to JavaScript/Plugin Support."
+    },
+    {
+      "post_id": "js-post-1512841",
+      "author": "Seda",
+      "date": "2025-05-08T20:45:37+0900",
+      "body": "Ms Littlefish said:\nThis thread was moved from RPG Maker MV Support to JavaScript/Plugin Support.\nClick to expand...\nSorry about that, and thanks for switching this post over!"
+    },
+    {
+      "post_id": "js-post-1512842",
+      "author": "Ms Littlefish",
+      "date": "2025-05-08T20:46:32+0900",
+      "body": "No worries, it’s never a bother. Happy game make!\n@Seda"
+    },
+    {
+      "post_id": "js-post-1512852",
+      "author": "Robro33",
+      "date": "2025-05-08T23:24:20+0900",
+      "body": "Seda said:\nI am still having the problem of the character going into the walk animation and not moving, then going into neutral pose then moving.\nClick to expand...\none more thing to try then. if the move forces a different motion, then what happens if you move the walk motion line to after the movement line but before the wait? if it doesnt work ill check it out later. I might have edited the version of the plugin ive been using to not force a motion during targeted moves and not remembered."
+    },
+    {
+      "post_id": "js-post-1512935",
+      "author": "Seda",
+      "date": "2025-05-09T05:53:17+0900",
+      "body": "Robro33 said:\none more thing to try then. if the move forces a different motion, then what happens if you move the walk motion line to after the movement line but before the wait? if it doesnt work ill check it out later. I might have edited the version of the plugin ive been using to not force a motion during targeted moves and not remembered.\nClick to expand...\nCode:\nSkill #1 will be used when you select\nthe Attack command.\n\n<setup action>\ndisplay action\nimmortal: targets, true\n</setup action>\n\n<whole action>\n</whole action>\n\n<target action>\nmove user: target, front base, 30\nMotion walk: user\nwait: 30\nmotion swing: user\nwait: 12\naction animation\nwait for animation\naction effect\ndeath break\nMotion Evade: user\nWait: 4\nJump User: 10%, 20\nMotion Evade: user\nWait: 1\nFace User: Target, Front Base\nMove User: Home, 8\nMotion Evade: user\nFace User: Forward\n</target action>\n\n<follow action>\n</follow action>\n\n<finish action>\nimmortal: targets, false\nwait for movement\nwait for effect\nclear battle log\naction common event\n</finish action>\nUnfortunately, it is doing the same thing."
+    },
+    {
+      "post_id": "js-post-1512961",
+      "author": "Robro33",
+      "date": "2025-05-09T08:53:19+0900",
+      "body": "Just to clarify.\nSeda said:\nThe problem I am running into is when I try to force the walking animation (Motion walk: user), the character does the walk animation, but then goes back into their neutral animation before moving to the targets base. The rest of the animation plays out perfectly though.\nClick to expand...\nwhat motion exactly are you expecting? the very top left one on a standard battler sheet, right? the walk motion is the \"neutral\" motion, so if calling for the walk motion resulted in a different one playing, then there is likely either some confusion or a plugin installed that changes things\nin a project with just yanfly's core, battle engine core, the 3 action sequence plugins, and animated enemies plugin, the skill works as expected. for visibility, the walk motion has red painted over it and the blue is for the physical action ready motion. Once the AS starts and the sprite leaves the ready motion it only does the walk. Can you confirm the same if you removed all other plugins?\nThe skill is the exact one in the last response"
+    },
+    {
+      "post_id": "js-post-1513000",
+      "author": "Seda",
+      "date": "2025-05-09T17:24:41+0900",
+      "body": "Robro33 said:\nJust to clarify.\nwhat motion exactly are you expecting? the very top left one on a standard battler sheet, right? the walk motion is the \"neutral\" motion, so if calling for the walk motion resulted in a different one playing, then there is likely either some confusion or a plugin installed that changes things\nin a project with just yanfly's core, battle engine core, the 3 action sequence plugins, and animated enemies plugin, the skill works as expected. for visibility, the walk motion has red painted over it and the blue is for the physical action ready motion. Once the AS starts and the sprite leaves the ready motion it only does the walk. Can you confirm the same if you removed all other plugins?\nThe skill is the exact one in the last response\nClick to expand...\nHoly Moly! This made me start digging up stuff and questioning if my assets were set up correctly. As it turns out, the template I was using for the side view battlers was a japanese one that was translated to english. The english translation was incorrect for the \"Ready\" animation and called it \"Walk\". I was opperating under the assumption that the Yanfly's engine for \"motion walk: user\" was calling sprites from what I thought was the walk position on the sprite sheet, but I was actually putting my movement animation into the \"Ready\" animations on the sprite sheet. I adjusted my sprite sheet, and just on a whim switched my movement animation on the sprite sheet over to the missile position, used \"Motion missile: user\" instead of \"motion walk: user\" before and after the \"Move user: target base\" and it all worked out!\nIssue resolved, and all is well. Thank YOU Robro33 SO MUCH for the assistance! I've been banging my head against a wall for 3 weeks trying to figure this out!!"
+    },
+    {
+      "post_id": "js-post-1513124",
+      "author": "Robro33",
+      "date": "2025-05-10T06:24:19+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

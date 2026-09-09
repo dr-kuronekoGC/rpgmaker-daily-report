@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/uncaught-typeerror-cannot-read-property-naturalwidth-of-null.177448",
+  "title": "MV Uncaught TypeError: Cannot read property 'naturalWidth' of null",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:36.941443+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1512447",
+      "author": "GrentoYTP",
+      "date": "2025-05-06T08:52:46+0900",
+      "body": "Hello.\nI've had a problem for a while now;\nI created a common event, which consists of playing a short animation (video) of an attack or parry using the PDK_VPlayer plugin by Pheonix KageDesu. It plays videos in WEBM format. I noticed that every time the video ends, there is a chance that the error will appear. I think that this is because the game is trying to read some data from the video that has already been removed from the cache. Maybe the whole thing is not 100% optimized, so sometimes it will load everything on time and sometimes not. After the animation ends, an image of a \"static sword\" appears, which is held in such a way that it does not disappear immediately after the attack animation. Below I am sending more data from the console.\nPlease help me fix this error. I haven't found any solution. Thanks in advance for your help!"
+    },
+    {
+      "post_id": "js-post-1512458",
+      "author": "Ms Littlefish",
+      "date": "2025-05-06T09:24:53+0900",
+      "body": "This thread was moved from JS Plugin Releases (RMMV) to JavaScript/Plugin Support."
+    },
+    {
+      "post_id": "js-post-1512508",
+      "author": "ShadowDragon",
+      "date": "2025-05-06T19:36:03+0900",
+      "body": "what does the attack and parry look like?\nwhy not use animation on them?\nVplayer is to use to interact with, not exactly used for animation alike.\nif you want to use attacking animations, parrying as playable, I would look\ninto PDK_AnimaX plugin instead for attacking.\nelse look into animation to be played instead.\nGalv_Projectiles does this really good if you aiming for an lightweight abs system."
+    },
+    {
+      "post_id": "js-post-1513498",
+      "author": "GrentoYTP",
+      "date": "2025-05-12T23:01:03+0900",
+      "body": "ShadowDragon said:\nwhat does the attack and parry look like?\nwhy not use animation on them?\nVplayer is to use to interact with, not exactly used for animation alike.\nif you want to use attacking animations, parrying as playable, I would look\ninto PDK_AnimaX plugin instead for attacking.\nelse look into animation to be played instead.\nGalv_Projectiles does this really good if you aiming for an lightweight abs system.\nClick to expand...\nDamn, such a quick response, thanks for that. I didn't get a notification.\nIt's just a short video that runs full screen, showing only the sword slash. I forgot to mention that I also use rpg maker mv 3d. I turned on first person mode there, so it looks like a sword attack, like in something like Skyrim.\nThanks for the suggestion, I'll try the other plugins and let you know how it goes!\nThanks for the reply."
+    },
+    {
+      "post_id": "js-post-1513522",
+      "author": "ShadowDragon",
+      "date": "2025-05-13T01:34:26+0900",
+      "body": "if its using MV3D plugin to make it more realistic on animation on slashing,\nthan it can be a bit more complicated as it might not be compatible in\na way you look for.\nyou didn't told you where using MV3D as well, as that plugins probably\nchanges a lot of the default way to render it, and if other try to change or extend\nit differently, than it might collide as MV3D might alter the width in its own,\nto make the screen much better.\nso in that regards, I cannot really help and I doubt my suggestion might\neven work in those what you try to achieve."
+    },
+    {
+      "post_id": "js-post-1514182",
+      "author": "GrentoYTP",
+      "date": "2025-05-16T08:17:59+0900",
+      "body": "ShadowDragon said:\nif its using MV3D plugin to make it more realistic on animation on slashing,\nthan it can be a bit more complicated as it might not be compatible in\na way you look for.\nyou didn't told you where using MV3D as well, as that plugins probably\nchanges a lot of the default way to render it, and if other try to change or extend\nit differently, than it might collide as MV3D might alter the width in its own,\nto make the screen much better.\nso in that regards, I cannot really help and I doubt my suggestion might\neven work in those what you try to achieve.\nClick to expand...\nYou're right.\nWell, I don't know how else I could solve it. I only have one more idea; to do it on images that will appear and disappear one after another, to give the impression of animation. I've tried this before, but it didn't look as good as those short animations by playing a movie.\nFirst of all, the whole animation would occasionally flash to start too late, but it would cut off a few frames (images) at the beginning or at the end. In theory, it worked, but in practice, RGP Maker couldn't handle it very well. Is there a plugin that helps with handling images or that even allows you to make such an animation? Actually, it looks like this, I just have more frames of animation:\nAnd if there is no such plugin, maybe there is another way?\nThanks in advance for your help."
+    },
+    {
+      "post_id": "js-post-1514236",
+      "author": "ShadowDragon",
+      "date": "2025-05-16T17:13:01+0900",
+      "body": "best way to make it nice is calling an common event.\nCode:\nif slash is ON (no interaction possible)\n    picture 1 = slash_1 ..... \n    wait 4\n    picture 1 = slash_2....\n    wait 4\n    picture 1 = slash 6\n    wait 20 frames\n    switch Slash is OFF\nelse\n    slash switch = ON\nend\nsomething like this (use it for each weapon if different animation.\nbut its a matter of testing though what works best."
+    },
+    {
+      "post_id": "js-post-1514630",
+      "author": "GrentoYTP",
+      "date": "2025-05-19T23:13:58+0900",
+      "body": "ShadowDragon said:\nbest way to make it nice is calling an common event.\nCode:\nif slash is ON (no interaction possible)\n    picture 1 = slash_1 .....\n    wait 4\n    picture 1 = slash_2....\n    wait 4\n    picture 1 = slash 6\n    wait 20 frames\n    switch Slash is OFF\nelse\n    slash switch = ON\nend\nsomething like this (use it for each weapon if different animation.\nbut its a matter of testing though what works best.\nClick to expand...\nThank you, but this is how I did it. The problem is that some frames flicker from time to time, especially when the attack or blocking animation is displayed for the first time, it doesn't load properly. It looks like frames are lost for a split second. Interestingly, I didn't notice this in the recording. Could it be related to the refresh rate? I didn't set the delay between frames of the animation to that high, because I want it to be more fluid, smooth. Is there anything I can do about it?"
+    },
+    {
+      "post_id": "js-post-1514633",
+      "author": "ShadowDragon",
+      "date": "2025-05-19T23:30:51+0900",
+      "body": "if it flickers, use this hacky way boot\nCode:\nshow picture 1 opacity 0 // slash1\nwait 1\nshow picture 1 opacity 0 slash2\nwait 1\netc\n...\nerase pictre 1\nif it has a bunch, you can use galv or entire folder what I use on boot\nfrom base plugin\nJavaScript:\nSDJB_Base.preloadFolders = function() {\n        // A list of preloaded images used by my plugins and others\n        if (Imported[\"SDJB_TitleRewardIcons\"]) {\n            ImageManager.loadTRI = function(filename, hue) {\n                return this.loadBitmap(\"img/shadowdragon/tri/\", filename, hue, true);\n            }\n        }\n        // load folder here or list\n    }\n\n    SDJB_Base._SB_start = Scene_Boot.prototype.start;\n        Scene_Boot.prototype.start = function() {\n            SDJB_Base.preloadFolders();\n            SDJB_Base._SB_start.apply(this, arguments);\n                \n        };\nso from this, it load all images from boot, so you can set img/pictures\nand it load all pictures in the pictures folder, as its simple and effective.\nit depends how much images needed to be loaded.\nif its only 20, use the evented way, or a smaller plugin to load a common event\non boot (which I have on it too) and turn it off, so its always loaded when the\ngame starts.\nso you don't have to worry to much anyway\nso try some pictures of the slash on evented way and see if that fixed,\nthan use galv plugin (as it can load the folder) and/or images required.\nfrom there, if it works, your good to go"
+    },
+    {
+      "post_id": "js-post-1521110",
+      "author": "GrentoYTP",
+      "date": "2025-07-05T05:20:55+0900",
+      "body": "ShadowDragon said:\nif it flickers, use this hacky way boot\nCode:\nshow picture 1 opacity 0 // slash1\nwait 1\nshow picture 1 opacity 0 slash2\nwait 1\netc\n...\nerase pictre 1\nif it has a bunch, you can use galv or entire folder what I use on boot\nfrom base plugin\nJavaScript:\nSDJB_Base.preloadFolders = function() {\n        // A list of preloaded images used by my plugins and others\n        if (Imported[\"SDJB_TitleRewardIcons\"]) {\n            ImageManager.loadTRI = function(filename, hue) {\n                return this.loadBitmap(\"img/shadowdragon/tri/\", filename, hue, true);\n            }\n        }\n        // load folder here or list\n    }\n\n    SDJB_Base._SB_start = Scene_Boot.prototype.start;\n        Scene_Boot.prototype.start = function() {\n            SDJB_Base.preloadFolders();\n            SDJB_Base._SB_start.apply(this, arguments);\n               \n        };\nso from this, it load all images from boot, so you can set img/pictures\nand it load all pictures in the pictures folder, as its simple and effective.\nit depends how much images needed to be loaded.\nif its only 20, use the evented way, or a smaller plugin to load a common event\non boot (which I have on it too) and turn it off, so its always loaded when the\ngame starts.\nso you don't have to worry to much anyway\nso try some pictures of the slash on evented way and see if that fixed,\nthan use galv plugin (as it can load the folder) and/or images required.\nfrom there, if it works, your good to go\nClick to expand...\nThank you! I tested this method and it works much better. The first time the sword appears, it still flickers a bit, but after that it doesn’t anymore — and that’s something I can handle. Thanks again and best regards!"
+    },
+    {
+      "post_id": "js-post-1521111",
+      "author": "ShadowDragon",
+      "date": "2025-07-05T05:28:39+0900",
+      "body": "galv can work, but if it still flickers after preload/pre-cache it,\nits weird as it doesn't really happen on my end.\ncan be something on the other plugin being delayed. but if its only the first\nand not after, its all good, try something with the image loading with 0 opacity.\nthan call it starting from there, as I have no idea either.\nbut good luck on your project further"
+    }
+  ]
+}

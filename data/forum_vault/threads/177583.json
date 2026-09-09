@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-lunatic-mode-for-yep-buff-state-core.177583",
+  "title": "MV Help with Lunatic Mode for YEP Buff & State Core",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:39.102354+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1513287",
+      "author": "VHStapes",
+      "date": "2025-05-11T09:45:58+0900",
+      "body": "Hey everyone, me again!\nI am trying to use YEP Buff & State Core to create a state that deals damage each turn to the effected battler based on the number of turns left on the state. To be exact, I want it to deal 10% of the effected battler's max hp as damage per turn left on the state. So if the battler has 3 stacks of this state, they will take 30% of their max hp as damage at the start of their turn. I tried hobbling it together but couldn't get it to actually deal damage, I'm guessing I don't know how to reference the number of turns left correctly.\nThanks!"
+    },
+    {
+      "post_id": "js-post-1513294",
+      "author": "Robro33",
+      "date": "2025-05-11T14:26:07+0900",
+      "body": "VHStapes said:\nI tried hobbling it together but couldn't get it to actually deal damage, I'm guessing I don't know how to reference the number of turns left correctly.\nClick to expand...\nhow had you tried to do it before? it could have been a typo. the base engine has a _stateTurns array property that holds the current state durations and yanfly added a getter function to it in that plugin. try\nCode:\n<Custom Turn Start Effect>\nuser.gainHp(-Math.ceil(user.mhp/10*user.stateTurns(stateId)))\n</Custom Turn Start Effect>"
+    },
+    {
+      "post_id": "js-post-1513408",
+      "author": "Ms Littlefish",
+      "date": "2025-05-12T09:44:36+0900",
+      "body": "This thread was moved from RPG Maker MV Support to JavaScript/Plugin Support."
+    },
+    {
+      "post_id": "js-post-1513523",
+      "author": "VHStapes",
+      "date": "2025-05-13T01:35:24+0900",
+      "body": "Robro33 said:\nhow had you tried to do it before? it could have been a typo. the base engine has a _stateTurns array property that holds the current state durations and yanfly added a getter function to it in that plugin. try\nCode:\n<Custom Turn Start Effect>\nuser.gainHp(-Math.ceil(user.mhp/10*user.stateTurns(stateId)))\n</Custom Turn Start Effect>\nClick to expand...\nThis unfortunately doesn't seem to work, I'm wondering if maybe I need to move the plugin around in my plugins list but won't have time to mess with it today. I appreciate the attempt, it really looks like it should do it!"
+    },
+    {
+      "post_id": "js-post-1513529",
+      "author": "ShadowDragon",
+      "date": "2025-05-13T01:53:03+0900",
+      "body": "YEP plugins are know to have a more strict order.\ncheck his website or use the plugin in my spoiler (ALOE_YEP_PluginOrderChecker)\nto see which one is wrong and the correct order from the plugin you currently use."
+    },
+    {
+      "post_id": "js-post-1513938",
+      "author": "VHStapes",
+      "date": "2025-05-15T01:27:49+0900",
+      "body": "ShadowDragon said:\nYEP plugins are know to have a more strict order.\ncheck his website or use the plugin in my spoiler (ALOE_YEP_PluginOrderChecker)\nto see which one is wrong and the correct order from the plugin you currently use.\nClick to expand...\nI did have some plugins out of order but unfortunately fixing it did not make this custom start effect work.\nRobro33 said:\nhow had you tried to do it before? it could have been a typo. the base engine has a _stateTurns array property that holds the current state durations and yanfly added a getter function to it in that plugin. try\nCode:\n<Custom Turn Start Effect>\nuser.gainHp(-Math.ceil(user.mhp/10*user.stateTurns(stateId)))\n</Custom Turn Start Effect>\nClick to expand...\nIs it possible that \"user\" doesn't refer to the afflicted character?\nEDIT: Got it working as Custom Regenerate Effect. Not sure why the Turn Start doesn't work but I'll take it!"
+    },
+    {
+      "post_id": "js-post-1513948",
+      "author": "Robro33",
+      "date": "2025-05-15T02:19:28+0900",
+      "body": "VHStapes said:\nEDIT: Got it working as Custom Regenerate Effect. Not sure why the Turn Start doesn't work but I'll take it!\nClick to expand...\nif was on an enemy then try this. The damage may have been dealt but there just might not have been a damage popup to show it.\nCode:\n<Custom Turn Start Effect>\nuser.gainHp(-Math.ceil(user.mhp/10*user.stateTurns(stateId)))\nuser.startDamagePopup()\n</Custom Turn Start Effect>\nIf it was an enemy then itd be harder to notice a health change without an hp gauge plugin"
+    },
+    {
+      "post_id": "js-post-1513951",
+      "author": "VHStapes",
+      "date": "2025-05-15T02:33:24+0900",
+      "body": "Robro33 said:\nif was on an enemy then try this. The damage may have been dealt but there just might not have been a damage popup to show it.\nCode:\n<Custom Turn Start Effect>\nuser.gainHp(-Math.ceil(user.mhp/10*user.stateTurns(stateId)))\nuser.startDamagePopup()\n</Custom Turn Start Effect>\nIf it was an enemy then its be harder to notice a health change without an hp gauge plugin\nClick to expand...\nThat did it! I had no idea it wouldn't draw the damage popup by default whenever health changed lol. Thanks so much, now it is working as intended!"
+    },
+    {
+      "post_id": "js-post-1514282",
+      "author": "Robro33",
+      "date": "2025-05-17T04:20:17+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

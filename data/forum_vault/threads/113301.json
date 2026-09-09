@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-create-your-own-templates-any-sprite-or-battler-sheet.113301",
+  "title": "How to create your own templates (any sprite or battler sheet)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:41.435568+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1001477",
+      "author": "Andar",
+      "date": "2019-09-15T10:22:28+0900",
+      "body": "Time and time again people who want to create their own sprites are asking for pre-made empty/framed templates because they can't work without them. And they don't even understand how limiting that is.\nTemplates are crutches - bad crutches to be precise, because if you need a premade template then you're drastically limiting what you can do with the engine. Because the engine itself doesn't use such templates, it uses mathematics.\nLimiting yourself to premade templates is the same as saying \"I only want to learn addition and subtraction, I have no need for multiplication\". And yes, that is similiar in how far you would be able to go in real life without knowing how to multiply? A basic shopping trip would become a problem...\nWith this tutorial I want to show you how to create your own templates - of any size, because all modern RPG-Makers accept and handle sprites of any size.\n1) Cell and Cell Size\nThe first step is to learn \"what is a cell\". If you have read around the resource forums and especially resource support, you might already have heard about that term.\nBasically a cell is that space on any spritesheet that is dedicated to one single version of the person or object to be displayed on that sprite. Usually single map sprites have 3x4 cells, map spritesheets have 12x8 cells and battler sheets (MV) have 9x6 cells - just count them on any default/RTP spritesheet.\nThe size of the cell is that what is extremely important - and that can be any size you choose. It should usually be big enough to contain the entire person or object, but as small as possible (no excess transparent space around the figure). You will need some extra space because different poses will require different parts of the cell, but you should keep it as small as possible.\nHere are some default numbers:\nAce RTP Map sprites have a cell size of 32x32\nMV default map sprites have a cell size of 48x48\nMV default battler sprites have a cell size of 64x64\nmost people who want tall (non-chibi) sprites use either 150% or 200% for the size, some (for example PVGames) go even beyond 200%.\nHere are some numbers based on the more common 150% size setting:\nAce Tall Map Sprites have a cell size of 32x48 (48  is 150% of 32)\nMV Tall Map Sprites have a cell size of 48x72 (72 is 150% of 48)\nBut basically as I mentioned any cell size will be accepted by all RM-engines.\nIf you want to have a titanic truck with a cell size of 200x300 pixels, then go for it. Just keep in mind that if you go too large, the star destroyer sprite of 2000x2000 pixels will usually not fit on your screen, and may cause lag to older computers (that sprites needs a lot of RAM due to its size)\n2) The sprite/battler-sheets and their definition.\nCells are defined by their pixel numbers, but spritesheets are NOT.\nWhat defines a spritesheet in the RPG-Makers is the number of cells it has. I already mentioned some of those numbers in the introductions, but let's repeat it here in a full list:\nXP Map Sprites are 4x4 cells. I don't know if the rest is similiar to the following because I never worked with RMXP. To convert a XP sprite to VX/VXA you need to delete the first row.\nVX, VXA and MV Single map sprites have 3x4 cells and are defined by a $ at the beginning of their filenames\nVX, VXA and MV Spritesheets for map sprites are for 4x2 sprites and as such have 12x8 cells. Any picture without a $ is considered a 4x2 spritesheet.\nMV Battler Sheets have 9x6 cells on them. No distinction needed here\nPlease note that this is based on the default 3-frame-animation of the RPG-Makers. There are scripts and plugins available to increase the number of animation frames, and that always goes hand in hand with an increased number of cells on the sprites.\nThis is especially true for the larger spritesheets of PVGames DLC available in the shop, those can't be used without scripts/plugins to change the number of cells/frames the engine expects.\n3) The picture/sheet/template size\nThe next step is to calculate the size for the template you want to create. For this you'll need the infos from the sections above and a calculator, because you basically multiply the numbers.\nYou want a single tall map sprite for MV?\nThe picture size will be (48*3)x(72*4) or 144x288 pixel - remember that you need a $ at the beginning of the filename for this to work.\nYou want a spritesheet of 8 double-size map sprites for Ace for a village of friendly giants?\nThe cell size would be 64x64 (double size for Ace) and the picture size would be (64*12)x(64*8) or 768x512 pixels\nYou want to use an armored car of 384x96 pixels as a MV battler (with the rest of the party as 64x64 regular scale):\nThe SV battlersheet would be (384*9)x(96*6) or 3456x676 pixel as picture sheet.\n4) creating the template\nThese steps are usually a bit different depending on what image program you use, you need to find the exact naming of the commands (especially the grid command) for yourself.\n- open your image program and click on \"new image\" with a transparent background selected.\n- enter the calculated picture size from 3) as the size of the new image, for example 144x288 for the tall map sprite for MV.\n- enter the grid function of your image program and use the cell size from 1) as the grid setting. In the case of the tall map sprite, the horizontal grid needs to be set to 48 pixel and the vertical grid needs to be set to 72 pixels.\n- save under whatever name you want as a template, in this case I sugges to have the template name begin with $ to not forget that format requirement.\nIf everything is done correctly, the image program will use it's grid to show the borders between the cells - much less hassle than most templates who use different background colors for different cells and require you to make them transparent as an extra work step.\nWith these steps you can get any template for any cell size in any modern RPG-Maker and never be limited to the default sizes.\nAnd a few added infos about the use of non-default sized sprites:\n5) editor and collision\nThe editor will always limit the display of all sprites to the maximum of one tile (48x48 pixel for MV, 32x32 for olders). That is because you need to be able to edit the tiles next to it in the editor - in the game the engine will always use the full sprite size, blocking what is next to the tile if the sprite is larger.\nBut even if the sprite is larger, the default engine will still limit collision detection to the grid itself, with the sprite displayed bottom-centereed on that specific tile for collisions.\nThat is a good default for regular sprites and tall sprites, but bad if you have a large vehicle or a long snake.\nFor that reason there are different scripts or plugins for \"large events\" available, they have been written exactly because that is how the engine handles large sprites without increasing collision size."
+    },
+    {
+      "post_id": "js-post-1001483",
+      "author": "SmashArtist",
+      "date": "2019-09-15T10:47:16+0900",
+      "body": "This is a much needed tutorial. Thanks for this, it will help a bunch of newbies along the way!\nI would suggest also mentioning where users can find their maker's manual, as that can have extra information on other asset standards.\nQuestion from me: I think I've heard this somewhere or encountered a problem with it before(can't remember exactly): it isn't possibly to make charactersets smaller than the default sizes. EX: in MV cells can not be smaller than 48x48. Is this true?"
+    },
+    {
+      "post_id": "js-post-1001486",
+      "author": "Andar",
+      "date": "2019-09-15T10:53:37+0900",
+      "body": "SmashArtist said:\nit isn't possibly to make charactersets smaller than the default sizes. EX: in MV cells can not be smaller than 48x48. Is this true?\nClick to expand...\nfalse\nthere are problems with smaller sprites, but they are NOT on the sprite itself.\nHere is a list of the problems (numbers taken from MV, but is the same elsewhere):\n1) all sprites are bottom-centered automatically. so if you want to make a pixy sprite of tiny 12x12 pixels you can do that, but that pixy will still walk on the ground an not fly in the middle of the tile.\n2) collision is still the full tile. The player will hit the pixy from above when he hits the 48x48 pixel tile area, not the 12x12 pixel sprite area.\nI think there are one or two more problems, but I don't remember them at the moment.\nEDIT:\nThis might have been confused with tilesheets, because youcannot make incomplete or smaller tilesheets - you need to include the entire 16x16 tiles for B-sheets for example even if you have only a dozen tiles that are missing on the map.\nThe rest could be just transparents, but if they are missing from the tilesheet then the engine will have problems mapping."
+    },
+    {
+      "post_id": "js-post-1001491",
+      "author": "TheoAllen",
+      "date": "2019-09-15T11:05:40+0900",
+      "body": "Are you sure you're not confused the template as \"naked sprite so that I can put on the clothes myself\" with \"the dimension/size of the image\"? I often thought when people asked for a template, it's genuinely asking for naked sprites.\nSpeaking of which, it's probably more interesting to read if there's an image showing an example."
+    },
+    {
+      "post_id": "js-post-1001494",
+      "author": "SmashArtist",
+      "date": "2019-09-15T11:08:19+0900",
+      "body": "@Andar\nAh that makes sense, basically it's just less convenient of a way of doing things. It's better to make 48x48 cells with a small sprite in it so you can decide how you want to position it. (Or just in general not making a sprite so small because then collisions will be weird looking)\nAnd I did most likely get it confused with tiles, thanks for clearing it up!\n@TheoAllen\nI agree, that's an important distinction to make."
+    },
+    {
+      "post_id": "js-post-1001495",
+      "author": "Andar",
+      "date": "2019-09-15T11:10:49+0900",
+      "body": "@TheoAllen\nno, I didn't confuse this. Both cases are asked for equally often, and I wrote this tutorial because there were two different people/support topics just an hour ago where exactly this info was asked for."
+    },
+    {
+      "post_id": "js-post-1179117",
+      "author": "EcchiSamurai",
+      "date": "2021-04-12T07:36:28+0900",
+      "body": "Without images its kind of hard to follow. I'm looking to create sprites based off of an already existing image of a character I made a little over a year ago or so. Its a full detailed image but I need to make a sprite from scratch based off of that character image and I'm lost on where to even really begin. I should also mention its a fox, most sprites of characters are generally humans."
+    },
+    {
+      "post_id": "js-post-1179522",
+      "author": "Archeia",
+      "date": "2021-04-13T16:10:34+0900",
+      "body": "EcchiSamurai said:\nWithout images its kind of hard to follow. I'm looking to create sprites based off of an already existing image of a character I made a little over a year ago or so. Its a full detailed image but I need to make a sprite from scratch based off of that character image and I'm lost on where to even really begin. I should also mention its a fox, most sprites of characters are generally humans.\nClick to expand...\nAs the saying goes, reference!"
+    },
+    {
+      "post_id": "js-post-1512627",
+      "author": "DeterminedKid1000",
+      "date": "2025-05-07T11:51:24+0900",
+      "body": "I can't understand this at all. How to I make my sprites bigger without editing them?"
+    },
+    {
+      "post_id": "js-post-1512635",
+      "author": "Andar",
+      "date": "2025-05-07T14:02:07+0900",
+      "body": "of course you need to edit them. But you need to keep in mind the mathematics behind the size edits for the sprite to work correctly.\nso where exactly d you have problems understanding? which step or definition is the first one you fail to understand, and why?"
+    },
+    {
+      "post_id": "js-post-1512639",
+      "author": "DeterminedKid1000",
+      "date": "2025-05-07T14:11:58+0900",
+      "body": "Andar said:\nof course you need to edit them. But you need to keep in mind the mathematics behind the size edits for the sprite to work correctly.\nso where exactly d you have problems understanding? which step or definition is the first one you fail to understand, and why?\nClick to expand...\nSometimes putting an \"!\" makes things bigger, but I don't know how or why. And now I'm freaking out because I can't move my player character downward in battle because he's too high up. Why can I move the troops but not my character? What do I do?"
+    },
+    {
+      "post_id": "js-post-1512773",
+      "author": "Canned_Dinosaur",
+      "date": "2025-05-08T09:46:13+0900",
+      "body": "DeterminedKid1000 said:\nWhat do I do?\nClick to expand...\nAre we talking about battlers now? If yes, you can't simply move their position on the battle screen. Just open a thread in\nMV support\ndescribing how you want the battlers positioned in battle."
+    },
+    {
+      "post_id": "js-post-1512776",
+      "author": "Robro33",
+      "date": "2025-05-08T10:34:54+0900",
+      "body": "DeterminedKid1000 said:\nWhy can I move the troops but not my character?\nClick to expand...\nbecause there are functions that automatically determine where an actor is to be placed based on their index in the party list. Enemies are different and use their placement in the troops tab of the database.\nDeterminedKid1000 said:\nWhat do I do?\nClick to expand...\nyou would want a plugin to change that. Yanfly's battle engine has parameters that you can use to determine where actors are placed yourself, but using the plugin itself makes a number of changes by itself. ive seen a few plugins for it that'd come up un a google search but i dont know any names offhand\nIts possible to use scriptcalls to move actors, but without plugins at best you'll end up having to use troop events in every encounter to move any and all actors the player may or may not have at turn 0 (and end up with them visibly snapping to their position)\nEDIT: Theres a plugin for repositioning actors inside the DLC folder for MV as well"
+    },
+    {
+      "post_id": "js-post-1515543",
+      "author": "DeterminedKid1000",
+      "date": "2025-05-26T06:54:48+0900",
+      "body": "Robro33 said:\nbecause there are functions that automatically determine where an actor is to be placed based on their index in the party list. Enemies are different and use their placement in the troops tab of the database.\nyou would want a plugin to change that. Yanfly's battle engine has parameters that you can use to determine where actors are placed yourself, but using the plugin itself makes a number of changes by itself. ive seen a few plugins for it that'd come up un a google search but i dont know any names offhand\nIts possible to use scriptcalls to move actors, but without plugins at best you'll end up having to use troop events in every encounter to move any and all actors the player may or may not have at turn 0 (and end up with them visibly snapping to their position)\nEDIT: Theres a plugin for repositioning actors inside the DLC folder for MV as well\nClick to expand...\nOh thanks! I'm sorry I didn't see this!"
+    }
+  ]
+}

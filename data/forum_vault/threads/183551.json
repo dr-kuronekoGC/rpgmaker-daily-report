@@ -1,0 +1,173 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/visustellas-weapon-animations-plugin.183551",
+  "title": "VisuStella's Weapon Animations plugin",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:19.212609+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1555933",
+      "author": "MDR",
+      "date": "2026-05-10T10:22:09+0900",
+      "body": "I've read through the parameters and instructions for this\nplugin\nand have a couple questions\nFrom what I've read this plugin helps you customize the weapon's animation for the attack command or any action sequence that uses an attack command.\nThis seem straight forward to me, but what I'm wondering is, if this plugin allows you to add a weapon animation to other commands like Ready/Physical or Guard. The battler sprite sheets I'm using for my project has weapon's visible for commands like Guard and Ready/Physical. If I can't customize weapon animations for these default commands, I may need to rethink the battler sprite sheets"
+    },
+    {
+      "post_id": "js-post-1556012",
+      "author": "Holder",
+      "date": "2026-05-11T05:15:39+0900",
+      "body": "Akea Animated Battle system 2 for MZ is free and does what you're looking for. Actors and weapons are on separate sheets and layer depending on what's equipped.\nI have a free open project demo on my itch page, and tutorials on using it on my wordpress."
+    },
+    {
+      "post_id": "js-post-1556067",
+      "author": "MDR",
+      "date": "2026-05-11T20:08:06+0900",
+      "body": "Interesting!\nThere’s no compatibility issues with VS plugins?\n[edit]\nI did some quick reading up on this. It's a very impressive plugin with a lot of customizations. However, my project is heavily dependent on Visustella plugins. I read their Battle Core plugin has compatibility issues with Akea Animated Battle system 2 for MZ, and since they use obfuscated code, a solution might not be feasible.\nI'm going to have to continue exploringa solution within the Weapon Animated plugin from Visustella.\nHere's an example of a sv_battler from my project. I added the weapons for visual aid but they would exist on a separate png file unique to each weapon.\nWould something like this work under the weapon notetag?\nWhat I'm unsure about is if the plugin allows you to replace multiple motion types for the same weapon."
+    },
+    {
+      "post_id": "js-post-1556119",
+      "author": "Winshifter",
+      "date": "2026-05-12T11:18:56+0900",
+      "body": "Looking at your examples, VS Weapon animations will not do what you want, the tag you have in your last image only supplants the attack motion for the motion you have selected, it doesn't change that particular motion. For example, the <Weapon Motion:guard> will make that, when you select the attack command and the character moves to attack, the motion used for animating the batler will be the guard motion from the battler's motion, not that it will show that particular file for the weapon when you select guard command, VS Weapon animations doesn't consider such things. Unless there is a plugin that specificaly handles that kind of logic that is compatible with Visustella plugins, your best bet is to basically draw the weapons directly into different files and handle a parallel common event to update that based on the equiped weapon, basically like your first image in your last post."
+    },
+    {
+      "post_id": "js-post-1556123",
+      "author": "sunhihi",
+      "date": "2026-05-12T12:57:41+0900",
+      "body": "RPG Maker MZ - SV Equip Sprite Expansion Plugin\nTry this to see if it solves your problem.\nAlthough it's a paid plugin."
+    },
+    {
+      "post_id": "js-post-1556143",
+      "author": "MDR",
+      "date": "2026-05-12T21:07:25+0900",
+      "body": "Winshifter said:\nLooking at your examples, VS Weapon animations will not do what you want, the tag you have in your last image only supplants the attack motion for the motion you have selected, it doesn't change that particular motion. For example, the <Weapon Motion:guard> will make that, when you select the attack command and the character moves to attack, the motion used for animating the batler will be the guard motion from the battler's motion, not that it will show that particular file for the weapon when you select guard command, VS Weapon animations doesn't consider such things. Unless there is a plugin that specificaly handles that kind of logic that is compatible with Visustella plugins, your best bet is to basically draw the weapons directly into different files and handle a parallel common event to update that based on the equiped weapon, basically like your first image in your last post.\nClick to expand...\nThanks, that helps explain the VS Weapon Animation plugin better. I had a feeling this would be the explanation.\nDo you think a common event that toggles 12 actors with 10 weapons each is too much? Would it slow the game down?\nsunhihi said:\nRPG Maker MZ - SV Equip Sprite Expansion Plugin\nTry this to see if it solves your problem.\nAlthough it's a paid plugin.\nClick to expand...\nTaking a closer look to make sure it doesn't have major compatibility issues with VisuStella plugins, specifically the BattleCore and BattlesystemATB plugins."
+    },
+    {
+      "post_id": "js-post-1556150",
+      "author": "sunhihi",
+      "date": "2026-05-12T22:56:52+0900",
+      "body": "MDR said:\nThanks, that helps explain the VS Weapon Animation plugin better. I had a feeling this would be the explanation.\nDo you think a common event that toggles 12 actors with 10 weapons each is too much? Would it slow the game down?\nTaking a closer look to make sure it doesn't have major compatibility issues with VisuStella plugins, specifically the BattleCore and BattlesystemATB plugins.\nClick to expand...\nUsing it directly will cause some issues.\nThe code needs some minor tweaks.\nI estimate these issues will be fixed in version v1.3."
+    },
+    {
+      "post_id": "js-post-1556159",
+      "author": "MDR",
+      "date": "2026-05-12T23:53:54+0900",
+      "body": "I purchased the plugin and now reading through the manual.\nIt seems like I have three options to pick from.\nOption 1: SV Equip Sprite Expansion Plugin\nPro - It would allow me to customize weapon animations over each motion type.\nCon - Risk compatibility issues with VisuStella plugins.\nOption 2: Parallel Common Events\nPro - No risk of compatibility issues with VisuStella plugins.\nCon - Would common events this large cause lag?\nOption 3: VisuStella Weapon Animation plugin\nPro - Fully compatible with other VisuStella plugins.\nCon - Weapon animations would be limited to attack motions only."
+    },
+    {
+      "post_id": "js-post-1556211",
+      "author": "Winshifter",
+      "date": "2026-05-13T14:37:21+0900",
+      "body": "MDR said:\nDo you think a common event that toggles 12 actors with 10 weapons each is too much? Would it slow the game down?\nClick to expand...\nDepends on how you call and structure the common event. I think you best bet is to find a plugin that calls a common event after equiping a weapon or one that triggers after closing main menu. But, overall, a common event that only switches files every frame with a wait each frame shouldn't take that much just make sure that there is a way to skip all if there is no change, like keeping a variable with the current name of the file for the character, if it hasn't changed, do nothing, else check the current weapon and update accordingly. That way, even if checked every frame, it will do basically nothing and will have negligible impact on the framerate or the game itself."
+    },
+    {
+      "post_id": "js-post-1556218",
+      "author": "MDR",
+      "date": "2026-05-13T17:44:25+0900",
+      "body": "Winshifter said:\nDepends on how you call and structure the common event. I think you best bet is to find a plugin that calls a common event after equiping a weapon or one that triggers after closing main menu. But, overall, a common event that only switches files every frame with a wait each frame shouldn't take that much just make sure that there is a way to skip all if there is no change, like keeping a variable with the current name of the file for the character, if it hasn't changed, do nothing, else check the current weapon and update accordingly. That way, even if checked every frame, it will do basically nothing and will have negligible impact on the framerate or the game itself.\nClick to expand...\nSo would I have a weapons common event for each actor, or one big one that does it all?"
+    },
+    {
+      "post_id": "js-post-1556219",
+      "author": "rpgLord69",
+      "date": "2026-05-13T17:46:28+0900",
+      "body": "Hmmm, if you want to combine the actor and weapon file like that, doesn't it work if you make file Sprite_Weapon loadBitmap use a file depending on what weapon the actor is using. Then in Sprite_Actor update frame you also update the _weaponSprite frame to match. And remove the weapon update methods that would otherwise control it.\nEDIT: To clarify, because the _weaponSprite is always visible (it's just set to a frame 0,0,0,0 when it's not supposed to show), so you don't have to control the visibility, only set it to correct frame in sync with your actor sprite frame change."
+    },
+    {
+      "post_id": "js-post-1556226",
+      "author": "MDR",
+      "date": "2026-05-13T21:50:08+0900",
+      "body": "@rpgLord69\nyou're always very helpful, thank you!\nUnfortunately, that kind of coding is a bit above my experience level, although I could learn if necessary.\nWhat I'm trying to achieve is\n(i)\nweapon animations unique to each weapon\nwhen equip by an actor. In addition, I also want to have\n(ii)\nweapon animations for other motion commands like walk, guard, and ready/physical\n. I believe by default, RMMZ only adds a weapon animation to swing and thrust (maybe one other) using the 3 frame weapon png files. My project has a heavy use of VisuStella plugins, but their\nWeapon Animation plugin\nseems to only solve\n(i)\nand not\n(ii)\n.\nThanks to the help of others, I've kind of narrowed myself to two possible solutions\nFinding a plugin that achieves this, but doesn't crash with VisuStella plugins.\nOR\nUsing common events to swap SV_actor image files.\nSV Equip Sprite Expansion Plugin\nappears to do everything I'm looking for, but I haven't tested its compatibility with VisuStella.  It uses two plugins (see below).\nIf they can co-exist with VisuStella plugins I'm pretty sure I'll have a solution. If not, I'll have to either use common-events (as Winshifter suggested) or return to the limited features of\nVS Weapon Animation plugin\n."
+    },
+    {
+      "post_id": "js-post-1556231",
+      "author": "rpgLord69",
+      "date": "2026-05-13T22:25:00+0900",
+      "body": "Cool, yeah assuming it'd work like I think, it's a limited number of edits. I can do it some day, unless Sunhihi already edits their plugin to be compatible with VS for you."
+    },
+    {
+      "post_id": "js-post-1556233",
+      "author": "MDR",
+      "date": "2026-05-13T22:50:58+0900",
+      "body": "*fingers crosses* that\n@sunhihi\nhas done this already.\nI'm going to start building out the plugin in my project and see if I run into problems.\nWhat would you suggest to be the best order for the Tier_0 plugins. My project uses several Tier 1-4 plugins after that.\n[Update]\nI added the plugins in this order and did not run into any issues with a Test Play. The real test will be when I start adding notetags to weapons, and commands to the actual Sun_0_SvEquipSpriteEx plugin."
+    },
+    {
+      "post_id": "js-post-1556287",
+      "author": "sunhihi",
+      "date": "2026-05-14T11:33:33+0900",
+      "body": "MDR said:\n*fingers crosses* that\n@sunhihi\nhas done this already.\nI'm going to start building out the plugin in my project and see if I run into problems.\nWhat would you suggest to be the best order for the Tier_0 plugins. My project uses several Tier 1-4 plugins after that.\nView attachment 366205\n[Update]\nI added the plugins in this order and did not run into any issues with a Test Play. The real test will be when I start adding notetags to weapons, and commands to the actual Sun_0_SvEquipSpriteEx plugin.\nClick to expand...\nVersion 1.2 of Sun_0_SvEquipSpriteEx.js works fine when mounted before VisuMZ_1_BattleCore.js. However, mounting it after VisuMZ_1_BattleCore.js causes errors, mainly due to some logical flaws in my code. Once fixed, it works fine when mounted after VisuMZ_1_BattleCore.js. I will fix these flaws in version 1.3.\nHowever, due to some settings in VisuStella, the two knives attack separately, causing them not to display simultaneously."
+    },
+    {
+      "post_id": "js-post-1556293",
+      "author": "MDR",
+      "date": "2026-05-14T13:54:20+0900",
+      "body": "FYI - when I tried to enable motion browsing, the Test Battle would get stuck on the command window."
+    },
+    {
+      "post_id": "js-post-1556295",
+      "author": "sunhihi",
+      "date": "2026-05-14T15:00:35+0900",
+      "body": "MDR said:\nFYI - when I tried to enable motion browsing, the Test Battle would get stuck on the command window.\nClick to expand...\nEnable Motion browsing mode\nis for viewing actions and weapon positions.\nIn terms of code, it's incompatible with any plugins.\nAfter all, I wrote this mode in a very brute-force way.\nSo please keep the environment relatively clean when enabling it."
+    },
+    {
+      "post_id": "js-post-1556337",
+      "author": "MDR",
+      "date": "2026-05-15T06:54:15+0900",
+      "body": "@sunhihi\nI really do like your plugin and it was worth the money. However, I might need to come back to it later in my project when I have more experience with plugins. My only feedback would be the english translation was hard to follow at some parts, but overall a great product.\nFor now I'm going to retreat back to the VisuStella Weapon Animation plugin and accept the limited motion animations. Keep up the great work though.\nA general question for everyone else.\nMy SV_battlers use a custom cell size of 144x144 pixels. If my math is correct, that means the cell size of my weapon animations should be 216x144 pixels. According to this\nguide\n, you align the SV battler over the weapon animation, by\nsnap to grid\nthe SV_battler to the the far right of the weapon animation.\nHowever this doesn't line up inside RMMZ.\nI can certainly edit the weapon animation down and to the left, but I'm wondering if anyone has an explanation?"
+    },
+    {
+      "post_id": "js-post-1556384",
+      "author": "ATT_Turan",
+      "date": "2026-05-15T21:38:04+0900",
+      "body": "MDR said:\nMy SV_battlers use a custom cell size of 144x144 pixels. If my math is correct, that means the cell size of my weapon animations should be 216x144 pixels.\nClick to expand...\nThat's not how weapon animations work. The size of a frame isn't dynamically calculated from the size of the image file like character and battler spritesheets are. The 96x64 frame size is hardcoded into MZ:\nI don't see anything in the VisuStella documention which claims to change this."
+    },
+    {
+      "post_id": "js-post-1556389",
+      "author": "rpgLord69",
+      "date": "2026-05-15T23:39:13+0900",
+      "body": "Here's some code that seemed to work with VisuStella Battle Core (actually needs it), though I only quickly tested it. So the idea is making an additional child sprite on the actor that shows a weapon when the actor is waiting or guarding. But currently it uses the normal weapon files and also you need to change x and y (or position of weapons in file) to make it be at exactly correct position. Also since in the game the motions can sometimes switch fast, I don't know if it'll look that great. Best look is having the weapon on the battler sheets.\nconst _myEdit1_SpriteActor_createWeaponSprite = Sprite_Actor.prototype.createWeaponSprite;\nSprite_Actor.prototype.createWeaponSprite = function() {\n_myEdit1_SpriteActor_createWeaponSprite.call(this);\nthis._waitGuardWeaponSprite = new Sprite();\nthis._distortionSprite.addChild(this._waitGuardWeaponSprite);\nthis._waitGuardWeaponSprite.anchor.x = 0.5;\nthis._waitGuardWeaponSprite.anchor.y = 1;\nthis._waitGuardWeaponSprite.x = -16;\nthis._waitGuardWeaponSprite.y = 20;\nthis._waitGuardWeaponSprite.setFrame(0,0,0,0);\n};\nconst _myEdit1_SpriteActor_update = Sprite_Actor.prototype.update;\nSprite_Actor.prototype.update = function() {\n_myEdit1_SpriteActor_update.call(this);\nif (this._actor && this._actor.isActor() && this._actor.battler() && this._waitGuardWeaponSprite)\nthis.updateWaitGuardWeaponSprite();\n};\nSprite_Actor.prototype.updateWaitGuardWeaponSprite = function() {\nconst actor = this._actor;\nconst actorSprite = actor.battler();\nconst weapons = actor.weapons();\nconst wtypeId = weapons[0] ? weapons[0].wtypeId : 0;\nconst attackMotion = $dataSystem.attackMotions[wtypeId];\nconst weaponImageId = attackMotion.weaponImageId;\nconst pageId = Math.floor((weaponImageId - 1) / 12) + 1;\nif (pageId >= 1) {\nthis._waitGuardWeaponSprite.bitmap = ImageManager.loadSystem(\"Weapons\" + pageId);\n} else {\nthis._waitGuardWeaponSprite.bitmap = ImageManager.loadSystem(\"\");\n}\nif (actorSprite._motion) {\nif (actorSprite._motion.index === 1 || actorSprite._motion.index === 3) {\nconst index = (weaponImageId - 1) % 12;\nconst w = 96;\nconst h = 64;\nconst sx = (Math.floor(index / 6) * 3) * w;\nconst sy = Math.floor(index % 6) * h;\nthis._waitGuardWeaponSprite.setFrame(sx, sy, w, h);\n} else {\nthis._waitGuardWeaponSprite.setFrame(0,0,0,0);\n}\n}\n};"
+    },
+    {
+      "post_id": "js-post-1556426",
+      "author": "MDR",
+      "date": "2026-05-16T06:38:37+0900",
+      "body": "ATT_Turan said:\nThat's not how weapon animations work. The size of a frame isn't dynamically calculated from the size of the image file like character and battler spritesheets are. The 96x64 frame size is hardcoded into MZ:\nView attachment 366298\nI don't see anything in the VisuStella documention which claims to change this.\nClick to expand...\nThis is very helpful information. Thank you!\nDo you know how the two images align in RMMZ? bottom right corner? centre right?\n[Edit} And can I change the hard coded dimensions?\n@rpgLord69\nthis is very helpful too. Based on the advice I've gotten, I'm probably going to forgo my need for weapon animations on guard and wait motion types. My coding skills just aren't there yet."
+    },
+    {
+      "post_id": "js-post-1556474",
+      "author": "MDR",
+      "date": "2026-05-16T17:39:42+0900",
+      "body": "Update: I think I have a working solutions for 2 options.\nOption 1: Using VisuStella Weapon Animation\nI updated the code as\n@ATT_Turan\nsuggested.\nThis fixed the cell size of the weapon image, but the alignment was still off. Perhaps there's an x and y anchor that needs to be changed, idk. Instead I simply edited the image file until it lined up in RMMZ. It's not the cleanest solution, but it works. I can then use this weapon image as a template for positioning for all other weapon images.\nOption 2: Common Event\nI've been thinking a lot about\n@Winshifter\n's suggestion regarding common events. If I were to simply merge the weapon images to the SV_battler spites, this is how I would try to approach it.\nEach actor would have the following\nUnique SV_Battler Spite image for each weapon\nUnique Switch - Actor_Weapon Image\nUnique Common Event to check/change the SV_Battler Sprite image\nUsing VisuStella Items and Equip Core plugin\nFind a plugin that will enable a notetag to each weapon that toggles the actor's switch on/off\n<onEquipJS>\n$gameSwitches.setValue(X, true);\n</onEquipJS>\n<onUnequipJS>\n$gameSwitches.setValue(X, true);\n</onUnequipJS>\nThe common event for that actor would then be triggered by the actor's switch. The common event would then do the following:\nRun a Conditional Branch command that checks the ID of the weapon equip\nChange the SV_battler sprite image to match the weapon equiped.\nToggle the Actor's switch off.\nI'm not sure if this would work, so I'm open to feedback."
+    },
+    {
+      "post_id": "js-post-1556531",
+      "author": "MDR",
+      "date": "2026-05-17T07:47:29+0900",
+      "body": "This also got me wondering\nIf VS Items & Equip core plugin allows for <onEquip JS> notetags, is there not a script that simply replaces the SV_battler sprite. This would replace the need for any common event.\nI’m guessing this is not possible, as someone would have already thought of it."
+    },
+    {
+      "post_id": "js-post-1556532",
+      "author": "Winshifter",
+      "date": "2026-05-17T07:53:33+0900",
+      "body": "I've tried to look in Visustella library that <onEquip JS> notetag and I couldn't find it...and I literally went to their main page where they have all their plugin documentation and I couldn't find it. That being said, that particular notetag does happen to exist on another plugin, but I wouldn't rule out that there are other plugins that have it.\nYes, you might not need a specific common event if there is a notetag that allow you to run code when a particular weapon or armor is being equipped or unequipped, you just have to run code that gets the correct file and update it accordingly."
+    },
+    {
+      "post_id": "js-post-1556537",
+      "author": "ATT_Turan",
+      "date": "2026-05-17T09:20:19+0900",
+      "body": "MDR said:\nIf VS Items & Equip core plugin allows for <onEquip JS> notetags, is there not a script that simply replaces the SV_battler sprite. This would replace the need for any common event.\nI’m guessing this is not possible, as someone would have already thought of it.\nClick to expand...\nThis has been discussed in multiple previous threads, and it's what I do in my game. Instead of using weapon animations at all, I execute code when weapons are equipped which changes the battler spritesheet to the one with the appropriate weapon drawn onto it.\nHowever, it was specifically not the topic of this thread.\nAlso, I have no idea where\n@MDR\ngot that notetag in the post you quote, it simply doesn't exist in the plugin documentation that they link to. I use a different plugin entirely for that functionality."
+    },
+    {
+      "post_id": "js-post-1556548",
+      "author": "MDR",
+      "date": "2026-05-17T11:50:57+0900",
+      "body": "ATT_Turan said:\nAlso, I have no idea where\n@MDR\ngot that notetag in the post you quote, it simply doesn't exist in the plugin documentation that they link to. I use a different plugin entirely for that functionality.\nClick to expand...\nLesson learned. Don’t trust AI Google search.\nI’m interested in learning more about how you execute code when weapons are equipped which changes the battler spritesheet to the one with the appropriate weapon drawn onto it.\nI edited my previous post to avoid confusion on the VS plugin. I found the source of the error. the AI search answer I got was pulling from another thread that made the same claim about the VS Equip and Item plugin, but found incorrect as well.\nSorry everyone.\n[Edit]\nI reported the thread to be closed, but before they do so.\n@ATT_Turan\nand\n@Winshifter\nwere right.\nI disabled the VisuStella Weapon Animation plugin and installed WAY_Core and WAY_CustomOnEquipEval plugins. Then I just added the following code to each weapon. Replacing the filename with the actual name of the png file (excluding the extension). It appears to be working\n<Custom On Equip Eval>\nuser.setBattlerImage('filename');\n</Custom On Equip Eval>\n<Custom On Remove Equip Eval>\nuser.setBattlerImage('filename');\n</Custom On Remove Equip Eval>\n@rpgLord69\ngives advice on this\nhere\n."
+    },
+    {
+      "post_id": "js-post-1556655",
+      "author": "hiddenone",
+      "date": "2026-05-18T10:47:10+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

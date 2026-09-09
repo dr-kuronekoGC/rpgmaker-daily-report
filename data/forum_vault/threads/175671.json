@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-there-a-way-to-indicate-what-character-is-about-to-be-hit.175671",
+  "title": "Is there a way to indicate what character is about to be hit?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:47.223939+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1500149",
+      "author": "mol10jelly",
+      "date": "2025-02-20T23:53:33+0900",
+      "body": "I've been using RPGMaker MV for years but I'm not all too familiar with the text codes. Say that a slime is about to poison a party member. Is there a way to make the message something like (Slime) poisons [Party Member].\nAs in, \"Slime throws poison on Honeycherry\"\nI know the text afterwards will indicate who's affected afterwards anyway, I'm just curious.\nI'm not using any battle/combat plugins. Any ideas?"
+    },
+    {
+      "post_id": "js-post-1500154",
+      "author": "MoltresRider",
+      "date": "2025-02-21T00:40:57+0900",
+      "body": "Good luck. I have been searching for something like this for VX Ace for pretty much ever since I got into RPG Maker, and all Google searches return nothing, no matter how I word it. I know that you are asking for MV, but nothing comes up for any engine.\nI've requested a script to be made that displays who is being targeted on here a few times, and nobody seems interested in making one.\nI am actually quite surprised that this has not been done yet on any engine. Makes me wonder if it is even possible.\nI hope you get your answer."
+    },
+    {
+      "post_id": "js-post-1500232",
+      "author": "Showsni",
+      "date": "2025-02-21T10:14:04+0900",
+      "body": "I'm not sure exactly what point the enemy chooses its target; maybe it only does it when it's attacking? There's some discussion here:\nhttps://forums.rpgmakerweb.com/inde...script-code-for-enemy-target-selection.98839/\nabout how the code works, it seems. I think the enemies choose what actions to take beforehand, as I have seen plugins that will show what skill an enemy is about to use (like this one:\nhttps://plugin.fungamemake.com/archives/2373"
+    },
+    {
+      "post_id": "js-post-1500300",
+      "author": "TG22",
+      "date": "2025-02-21T17:32:02+0900",
+      "body": "Enemy skills are decided at the begining of the turn (early enough so all the actions - actors' and enemies' - can be ordered by speed), but the targets of the actions are picked at the last moment.\nFor example if a character has a high speed provoke skill that dramatically increases (or reduces) their TGR, enemies will be able to pick their target using the updated TGR value and not the TGR value they had in the begining of the turn.\nAnd enemies' attacks won't be canceled due to invalid targets (dead characters).\nThis is MZ default code, but I guess it was similar in older makers :\nCode:\nBattleManager.startAction = function() {\n    const subject = this._subject;\n    const action = subject.currentAction();\n    const targets = action.makeTargets();\n    this._phase = \"action\";\n    this._action = action;\n    this._targets = targets;\n    subject.cancelMotionRefresh();\n    subject.useItem(action.item());\n    this._action.applyGlobal();\n    this._logWindow.startAction(subject, action, targets);\n};\nmakeTargets() is called during the startAction() method execution.\nA \"read their mind\" plugin would need huge rework of the battle flow and also to solve many problems such as the TGR changing, invalid targets."
+    }
+  ]
+}

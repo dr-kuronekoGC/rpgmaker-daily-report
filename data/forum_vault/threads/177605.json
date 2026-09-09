@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-help-required-with-speed-building-system.177605",
+  "title": "(Solved) Help required with speed building system.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:38.762539+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1513431",
+      "author": "CharlesKessinton",
+      "date": "2025-05-12T12:56:37+0900",
+      "body": "I'm currently making a game where the player can build speed as he dashes. The longer he dashes, the more speed he builds.\nSaid system is being coded through an event, and I'm actually really close to finishing it, but one thing is holding me back.\nThis is the first page of the event, which sets off another page if the Shift key + a directional key are being pressed.\nThis is the second page, and where the problem lives. There is a third one but that works so it doesn't matter.\nMy problem is that this code is supposed to check if the Shift key is still being pressed and if not, it will turn the self-switch off and restart the event. The thing is that the wait command before the self-switch that sets off the next page is causing the Else statement function to be delayed. Basically, it will wait 140 frames (in my case) before whatever is inside the Else statement happens.\nI need to find a way to bypass this but so far, I have failed. Could anyone please enlighten me on this? Sorry if this is a super basic and an easily solvable issue. I'm really, really new to RPG Maker, perhaps to coding as a whole."
+    },
+    {
+      "post_id": "js-post-1513455",
+      "author": "rpgLord69",
+      "date": "2025-05-12T17:07:49+0900",
+      "body": "Hmmm does it work if you check in parallel common event conditional script something like this (if you want to wait even before the first speed increase, you can change the speed function to not count the +1 dash increase):\nIF $gamePlayer.isDashing()\n-> control variable dashcounter +1\nELSE\n-> control variable dashcounter = 0\n-> IF $gamePlayer.moveSpeed() > 4\n---> $gamePlayer.setMoveSpeed(4)\nIF variable dashcounter > 140\n-> control variable dashcounter = 0\n-> IF $gamePlayer.moveSpeed() < 6\n---> $gamePlayer.setMoveSpeed($gamePlayer.moveSpeed()+1)\nIF !$gamePlayer.isMoving()\n-> control variable standstill +1\n-> IF variable standstill > 5\n---> control variable standstill = 0\n---> control variable dashcounter = 0\n---> $gamePlayer.setMoveSpeed(4)\nELSE\n-> control variable standstill = 0"
+    },
+    {
+      "post_id": "js-post-1513462",
+      "author": "ShadowDragon",
+      "date": "2025-05-12T17:58:21+0900",
+      "body": "using the above code, inside a plugin (should be coded correctly)\nwill run as parallel, this avoid parallel updating, or try to\nadd a +5 or +10 wait frame buffer on top, to avoid lag just in case.\nas the variable below also update +1 every 5 frames, instead of directly.\nbut speeding up is a cool idea though =)"
+    },
+    {
+      "post_id": "js-post-1513475",
+      "author": "ZimXero",
+      "date": "2025-05-12T20:14:01+0900",
+      "body": "I don't have a working script but have been thinking about how to create a similar system to simulate space ship acceleration/deceleration.  Maybe it would work to create 10 specific velocity points that would cycle upward if player is pressing sprint and cycle down if a player is not pressing sprint.  The parallel process \"check time gap\" represents acceleration/deceleration intensity.  Half a second check for a cycle up or down seems like a good default.\nThe max velocity(1-10) or acceleration (parallel waiting frames) could be upgradeable if they are variables."
+    },
+    {
+      "post_id": "js-post-1513494",
+      "author": "CharlesKessinton",
+      "date": "2025-05-12T22:51:55+0900",
+      "body": "rpgLord69 said:\nHmmm does it work if you check in parallel common event conditional script something like this (if you want to wait even before the first speed increase, you can change the speed function to not count the +1 dash increase):\nIF $gamePlayer.isDashing()\n-> control variable dashcounter +1\nELSE\n-> control variable dashcounter = 0\n-> IF $gamePlayer.moveSpeed() > 4\n---> $gamePlayer.setMoveSpeed(4)\nIF variable dashcounter > 140\n-> control variable dashcounter = 0\n-> IF $gamePlayer.moveSpeed() < 6\n---> $gamePlayer.setMoveSpeed($gamePlayer.moveSpeed()+1)\nIF !$gamePlayer.isMoving()\n-> control variable standstill +1\n-> IF variable standstill > 5\n---> control variable standstill = 0\n---> control variable dashcounter = 0\n---> $gamePlayer.setMoveSpeed(4)\nELSE\n-> control variable standstill = 0\nClick to expand...\nIt worked like a charm! Thanks a lot, pal. And to everyone that tried to help as well.\nI actually did try to use the \"Is player dashing\" condition and it didn't work for some reason, but I did not think about using a variable as a counter rather than a Wait function."
+    },
+    {
+      "post_id": "js-post-1513495",
+      "author": "Ms Littlefish",
+      "date": "2025-05-12T22:53:43+0900",
+      "body": "This thread is closed due to being marked solved. Report the next one so it’s easy to find~ If you need this thread reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

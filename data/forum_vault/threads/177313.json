@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/skill-changing-tp.177313",
+  "title": "Skill changing tp",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:33.278460+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1511511",
+      "author": "ShuCrocodil",
+      "date": "2025-04-29T20:56:42+0900",
+      "body": "Skill that decreases your own TP (but dosent cost TP) and increases opponents tp based on how much you lost.\nI cant find anyway to increase opponents tp based on how much mine decreases. But i can make it decrease mine.\nim using Skill Rewards YEP\n<Hit Reward: - xTP>\nTo remove tp from myself but how do i make the enemy take TP based on x"
+    },
+    {
+      "post_id": "js-post-1511519",
+      "author": "Robro33",
+      "date": "2025-04-29T21:38:26+0900",
+      "body": "how much should you lose?"
+    },
+    {
+      "post_id": "js-post-1511522",
+      "author": "ShuCrocodil",
+      "date": "2025-04-29T21:46:41+0900",
+      "body": "like 80% or 100% of how much the player loses in TP. but im not sure yet so i want it to be flexible.\nPlayer move TP loss is gonna increase depending on level, so i want that value to be changing aswell."
+    },
+    {
+      "post_id": "js-post-1511524",
+      "author": "ShuCrocodil",
+      "date": "2025-04-29T22:11:35+0900",
+      "body": "Maybe im not clear enough\nI want to make a skill that removes a % of the user's current TP. And gives that same amount TP to the target."
+    },
+    {
+      "post_id": "js-post-1511527",
+      "author": "Maliki79",
+      "date": "2025-04-29T22:44:29+0900",
+      "body": "First make skill cost 0 TP.\nThan, in dam formula:\nJavaScript:\nvar amount = a.tp; a.gainTp(-amount); b.gainTp(amount); 0\nYou can adjust amount as much as you want.\nLet us know if you need any further explanation for the above."
+    },
+    {
+      "post_id": "js-post-1511528",
+      "author": "Robro33",
+      "date": "2025-04-29T22:48:52+0900",
+      "body": "Robro33 said:\nhow much should\nyou\nlose?\nClick to expand...\nShuCrocodil said:\nlike 80% or 100% of how much\nthe player\nloses in TP\nClick to expand...\nShuCrocodil said:\nPlayer move TP loss is gonna increase depending on level\nClick to expand...\nShuCrocodil said:\nMaybe im not clear enough\nClick to expand...\ni needed to know how much of the user's tp it'd remove (which is still kinda nebulous), and how much of that tp would be transferred to the target (which i had assumed to be 100%, but i dont know if that 80-100% was actually for the player as i had asked for, or for the target as it sounds like you meant)\nPut this in the notebox for the skill. the notetag is from the skill core, but if youre using skill rewards then youre already using it\nCode:\n<After Eval>\nvar tpChange = Math.ceil(user.tp*(.8+user.level/500));\nuser.gainTp(-tpChange)\ntarget.gainTp(tpChange)\n</After Eval>\nitll remove a percentage of tp from the user based on their level. the target will gain that amount of tp the user lost. the amount lost starts at 80% and increases by +.2% per level so that by the time the user hits lv 100 itll be 100%"
+    },
+    {
+      "post_id": "js-post-1511530",
+      "author": "ShuCrocodil",
+      "date": "2025-04-29T23:03:26+0900",
+      "body": "Maliki79 said:\nFirst make skill cost 0 TP.\nThan, in dam formula:\nJavaScript:\nvar amount = a.tp; a.gainTp(-amount); b.gainTp(amount); 0\nYou can adjust amount as much as you want.\nLet us know if you need any further explanation for the above.\nClick to expand...\nill use Robro33's notetag code as i understand it better.\nRobro33 said:\ni needed to know how much of the user's tp it'd remove (which is still kinda nebulous), and how much of that tp would be transferred to the target (which i had assumed to be 100%, but i dont know if that 80-100% was actually for the player as i had asked for, or for the target as it sounds like you meant)\nPut this in the notebox for the skill. the notetag is from the skill core, but if youre using skill rewards then youre already using it\nCode:\n<After Eval>\nvar tpChange = Math.ceil(user.tp*(.8+user.level/500));\nuser.gainTp(-tpChange)\ntarget.gainTp(tpChange)\n</After Eval>\nitll remove a percentage of tp from the user based on their level. the target will gain that amount of tp the user lost. the amount lost starts at 80% and increases by +.2% per level so that by the time the user hits lv 100 itll be 100%\nClick to expand...\nit works but could i refrence instead of user.level make it based of a variable that determines a skill level. Like i made a Variable go up each time you upgrade a Skill and that number is used.\nCan you use variables in the notetags is what im asking pretty much."
+    },
+    {
+      "post_id": "js-post-1511532",
+      "author": "Robro33",
+      "date": "2025-04-29T23:16:21+0900",
+      "body": "if you already have the variable, then the\nscript call\nto get it is\nCode:\n$gameVariables.value(x)\nwith x being the id of the variable without the leading 0's"
+    },
+    {
+      "post_id": "js-post-1511534",
+      "author": "Maliki79",
+      "date": "2025-04-29T23:22:37+0900",
+      "body": "Technically\n@Robro33\nidea is better since you shouldn't put that kind of code in the damage formula, but mine doesn't require a separate plugin.\nAt any rate, glad you got it working."
+    },
+    {
+      "post_id": "js-post-1511535",
+      "author": "ShuCrocodil",
+      "date": "2025-04-29T23:29:42+0900",
+      "body": "Works nicely\n<After Eval>\nvar tpChange = Math.ceil(user.tp*(.2*$gameVariables.value(1)\n));\nuser.gainTp(-tpChange)\ntarget.gainTp(tpChange)\n</After Eval>\nthis is the result, with var1 being the level for that certain move. Is there any plugin to make leveling moves easier without making a separate var for each one. I tried Skill Mastery YEP, but i don't want moves to level up upon uses. Like each move starts at level 1 then increases if you upgrade it with certain requirements. Or do i manually have to do something like that. Might be abit vague but i haven't planned out my whole idea of how the system will work."
+    },
+    {
+      "post_id": "js-post-1511536",
+      "author": "Robro33",
+      "date": "2025-04-29T23:37:25+0900",
+      "body": "i havent used skill mastery, but im making the assumption itd be easy to make it so that the skills dont gain exp on use. from there, youd be able use a script call in your events (or whatever you plan on using to level the skills) to level the skill for your actors"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-do-i-force-action-via-common-event-in-a-battle.177403",
+  "title": "How do I \"force Action\" via Common Event in a Battle?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:29.096686+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1512117",
+      "author": "SamThePengwyn",
+      "date": "2025-05-04T07:12:26+0900",
+      "body": "Sorry for asking, I have seen some Answers to my Question but I just don´t seem to get it to work.\nFirst: What do i want to do?\nI want to create a skill that gives an actor like fireballs that shoot at the enemy for 3 rounds after casting the skill but i also want the actor to keep his rounds while the skill is active.\nwhat i found:\nmake a\nskill\nthat gives the actor a\nstate\nthat lasts for 3 rounds.\nthen make a\ncommon event\nthat\nif: [Actor name here] is affected by [state name here]\nForce Action: [Actor name here], [Skill], Random\n:End\nI testet this with the basic Fire I skill, with Visustella like Action sequence, if its name repetition,\nbut the common Event does not seem to start and nothing happens.\nI´m fairly new to RPG maker~ so if there is a Tutoral that explains it in detail, i´ll gladly watch that first before you try to explain some random basics i didn´t account for\nthanks in advance tho"
+    },
+    {
+      "post_id": "js-post-1512178",
+      "author": "rpgLord69",
+      "date": "2025-05-04T20:50:21+0900",
+      "body": "At what point do you want it to activate? If it's okay at turn start, you can just make a base troop event that checks if an actor is affected by that state and then fire those projectiles with the VS plugin commands in the troop event."
+    },
+    {
+      "post_id": "js-post-1512224",
+      "author": "SamThePengwyn",
+      "date": "2025-05-05T01:43:22+0900",
+      "body": "at the Start of the turn is fine but sorry for asking but i need a bit more information to understand it completely~\ncan i use the one i´ve posted above or do i need something els entirely? like~ do i put an VS Action sequence into that or how do i do that coz right now its just not doing anything."
+    },
+    {
+      "post_id": "js-post-1512227",
+      "author": "rpgLord69",
+      "date": "2025-05-05T01:58:54+0900",
+      "body": "Make a troop event in troop 1 (it's set as default as a base troop for VisuStella Battle Core, so it activates for all troops). Make it activate every turn. There you have conditionals to check if your actors are affected by the state. If they are you play an animation on an enemy (you can roll for random enemy and make conditionals // use VS projectiles for the fireballs if you want). And then you reduce the enemy hp. That was my suggestion."
+    },
+    {
+      "post_id": "js-post-1512249",
+      "author": "SamThePengwyn",
+      "date": "2025-05-05T04:29:42+0900",
+      "body": "Allllright. That worked. Thanks!\ntwo short questions tho~\nIf i want to have multiple of such a.e. an Ice / lightning / etc i just have to put 'em on a new page right?\nIs there a way to check if \"user\" has the state or must it be a specific actor?\nThanks in advance :>"
+    },
+    {
+      "post_id": "js-post-1512335",
+      "author": "rpgLord69",
+      "date": "2025-05-05T15:01:38+0900",
+      "body": "You can also check the other states on the same page if you want.\nAnd you can check your battle members in the conditional script, so they can be any actors. If you have max 4 battle members, you check four (put Xs to 0, 1, 2, 3 + change stateId to number):\n$gameParty.battleMembers()[X] && $gameParty.battleMembers()[X].isStateAffected(stateId)"
+    },
+    {
+      "post_id": "js-post-1512382",
+      "author": "SamThePengwyn",
+      "date": "2025-05-06T02:02:54+0900",
+      "body": "oooohhhhh, Thanks. I lern so much every day and find new intresting stuff to try. Its realy Exiting.\nanyway~ My Questions have been successfully answerd  and this thread can be closed :>"
+    }
+  ]
+}

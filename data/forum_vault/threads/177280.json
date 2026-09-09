@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/handling-nested-if-statements-in-battle.177280",
+  "title": "Handling nested IF statements in Battle",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T19:18:33.876836+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1511294",
+      "author": "ZimXero",
+      "date": "2025-04-28T08:36:10+0900",
+      "body": "In RPG maker MZ, what method would be efficient for creating a picture in battle next to each character which shows which elements are their forte?  In my case, I can pull this data based what headwear and footwear the character is using.  This is a lot of IF statements and corresponding show pictures.\nIn frontview VS, a character's data pops upward on their turn so I thought it would be nice to put a reminder to the characters elemental bonus covered under it, that reveals/unveils when their turn comes.  It's easy to forget what each character has equipped.  The mark/pic also queues that their command turn is on.\\\nexample:"
+    },
+    {
+      "post_id": "js-post-1511325",
+      "author": "rpgLord69",
+      "date": "2025-04-28T18:44:08+0900",
+      "body": "What do you mean with what elements are their forte? I think you can check element rate with\nbattler.elementRate(X)\nIf you mean the VS 'dealt element' notetag increases, you can check the notetags with like\n.meta['notetag']\n(at least if you put the values in the x.x form). If you mean attack element trait, there's a script for that too, but don't know it by heart. You get the battler equipment with like\nbattler.equips()[x]\nThen when you get that data you can compare what is highest/lowest. I think you can make a pic appear there by modifying the inputting function, but to make it somehow reveal under the actor box, I guess you'd have to edit the VisuStella code."
+    },
+    {
+      "post_id": "js-post-1511340",
+      "author": "ZimXero",
+      "date": "2025-04-28T20:43:17+0900",
+      "body": "Thanks.  The reveal is the part I have working.  In this game, headwear gives an elemental bonus represented by shape (5 possible) by 20 pieces available.  Footwear gives an elemental bonus represented by color (10 possible) by 20 pieces available.  There are other factors that can influence elemental damage output, but these are consistent and it is easy to forget which ones are affecting the character.  The skills have color and shape that show their corresponding elemental types.\nTo show a colored shape onscreen (showing which types of head and foot gear the player has equipped), my strategy is to run 4x IF chains (1 per character), with 20x IF branches for headwear and 20x nested branches per footwear.  This will show the right color/shape graphic under each character box.\nProblem is it will be 400 IF statements and 20 draw pic statements which seems very clumsy, could even slow down the system a little."
+    },
+    {
+      "post_id": "js-post-1511349",
+      "author": "rpgLord69",
+      "date": "2025-04-28T21:13:17+0900",
+      "body": "Hmmm, if you put the shapes and colors as notetags on the equipment and name your picture files like ShapeColor, isn't it something like this then (replace X and Y with the number of your equipment type, starts from 0):\nlet shape = $gameActors.actor(1).equips()[X].meta.Shape;\nlet color = $gameActors.actor(1).equips()[Y].meta.Color;\n$gameScreen.picture(1).show(shape+color, 0, 0, 0, 100, 100, 255, 0);\nEDIT:\nOr maybe the other show picture script (never know what's the difference, but I tested and this one seems to work):\n$gameScreen.showPicture(1, shape+color, 1, 500, 300, 100, 100, 255, 0);"
+    }
+  ]
+}
