@@ -13,6 +13,7 @@ from report import (
 from sources import (
     community_reddit,
     community_forum,
+    community_guild,
     official_site,
     official_steam,
     official_opengameart,
@@ -23,7 +24,6 @@ from sources import (
     official_deviantart,
     asset_itchio,
     official_makerdevs,
-    official_x,
 )
 
 from asset_metadata import enrich_items
@@ -48,8 +48,8 @@ SOURCES = [
     official_deviantart,
     asset_itchio,
     community_forum,
+    community_guild,
     official_makerdevs,
-    official_x,
 ]
 
 
@@ -475,6 +475,7 @@ def main():
             "[Pending] Slack送信失敗のため、"
             "seen/pendingを更新しません。"
         )
+
 
 if __name__ == "__main__":
     main()
