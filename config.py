@@ -11,19 +11,6 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 
 # ----------------------------
-# Official X
-# ----------------------------
-
-OFFICIAL_X_ACCOUNTS = [
-    {
-        "username": "tkool_dev",
-        "name": "ツクール開発部公式X",
-    },
-]
-
-OFFICIAL_X_SEEN_FILE = "seen_official_x.json"
-
-# ----------------------------
 # Official Steam
 # ----------------------------
 
