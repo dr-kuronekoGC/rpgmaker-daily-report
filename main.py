@@ -23,6 +23,7 @@ from sources import (
     official_deviantart,
     asset_itchio,
     official_makerdevs,
+    official_x,
 )
 
 from asset_metadata import enrich_items
@@ -48,6 +49,7 @@ SOURCES = [
     asset_itchio,
     community_forum,
     official_makerdevs,
+    official_x,
 ]
 
 
