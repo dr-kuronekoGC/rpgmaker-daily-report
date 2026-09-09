@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-mv-help.180700",
+  "title": "RPG MAKER MV HELP",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-09T12:59:11.725877+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1534589",
+      "author": "Tyuri2",
+      "date": "2025-10-25T13:47:18+0900",
+      "body": "Hi! For context, I am using RPG Maker MV, via steam. I do not have any plugins, (aside from Community_Basic), and the tileset I am using is the POP Horror City/Slasher forrest, also via steam (Both confirmed as MV assets, not MZ)\nI am trying to make an event, *See image attached*, where the player gets transferred to the *not same map* but a copy that has more gameplay features to progress the story. HOWEVER, when the player transfers, They get stuck. They can change direction, but not actually move. I browsed multiple forums, reddit, youtube, everything I could, but nothing. The tileset works in other maps, but with this event, it breaks.\nI have tried using a different map, different tileset, created a brand new map, but I do not know what to do. I am fairly new at using MV, (RPG Maker in general), aside from making random maps for hours to try and get better with design, and YT tutorials got me this far. I have a demo posted to GameJolt, and that runs perfectly fine, but this latest update has been a nightmare.\n(I apologize for my rambling, and incoherent SOS) Any advice, help, even external help via discord would be greatly appreciated!\n*If more context, details, etc. are needed, please let me know!"
+    },
+    {
+      "post_id": "js-post-1534683",
+      "author": "Piyan Glupak",
+      "date": "2025-10-26T13:22:00+0900",
+      "body": "Your cutscene event is autorun, with nothing to stop it when it has done its job. The easiest way to do that is to:\nAdd a \"Control Self Switch\" to switch self-switch A on;\nCreate a 2nd event page to be event page number 2 (shown on the right of the existing event page). This should be blank, have \"Self Switch A\" as the sole condition. You want this event page to be triggered by the action button.\nHere is a screenshot of the type of new event page that you want for event page 2:"
+    },
+    {
+      "post_id": "js-post-1534684",
+      "author": "Tyuri2",
+      "date": "2025-10-26T13:26:04+0900",
+      "body": "Piyan Glupak said:\nYour cutscene event is autorun, with nothing to stop it when it has done its job. The easiest way to do that is to:\nAdd a \"Control Self Switch\" to switch self-switch A on;\nCreate a 2nd event page to be event page number 2 (shown on the right of the existing event page). This should be blank, have \"Self Switch A\" as the sole condition. You want this event page to be triggered by the action button.\nHere is a screenshot of the type of new event page that you want for event page 2:\nView attachment 351933\nClick to expand...\nThank you! honestly I will try this once I get home, but doing some testing, I don't know how to explain it, the tileset seems to be broken? I tried using it on a new project, it worked, I tried a new map on my current project, broken. I tried re-adding the tileset, still nothing, and I have no idea what happened, but i will try it! <3"
+    },
+    {
+      "post_id": "js-post-1534687",
+      "author": "Piyan Glupak",
+      "date": "2025-10-26T13:55:31+0900",
+      "body": "I should have explained what I believe has been happening. Here goes:-\nAn autorun event stops the player from doing anything while it runs. When it comes to the end of its event page, it goes back to the start of that event page, and keeps running continiously. To give control back to the player, you need to stop that by getting RPG Maker to process another event page of the event instead. You\ndon't\nwant your new page to be autorun.\nRPG Maker tries to run pages from right to left, that is try and run event page 2 before it runs event page 1, providing that the condition(s) for page 2 are met. In this case, RPG Maker can't run page 2 until self switch A is 'On', so it runs page 1 which is autorun. As soon as event page 1 sets self switch A to 'On', it stops running the autorun page and hands control to event page 2. If event page 2 isn't autorun, the player should be able to move and access the menu.\nBy the way, I didn't notice anything worrying in the screenshot of your tileset. If the player can move okay on other maps made with it, I doubt that it is an issue in this case. Try stopping the autorun first before you start investigating the settings of the tileset."
+    },
+    {
+      "post_id": "js-post-1534785",
+      "author": "Showsni",
+      "date": "2025-10-27T09:40:10+0900",
+      "body": "If the player can spin around but not actually walk it does sound more like a tileset passability issue than an autorunning event - an autorun wouldn't let the player move at all. Make sure the map is using the correct tileset (edit the map properties and make sure it's set to the right one), and that the tileset has the correct passability in the database. It looks like you're moving your character on top of a bed tile? The bed tile doesn't seem to be in the screenshot you took of the tileset - is it on one of the other letter pages? See if you can find it and make sure it has a circle and not a cross. The other thing to check is the regions for the map, if you're using any kind of region blocking plugin."
+    },
+    {
+      "post_id": "js-post-1534814",
+      "author": "Andar",
+      "date": "2025-10-27T18:46:29+0900",
+      "body": "@Tyuri2\nIf the player can spin but not walk, then it is a passability issue like\n@Showsni\nsaid above.\nHowever the most common cause for this (a wrong passability on the first B tile) cannot happen in a modern MV (that was fixed for MV in 1.5 or so way back), and if you didn't change the default Steam settings, your editor will be kept up-to-date by Steam.\nThe only way this can still happen is if you manually place either a decoration or a transparent tile that is impassible on a position.\nAnd at a guess? It's the bed\nBeds are usually set to impassable as all furniture, but that means you can't leave that tile if you accidentally transfer the player to that position."
+    }
+  ]
+}

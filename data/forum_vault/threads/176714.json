@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/need-help-with-timeloop-game-im-making.176714",
+  "title": "Need help with timeloop game I'm making.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T12:59:32.954793+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1507565",
+      "author": "RobertVinnie",
+      "date": "2025-04-03T14:40:04+0900",
+      "body": "So i am trying to make a simple game where there is a bit of timelooping involved and i need help in trying to make it work.\nI need help figuring out:\n1. make a false gameover, that occurs when you die in battle, where you get to respawn at a designated checkpoint.\n2. respawn all slain enemies, cause i placed a set amount of enemy sprites that the player has to defeat and if it isn't completed the enemies will respawn. i also might need help in erasing this event when every enemy on the map is slain.\n3. keep track of potion count- like if the player used 2 potions before dying they will regain two potion back when they loop.\ni've combed through the threads about timelooping and the only one i saw wanted the player to back to the title screen when they gameover and that's out of my depth.\ni am using rpgmaker vxace."
+    },
+    {
+      "post_id": "js-post-1507573",
+      "author": "Timtrack",
+      "date": "2025-04-03T15:45:24+0900",
+      "body": "Are there other things you want to 'reset' or specifically 'preserve' upon 'death'? (If it was everything, I would suggest using hidden save files, but it depends on how you want to use this mechanic)\n1. For false gameover, when you call battles through events, you can put lose conditions, avoiding the Game Over screen. The easiest is to call a common event that will teleport your party and reset the properties you want.\nThe next 2 solutions are based on variables and switches use:\n2. Depends on how you 'remove' an enemy, if you delete the event, it will respawn when the map is loaded, so the best is to use local switches along with variables and global switches:\nYou should have a variable that counts the amount of resets that will increase every time the reset event is activated, I will cal it '\nreset_counter\n'.\nFor each 'pack' of enemies (by that I mean number of troops to defeat), you should have a variable that counts the number of enemies defeated (I will call it '\nenemies_counter\n') and optionally a switch that is activated when\nenemies_counter\nreaches the intended amount, I will call the switch '\nenemies_defeated\n'. When the reset event is called, if\nenemies_defeated\nis not true, you should reset\nenemies_counter\nto 0.\nUnless you use local variables (with Event Extender or RPG Maker Extender scripts for instance), you will need one variable per maps with your battled events that I will call\nmapID_reset_counter\n(with ID replaced by the map ID).\nAn enemy event should have 3 pages:\n- the first page is how you trigger your battle, when the enemy is slain, you set a local switch (say 'A') to true, increase\nenemies_counter\nby 1 and set\nmapID_reset_counter\nto\nreset_counter. (\nIf you increase\nenemies_counter,\nthis might be the place to check if\nenemies_counter\nhigh enough to set\nenemies_defeated\nto true).\n- the second page is automatic or in parallel process and does not have a sprite: its page conditions are that 'A' is true. The page checks if\nmapID_reset_counter < reset_counter,\nif that is the case, the events disable  'A'. Otherwise, delete the event.\n- the third one is empty and its page condition is\nenemies_defeated\nis true. (if you only use\nenemies_counter,\nyou might just need to set the condition as\nenemies_counter >\nyour total number of enemies)\n3. When you do your checkpoint, you can store into a variable the amount of items your party has with specific IDs, so if you only keep track of potions, you need only 1 variable.\nWhen you call the reset event, you may then deduce the difference between the number of items your party has and how many they had before death, you can then add or remove difference."
+    },
+    {
+      "post_id": "js-post-1507584",
+      "author": "Andar",
+      "date": "2025-04-03T18:01:52+0900",
+      "body": "RobertVinnie said:\ni've combed through the threads about timelooping\nClick to expand...\nThose have nothing to do with your project, because they are usually about managing time systems.\nWhat you describe is a simple recurring enemy reset, which is best handled through eventing.\nthere are several different variants of resetting events, if you don't understand the description above ask again.\nThe answer above to point 1 (custom gameover) only works with evented enemies, not with random encounters. From your description that is exactly what you have, but if that changes then look for a script that calls a common event on game over.\nthat might actually be easier to use than changing all enemy events to allow a lost battle..."
+    },
+    {
+      "post_id": "js-post-1507589",
+      "author": "Arcaines",
+      "date": "2025-04-03T19:29:24+0900",
+      "body": "If I'm understanding this correctly, it seems like you want to do a game over scene, with all the resets and everything then you might be better off doing a normal game over but with an Auto-save function.\nSo you go to check point 1. The game auto saves that file. you get a game over and the game auto loads the auto save file.\nYou might be better off getting a plugin that does that.\nJust a quick google search gave me this plugin.\nCustom Game Over behavior\nCustom Game Over      Version 1.3.2      by McKathlin   Introduction     Change what happens when the party dies or an event calls Game Over processing.         In some games, after the party dies they find themselves in a recently visited safe place, where they can continue their game with all...\nforums.rpgmakerweb.com\nSo you just need to find an auto save plugin for the check points now."
+    },
+    {
+      "post_id": "js-post-1507592",
+      "author": "Andar",
+      "date": "2025-04-03T20:07:59+0900",
+      "body": "@Martin_Arcainess\nVXA doesn't use plug-ins at all, it uses scripts. there are script equivalents, but the link you gave is useless here."
+    },
+    {
+      "post_id": "js-post-1507645",
+      "author": "RobertVinnie",
+      "date": "2025-04-04T04:12:56+0900",
+      "body": "Timtrack said:\nAre there other things you want to 'reset' or specifically 'preserve' upon 'death'?\nClick to expand...\nThere's a event where you collect a bomb to bring it to a boulder to blow it up and collect potions. If you were to die before the event is complete, though I'm not sure how you would die during it, it should reset and if it is completed the mc will make a save and the event will stay complete.\nAlso thank you for your help."
+    },
+    {
+      "post_id": "js-post-1507655",
+      "author": "RobertVinnie",
+      "date": "2025-04-04T04:51:33+0900",
+      "body": "Thank you everyone who replied.\nAlso sorry for the upcoming \"rant\" for a lack of a better word but this thought has festered in my mind for a bit and I need to get it out before it gets worse. So here's a little bit of what I'm thinking.\nThe more I look on these forums the more inadequate I feel about my small game; most of the game centers around a single map with like 2-3 quests to complete and an additional area with a boss.\nI'm aware enough to know that I have no experience with game making and at most, only started when vx ace was free on steam; which was like a month or so ago. I know that my first game that I make will not be the best and I don't think others would expect it to be either.\nEven knowing this, that this is my first game I'm making and I don't have any experience as a game maker my mind is still thinking that the game won't turn out good and that I'm waisting my time even trying. That thought is absolutely annoying me and I can't really think about a way to solve it."
+    },
+    {
+      "post_id": "js-post-1507656",
+      "author": "Trihan",
+      "date": "2025-04-04T05:00:22+0900",
+      "body": "RobertVinnie said:\nThank you everyone who replied.\nAlso sorry for the upcoming \"rant\" for a lack of a better word but this thought has festered in my mind for a bit and I need to get it out before it gets worse. So here's a little bit of what I'm thinking.\nThe more I look on these forums the more inadequate I feel about my small game; most of the game centers around a single map with like 2-3 quests to complete and an additional area with a boss.\nI'm aware enough to know that I have no experience with game making and at most, only started when vx ace was free on steam; which was like a month or so ago. I know that my first game that I make will not be the best and I don't think others would expect it to be either.\nEven knowing this, that this is my first game I'm making and I don't have any experience as a game maker my mind is still thinking that the game won't turn out good and that I'm waisting my time even trying. That thought is absolutely annoying me and I can't really think about a way to solve it.\nClick to expand...\nThe only way to waste your time is to create nothing.\nEven a bad game will teach you things you can bring into your next one. As long as you can take a lesson from your time, it was well-spent.\nYou seem to think it's a problem if your game is small, but the good thing about small games is they're quicker to complete. The faster you finish, the sooner you can move to the next project.\nBut if you're truly losing sleep over the prospect of your magnum opus not being as good as you'd hoped it would be, why not shelve it for a bit and focus on some even smaller projects you only share with your closest friends for feedback?"
+    },
+    {
+      "post_id": "js-post-1507710",
+      "author": "RobertVinnie",
+      "date": "2025-04-04T13:57:20+0900",
+      "body": "Timtrack said:\n1. For false gameover, when you call battles through events, you can put lose conditions, avoiding the Game Over screen. The easiest is to call a common event that will teleport your party and reset the properties you want.\nClick to expand...\nI was able to do what you said, but i want to show game over screen graphic before i transfer the player to the location first."
+    },
+    {
+      "post_id": "js-post-1507731",
+      "author": "Andar",
+      "date": "2025-04-04T18:38:35+0900",
+      "body": "then use a show picture of the game over screen instead of the actual game over function.\nsaid screen is nothing but said picture showing anyway.\nyou might have to copy the picture to the correct folder however, I don't remember where it is stored."
+    },
+    {
+      "post_id": "js-post-1507883",
+      "author": "RobertVinnie",
+      "date": "2025-04-05T14:11:53+0900",
+      "body": "Timtrack said:\nset\nmapID_reset_counter\nto\nreset_counter.\nClick to expand...\nI'm sorry, but I don't understand how I would set map reset counter to reset counter. I'm not even sure how I could explain why I don't get this."
+    },
+    {
+      "post_id": "js-post-1507946",
+      "author": "Andar",
+      "date": "2025-04-06T03:16:46+0900",
+      "body": "@RobertVinnie\n\"set\" is an option of the control variable event command, and the rest of that sentence refer to the other options of the control variable command.\nWe cannot help you if you don't even know the common terms used in the editor, because it is too much work to make screenshots with pointers to every button and option in the program.\nYou'll need to get the basics through the usual tutorials - which is is a problem in so far as VXA does not have integrated tutorials (only the newer MV and MZ have those).\nHowever, I once wrote the \"starting point\" tutorial linked in my signature to help new users with exactly that.\nPlease work through that tutorial (no,, reading it is not enoug, you'll need to try to use the options mentioned in there in the editor for yourself, just to learn what is where).\nOn an average (depending on available time) most people need about a month to work through that (reading is fast but as said useless). After that please come back here with any more questions."
+    }
+  ]
+}

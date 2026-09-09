@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/need-help-making-an-event-condition-trigger-after-battle-starts-but-before-it-ends.177020",
+  "title": "Need help making an event condition trigger after battle starts, but before it ends",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T12:59:30.219046+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1509671",
+      "author": "james5272",
+      "date": "2025-04-17T23:29:04+0900",
+      "body": "I have an event that has a character 5 tiles away from the main character before battle starts. After the battle, I want them to be right behind the main character, and a different color sprite. What's happening right now is, battle ends, you see this sprite 5 tiles away for a second, then that gets erased and it appears right behind the main character as a different color. I want the change to happen without being seen. Is there a way to do this?"
+    },
+    {
+      "post_id": "js-post-1509673",
+      "author": "SGHarlekin",
+      "date": "2025-04-17T23:40:23+0900",
+      "body": "Well, one easy solution could be just fading out the screen and doing it before the battle starts. Otherwise I would check your eventing. Maybe there's some weird wait somewhere that delays the execution. I have multiple spots in my game that does this kinda stuff after battle and they work just fine."
+    },
+    {
+      "post_id": "js-post-1509676",
+      "author": "james5272",
+      "date": "2025-04-18T00:18:04+0900",
+      "body": "I have the switch that causes the move happening right after the battle processing line, no wait frames there. If I put it right before you see him move before the battle starts which isn't good. Setting a fadeout before battle then having a fadein after the battle is going to have to be good enough. It does make it a little annoying compared to other scripted event, since it fades out then shows the map again to do the battle begin effect (the zoom in on the map thing). But that doesn't show any of the event images, so don't see the moved sprite til after the battle, so it'll work."
+    },
+    {
+      "post_id": "js-post-1509679",
+      "author": "SGHarlekin",
+      "date": "2025-04-18T00:55:21+0900",
+      "body": "You can try using a show picture instead of the regular screen fade. Just make a black square as big as your game window and fade that in. This should prevent the map from popping up during the battle intro."
+    },
+    {
+      "post_id": "js-post-1509690",
+      "author": "Another Fen",
+      "date": "2025-04-18T01:43:48+0900",
+      "body": "I have not tested it, but from what I remember, regular events will pause their execution while the screen fades in.\nYou could try to make the effect happen by either using a second event for the \"behind the player\" sprite and activate the switch to make event appear at some point during the battle.\nAnother option would be to use a parallel process event to move the character, which is not subject to the \"fade in pause\" if I remember correctly.\nBoth of these methods will likely still be one frame late due to the order the game updates its entities, but this should hopefully not be noticeable.\nAlternatively you could move the event during the battle process.\nMost map related event commands are likely disabled during battle events, but you could use script commands to move the events anyways:\nJavaScript:\nlet event = $gameMap.event(17);  // Replace 17 with Event ID\n\nevent.locate(125, 54); // Move event to position x=125, y=54\nevent.setDirection(2); // Make the event look 2=down, 4=left, 6=right or 8=up\nevent.setImage(\"Spritesheet Name\", 0); // Change the events image, replace 0 with the character index (0-7)\n\n$gamePlayer.reserveTransfer(1, 2, 3, 4, 0); // Transfer the player to a new map:\n// Replace: 1 = New Map ID, 2 = New X position, 3 = new Y position, 4 = New Face Direction,\n// 0 = Fade Type (0 = black, 1 = white, 2 = none)\n(You can probably look up more in the pinned\nRPG Maker MV/MZ Script Call List\n.)"
+    }
+  ]
+}

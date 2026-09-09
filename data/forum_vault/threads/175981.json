@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/setting-up-conditional-states-in-battle.175981",
+  "title": "Setting up conditional states in battle",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T12:59:35.731238+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1502571",
+      "author": "CuteWolfGames",
+      "date": "2025-03-04T10:32:46+0900",
+      "body": "I apologize if this has been posted on/explained before, I have tried to look around but haven't found anything that can quite help me yet!\nHello RPG Maker community! I am, slowly, learning how to use the engine, and have been working on a tutorial battle intended to introduce some of the basic mechanics of my battle system, however, I am running into some problems inducing condition based elements in the battle itself.\nI have a skill that requires TP that I want to force the player to use, but only when it would make sense to use it. As TP will be generated from a physical attack, I want the battle to prompt the player to use the skill only after a successful physical attack has occurred.\nI believe I understand that the way to force a player to use a specific skill is best accomplished through sealing skills and attaching those sealed skills to a state, however, setting up the conditional branching to only trigger this state after a successful attack is proving to be difficult. I am sure I am missing something simple, and I am hopeful that this wonderful team of talented indie developers can point me in the right direction.\nSo far this is what I have.\nFirst, I have created a State called \"Attacked\" I have built this for tracking purposes so that the system can track when the enemy unit has indeed been attacked.\nNext, in the Battle Event, I am attempting to set up the condition that when this enemy is effected by Attacked the switch \"successful attack\" will switch to \"ON\"\nNext, I have a condition set to check once per battle that if the switch \"successful attack\" is ON then I should switch the State Tutorial 1\nTutorial 1 should then seal away the rest of the skills from the player.\nI can see via Icons that the state Attacked is applying to the enemy during a successful attack, however the switch doesn't seem to be inducing the state of Tutorial 1.\nCan anyone advise me on what I might be doing incorrectly? Any thoughts or insights would be incredibly welcome. Thanks again!"
+    },
+    {
+      "post_id": "js-post-1502587",
+      "author": "Andar",
+      "date": "2025-03-04T13:49:13+0900",
+      "body": "your problem is that the troop event 1 does not run as you assumed.\nCondition Turn 0 means that it will only run on turn 0 (which is before battle) and never later.\nyou need to run it every turn, so either turn 1*x or turn end as a condition\nadditionally, the span determines how often a troop event can be triggered: once per battle, once per turn or once per moment/action.\nsince you want it to happen several times during battle, you'll need to change the span to turn as well.\nEDIT: and you should probably split troop event 1: the messages only once on turn 0, but the check for the state in a different troop event once per turn\nEDIT2: And sealing the escape skill does nothing, the party command escape doesn't use that skill. that skill is intended for use by enemies only."
+    }
+  ]
+}
