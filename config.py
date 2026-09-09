@@ -44,7 +44,8 @@ OFFICIAL_STEAM_SEEN_FILE = (
 
 FORUM_URL = "https://forums.rpgmakerweb.com/index.php?whats-new/posts/"
 RPGMAKERWEB_URL = ""
-GUILD_URL = ""
+GUILD_URL = "https://guild.rpgmakerofficial.com/c/14-category/14"
+GUILD_PLUGIN_URL = "https://guild.rpgmakerofficial.com/c/14-category/17-category/17"
 
 # ----------------------------
 # RPG Maker Web Forum Archive
