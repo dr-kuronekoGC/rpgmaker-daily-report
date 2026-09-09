@@ -1,0 +1,203 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/custom-hit-formula-mz.156236",
+  "title": "Custom Hit Formula MZ",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T04:47:14.093120+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1338101",
+      "author": "ATT_Turan",
+      "date": "2023-03-29T23:43:29+0900",
+      "body": "Custom Hit Formula 1.4\nATT_Turan\n​\nIntroduction\nAs far as I know, there's still no plugin written with the ability to provide a custom hit formula in MZ, and I got tired of telling people that\n(apparently caethyril actually had one and I didn't know about it! Well, now you can try both and tell us who you like better. It should be me.)\nSo I wrote this to allow for custom hit formulae globally and/or per skill.\nI tested the basic functions, please let me know if you run into any errors. Because it was necessary to modify code in the middle of the Game_Action.apply() function, this may cause conflicts with other plugins that modify the same function.\nI will consider making compatibility patches if the other plugin is free to use and unobfuscated. Otherwise, other authors are free to modify this code to make it compatible with theirs so long as I am still credited.\nSpoiler:\nFeatures\nYou may use this plugin to bypass MZ's default hit formula (a percentile check against the attacker's hit rate). You can redefine one universal formula to supplant it, modify it at the skill level, and decide whether evasion is checked separately.\nThe default behavior of the engine is to determine a hit and then check for evasion or magic evasion, depending on the skill type. You can choose to bypass this behavior in order to incorporate the eva/mev parameters into your formula (or to disregard them).\nThe hit formula notetags and plugin parameter function identically; the notetags will always override the plugin parameter, and the parameter is set to MZ's built-in calculation by default. So this plugin is as plug-and-play as the user desires, with the ability to change the hit calculations on just one or few skills if that's all that's required.\nSpoiler:\nHow to Use\nUse the following notetag in the notebox of your skills:\n<hitformula>\nyour_formula_here\n</hitformula>\nThe formula can be any valid JavaScript expression. An evaluation of \"true\" means the skill will hit, whereas \"false\" is a miss.\nThe below example is fashioned after the D20 system, adding d20 + level and comparing it to the target's Defense:\n<hitformula>\nMath.randomInt(20)+1+a.level >= b.def\n</hitformula>\nIncluded variables are the same as those listed in MZ's damage formula, as well as user and target.\nTerms and Credits\nFree for non-commercial and commercial use. Credit ATT_Turan."
+    },
+    {
+      "post_id": "js-post-1338209",
+      "author": "Arthran",
+      "date": "2023-03-30T06:57:01+0900",
+      "body": "For anyone who wants to use this with VisuStella Battle Core, it should be compatible as long as you place this plugin somewhere\nabove\nBattle Core in your plugin manager."
+    },
+    {
+      "post_id": "js-post-1340565",
+      "author": "murilloc",
+      "date": "2023-04-11T02:28:43+0900",
+      "body": "This is so incredible i'm beyond words!\nIt's simple, effective and give us plenty of possibilities.\nThank you so much\n@ATT_Turan\nJust a quick question tho.\nThis formula already takes the evade parameters in consideration or i need to add it?\n<hitformula: Math.randomInt(20)+1+a.level >= b.def>"
+    },
+    {
+      "post_id": "js-post-1340573",
+      "author": "ATT_Turan",
+      "date": "2023-04-11T03:03:39+0900",
+      "body": "murilloc said:\nThis formula already takes the evade parameters in consideration or i need to add it?\nClick to expand...\nThat depends on how you configured the plugin parameters.\nAs I described in the instructions, checking evade is normally a second check unrelated to the hit formula.\nSo if you left that option on, then the engine will check evade as it always does.\nIf you turned it off, then no, there's nothing in your formula that references it."
+    },
+    {
+      "post_id": "js-post-1355829",
+      "author": "aironneil",
+      "date": "2023-06-12T12:38:41+0900",
+      "body": "Sorry, but it doesn't seem to work for me. No matter what I put in the Hit Formula it doesn't do anything. I even tried making the formula always return false and it still just kept to the default. I turned all other plugins off to see if that made a difference and it didn't.\nEdit: Nevermind, I forgot about hit rate with the default formula."
+    },
+    {
+      "post_id": "js-post-1357156",
+      "author": "bookco",
+      "date": "2023-06-17T18:16:58+0900",
+      "body": "How do I make a certain hit formula for this plugin? I have tried <hitformula: true>, but it doesn't work in all cases. Would this be a compatibility issue with another plugin in that case?\nEDIT: Nevermind, I answered my own question as I was asking it. I got my issue resolved by making sure both plugins were telling the skill to always hit."
+    },
+    {
+      "post_id": "js-post-1406494",
+      "author": "LordEdmundGod",
+      "date": "2023-12-17T05:29:28+0900",
+      "body": "I added a custom hit formula, but it doesn't seem to be working. I'm just using the D20 formula provided here, but edited so that it's no longer adding level."
+    },
+    {
+      "post_id": "js-post-1406496",
+      "author": "ATT_Turan",
+      "date": "2023-12-17T05:40:24+0900",
+      "body": "@LordEdmundGod\nPlease post what you\nactually\nhave entered, rather than describing it. There may be an error in syntax that you're not noticing.\nAside from that:\n- What do you mean that it \"doesn't seem\" to be working?\n- When you press F8 and go to the Console tab during a playtest, do you see any warnings or errors (aside from the pixi map thing)?\n- What engine are you using? Your profile says you use MV, but this is an MZ plugin."
+    },
+    {
+      "post_id": "js-post-1406553",
+      "author": "LordEdmundGod",
+      "date": "2023-12-17T11:50:52+0900",
+      "body": "Well, then there's my problem! It appears I missed that this was an MZ plugin! Do you know of any plugins that would allow for me to create a similar effect to this one that work for MV?"
+    },
+    {
+      "post_id": "js-post-1406556",
+      "author": "ATT_Turan",
+      "date": "2023-12-17T12:03:26+0900",
+      "body": "@LordEdmundGod\nYup, if you Google the terms there are a number of plugins that do this stuff for MV.\nYanfly has a hit formula plugin, as does...I wanna say Victor Engine. There may be more, depending on exactly which features you want."
+    },
+    {
+      "post_id": "js-post-1406557",
+      "author": "LordEdmundGod",
+      "date": "2023-12-17T12:04:44+0900",
+      "body": "I really just want to be implement a D20 system for my game- thanks for your help!"
+    },
+    {
+      "post_id": "js-post-1415702",
+      "author": "Falastur18",
+      "date": "2024-01-19T07:12:19+0900",
+      "body": "Where would I add individualized + to hit for different enemies/actors. For example I have the hit formula setup for a basic d20 system plus their attack/2 but some have bonuses to hit. Can I add this in the notes of each enemy and if so what would be the formula for that?"
+    },
+    {
+      "post_id": "js-post-1415717",
+      "author": "ATT_Turan",
+      "date": "2024-01-19T08:36:23+0900",
+      "body": "Falastur18 said:\nWhere would I add individualized + to hit for different enemies/actors. For example I have the hit formula setup for a basic d20 system plus their attack/2 but some have bonuses to hit. Can I add this in the notes of each enemy and if so what would be the formula for that?\nClick to expand...\nHm. There isn't an easy way to do that built into the plugin, because everyone's equation is potentially different - so me making a notetag that \"adds this much\" to the formula wouldn't necessarily mean anything.\nTwo thoughts:\n1 - what are you using ATK for? You could simply make that be the hit bonus, then you're incorporating a.atk into your formula.\n2 - you could use a notetag. The only trick is you'd have to use a bit of fanciness because the way you access notetags is different for actors vs. enemies.\nSo if you give your actors and enemies a <tohit:x> notetag, you could then do:\nCode:\n(a.isActor() ? Number(a.actor().meta.tohit) : Number(a.enemy().meta.tohit))\nand stick that wherever in your formula you want to add the value.\nYou just need to make sure every actor and enemy has that notetag, even if it's\n<tohit:0>"
+    },
+    {
+      "post_id": "js-post-1416204",
+      "author": "Aquras",
+      "date": "2024-01-21T08:52:14+0900",
+      "body": "I've tried the following formula.\n<hitformula: Math.randomInt(20)+1+a.agi >= b.agi>\nhowever the game seems to revert to the game's default formula. I've set the enemy agility to 200, but the player characters are still landing hits. I'm really bad with code, and I'm honestly just looking to add character speed state to both hit and evasion rates.  Would someone be able to tell me where I'm going wrong?\nThe plugin itself is working fine as I tried simply <hitformula: false> which made sure all attacks missed, so there is no conflict with other plugins."
+    },
+    {
+      "post_id": "js-post-1416207",
+      "author": "ATT_Turan",
+      "date": "2024-01-21T09:23:27+0900",
+      "body": "@Aquras\nJust making sure you're using this in MZ - your profile says you use MV, and this plugin has JavaScript syntax that will prevent it from loading in MV.\nI did confirm a bug when using some characters in the hitformula notetag, and I've uploaded a new version.\nPlease notice the format of the notetag has changed to:\nCode:\n<hitformula>\nformula\n</hitformula>"
+    },
+    {
+      "post_id": "js-post-1416209",
+      "author": "Aquras",
+      "date": "2024-01-21T09:28:42+0900",
+      "body": "ATT_Turan said:\n@Aquras\nJust making sure you're using this in MZ - your profile says you use MV, and this plugin has JavaScript syntax that will prevent it from loading in MV.\nI did confirm a bug when using some characters in the hitformula notetag, and I've uploaded a new version.\nPlease notice the format of the notetag has changed to:\nCode:\n<hitformula>\nformula\n</hitformula>\nClick to expand...\nThanks for the help.  It's working just fine now.  Glad it was a bug in the end and not me."
+    },
+    {
+      "post_id": "js-post-1418430",
+      "author": "Aquras",
+      "date": "2024-01-29T20:44:13+0900",
+      "body": "Hi, me again.  I believe I have found another bug potentially.  When I have a character use an item, any item, i get a \"Cannot read property \"Length\" undefined.  I have tried using items without the plugin and all goes as normal.  I'll insert an image of the debug window."
+    },
+    {
+      "post_id": "js-post-1418449",
+      "author": "ATT_Turan",
+      "date": "2024-01-29T22:21:54+0900",
+      "body": "@Aquras\nThanks for the heads up, should be corrected in the new version on the first post."
+    },
+    {
+      "post_id": "js-post-1435486",
+      "author": "ATT_Turan",
+      "date": "2024-04-06T12:34:49+0900",
+      "body": "Updated to correct an error with the ApplyEvasion parameter."
+    },
+    {
+      "post_id": "js-post-1491856",
+      "author": "imcatman",
+      "date": "2025-01-05T11:21:13+0900",
+      "body": "Thank you for the amazing plugin.\nI have one question: how can I write a code to use a notetag to check a condition where an actor's attack misses or the enemy evades?\nI tried writing it as follows, but it didn't work:\n<hitformula>\nif (target.result().missed || target.result().evaded) {\n// process\n} else {\n// process\n}\n</hitformula>"
+    },
+    {
+      "post_id": "js-post-1491865",
+      "author": "ATT_Turan",
+      "date": "2025-01-05T12:19:36+0900",
+      "body": "@imcatman\nThis doesn't make sense.\nThe point of a hit formula is to\ndetermine\nwhether an attack hits or misses - there's no such thing as an action result or the missed or evaded properties until well after that notetag's code has been run.\nI think you're looking to do something with a skill notetag or during an action sequence. My Eval Tags plugin provides notetags that occur during skill resolution, or if you're using VisuStella plugins their Battle Core does.\nAlso, just mentioning based on your profile - this is an MZ plugin. It's entirely possible that this portion of the code is the same for MV so it might work, but I didn't test it in that engine at all."
+    },
+    {
+      "post_id": "js-post-1492033",
+      "author": "imcatman",
+      "date": "2025-01-06T07:12:21+0900",
+      "body": "@ATT_Turan\nThank you for your reply.\nOh, my profile says RMMV, but I recently started using MZ, so this question is about MZ. I'll update my profile later.\nI was trying to use a skill's notetag to check the enemy's evasion condition. In MV's Battle Engine Core (YEP), I was able to use target.result().missed or target.result().evaded within a notetag to check for evasion conditions, but I can't seem to do that with VisuStella's Battle Core.\nThat’s why I was wondering if it might be possible to achieve this using a hit formula.I'll keep exploring other methods to see if there’s a way to achieve what I’m aiming for. Thank you!"
+    },
+    {
+      "post_id": "js-post-1492065",
+      "author": "ATT_Turan",
+      "date": "2025-01-06T09:58:05+0900",
+      "body": "@imcatman\nYanfly's Battle Engine Core doesn't provide any notetags to do anything by itself, but that's not really your point.\nYou absolutely can do it with VisuStella's Battle Core - there's a whole section of notetags that execute code at different times during a skill or turn.\nBut if you're having a hard time figuring out what to do there, you'd need to make a new thread asking your specific question - it wouldn't have anything to do with this plugin.\nGood luck."
+    },
+    {
+      "post_id": "js-post-1500022",
+      "author": "ArkhamVI",
+      "date": "2025-02-20T10:00:12+0900",
+      "body": "Hey, here's a question: is it possible to use the Custom Parameters from VisuStella's Core Engine with this?"
+    },
+    {
+      "post_id": "js-post-1500046",
+      "author": "ATT_Turan",
+      "date": "2025-02-20T12:04:52+0900",
+      "body": "ArkhamVI said:\nHey, here's a question: is it possible to use the Custom Parameters from VisuStella's Core Engine with this?\nClick to expand...\nThe formula is just JavaScript, so you can use anything you can express in JavaScript.\nI'm not versed with that plugin, but I assume the documentation gives you some way to reference the custom parameters."
+    },
+    {
+      "post_id": "js-post-1517203",
+      "author": "Zykles",
+      "date": "2025-06-07T00:23:26+0900",
+      "body": "ATT_Turan said:\nThe formula is just JavaScript, so you can use anything you can express in JavaScript.\nI'm not versed with that plugin, but I assume the documentation gives you some way to reference the custom parameters.\nClick to expand...\nHey, I have the same question as the person above. As far as i can see in your code, these lines load the involved actor's skills from $dataSkills and put them into an array\nVisuStella's parameters seem to be from Game_Battlerbase and not $dataSkills\nI'm kind of new to RPG Maker and not the most versed in JS, do you have an idea on how i would impliment the custom parameters? I understand somewhat how you do the original, but i don't really know any of the syntax"
+    },
+    {
+      "post_id": "js-post-1517235",
+      "author": "ATT_Turan",
+      "date": "2025-06-07T04:30:03+0900",
+      "body": "Zykles said:\nHey, I have the same question as the person above.\nClick to expand...\nI don't really see why you're rooting around in code or looking at skills.\nYou\ndefine how to access custom parameters right in the Core Engine plugin parameters:\nIf you had the entry above, you would reference the attacker's Strength in a hit formula by simply using\na.str\n, exactly like it says in the screenshot you provided from the documentation."
+    },
+    {
+      "post_id": "js-post-1517247",
+      "author": "Zykles",
+      "date": "2025-06-07T05:05:52+0900",
+      "body": "ATT_Turan said:\nI don't really see why you're rooting around in code or looking at skills.\nYou\ndefine how to access custom parameters right in the Core Engine plugin parameters:\nView attachment 342335\nIf you had the entry above, you would reference the attacker's Strength in a hit formula by simply using\na.str\n, exactly like it says in the screenshot you provided from the documentation.\nClick to expand...\nIt's possible I'm wrong, but as far as I can tell, using custom parameters as is results in an error. Calling them in a formula as per\nv[1] = b.str\n(formula involving v[1] in some way)\nresults in an error (automatic miss)\nAnd using them directly in a formula\na.str > b.def\nMakes the attack automatically hit.\nWhat I was trying to say is that I think they SHOULD be pulled up, but your plugin finds the values of skills from $dataSkills, but visustella custom parameters values are from Game_Battlerbase, so it results in an error when used in the plugin. So my theory is that if code is added to your plugin to either take skill values from battlerbase or just add on the visuatella ones to your array, they'll be compatible.\nI could be wrong, but if I'm not, I would love help implementing this. Thanks for your reply"
+    },
+    {
+      "post_id": "js-post-1517249",
+      "author": "ATT_Turan",
+      "date": "2025-06-07T05:17:20+0900",
+      "body": "Zykles said:\nAnd using them directly in a formula\na.str > b.def\nMakes the attack automatically hit.\nClick to expand...\nThat would not happen if the custom parameter were being somehow ignored. If you reference a nonexistent property in a formula, it will have a value of\nundefined\n- that will never evaluate to being greater than anything. That means the attacks would always automatically fail, not hit.\nZykles said:\nWhat I was trying to say is that I think they SHOULD be pulled up, but your plugin finds the values of skills from $dataSkills, but visustella custom parameters values are from Game_Battlerbase, so it results in an error when used in the plugin.\nClick to expand...\nYou are confusing yourself by trying to read the code - that's not how any of it works.\nThe variable\na\n- defined in the appropriate function of my plugin as\nthis.subject()\n- and\nb\n- passed in as an argument to that function - are both going to be of types either Game_Actor or Game_Enemy, both of which inherit from Game_BattlerBase.\nIf my code didn't have correct references to the attacker and target,\nnone\nof it would work.\nZykles said:\nSo my theory is that if code is added to your plugin to either take skill values from battlerbase\nClick to expand...\nThere's no such thing as \"skill values from battlerbase\".\nZykles said:\nor just add on the visuatella ones to your array\nClick to expand...\nThere's no such thing, I don't make an array of anything.\nZykles said:\nI could be wrong, but if I'm not, I would love help implementing this.\nClick to expand...\nYou would have to post screenshots of how your custom parameters are defined in your plugin parameters and the exact formulae you're trying to use.\nThen press F8 and go to the Console tab while the game is running so you can see whether it produces any errors and post a screenshot of\nthat\nwindow."
+    },
+    {
+      "post_id": "js-post-1517250",
+      "author": "Zykles",
+      "date": "2025-06-07T05:20:44+0900",
+      "body": "ATT_Turan said:\nThat would not happen if the custom parameter were being somehow ignored. If you reference a nonexistent property in a formula, it will have a value of\nundefined\n- that will never evaluate to being greater than anything. That means the attacks would always automatically fail, not hit.\nYou are confusing yourself by trying to read the code - that's not how any of it works.\nThe variable\na\n- defined in the appropriate function of my plugin as\nthis.subject()\n- and\nb\n- passed in as an argument to that function - are both going to be of types either Game_Actor or Game_Enemy, both of which inherit from Game_BattlerBase.\nIf my code didn't have correct references to the attacker and target,\nnone\nof it would work.\nThere's no such thing as \"skill values from battlerbase\".\nThere's no such thing, I don't make an array of anything.\nYou would have to post screenshots of how your custom parameters are defined in your plugin parameters and the exact formulae you're trying to use.\nThen press F8 and go to the Console tab while the game is running so you can see whether it produces any errors and post a screenshot of\nthat\nwindow.\nClick to expand...\nOk, fair enough, seems like I've confused myself.\nI'm not with my PC right now, but I'll do some testing and return. It's possible there's weird errors resulting from me using a combination of visustella and eli parameters. Thanks for the help."
+    },
+    {
+      "post_id": "js-post-1517251",
+      "author": "ATT_Turan",
+      "date": "2025-06-07T05:25:35+0900",
+      "body": "Zykles said:\nv[1] = b.str\nClick to expand...\nAs a side note, make sure you've read the documentation and plugin parameters for everything else you're using.\nThere are VisuStella plugins (perhaps even the Core Engine) which reserve variables for specific purposes. If you're trying to use variable 1 in your formula and it's reserved by a plugin parameter, that would yield unexpected results."
+    },
+    {
+      "post_id": "js-post-1517363",
+      "author": "Zykles",
+      "date": "2025-06-08T01:41:11+0900",
+      "body": "oh my god it was a single } LMAOOOOOOOOOOOOOOOOOOOOOOOO IM SO SORRY, THANK YOU SO MUCH\n(also the variable 1 thing was screwing with things so that helped a lot)"
+    }
+  ]
+}
