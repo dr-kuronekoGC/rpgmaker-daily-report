@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/if-low-sp-enemy-is-skipping-turn-on-rpg-maker-xp.175376",
+  "title": "if low SP enemy is skipping turn on rpg maker xp",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker XP",
+  "language": "英語",
+  "archived_at": "2026-09-09T22:35:11.284300+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1498575",
+      "author": "thalesgal",
+      "date": "2025-02-12T06:31:14+0900",
+      "body": "Hello guys!!\nSo this is my problem, when the enemy dont have enough SP to use the selected skill, nothing happens and that enemy turn ends.\nI have no idea how to fix that. I would like to request a script that could reroll the movement again if the selected one coudnt be done because of low SP.\n- All my enemies have free movements such as basic attacks or 0 SP skills.\nPlease help xD\nThank you so much in advance!!"
+    },
+    {
+      "post_id": "js-post-1499048",
+      "author": "thalesgal",
+      "date": "2025-02-15T03:19:47+0900",
+      "body": "Hello guys!!\nI managed to solve that problem. I will share here the script. Maybe that could be useful to someone in the future!\nYou can use edit and do whatever you want!\nCheers!!\nSpoiler:\nBattle NO SP bug script\nclass Game_Enemy < Game_Battler\nalias original_make_action make_action\ndef make_action\nputs \"[DEBUG] Inimigo esta escolhendo uma acao...\"\n@action = Game_BattleAction.new  # Garante que @action seja sempre uma nova instancia\nenemy_data = $data_enemies[@enemy_id]\nreturn set_attack_action unless enemy_data  # Se nao encontrar os dados do inimigo, ataca\n# Filtro avancado: Obtem todas as acoes que podem ser usadas neste turno\nvalid_actions = []\nenemy_data.actions.each do |action|\ncase action.kind\nwhen 0 # Acoes basicas (Ataque, Defesa, Fugir, Nada)\nvalid_actions << [action, action.rating]\nwhen 1 # Skill\nif skill_can_use?(action.skill_id) && action_condition_met?(action)\nvalid_actions << [action, action.rating]\nelse\nputs \"[DEBUG] Skill #{action.skill_id} nao pode ser usada (SP insuficiente ou fora das condicoes!)\"\nend\nend\nend\n# Se houver acoes validas, escolhe uma com base no rating\nif valid_actions.any?\nchosen_action = weighted_random_choice(valid_actions)\ncase chosen_action.kind\nwhen 0 # Acoes basicas (Ataque, Defesa, Fugir, Nada)\ncase chosen_action.basic\nwhen 0 # Ataque normal\nputs \"[DEBUG] Inimigo escolheu atacar normalmente.\"\nset_attack_action\nwhen 1 # Defender\nputs \"[DEBUG] Inimigo escolheu defender.\"\nset_defend_action\nwhen 2 # Fugir\nputs \"[DEBUG] Inimigo escolheu fugir.\"\nset_escape_action\nwhen 3 # Fazer nada\nputs \"[DEBUG] Inimigo escolheu fazer nada.\"\nset_do_nothing_action\nend\nwhen 1 # Skill\nputs \"[DEBUG] Inimigo escolheu usar a skill #{chosen_action.skill_id}.\"\n@action.kind = 1\n@action.basic = 0\n@action.skill_id = chosen_action.skill_id\nend\nelse\nputs \"[DEBUG] Nenhuma acao valida disponivel. Forcando ataque normal.\"\nset_attack_action\nend\nset_valid_target  # Garante que o inimigo tenha um alvo valido\nenforce_valid_action\n@current_action = @action\nend\n#\nAgora os inimigos podem Defender, Fugir ou Fazer Nada!\ndef set_attack_action\n@action.kind = 0\n@action.basic = 0  # 0 = Ataque normal\n@action.skill_id = nil\nputs \"[DEBUG] Inimigo foi configurado para ataque normal.\"\nend\ndef set_defend_action\n@action.kind = 0\n@action.basic = 1  # 1 = Defender\n@action.skill_id = nil\nputs \"[DEBUG] Inimigo foi configurado para defesa.\"\nend\ndef set_escape_action\n@action.kind = 0\n@action.basic = 2  # 2 = Fugir\n@action.skill_id = nil\nputs \"[DEBUG] Inimigo foi configurado para fuga.\"\nend\ndef set_do_nothing_action\n@action.kind = 0\n@action.basic = 3  # 3 = Fazer nada\n@action.skill_id = nil\nputs \"[DEBUG] Inimigo foi configurado para fazer nada.\"\nend\n#\nRespeita as condicoes do database (ex: turno minimo, rating)\ndef action_condition_met?(action)\nreturn true if action.condition_turn_a == 0  # Se a condicao de turno for 0, pode ser usada sempre\nturn_count = $game_temp.battle_turn  # Obtendo o turno corretamente\nreturn turn_count >= action.condition_turn_a && turn_count <= action.condition_turn_b\nend\n#\nEscolhe a acao de forma ponderada pelo rating\ndef weighted_random_choice(actions)\ntotal_weight = actions.inject(0) { |sum, (action, rating)| sum + rating }\nrnd = rand(total_weight)\nactions.each do |action, rating|\nreturn action if rnd < rating\nrnd -= rating\nend\nend\n# Metodo para garantir que @action esteja sempre correto\ndef enforce_valid_action\nunless @action.kind == 0 || (@action.kind == 1 && skill_can_use?(@action.skill_id))\nputs \"[DEBUG] Acao invalida detectada! Corrigindo para ataque normal.\"\nset_attack_action\nend\nputs \"[DEBUG] Acao final escolhida: #{@action.inspect}\"\nend\n# Metodo que define um alvo valido para o inimigo\ndef set_valid_target\nenemies = $game_party.actors  # Obtem todos os herois vivos\nif enemies.any?\n@action.target_index = rand(enemies.size)  # Escolhe um alvo aleatorio\nputs \"[DEBUG] Inimigo definiu alvo: #{@action.target_index}\"\nelse\nputs \"[DEBUG] Nenhum alvo disponivel! Acao sera ignorada.\"\nset_do_nothing_action\nend\nend\nend"
+    },
+    {
+      "post_id": "js-post-1499051",
+      "author": "Ms Littlefish",
+      "date": "2025-02-15T03:21:43+0900",
+      "body": "This thread is closed due to being reported as solved. If you need it reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

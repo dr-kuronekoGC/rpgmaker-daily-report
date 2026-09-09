@@ -1,0 +1,113 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/using-tiled-with-rmmz-trouble-with-tolvl1-collision-tile.182955",
+  "title": "Using Tiled with RMMZ - trouble with toLvl1 collision tile",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T22:35:08.297232+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1551305",
+      "author": "MDR",
+      "date": "2026-03-20T23:56:11+0900",
+      "body": "Hey everyone\nApologies if the answer to this question is fairly simple. I'm using the VisuStella plugin for Tiled in RMMZ. Their tutorial project is extremely helpful and I've met a couple people who are happy to share their experience with it, but I'm wondering if there's a message board or place where likeminded people with this tool help each other out? I understand the basics pretty well, but there's always nuanced specific tasks or problems I still come across.\nSomeone suggested I go to the Tiled Forum, but they seem to direct RPG Maker questions back to this forum.\nI just don't want to get into the habit of asking Tiled questions here if it's not common practice."
+    },
+    {
+      "post_id": "js-post-1551317",
+      "author": "SGHarlekin",
+      "date": "2026-03-21T02:12:30+0900",
+      "body": "Well, If you know how to get a map made with tiled into rpg maker via the plugin and get the collisions all working, that's all there is concerning rpg maker itself I would say. Technicalities of tiled itself would be a tiled forum thing to ask I would think.\nThat's about as much as one can say with the vague premise of \"Nuanced specific tasks or problems\".\nIn general, just make a thread for each nuanced specific task or problem, and people who know how to solve them will respond."
+    },
+    {
+      "post_id": "js-post-1551322",
+      "author": "MDR",
+      "date": "2026-03-21T03:21:35+0900",
+      "body": "Fair point.\nI changed the title of the thread. Here's the example.\nI have a cutscene where a roof of a burning building collapses on itself half way through the scene. Instead of using events and switches in RMMZ, I decided to do the tile swap using levels in Tiled. It seemed cleaner.\nI created two layers Before Roof Collapsed and Roof Collapsed, and gave them the correct priorities that display and disappear each layer depending on the level the player is on. During the cutscene I use Set Movement Route to move the player over toLvl1 collision tile. In theory this should swap the roof tiles, but it doesn't. To test whether it's an issue with the Set Movement Route or Tiled, I restored full movement at the end of the cutscene, moved the player off the toLvl1 tile and back onto it, and the tiles swapped like they should.\nConclusion: it doesn't seem like Set Movement Route command can be used to trigger a to-Lvl tile collision."
+    },
+    {
+      "post_id": "js-post-1551325",
+      "author": "Solar_Flare",
+      "date": "2026-03-21T03:32:51+0900",
+      "body": "It sounds like the core of the issue is that there's a difference between moving the player via keyboard/mouse control and moving the player via movement route – the former triggers the thing you need, and the latter does not.\nIs that accurate?\nIf so, I think you'd need to make copious used of the debugger to figure out\nwhat exactly\nis called to trigger that thing, and then call it manually in your movement route with a script call."
+    },
+    {
+      "post_id": "js-post-1551326",
+      "author": "MDR",
+      "date": "2026-03-21T03:40:10+0900",
+      "body": "Yes that is 100% accurate.\nBy debugger, do you mean that additional window that shows up when you run a test play and shows a bunch of coding as you run the game?\nI still want to figure this out, but I've also changed my approach on this cutscene.\nThe scene has the player follow another character through a village. Instead of forcing the players movement with Set Movement Route, I'm going to let the player follow with the keypad and use additional events to block the wrong directions. Seems more interactive."
+    },
+    {
+      "post_id": "js-post-1551335",
+      "author": "Solar_Flare",
+      "date": "2026-03-21T07:11:03+0900",
+      "body": "MDR said:\nBy debugger, do you mean that additional window that shows up when you run a test play and shows a bunch of coding as you run the game?\nClick to expand...\nWell, it normally doesn't show up by default, but I think VisuStella might change that so it does. You can also access it by pressing F8.\nIs the swap directly triggered by an event or is it something that's automatically handled somehow? If it's the former, you could try\nthis.checkEventTriggerHere([1,2])\nas a move route script. But, triggering an event while another (non-parallel) event is running probably isn't really supported. It would be better to take the thing you're doing in the event and do the exact same thing in a move route script."
+    },
+    {
+      "post_id": "js-post-1551438",
+      "author": "MDR",
+      "date": "2026-03-22T22:13:23+0900",
+      "body": "debugger language is not something I’m good at so I’ll try to explain the best I can. Apologies if I’m explaining something you already know.\nThe tile swap isn’t triggered within the event, rather a player’s movement over a tile with level properties assigned in Tiled. The most common example of its use is showing a bridge above and below a player pending what level they are on. You make two tile layers of the same bridge in Tiled, one layered above the player the other layered below. Depending on what level the player is on, one layer is visible while the other is invisible. The swap is triggered when a player walks over a tile with a level property (eg toLvl0, toLvl1).\nHowever, I think there’s a restriction to how the player steps on the level tile. You cannot activate a level tile by teleporting a player onto it. I think the same is true for Set Movement Route. The player has to walk over the level tile using the mouse or direction keys.\nAnyways, I opted for a more interactive approach to this cutscene. The player is forced to follow another character and in the process walk over the level tile and triggering the tile swap and roof collapse. It actually flows nicer for the player.\nThanks again SF"
+    },
+    {
+      "post_id": "js-post-1551446",
+      "author": "Solar_Flare",
+      "date": "2026-03-23T00:07:54+0900",
+      "body": "Okay, so it sounds like a mechanic implemented in the Tiled plugin, perhaps in\nincreaseSteps\nor a similar place. It would definitely be possible to trigger that in a move route. I don't know what the script call would be to do so though."
+    },
+    {
+      "post_id": "js-post-1551454",
+      "author": "MDR",
+      "date": "2026-03-23T01:44:56+0900",
+      "body": "If you want I’ll make a test map and we can figure it out. Because if there’s a way to do it, there would definitely be an audience that would want it"
+    },
+    {
+      "post_id": "js-post-1552655",
+      "author": "MDR",
+      "date": "2026-04-02T21:21:24+0900",
+      "body": "For continuity of good advice. I actually found a simple solution in the Visustella Tiled sample project. It was right in front of me and didn't notice.\nI believe it is map4 that outlines how Levels work in tiled, there's a pro tip that states:\nThis plugin comes with a simple command you can us in MZ. (Event command/Plugin Command/VisuMZ_5_TiledMZ/) called Set Map Level.\nSimply input the level you want to change to manually, but this is a cumbersome way to do it, recommended only for special occasions like cutscenes and similar non-exploration.\nIn case someone else is reading this thread, I wanted them to have this solution."
+    },
+    {
+      "post_id": "js-post-1552656",
+      "author": "Archeia",
+      "date": "2026-04-02T21:28:42+0900",
+      "body": "Thanks for using Tiled plugin!\nIf this is just a cutscene or one off, sometimes you also don't want to modify the tiles themselves and use something simpler. When I was trying to trigger a stairs to appear in RPG Maker using a sequence of 4 tiles, I noticed it was \"slower.\" I just ended up making it use a\nsingle frame sprite\nand event x / y offset place them. If you need better collission for it, then an event hitbox modification."
+    },
+    {
+      "post_id": "js-post-1552662",
+      "author": "MDR",
+      "date": "2026-04-02T22:19:25+0900",
+      "body": "good call! I actually did this in another cutscene with the Jump Command. I didn’t even think of the x/y offset. I’m assuming that can drop the sprite image down a few pixels to align it with the tilesets.\nThe Tiled plugin is great, along with the 8 wave bundle of plugins. Visustella has its fingerprints all over my project.\nI have a few quality of life questions related to the Tiled plugin. Mind if I send you a private message?"
+    },
+    {
+      "post_id": "js-post-1552666",
+      "author": "Solar_Flare",
+      "date": "2026-04-02T22:36:00+0900",
+      "body": "MDR said:\nI’m assuming that can drop the sprite image down a few pixels to align it with the tilesets.\nClick to expand...\nBy default you would do this by putting a\n!\nat the beginning of the spritesheet's filename."
+    },
+    {
+      "post_id": "js-post-1552672",
+      "author": "MDR",
+      "date": "2026-04-02T23:23:03+0900",
+      "body": "Solar_Flare said:\nBy default you would do this by putting a\n!\nat the beginning of the spritesheet's filename.\nClick to expand...\nSo here's the problem with doing it that way.\nWhen using Tiled, if you:\nplace a ! at the beginning of the spritesheet's filename and;\nuse that spritesheet in an event with the priority set to Below character\nThe event isn't visible because it gets drops below all the Tiled layers.\nBut as you stated in another thread, you can simple use a script command (this._priorityType = 2) in the movement route."
+    },
+    {
+      "post_id": "js-post-1552673",
+      "author": "Archeia",
+      "date": "2026-04-02T23:30:45+0900",
+      "body": "MDR said:\ngood call! I actually did this in another cutscene with the Jump Command. I didn’t even think of the x/y offset. I’m assuming that can drop the sprite image down a few pixels to align it with the tilesets.\nThe Tiled plugin is great, along with the 8 wave bundle of plugins. Visustella has its fingerprints all over my project.\nI have a few quality of life questions related to the Tiled plugin. Mind if I send you a private message?\nClick to expand...\nI cannot guarantee I have time to answer them all but you can certainly try or just ask here really."
+    },
+    {
+      "post_id": "js-post-1552688",
+      "author": "MDR",
+      "date": "2026-04-03T01:25:56+0900",
+      "body": "*Edit*\nI keep running into a a problem where a tileset used in Tiled, unexpected flashes the screen in MZ (typically when exiting the paused menu or exiting a tutorial (Visustella plugin).\nBeing respectful to forum rules, I'm going to keep my discussion related to this topic\nhere\n."
+    },
+    {
+      "post_id": "js-post-1553031",
+      "author": "hiddenone",
+      "date": "2026-04-06T23:51:27+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

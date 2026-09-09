@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/status-overlay-issue-solved.183342",
+  "title": "MZ Status Overlay Issue (SOLVED)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-09T22:35:06.840512+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1554209",
+      "author": "Nirriti",
+      "date": "2026-04-22T02:19:15+0900",
+      "body": "I've expanded my side-view character battle sprites sizes, last month. Ive kept a specific ratio: divided by 9 (W), divided by 6 (H). However, it has an unexpected consequence: The overlay sprites—that is, the status condition bubbles (not icons)—appears magically multiplied size, and chopped at 1/3rd. The engine has it flicker back and forth\n(at a regular frame switch timing)\nbetween 2/3rd and 1/3rd.\nIn short, its way misplaced and covers the player character's sprites. Its likely something to do with vanilla sprite sheet sizes and overlay bubbles being hardcoded together into specific ratios. I've also tested this by copying my game project and wiping off all plugins. So its not a plugin issue as it still occurs. My SV Character sprite sheets, for reference, are 783(W) x 522(H)."
+    },
+    {
+      "post_id": "js-post-1554210",
+      "author": "rpgLord69",
+      "date": "2026-04-22T02:42:52+0900",
+      "body": "You mean you enlarged the overlay file too?\nThe size is hardcoded in the method that sets the frame. Change the size (make a plugin). Like change that w and h to bigger than 96\nSprite_StateOverlay.prototype.updateFrame = function() {\nif (this._overlayIndex > 0) {\nconst w = 96;\nconst h = 96;\nconst sx = this._pattern * w;\nconst sy = (this._overlayIndex - 1) * h;\nthis.setFrame(sx, sy, w, h);\n} else {\nthis.setFrame(0, 0, 0, 0);\n}\n};"
+    },
+    {
+      "post_id": "js-post-1554225",
+      "author": "Nirriti",
+      "date": "2026-04-22T06:05:55+0900",
+      "body": "Took so long to reply, as I kept editing my answer to make it more in-depth to cover as much ground as possible. When I was about to mention two specified sheet sizes, by God, it clicked... I exported by +200%\n(at the last version)\nand never noticed until I went back testing some status effects yesterday. Ill mark the topic as solved. Thanks for the help regardless, wolfy.\nSpoiler:\nReasons it happened.\nI know why; Sometimes I like saving sprites (or screenshots) from various sources, even from games Ive never played nor have any interest in: Something pretty remains pretty. At times I just like how a game UI looks and want to keep note of it, even from VNs. Could even be a map... But when things are often so small, before placing in a proper folder, I tend to export by +300% so I can appreciate the sprites proper when browsing them\n(I COULD press ENTER on ifranview (my current img viewer) as its fullscreen has an innate vectorization effect, but its a bit tedious if youre talking of checking hundreds of files, having to zoom on each many times)\n. I must have went too fast and did it by reflex on my exported aseprite file. Oops."
+    },
+    {
+      "post_id": "js-post-1554234",
+      "author": "Robro33",
+      "date": "2026-04-22T07:39:13+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}
