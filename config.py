@@ -77,7 +77,7 @@ ITCHIO_GAME_RSS = (
 )
 
 ITCHIO_ASSET_RSS = (
-    "https://itch.io/game-assets/tag-rpg-maker-mz/tag-rpgmaker"
+    "https://itch.io/game-assets/tag-rpg-maker/tag-rpgmaker"
 )
 
 ITCHIO_SEEN_FILE = "seen_itchio.json"
@@ -145,6 +145,28 @@ DEVIANTART_SEARCHES = [
 ]
 
 DEVIANTART_SEEN_FILE = "seen_deviantart.json"
+
+# ==========================================
+# Casper Gaming
+# ==========================================
+
+CASPER_RESOURCES_URL = (
+    "https://www.caspergaming.com/resources/"
+)
+
+CASPER_SOUND_URL = (
+    "https://www.caspergaming.com/resources/sound/"
+)
+
+CASPER_MAP_URL = (
+    "https://www.caspergaming.com/resources/map/"
+)
+
+CASPER_PLUGINS_URL = (
+    "https://www.caspergaming.com/cgmz/"
+)
+
+CASPER_SEEN_FILE = "seen_caspergaming.json"
 
 # ==========================================
 # Pending items
