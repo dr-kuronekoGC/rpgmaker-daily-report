@@ -34,6 +34,10 @@ HEADERS = {
 # 1回のActionで取得するページ数
 MAX_PAGES = 3
 
+# トピック詳細を取得するときの待機時間。
+# Guildへの短時間の連続アクセスを避ける。
+TOPIC_REQUEST_INTERVAL = 0.5
+
 # Guildの対象カテゴリ
 #
 # 現在のGuildでは、これらが独立した
@@ -114,6 +118,93 @@ def classify_material(title, tags):
             return "サウンド素材"
 
     return "グラフィック素材"
+
+
+# ==========================================
+# Actual Guild Category Classification
+# ==========================================
+
+def classify_guild_category(
+    guild_category,
+    actual_category,
+    title,
+    tags,
+):
+    """
+    トピック自身に設定されている実際のGuildカテゴリを
+    Daily Reportのカテゴリへ変換する。
+
+    一覧ページの取得元カテゴリだけで判断せず、
+    トピック詳細のカテゴリを優先する。
+    """
+
+    category = (actual_category or "").strip()
+
+    # ----------------------------------
+    # 質問系
+    # ----------------------------------
+
+    if category in {
+        "質問",
+        "バグ報告",
+    }:
+        return "質問"
+
+    # ----------------------------------
+    # ゲーム系
+    # ----------------------------------
+
+    if category in {
+        "完成ゲーム",
+        "制作中ゲーム",
+    }:
+        return "ゲーム"
+
+    # ----------------------------------
+    # プラグイン系
+    # ----------------------------------
+
+    if category in {
+        "プラグイン",
+        "RPG Makerプラグイン",
+        "RGSSx",
+    }:
+        return "プラグイン"
+
+    # ----------------------------------
+    # 素材
+    # ----------------------------------
+
+    if category == "素材":
+        return classify_material(
+            title,
+            tags,
+        )
+
+    # ----------------------------------
+    # 詳細カテゴリを取得できなかった場合
+    # ----------------------------------
+    #
+    # 一時的な取得失敗で従来の収集機能を
+    # 全停止させないためのフォールバック。
+
+    if not category:
+
+        if guild_category == "プラグイン":
+            return "プラグイン"
+
+        if guild_category == "RGSSx":
+            return "プラグイン"
+
+        if guild_category == "素材":
+            return classify_material(
+                title,
+                tags,
+            )
+
+    # 雑談・お知らせなど、今回の対象から外すカテゴリは
+    # 採用しない。
+    return None
 
 
 # ==========================================
@@ -218,26 +309,6 @@ def extract_topics(
         )
 
         # ----------------------------------
-        # Daily Report category
-        # ----------------------------------
-
-        if guild_category == "プラグイン":
-            category = "プラグイン"
-
-        elif guild_category == "RGSSx":
-            category = "プラグイン"
-
-        elif guild_category == "素材":
-            category = classify_material(
-                title,
-                tags,
-            )
-
-        else:
-            # 想定外のカテゴリは採用しない。
-            continue
-
-        # ----------------------------------
         # Item
         # ----------------------------------
 
@@ -245,7 +316,7 @@ def extract_topics(
             {
                 "title": title,
                 "url": url,
-                "category": category,
+                "category": None,
                 "source": "RPG Maker Guild",
                 "tags": tags,
                 "guild_category": guild_category,
@@ -298,6 +369,68 @@ def get_page(
     response.raise_for_status()
 
     return response.text
+
+
+# ==========================================
+# Topic Detail Fetch
+# ==========================================
+
+def get_topic_detail(
+    session,
+    url,
+):
+    """
+    DiscourseのトピックJSONから、
+    トピック自身のカテゴリとタグを取得する。
+
+    トピックページのパンくずに表示されるカテゴリと
+    同じ情報をJSONから取得する。
+    """
+
+    topic_json_url = (
+        url.rstrip("/")
+        + ".json"
+    )
+
+    response = session.get(
+        topic_json_url,
+        headers=HEADERS,
+        timeout=REQUEST_TIMEOUT,
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    actual_category = data.get(
+        "category_name",
+        "",
+    )
+
+    json_tags = data.get(
+        "tags",
+        [],
+    )
+
+    if not isinstance(
+        json_tags,
+        list,
+    ):
+        json_tags = []
+
+    tags = []
+
+    for tag in json_tags:
+
+        text = str(tag).strip()
+
+        if text and text not in tags:
+            tags.append(text)
+
+    return (
+        str(actual_category).strip(),
+        tags,
+    )
 
 
 # ==========================================
@@ -384,6 +517,84 @@ def get_items(seen):
                     if url in seen_set:
                         continue
 
+                    # ----------------------------------
+                    # トピック自身のカテゴリを確認
+                    # ----------------------------------
+                    #
+                    # 一覧ページのカテゴリだけでは、
+                    # 「素材」一覧に質問・完成ゲームなどが
+                    # 混ざるケースを正しく判定できないため、
+                    # 新規トピックについて詳細情報を確認する。
+
+                    actual_category = ""
+                    detail_tags = []
+
+                    try:
+
+                        (
+                            actual_category,
+                            detail_tags,
+                        ) = get_topic_detail(
+                            session,
+                            url,
+                        )
+
+                        print(
+                            "[RPG Maker Guild] "
+                            f"Detail: "
+                            f"{item['title']} "
+                            f"=> "
+                            f"{actual_category or '(unknown)'}"
+                        )
+
+                    except (
+                        requests.RequestException,
+                        ValueError,
+                        TypeError,
+                    ) as e:
+
+                        print(
+                            "[RPG Maker Guild] "
+                            "Detail error: "
+                            f"{item['title']} - {e}"
+                        )
+
+                    # JSON側のタグを優先
+                    if detail_tags:
+                        item["tags"] = detail_tags
+
+                    category = classify_guild_category(
+                        guild_category,
+                        actual_category,
+                        item["title"],
+                        item.get("tags", []),
+                    )
+
+                    # ----------------------------------
+                    # 対象外カテゴリ
+                    # ----------------------------------
+
+                    if category is None:
+
+                        print(
+                            "[RPG Maker Guild] "
+                            "Skip category: "
+                            f"{item['title']} "
+                            f"({actual_category or guild_category})"
+                        )
+
+                        # 対象外カテゴリはseenに追加しない。
+                        #
+                        # 後からカテゴリ変更された場合に
+                        # 再取得できるようにする。
+                        continue
+
+                    # ----------------------------------
+                    # 採用
+                    # ----------------------------------
+
+                    item["category"] = category
+
                     adopted_items.append(
                         item
                     )
@@ -397,6 +608,11 @@ def get_items(seen):
                     )
 
                     category_new += 1
+
+                    # トピック詳細取得の間隔
+                    time.sleep(
+                        TOPIC_REQUEST_INTERVAL
+                    )
 
                 # ページ間隔
                 if page < MAX_PAGES:
