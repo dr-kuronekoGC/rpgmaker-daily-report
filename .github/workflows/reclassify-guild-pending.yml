@@ -1,0 +1,45 @@
+name: Reclassify Guild Pending
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reclassify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install packages
+        run: |
+          pip install -r requirements.txt
+
+      - name: Reclassify Guild pending items
+        run: |
+          python maintenance/reclassify_guild_pending.py
+
+      - name: Show pending diff
+        run: |
+          echo "===== pending_items.json diff ====="
+          git diff -- pending_items.json
+
+      - name: Commit updated pending
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add pending_items.json
+          git add pending_items.json.guild_cleanup_backup
+
+          git diff --cached --quiet || git commit -m "Reclassify old Guild pending items"
+
+          git push
