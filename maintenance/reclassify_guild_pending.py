@@ -1,5 +1,5 @@
 # ==========================================
-# Reclassify old RPG Maker Guild pending items
+# Rebuild old RPG Maker Guild pending items
 # ==========================================
 
 import json
@@ -12,9 +12,11 @@ from pathlib import Path
 import requests
 
 
-ROOT_DIR = Path(
-    __file__
-).resolve().parent.parent
+ROOT_DIR = (
+    Path(__file__)
+    .resolve()
+    .parent.parent
+)
 
 sys.path.insert(
     0,
@@ -51,16 +53,13 @@ TARGET_CATEGORIES = {
 
 
 # ==========================================
-# Rate Limit Settings
+# Rate Limit
 # ==========================================
 
-# 通常のリクエスト間隔。
-REQUEST_INTERVAL = 1.2
+REQUEST_INTERVAL = 1.5
 
-# 429発生時の最大リトライ回数。
 MAX_RETRIES = 4
 
-# Retry-Afterが取得できない場合の待機時間。
 DEFAULT_RETRY_WAIT = 10
 
 
@@ -101,6 +100,10 @@ def classify_material(
     title,
     tags,
 ):
+    """
+    素材カテゴリを
+    グラフィック / サウンドに分類する。
+    """
 
     text = " ".join(
         [title] + list(tags)
@@ -128,6 +131,15 @@ def classify_topic(
     title,
     tags,
 ):
+    """
+    Guildカテゴリを
+    Daily Reportカテゴリへ変換する。
+
+    重要：
+    categoryが空の場合はNoneを返す。
+    これは「削除」ではなく、
+    「判定不能」として扱う。
+    """
 
     if category in {
         "プラグイン",
@@ -148,13 +160,10 @@ def classify_topic(
 
 
 # ==========================================
-# Guild Topic API
+# Topic API
 # ==========================================
 
 def topic_api_url(url):
-    """
-    Discourse topic URLをJSON API URLへ変換する。
-    """
 
     url = url.rstrip("/")
 
@@ -171,8 +180,15 @@ def fetch_topic(
     """
     Guild Topic APIを取得する。
 
-    429の場合はRetry-Afterを尊重して
-    最大MAX_RETRIES回まで再試行する。
+    戻り値：
+        category
+        title
+        tags
+
+    取得できなかった場合は例外を発生させる。
+
+    「カテゴリが空」はエラーではないが、
+    判定不能として扱う。
     """
 
     api_url = topic_api_url(
@@ -191,14 +207,13 @@ def fetch_topic(
                 timeout=REQUEST_TIMEOUT,
             )
 
-            # ----------------------------------
-            # Rate Limit
-            # ----------------------------------
+            # ------------------------------
+            # 429
+            # ------------------------------
 
             if response.status_code == 429:
 
                 if attempt >= MAX_RETRIES:
-
                     response.raise_for_status()
 
                 retry_after = (
@@ -222,7 +237,6 @@ def fetch_topic(
                         DEFAULT_RETRY_WAIT
                     )
 
-                # 念のため上限を設定。
                 wait_seconds = min(
                     max(
                         wait_seconds,
@@ -234,8 +248,10 @@ def fetch_topic(
                 print(
                     "[Guild cleanup] "
                     "429 Too Many Requests. "
-                    f"Waiting {wait_seconds:.1f}s "
-                    f"(retry {attempt + 1}/"
+                    f"Waiting "
+                    f"{wait_seconds:.1f}s "
+                    f"(retry "
+                    f"{attempt + 1}/"
                     f"{MAX_RETRIES})"
                 )
 
@@ -249,41 +265,50 @@ def fetch_topic(
 
             data = response.json()
 
+            # ----------------------------------
+            # Category
+            # ----------------------------------
+
             category = (
                 data.get(
                     "category_name"
                 )
                 or ""
-            )
+            ).strip()
+
+            # ----------------------------------
+            # Title
+            # ----------------------------------
 
             title = (
                 data.get(
                     "title"
                 )
                 or ""
-            )
+            ).strip()
 
-            tags = (
-                data.get(
-                    "tags"
-                )
-                or []
-            )
+            # ----------------------------------
+            # Tags
+            # ----------------------------------
+
+            tags = data.get(
+                "tags"
+            ) or []
 
             if not isinstance(
                 tags,
                 list,
             ):
-
                 tags = []
 
             tags = [
-                tag
+                tag.strip()
                 for tag in tags
                 if isinstance(
                     tag,
                     str,
                 )
+                and tag.strip()
             ]
 
             return (
@@ -307,8 +332,9 @@ def fetch_topic(
             print(
                 "[Guild cleanup] "
                 "Request error. "
-                f"Waiting {wait_seconds}s "
-                f"before retry."
+                f"Waiting "
+                f"{wait_seconds}s "
+                "before retry."
             )
 
             time.sleep(
@@ -321,18 +347,8 @@ def fetch_topic(
 
 
 # ==========================================
-# Backup Handling
+# File Helpers
 # ==========================================
-
-def get_backup_path(
-    pending_path,
-):
-
-    return pending_path.with_name(
-        pending_path.name
-        + ".guild_cleanup_backup"
-    )
-
 
 def load_json(
     path,
@@ -344,6 +360,16 @@ def load_json(
     ) as f:
 
         return json.load(f)
+
+
+def get_backup_path(
+    pending_path,
+):
+
+    return pending_path.with_name(
+        pending_path.name
+        + ".guild_cleanup_backup"
+    )
 
 
 # ==========================================
@@ -359,7 +385,7 @@ def main():
     if not pending_path.exists():
 
         raise FileNotFoundError(
-            f"Pending file not found: "
+            "Pending file not found: "
             f"{pending_path}"
         )
 
@@ -370,7 +396,7 @@ def main():
     if not backup_path.exists():
 
         raise FileNotFoundError(
-            "Guild cleanup backup not found: "
+            "Original Guild backup not found: "
             f"{backup_path}"
         )
 
@@ -388,11 +414,12 @@ def main():
     ):
 
         raise ValueError(
-            "pending_items.json is not a list"
+            "pending_items.json "
+            "is not a list"
         )
 
     # --------------------------------------
-    # Backup
+    # Original backup
     # --------------------------------------
 
     backup_items = load_json(
@@ -405,7 +432,8 @@ def main():
     ):
 
         raise ValueError(
-            "Guild cleanup backup is not a list"
+            "Guild cleanup backup "
+            "is not a list"
         )
 
     # --------------------------------------
@@ -435,8 +463,7 @@ def main():
     ]
 
     # ======================================
-    # Restore ALL Guild items from the
-    # original cleanup backup.
+    # Restore original Guild items
     # ======================================
 
     guild_items = [
@@ -452,7 +479,7 @@ def main():
     )
 
     print(
-        "Guild items from original backup: "
+        "Guild items from backup: "
         f"{len(guild_items)}"
     )
 
@@ -460,6 +487,10 @@ def main():
         "Non-Guild items preserved: "
         f"{len(non_guild_items)}"
     )
+
+    # ======================================
+    # Process
+    # ======================================
 
     session = requests.Session()
 
@@ -469,10 +500,7 @@ def main():
     unchanged = 0
     removed = 0
     errors = 0
-
-    # ======================================
-    # Process Guild items
-    # ======================================
+    unknown = 0
 
     for index, item in enumerate(
         guild_items,
@@ -494,17 +522,27 @@ def main():
             f"{title}"
         )
 
+        # ----------------------------------
+        # URL missing
+        # ----------------------------------
+
         if not isinstance(
             url,
             str,
         ) or not url.strip():
 
-            print(
-                "[Guild cleanup] "
-                "Missing URL; removing."
+            # 絶対に削除しない。
+            errors += 1
+
+            updated_guild.append(
+                item
             )
 
-            removed += 1
+            print(
+                "[Guild cleanup] "
+                "ERROR: Missing URL. "
+                "Keeping item."
+            )
 
             continue
 
@@ -519,54 +557,91 @@ def main():
                 url,
             )
 
-            new_category = classify_topic(
-                category,
-                topic_title
-                or title,
-                tags,
-            )
+            # ==================================
+            # 最重要安全チェック
+            # ==================================
 
-            # ----------------------------------
-            # Non-target category
-            # ----------------------------------
+            if not category:
 
-            if new_category is None:
+                # ----------------------------------
+                # カテゴリ不明
+                # ----------------------------------
+                #
+                # ここでは絶対に削除しない。
+                #
+                # 前回の事故はここで起きた。
+                # ----------------------------------
+
+                unknown += 1
+
+                updated_guild.append(
+                    item
+                )
 
                 print(
                     "[Guild cleanup] "
-                    "Remove non-target: "
-                    f"{category} | "
+                    "UNKNOWN CATEGORY. "
+                    "Keeping item: "
                     f"{title}"
                 )
 
-                removed += 1
-
-                # 次のAPIアクセスまで少し待つ。
                 time.sleep(
                     REQUEST_INTERVAL
                 )
 
                 continue
 
+            # ----------------------------------
+            # Daily Report category
+            # ----------------------------------
+
+            new_category = classify_topic(
+                category,
+                topic_title or title,
+                tags,
+            )
+
+            # ==================================
+            # 明確に対象外
+            # ==================================
+
+            if new_category is None:
+
+                removed += 1
+
+                print(
+                    "[Guild cleanup] "
+                    "Remove confirmed "
+                    "non-target: "
+                    f"{category} | "
+                    f"{title}"
+                )
+
+                time.sleep(
+                    REQUEST_INTERVAL
+                )
+
+                continue
+
+            # ----------------------------------
+            # Metadata update
+            # ----------------------------------
+
             old_category = item.get(
                 "category"
             )
-
-            # ----------------------------------
-            # Update metadata
-            # ----------------------------------
 
             item["guild_category"] = (
                 category
             )
 
-            if tags:
-
-                item["tags"] = tags
-
             item["category"] = (
                 new_category
             )
+
+            if tags:
+
+                item["tags"] = tags
 
             asset_type = {
                 "グラフィック素材": "graphic",
@@ -605,17 +680,16 @@ def main():
                 item
             )
 
-            # ----------------------------------
-            # Rate limit prevention
-            # ----------------------------------
-
             time.sleep(
                 REQUEST_INTERVAL
             )
 
         except Exception as e:
 
-            # API取得失敗の場合は削除しない。
+            # ==================================
+            # エラー時も絶対に削除しない
+            # ==================================
+
             errors += 1
 
             updated_guild.append(
@@ -623,11 +697,10 @@ def main():
             )
 
             print(
-                "[Guild cleanup] ERROR: "
-                f"{url} | {e}"
+                "[Guild cleanup] "
+                f"ERROR: {url} | {e}"
             )
 
-            # エラー時も少し間隔を置く。
             time.sleep(
                 REQUEST_INTERVAL
             )
@@ -665,42 +738,47 @@ def main():
     )
 
     print(
-        f"Guild items from backup: "
+        "Guild items from backup: "
         f"{len(guild_items)}"
     )
 
     print(
-        f"Reclassified: "
+        "Reclassified: "
         f"{reclassified}"
     )
 
     print(
-        f"Unchanged target items: "
+        "Unchanged target items: "
         f"{unchanged}"
     )
 
     print(
-        f"Removed non-target items: "
+        "Removed confirmed non-target: "
         f"{removed}"
     )
 
     print(
-        f"Errors kept in pending: "
+        "Unknown category kept: "
+        f"{unknown}"
+    )
+
+    print(
+        "Errors kept: "
         f"{errors}"
     )
 
     print(
-        f"Pending total before: "
+        "Pending total before: "
         f"{len(current_items)}"
     )
 
     print(
-        f"Pending total after: "
+        "Pending total after: "
         f"{len(updated)}"
     )
 
     print(
-        f"Safety backup: "
+        "Safety backup: "
         f"{safety_backup}"
     )
 
