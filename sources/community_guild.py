@@ -38,10 +38,13 @@ MAX_PAGES = 3
 # Guildへの短時間の連続アクセスを避ける。
 TOPIC_REQUEST_INTERVAL = 0.5
 
+# Guildカテゴリ一覧を取得した後の待機時間
+CATEGORY_REQUEST_INTERVAL = 1.0
+
 # Guildの対象カテゴリ
 #
-# 現在のGuildでは、これらが独立した
-# サブカテゴリとして存在する。
+# ここでは「収集候補」を拾うために使用する。
+# 実際の分類はトピック詳細のカテゴリを優先する。
 CATEGORY_URLS = {
     "プラグイン": (
         "https://guild.rpgmakerofficial.com/"
@@ -64,8 +67,8 @@ CATEGORY_URLS = {
 
 def classify_material(title, tags):
     """
-    Guildの「素材」カテゴリを、
-    Daily Reportの表示カテゴリへ分類する。
+    トピック自身のカテゴリが「素材」の場合に、
+    グラフィック素材とサウンド素材へ分類する。
 
     サウンドと明確に判断できない場合は
     グラフィック素材とする。
@@ -75,7 +78,10 @@ def classify_material(title, tags):
         [title] + list(tags)
     ).lower()
 
+    # ----------------------------------
     # 日本語キーワード
+    # ----------------------------------
+
     japanese_sound_keywords = [
         "bgm",
         "bgs",
@@ -93,8 +99,10 @@ def classify_material(title, tags):
         if keyword in text:
             return "サウンド素材"
 
+    # ----------------------------------
     # 英語キーワード
-    #
+    # ----------------------------------
+
     # 「se」は単純な部分一致にしない。
     # sprites / scene などへの誤反応を防ぐ。
     english_sound_patterns = [
@@ -121,6 +129,86 @@ def classify_material(title, tags):
 
 
 # ==========================================
+# Material Content Sieve
+# ==========================================
+
+def classify_material_content(title, tags):
+    """
+    トピック自身のカテゴリが「素材」であっても、
+    実際の内容が質問・相談などである可能性があるため、
+    二次的に内容を確認する。
+
+    明確な質問表現がある場合のみ「質問」とする。
+    判定できない場合はNoneを返し、
+    通常の素材分類へ進める。
+    """
+
+    text = " ".join(
+        [title] + list(tags)
+    ).strip()
+
+    # ----------------------------------
+    # タグによる質問判定
+    # ----------------------------------
+
+    question_tags = {
+        "質問",
+        "question",
+        "questions",
+        "help",
+        "support",
+    }
+
+    normalized_tags = {
+        str(tag).strip().lower()
+        for tag in tags
+        if str(tag).strip()
+    }
+
+    if normalized_tags & {
+        tag.lower()
+        for tag in question_tags
+    }:
+        return "質問"
+
+    # ----------------------------------
+    # タイトルによる明確な質問判定
+    # ----------------------------------
+
+    question_patterns = [
+        r"[？?]$",
+        r"どうすれば",
+        r"どうしたら",
+        r"方法",
+        r"できますか",
+        r"できますでしょうか",
+        r"でしょうか",
+        r"教えて",
+        r"教えてください",
+        r"わからない",
+        r"分からない",
+        r"できない",
+        r"うまくいかない",
+        r"やり方",
+        r"how\s+to\b",
+        r"\bhow\s+do\s+i\b",
+        r"\bhelp\b",
+        r"\bquestion\b",
+    ]
+
+    for pattern in question_patterns:
+
+        if re.search(
+            pattern,
+            text,
+            flags=re.IGNORECASE,
+        ):
+            return "質問"
+
+    return None
+
+
+# ==========================================
 # Actual Guild Category Classification
 # ==========================================
 
@@ -134,11 +222,20 @@ def classify_guild_category(
     トピック自身に設定されている実際のGuildカテゴリを
     Daily Reportのカテゴリへ変換する。
 
-    一覧ページの取得元カテゴリだけで判断せず、
-    トピック詳細のカテゴリを優先する。
+    基本方針:
+
+    1. トピック詳細の実カテゴリを最優先する
+    2. 質問・ゲーム・プラグインなどは、そのカテゴリを採用
+    3. 実カテゴリが「素材」の場合のみ、
+       グラフィック／サウンドへ細分類
+    4. 「素材」内でも明確な質問は質問へ回す
+    5. 詳細カテゴリを取得できなかった場合は
+       誤分類防止のため採用しない
     """
 
-    category = (actual_category or "").strip()
+    category = (
+        actual_category or ""
+    ).strip()
 
     # ----------------------------------
     # 質問系
@@ -176,34 +273,35 @@ def classify_guild_category(
     # ----------------------------------
 
     if category == "素材":
+
+        # まず素材カテゴリ内に混在している
+        # 明確な質問・相談を除外する。
+        content_category = (
+            classify_material_content(
+                title,
+                tags,
+            )
+        )
+
+        if content_category is not None:
+            return content_category
+
+        # 質問でなければ、素材の種類を判定する。
         return classify_material(
             title,
             tags,
         )
 
     # ----------------------------------
-    # 詳細カテゴリを取得できなかった場合
+    # 対象外カテゴリ
     # ----------------------------------
+
+    # 雑談・お知らせなど、今回のDaily Reportの
+    # 対象外カテゴリは採用しない。
     #
-    # 一時的な取得失敗で従来の収集機能を
-    # 全停止させないためのフォールバック。
+    # 「お知らせ」を将来対象にしたくなった場合は、
+    # ここに明示的に追加する。
 
-    if not category:
-
-        if guild_category == "プラグイン":
-            return "プラグイン"
-
-        if guild_category == "RGSSx":
-            return "プラグイン"
-
-        if guild_category == "素材":
-            return classify_material(
-                title,
-                tags,
-            )
-
-    # 雑談・お知らせなど、今回の対象から外すカテゴリは
-    # 採用しない。
     return None
 
 
@@ -213,7 +311,7 @@ def classify_guild_category(
 
 def get_tags(topic):
     """
-    Discourseトピックのタグを取得する。
+    Discourseトピック一覧からタグを取得する。
     """
 
     tags = []
@@ -248,8 +346,9 @@ def extract_topics(
     Guildのカテゴリ一覧から
     トピックを抽出する。
 
-    カテゴリはHTMLから推測せず、
-    呼び出し元から明示的に渡す。
+    ここでは分類を確定しない。
+    guild_categoryは「どの一覧から拾ったか」を
+    記録するために使用する。
     """
 
     soup = BeautifulSoup(
@@ -381,10 +480,14 @@ def get_topic_detail(
 ):
     """
     DiscourseのトピックJSONから、
-    トピック自身のカテゴリとタグを取得する。
 
-    トピックページのパンくずに表示されるカテゴリと
-    同じ情報をJSONから取得する。
+    - トピック自身のカテゴリ
+    - トピック自身のタグ
+
+    を取得する。
+
+    詳細取得に失敗した場合は例外をそのまま返し、
+    呼び出し側で「分類不能」として扱う。
     """
 
     topic_json_url = (
@@ -505,7 +608,10 @@ def get_items(seen):
                         "url"
                     ]
 
+                    # ----------------------------------
                     # 同一Action内の重複防止
+                    # ----------------------------------
+
                     if url in current_urls:
                         continue
 
@@ -513,21 +619,27 @@ def get_items(seen):
                         url
                     )
 
+                    # ----------------------------------
                     # 過去に取得済みならスキップ
+                    # ----------------------------------
+
                     if url in seen_set:
                         continue
 
                     # ----------------------------------
-                    # トピック自身のカテゴリを確認
+                    # トピック詳細を確認
                     # ----------------------------------
                     #
-                    # 一覧ページのカテゴリだけでは、
-                    # 「素材」一覧に質問・完成ゲームなどが
-                    # 混ざるケースを正しく判定できないため、
-                    # 新規トピックについて詳細情報を確認する。
-
-                    actual_category = ""
-                    detail_tags = []
+                    # ここが今回の重要ポイント。
+                    #
+                    # 一覧ページのカテゴリではなく、
+                    # トピック自身のカテゴリを確認する。
+                    #
+                    # 例えば「素材」一覧に
+                    # 「質問」や「完成ゲーム」が
+                    # 混ざっていても、
+                    # トピック自身が「質問」なら
+                    # 「質問」として扱う。
 
                     try:
 
@@ -559,15 +671,39 @@ def get_items(seen):
                             f"{item['title']} - {e}"
                         )
 
+                        # ----------------------------------
+                        # 詳細取得失敗時は採用しない
+                        # ----------------------------------
+                        #
+                        # ここで一覧カテゴリを使って
+                        # 「素材」「プラグイン」などと
+                        # 推測すると、今回修正したかった
+                        # 誤分類が再発する。
+                        #
+                        # またseenにも追加しない。
+                        # 次回Actionで再試行する。
+
+                        continue
+
+                    # ----------------------------------
                     # JSON側のタグを優先
+                    # ----------------------------------
+
                     if detail_tags:
                         item["tags"] = detail_tags
+
+                    # ----------------------------------
+                    # 実カテゴリから分類
+                    # ----------------------------------
 
                     category = classify_guild_category(
                         guild_category,
                         actual_category,
                         item["title"],
-                        item.get("tags", []),
+                        item.get(
+                            "tags",
+                            [],
+                        ),
                     )
 
                     # ----------------------------------
@@ -580,12 +716,12 @@ def get_items(seen):
                             "[RPG Maker Guild] "
                             "Skip category: "
                             f"{item['title']} "
-                            f"({actual_category or guild_category})"
+                            f"({actual_category})"
                         )
 
                         # 対象外カテゴリはseenに追加しない。
                         #
-                        # 後からカテゴリ変更された場合に
+                        # 将来的にカテゴリ変更された場合に
                         # 再取得できるようにする。
                         continue
 
@@ -609,14 +745,26 @@ def get_items(seen):
 
                     category_new += 1
 
+                    print(
+                        "[RPG Maker Guild] "
+                        f"Adopt: "
+                        f"{item['title']} "
+                        f"=> {category}"
+                    )
+
                     # トピック詳細取得の間隔
                     time.sleep(
                         TOPIC_REQUEST_INTERVAL
                     )
 
+                # ----------------------------------
                 # ページ間隔
+                # ----------------------------------
+
                 if page < MAX_PAGES:
-                    time.sleep(1.0)
+                    time.sleep(
+                        CATEGORY_REQUEST_INTERVAL
+                    )
 
             print(
                 "[RPG Maker Guild] "
@@ -625,7 +773,9 @@ def get_items(seen):
             )
 
             # カテゴリ間隔
-            time.sleep(1.0)
+            time.sleep(
+                CATEGORY_REQUEST_INTERVAL
+            )
 
         # ==================================
         # Result
@@ -672,16 +822,14 @@ def get_items(seen):
 
         print(
             "[RPG Maker Guild] "
-            f"Request Error: {e}"
-        )
-
-        return [], seen
-
-    except Exception as e:
-
-        print(
-            "[RPG Maker Guild] "
             f"Error: {e}"
         )
 
-        return [], seen
+        return (
+            adopted_items,
+            new_seen,
+        )
+
+    finally:
+
+        session.close()
