@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/cannot-edit-player-actor-atk-stat.174986",
+  "title": "Cannot edit Player Actor ATK stat?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T22:37:38.218456+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1496049",
+      "author": "SleepySalami",
+      "date": "2025-01-28T02:14:51+0900",
+      "body": "hello,\ni was wondering if anybody could help me get a better grip on this. the player is consistently doing 0 damage to enemies when attacking without any sort of weapons, and in the status screen it does show that the player has exactly 0 attack points. and a weapon does fix it because if a sword is equipped which boosts attack power the player will then be able to deal the weapons set damage value. but how could one make it so that the player has attack power even without weapons, or is that simply not possible?\nany sort of help would be appreciated!"
+    },
+    {
+      "post_id": "js-post-1496059",
+      "author": "Rasticore",
+      "date": "2025-01-28T03:37:59+0900",
+      "body": "You can modify this in the script editor, specifically under\nGame_Battler 3\n.\nBy default, RPG Maker XP uses the following basic damage calculation:\nRuby:\n# Calculate basic damage\n      atk = [attacker.atk - self.pdef / 2, 0].max\n      self.damage = atk * (20 + attacker.str) / 20\nThis means that if the actor's atk is 0, the attack will deal 0 damage.\nI wasn't satisfied with this damage formula, so I created my own version using the limited scripting knowledge I have. My formula includes a small adjustment to ensure that damage is always above zero:\nRuby:\n# Calculate base damage\n    if attacker.atk < 1\n      self.damage = 0.1 * attacker.str\n    else\n      self.damage = (attacker.atk * attacker.str / 10)\n    end\nThis calculation is performed before defense is applied. As you can see, the first if condition ensures that if the attacker's atk is less than 1 (e.g., if the actor has no weapon equipped), the damage dealt is calculated as 0.1 * attacker.str.\nFeel free to modify the damage formula to suit your needs. However, if you want to adopt this approach, I recommend including the if attacker.atk < 1 condition to handle edge cases where the attacker's atk is extremely low."
+    },
+    {
+      "post_id": "js-post-1496071",
+      "author": "kyonides",
+      "date": "2025-01-28T04:42:18+0900",
+      "body": "I wouldn't alter it there at all because there's a problem with it that should not be introduced to that game. You see, if your actor is level 5 but your mob is like some sort of level 20 hellhound, it'd be normal not to be able to inflict any damage to that critter mainly due to the level difference. So getting 0 damage as end result would be quite expectable.\nIn Game_Actor#base_str the minimum value for an actor's strength variable is 1 based on its formula. Here it doesn't matter whether or not the hero has equipped a weapon at all. The OP's issue could be found in another method called base_atk that says:\nRuby:\nclass Game_Actor\n  def base_atk\n    weapon = $data_weapons[@weapon_id]\n    return weapon != nil ? weapon.atk : 0\n  end\nend\nThere you can see that any actor will get some 0 attack value if no weapon was equipped. Replace that 0 with anything you might prefer as a default result for weaponless heroes and that's it.\nPreferably, copy and paste your modification in a separate script section to easily keep track of your changes."
+    },
+    {
+      "post_id": "js-post-1496177",
+      "author": "SleepySalami",
+      "date": "2025-01-29T00:33:42+0900",
+      "body": "oh sweet! thank you, i'm gonna try that out later today when i get back to working on it"
+    }
+  ]
+}

@@ -1,0 +1,389 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/infinite-sudoku-working-title.164974",
+  "title": "MZ Infinite Sudoku (Working Title)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T22:37:46.314043+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1416161",
+      "author": "ZombieKidzRule",
+      "date": "2024-01-21T05:16:50+0900",
+      "body": "I decided I would try to make a Games In Development thread to see if I can take my first real game across the finish line. All concepts, layouts, graphics, features, etc. are works in progress and subject to change. I plan to release this game for FREE on itch.io and maybe Steam (depending on how ugly of a baby it is).\nSpoiler:\nSYNOPSIS\nAs the working title suggests, this is a Sudoku inspired game. You might even say it is Sudoku lite or like, given some of the features. At this moment, subject to feedback, suggestions, and sudden bouts of inspiration, here are the main features that are planned:\nAll Randomly Generated, Solvable Puzzles (Both Pregenerated & On Demand Generation)\nMultiple Puzzle Types (Not just Numbers like traditional Sudoku - 12 so far)\nPlayer chooses how many Hints will be initially revealed in the Puzzle (17, 21, 25, 29, 33, 36)\nPlayer chooses either Manual or Auto Hints (Manual means the player chooses where the hints are revealed)\nPlayer chooses either Timer or No Timer\nPlayer chooses either Auto Generated Hints or Pregenerated Hints\nPlayer can insert possible values in squares before making their official choice\nPlayer can change values in the puzzle (but not hints once selected)\nQuit Puzzle Option\nSave on Demand\nMusic Selection\nClick on Choice and then square to assign a value in the puzzle (No number input)\nIn game Achievements with Player Hall of Fame area\nTwo different checks for solved puzzles (Actual solution for Pregenerated puzzles & Valid solution)\nPlayer can elect more Hints if they started with fewer than 36.\nAgain, all of these features are subject to my ability to incorporate them. Because the puzzles are generated randomly, and the revealed hints can be assigned randomly or by the player, and the number of hints can be selected, and there are more puzzle types than just traditional numbers, there should be excellent replay value.\nThe Achievements will be designed to encourage the player to explore and try all the different options available.\nIf the player likes traditional Sudoku, they should be able to make choices that give them an almost unlimited puzzle solving experience. And for those who want a real challenge, they can choose something other than numbers, with less hints that are randomly placed.\nSpoiler:\nSCREENSHOTS\nTags and Genre for this game would be Puzzle and Sudoku Puzzle.\nI welcome any and all feedback and suggestions.\nThanks!\nEDIT: UPDATED some information and concepts."
+    },
+    {
+      "post_id": "js-post-1416171",
+      "author": "Kes",
+      "date": "2024-01-21T06:12:16+0900",
+      "body": "Congrats on getting your first game thread going."
+    },
+    {
+      "post_id": "js-post-1416190",
+      "author": "Mac15001900",
+      "date": "2024-01-21T07:15:12+0900",
+      "body": "That title screen gave me flashbacks to 4D sudoku\nGood luck on your project!"
+    },
+    {
+      "post_id": "js-post-1416198",
+      "author": "ZombieKidzRule",
+      "date": "2024-01-21T08:19:09+0900",
+      "body": "I had never heard of 4D Sudoku. Basically a Rubik's Cube for Sudoku. Very interesting."
+    },
+    {
+      "post_id": "js-post-1416234",
+      "author": "TESTOSTERONE",
+      "date": "2024-01-21T11:35:00+0900",
+      "body": "Oooh look who has an official game thread!! Congrats putting all this together!"
+    },
+    {
+      "post_id": "js-post-1417005",
+      "author": "BloodyKun",
+      "date": "2024-01-24T07:24:24+0900",
+      "body": "For all the things I've seen people do with RPG Maker, somehow this has been the most surprising, especially in that it's not something I think has been done before?  Could be wrong on that.  Either way, looking forward to seeing more progress on this.  Family and I used to get each other tons of Sudoku books every Xmas, cheap and easy gifts."
+    },
+    {
+      "post_id": "js-post-1417792",
+      "author": "ZombieKidzRule",
+      "date": "2024-01-27T09:58:07+0900",
+      "body": "Added two new Puzzle Themes.\nSpoiler:\nNew Themes\nHad a minor setback. I was trying to use a Parallel Event to generate a Valid puzzle while an Autorun Event was running an Intro and asking the player to select certain options. I thought that could hide the time it takes to generate the puzzle.\nUnfortunately, running the Autorun Event and the Parallel Event at the same time was causing random problems with the puzzle generation. The Parallel Event seemed to run fine alone. It was only when I tried to run them together that there were problems.\nI will keep trying to experiment to figure it out or figure out an alternative. It will require some lengthy testing.\nIn the meantime, I still need to test different ways to generate puzzles.\nAlso, if I can't figure out how to implement a better way to generate a random puzzle and if I can't get the generation Event to run in the background correctly, then I thought of an alternative solution.\nIf I want to keep the Random Generation concept that I was able to Event in MZ, I can generate as many puzzles as I want (that have still been randomly generated) and then include them in the game as \"seed\" games. Technically, they would still be randomly generated, just not while the game is running.\nI can also allow the player to still generate a random puzzle in the game, as long as they understand that it could take a few minutes to complete the generation. It could take seconds or minutes.\nWe will see."
+    },
+    {
+      "post_id": "js-post-1420185",
+      "author": "ZombieKidzRule",
+      "date": "2024-02-04T22:14:47+0900",
+      "body": "Made pretty good progress so far.\nI have 12 working puzzle themes now, I have the Event part that allows the player to select a pre-generated random puzzle (just need to generate and add a bunch more) or a new random puzzle, my random puzzle generator is working without problems (other than being slow sometimes), and I have the Event completed that allows the player to select their own hints based on the total number of hints they selected.\nNow comes the part that is probably the hardest. Experimenting and trying to find the best way to auto generate hints. Which is kind of critical for a new, random generated puzzle. With the pre-generated, random puzzles, I can tweak the puzzle hints in advance if I need to.\nI also decided to have the Solve Puzzle option do two checks. One will check to see if the puzzle is solved with the exact same values in the exact same places as the puzzle. The other will just check to see if whatever values the player entered results in a valid solution, even if it doesn't match the original puzzle.\nThis is actually important since I am allowing the player to choose where they place their hints and to select a total number of hints (14) that is lower than what is required (17) for a Sudoku puzzle to have only one valid solution. So getting a solution that \"works\" even if it isn't a match to the original puzzle is still an \"ok\" solution.\nI have a bunch of ideas to try, but my main concern (probably obvious) is whether or not the methods I use to auto generate the hints will result in visible hints that will allow the player to have clear and obvious selections at the start of the game without having to guess.\nI haven't done a TON of Sudoku puzzles and I have mostly stuck with easy or medium puzzles, but I think every one I have done is set up so you can narrow down the value of some squares without having to guess or do the this square could have more than one value thing.\nI have to try to see if I can figure out a way to get auto generated hints for a random puzzle that will make sure to give the player a few squares at the start that can only have one value based on the visible puzzle hints based on usual Sudoku puzzle solving strategies.\nNow, maybe that won't be possible. But I am certainly going to give it a try by experimenting to see what happens.\nI have been researching sample Sudoku puzzles to see if there are any observable patterns to the hint placements and values for the puzzle start.\nI have thought about starting with random selection of 1 value for each Group (3x3 grid), then 1 value for each column or row and continuing in that pattern until the hints are exhausted.\nI have thought about only selecting values from columns (or rows) to make sure that there are multiple values in most columns.\nI have thought about options to make sure that the same value in the puzzle (like say 8) shows up enough times and in the right places to let the player narrow down where another 8 needs to go.\nBut I am one of those people who has a hard time conceptualizing how things will play out unless I see them in action. So there are limits to how much my theorizing will benefit me.\nI guess time will tell. But at least I have ideas of how to start and see what happens when the Event runs.\nIf anyone has any ideas of how to approach this, besides this isn't possible so don't try, I would be happy to consider them. I am stubborn enough to try anyway, just to see the results. So productive suggestions to achieve that goal are very much appreciated.\nBut I am still learning a lot while doing this so it is definitely worth it for me.\nI hope this update makes sense.\nHappy game developing!"
+    },
+    {
+      "post_id": "js-post-1420206",
+      "author": "Lady_JJ",
+      "date": "2024-02-05T00:08:55+0900",
+      "body": "Watching this progress with a great deal of interest."
+    },
+    {
+      "post_id": "js-post-1421987",
+      "author": "ZombieKidzRule",
+      "date": "2024-02-12T08:26:22+0900",
+      "body": "So as long as I am making good, consistent progress, I guess I will do Weekly updates until things start to slow down.\nSo without further ado, here is a list of things that have been updated:\nFor the 12 Puzzle Themes now, I removed the Food Icons, updated the Letter Icons, and added two new themes (Super Mario & Animals) with screen shots of the two new ones in the spoiler.\nChanged the Font & Window Border Color (Screen shot in spoiler)\nChanged the Hint Number choices (17, 21, 25, 29, 33, 36)\nAdded an explanation of Sudoku (can be skipped)\nAdded an explanation of the differences between the game and traditional Sudoku (can be skipped)\nAdded an erase mechanic so players can change a choice they made back to a blank square instead of just changing to a new value\nEvented 10 methods of generating Auto Hints (continuing to test)\nUpdated the Intro so it shows an example of a puzzle with the Puzzle Theme selected\nAdded 6 Randomly Generated Puzzles so the game will have Pregenerated puzzles\nAdded numerous Comments for future reference\nMy immediate To Do list that I am already working on:\nComplete the Solve puzzle Common Event that will check to see if the player solution exactly matches the official puzzle solution as well as if the player solution equals a valid puzzle. This is important because the player might have a solution that is a valid puzzle, but it might vary slightly from the official solution.\nEventing the ability to continue to play after completing a puzzle\nContinuing to test methods to autogenerate hints\nAdding a quick tutorial for how the puzzle mechanics function (can be skipped)\nAdd mechanic to quit the current puzzle\nAdd mechanic to insert \"notes\" in squares that could have multiple values (this is a longer term challenge)\nHere are the new screenshots as examples:\nSpoiler:\nNew Screenshots\nOnce I get the majority of the To Do list implemented, I will be asking if anyone is interested in participating in a pre-alpha testing to help me gather data about the different Auto Hint generation methods. I forgot how mentally exhausting doing a bunch of medium level Sudoku puzzles can be.\nI am also seriously considering adding a couple special Puzzle Themes. I was thinking it might be cool to have a couple of Themes dedicated to those who have helped me so much in my progress in learning MZ and game developing and the people who are willing to help me test the game. But it will depend on if the Avatars will be sufficiently visible for a puzzle. I did test it with my Avatar and the Snorlax picture that Avery drew for me and they seem to be large enough. So I would like to give it a try to see what it looks like.\nAs always, if anyone has any thoughts, comments, suggestions, or requests that you would like to offer, please feel free.\nI am learning so much from working on this so it is pretty exciting.\nThanks!"
+    },
+    {
+      "post_id": "js-post-1423893",
+      "author": "ZombieKidzRule",
+      "date": "2024-02-19T21:31:30+0900",
+      "body": "Weekly Progress Update\nI spent most of the week puzzling (how punny) over how to Event a new method for Auto Generating Hints that will always result in an Easy puzzle at the maximum hint number of 37. I was researching Sudoku algorithms and while the math is WAY beyond this immortal Zombie's comprehension, I was able to understand the logic of reverse tracking a completed puzzle for determining where to place hints.\nWhich is what I have been logically trying to organize into an Event. Essentially, you take a completed Sudoku puzzle and remove one square at a time. Each time you remove a square value, you check to see how many possible values could go in that square. If it is only 1, then you still have an Easy puzzle. If it is more than 1, you put the value back and try a different square. You keep doing that until you get to the number of hints remaining you want for the puzzle and you should be left with a puzzle with hints displayed where there is always at least 1 square of the puzzle that has only 1 possible value.\nI spent most of my development time this week updating all 81 of the Common Events that are called from the Puzzle squares and the Parallel Event that actually allows the player to complete the puzzle. While it was incredibly tedious work of copying/pasting and changing a bunch of values for each Event for Variables, Switches, Picture Ids, etc., at least all the puzzle squares now have all functionality (designed so far) and seem to work correctly.\nSo even though I only knocked 1 item off my previous immediate To Do list, I still made good developing progress.\nI also inadvertently discovered a serious flaw in the logical design of the majority of the 10 methods of Auto Generating Hints that I Evented. This made Zombie's brain hurt. Essentially, I forgot a very important part that made it so the same square could be picked more than once under certain circumstances for a possible hint. This resulted in random instances of LESS hints than desired. The solution required some experimental testing of the solution logic and then lots of copying/pasting and changing values. But I now have 7 of the 10 correctly updated and functioning now.\nI also want to officially extend the offer, like I did in a status post this week, that if anyone has 9 Themed 48x48 pictures that they would like to see as a Puzzle Theme option, I am happy to consider requests since adding Themes is incredibly easy.\n@Ziorke\nposted an example that looks really cool and they also gave me an idea.\nI decided to add two more features.\nTry to either add numbers to the Themed images so there is a visual reference for the Note taking mechanic OR add the number references where the player selects the value they want to enter for the square.\nAdd the option (with detailed instructions) to allow the player to use their own Theme. I will program the Events to accept a generic image name \"Custom1-\", \"Custom2-\", and \"Custom3-\". That way, all the player has to do is place 9 images (48x48) in the appropriate game folder with the exact appropriate file names (like Custom1-1, Custom1-2, Custom1-3, etc.) and they can, in theory, try any images they want in the game for a puzzle Theme. I thought that might be really cool and interesting.\nOther than that I also:\nAdded a couple more Pregenerated puzzles (I am slowly adding up to 30 and will probably increase that as I go)\nAdded the ability for the player to either choose a specific pregenerated puzzle or do a randomly selected pregenerated puzzle (which means I also now need to add a puzzle identifier to show which pregenerated puzzle is being played)\nSo this week, my top priorities from the To Do list are:\nFinish fixing the existing Auto Generating Hint methods & Test\nEvent the newest method & Test\nFinish the Event for solving the puzzle\nAnd finally, here is a screenshot of a puzzle utilizing the add notes mechanic. As you can see, the player can leave a space in any of the 4 places if they don't have 4 values they want to add.\nSpoiler:\nPlayer Added Notes\nI hope everyone has a productive week game developing and remember to have fun!"
+    },
+    {
+      "post_id": "js-post-1425536",
+      "author": "ZombieKidzRule",
+      "date": "2024-02-26T07:22:16+0900",
+      "body": "Weekly Progress Update\nI spent most of the week working on my 12th (AND APPARENTLY FINAL) method of Autogenerating Hints. The Common Event can consistently and rapidly generate hints for a 36 or 37 hint EASY puzzle. From looking at a sampling of Easy puzzles, it appears that 36 or 37 hints is standard. So the method does exactly what it needs to do.\nThe full list for this week:\nAuto Hint Generation method that finally works!\nAdded Puzzle Identifier so the player knows what Pregenerated Puzzle they are doing\nAdded a special Zioke Theme for\n@Ziorke\nAdded Info & Option for Custom Themes\nAdded 4 more Pregenerated Puzzles\nStarted experimenting with adding backgrounds\nFigure out how to make part of an image transparent in GIMP (not a big deal for most, but anything I learn new in GIMP is a big deal to me)\nSo having backgrounds that the player can select or that go with different Themes or that are random is something new that I should have thought of before, but I didn't until Ziorke made a great suggestion!\nUp to this point, I have been focusing on mechanics and functionality just to get the game working. And the current UI may just be a placeholder.\nBut since my mechanics and functionality list is getting shorter and I don't think I have any major pieces left for those, I can now start focusing on the overall appearance, the UI, and music/sound.\nHere are a couple screenshots of the initial Ziorke Theme implementation.\nIf anyone has any questions, suggestions, or request, please let me know.\nSpoiler:\nZIORKE THEME SAMPLES\nI hope everyone had a very enjoyable and productive week!"
+    },
+    {
+      "post_id": "js-post-1427358",
+      "author": "ZombieKidzRule",
+      "date": "2024-03-04T07:49:07+0900",
+      "body": "Weekly Progress Update\nGot sort of distracted by the concept of adding Background Themes to the puzzle. So I decided to experiment with a new UI concept for that mechanic. I originally just made the game using Show Text and Show Choices options as placeholders. So I am working on updating the game with new UI.\nHere are some screenshots of the new Background choices and UI.\nSpoiler:\nBackground Choices & UI\nI also:\nUpdated the Auto Hint Generation Mechanic\nChanged the border on the transparent squares\nAlmost finished the Solve Puzzle mechanic\nAdded on-screen placeholders for RESET and QUIT puzzle\nDid more testing\nThe game is almost 100% functional now. Only a few more things before it can be fully play tested. Most of my to-do list is polish or extra stuff.\nHere is a screenshot of how a puzzle might start with a background and theme.\nSpoiler:\nUpdated Puzzle Appearance\nI hope everyone had a very productive and happy week!"
+    },
+    {
+      "post_id": "js-post-1428938",
+      "author": "ZombieKidzRule",
+      "date": "2024-03-11T05:53:36+0900",
+      "body": "Weekly Progress Update\nIncreased the Maximum Number of Show Pictures to 400\nUpdated some Show Picture ID scripts to the higher values and fixed a few conflicts\nAdded the option for a Black Background\nAdded Background options for 5 categories: Castles, Halloween, Lakes, Lightning, & Steampunk\nTurned off access to the Menu\nAdded 4 Navigation Icons for Exit, Save, Change Music, & Change Puzzle or Background Theme\nAdded Exit & Save functionality to those Navigation Icons\nAdded functionality to change the puzzle Theme while playing in case the player decides the Theme clashes with the background\nAdded a few more Pregrenerated puzzles\nContinued to play test and update the UI from placeholder Show Text & Show Choices\nAnd here are some screenshots of the background choices in the 5 completed categories & an updated screenshot of what the puzzle UI looks like while playing with a background.\nSpoiler:\nBackgrounds & Updated Puzzle UI\nI hope everyone had a productive week and happy game developing!"
+    },
+    {
+      "post_id": "js-post-1430867",
+      "author": "ZombieKidzRule",
+      "date": "2024-03-18T06:10:07+0900",
+      "body": "Weekly Progress Update\nSpent most of this week implementing background categories and updating some events to make them more efficient. I also learned that I have been doing something completely unnecessary with my use of Parallel Events for when I use the ButtonPicture plugin so  that is resulting in some redesign efforts.\nHere is a list for this week:\nImplemented 10 background categories: Autumn, Beaches, Dragons, Fairytale, Flowers, Horror, Romance, Victorian, Villages, & Winter (only 3 more to go)\nAdd a few more Pregenerated puzzles\nUpdated the Pregenerated Puzzles Common Event to eliminate a Conditional Branch for each Puzzle and 81 Variables being set with individual commands with an Array for each puzzle and a simple script to replace all the Conditional Branches. Eliminated over 1,600 command lines for just 20 puzzles.\nBegan updating Events that no longer need to be Parallel Events (URGH...ARGH)\nContinued to test, polish, and improve\nExperimented with making some of the puzzle themes more transparent (like Numbers & Letters) so you can see more of the background\nHere is an example of the more transparent Numbers and Letters. Still need to tweak the colors.\nSpoiler:\nSee More Background\nAnd here are some screenshots of the 10 new backgrounds.\nSpoiler:\nNew Backgrounds\nI hope everyone had a productive week of Game Deving!"
+    },
+    {
+      "post_id": "js-post-1432508",
+      "author": "ZombieKidzRule",
+      "date": "2024-03-25T06:21:47+0900",
+      "body": "Weekly Progress Update.\nThe week started off pretty slow. My To Do list is getting shorter and everything seems to be taking longer to implement and make sure everything else continues to work. Here is the list from this week:\nAdded the last 3 Background categories: Animals, Children, & Christmas\nAdded the option for a random Background from all categories\nAdded the option for a random Background from chosen category\nAdded the functionality to change the Background at anytime while playing\nAdded Back Button navigation functionality on the Background selection menu screens\nAdded the Puzzle Reset Button functionality\nConverted all the Puzzle Theme Example Screenshots with a Black Background to an example of the Puzzle Theme where any Background that was selected will show to the player can see, in advance, how the chosen Theme will match with the Background\nTested the Custom Background Music (BGM) concept with the song Indestructible by Disturbed\nSo, this week I really need to concentrate on music and sound, which is an area that is VERY weak for me. I need to figure out what options I want to provide to the player for selecting the Background Music.\nI also need to design how I want my menu screens to look so I can convert all the Show Text and Show Choices Events to a menu/button driven player navigation experience.\nEventually, the game will also have Custom options for Theme (what goes in the puzzle squares), Background, and Background Music. The player will just have to follow the directions for saving the images/audio files in the correct format with the exact example Custom names. So the player will be able to truly customize their experience.\nHere are the screen shots of the 3 final Background category options.\nSpoiler:\nFinal Background Choices\nI hope everyone had a productive week and happy game developing!"
+    },
+    {
+      "post_id": "js-post-1434145",
+      "author": "ZombieKidzRule",
+      "date": "2024-04-01T07:08:06+0900",
+      "body": "Weekly Progress Update.\nI know it probably sounds funny, but I still don't feel...qualified...to call this a Dev Log or to refer to myself as a developer. More like a hobbiest dabbler. Anywho...\nI didn't accomplish much this week, but I suppose that is bound to happen once in a while. I ran into a few problems that slowed things down.\nFirst was an unexpected behavior with the ButtonPicture plugin that I heavily rely on for this game. Thankfully, my post on this forum led to a better understanding of what was happening and a very simple solution was offered that I tested successfully.\nSecond was something that I never did resolve. I had 1 background image, out of 401 that the game wouldn't recognize. I scrutinized it carefully and tried everything I could think of. It didn't seem any different from the other 400 images. And even though the image was the right type and in the right folder, the game just wouldn't show the image in the option for Show Picture. It was the strangest thing. So after hours of fighting with it, I just gave up and selected another image.\nSo, what did I actually achieve this week? Here it is:\nStarted implementing the fix to solve the problem with the way I was using the ButtonPicture plugin.\nContinued to test different colors to make the semi-transparent Numbers & Letters Puzzle Themes easier to see.\nAdded the option to also select solid Numbers & Letters.\nAdded the solid Numbers & Letters examples for the player to preview what they will look like.\nAdded some new Pregenerated puzzles.\nAdded Custom Backgrounds & Custom Theme placeholders.\nImplemented the functionality for the player to choose a Custom Background or Custom Theme.\nI also made a DEMO video about a week ago that I posted on my status feed. I will repost it here as well.\nAs always, if you have any questions or suggestions, feel free to leave a message or send me a PM.\nI hope everyone had a productive week and a Happy Easter!\nHappy gaming and Happy game developing!"
+    },
+    {
+      "post_id": "js-post-1435873",
+      "author": "ZombieKidzRule",
+      "date": "2024-04-08T08:13:03+0900",
+      "body": "Weekly Progress (?) Update.\nWhat is the opposite of progress? Can you regress in game development? Asking for an undead friend.\nAnyway, a major UI change is looming and I am suffering from indecision paralysis so things are slowing down. But here is what I managed to accomplish this week:\nAdded some more Pregenerated puzzles.\nDid some bug squashing during continued testing.\nContinued to experiment with different colors for my semi-transparent Numbers and Letters themes to try to get colors that show up better on more background while still letting the player see more of the puzzle through the Numbers and Letters. I'm still not 100% satisfied.\nAdded 10 new themes. 5 for Numbers and 5 for Letters. (Fire, Gold, Rainbow Stars, Red, & Silver) This was to make sure the player would have a Numbers and Letters theme that would show up on any background.\nStarted Eventing an Intro before the Main Menu choices screen.\nMostly settled on a new UI design to replace all the Show Text & Show Choices interface with Menu style button clicking.\nTested a script that\n@caethyril\nhad shared to show a picture when hovering over another picture. I am definitely using that.\nThere might be more, but I can't remember right now.\nThere are now 407 Backgrounds that the player can use, not counting the 3 placeholder backgrounds that will allow the player to add 20 backgrounds of their own.\nThere are now 23 Themes and 39 Pregenerated puzzles.\nHere are some screenshots of the new themes.\nSpoiler:\nNew Themes\nAs always, if anyone has any comments, feedback, suggestions, etc., please feel free to leave a response here or send me a PM.\nI hope everyone had a great week! Happy Gaming! Happy Game Developing! And watch out for the Eclipse if you are somewhere you can see it!"
+    },
+    {
+      "post_id": "js-post-1435995",
+      "author": "r66r",
+      "date": "2024-04-09T01:29:28+0900",
+      "body": "Hi\n@ZombieKidzRule\nI'm still impressed by the evolution of this game and look forward to playing it soon.\nHowever, as a player suffering from a kind of color blindness, my suggestion would be to find a solution to better distinguish the contents in the cells from the image in the background. As it happens, in the examples below, I've circled in blue the letters for which I had to stick my nose to the screen to see them properly. Perhaps it would be enough just to add a 20-40% transparent black or white background to each filled cell, or to add a few pixels of black ou white outline around the letters/numbers.\nSpoiler\nAnyway, you've done a great job so far. I can only encourage you to keep up the good work."
+    },
+    {
+      "post_id": "js-post-1436008",
+      "author": "ZombieKidzRule",
+      "date": "2024-04-09T02:05:32+0900",
+      "body": "@r66r\nThanks for that point and I definitely understand. I keep trying to tweak that option to see if I can maximize puzzle visibility while still making it a useable option for most backgrounds. I also struggle with seeing some of the numbers, which is why I keep experimenting based on my limited GIMP skills.\nFortunately, there will always be the option for numbers that are easy to see. The original theme for the numbers and letters were pastel color blocks, sort of like children’s toy blocks. Those will always be available along with the solid color numbers and letters in red, gold, etc.\nThis is why it was so important for me to add the functionality of allowing the player to change the chosen theme and background any time they want.\nI appreciate the feedback and I will keep trying to find the optimal appearance for those semi-transparent numbers and letters.\nI am also open to anyone with more skills doing some modifications as well. The theme images are all 48x48 pixels and my recent edits of the new numbers and letters use numbers/letters that are 40x40 inside a 48x48 image. The default size of the theme images must be 48x48.\nZiorke posted images for a theme and I am happy to consider other submissions, with full credit indicated.\nThanks again!"
+    },
+    {
+      "post_id": "js-post-1437339",
+      "author": "ZombieKidzRule",
+      "date": "2024-04-15T08:31:37+0900",
+      "body": "Weekly Progress Update.\nI learned a lot of new things this week, but not everything was for my game. Decided to start experimenting with an Intro and did quite a bit of work in GIMP.\nHere is the short list:\nAdded another Puzzle Theme (RPG Classes)\nExperimented & made 3 versions of an Intro (Video included here)\nSquashed a few more bugs\nExperimented & learned how to increase/decrease the volume of the BGM by 5 each time the plus/minus buttons are pressed\nLearned a few new things in GIMP\nLearned how to use a few more scripts\nSpoiler:\nNew Theme\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1438538",
+      "author": "TotalyNate",
+      "date": "2024-04-20T06:09:42+0900",
+      "body": "Sounds cool bro!!!!! (I suck at sudoku tho.....)\n(I like the first one best....)"
+    },
+    {
+      "post_id": "js-post-1439009",
+      "author": "ZombieKidzRule",
+      "date": "2024-04-22T07:39:59+0900",
+      "body": "Weekly Progress Update\nHere is the short list for this week:\nStarted converting the game UI to picture-based, button-click menus\nTurned off the default Title screen & menu\nAdded a new part to the Intro (which now runs 1 minute & 11 seconds & will run each time the game is started)\nMade some custom buttons in GIMP\nEvented a custom title screen & menu\nWith some help from the forum, added a new plugin to Remove General Options from the Options menu (went with caethyril's recommended code)\nAdded 4 more Navigation icons, 8 total (Exit, Save, Music, Background, Theme, Puzzle Options, Achievements, & Help/Tutorials)\nStarted Eventing the Credits\nSo I will be primarily focusing on the UI conversion until I have it all implemented. This will include making the exiting Eventing more efficient and fixing some early design mistakes.\nHere are a couple of screenshots.\nSpoiler:\nCustom Title Menu\nSpoiler:\nUpdated Navigation Icons\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1439143",
+      "author": "SomaelCK",
+      "date": "2024-04-22T23:39:22+0900",
+      "body": "It's always impressive to see people do wild things with RPG Maker. A while ago, I saw a project doing Chess with RPG Maker. Now, Sudoku! Bravo man!"
+    },
+    {
+      "post_id": "js-post-1440593",
+      "author": "ZombieKidzRule",
+      "date": "2024-04-29T08:05:20+0900",
+      "body": "Weekly Progress Update\nStill primarily focusing on converting the game to a new UI. Here is the short list for this week:\nAdded the option to Skip the Intro (primarily for testing, but contemplating allowing the player to skip the Intro after it has been watched the first time in a new game)\nAnimated the Infinity Sign on the Title Screen\nAdded another Navigation Icon (Home)\nStarted making the UI for the Main Menu\nStarted making the one-time tutorial for the first time the player sees the Main Menu\nAdd Hover Over Hints for the Navigation Icons in the Main Menu\nStarted designing the quick settings options for the Main Menu\nAdded a few more pregenerated puzzles\nHere is a quick video of how it looks so far. The music is a placeholder and everything is subject to change.\nSpoiler:\nCurrent Progress Video\nAnd here is a screenshot of the WIP UI for the Main Menu - Home screen.\nSpoiler:\nMain Menu UI Progress\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1441068",
+      "author": "TotalyNate",
+      "date": "2024-05-01T05:44:16+0900",
+      "body": "Umm.... a small thing about the intro.... what's with all of the random pictures in the backround.... it's kind of wierd, it doesn't really have anything to do with sudoku, maybe remove them?\nPerhaps add some gameplay videos in the backround.... idk, it just seems the random picture are... out of place......"
+    },
+    {
+      "post_id": "js-post-1441073",
+      "author": "ZombieKidzRule",
+      "date": "2024-05-01T06:01:48+0900",
+      "body": "@CoolBeans\nThanks for that feedback! The random pictures in the background of the Intro are actually random backgrounds from the game. There are over 400 backgrounds that the player can choose for the background while they are doing puzzles.\nSo the idea was to display some of the possible backgrounds during the Intro while the available themes are also shown. The Intro is set up where the backgrounds that show during the Intro will always be random. And the timing is such that it cycles through the 20+ categories of backgrounds 3 times during the Intro.\nIt may or may not be a good idea. It was just something I was experimenting with while making the Intro. I have been told I can be a bit excessive with certain things.\nThanks again for providing that feedback!"
+    },
+    {
+      "post_id": "js-post-1441074",
+      "author": "TotalyNate",
+      "date": "2024-05-01T06:04:13+0900",
+      "body": "OOOOOOOOOOOOOOH...... well in that case... ig it's not too bad.... it just looked a little random....."
+    },
+    {
+      "post_id": "js-post-1441075",
+      "author": "ZombieKidzRule",
+      "date": "2024-05-01T06:06:16+0900",
+      "body": "@CoolBeans\nI definitely get that! I consider everything in the game a WIP as I learn and experiment. And I hope to get a lot of feedback when I finally put the game out for testing.\nThanks again!"
+    },
+    {
+      "post_id": "js-post-1442322",
+      "author": "ZombieKidzRule",
+      "date": "2024-05-06T06:57:05+0900",
+      "body": "Weekly Progress Update\nMuch less progress this week since my entire weekend was spent traveling out of state and back for a retirement party.\nThe only thing I really accomplished was I completed the current draft of what the Main Menu UI will look like. After getting all the labels and buttons in place, I reorganized the Event to be in the order that the one-time tutorial will explain all the options. And I set all the options to what they will probably be at the start of the game.\nThe Main Menu will allow the player to change most of the settings for the game. But there will also be dedicated menus for all of the options that may be easier in some ways to make changes.\nI tried to change my alphabet letters to a different color in GIMP, but the letters have many different shades of color in them and all of my attempts to convert them to just a solid color failed miserably. But, I will continue to experiment.\nAnd some feedback from\n@CoolBeans\ngave me an idea to implement at the beginning of the Intro so the flashing backgrounds and flying themes don't seem so random the first time the game is loaded.\nHere is a screenshot of the current draft of the Main Menu. It seems very busy, but I like it. And I will keep an open mind about making additional edits as I continue to experiment.\nSpoiler:\nMain Menu UI Updated\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1442682",
+      "author": "SomaelCK",
+      "date": "2024-05-07T19:55:46+0900",
+      "body": "Love it, the main UI has a charm of those windows 2000/XP apps. I actually watched some of your YouTube video as well. Very impressive that everything is made with eventing!"
+    },
+    {
+      "post_id": "js-post-1444013",
+      "author": "ZombieKidzRule",
+      "date": "2024-05-13T06:24:34+0900",
+      "body": "Weekly Progress Update\nI have essentially decided to update my entire game as I convert the UI. So I am going from the very beginning and making all the necessary changes, reorganization, etc.\nShort list for this past week:\nConverted the UI Buttons that I made in GIMP to Buttons that use the Custom Font and the TextPicture plugin. So the Buttons will now be consistent with the rest of the Font.\nEvented about 80% of the Main Menu with working options. Only the Music options are unfinished.\nAdded the option to Disable the One-Time Tutorial.\nHere is an updated screenshot of the Main Menu UI:\nSpoiler:\nMain Menu UI Updated\nHere is a quick video of how the Main Menu functions so far.\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1445578",
+      "author": "ZombieKidzRule",
+      "date": "2024-05-20T08:20:27+0900",
+      "body": "Weekly Progress Update\nProgress is slow going because I am designing and building prototype UI menus and I'm not very good at the planning part. I end up implementing something, then move it around, add stuff, move them around some more, etc. I don't visualize well. I really need to see something that isn't just conceptual.\nHere is the short list:\nDownloaded a new button Sound Effect and added it to the existing buttons\nUpdated the Main Menu UI & associated Common Events\nMoved the Music Preview Button\nAdded the option to increase & decrease the BGM Volume (can't believe I forgot that)\nUpdated all the associated Common Events so they fully function\nMade it so if the Default BG Switch is ON, all of the other BG options are disabled & the BG example in the lower right corner is replaced with a message ALL BLACK DEFAULT\nThe Music options still aren't functional\nDesigned & Implemented the Background Main Menu UI with several versions\nHere are screenshots of the most updated Main Menu UI and the new Background Main Menu UI.\nSpoiler:\nMenu UI\nI am also asking for input on your preference of UI design for the screen that will show the Background categories. I posted this on my status and in the map sharing thread.\nI haven't gotten very many responses so far, but I have been a little surprised by what has been shared so far.\nAs a player, which of the options in the Spoiler below would you prefer? The very first option still needs to be updated to have all the same options as the other versions.\nSpoiler:\nPreference?\nI have also started considering if maybe I want to allow the player to choose from two versions based on their own preference. If I have the UI designed and built anyway, it doesn't seem that hard to just show one instead of the other based on the player choice.\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1445586",
+      "author": "Lady_JJ",
+      "date": "2024-05-20T08:50:44+0900",
+      "body": "I like the second, white text on red buttons. I think the 3rd is just a little too busy and the 4th looks odd with just a couple of buttons non-conforming.  Whatever you decide, I'm looking forward to being able to play a demo someday."
+    },
+    {
+      "post_id": "js-post-1447086",
+      "author": "ZombieKidzRule",
+      "date": "2024-05-27T07:27:48+0900",
+      "body": "Weekly Progress Update\nI think I made some good progress this week. It is easier when you have a list of things you know how to achieve rather than things you have to research and experiment with.\nAnd thanks to everyone who provided input on the different versions of the Background Categories Menu. The input was actually surprising and it helped me decide to implement 2 versions and let the player use either one they like. They can also switch at pretty much any time.\nHere are some specifics:\nUpdated the old Background Categories Menu to be consistent with the new content design and modified the MV frames to be smaller.\nMade both versions of the BG Categories Menu functional.\nUpdated the BG Main Menu by moving some things around, adding a Custom: ON/OFF switch, and added screenshots of the BG Categories Menu versions so the player can choose.\nDesigned and developed the Theme Menu and the options are mostly functional.\nDesigned, but haven't developed the Settings Menu.\nConverted 20 old Parallel Events to functional Common Events instead. Which is MUCH more efficient.\nContinued to reorganize Events to make them more efficient.\nHere are some updated screenshots.\nSpoiler:\nNew Screenshots of Menus\nSome of the Themes still need tweaking to make sure they are visible on all backgrounds.\nI also have a request for additional input that I will also post in a couple of other places. I am working on an optional, one-time tutorial. I started explaining everything in the Main Menu, but then I was reading a thread about in game tutorials and some of the comments got me thinking.\nSo I am curious, when you look at the current Menus, what seems to be unclear to you? What would you want explained, as a player, because the UI isn't readily clear?\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1448438",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-03T06:38:28+0900",
+      "body": "Weekly Progress Update\nDesigned and developed a new Puzzle Options Menu\nUpdated the appearance of existing menus by increasing the size of the navigation icons and yellow highlight box\nTweaked the Theme Menu\nUpdated more Common Events for Menu functionality\nUpdated all new Events from the beginning of the redesigned game\nHere is a screenshot of the new Puzzle Options Menu.\nSpoiler:\nPuzzle Options Menu\nYou can't see it in the screenshot, but if the Player has solved a puzzle, the box will be Green. And the Green and Red boxes will change based on the Number of Hints used to solve the puzzle. So the player will be able to see which puzzles they have already solved at which Hint Number. Or they can choose the Solved Any Hint # option and see which puzzles they have solved using any Hint Number.\nA huge thanks to\n@bass2yang\nwho provided a script that taught me something new and helped to eliminate 99 repetitive Event Commands!\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1448440",
+      "author": "doomthey",
+      "date": "2024-06-03T07:14:32+0900",
+      "body": "Great job putting up your first project thread (edit: late praise I know lol\n)! This is cool! I always enjoy seeing inventive uses of RPG Maker."
+    },
+    {
+      "post_id": "js-post-1449846",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-10T18:26:02+0900",
+      "body": "Weekly Progress Update (A day late)\nNot much progress this week. The work weeks are getting more busy and I took Monday - Friday off from game development. Instead, I played some on my Steam Deck (research...yeah...research) and I also tested a game for someone. But, I did manage to work a bit on the weekend.\nThe only real update is I am continuing to implement all the navigation features of the new, fully Evented, UI menus. As I update certain Common Events to make a navigation feature operational, I often realize that I need to go back and update other Common Events so everything interconnects properly. And the farther down the rabbit hole I go, the more I recognize new things that need to be implemented.\nI am also fixing random oddities that pop up while testing the new features I am implementing.\nBut the good news is that the 6 UI menus that I have designed, developed, and implemented are all connected and changes I make in one menu carry over to any other applicable menu(s).\nSince I am at a point where so much of what I am developing requires a lot of focus and refreshing my memory, I fear that developing during the work week might not be viable and I might end up only really developing on the weekend. Tell will tell, I guess.\nBut, focusing on this project is a great experience and I am learning a ton of useful things for future projects.\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1451249",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-17T06:41:12+0900",
+      "body": "Weekly Progress Update\nUnfortunately, I realized early in the week that there was a fatal flaw in my Game Intro & Start design. Everything was going great until I realized there would be a problem for returning players that I hadn't accounted for. I figured I could Frankenstein something to make it work, but I want to stop doing that.\nSo I spent most of the work week stuck in game design indecision paralysis because I couldn't figure out the best way to rebuild the Intro & Start.\nAround Friday, I finally figured out something to just try and then things went fine.\nSo, I made a new map so I could remake all the Events for the game from the very beginning...again. I managed to get back to where I was before I realized there was a problem and significantly improved the design and Events in the process. So I am back to making actually progress. If I can confirm that everything is working correctly so far, I will make an updated video of the progress.\nI hope to be able to work a bit more on the game for a couple of weeks since I only have two more days of work and then I am off until the end of the month.\nUnfortunately, that is also when I am assuming a new position at work. I am going back to management so I will have very little time during the work week.\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1452800",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-24T08:18:57+0900",
+      "body": "Weekly Progress Update\nI am almost completely caught up to where I was before I decided to redesign and reorganize the game with custom UI. I have almost all the functionality implemented with the new UI and the Eventing is much more streamlined and no more Frankenstein Spaghetti Monster.\nHowever, I did just discover that my decision to re-designate some Picture IDs that are used in many Events (navigation icons and other things that appear on every menu and while playing the game) was flawed. I thought I was being better organized, but I mistakenly used Picture IDs that were used for something else. So now I have to go back and undo all those re-designated Picture IDs. Because that is easier than re-designating the Picture IDs for the Common Events that I still need to update and implement.\nHopefully it won't take that long. Probably about a 2-3 hours so not terrible.\nAnd a big thanks to\n@Robro33\nfor helping me with a script to use the Actor Name as the Save file name. That seems to be working great.\nSince I am off all this week and only traveling until Wednesday, I hope to get everything updated and get an updated video of the operational UI.\nAs always, if you have any comments, suggestions, feedback, etc., please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1454317",
+      "author": "ZombieKidzRule",
+      "date": "2024-07-01T07:46:30+0900",
+      "body": "Weekly Progress Update\nI made a ton of progress this week and I have now surpassed where I was when I decided to switch to a custom UI and to reorganize everything.\nI have squashed a ton of bugs and and the list of what I fixed and implemented would be too long to provided bulleted details.\nExcept for one error that I didn't catch until I was recording a demo a few minutes ago, the player can play a puzzle based on the settings they choose, they can Quit or Solve the puzzle, and they can play as many puzzles as they want. As well as change most of the settings for the game.\nAnd although I should have thought of it sooner, I just realized today that I can save the original puzzles that the player generates (if they choose to) and the player can go back to those puzzles just like they would one of the 99 pregenerated puzzles.\nI just need to assign the necessary Array variables to store each original puzzle data and then make the functionality to allow the player to see those puzzles as well. So each player would have puzzles that are unique to their game.\nI now have 50 of 99 pregenerated puzzles set up in the game.\nIf you add in the functionality that the player can create their own Themes and Backgrounds, there really isn't a limit to the number of puzzles and variety that the player can experience.\nHere is the DEMO video.\nI am compiling a list of functionality that I need to complete before I do a play test.\nIn the meantime, if you have any comments, suggestions, feedback, etc., based on the DEMO, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1455789",
+      "author": "ZombieKidzRule",
+      "date": "2024-07-08T02:46:22+0900",
+      "body": "Weekly Progress Update\nFigured I would post this early today since I won't be able to finish anything else for a couple of days.\nMy primary focus this week was play testing, making sure all the current functionality works, implementing the changing background while playing feature, and bug fixing.\nI have also started implementing the new feature of allowing the player to save the Original puzzles that they generate, allowing the player to see which Original puzzles they have solved at which hint numbers, and allowing them to replay Original puzzles.\nThis new feature was actually a lot more work than I thought it would be, but I think it is worth it.\nSo once this feature is fully implemented, the player will have access to 99 pregenerated puzzles, they will be able to generate and save 99 more original puzzles, and then they will still be able to generate unlimited original puzzles. They just won't be able to save them and get access to them.\nHere is a demo video that I posted in a couple other places that shows me playing 2 of the pregenerated puzzles while the background changes every minute. After I stopped the video, I also generated 2 original puzzles and played those as well. So everything seems to be working pretty good.\nIf you have any comments, suggestions, feedback, etc., based on the DEMO, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1457369",
+      "author": "ZombieKidzRule",
+      "date": "2024-07-15T08:13:55+0900",
+      "body": "Weekly Progress Update\nVery little to update since my new job at work is taking up most of my time during the week so I am only really working on my game on the weekend.\nI continued to implement the feature that allows the player to save the original puzzles that they choose to generate so they can go back to them. It isn't quite finished, but here are some updated UI screenshots using test data.\nLike the pregenerated puzzles, the player will be able to see how many original puzzles they have generated and see which puzzles they have solved at which hint levels.\nSpoiler:\nUpdated Original Puzzles UI\nIf you have any comments, suggestions, feedback, etc., based on the DEMO, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1458771",
+      "author": "ZombieKidzRule",
+      "date": "2024-07-22T08:08:07+0900",
+      "body": "Weekly Progress Update\nReally simple. I am still working on fully incorporating the feature of saving the original puzzles that are generated and then allowing the player to select those puzzles to play again.\nThat functionality touches a lot more Events than I thought. But I am almost done and can then move on to something else.\nAnd I took a short break today to try to help someone else Event a puzzle, which was a good distraction and it feels good when I can actually help someone else.\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1460248",
+      "author": "ZombieKidzRule",
+      "date": "2024-07-29T06:41:37+0900",
+      "body": "Weekly Progress Update\nThis only developing on the weekends is killing me. But thankfully I am already 1 month into my up to 4 month detail in my temporary position at work and then I can go back to the way things were.\nI am still testing and fixing the functionality for the player to save, track, and replay the original puzzles that they generate. Each time I test I have to generate two new puzzles and then I find something else I forgot and have to fix that and test again. But it is close to being complete.\nAnd generating the new puzzles each test is also adding to the pregenerated puzzles for the game. I am now up to 61 of 99 pregenerated puzzles that the player can just select and play.\nI also started implementing the functionality for the background music. I had to do some experiments to make sure I understood how to do it and then I added all the MZ BGMs to the RPG Maker music category. Since this is made in MZ, the player can listen to that sweet, sweet MZ BGM if they want.\nThe time consuming part will be selecting, downloading, and implementing a bunch of other songs for other categories. Once I have those, I will have to design and develop the Music Menu.\nI also have to implement the functionality for starting a new song when the previous song finishes. I am pretty sure I know how to do that. I am going to use an Array to store the total number of seconds each song has so when any particular song is playing, I can set an appropriate Wait time to the number of seconds for the song and then switch to the next song.\nNot a lot of progress, but a little progress is still progress.\nI still have quite a few big things that need to be implemented and a lot of testing.\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1461560",
+      "author": "ZombieKidzRule",
+      "date": "2024-08-05T08:38:21+0900",
+      "body": "Weekly Progress Update\nI've told myself that I'm not going to skip a week, even if I haven't done much.\nAll I did this week was gather and start converting music.\nMusic is probably my weakest aspect.\nBut I am also starting to plan out another game experiment because I can't stop thinking about it. And I bought a book called Javascript Crash Course and it is already helping me better understand concepts.\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1462942",
+      "author": "ZombieKidzRule",
+      "date": "2024-08-12T06:39:02+0900",
+      "body": "Weekly Progress Update\nNothing new since last week. I spent all my available time downloading some additional music, converting music to the OGG format, and tracking the list of music so I can make the necessary arrays that I will use to pull the music titles.\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1463294",
+      "author": "Quixote",
+      "date": "2024-08-13T15:42:15+0900",
+      "body": "I think it looks very impressive, and being communicative with the game is usually always a good thing. Interested to eventually see more."
+    },
+    {
+      "post_id": "js-post-1464481",
+      "author": "ZombieKidzRule",
+      "date": "2024-08-19T03:33:08+0900",
+      "body": "Weekly Progress Update\nSurprise! I'm still working on implementing the music.\nI have all the BGM files from all the Makers converted to OGG files and I renamed them with the Maker prefix so none of the BGM titles would be duplicated.\nI am still converting BGM files from another source to OGG files. I am about 40% done since I am limited to 20 conversions for 1 site and 10 minutes of sound files for another site.\nI am also starting to make my arrays that I will use to store the BGM OGG file names and the corresponding BGM name to display.\nSo I will use Variables to extract the correct OGG file name and BGM display name from the correct position of the correct array.\nI am also starting to design the Music menu.\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1466294",
+      "author": "ZombieKidzRule",
+      "date": "2024-08-26T08:31:45+0900",
+      "body": "Weekly Progress Update\nStill working on implementing the music. I have almost all the MP3 files converted to OGG files.\nBut I finally realized that it is easier to create my list of string values for my arrays in a Word document and then copy and paste them. With long arrays, it is easier to see if I made any mistakes. I just need to insert the quotation marks around the strings once they are in the arrays since copied quotation marks from Word don’t seem to paste correctly.\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1468976",
+      "author": "ZombieKidzRule",
+      "date": "2024-09-09T09:12:50+0900",
+      "body": "Weekly Progress Update\nMissed last week because we were traveling.\nI finally started implementing the BGM arrays and necessary Variables. I previously tested the necessary mechanics and now I just need to fully implement the functionality. I am almost ready to test all the BGMs from all the RPG Makers.\nThen I need to design and develop the Music Menu.\nIf everything works the way it should, I will then decide if I want to add all the other music files I downloaded and converted.\nI hope everyone had a great couple weeks of developing or doing other things that you enjoy!\nGood luck on your projects!"
+    },
+    {
+      "post_id": "js-post-1470240",
+      "author": "ZombieKidzRule",
+      "date": "2024-09-16T07:45:22+0900",
+      "body": "Weekly Progress Update\nSo I actually made pretty good progress in the game for the first time in a while.\nI still need to design and develop the Music Menu to expand the Music options, but the limited Music options from the Main Menu are now fully implemented, as follows:\n7 categories of BGMs, 1 for each RPG Maker (MZ, MV, VX Ace, VX, XP, 2003, 2000)\n447 total BGM files\nOption to randomly select a BGM category and BGM file which changes the displayed BGM category name and BGM file number\nBGM Fixed option to keep the same BGM playing (On) or BGM changing after X amount of minutes (Off)\nWhen BGM Fixed option is OFF, no other options function because the BGMs are randomly rotating\nOption to scroll through the BGM categories (up or down) which changes the displayed BGM category name\nOption to randomly select a BGM file within the current BGM category which changes the displayed BGM file number\nOption to scroll through the BGM files (up or down) in the current BGM category which changes the displayed BGM file number\nBGM Preview Button that stops the current BGM playing and starts a new BGM based on the current BGM category and file number\nOption to increase the BGM audio by 5 (up or down)\nI also had to make a few changing in the UI appearance of the Main Menu to accommodate longer BGM category names. And the functionality exists to display the BGM file name that looks more normal than the OGG file name.\nThe Music Menu with have these same options, but will have additional options to make selecting a BGM category or specific BGM file easier and faster as well as setting the amount of time between changes in the BGM when the BGM Fixed option is Off. The Music Menu will have more room for options that couldn't fit on the Main Menu.\nI have also decided that with 447 BGM files already for the player to choose from, I won't be adding all of the other free music that I downloaded and converted to OGG files.\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1471471",
+      "author": "ZombieKidzRule",
+      "date": "2024-09-23T07:42:33+0900",
+      "body": "Weekly Progress Update\nContinued working on the Background Music implementation and I have the Music Menu almost completely designed and developed. I am still just figuring out how to make it easier to select songs.\nHere is a screenshot of the Music Menu UI.\nSpoiler:\nBGM Menu\nThe values show 0 right now because the Variables didn't have values when I was doing the quick developing test.\nAt the bottom of the screen, if you select category (default) it shows the BGM categories for quick selection. If you select SONG #, those categories are replaced with squares with song numbers for rapid selection, rather than using the up and down options to increase or decrease one song at a time.\nThere are now 534 BGM files that the player can select from or listen to randomly.\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1471479",
+      "author": "Slaughty",
+      "date": "2024-09-23T08:14:17+0900",
+      "body": "534 bgm? That's going to be a chunky download!"
+    },
+    {
+      "post_id": "js-post-1471481",
+      "author": "ZombieKidzRule",
+      "date": "2024-09-23T08:18:18+0900",
+      "body": "@Slaughty\nBut so worth all the dulcet tones of RPG Maker goodness!"
+    },
+    {
+      "post_id": "js-post-1472794",
+      "author": "ZombieKidzRule",
+      "date": "2024-09-30T04:30:18+0900",
+      "body": "Weekly Progress Update\nI have the BGM Menu almost completely implemented and most of the buttons are working correctly and most information is displaying correctly. Just some bugs I need to work out after quickly testing.\nHere are two screenshots of the BGM Menu that still have a couple of errors on them, but they are pretty close to being complete. Again, a few things aren't complete if you notice anything odd.\nSpoiler:\nBGM Menu Examples\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1472831",
+      "author": "ISC",
+      "date": "2024-09-30T13:56:43+0900",
+      "body": "I'm really enjoying this project. The level of customization you're giving the player is truly impressive. Can RPG Maker be used to create genres other than RPGs? Absolutely yes, and you're providing a fantastic example of what this engine can do when it's in the hands of creative and skilled developers. Well done, this is very interesting!"
+    },
+    {
+      "post_id": "js-post-1472858",
+      "author": "ZombieKidzRule",
+      "date": "2024-09-30T18:33:20+0900",
+      "body": "@ISC\nThank you! You are too kind! I consider myself creative, but I think the \"skilled developer\" part would be dubious to apply to me. It seems like every day I realize how much more I need to learn.\nBut I am also aware that I have learned a awful lot too. So I will just keep doing what I'm doing, having fun, experimenting, learning, and hopefully eventually sharing something worth playing.\nThanks again!"
+    },
+    {
+      "post_id": "js-post-1474144",
+      "author": "ZombieKidzRule",
+      "date": "2024-10-07T04:35:33+0900",
+      "body": "Weekly Progress Update\nI now have the BGM menu and functionality fully implemented. Subject to any bugs I find while testing.\nI made a fairly quick video that shows the current menus and highlights all the features on the menus. Including a number of features that I think might be unique to this game.\nHere is the link if you are interested.\nI also drafted a pretty short To Do List before I can consider opening up a Beta testing with some\nvictims\n...I mean volunteers!\nTO DO LIST\n:\nAdd pregenerated puzzles (61 of 99)\nAdd changing Theme functionality\nDesign & implement Help & Tutorial Menu\nDesign & implement Achievements Menu\nAdd One-Time Tutorial\nMain Menu (Started)\nHelp & Tutorial Menu\nAchievements Menu\nPuzzle Settings Menu\nTheme Menu\nBackground Menu\nBackground Music Menu\nFirst Game\nOptimize Themes against Backgrounds\nDesign & implement Achievements\nOptimize by making Events more efficient and eliminating duplication in Common Events\nEnd to end testing\nNot too bad considering where I started!\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1475450",
+      "author": "ZombieKidzRule",
+      "date": "2024-10-14T21:14:05+0900",
+      "body": "Weekly Progress Update\nForgot to post this yesterday. I knocked one thing off my To Do List, but I am adding another.\nI managed to implement the changing Theme functionality and I updated the Parallel Events for the changing Backgrounds, changing Background Music, and changing puzzle Theme to update the change frequency when the player changes it. So if the player picks the highest setting (5 minutes) but then changes their mind, the Parallel Event Wait will get interrupted after no more than 15 seconds. I will test reducing that maximum delay down to 5 seconds and see how it works.\nSo now the player can choose to have the background, music, and theme all changing as they play and they can set the frequency to 1, 2, 3, 4, or 5 minutes. Of course they can also turn off the changing functionality at anytime while they are playing a puzzle.\nI added redesigning and implementing a new Intro to the list as well. I like the Intro because it was something new I learned how to do early on. But I'm not sure the player will appreciate the length and visuals. Even though they only have to watch it once when they start a new game. Then it can be skipped from that point on.\nTO DO LIST\n:\nAdd pregenerated puzzles (61 of 99 complete)\nAdd changing Theme functionality\nDesign & implement Help & Tutorial Menu\nDesign & implement Achievements Menu\nAdd One-Time Tutorial\nMain Menu (Started)\nHelp & Tutorial Menu\nAchievements Menu\nPuzzle Settings Menu\nTheme Menu\nBackground Menu\nBackground Music Menu\nFirst Game\nOptimize Themes against Backgrounds (and replace, if necessary)\nDesign & implement Achievements\nOptimize by making Events more efficient and eliminating duplication in Common Events\nRedesign and implement new Intro\nEnd to end testing\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1476668",
+      "author": "ZombieKidzRule",
+      "date": "2024-10-21T05:32:09+0900",
+      "body": "Weekly Progress Update\nKnocked a few more things off my list and added a couple more.\nI completed the One-Time Tutorial for the Main Menu and the Puzzle Settings Menu. I also started the set up portions of the tutorial for the rest of the menus.\nI added finishing the Credits, updating my image file names (guess I am not supposed to have spaces in image file names), removing all the placeholder text and parts of Events that are for testing purposes only, and removing all the experimenting events/maps that are no longer needed for the actual game.\nTO DO LIST\n:\nAdd pregenerated puzzles (61 of 99 complete)\nDesign & implement Help & Tutorial Menu\nDesign & implement Achievements Menu\nAdd One-Time Tutorial\nMain Menu (Started)\nHelp & Tutorial Menu\nAchievements Menu\nPuzzle Settings Menu\nTheme Menu\nBackground Menu\nBackground Music Menu\nFirst Game\nOptimize Themes against Backgrounds (and replace, if necessary)\nDesign & implement Achievements\nOptimize by making Events more efficient and eliminating duplication in Common Events\nRedesign and implement new Intro\nFinish Credits\nUpdate Image file names (remove spaces)\nRemove placeholder text and For Testing Only parts of Events.\nRemove all Maps and Events that are no longer needed for the final game.\nEnd to end testing\nIf you have any comments, suggestions, feedback, etc., based on anything so far, please feel free to leave a response.\nI hope everyone had a great week of game developing!\nAnd always remember to enjoy what you do!"
+    },
+    {
+      "post_id": "js-post-1488452",
+      "author": "ZombieKidzRule",
+      "date": "2024-12-18T19:06:20+0900",
+      "body": "Realized it has been about 2 months since I worked on this game and posted an update. I haven't abandoned it. Just life has done life things and I have had other priorities.\nI took a break from RPG Maker for a while, but now I am getting motivated again by working on recreating the Eye of the Beholder 1 character generation process. It is going great, it is fun, I am learning things, and I am getting excited about developing again.\nBut I have also started playing more games, play testing more games, and taking notes about things I like about games for the larger project that I want to eventually work on.\nSo, I will be back to this thread soon. I am too close to finishing to abandon this game.\nI hope everyone has been enjoying working on their projects and best wishes for the holiday season!"
+    },
+    {
+      "post_id": "js-post-1531951",
+      "author": "ZombieKidzRule",
+      "date": "2025-09-30T00:06:20+0900",
+      "body": "Wow! Looking at my last update I can see that my break from this game has been longer than I realized.\nI have been focusing on learning Javascript so I can improve the game and make it more efficient.\nHowever, I do have a significant update on one piece that I have been pursuing sporadically.\nAfter many months of trying different things and untold hours of work, I finally had a way of consistently generating a new Sudoku puzzle. And I used that method to generate over 60 puzzles for the game. I was also planning on using it to allow the player to create about 99 original puzzles that they could also save (in addition to the 99 already set up in the game) and then they could generate as many as they wanted after that (they just couldn't save them).\nThe problem was that the method to generate the puzzle could be as quick as only a few seconds to as long as 4 or more minutes. That was because the method was essentially based on trial and error where if the puzzle generation got to a point it couldn't proceed with a valid puzzle, then the generation process started over.\nBut after recently trying another method and failing to improve my current method, I was able to test a script that seems to reliably generate a new puzzle in only a few seconds each time. I am still testing it, but it seems to be exponentially better than the method I have been using.\nI generated 15 new puzzles in less than a minute.\nMy next step is testing a script that will take the generated puzzle and reliably turn the necessary number of squares blank for easy, medium, and hard puzzles.\nThe method I have right now can only reliably make easy puzzles with only one solution.\nSo, this seems to me to be a significant improvement.\nI also made the terrible mistake of starting this game project inside another project that is filled with other unrelated experiments. So, it is a mishmash of things that aren't needed for the game.\nSo, I need to make a new copy of the project and remove all the unnecessary things that aren't part of the game. When I do that, I also plan on taking the time to reorganize everything and try to improve the coding/scripts to make the entire game more efficient using what I'm learning about JS.\nSo, I'm working on the game a little at a time while I do other things. Getting a \"clean,\" reorganized, and more efficient project is going to take a significant amount of time.\nI hope everyone is doing well! Happy gaming and good luck on your projects!"
+    }
+  ]
+}

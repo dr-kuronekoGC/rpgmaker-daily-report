@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/end-of-battle-event-messages.174717",
+  "title": "End of battle event messages?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T22:37:40.033026+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1493863",
+      "author": "Sarzac",
+      "date": "2025-01-15T13:27:46+0900",
+      "body": "Hello!\nI'm very newish to RPG Maker XP. I'm currently using the Sideview Battle System Tankentai script to have battles in a more traditional Final Fantasy perspective. However, I'm trying to figure out how to enable messages at the end of a battle which would tell the player if a character learned a new skill.\nAny help would be appreciated! ^_^"
+    },
+    {
+      "post_id": "js-post-1495457",
+      "author": "Rasticore",
+      "date": "2025-01-24T13:51:28+0900",
+      "body": "I'm also pretty new but I have an idea that I think could help you:\nFirst we're gonna create 2 variables for each of the actors in our game. (I'm using Aluxes and Basil so I'm creating 4 variables)\nNext, create one common event for each of your actors, plus an additional common event that will be triggered after every battle. ( I named the last event \"Actor level\" and each of the other events after their corrresponding actor.) Then in this last common event (Actor level), we set the first variable for each actor to match their current level. Then, add a conditional branch for each actor to check if their first variable (Level) is different from their second variable (Level Trigger). If the two variables don’t match, the common event for that specific actor should be triggered.\nNow the long part. In each actor's common event, you’ll need to add a conditional branch to check if the level the actor just reached unlocks any new skills. This step is done manually for each level where the actor learns a new skill. If a skill is unlocked, display a message in the format: 'Actor has learned [Skill Name].'Repeat this process for every level at which your actor learns a new skill. Finally, at the end of the common event, update the actor's second variable (Level Trigger) by adding 1 to it. (In my case I set Aluxes to learn different skills at level 2, 3 and 4). You will need to repeat the steps for every actor in your game.\nNow, to ensure everything works properly, there are two more steps to complete:\n1. At the start of your game, create an event that sets each actor's second variable (Level Trigger) to match their starting level. (In my case both Aluxes' and Basil's starting level is 1)\n2.Call the common event (Actor Level) at the end of every battle.\nThis method will work as long as you avoid making any other modifications to the actors' second variable (Level Trigger) throughout the game.\nWhile this process is functional, it’s worth noting that scripting could likely achieve the same result more efficiently. However, since I don’t have experience with scripting, I can’t provide guidance on that approach.\nHope this helped"
+    },
+    {
+      "post_id": "js-post-1495480",
+      "author": "Sarzac",
+      "date": "2025-01-24T17:54:41+0900",
+      "body": "Hi there!\nThank you for the incredibly detailed post - I really appreciate it a lot! =D\nSo it is somewhat working for me. If I have an event enemy, like a boss, I've added the Call Common Event just as you have, and after the battle, I get the message (see attached image).\nHowever, I can't seem to figure out how to get this to also work from level-ups that occur from random encounters. I've tried adding the same Call Common Event to the troop field for the random encounter that I've assigned to the map, but no message occurs about learning a skill if a level-up is triggered through said random encounter.\nRasticore said:\nI'm also pretty new but I have an idea that I think could help you:\nFirst we're gonna create 2 variables for each of the actors in our game. (I'm using Aluxes and Basil so I'm creating 4 variables)\nView attachment 329653\nNext, create one common event for each of your actors, plus an additional common event that will be triggered after every battle. ( I named the last event \"Actor level\" and each of the other events after their corrresponding actor.) Then in this last common event (Actor level), we set the first variable for each actor to match their current level. Then, add a conditional branch for each actor to check if their first variable (Level) is different from their second variable (Level Trigger). If the two variables don’t match, the common event for that specific actor should be triggered.\nView attachment 329655\nNow the long part. In each actor's common event, you’ll need to add a conditional branch to check if the level the actor just reached unlocks any new skills. This step is done manually for each level where the actor learns a new skill. If a skill is unlocked, display a message in the format: 'Actor has learned [Skill Name].'Repeat this process for every level at which your actor learns a new skill. Finally, at the end of the common event, update the actor's second variable (Level Trigger) by adding 1 to it. (In my case I set Aluxes to learn different skills at level 2, 3 and 4). You will need to repeat the steps for every actor in your game.\nView attachment 329660\nNow, to ensure everything works properly, there are two more steps to complete:\n1. At the start of your game, create an event that sets each actor's second variable (Level Trigger) to match their starting level. (In my case both Aluxes' and Basil's starting level is 1)\n2.Call the common event (Actor Level) at the end of every battle.\nView attachment 329661\nView attachment 329662\nThis method will work as long as you avoid making any other modifications to the actors' second variable (Level Trigger) throughout the game.\nWhile this process is functional, it’s worth noting that scripting could likely achieve the same result more efficiently. However, since I don’t have experience with scripting, I can’t provide guidance on that approach.\nHope this helped\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1495483",
+      "author": "kyonides",
+      "date": "2025-01-24T18:00:50+0900",
+      "body": "That last screenshot actually tells me you're trying to call a second battle scene with another troop of 3 useless ghosts.\nI'd suspect you'd need a script for calling the common event even after finishing a random battle."
+    },
+    {
+      "post_id": "js-post-1495489",
+      "author": "Sarzac",
+      "date": "2025-01-24T18:46:25+0900",
+      "body": "Ah okay, I understand what that Battle Event is doing now - once I turned the Condition to Turn 1, it started another fight against another troop of three ghosts XD\nSo yeah, that's not going to work for what I'm trying to do. Would you happen to know how to script something like this?\nkyonides said:\nThat last screenshot actually tells me you're trying to call a second battle scene with another troop of 3 useless ghosts.\nI'd suspect you'd need a script for calling the common event even after finishing a random battle.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1495506",
+      "author": "Rasticore",
+      "date": "2025-01-24T21:29:08+0900",
+      "body": "Hi again, I’m glad this was helpful! I realized I might have overlooked random encounters, though. As I mentioned earlier, I don’t have any experience with scripting, but I believe this could be done fairly easily.\nIn the\nScene_Battle 1\nfile, there’s a section that handles the end of a battle. I added a call to my common event here. (In my case, the common event ID is 001, so if your common event uses a different ID, just update that part accordingly.)\nAt the very end of the \"Battle Ends\" section in\nScene_Battle\n, replace the #switch to map screen part with:\nRuby:\n# Switch to map screen\n    $game_temp.common_event_id = 1 #Change 1 for you common event ID\n    $scene = Scene_Map.new\n  end\nSarzac said:\nHi there!\nThank you for the incredibly detailed post - I really appreciate it a lot! =D\nSo it is somewhat working for me. If I have an event enemy, like a boss, I've added the Call Common Event just as you have, and after the battle, I get the message (see attached image).\nHowever, I can't seem to figure out how to get this to also work from level-ups that occur from random encounters. I've tried adding the same Call Common Event to the troop field for the random encounter that I've assigned to the map, but no message occurs about learning a skill if a level-up is triggered through said random encounter.\nView attachment 329669\nView attachment 329672\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1495607",
+      "author": "Sarzac",
+      "date": "2025-01-25T06:43:20+0900",
+      "body": "This worked perfectly! Thank you so much Rasticore! I really appreciate your help and time here! =D\nRasticore said:\nHi again, I’m glad this was helpful! I realized I might have overlooked random encounters, though. As I mentioned earlier, I don’t have any experience with scripting, but I believe this could be done fairly easily.\nIn the\nScene_Battle 1\nfile, there’s a section that handles the end of a battle. I added a call to my common event here. (In my case, the common event ID is 001, so if your common event uses a different ID, just update that part accordingly.)\nAt the very end of the \"Battle Ends\" section in\nScene_Battle\n, replace the #switch to map screen part with:\nRuby:\n# Switch to map screen\n    $game_temp.common_event_id = 1 #Change 1 for you common event ID\n    $scene = Scene_Map.new\n  end\nClick to expand..."
+    }
+  ]
+}
