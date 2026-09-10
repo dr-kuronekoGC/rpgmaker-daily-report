@@ -1,0 +1,161 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/random-freezing-issues-in-rpg-maker-mv-performance-problem.176740",
+  "title": "Random Freezing Issues in RPG Maker MV (Performance Problem)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:42.462095+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1507734",
+      "author": "Luciien",
+      "date": "2025-04-04T18:45:41+0900",
+      "body": "Hello everyone,​\nI'm developing a game with RPG Maker MV, and as the game progresses, I've started experiencing\noccasional small freezes\nduring gameplay. Here's what I've tried so far:\nI enlarged the map\n, but only to a necessary size.\nI reduced parallel events\nas much as possible.\nI'm using 19 different plugins\n, all of which are essential for my game’s mechanics.\nI suspect the freezes might be caused by some of the plugins, but I can't figure out which ones are causing the problem. Reducing the number of plugins isn't an option because all of them are useful for my game.\nMy questions:\nHow can I determine if plugins are conflicting or causing performance issues?\nI've reduced parallel events, but there are still many events (non-parallel). Can these also affect performance?\nIs there a better and practical way to improve performance?\nI’d appreciate any advice or suggestions. Thanks in advance!"
+    },
+    {
+      "post_id": "js-post-1507739",
+      "author": "SGHarlekin",
+      "date": "2025-04-04T19:16:20+0900",
+      "body": "Likely has to do with the default coding of pixi's garbage collection.\nYou can try this:\nhttps://aceofaces.itch.io/rmmv-tuned-core"
+    },
+    {
+      "post_id": "js-post-1507747",
+      "author": "Andar",
+      "date": "2025-04-04T20:25:42+0900",
+      "body": "It's not the number of parallel processes that count, but their quality.\nOne badly designed parallel process event can cause more lag than a hundred correctly designed ones.\nBasically each parallel process needs the correct number of waitframes - the wait command basically tells the engine \"skip this event for x frames\" - which causes a pause in an action button event, but reduces processing and lag in a parallel process.\nunfortunately the correct number is different depending on the other PP in the game - not enough and it still creates lag, too much and the game's reaction (instead of processing) is slowed.\nLuciien said:\nHow can I determine if plugins are conflicting\nClick to expand...\nBasically only by experience.\nSo the best way is to post a screenshot of your plugin manager and allow the community with their greater experience to check if there is anything wrong.\nThere are a lot of quirks in plug-ins that are known to us, but rarely are known by new users who never read much here.\nFor example, with yanfly's plug-ins their order is extremely critical - have more than a few in the wrong order and they will have extremely strange results.\nLuciien said:\nmany events (non-parallel). Can these also affect performance?\nClick to expand...\nnot in any detectable measure, not on modern computers.\nten, twenty years ago that was different, but even then you needed multiple hundreds of events on a single map before it became detectable."
+    },
+    {
+      "post_id": "js-post-1507756",
+      "author": "Luciien",
+      "date": "2025-04-04T21:35:47+0900",
+      "body": "SGHarlekin said:\nLikely has to do with the default coding of pixi's garbage collection.\nYou can try this:\nhttps://aceofaces.itch.io/rmmv-tuned-core\nClick to expand...\nthank you I will try this and write about my experience"
+    },
+    {
+      "post_id": "js-post-1507757",
+      "author": "Luciien",
+      "date": "2025-04-04T21:38:00+0900",
+      "body": "Andar said:\nIt's not the number of parallel processes that count, but their quality.\nOne badly designed parallel process event can cause more lag than a hundred correctly designed ones.\nBasically each parallel process needs the correct number of waitframes - the wait command basically tells the engine \"skip this event for x frames\" - which causes a pause in an action button event, but reduces processing and lag in a parallel process.\nunfortunately the correct number is different depending on the other PP in the game - not enough and it still creates lag, too much and the game's reaction (instead of processing) is slowed.\nBasically only by experience.\nSo the best way is to post a screenshot of your plugin manager and allow the community with their greater experience to check if there is anything wrong.\nThere are a lot of quirks in plug-ins that are known to us, but rarely are known by new users who never read much here.\nFor example, with yanfly's plug-ins their order is extremely critical - have more than a few in the wrong order and they will have extremely strange results.\nnot in any detectable measure, not on modern computers.\nten, twenty years ago that was different, but even then you needed multiple hundreds of events on a single map before it became detectable.\nClick to expand...\ni understand thank you for your long reply. do you think there is a problem about the ranking looking here?"
+    },
+    {
+      "post_id": "js-post-1507762",
+      "author": "Luciien",
+      "date": "2025-04-04T22:05:16+0900",
+      "body": "SGHarlekin said:\nLikely has to do with the default coding of pixi's garbage collection.\nYou can try this:\nhttps://aceofaces.itch.io/rmmv-tuned-core\nClick to expand...\nI didn't find it to be of much use. is there an alternative solution?"
+    },
+    {
+      "post_id": "js-post-1507769",
+      "author": "Maliki79",
+      "date": "2025-04-04T22:57:42+0900",
+      "body": "I had this issue too.\nI was told it was a glitch where a counter goes into the negative or something which causes the game to lock up.\nWhen your game locks up, can you still hear the music and can hear when you go into a menu or something?"
+    },
+    {
+      "post_id": "js-post-1507771",
+      "author": "utunnels",
+      "date": "2025-04-04T23:14:24+0900",
+      "body": "I don't think they are the same thing. The OP says small freeze.\nI think you can make a test map which lags.\nThen you remove the plugins one by one, from the HUD and on-screen display elements like event indicators, event shadows to item slots. If it still lags then it might be related to map size and event count."
+    },
+    {
+      "post_id": "js-post-1507773",
+      "author": "Luciien",
+      "date": "2025-04-04T23:29:01+0900",
+      "body": "Maliki79 said:\nI had this issue too.\nI was told it was a glitch where a counter goes into the negative or something which causes the game to lock up.\nWhen your game locks up, can you still hear the music and can hear when you go into a menu or something?\nClick to expand...\nMy game doesn’t completely lock up, but it experiences frequent small freezes instead. The music continues to play, and I can still access menus during these freezes. It’s more like brief stutters rather than a full game crash. Any idea what could be causing this?"
+    },
+    {
+      "post_id": "js-post-1507775",
+      "author": "Luciien",
+      "date": "2025-04-04T23:31:58+0900",
+      "body": "utunnels said:\nI don't think they are the same thing. The OP says small freeze.\nI think you can make a test map which lags.\nThen you remove the plugins one by one, from the HUD and on-screen display elements like event indicators, event shadows to item slots. If it still lags then it might be related to map size and event count.\nClick to expand...\nI see, that makes sense. I tried disabling plugins one by one and noticed that the small freezes stopped when I removed certain plugins related to HUD and on-screen displays. However, I need to use these plugins for my game.\nIs there a way to keep them active without causing performance issues? Any tips for optimizing or configuring these plugins to reduce lag would be really helpful."
+    },
+    {
+      "post_id": "js-post-1507776",
+      "author": "utunnels",
+      "date": "2025-04-04T23:34:00+0900",
+      "body": "Do you test it on an old PC?\nIf not which plugin exactly causes the lag? Maybe I can take a look at it to see if it can be optimized in any way."
+    },
+    {
+      "post_id": "js-post-1507777",
+      "author": "Luciien",
+      "date": "2025-04-04T23:39:14+0900",
+      "body": "utunnels said:\nDo you test it on an old PC?\nIf not which plugin exactly causes the lag? Maybe I can take a look at it to see if it can be optimized in any way.\nClick to expand...\nI’m not sure which plugin is causing the lag yet. I’ve tested by disabling some plugins related to HUD and on-screen displays, but I haven’t pinpointed the exact one.\nIf you’re willing to take a look, I’d really appreciate it! Let me know what information you need from me to help identify the issue."
+    },
+    {
+      "post_id": "js-post-1507778",
+      "author": "Luciien",
+      "date": "2025-04-04T23:41:00+0900",
+      "body": "utunnels said:\nDo you test it on an old PC?\nIf not which plugin exactly causes the lag? Maybe I can take a look at it to see if it can be optimized in any way.\nClick to expand...\nI’m testing it on a PC that isn’t particularly powerful but should be more than capable of handling a game like this. It’s not high-end, but it’s definitely not so weak that it should struggle with RPG Maker MV."
+    },
+    {
+      "post_id": "js-post-1507780",
+      "author": "utunnels",
+      "date": "2025-04-04T23:48:50+0900",
+      "body": "It is best you can narrow it down to one or two plugins.\nAre we talking about the farm simulator game you posted in another thread?\nI see you use mog variable hud to display money and gems, also mkr map item slots at the bottom.\nAre they related to the lags?"
+    },
+    {
+      "post_id": "js-post-1507781",
+      "author": "Luciien",
+      "date": "2025-04-04T23:58:10+0900",
+      "body": "utunnels said:\nIt is best you can narrow it down to one or two plugins.\nAre we talking about the farm simulator game you posted in another thread?\nI see you use mog variable hud to display money and gems, also mkr map item slots at the bottom.\nAre they related to the lags?\nClick to expand...\nYes, it’s the farm simulator game I mentioned before. You’re right, I’m using MOG Variable HUD for displaying money and gems, and MKR Map Item Slots at the bottom.\nI tried disabling those plugins, and it does seem to reduce the lag a bit, but I really need them for the game’s functionality and UI. Since all of the plugins I’m using are important, I’m not sure how to narrow it down to just one or two.\nDo you have any suggestions for optimizing these plugins or making them work more efficiently without causing lag?"
+    },
+    {
+      "post_id": "js-post-1507785",
+      "author": "utunnels",
+      "date": "2025-04-05T00:11:29+0900",
+      "body": "I don't know how serious the lag is. But in theory if you update the hud it will refresh and may cause some lag. But usually the pc is fast enough to handle. I tried them on my pc and doesn't see much slow down.\nThe maybe you can try not to update the numbers every frame?"
+    },
+    {
+      "post_id": "js-post-1507852",
+      "author": "Luciien",
+      "date": "2025-04-05T10:15:36+0900",
+      "body": "utunnels said:\nI don't know how serious the lag is. But in theory if you update the hud it will refresh and may cause some lag. But usually the pc is fast enough to handle. I tried them on my pc and doesn't see much slow down.\nThe maybe you can try not to update the numbers every frame?\nClick to expand...\nThanks for the suggestion! The lag I’m experiencing isn’t too serious—more like small stutters every few seconds. I think you're right that constantly updating the HUD every frame might be causing it.\nWhen you say “try not to update the numbers every frame,” how exactly can I do that? Is there a setting in the plugin, or would I need to modify the code directly? I’d appreciate a bit more guidance on that!"
+    },
+    {
+      "post_id": "js-post-1507856",
+      "author": "utunnels",
+      "date": "2025-04-05T11:03:15+0900",
+      "body": "I haven't read Mog's code thoroughly but I think it refresh the HUD when the variable changes.\nSo if you chage the number frequently, it will need to refresh frequently.\nYou can for example update the money every few loops to see if it is faster."
+    },
+    {
+      "post_id": "js-post-1507860",
+      "author": "Luciien",
+      "date": "2025-04-05T11:42:08+0900",
+      "body": "utunnels said:\nI haven't read Mog's code thoroughly but I think it refresh the HUD when the variable changes.\nSo if you chage the number frequently, it will need to refresh frequently.\nYou can for example update the money every few loops to see if it is faster.\nClick to expand...\nYeah, I was thinking the same thing, but if I update the loop less frequently, wouldn’t that make it seem like the money is added with a delay on the top HUD? I mean, if the player receives money but doesn't immediately see it reflected in the display, it might look like there's a lag, which could affect the user experience a bit."
+    },
+    {
+      "post_id": "js-post-1507863",
+      "author": "utunnels",
+      "date": "2025-04-05T11:48:07+0900",
+      "body": "The game runs 60 fps so 6 frames delay is 0.1 second. Maybe not too long too be visible.\nBut we are still not sure if the HUD is the cause, so you can do some test, for example ,stop change money and gems count for a while to see if makes any difference."
+    },
+    {
+      "post_id": "js-post-1507866",
+      "author": "Luciien",
+      "date": "2025-04-05T11:59:59+0900",
+      "body": "utunnels said:\nThe game runs 60 fps so 6 frames delay is 0.1 second. Maybe not too long too be visible.\nBut we are still not sure if the HUD is the cause, so you can do some test, for example ,stop change money and gems count for a while to see if makes any difference.\nClick to expand...\nThat makes sense. How can I actually set or simulate a 6-frame delay like that? Is there a specific way to delay the HUD update by exactly that amount?"
+    },
+    {
+      "post_id": "js-post-1507867",
+      "author": "Luciien",
+      "date": "2025-04-05T12:03:23+0900",
+      "body": "utunnels said:\nThe game runs 60 fps so 6 frames delay is 0.1 second. Maybe not too long too be visible.\nBut we are still not sure if the HUD is the cause, so you can do some test, for example ,stop change money and gems count for a while to see if makes any difference.\nClick to expand...\nHere are three screenshots showing the parallel events I currently have set up in the game. Could any of these parallel events be causing performance issues or delays?"
+    },
+    {
+      "post_id": "js-post-1507872",
+      "author": "utunnels",
+      "date": "2025-04-05T12:19:33+0900",
+      "body": "For example,  HUD money uses variable 30, you can store the actually money number in variable 60.\nSo when money changes, you update variable 60 instead. In the meanwhile, make a parallel common event, copy variable 60 to variable 30, then wait for 6 frames. The other values can use similar method.\nLuciien said:\nHere are three screenshots showing the parallel events I currently have set up in the game. Could any of these parallel events be causing performance issues or delays?\nClick to expand...\nI don't see obvious problem in your screenshots."
+    },
+    {
+      "post_id": "js-post-1507878",
+      "author": "Luciien",
+      "date": "2025-04-05T12:50:13+0900",
+      "body": "utunnels said:\nFor example,  HUD money uses variable 30, you can store the actually money number in variable 60.\nSo when money changes, you update variable 60 instead. In the meanwhile, make a parallel common event, copy variable 60 to variable 30, then wait for 6 frames. The other values can use similar method.\nI don't see obvious problem in your screenshots.\nClick to expand...\nI tried deleting some parallel events and also reduced the map size by half. After doing that, I noticed an improvement in performance and fewer freezes. However, both the events I removed and the larger map size are actually important for my game and its features.\nDo you have any suggestions on how I could optimize these parallel events or handle large maps more efficiently? I’d really appreciate any tips on how to improve overall performance without removing essential parts of the game."
+    },
+    {
+      "post_id": "js-post-1507881",
+      "author": "utunnels",
+      "date": "2025-04-05T13:07:11+0900",
+      "body": "The game should be able to handle a few dozens of events without slow down. Parallel events don't slow down the game directly. Unless they do something stressful to your computer.\nI can only guess:\n1) Plugins that add display elements, like HUD, but I don't think it is map size related.\n2) Event indicator (labels over their heads), but I think I need to actually read the code to judge. Usually they don't refresh every frame considering the author is not a novice. Shadows are the same I think.\n3) There are actually more events than it is shown in your screenshot. For example you use event spawner to spawn a few hundreds events.\n4) Your pc is too old, have a faulty display driver, etc. Maybe you can make a smaller demo so different people can test if they have the same problem on their hardwares."
+    }
+  ]
+}

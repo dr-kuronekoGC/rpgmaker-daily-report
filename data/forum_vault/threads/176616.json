@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/if-then-conditional-note-tags.176616",
+  "title": "MZ IF THEN conditional note tags",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:25.155332+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1506897",
+      "author": "ZimXero",
+      "date": "2025-03-30T03:06:18+0900",
+      "body": "Is it possible to use IF statement notetags when none are hardcoded within a plugin for use?  If not, is it possible to create a plugin for this that would toggle the readability of other direct plugin commands.\nexample:\n<conditon> if variableX ==Y <ATB Interrupt>\nMy thought on how the plugin would work is to have it look for the \"<condition> note tag.  It would then run the conditional check which follows.  It would activate resulting notetags to be visible to other plugins.  Maybe it would convert the bracketing in order to hide or activate?\nIf this is manually possible already, please share with me how.  IF not, and it could be done as a plugin... it would really help so that non-javascripters can activate plugin commands based on conditions not coded within the controlling plugin.  It could extend functionality of existing plugins significantly."
+    },
+    {
+      "post_id": "js-post-1506901",
+      "author": "ShadowDragon",
+      "date": "2025-03-30T03:18:58+0900",
+      "body": "depending on the plugin, most could be something like:\nCode:\n<JS eval condition> // use the correct one for VS part\nif (someVariable === x) {\n   condition = true\n} else {\n    condition = false\n}\n</JS eval condition>\n\n// shorter way if allows\n\ncondition = somevariable ? true : false\nso once false, nothing can happen (maybe return value is possible).\nif true, continue as normal."
+    },
+    {
+      "post_id": "js-post-1506905",
+      "author": "rpgLord69",
+      "date": "2025-03-30T03:38:32+0900",
+      "body": "I think you misunderstood them, they didn't mean how to check variable in a notetag that allows JS code, but how to make it so that a simple notetag is ignored depending on a condition.\nDon't know how that would be done myself, but I'll just point out that doing your example with available methods isn't very difficult. Just go to the action sequence and add the plugin command to interrupt in a conditional branch that checks the variables. (That's doesn't take much more time than putting a notetag on the skill.)\nA lot can be done with just action sequences, or with states that run the functions/plugin commands at certain times."
+    },
+    {
+      "post_id": "js-post-1506906",
+      "author": "AquaEcho",
+      "date": "2025-03-30T03:40:24+0900",
+      "body": "Some plugins allow it.\nrpgLord69 said:\nvariable in a notetag that allows JS code, but how to make it so that a simple notetag is ignored depending on a condition.\nClick to expand...\nYou'd have to do that from the function that checks the notetag in the first place. Otherwise, you'd have to put a JS eval in the notetag like ShadowDragon said"
+    },
+    {
+      "post_id": "js-post-1506908",
+      "author": "rpgLord69",
+      "date": "2025-03-30T03:47:10+0900",
+      "body": "Huh, really, wasn't aware of that? So if I have a VisuStella notetag like what the OP mentioned <ATB Interrupt>, you're saying I can just somehow put my own condition to it? Can you show an example of how the whole thing looks?"
+    },
+    {
+      "post_id": "js-post-1506910",
+      "author": "AquaEcho",
+      "date": "2025-03-30T03:51:20+0900",
+      "body": "If the plugin is written to parse javascript, yes, but that is dependent on the author of the plugin. Otherwise if the author didn't write it that way, you have to go edit the plugin code yourself to check for a condition when it triggers.\nWe're talking about VisuStella though so yeah, good luck with that..."
+    },
+    {
+      "post_id": "js-post-1506911",
+      "author": "rpgLord69",
+      "date": "2025-03-30T03:56:32+0900",
+      "body": "Yeah but I thought the whole point of the opening post was to ask how to do it in a case when the plugin author hasn't written it in such a way (and in case of VS the code is obfuscated). So like build something that sends changed data from the note field to the plugin depending on the condition you write there, like act \"in between\" the notefield (or the data stored in the code) and the plugin."
+    },
+    {
+      "post_id": "js-post-1506913",
+      "author": "AquaEcho",
+      "date": "2025-03-30T04:03:10+0900",
+      "body": "Without editing the (VS) plugin you'd have to interrupt an earlier function that triggers right before the plugin does. Basically make another plugin to alias or overwrite an earlier core engine function to add a conditional."
+    },
+    {
+      "post_id": "js-post-1506914",
+      "author": "Robro33",
+      "date": "2025-03-30T04:07:31+0900",
+      "body": "rpgLord69 said:\nYeah but I thought the whole point of the opening post was to ask how to do it in a case when the plugin author hasn't written it in such a way (and in case of VS the code is obfuscated)\nClick to expand...\ntheres also the other issue of when the code is ran. If VS plugins are written like Yanfly's, then the majority of the time the notetags are only read as the game starts and they write in properties into the corresponding objects based on the conditions right then.\nAt that point itd just be easier to find the related functions for the tag if any and call them directly within some eval. might not be so easy with the obfuscation, but definitely easier than having to rewrite portions of the plugin"
+    },
+    {
+      "post_id": "js-post-1506915",
+      "author": "rpgLord69",
+      "date": "2025-03-30T04:10:01+0900",
+      "body": "Cool, yeah I understand it'd be difficult, I just commented that that's what I thought the OP was after. And that's why I suggested to him alternatives"
+    },
+    {
+      "post_id": "js-post-1506927",
+      "author": "ZimXero",
+      "date": "2025-03-30T05:15:43+0900",
+      "body": "Thanks for all the evaluations.  It looks like the only way is Javascript.  Is there a way to trigger a standard notetag from within javascript  though?\nMy actual use is for a mechanic on boost skills.  I wanted players to gain a boost point when they use a skill with a matching attached \"influence\".  The 4x influence types are shown as icons at the beginning of the skill descriptions (Sun,Moon,Planetary, or Void).  The active influence shows on the battle screen and randomly changes each ATB turn.  The system is working, but I can't get it to conditionally add boost points because notetags don't recognize the IF statement, and javascript doesn't recognize the add boost point command.\ninfvar=3 ? <User Boost Points: +1> :\nThe result now, is that every skill adds 1 boost point, no matter what the infvar variable is."
+    },
+    {
+      "post_id": "js-post-1506929",
+      "author": "AquaEcho",
+      "date": "2025-03-30T05:20:03+0900",
+      "body": "Notetags themselves don't trigger. It's literally just text data. It's the plugin or script parsing it that triggers.\nYou could theoretically have multiple plugins and scripts grabbing the same notetag data and doing different things with it."
+    },
+    {
+      "post_id": "js-post-1506933",
+      "author": "ShadowDragon",
+      "date": "2025-03-30T05:46:18+0900",
+      "body": "outside VS plugin, you can use this one\nTUR_EvalTags\n.\nI have no idea how far it is capable it is to run what you want.\nbut with some error and trial, I think you can figure something out."
+    },
+    {
+      "post_id": "js-post-1506936",
+      "author": "rpgLord69",
+      "date": "2025-03-30T05:58:24+0900",
+      "body": "ZimXero said:\nThanks for all the evaluations.  It looks like the only way is Javascript.  Is there a way to trigger a standard notetag from within javascript  though?\nMy actual use is for a mechanic on boost skills.  I wanted players to gain a boost point when they use a skill with a matching attached \"influence\".  The 4x influence types are shown as icons at the beginning of the skill descriptions (Sun,Moon,Planetary, or Void).  The active influence shows on the battle screen and randomly changes each ATB turn.  The system is working, but I can't get it to conditionally add boost points because notetags don't recognize the IF statement, and javascript doesn't recognize the add boost point command.\ninfvar=3 ? <User Boost Points: +1> :\nThe result now, is that every skill adds 1 boost point, no matter what the infvar variable is.\nClick to expand...\nBut again, can't you do that in skill action sequences with MECH: Boost Points Change?\nLike put that in conditional depending on the variable. The target you can get with control variable last actor id to act or something. (I assume that command changes the boost points and not the boost state or whatever.)\nEDIT: I think your problem with this in some earlier thread was that there was no way of getting the number of boost points. But you can change them with the plugin command."
+    }
+  ]
+}

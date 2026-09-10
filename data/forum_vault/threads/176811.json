@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/actor-running-help-solved.176811",
+  "title": "Actor running help. (Solved)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:19.318663+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1508243",
+      "author": "Ikaro",
+      "date": "2025-04-08T02:22:05+0900",
+      "body": "Hi, I was trying to make a common event were when running the actor's character changes momentarily to enhance the dynamic of the project, however the script doesn't work, but doesn't give an error message either."
+    },
+    {
+      "post_id": "js-post-1508253",
+      "author": "caethyril",
+      "date": "2025-04-08T02:51:48+0900",
+      "body": "From the\nMV / MZ Script Call List\n(Set Actor Map Character, row ~477):\nactor\n.setCharacterImage(\nfilename\n,\nindex\n);\n$gamePlayer.refresh();\nClick to expand...\nSo your script call should be:\nJavaScript:\n$gameActors.actor(1).setCharacterImage('&actor1', 0);\n$gamePlayer.refresh();\nA couple of other notes:\nMZ makes HTML games, so all filenames should conform to network standards.\n&\nis a reserved character for URLs, so the filename\n&actor1.png\nmay cause unexpected results in-game.\nDon't write integers with zeroes in front. I.e. use\n1\n, not\n0001\n. Why? Because in JavaScript, leading zeroes indicate an octal value. E.g.\n0010\nis another way of writing the decimal number\n8\n, and\n0009\nis just invalid. (Also,\n1\nis quicker to write than\n0001\n.)"
+    },
+    {
+      "post_id": "js-post-1508444",
+      "author": "Ikaro",
+      "date": "2025-04-09T08:02:02+0900",
+      "body": "caethyril said:\nFrom the\nMV / MZ Script Call List\n(Set Actor Map Character, row ~477):\nSo your script call should be:\nJavaScript:\n$gameActors.actor(1).setCharacterImage('&actor1', 0);\n$gamePlayer.refresh();\nA couple of other notes:\nMZ makes HTML games, so all filenames should conform to network standards.\n&\nis a reserved character for URLs, so the filename\n&actor1.png\nmay cause unexpected results in-game.\nDon't write integers with zeroes in front. I.e. use\n1\n, not\n0001\n. Why? Because in JavaScript, leading zeroes indicate an octal value. E.g.\n0010\nis another way of writing the decimal number\n8\n, and\n0009\nis just invalid. (Also,\n1\nis quicker to write than\n0001\n.)\nClick to expand...\nThank you~ ^^/\nI always feel like a 6 year old struggling to fit a cube in the square hole when asking for help :,)"
+    },
+    {
+      "post_id": "js-post-1508505",
+      "author": "slimmmeiske2",
+      "date": "2025-04-09T21:00:39+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

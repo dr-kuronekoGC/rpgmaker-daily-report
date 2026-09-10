@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/dynamic-buff.176805",
+  "title": "Dynamic Buff",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:37.184923+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1508192",
+      "author": "Vyndicate",
+      "date": "2025-04-07T21:05:23+0900",
+      "body": "Dynamic Buff\nAuthor: Vyndicate\nThere's a part that you want to give a buff to allies or enemy gain a buff\nBut you also want to make it dynamic instead of 25% of each buff (or other value from plugins)\nYou can make it dynamic with this plugin\nDescription:\nThis plugin to make buff increase dynamically\nCreate a dynamic buff based on state you use\nNotetag (States):\n<BUFFS: [\n{\"paramId\": 0, \"buff\": 2, \"based\": true, \"type\": 0},\n{\"paramId\": 1, \"buff\": 1.3}\n]>\nparamId (Mandatory)\n=> parameter id (Refer to game data)\nbuff (Optional)\n=> Multiplier or Flat, depends on type, default will\nmultiplied by 1 or added by 0. Can use negative value\nbased (Optional)\n=> Whether you want multiply from base only or with other calc\ntype (Optional)\n=> between 0 and 1 (Only when based = false)\nif 0, The buff will do multiplication\nif 1, The buff will do addition\nDefault value:\nbased = false\ntype = 0\nIn that example, paramId 0 and 1 is Max HP and Max MP\nExample of using based = true:\nDef from stats = 10, def from other source (Armor, weapon, etc) = 20\nTotal def = 30\nBuff = 2x\nTotal def after buff = 10 * 2 + 20 = 40\nif based false, it will like this => (10 + 20) * 2 = 60\nYou can write either in one line or like example above\nYou can also write string like:\n<BUFFS: [\n{\"paramId\": 0, \"buff\": \"v[3] + value / 200 + this.paramOrigin(4) / 5\"},\n{\"paramId\": 1, \"buff\": 1.3}\n]>\nv => variable value\nvalue => param value of that id (in this case is mhp)\nthis.paramOrigin(x) => parameter value, same as param but in other function\nto avoid recursive loop\nYou can use other like this.paramBase, this.paramPlus, etc. But avoid\nthis.param(), use this.paramOrigin() instead\nNotetag (Weapon, Armor):\n<BUFFS: [\n{\"paramId\": 2, \"buff\": 0.5, \"type\": 0, \"armorId\": 2, \"armorSlot\": 2},\n{\"paramId\": 2, \"buff\": -0.5, \"type\": 0, \"armorId\": 2, \"armorSlot\": 3}\n]>\nPretty much similar to states but without based, with addition armorId,\narmorSlot, weaponId, and weaponSlot\nBuff value 0 is neutral, buff value 1 will double the value (Ex: atk +15,\nbuff: 1 will become atk +30). Remove the upgrade, set to -1. Assuming all\nof this using type: 0\narmorId can exist alone, but armorSlot need armorId. Similar to weapon\nSo far, the usage between armor and weapon separated. So it will like this\n<BUFFS: [\n{\"paramId\": 2, \"buff\": 0.5, \"type\": 0, \"armorId\": 2, \"armorSlot\": 2},\n{\"paramId\": 2, \"buff\": -0.5, \"type\": 0, \"weaponId\": 2, \"weaponSlot\": 3}\n]>\nI'm yet to create if armor and weapon must exist, buff applied\nRegarding how big the value is, you can go crazy whatever you want\nFrom changelog 1.3.3: Thank you for someone mentioned me in Discord regarding this bug\nTerms of Use:\nFree for commercial and non commercial use with credits\nChangelog:\nv1.3.3\nSimplified code\nFix multiple state use the latest one\nv1.3.1\nFix when get .equips() cause error for enemies\nv1.3.0\nAdd notetag for weapon and armor\nv1.2.0\nAdd type, change buff between flat add or multiply it, and this.paramOrigin() function\nv1.1.0\nAdd custom value, multiplier based on what you need, with variable and value\nv1.0.0\nInit plugin\nShowcase:\nIn this case, allies who get Emergency Defense gets Max HP buff by 2x, def by 10x, and magical def by 10x\nStats before getting buff:\nStats when getting buff:\nShowcase regarding weapon and armor notetag:\nNotetag used for this showcase:\nCode:\n<BUFFS: [\n{\"paramId\": 2, \"buff\": 0.5, \"type\": 0, \"armorId\": 2, \"armorSlot\": 2},\n{\"paramId\": 2, \"buff\": -0.5, \"type\": 0, \"armorId\": 2, \"armorSlot\": 3}\n]>"
+    },
+    {
+      "post_id": "js-post-1508383",
+      "author": "ShadowDragon",
+      "date": "2025-04-09T02:11:48+0900",
+      "body": "this looks useful\nspecially for states, maybe you can do similar to armor/weapons too?"
+    },
+    {
+      "post_id": "js-post-1508632",
+      "author": "Vyndicate",
+      "date": "2025-04-10T21:01:39+0900",
+      "body": "ShadowDragon said:\nthis looks useful\nspecially for states, maybe you can do similar to armor/weapons too?\nClick to expand...\nIs it like when wear this item, increase stat by value?\nI just want to make sure before doing stuff"
+    },
+    {
+      "post_id": "js-post-1508643",
+      "author": "ShadowDragon",
+      "date": "2025-04-10T22:46:32+0900",
+      "body": "yes.\nlike weapon has 10 attack, but can get +5 if armor X is on or armor X in slot\n4 (accessory) if armor X is in 5, than -5 attack.\nso if it can check equips based on slots position, you can make it really dynamic\nor add stats this way as well to boost stuff.\nbut if you have passive stats from an accessory, you can boost the weapon too\nor armor\nif that makes sense?"
+    },
+    {
+      "post_id": "js-post-1508654",
+      "author": "Vyndicate",
+      "date": "2025-04-10T23:50:20+0900",
+      "body": "ShadowDragon said:\nyes.\nlike weapon has 10 attack, but can get +5 if armor X is on or armor X in slot\n4 (accessory) if armor X is in 5, than -5 attack.\nso if it can check equips based on slots position, you can make it really dynamic\nor add stats this way as well to boost stuff.\nbut if you have passive stats from an accessory, you can boost the weapon too\nor armor\nif that makes sense?\nClick to expand...\nInteresting take, I'll consider this then\nIt might take a while"
+    },
+    {
+      "post_id": "js-post-1509014",
+      "author": "Vyndicate",
+      "date": "2025-04-13T11:28:39+0900",
+      "body": "Update:\nv1.3.0\nAdd notetag for weapon and armor\nStats value will be changed regarding weapon and armor notetag. But so far, it doesn't buff automatically (Ex: Put specific armor it will not buff all available params in database, but buff from the paramId that has been set in notetag), you need to set with correct paramId manually to buff it (Assume using type: 0)"
+    },
+    {
+      "post_id": "js-post-1509085",
+      "author": "ShadowDragon",
+      "date": "2025-04-14T01:38:40+0900",
+      "body": "nice, this is really awesome, thank you =)"
+    },
+    {
+      "post_id": "js-post-1512609",
+      "author": "Vyndicate",
+      "date": "2025-05-07T09:01:09+0900",
+      "body": "Update:\nv1.3.1\nThere's a bug when encounter battle, Game_Enemy.prototype.equips() cause an error"
+    },
+    {
+      "post_id": "js-post-1548977",
+      "author": "Vyndicate",
+      "date": "2026-02-26T10:09:51+0900",
+      "body": "Update:\nv1.3.3\nWhen using multiple of states, it will cause a bug that you only using latest state applied\nAlso simplified the code\nThanks to someone that mentioned me in Discord about this bug"
+    }
+  ]
+}

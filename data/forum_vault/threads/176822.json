@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-way-for-mouse-to-only-be-used-in-menu-scenes-not-to-move-in-overworld-mz.176822",
+  "title": "MZ A way for mouse to only be used in menu scenes, not to move in overworld ( MZ )",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:19.705551+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1508299",
+      "author": "VeryPeachy",
+      "date": "2025-04-08T10:16:38+0900",
+      "body": "Hey y'all! For a while I've had a beta tester talk about how they wish that they could use their mice to select buttons and scroll while in menu. I've been using a plugin by CT_Bolt that disables mouse movement, as it feels unprofessional and shows that my game is made in RPG Maker (Something that I'm trying to hide not out of shame, but just because sometimes RMMZ gets a bad rep). Does anyone know how to make it so that just mouse movement is disabled? Thanks in advance!\n(Not sure if this is the right thread to post in, if not I'll be glad to change it.)"
+    },
+    {
+      "post_id": "js-post-1508327",
+      "author": "ShadowDragon",
+      "date": "2025-04-08T17:07:11+0900",
+      "body": "you can try to open the CTB_DisableTouchInputMZ and go to line 67.\nreplace the entire code with the following: (or add the missing line)\nJavaScript:\n$_$['TouchInput.update'] = TouchInput.update;\n    TouchInput.update = function() {\n        if (SceneManager._scene instanceof Scene_Menu) return; // <= added line\n        if (CTB.DisableTouchInputMZ.enabled) {$_$['TouchInput.update'].apply(this, arguments);};\n    };\nthis should enable the mouse in the menu's (I don't own MZ so I cannot test it).\nmaybe you need to set\nif (!SceneManager._scene instanceof Scene_Menu)\nto enable it there.\notherwise, you can make a condition with else handler.\nto make it true in menu, else whatever the update should be."
+    },
+    {
+      "post_id": "js-post-1508337",
+      "author": "caethyril",
+      "date": "2025-04-08T19:19:47+0900",
+      "body": "Alternatively, you could try saving this as a .js file and importing as a plugin:\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Disable map movement via touch controls.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/posts/1315190/\n * @help Free to use and/or modify for any project, no credit required.\n */\n// Override!\nGame_Temp.prototype.setDestination = function() {};"
+    },
+    {
+      "post_id": "js-post-1508450",
+      "author": "VeryPeachy",
+      "date": "2025-04-09T09:10:03+0900",
+      "body": "Hey! I've worked in both of your code (Thanks a ton btw!), but it's odd. It works when in the submenus of the menu and the battle scenes, but it doesn't work for main menu (like the area where you select items, skills, etc.). Any idea what could be causing this? Idk how to attach a video, but if it would help I could try to attach a video."
+    },
+    {
+      "post_id": "js-post-1508493",
+      "author": "caethyril",
+      "date": "2025-04-09T19:21:59+0900",
+      "body": "If you're using my plugin then simply turn off the other plugins and save your project (to apply Plugin Manager changes) before testing. That's why I said \"alternatively\": my plugin replaces CTB's one.\nIf you're using ShadowDragon's suggestion, that's exactly what the added line does: it disables touch input updates on the pause menu (\nScene_Menu\n). I might be wrong but I think that's the wrong approach, because even if you disabled it on the correct scene (\nScene_Map\n), that would mean you wouldn't be able to use touch selection in events, e.g. Show Choices."
+    },
+    {
+      "post_id": "js-post-1508580",
+      "author": "VeryPeachy",
+      "date": "2025-04-10T08:48:06+0900",
+      "body": "Thank you so much! This totally worked!"
+    }
+  ]
+}

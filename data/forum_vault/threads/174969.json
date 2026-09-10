@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/about-mkxp-usage.174969",
+  "title": "About MKXP usage",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:57.386853+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1495939",
+      "author": "lemen",
+      "date": "2025-01-27T05:01:10+0900",
+      "body": "I'm not sure if this is the right forum to ask... I heard game such as oneshot used both RPG Maker and the open source program for Ruby script called MKXP, which made the director to connect the RPG Maker program with the external code such as C++ while making and develop their game. Anyone used the program over here?\nI'm curious about the process of how I could connect the external code to RPG Maker(I mean the process after download-maybe about which files to open from MKXP and how to connect the external code that is written?),\nand if it supports Javascript to connect with Vx ace,\nand if it's legal maybe...? I've heard in some points that using MKXP to make RPG maker games could be illegal, but seeing the case of Oneshot, I assume it's not- but I bet correct info is the best."
+    },
+    {
+      "post_id": "js-post-1495954",
+      "author": "kyonides",
+      "date": "2025-01-27T07:43:47+0900",
+      "body": "Nope, mkxp can't support javascript on its own. It just can't, only runs on ruby 2.x or 3.x depending on the build.\nAnd regarding your last point there, do you own the engine like VX ACE? You do? Then why can't you make your game using its editor and run it using any executable at will? Just thinking aloud here."
+    },
+    {
+      "post_id": "js-post-1495959",
+      "author": "Andar",
+      "date": "2025-01-27T08:38:18+0900",
+      "body": "MKXP is - as opposed to all other tries before that one - declared legal, although I don't have any link to that post.\nNow a bit of background.\nMKXP can only work because all makers since RMXP have been double interpreted engines - the games were never compiled.\nThe first interpreter is the one that interprets Ruby code on the local machine (or javascript for MV and MZ). This interpreter always runs the engine code, which in itself includes an interpreter for event code.\nSo MKXP is basically an interpreter for running Ruby/RGSSx - code on whatever the target hardware is. That in itself can never be illegal.\nThe difference comes from the display library used by RM XP/VX/VXA. That one is closed source and only available as an encrypted dll.\nMost early converters hacked the dll to learn how to access them, and that broke the EULA and made them illegal.\nMKXP went the much more difficult route of replacing that original display library with something else (DirectX in case of Windows).\nThat is why it remains legal - it never broke any laws on being programmed."
+    },
+    {
+      "post_id": "js-post-1495961",
+      "author": "kyonides",
+      "date": "2025-01-27T08:49:37+0900",
+      "body": "Err, nope. Mkxp doesn't DIRECTLY rely on DirectX as you might think. It might... yet, that is not guaranteed at all. Honestly, not depending on the platform you pick, it might still use OpenGL as its default backend for all graphical stuff. It still exists on Windows so why not? OpenGL has been quite common in Linux and similar OS's so it's the default option just because. SDL2 is a complex bridge to all the underlying technologies, but AFAICR you'd have to tell it explicitly to depend on DirectX to do some stuff. (Somebody correct me if they can find the source files saying otherwise.)\nBoth SDL2 and OpenGL are legal from the very beginning so their implementation won't break the law."
+    },
+    {
+      "post_id": "js-post-1495985",
+      "author": "lemen",
+      "date": "2025-01-27T12:45:02+0900",
+      "body": "kyonides said:\nNope, mkxp can't support javascript on its own. It just can't, only runs on ruby 2.x or 3.x depending on the build.\nAnd regarding your last point there, do you own the engine like VX ACE? You do? Then why can't you make your game using its editor and run it using any executable at will? Just thinking aloud here.\nClick to expand...\nOh okay. I thought since MKXP makes external C++code to be connected on ruby, maybe connecting external javascript code on ruby could work too. So C++ might be the only supportable code that it can provide?\nYes I own VX ACE, but I was confused about the legal issues because I couldn't find the clear answer when I search and some said it might be illegal, while I thought it would be legal. But now I get the point, thanks."
+    },
+    {
+      "post_id": "js-post-1495987",
+      "author": "lemen",
+      "date": "2025-01-27T12:54:23+0900",
+      "body": "Andar said:\nMKXP is - as opposed to all other tries before that one - declared legal, although I don't have any link to that post.\nNow a bit of background.\nMKXP can only work because all makers since RMXP have been double interpreted engines - the games were never compiled.\nThe first interpreter is the one that interprets Ruby code on the local machine (or javascript for MV and MZ). This interpreter always runs the engine code, which in itself includes an interpreter for event code.\nSo MKXP is basically an interpreter for running Ruby/RGSSx - code on whatever the target hardware is. That in itself can never be illegal.\nThe difference comes from the display library used by RM XP/VX/VXA. That one is closed source and only available as an encrypted dll.\nMost early converters hacked the dll to learn how to access them, and that broke the EULA and made them illegal.\nMKXP went the much more difficult route of replacing that original display library with something else (DirectX in case of Windows).\nThat is why it remains legal - it never broke any laws on being programmed.\nClick to expand...\nOkay, I got the point here. Thanks. Do you know if it could also connect Javascript code to ruby, or the process of implying the external code to actual RPG Maker? I've downloaded and tried, but things goes hard.\nJust curious here if you've used MKXP."
+    },
+    {
+      "post_id": "js-post-1495988",
+      "author": "kyonides",
+      "date": "2025-01-27T13:30:21+0900",
+      "body": "Why don't you find an executable that runs on javascript instead? I mean, VX ACE uses Ruby by default so it makes sense to create an alternate binary that also does that on a modern build of Ruby."
+    },
+    {
+      "post_id": "js-post-1496005",
+      "author": "Zeriab",
+      "date": "2025-01-27T18:13:21+0900",
+      "body": "MKXP does not come with any JavaScript support which makes sense given how being able to execute JavaScript is irrelevant for its purpose. That said, check out the js gem and see if it suits your needs:\nhttps://rubygems.org/gems/js\nNote: MKXP allows you to write and use Ruby C Extensions"
+    },
+    {
+      "post_id": "js-post-1496014",
+      "author": "lemen",
+      "date": "2025-01-27T21:05:08+0900",
+      "body": "Zeriab said:\nMKXP does not come with any JavaScript support which makes sense given how being able to execute JavaScript is irrelevant for its purpose. That said, check out the js gem and see if it suits your needs:\nhttps://rubygems.org/gems/js\nNote: MKXP allows you to write and use Ruby C Extensions\nClick to expand...\nOh thank you! I didn't know there were other open sources. I've researched about it and I think it's just the additional code for ruby to hang out with different purpose(the one you gave me is about JS)-this also doesn't matter with EULA, right?\nSorry for some stupid questions... I have never experienced coding before so even when I read EULA, with the words such as reverse engineer and decompile and etc, I'm not sure if it is allowed or not.\nOf course I'll try to learn about it when I start the project"
+    },
+    {
+      "post_id": "js-post-1496015",
+      "author": "lemen",
+      "date": "2025-01-27T21:12:06+0900",
+      "body": "kyonides said:\nWhy don't you find an executable that runs on javascript instead? I mean, VX ACE uses Ruby by default so it makes sense to create an alternate binary that also does that on a modern build of Ruby.\nClick to expand...\nBecause I'm totally new to programming and making games, which means I do not get correctly if 'something out of the game' is legal for game making even when I read the EULA- I was just afraid if I would cross the law without noticing. (The reason I asked about MKXP directly was because there was the case for other games using it, and because I was using VX ACE as main already)\nBut someone has introduced me about another source named Rubygem, so now I'm gonna search about it maybe."
+    },
+    {
+      "post_id": "js-post-1497595",
+      "author": "kyonides",
+      "date": "2025-02-07T05:22:37+0900",
+      "body": "Rubygems are extensions written in C for Ruby aka CRuby or pure Ruby scripts."
+    }
+  ]
+}

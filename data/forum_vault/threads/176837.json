@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/custom-menu-backgrounds-for-each-actor.176837",
+  "title": "MV Custom Menu Backgrounds for each actor?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:35.715888+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1508452",
+      "author": "Hyper_kat7",
+      "date": "2025-04-09T09:36:18+0900",
+      "body": "I'm making my first project in RPG maker MV. I've created full body art of the main four party members for my game, and I want there to be some way to see this art within the game.\nNear the very start when I made the project, I downloaded the\nMenu Backgrounds plugin\nby SomeRandomDude, so that I could have the backgrounds for the pause menus be all black. I see there's a way to have a different image for the status screen, but I want there to be unique backgrounds for the status screen of each actor. Is there a way to do that with this plugin? If not, is there a way to do that with some other plugin? ( Also, I don't have money to buy plugins ;-; )\nI'd very much appreciate some help and/or advice, thank you."
+    },
+    {
+      "post_id": "js-post-1508521",
+      "author": "rpgLord69",
+      "date": "2025-04-09T23:41:01+0900",
+      "body": "Hmmm, don't know if it works, but a random suggestion you can try:\nIn the plugin where it selects the file to load (const bit), put conditionals if the constuctor name is Scene_Status, check who the menuActor is and change the filename depending on that.\nEDIT:\nI tested it quickly and it seems to work if you replace the below\nconst bit = _.loadImage(_.backgrounds[this._menuBackgroundConstructorName]);\nwith (change the file names to what you want and add all actor ids)\nlet bit = 0;\nif (this._menuBackgroundConstructorName == \"Scene_Status\") {\nif ($gameParty._menuActorId == 2) {\nbit = _.loadImage(\"Sword\");\n}\nif ($gameParty._menuActorId == 1) {\nbit = _.loadImage(\"Night\");\n}\n} else {\nbit = _.loadImage(_.backgrounds[this._menuBackgroundConstructorName]);\n}\nBut yeah, there might be some problem that I'm unaware of and maybe you should add stuff to what it loads automatically(?). Ask some coders LOL."
+    },
+    {
+      "post_id": "js-post-1508732",
+      "author": "Hyper_kat7",
+      "date": "2025-04-11T10:27:11+0900",
+      "body": "rpgLord69 said:\nHmmm, don't know if it works, but a random suggestion you can try:\nIn the plugin where it selects the file to load (const bit), put conditionals if the constuctor name is Scene_Status, check who the menuActor is and change the filename depending on that.\nEDIT:\nI tested it quickly and it seems to work if you replace the below\nconst bit = _.loadImage(_.backgrounds[this._menuBackgroundConstructorName]);\nwith (change the file names to what you want and add all actor ids)\nlet bit = 0;\nif (this._menuBackgroundConstructorName == \"Scene_Status\") {\nif ($gameParty._menuActorId == 2) {\nbit = _.loadImage(\"Sword\");\n}\nif ($gameParty._menuActorId == 1) {\nbit = _.loadImage(\"Night\");\n}\n} else {\nbit = _.loadImage(_.backgrounds[this._menuBackgroundConstructorName]);\n}\nBut yeah, there might be some problem that I'm unaware of and maybe you should add stuff to what it loads automatically(?). Ask some coders LOL.\nClick to expand...\nIt works!!! thank you so much!!!!!!!!\nOne problem though is that when the game starts up, and the status screen is opened, it doesn't load the image the first time the player opens the status screen, only the second time onward, for all actors except the first one. how do you fix this?"
+    },
+    {
+      "post_id": "js-post-1508741",
+      "author": "utunnels",
+      "date": "2025-04-11T11:35:39+0900",
+      "body": "JavaScript:\nthis._backgroundSprite.bitmap = new Bitmap(newWidth, newHeight);\nthis._backgroundSprite.bitmap.blt(bit, 0, 0, bit.width, bit.height, 0, 0, newWidth, newHeight);\nThis part looks suspicious. If the image is not loaded blt doesn't work.\nI haven't read his whole code to know why he needs to create a new bitmap.\nWithout fixing the plugint itself, you can load the image in those custom scenes (there are 20 of them so maybe it is just enough). Maybe you can just use a false scene name too fool the plugin to load the image."
+    },
+    {
+      "post_id": "js-post-1508748",
+      "author": "Kenen",
+      "date": "2025-04-11T12:31:51+0900",
+      "body": "A common approach would be to attach a load listener to the bitmap and blt it within the callback rather than right away.\nFor more flexibility, just add the image as a custom sprite."
+    },
+    {
+      "post_id": "js-post-1508759",
+      "author": "rpgLord69",
+      "date": "2025-04-11T15:26:46+0900",
+      "body": "Hyper_kat7 said:\nIt works!!! thank you so much!!!!!!!!\nOne problem though is that when the game starts up, and the status screen is opened, it doesn't load the image the first time the player opens the status screen, only the second time onward, for all actors except the first one. how do you fix this?\nClick to expand...\nCool.\nYeah, I was gonna suggest the same thing as utunnels (seems to work if you just name the custom scenes like test1, test2 etc and use the same images there as the ones you want for status). Or you could do what Kenen suggested, but I've no idea how to do that LOOOL\nEDIT: It also seems to work if you add in that loadAllImages function to load the images you've added in the code you changed."
+    },
+    {
+      "post_id": "js-post-1509170",
+      "author": "Hyper_kat7",
+      "date": "2025-04-14T09:42:40+0900",
+      "body": "rpgLord69 said:\nCool.\nYeah, I was gonna suggest the same thing as utunnels (seems to work if you just name the custom scenes like test1, test2 etc and use the same images there as the ones you want for status). Or you could do what Kenen suggested, but I've no idea how to do that LOOOL\nEDIT: It also seems to work if you add in that loadAllImages function to load the images you've added in the code you changed.\nClick to expand...\nSorry, I have no experience with javascript whatsoever, how do I add in that function to the code?"
+    },
+    {
+      "post_id": "js-post-1509199",
+      "author": "rpgLord69",
+      "date": "2025-04-14T15:37:30+0900",
+      "body": "Hyper_kat7 said:\nSorry, I have no experience with javascript whatsoever, how do I add in that function to the code?\nClick to expand...\nAdded the line that's commented as EXTRA. You can add lines for all the pics you need. That seemed to work for me, but I only tested it quickly back then.\n_.loadAllImages = function() {\nfor (let property in _.backgrounds) {\nif (_.backgrounds.hasOwnProperty(property)) {\nconst name = _.backgrounds[property];\nif(name.trim().length > 0) {\n_.loadImage(name);\n}\n}\n}\n_.loadImage(\"Sword\"); // EXTRA\n};\n_.loadAllImages();"
+    },
+    {
+      "post_id": "js-post-1509280",
+      "author": "ShadowDragon",
+      "date": "2025-04-15T01:54:16+0900",
+      "body": "keep in mind that there can be 1 major drawback here as well and need\na fallback if it fails to load.\nfor example, your player can rename the actor, so this actor name doesn't\nexist, so it must use the drawback.\nanother idea is maybe longer, which require more the ID for the actor\ninstead of using it's name.\nthis way, its safer and might better work as well\nif it also depends on the class, than ID's is the best way to go with."
+    },
+    {
+      "post_id": "js-post-1509461",
+      "author": "Hyper_kat7",
+      "date": "2025-04-16T05:40:35+0900",
+      "body": "rpgLord69 said:\nAdded the line that's commented as EXTRA. You can add lines for all the pics you need. That seemed to work for me, but I only tested it quickly back then.\n_.loadAllImages = function() {\nfor (let property in _.backgrounds) {\nif (_.backgrounds.hasOwnProperty(property)) {\nconst name = _.backgrounds[property];\nif(name.trim().length > 0) {\n_.loadImage(name);\n}\n}\n}\n_.loadImage(\"Sword\"); // EXTRA\n};\n_.loadAllImages();\nClick to expand...\nIt works!! Thank you so much for helping me out with this!"
+    },
+    {
+      "post_id": "js-post-1516821",
+      "author": "Hyper_kat7",
+      "date": "2025-06-03T05:05:21+0900",
+      "body": "rpgLord69 said:\nAdded the line that's commented as EXTRA. You can add lines for all the pics you need. That seemed to work for me, but I only tested it quickly back then.\n_.loadAllImages = function() {\nfor (let property in _.backgrounds) {\nif (_.backgrounds.hasOwnProperty(property)) {\nconst name = _.backgrounds[property];\nif(name.trim().length > 0) {\n_.loadImage(name);\n}\n}\n}\n_.loadImage(\"Sword\"); // EXTRA\n};\n_.loadAllImages();\nClick to expand...\nHi again. Late follow-up question, How can I modify this to allow for image changes? For example, if I wanted to change the art that's used for a character after a certain point in the game?"
+    },
+    {
+      "post_id": "js-post-1516825",
+      "author": "rpgLord69",
+      "date": "2025-06-03T05:24:09+0900",
+      "body": "Hmmm, I guess you can just put conditionals in the stuff in my first post, like $gameParty._menuActorId == 1 && $gameVariables.value(X) == 3\nAnd then add it to also load those pics in the stuff you quoted.\nChange the variables to choose what pic to use."
+    }
+  ]
+}

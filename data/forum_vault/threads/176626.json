@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-remove-a-specific-actors-shadow.176626",
+  "title": "How to remove a specific actor's shadow?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:24.648495+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1506959",
+      "author": "LupineDev",
+      "date": "2025-03-30T08:24:46+0900",
+      "body": "I'm using RPG Maker MZ and I have access to Visustella's Events and Movement Core.\nI need the shadow of my 9th Actor to disappear. Since they're a fire elemental and produce light, it doesn't make sense for them to cast a shadow.\nVisustella's plugin seems to only remove shadows from events, not actors (please correct me if I'm wrong).\nAny help would be appreciated."
+    },
+    {
+      "post_id": "js-post-1506988",
+      "author": "Timeline_man",
+      "date": "2025-03-30T11:56:30+0900",
+      "body": "does the sprite sheet itself have a shadow? Because I think you should just be able to erase that and then there'd be no shadow normally"
+    },
+    {
+      "post_id": "js-post-1507051",
+      "author": "LupineDev",
+      "date": "2025-03-31T00:59:52+0900",
+      "body": "No, the spritesheet does not have a shadow. The shadow is added in via MZ. I don't want to erase the shadow in the system folder itself. I just want to get rid of a specific actor's shadow."
+    },
+    {
+      "post_id": "js-post-1507719",
+      "author": "fizzly",
+      "date": "2025-04-04T15:44:47+0900",
+      "body": "I think it can't be done sadly, you can define the file name or disable itfor event,s but not for the player in  Visustella's Events and Movement Core. Sadly. Considering the fact that their scripts are obfocused, it would probably be easiest to write them with an idea for such an update."
+    },
+    {
+      "post_id": "js-post-1507722",
+      "author": "Robro33",
+      "date": "2025-04-04T16:55:13+0900",
+      "body": "try loading this after the visustella plugin and use the <Hide Shadow> you'd use in events inside the actor's notebox. quick test looks fine to me\nCode:\nGame_Follower.prototype.shadowFilename = function() {\n    if (this.actor().actor().meta[\"Hide Shadow\"]) return \"\";\n    const _0x582f10 = _0x1e9303;\n    return VisuMZ[_0x582f10(0x2bb)][_0x582f10(0x27e)][_0x582f10(0xfd)]['DefaultShadow'];\n}\nGame_Player.prototype.shadowFilename = function() {\n    if ($gameParty.leader().actor().meta[\"Hide Shadow\"]) return \"\";\n    const _0x582f10 = _0x1e9303;\n    return VisuMZ[_0x582f10(0x2bb)][_0x582f10(0x27e)][_0x582f10(0xfd)]['DefaultShadow'];\n}\nEdit: slipped my mind that you might want this for if that actor is the party leader as well. added the bit for that"
+    },
+    {
+      "post_id": "js-post-1507853",
+      "author": "LupineDev",
+      "date": "2025-04-05T10:16:13+0900",
+      "body": "Robro33 said:\ntry loading this after the visustella plugin and use the <Hide Shadow> you'd use in events inside the actor's notebox. quick test looks fine to me\nCode:\nGame_Follower.prototype.shadowFilename = function() {\n    if (this.actor().actor().meta[\"Hide Shadow\"]) return \"\";\n    const _0x582f10 = _0x1e9303;\n    return VisuMZ[_0x582f10(0x2bb)][_0x582f10(0x27e)][_0x582f10(0xfd)]['DefaultShadow'];\n}\nGame_Player.prototype.shadowFilename = function() {\n    if ($gameParty.leader().actor().meta[\"Hide Shadow\"]) return \"\";\n    const _0x582f10 = _0x1e9303;\n    return VisuMZ[_0x582f10(0x2bb)][_0x582f10(0x27e)][_0x582f10(0xfd)]['DefaultShadow'];\n}\nEdit: slipped my mind that you might want this for if that actor is the party leader as well. added the bit for that\nClick to expand...\nWhat do you mean loading this after the VS plugin? Load what?\nAnd do I just stick that code in the actor's notebox as is? Or do I modify it?"
+    },
+    {
+      "post_id": "js-post-1507880",
+      "author": "Robro33",
+      "date": "2025-04-05T13:03:13+0900",
+      "body": "LupineDev said:\nWhat do you mean loading this after the VS plugin? Load what?\nClick to expand...\ntake the code i posted, paste it into a text editor, save it as a .js file, and add it to your project as a plugin. as a plugin, it should be placed underneath the VS event and movement plugin.\nLupineDev said:\nAnd do I just stick that code in the actor's notebox as is? Or do I modify it?\nClick to expand...\ndont modify the code at all. the only thing youre doing to your actors is adding a <Hide Shadow> notetag to the ones that dont have shadows"
+    },
+    {
+      "post_id": "js-post-1511259",
+      "author": "RealityBlights",
+      "date": "2025-04-28T04:48:50+0900",
+      "body": "@Robro33\nI don't use MZ, and I only got to this thread when looking for something related to event/actor shadows, but the fact that you wrote this up to help someone is exemplary. Thank you for using your talents to better the RM community. It's thanks to wonderful people like you that amateur game developers around the world can put forth their dreams for others to play. I'm working hard on a project of my own using MV, and because there are free options for plugins, or at least extremely low-cost specialty plugins, I'm able to justify the hobby (as I will never charge for my games).  Again, thank you, and to all others like you, and those that will come after."
+    }
+  ]
+}

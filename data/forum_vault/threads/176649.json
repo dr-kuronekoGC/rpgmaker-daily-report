@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/need-help-converting-a-set-of-events-into-a-script.176649",
+  "title": "MZ Need help converting a set of events into a script",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:23.894434+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1507104",
+      "author": "Optic_Fusion1",
+      "date": "2025-03-31T06:19:52+0900",
+      "body": "I'm currently trying to convert the tutorial\nLetting The Player Choose Their Character\ninto a script as it's an unreadable mess and a pain to update as events only, however, I've ran into the issue of not knowing how to handle recursive choice selections. I saw the following threads\nQuestion about Nested Choices via JS\nand\nMessage window doesn't show when called more than once\nbut the first one isn't actually answered and the second one isn't script only. I'm not really sure on how to handle this. I'm\nsure\nthere's a more complex character creation plugin, but I see no point in using one for something this simple.\nI also saw\nthis\nbut it doesn't go into this either.\nThe code as-is:\nJavaScript:\nconst characters = [\n  { name: 'Kasey', class: 2, event_id: 26, image_id: 5, battle_image_id: \"Actor1_5\" },\n  { name: 'Eliot', class: 3, event_id: 27, image_id: 6, battle_image_id: \"Actor1_6\" },\n  { name: 'Roza', class: 3, event_id: 28, image_id: 7, battle_image_id: \"Actor1_7\" }\n];\n\n$gameMessage.add(\"Welcome Hero! It's time to face your destiny.\\nNow, who are you?\");\n$gameMessage.setChoices(['Kasey', 'Eliot', 'Roza'], 1, -1);\n$gameMessage.setChoiceCallback(index => {\n  character = characters[index]\n  $gameMap.event(character.event_id).moveStraight(2);\n\n  // TODO: Show selected character's actor image. Part of the Yes/No choice selection process\n\n  // TODO: Move this behind a separate yes/no choice selection\n  // If no, the character event_id moves back once and goes back to the character selection menu\n  $gameParty.members()[0].setName(character.name)\n  $gameParty.members()[0].changeClass(2, true);\n  $gameSwitches.setValue(2, true);\n\n  // Plays animation\n  const char = this.character(this._characterId = -1);\n  $gameTemp.requestAnimation([char], 117);\n  this.setWaitMode('animation');\n\n  // Changes the player's character\n  var actor = $gameParty.members()[0];\n  actor.setCharacterImage('Actor1', character.image_id);\n  actor.setFaceImage('Actor1', character.image_id);\n  actor.setBattlerImage(character.battle_image_id);\n  $gamePlayer.refresh();\n  // TODO: Have the event send a message saying the character was selected\n});\n\nthis.setWaitMode('message');"
+    },
+    {
+      "post_id": "js-post-1507205",
+      "author": "Optic_Fusion1",
+      "date": "2025-04-01T03:31:19+0900",
+      "body": "Bump.\nDid more looking in the mentioned google doc link, definitely didn't find an example for this."
+    },
+    {
+      "post_id": "js-post-1507217",
+      "author": "caethyril",
+      "date": "2025-04-01T04:50:59+0900",
+      "body": "Oh boy. I hope you're not planning any fancy cutscenes for your game.\nTrying to reproduce event commands with script calls is less straightforward, readable, maintainable, efficient, and concise. It's also more likely to break plugins. What I'm saying is: it's possible, but generally not the best idea.\nYou're having trouble because you're trying to use the event interpreter's timings (e.g. \"do this after a choice has been selected\") while largely avoiding use of the interpreter. Normally the interpreter works with a list of command objects, e.g. the core Show Choices callback simply jumps to the corresponding branch in the command list, and continues processing commands from there. Similarly, you'd need external structure to \"go back to the character selection menu\". Why reinvent the wheel?\nIf you're using this in a Script command in an event, you can just put the follow-up in another Script command after the first, e.g.\nJavaScript:\n// $gameMessage stuff...\n$gameMessage.setChoiceCallback(index => {\n  // store selected index in variable ID 123 for later reference\n  $gameVariables.setValue(123, index);\n});\nJavaScript:\n// Retrieve stored index.\nconst index = $gameVariables.value(123);\n// more stuff~\nThe\nthis.setWaitMode(\"message\")\nline should prevent the interpreter from processing any further commands until the message is dismissed, which in this case involves selecting a choice.\nI can't think of a good reason for it, but if you really\nneeded\nto replace a series of event commands with scripting, the best approach might be to:\nBuild the list of new commands to insert;\n(Deep-)clone the current command list;\nSplice the new commands in at the current index; then\nAssign the modified clone as the new command list.\nStep 1 would involve writing commands in their p-code as detailed on the \"Event Code\" sheet of the Script Call Reference, a sister document to the Script Call List that you linked:\nRPG Maker MZ Data and Script Call Reference\nRPG Maker MZ Data and Script Call Reference  A collection of data and script calls for certain functions of RPG Maker MZ.   Supplementary Material:  Most of the script calls found in RPG Maker MV also works. If you want samples and notes to compare side by side. Please visit this topic...\nforums.rpgmakerweb.com\nThis p-code can also be seen in a project's map files, e.g.\ndata/Map001.json\n. There's an example on the Script Call List: search for\nInsert Event Commands\n(currently row 579)."
+    },
+    {
+      "post_id": "js-post-1507221",
+      "author": "Optic_Fusion1",
+      "date": "2025-04-01T05:25:04+0900",
+      "body": "caethyril said:\nOh boy. I hope you're not planning any fancy cutscenes for your game.\nClick to expand...\nNot for this, no. I could also leave it as just event calls, but as a programmer it bugs me because of how quickly it becomes unreadable and unmaintainable (also because of how much copy-pasta has to be done for something that's quite simple)\nWhat little animation there is though is already covered via \"$gameSwitches.setValue(2, true);\" and events"
+    },
+    {
+      "post_id": "js-post-1507249",
+      "author": "caethyril",
+      "date": "2025-04-01T08:26:26+0900",
+      "body": "Optic_Fusion1 said:\nI could also leave it as just event calls, but as a programmer it bugs me because of how quickly it becomes unreadable and unmaintainable\nClick to expand...\nIf you think JS is more readable and maintainable than event commands, then I recommend you check out the script files directly, in your project's\njs\nsubdirectory. E.g.\nrmmz_objects.js\ndefines\nGame_Interpreter\n, the controller responsible for timing and executing event commands~"
+    },
+    {
+      "post_id": "js-post-1507254",
+      "author": "Another Fen",
+      "date": "2025-04-01T10:31:56+0900",
+      "body": "Adding some detail to the \"avoiding the interpreter\" point, one issue with your opening code is that the default message implementation does not allow you to line up another message before the previous one is fully completed and cleared (which has technically not yet happened when the choice is recorded). Similarly, the \"setWaitMode\" function does not immediately interrupt your script command. The command will be fully executed, but the interpreter will not start executing another before the wait is completed.\nAs a result, the easiest solution would probably be to split your script command into multiple parts, adding a break whenever you want the event to wait for the previous step to complete.\n(You may have to save some data from your local variables in a way that they are accessible by the later script parts)\nOf course, that is if you want to stick to the scripted event approach."
+    },
+    {
+      "post_id": "js-post-1507256",
+      "author": "Optic_Fusion1",
+      "date": "2025-04-01T10:58:59+0900",
+      "body": "caethyril said:\nIf you think JS is more readable and maintainable than event commands, then I recommend you check out the script files directly, in your project's\njs\nsubdirectory. E.g.\nrmmz_objects.js\ndefines\nGame_Interpreter\n, the controller responsible for timing and executing event commands~\nClick to expand...\nThat's certainly an.... interesting approach. I've done cleaner implementations of some of this stuff myself in Java and C++ lol"
+    }
+  ]
+}

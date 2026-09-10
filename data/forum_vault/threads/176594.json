@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/text-becoming-rightbound-for-some-reason-when-using-certain-characters.176594",
+  "title": "Text becoming rightbound for some reason when using certain characters?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:28.027582+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1506735",
+      "author": "Madre_Joshua",
+      "date": "2025-03-29T00:54:19+0900",
+      "body": "I'm currently making a game in which characters occasionally text each other. As such, I wanted to make it so that occasionally, one of the characters uses kaomoji. I have had this idea since I was working with RPG Maker MV, where text displayed just fine and as intended, but now I've run into a strange issue.\nAlmost all kaomoji i use cause the text to irreversible be written from the right side in this incredibly strange fashion? It also moves the character's portraits over to the right for seemingly no reason? I've tried various ways to try and get it to look normal while kaomoji are used, but for some reason, it just won't work. What can I do about this?"
+    },
+    {
+      "post_id": "js-post-1506738",
+      "author": "caethyril",
+      "date": "2025-03-29T01:34:07+0900",
+      "body": "MZ has built-in support for right-to-left display of text. By default the check is for Arabic characters:\nSpoiler:\ncore snippets\nJavaScript:\nUtils.containsArabic = function(str) {\n    const regExp = /[\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF]/;\n    return regExp.test(str);\n};\n\nGame_Message.prototype.isRTL = function() {\n    return Utils.containsArabic(this.allText());\n};\n\nWindow_Base.prototype.createTextState = function(text, x, y, width) {\n    const rtl = Utils.containsArabic(text);\n// ...\n}\nSo I guess your text includes Arabic characters, maybe the hands?\nIf you don't care about supporting RTL text then a plugin like this might help (untested):\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Disable core support for right-to-left text.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/176594/\n * @help Free to use and/or modify for any project, no credit required.\n */\nUtils.containsArabic = function() { return false; };\nAlternatively you could look for similar characters, e.g. via a site like\nhttps://shapecatcher.com/\n."
+    },
+    {
+      "post_id": "js-post-1506741",
+      "author": "Madre_Joshua",
+      "date": "2025-03-29T02:06:31+0900",
+      "body": "caethyril said:\nMZ has built-in support for right-to-left display of text. By default the check is for Arabic characters:\nSpoiler:\ncore snippets\nJavaScript:\nUtils.containsArabic = function(str) {\n    const regExp = /[\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF]/;\n    return regExp.test(str);\n};\n\nGame_Message.prototype.isRTL = function() {\n    return Utils.containsArabic(this.allText());\n};\n\nWindow_Base.prototype.createTextState = function(text, x, y, width) {\n    const rtl = Utils.containsArabic(text);\n// ...\n}\nSo I guess your text includes Arabic characters, maybe the hands?\nIf you don't care about supporting RTL text then a plugin like this might help (untested):\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Disable core support for right-to-left text.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/176594/\n * @help Free to use and/or modify for any project, no credit required.\n */\nUtils.containsArabic = function() { return false; };\nAlternatively you could look for similar characters, e.g. via a site like\nhttps://shapecatcher.com/\n.\nClick to expand...\nThank you very much, I can confirm that it now actually displays the right way ingame. Annoyingly, the generator preview still shows it as rightbound, but I suppose not much can be done about that."
+    }
+  ]
+}

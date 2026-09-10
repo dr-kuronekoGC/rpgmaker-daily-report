@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/deleted.176792",
+  "title": "deleted",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:20.855231+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1508103",
+      "author": "Deleted member 159675",
+      "date": "2025-04-07T03:37:46+0900",
+      "body": "deleted"
+    },
+    {
+      "post_id": "js-post-1508127",
+      "author": "rpgLord69",
+      "date": "2025-04-07T05:43:23+0900",
+      "body": "Hmmm, can't you just make the stages need a higher and higher value of the self variable (to change the event page) and then your sleep event increases the value of all the self variables in the events that have been planted? The plugin page gives your the scripts:\ngetSelfVariableValue(mapID, eventID, variableID);\nsetSelfVariableValue(mapID, eventID, variableID, value);\nSo to increase it, I think it's:\nsetSelfVariableValue(mapID, eventID, variableID, getSelfVariableValue(mapID, eventID, variableID)+X);\nWhen you harvest it, set the self variable to 0.\nEDIT:\nIf you have a range of events (let's say 10-20, map 1), you can loop (let's say self switch A on means they've been planted), I think it's (for self variable 100):\nfor (let i = 10; i < 21; i++) {\nif ($gameSelfSwitches.value([1, i, 'A'])) {\nsetSelfVariableValue(1, i, 100, getSelfVariableValue(1, i, 100)+X);\n}\n}"
+    },
+    {
+      "post_id": "js-post-1508153",
+      "author": "Deleted member 159675",
+      "date": "2025-04-07T08:56:36+0900",
+      "body": "deleted"
+    },
+    {
+      "post_id": "js-post-1508157",
+      "author": "stormofsunbeams",
+      "date": "2025-04-07T09:22:55+0900",
+      "body": "So, it looks to me like you're using the wrong flag in your sleep mechanic.\n<Self> CarrotSeeds should be <Self> Carrots Planted. I hope it's something this simple!\nEdit: disregard, I misread this.\nHowever, I feel like you should have a separate variable for the growth of the carrots than the seeds themselves. Looking at my own system with multiple crops (that I'm still learning how it works, I got the farming system template to learn from from a dev on itch called CazWolf or Caz), I have a separate variable for when crops grow. But mine looks a bit more complex than yours.\nBut I'm going to leave it to those who know a bit more than I do, because I already flubbed up."
+    },
+    {
+      "post_id": "js-post-1508171",
+      "author": "rpgLord69",
+      "date": "2025-04-07T15:26:51+0900",
+      "body": "There's several problems, I think.\nYou don't need self-switches B, C and D. You can put pages 3,4, and 5 to action button instead of parallel (remove their contents too). Also, do you really need to go with self-switch A from an empty pot page to another empty pot page? I suggested to use self-switch A when you plant the seeds.\nYour scripts are also wrong. Read carefully what each spot should contain. And replace the +X in my example with +1\nIf you want to set the value back to 0, you don't need the get-script in that case inside it (you seem to have made your own modifications with '=' in some spots).\nYour sleep-event seems to control it's own self variable. You need to control the self variables of the crop events (I gave you an example of the loop in the post above).\nEDIT: Also, inside the event you can just use the control variables to affect the self variables, instead of the scripts."
+    },
+    {
+      "post_id": "js-post-1508224",
+      "author": "Deleted member 159675",
+      "date": "2025-04-08T01:20:33+0900",
+      "body": "deleted"
+    },
+    {
+      "post_id": "js-post-1508226",
+      "author": "rpgLord69",
+      "date": "2025-04-08T01:31:01+0900",
+      "body": "Hmmm, I tested the loop script and it seems to be working for me.\nAre the crops in map id 1? That's what you're affecting right now in your scripts."
+    },
+    {
+      "post_id": "js-post-1508227",
+      "author": "Deleted member 159675",
+      "date": "2025-04-08T01:37:41+0900",
+      "body": "deleted"
+    },
+    {
+      "post_id": "js-post-1508231",
+      "author": "rpgLord69",
+      "date": "2025-04-08T01:52:37+0900",
+      "body": "Ok, if you're using some spawner plugin, I don't know how they interact with them. But VS Events and Move has their own spawner, I assume they would work with that.\nAnyway, if you're spawning them to Map 2, you should try affecting them there right?"
+    },
+    {
+      "post_id": "js-post-1508237",
+      "author": "Deleted member 159675",
+      "date": "2025-04-08T02:07:41+0900",
+      "body": "deleted"
+    },
+    {
+      "post_id": "js-post-1508245",
+      "author": "rpgLord69",
+      "date": "2025-04-08T02:27:43+0900",
+      "body": "It seems to work for me. Are you targeting the ids of your spawned events?\nLike when you spawn an event you can get it's id with:\n$gameMap.lastSpawnedEventID()\nStore those and loop through them to target the spawned events.\nYou can test it without the loop. Just use that setSelfVariable stuff and replace the event id with the above script."
+    },
+    {
+      "post_id": "js-post-1508259",
+      "author": "Deleted member 159675",
+      "date": "2025-04-08T03:52:46+0900",
+      "body": "deleted"
+    },
+    {
+      "post_id": "js-post-1508317",
+      "author": "rpgLord69",
+      "date": "2025-04-08T14:51:06+0900",
+      "body": "When you start the game you can make some variable X an array, script []\nThen when you spawn an event on the map, you add to the end of the event that controls the spawning:\n$gameVariables.value(X).push($gameMap.lastSpawnedEventID());\nThen in your sleep event you affect the stored values there:\n$gameVariables.value(X).forEach(function(crop) {\nif ($gameSelfSwitches.value([2, crop, 'A'])){\nsetSelfVariableValue(2, crop, 9, getSelfVariableValue(2, crop, 9)+1);\n}\n});\nI didn't test the code, I think it works that way, but anyway the idea is there.\nEDIT: Tested the code, seems to work. Remember to replace X in all spots with the variable number you choose.\nEDIT2: Changed map ids in the example script from 1 to 2.\nEDIT3: PS. The VisuStella spawn command lets you check spawn success with a switch. So put that 'push' script line inside a conditional that the spawn success switch is ON. Otherwise if the spawn fails and the script runs, it adds a copy of the previous event number in there and messes your system."
+    },
+    {
+      "post_id": "js-post-1508453",
+      "author": "Deleted member 159675",
+      "date": "2025-04-09T09:37:06+0900",
+      "body": "deleted"
+    },
+    {
+      "post_id": "js-post-1508483",
+      "author": "rpgLord69",
+      "date": "2025-04-09T15:27:46+0900",
+      "body": "Cool. Like I said it seemed to work for me. In the future it'd be best to just show screenshots of all the events when you make some changes.\nI think unless the plugin has a command like \"manually increase every planted growth cycle\", you'd still need some way of targeting the ones you want. But maybe it has that. Good luck!"
+    }
+  ]
+}

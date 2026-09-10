@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/battle-event-not-triggering-after-switch-is-turned-on-drop-logic-not-firing.176874",
+  "title": "Battle Event Not Triggering After Switch is Turned ON – Drop Logic Not Firing",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:34.475969+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1508736",
+      "author": "JaredKFan",
+      "date": "2025-04-11T11:06:22+0900",
+      "body": "Hey everyone—I'm running into an issue in RPG Maker MV with a battle event that refuses to trigger, even though the conditions are being met.\nHere’s what I’m doing:\nI have a custom ghost encounter that:\nBecomes immortal at the start of battle (Turn 0)\nOn HP ≤ 25%, plays a panic message (works perfectly)\nAfter that, it should attempt to drop one of three key items via a retry loop (up to 3 tries)\nIf successful, it drops one of the items the player doesn’t already have\nThen it removes the Immortal state, screams, and escapes the battle.\nThe panic message is on its own event page, like this:\nCondition: HP is 25% or less\nCode:\n◆If：GhostPanicked is OFF\n  ◆Text：None, Window, Top\n  ：    ：The ghost looks panicked!\n  ◆Play SE：Scream (90, 100, 0)\n  ◆Wait：10 frames\n  ◆Control Switches：#0004 GhostPanicked = ON\n  ◆Control Switches：#0006 TriggerDrop = ON\n  ◆\n：End\nThe code here works fine and the message appears once the HP of this enemy drops to the required level.\nNow the problem is with the next event page (the two are in sequential order, with the panic message on event page 3 and the item drop loop on page 4 (the next page). The code for page 4 is as follows (yes I know it's lengthy):\nCondition: TriggerDrop switch is on\nCode:\n◆Control Switches：#0006 TriggerDrop = OFF\n◆Control Switches：#0005 ReadyToDrop = ON\n◆Text：None, Window, Bottom\n：    ：[Debug] Drop logic triggered.\n◆Control Variables：#0003 RetryCount = 0\n◆Label：Retry\n◆Control Variables：#0001 Skill Chance = Random 0..2\n◆If：Party has Broken Key\n  ◆Control Variables：#0003 RetryCount += 1\n  ◆If：RetryCount ≥ 3\n    ◆Jump to Label：FailDrop\n    ◆\n  ：Else\n    ◆Control Variables：#0001 Skill Chance = Random 0..2\n    ◆Jump to Label：Retry\n    ◆\n  ：End\n  ◆\n：Else\n  ◆Change Items：Broken Key + 1\n  ◆Text：None, Window, Top\n  ：    ：A broken, rusty key hits the ground!\n  ◆Jump to Label：FinalScream\n  ◆\n：End\n◆If：Party has Silver Locket\n  ◆Control Variables：#0003 RetryCount += 1\n  ◆If：RetryCount ≥ 3\n    ◆Jump to Label：FailDrop\n    ◆\n  ：Else\n    ◆Control Variables：#0001 Skill Chance = Random 0..2\n    ◆Jump to Label：Retry\n    ◆\n  ：End\n  ◆\n：Else\n  ◆Change Items：Silver Locket + 1\n  ◆Text：None, Window, Bottom\n  ：    ：A pretty locket drops to the ground!\n  ◆Jump to Label：FinalScream\n  ◆\n：End\n◆If：Party has Scratched Note\n  ◆Control Variables：#0003 RetryCount += 1\n  ◆If：RetryCount ≥ 3\n    ◆Jump to Label：FailDrop\n    ◆\n  ：Else\n    ◆Control Variables：#0001 Skill Chance = Random 0..2\n    ◆Jump to Label：Retry\n    ◆\n  ：End\n  ◆\n：Else\n  ◆Change Items：Scratched Note + 1\n  ◆Text：None, Window, Bottom\n  ：    ：A tattered, torn piece of paper crumples to the ground.\n  ◆Jump to Label：FinalScream\n  ◆\n：End\n◆Jump to Label：FinalScream\n◆Label：FailDrop\n◆Text：None, Window, Bottom\n：    ：The ghost didn't drop anything...\n◆Label：FinalScream\n◆Wait：30 frames\n◆Text：None, Window, Bottom\n：    ：Here, just take it! Get away from me!\n◆Play SE：Scream (90, 100, 0)\n◆Flash Screen：(255,255,255,255), 30 frames (Wait)\n◆Change Enemy State：#1 Ghostly Apparition, - Immortal\n◆Force Action：#1 Ghostly Apparition, Escape, Last Target\n◆Abort Battle\nThe item drop page never ends up firing as the Debug message I'm using to ensure the page starts crawling through the item drop loop here doesn't ever show up. The panic message fires correctly, and the switch gets flipped, but nothing else happens afterward.\nI've checked the following things:\nPage order: Drop page is after the panic message page\nSwitch is being set correctly (confirmed via debug messages)\nNo early battle abort or death triggering before the drop logic\nSpan is Moment, not Battle\nI even tried just setting ReadyToDrop directly from the panic event—still no luck\nTried moving drop logic into its own page, tried combining it—all with no effect.\nDoes anyone have any ideas as to why this is happening and how I can fix it? Has anyone seen this kind of \"moment skip\" issue before? I can provide screenshots of the event drop pages if anyone needs them or can send the part of the project that's causing the issue to anyone that asks. Since this is part of a custom boss encounter I'm creating, I would like some assistance in figuring out what is borking the event page with the item drop loop."
+    },
+    {
+      "post_id": "js-post-1508749",
+      "author": "Robro33",
+      "date": "2025-04-11T12:35:56+0900",
+      "body": "please show the screenshots of your event pages and show the full window just in case theres something basic being missed.\nJaredKFan said:\nThe panic message fires correctly, and the switch gets flipped, but nothing else happens afterward\nClick to expand...\nDo you have any plugins installed? just to rule out the possibility of a plugin using that same switch and flipping it after use. After the panic page runs, if you open devtools with F8, go to the console tab and type in $gameSwitches.value(6), does it say true?"
+    },
+    {
+      "post_id": "js-post-1508753",
+      "author": "JaredKFan",
+      "date": "2025-04-11T13:53:28+0900",
+      "body": "Screenshots are attached.\nNo plugins are installed - this is a vanilla install. I'm still too new to bother with using plugins currently.  I have not tested using the dev console but will do so while you look at the screenshots.\nAnd I have checked, and entering $gameSwitches.value(6) returns \"true\".  So the switch is flipping but for some reason the item selection loop afterward that is supposed to randomize the item drop isn't.\nUpdate:\nAfter further testing with developer console ($gameSwitches.value()), we’ve confirmed that the switch used to trigger the item drop logic is turning ON as expected. So we’ve narrowed it down to two possibilities:\nThe event page that runs the item drop loop is not being evaluated\n(possibly due to RPG Maker’s single-event-per-moment behavior),\nOR\nThe loop itself is hanging\n—getting stuck due to a condition not being met or retry logic not resolving properly.\nEither way it seems like page 4 of the event that has the loop is the culprit. It's very easy for me to mess up nested loops like we have here. So having extra eyes to look at the loop code is handy."
+    },
+    {
+      "post_id": "js-post-1508758",
+      "author": "Andar",
+      "date": "2025-04-11T15:10:15+0900",
+      "body": "That entire event doesn't make any sense, especially the retry counts.\nand nowhere in that event you decide on which of the three items to drop - if not for the retry counts constantly aborting you would get all three items on the first try, because you check all by possession without any other check between them.\nI strongly suggest you try that event completely from scratch..."
+    },
+    {
+      "post_id": "js-post-1508761",
+      "author": "JaredKFan",
+      "date": "2025-04-11T15:58:22+0900",
+      "body": "I don't want all three on the first try.  I want a random one out of these three items to drop. That's because this is an optional encounter inside a puzzle room.  The room has three items that are hidden around it and each of these three is handled by a conditional event at each of those locations in the room that gives you the item if you don't have it already; if you do, the conditional event then simply displays a message that there's nothing to find here (and this part works fine),\nThe ghost encounter is supposed to be designed that once you reduce the ghost to 25 percent of its health, it panics, drops one of the three random items, and then escapes (and then vanishes from the room after the fight). So if you ended up fighting the ghost (and you can only do it once), you'll have one of those three items after the encounter, and then you can get the other two in the room itself, since the conditional code already checks to see if you have the item when you snoop in that location.\nThe fight mechanics work fine until the panic message is deployed, and then after that it hangs, apparently in the loop itself.  If there's a simpler way to get the encounter to randomly drop one of those three items after the ghost panics, drops item and then escapes, I'm all ears for that.\nJared"
+    },
+    {
+      "post_id": "js-post-1508762",
+      "author": "Andar",
+      "date": "2025-04-11T16:09:11+0900",
+      "body": "JaredKFan said:\ndrops one of the three random items\nClick to expand...\nbut this part is completely missing in the event - you do have a random variable 0..2, but that variable is never used or checked to determine which of the three, instead all three items are checked (and given if not due to the retry mistake) without distinction.\njust test it yourself by first removing all of that retry code - since the random variable is never checked anywhere, it is absolutely useless in all cases and only prevents everything from happening.\nthen you'll see that the first ghost will give all three items..."
+    }
+  ]
+}

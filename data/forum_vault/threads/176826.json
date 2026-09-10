@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-skill-that-does-the-skill-damage-and-weapon-damage.176826",
+  "title": "A skill that does the skill damage and weapon damage.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T19:08:36.157146+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1508336",
+      "author": "Ryanmsmb",
+      "date": "2025-04-08T19:10:00+0900",
+      "body": "So i'm trying to make a skill that does the weapon damage and the skill damage, but problem is, i'm using a plugin that links weapon damage to other skill that has the specific damage of this weapon, because this was the only way i found to make weapon damage be like DnD, using a formula of random number+ a.atk to damage.\nSo i'm trying to make a skill that adds the damage of this skill to the attack, but at same time does the damage of the weapon the player is using, like the Divine smite of the paladin, which of course would change a lot\nIf anyone could help with a script, or a plugin or an idea to do so, I'd thank a lot"
+    },
+    {
+      "post_id": "js-post-1508352",
+      "author": "Luckysince97",
+      "date": "2025-04-08T22:05:20+0900",
+      "body": "I think if you are giving your weapon the atack skill with this trait it will work, if not make a common event in skill then call it with all the effect\ncontrol var search (Math.ceil) for the random or make it manually with var range 0-999 w/e (+) a.attack"
+    },
+    {
+      "post_id": "js-post-1508364",
+      "author": "Andar",
+      "date": "2025-04-08T23:51:25+0900",
+      "body": "How have you defined \"Weapon Damage\"?\nbecause by default no weapon does any damage, they only (like all equipment) add numbers to the parameters. And without knowing what you mean we can't tell you how to change anything.\nA link to the website of the plugin you're using would also be helpfull."
+    },
+    {
+      "post_id": "js-post-1508507",
+      "author": "Ryanmsmb",
+      "date": "2025-04-09T21:23:54+0900",
+      "body": "Andar said:\nHow have you defined \"Weapon Damage\"?\nbecause by default no weapon does any damage, they only (like all equipment) add numbers to the parameters. And without knowing what you mean we can't tell you how to change anything.\nA link to the website of the plugin you're using would also be helpfull.\nClick to expand...\nFor Weapon damage formula i'm using for example Math.floor(Math.random() * 8) + 1 + a.atk, so i can get a number between 1 and 8 + a.atk. Of course, i'm already using a plugin that turns the weapon normal attack into a skill attack, of which has this formula, i'm not at home now to get the name.\nThe weapon adds no damage, but allows the use of the specific skill that does what would be its damage. That's why i'm trying to find a way to make a skill that adds its damage to the weapon normal skill attack\nLuckysince97 said:\nView attachment 336824\nI think if you are giving your weapon the atack skill with this trait it will work, if not make a comm\nLuckysince97 said:\nView attachment 336824\nI think if you are giving your weapon the atack skill with this trait it will work, if not make a common event in skill then call it with all the effect\ncontrol var search (Math.ceil) for the random or make it manually with var range 0-999 w/e (+) a.attack\nClick to expand...\non event in skill then call it with all the effect\ncontrol var search (Math.ceil) for the random or make it manually with var range 0-999 w/e (+) a.attacouod\nClick to expand...\nThat could work. This is my first time using common events, so if i used, i could create an event where by using this skill the character attacks then cause the damage of both skill separately, adding to the total?"
+    },
+    {
+      "post_id": "js-post-1508512",
+      "author": "Andar",
+      "date": "2025-04-09T22:22:21+0900",
+      "body": "So you basically want to execute two skills at the same time, the one where the weapon damage formula is stored and the additional skill.\nThat is not exactly easy, not even through common events, because both skills are to a point variable and you can only reference a few things.\nAlternatevely you might reference the damage formula in a different place and then add it through notetags, but that would require quite some javascript knowledge.\n@Luckysince97\nthe attack skill trait is new with MZ, it did not exist in MV - that is why the OP needed a plugin for that."
+    },
+    {
+      "post_id": "js-post-1508619",
+      "author": "Ryanmsmb",
+      "date": "2025-04-10T18:49:35+0900",
+      "body": "Andar said:\nSo you basically want to execute two skills at the same time, the one where the weapon damage formula is stored and the additional skill.\nThat is not exactly easy, not even through common events, because both skills are to a point variable and you can only reference a few things.\nAlternatevely you might reference the damage formula in a different place and then add it through notetags, but that would require quite some javascript knowledge.\n@Luckysince97\nthe attack skill trait is new with MZ, it did not exist in MV - that is why the OP needed a plugin for that.\nClick to expand...\nHow can i do it then? I don't have many knowledge on Javascript, but i understand the basic."
+    },
+    {
+      "post_id": "js-post-1508625",
+      "author": "Robro33",
+      "date": "2025-04-10T19:39:04+0900",
+      "body": "Ryanmsmb said:\nHow can i do it then?\nClick to expand...\nas Andar said, a basic way to set it up would be to have a notetag on your weapons to be their damage formula. something like:\nCode:\n<WeaponDamage:Math.randomInt(12)+1 + (Math.floor(a.atk/2)-5)>\nexample being 1d12+ atk mod\nand then in the damage formula for your smite you can have it be some formula and add on the formula on the weapon notetag\nCode:\nMath.randomInt(8) + Math.randomInt(8) + 2 + (a.weapons && a.weapons()[0] && a.weapons()[0].meta.WeaponDamage ? eval(a.weapons()[0].meta.WeaponDamage): 0)\nwhich would be 2d8 + the weapon formula\nid personally make a function out of the latter half of that with a plugin for convenience's sake, but its not required"
+    },
+    {
+      "post_id": "js-post-1508627",
+      "author": "Ryanmsmb",
+      "date": "2025-04-10T20:15:21+0900",
+      "body": "Robro33 said:\nas Andar said, a basic way to set it up would be to have a notetag on your weapons to be their damage formula. something like:\nCode:\n<WeaponDamage:Math.randomInt(12)+1 + (Math.floor(a.atk/2)-5)>\nexample being 1d12+ atk mod\nand then in the damage formula for your smite you can have it be some formula and add on the formula on the weapon notetag\nCode:\nMath.randomInt(8) + Math.randomInt(8) + 2 + (a.weapons && a.weapons()[0] && a.weapons()[0].meta.WeaponDamage ? eval(a.weapons()[0].meta.WeaponDamage): 0)\nwhich would be 2d8 + the weapon formula\nid personally make a function out of the latter half of that with a plugin for convenience's sake, but its not required\nClick to expand...\nNow wait a minute, if i add to the note of the weapon it's formula, it will work? At MV? Bro, i did not knew that. So all i had to do is add the formula to the weapon notes itself, not create a skill to every Weapon? I though the formulas were tied to itens and skill only"
+    },
+    {
+      "post_id": "js-post-1508629",
+      "author": "Robro33",
+      "date": "2025-04-10T20:36:41+0900",
+      "body": "Ryanmsmb said:\nit will work? At MV?\nClick to expand...\nyes\nRyanmsmb said:\nI though the formulas were tied to itens and skill only\nClick to expand...\nformulas are tied to skills and items, but in the end its all javascript. its very possible to make a skill/item formula say \"use this value in an entirely different place\" if you know JS and the engine well enough to express it. youre just directing the formula to look elsewhere the same way you do when you use a.atk to to get the attacker's atk param or v[4] to get the value of variable 4\nRyanmsmb said:\nSo all i had to do is add the formula to the weapon notes itself, not create a skill to every Weapon?\nClick to expand...\ntheres many ways to go about doing it, but using notetags imo is just easier. theres other bits of data that would be easier to set up by having each weapon have its own skill, but a formula is straightforward. like if different weapons had different scopes, animations, elements, etc, its easier to set them up as different skills than it is as one skill that tries to do it all based on the weapon"
+    },
+    {
+      "post_id": "js-post-1508630",
+      "author": "Ryanmsmb",
+      "date": "2025-04-10T20:45:43+0900",
+      "body": "Robro33 said:\nyes\nformulas are tied to skills and items, but in the end its all javascript. its very possible to make a skill/item formula say \"use this value in an entirely different place\" if you know JS and the engine well enough to express it. youre just directing the formula to look elsewhere the same way you do when you use a.atk to to get the attacker's atk param or v[4] to get the value of variable 4\ntheres many ways to go about doing it, but using notetags imo is just easier. theres other bits of data that would be easier to set up by having each weapon have its own skill, but a formula is striaghtforward. like if different weapons had different scopes, animations, elements, etc, its easier to set them up as different skills than it is as one skill that tries to do it all based on the weapon\nClick to expand...\nHow do i do it then? Like, add the formula to the notetag is something, but what should i do to chance the attack and weapon animation?"
+    },
+    {
+      "post_id": "js-post-1508634",
+      "author": "Robro33",
+      "date": "2025-04-10T21:05:56+0900",
+      "body": "Ryanmsmb said:\nwhat should i do to chance the attack and weapon animation?\nClick to expand...\nthen youd have to go into the code, see how that stuff is handled, and engineer a way to have skill data change with the user's weapon. Which in the end is going to be more complicated than giving each weapon its own skill. Thats why i said:\nRobro33 said:\nif different weapons had different scopes, animations, elements, etc, its easier to set them up as different skills\nClick to expand...\nthe formula is the easy one to do because you can make a formula whatever you want without plugins. to make the other things dynamic youd want to make a plugin and alter the engine to allow such changes."
+    },
+    {
+      "post_id": "js-post-1508635",
+      "author": "Ryanmsmb",
+      "date": "2025-04-10T21:10:25+0900",
+      "body": "Robro33 said:\nthen youd have to go into the code, see how that stuff is handled, and engineer a way to have skill data change with the user's weapon. Which in the end is going to be more complicated than giving each weapon its own skill. Thats why i said:\nthe formula is the easy one to do because you can make a formula whatever you want without plugins. to make the other things dynamic youd want to make a plugin and alter the engine to allow such changes.\nClick to expand...\nI see, thanks a lot. I'll see what i can do"
+    }
+  ]
+}
