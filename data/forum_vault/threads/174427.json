@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/dont-know-what-to-do-to-make-fountain-animate-like-an-example-shows.174427",
+  "title": "Don't know what to do to make fountain animate like an example shows",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T04:48:01.776607+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1491859",
+      "author": "L42cf",
+      "date": "2025-01-05T11:35:55+0900",
+      "body": "So I bought this tileset \"The Japan Collection: Bakery Interior\", and it comes with a fountain tilesheet that is supposed to animate. I'd like to believe the tilesheet is correctly prepared (left image), but I can not figure out how to make my fountain in game animate like in the example gif provided in the assets (right image).\nI was having issues making a different tilesheet animate (that was only one \"block\" tall), but after making an event for that one it worked, but this fountain tilesheet is laid out differently and I can not seemingly make the same event to make the fountain naturally animate (it seems this one is two \"blocks\" tall and might need two events, if making an event is even the correct approach).\nI don't imagine I need a script or anything complicated to make this work, but I have tried unsuccessfully for a while and imagine the solution is quite simple, I just do not know it. Any help or guidance appreciated, thanks!"
+    },
+    {
+      "post_id": "js-post-1491861",
+      "author": "kyonides",
+      "date": "2025-01-05T11:43:57+0900",
+      "body": "Well, it's a matter of format.\nIn VX ACE you have 3 columns and 4 rows in a single character file.\nIf you locate 3 different fountain cells in a row, and probably leave the other rows empty, you can make it move in a fixed direction and it will look just like on the screenshot above."
+    },
+    {
+      "post_id": "js-post-1491867",
+      "author": "Zia_",
+      "date": "2025-01-05T12:28:05+0900",
+      "body": "I don't know about the resource standards in VXAce, but it should support oversized Charsets, right? XP had that already. The spritesheet doesn't look RPG Maker ready, but it's not hard to fix that. Just make sure, the sprite matches the size of your fountain and it has empty slots to match the 3x4 spritesheet.\nShould look something like this.\nIf the stepping animation isn't enough to cover all the frames: set up 6 Event pages and give each a specific frame. As display condition use a variable that gets counted up by a Parallel process. As soon as it hits \"more than 6\", set it back to 1."
+    },
+    {
+      "post_id": "js-post-1491893",
+      "author": "Zahawk",
+      "date": "2025-01-05T18:29:47+0900",
+      "body": "First, does that fountain tilesheet have only 6 sprites? if it was 5 along the top then the extra 2 at the bottom then I would've assumed this was an animations graphic.\nAnyway, as Zia_ stated the spritesheet doesn't appear to be VXA ready, you'll need to use a photo editting program to reorganise them like Zia_ has shown. Specifically you'd need to measure one of the sprites and use that as a basis of a 3x4 grid. Also, pretty sure VXA automatically centers the sprite no matter its size so you can just trim off all transparant pixels around it.\nThen add it to the Graphics/Characters folder named like so,    !$fountain\nNote that the stepping animation uses the horizontal rows (3 sprites). To get all 6 of the sprites working would require a lot of precision in a custom move route or again as Zia_ stated make 6 event pages for the sprites.\nAlternatively, take this with a grain of salt... but my suggestion, since there are 6 sprites, would be to make an animation graphic and play it via the ShowAnimation EventCommand. I've never made one but they seem to be 192x192 pixel graphics in a 5xn grid, n being however many extra needed. Refer to Clip1 to see an example of a solid looping animation. Again since I've never done this  I've no idea how the graphic would line up or where you'd have to place it in the graphic to align it to the impassable event."
+    },
+    {
+      "post_id": "js-post-1491913",
+      "author": "L42cf",
+      "date": "2025-01-05T21:56:19+0900",
+      "body": "Zia_ said:\nI don't know about the resource standards in VXAce, but it should support oversized Charsets, right? XP had that already. The spritesheet doesn't look RPG Maker ready, but it's not hard to fix that. Just make sure, the sprite matches the size of your fountain and it has empty slots to match the 3x4 spritesheet.\nShould look something like this.\nView attachment 328044\nIf the stepping animation isn't enough to cover all the frames: set up 6 Event pages and give each a specific frame. As display condition use a variable that gets counted up by a Parallel process. As soon as it hits \"more than 6\", set it back to 1.\nClick to expand...\nThanks for all the suggestions everyone!\nI was able to brute force my way to make the sheet work, but now I'm having issues with the code itself. The stepping animation didn't seem to be enough, and I almost got the events pages working, but it's going way to fast and seems to bounce\n. Attached is a real time gif of the fountain, and the first and last code pages (with the in betweens just being copies but +1)\nfountain spazzing out:\nleft is with the 6 event pages, right is with stepping animation, which seems to cut short the animation compared to the gif in the original post.\nhttps://gyazo.com/d5bdcff3cad2e54f390977a651b8446f\n(it looks so fast here, but I understand not wanting to click a link, so I tried to make it something I could upload but it seems to slow down the speed/lag)\nthe code: (which may not even be the right way to do it, but I was honestly guessing what to do)"
+    },
+    {
+      "post_id": "js-post-1491933",
+      "author": "Zia_",
+      "date": "2025-01-05T23:46:15+0900",
+      "body": "You're almost there.\nAdd a wait of 15 Frames at the top of each pages. (play around with the amount until you got the speed you want)\nThe bouncing happens, because some of your sprites seem to be aligned incorrectly. Check your spritesheet again, they might be one pixel up or down in comparison to the others."
+    },
+    {
+      "post_id": "js-post-1492004",
+      "author": "Zahawk",
+      "date": "2025-01-06T04:39:26+0900",
+      "body": "No need for the conditional branches, you've already set the condition variables on the left.\nNote: variables are 0 by default so you don't need to set it on pg1\nEdit: I just noticed that the original png is a 4x2 grid which matches the Character Graphic size, so an alternative method would be to change the character graphic using a moveroute."
+    },
+    {
+      "post_id": "js-post-1492016",
+      "author": "L42cf",
+      "date": "2025-01-06T05:35:16+0900",
+      "body": "Thank you both for the responses, I added about a 7 frame wait in between, and also shifted my bottom row fountain graphics up one pixel and now it more or less looks like the gif in the original gif! Thanks for all the help! I also cleaned up the code to reduce the redundancies.\nI tried the character move route thing, but I probably did something off because it didn't work as expected, but it's okay because I was able to fix the other way to make it work!\nEveryone was a great help, shoutout Zia_ as otherwise I think I would not have been able to implement this fountain!"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-core-engine-max-item-note-tag-doesnt-account-for-equipped-items-when-buying-from-the-shop.177342",
+  "title": "MV Yanfly Core Engine - Max Item note tag doesn't account for equipped items when buying from the shop.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T04:47:47.177989+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1511760",
+      "author": "VistayeTV",
+      "date": "2025-05-01T20:22:49+0900",
+      "body": "Hello!\nSo, in my game the party is comprised of a single hero with 6 accessories able to be equipped. For balance reasons, the player is only able to earn 3 of any accessory in the game.\nFor the following example, for ease, I'll simply call the accessory \"Ribbon.\"\nMy ribbon has the note tag  <Max Item: 3>\nThe notetag works perfectly in shops, only allowing me to buy 3 Ribbons.\nHOWEVER, if I equip all 3 Ribbons, and go back into the store, I can buy another 3 Ribbons.\nI understand this is likely due to the plugin not including equipment when considering max items.\nI found another thread with a similar issue, and the proposed code was as follows:\nGame_Party.prototype.numItems = function(item)\n{\nvar container = this.itemContainer(item);\nlet numHeld = container ? container[item.id] || 0 : 0;\nif (container == this._weapons)\n$gameActors._data.forEach(actor =>\n{\nif (actor)\nactor.weapons().forEach(weapon => {if (weapon.id == item.id || weapon.baseItemId && weapon.baseItemId == item.id) numHeld++;});\n});\nelse if (container == this._armors)\n$gameActors._data.forEach(actor =>\n{\nif (actor)\nactor.armors().forEach(armor=> {if (armor.id == item.id || armor.baseItemId && armor.baseItemId == item.id) numHeld++;});\n});\nreturn numHeld;\n};\nWhilst this code works in the shop preventing me from owning more than 3, it presents a new unique issue - it resulted in infinite ribbons. If I equipped one, my number of ribbons would actually go up, which makes sense looking at the code. If I had 3 ribbons equipped, and 3 in my inventory, my total ribbons in my inventory would appear as 6, essentially giving me 9 ribbons.\nMy question is essentially, how can I make the shop follow the max item cap including the equipment my actor has equipped? Or is there a way to modify this code to ONLY be considered when inside the shop?\nAny suggestions at all would be immensely appreciated, thank you!"
+    },
+    {
+      "post_id": "js-post-1511764",
+      "author": "Ms Littlefish",
+      "date": "2025-05-01T20:31:55+0900",
+      "body": "This thread was moved from RPG Maker MV Support to JavaScript/Plugin Support."
+    },
+    {
+      "post_id": "js-post-1511782",
+      "author": "Robro33",
+      "date": "2025-05-01T23:31:39+0900",
+      "body": "VistayeTV said:\nI understand this is likely due to the plugin not including equipment when considering max items.\nClick to expand...\nthats not the plugin. thats the base engine iirc. items when theyre equipped are removed from your inventory. when theyre unequipped theyre given back.\nVistayeTV said:\nMy question is essentially, how can I make the shop follow the max item cap including the equipment my actor has equipped? Or is there a way to modify this code to ONLY be considered when inside the shop?\nClick to expand...\nwhile its possible, have you considered using a plugin that restricts the player to only buying 3 ribbons in the first place like\nhime's shop manager\n?"
+    },
+    {
+      "post_id": "js-post-1511790",
+      "author": "VistayeTV",
+      "date": "2025-05-02T00:43:43+0900",
+      "body": "Robro33 said:\nthats not the plugin. thats the base engine iirc. items when theyre equipped are removed from your inventory. when theyre unequipped theyre given back.\nwhile its possible, have you considered using a plugin that restricts the player to only buying 3 ribbons in the first place like\nhime's shop manager\n?\nClick to expand...\nI've already installed and tried the plugin but the help text didn't make it clear to me how to achieve this - additionally the player is capable of receiving the items in the store anyway, so simply capping the stock to 3 doesn't fix the issue if the player has 3 equipped anyway"
+    },
+    {
+      "post_id": "js-post-1511794",
+      "author": "rpgLord69",
+      "date": "2025-05-02T01:42:21+0900",
+      "body": "Hmmm, can't you just limit how many ribbons the player can equip with Yanfly Equip Requirements? I think it's like:\n<Custom Equip Requirement Condition>\nlet count = 0;\nuser.armors().forEach(function countArmors(armor){if(armor.id == 4){count++;}});\nif (count < 3) {\ncondition = true;\n} else {\ncondition = false;\n}\n</Custom Equip Requirement Condition>\nEDIT: Replace that '4' with the id of your ribbons."
+    },
+    {
+      "post_id": "js-post-1511799",
+      "author": "Robro33",
+      "date": "2025-05-02T02:05:10+0900",
+      "body": "VistayeTV said:\nI've already installed and tried the plugin but the help text didn't make it clear to me how to achieve this\nClick to expand...\nthe website says that it should be automatic if you use the Shop.open() command before the shop processing command and supply the command with the shop's name, but i havent tried it.\nVistayeTV said:\nadditionally the player is capable of receiving the items in the store anyway, so simply capping the stock to 3 doesn't fix the issue if the player has 3 equipped anyway\nClick to expand...\ndid you mean the player can obtain them outside of the shop?\nthen you'd probably find more luck going with this approach\nVistayeTV said:\nmake the shop follow the max item cap including the equipment my actor has equipped\nClick to expand...\nthe way i see it, It'd mean undoing the Game_Party.numItems() change and moving the logic to check actor equipment into Scene_Shop.maxBuy(). i wont be able to actually look at it till much later"
+    },
+    {
+      "post_id": "js-post-1511814",
+      "author": "VistayeTV",
+      "date": "2025-05-02T04:27:26+0900",
+      "body": "rpgLord69 said:\nHmmm, can't you just limit how many ribbons the player can equip with Yanfly Equip Requirements? I think it's like:\n<Custom Equip Requirement Condition>\nlet count = 0;\nuser.armors().forEach(function countArmors(armor){if(armor.id == 4){count++;}});\nif (count < 3) {\ncondition = true;\n} else {\ncondition = false;\n}\n</Custom Equip Requirement Condition>\nEDIT: Replace that '4' with the id of your ribbons.\nClick to expand...\nI could, except I currently have 70 accessories and am likely to have roughly 400 by the end of the game, so if there's a more optimal method I'd be inclined to go torwards that - I also would feel bad having the player buy a 4th ribbon and then find it's completely useless\nRobro33 said:\nthe website says that it should be automatic if you use the Shop.open() command before the shop processing command and supply the command with the shop's name, but i havent tried it.\ndid you mean the player can obtain them outside of the shop?\nthen you'd probably find more luck going with this approach\nthe way i see it, It'd mean undoing the Game_Party.numItems() change and moving the logic to check actor equipment into Scene_Shop.maxBuy(). i wont be able to actually look at it till much later\nClick to expand...\nIndeed, the player can get most of the items from enemy drops anyway, or purchase from the shop if they'd rather do that."
+    },
+    {
+      "post_id": "js-post-1511825",
+      "author": "ShadowDragon",
+      "date": "2025-05-02T05:59:45+0900",
+      "body": "here is a [\nfix for it though\n] as it was asked before."
+    },
+    {
+      "post_id": "js-post-1511826",
+      "author": "VistayeTV",
+      "date": "2025-05-02T06:10:33+0900",
+      "body": "ShadowDragon said:\nhere is a [\nfix for it though\n] as it was asked before.\nClick to expand...\nAh yeah so that's the code I referenced in my original post, and also what's caused the issues i'm facing (unless I pasted it into the wrong area ofc)"
+    },
+    {
+      "post_id": "js-post-1511842",
+      "author": "ATT_Turan",
+      "date": "2025-05-02T08:28:07+0900",
+      "body": "VistayeTV said:\nAh yeah so that's the code I referenced in my original post, and also what's caused the issues i'm facing (unless I pasted it into the wrong area ofc)\nClick to expand...\nWhen you're referencing something you got from another post, you should always link to that post - that way people know what you're talking about and you won't get duplicate effort/results.\nAs a side note, when you post code, use the CODE tags - the </> on the edit bar - so that it's legible and the forum doesn't eat your brackets.\nNote that's explicitly how the OP of that thread\nwanted\nit to work - they wanted the number you see anyplace to reflect the total number of that item that you own, whether it's in your inventory, equipped, etc.\nIf you want to quickly modify that snippet so that it only applies in the shop scene, then you'd do this:\nCode:\nGame_Party.prototype.numItems = function(item)\n{\n    var container = this.itemContainer(item);\n    let numHeld = container ? container[item.id] || 0 : 0;\n    if (container == this._weapons && SceneManager._scene typeof Scene_Shop)\n        $gameActors._data.forEach(actor =>\n        {\n             if (actor)\n                actor.weapons().forEach(weapon => {if (weapon.id == item.id || weapon.baseItemId && weapon.baseItemId == item.id) numHeld++;});\n        });\n    else if (container == this._armors && SceneManager._scene typeof Scene_Shop)\n        $gameActors._data.forEach(actor =>\n        {\n             if (actor)\n                actor.armors().forEach(armor=> {if (armor.id == item.id || armor.baseItemId && armor.baseItemId == item.id) numHeld++;});\n        });\n    return numHeld;\n};\nI don't know if this shop scene also displays the number carried anyplace that this would mess with - if that's the case, then what\n@Robro33\nsuggested would be a more elegant fix to have it interface directly with the buying method.\nBut this should cause the shop to count weapons and armor equipped where looking at held items in the main menu will not.\nVistayeTV said:\n(unless I pasted it into the wrong area ofc)\nClick to expand...\nI don't know what you did, but there should be no \"area\" that you're pasting it into to have any possible error. Whenever you use little snippets of code like that, you copy the code, paste it into a text editor, save it as a *.js file, include it as a plugin.\nIn this case, make sure that new plugin is below the one that you're modifying in your plugin manager."
+    },
+    {
+      "post_id": "js-post-1511874",
+      "author": "VistayeTV",
+      "date": "2025-05-02T11:26:01+0900",
+      "body": "ATT_Turan said:\nWhen you're referencing something you got from another post, you should always link to that post - that way people know what you're talking about and you won't get duplicate effort/results.\nAs a side note, when you post code, use the CODE tags - the </> on the edit bar - so that it's legible and the forum doesn't eat your brackets.\nNote that's explicitly how the OP of that thread\nwanted\nit to work - they wanted the number you see anyplace to reflect the total number of that item that you own, whether it's in your inventory, equipped, etc.\nIf you want to quickly modify that snippet so that it only applies in the shop scene, then you'd do this:\nCode:\nGame_Party.prototype.numItems = function(item)\n{\n    var container = this.itemContainer(item);\n    let numHeld = container ? container[item.id] || 0 : 0;\n    if (container == this._weapons && SceneManager._scene typeof Scene_Shop)\n        $gameActors._data.forEach(actor =>\n        {\n             if (actor)\n                actor.weapons().forEach(weapon => {if (weapon.id == item.id || weapon.baseItemId && weapon.baseItemId == item.id) numHeld++;});\n        });\n    else if (container == this._armors && SceneManager._scene typeof Scene_Shop)\n        $gameActors._data.forEach(actor =>\n        {\n             if (actor)\n                actor.armors().forEach(armor=> {if (armor.id == item.id || armor.baseItemId && armor.baseItemId == item.id) numHeld++;});\n        });\n    return numHeld;\n};\nI don't know if this shop scene also displays the number carried anyplace that this would mess with - if that's the case, then what\n@Robro33\nsuggested would be a more elegant fix to have it interface directly with the buying method.\nBut this should cause the shop to count weapons and armor equipped where looking at held items in the main menu will not.\nI don't know what you did, but there should be no \"area\" that you're pasting it into to have any possible error. Whenever you use little snippets of code like that, you copy the code, paste it into a text editor, save it as a *.js file, include it as a plugin.\nIn this case, make sure that new plugin is below the one that you're modifying in your plugin manager.\nClick to expand...\nThank you - good to know about the etiquette for forums, I'm incredibly new (start development last week) and have had a few issues during the process that have been a tad overwhelming. All of your patience is much appreciated.\nThis solution ended up working after some modifications, and I am eternally grateful for your help. Have a great rest of your day"
+    }
+  ]
+}

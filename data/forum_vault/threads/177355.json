@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/name-input-box-jumbled-up-text-how-can-i-fix-it.177355",
+  "title": "MZ Name Input Box jumbled up text. How can I fix it?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T04:47:46.754313+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1511875",
+      "author": "projektant84",
+      "date": "2025-05-02T11:35:58+0900",
+      "body": "Hi,\nthis is my first post on this forum and I won't lie – I'm completely new to this community and to RPG Maker in general. I've also had no prior experience in creating any games before, and I don't really know any coding (that's why I chose RPGM); I wanted to say that upfront, to excuse my incompetence.\nSo, to the matter at hand. I wanted to create a Visual Novel but found that even Ren'Py (which is considered very easy) is just too hard for me when it comes to coding. I tried TyranoBuilder (VN game engine that, in theory, doesn't require any coding knowledge) but it was just too buggy and unstable. Now I finally settled on RPG Maker. It was surprisingly easy for me to get into and grasp some initial mechanics. I even installed VisuStella's plugins to make my game more like a Visual Novel and less like a classic RPG.\nSo, everything was going on rather smoothly but now I encountered a minor bug that I just can't fix on my own. At the beginning of the game I'm giving the player an option to name their character and everything works as intended in the mechanical sense – but at the top of the screen there is this help box that makes it clear which button to press and its' text is just completely screwed up. Here's the screen of it:\nI suspect this help box on top of the screen is a part of VisuMZ_1_OptionCore's plugin (a similar box also appears in my customized menu, but there it works just fine). Unfortunately for the life of me I can't find any relevant options in the plugin parameters to fix this jumbled up text in the input name screen.\nHere's the screenshot of my Options Menu:\nI know this problem may seem like a small one but I also pay attention to aesthetics and this screwed up text just really irks me. Is there some way to fix it? Also, if there's not, then I would like to disable this help box entirely (I also couldn't find any option to do that).\nHere's the list of my installed plugins:\nThanks in advance for any help"
+    },
+    {
+      "post_id": "js-post-1512034",
+      "author": "rpgLord69",
+      "date": "2025-05-03T15:32:13+0900",
+      "body": "You can try and make the help window font smaller in the VS Core Engine plugin settings (Menu Button Assist Window settings). The 'text format' there allows text codes. Don't know if there's a limit how much smaller you can make it with the text codes though."
+    },
+    {
+      "post_id": "js-post-1512160",
+      "author": "projektant84",
+      "date": "2025-05-04T17:06:53+0900",
+      "body": "You can try and make the help window font smaller in the VS Core Engine plugin settings (Menu Button Assist Window settings). The 'text format' there allows text codes. Don't know if there's a limit how much smaller you can make it with the text codes though.\nClick to expand...\nHi, thanks for the tip. I just went there but... I couldn't find any font size options for this and I don't know coding enough to mess with 'text format'.\nBut yesterday I kinda found a solution to my problem, so if anyone is having similar issues, here's what I did. So, again: the problem arises because I have no idea which option in the Plugin Parameters or Dabatase menu is responsible for this help text in the top box that appears during name inputting event. Said event doesn't have any customizability to it beyond setting a character limit + there doesn't seem to be any option for this top box in the plugins themselves (only for the text *inside* name box). I couldn't edit this text because I just didn't know where to do it.\nSo, to the possible solution that I found.\nAfter many hours of dealing with this problem I still don't know where to edit this damn top box and the text in it, so I didn't so much 'solved' this problem as much as 'circumvented' it. I decided to look once again at the font size in the Database -> System 2. Normally I have my font set to 18 and that looks nicely in my game; but that's also where the text in the help box gets jubmled up. Earlier, I tried to change that value to 16 but didn't notice any changes (thus I assumed that the text in the help box wasn't affected by Database font settings – turns out I was wrong).\nWell, when I changed this value to 12, I finally noticed that the text in the help box DID change and this time it would fit in the top help box nicely! Imagine my surprise. Still, I couldn't just leave the font size at 12 because it was simply too small for the entire game itself (the message box and menus). But then I thought about a solution: what if I could TEMPORARILY change the font size of the whole game – say, only for the naming event – and then return it to normal?\nI didn't find any option to do that in RPGM MZ event list but then I asked deepseek if it's possible to do it via \"Script\" command (remember, I know absolutely nothing about coding). Deepseek responded that it is possible and gave me two commands to paste: one before the naming event and one after.\nHere they are. This should be the order:\nScript that changes the font size:\n// Save the original font size to restore later $gameSystem._originalFontSize = $gameSystem.mainFontSize(); // Set new font size (e.g., 12) $gameSystem.setMainFontSize(12); // Force windows to refresh (critical for VisuStella plugins) Window_Base.prototype.standardFontSize = function() { return 12 };\n[NAMING EVENT]\nScript that restored the previous font size:\n// Restore original font size if ($gameSystem._originalFontSize) { $gameSystem.setMainFontSize($gameSystem._originalFontSize); } // Reset the window font size override Window_Base.prototype.standardFontSize = function() { return $gameSystem.mainFontSize() }; // Refresh all windows (optional but safe) SceneManager._scene._windows.forEach(window => window.refresh());\nAnd that seemed to resolve the problem! Now the name input box looks like this:\nIt's still not ideal but at least there's no more jumbled up text at the top anymore. As I said, not a perfect solution, more of a workaround, but I still am glad that I was able to think of *something*.\nSo, I think that does it. Thanks rpgLord69 for the attempt to help me. Take care everyone"
+    },
+    {
+      "post_id": "js-post-1512164",
+      "author": "utunnels",
+      "date": "2025-05-04T17:47:38+0900",
+      "body": "Besides font size, the size of window doesn't look right."
+    },
+    {
+      "post_id": "js-post-1512165",
+      "author": "ShadowDragon",
+      "date": "2025-05-04T17:56:30+0900",
+      "body": "I think your VS arent in the correct order as options should probably be lower.\nthere should be \"before\" and \"after\" order? as tier are the same.\noptionCore is often lower than SaveCore, so not sure why it is higher.\nas some functions can override the other, as other alias it later.\nso make sure those order are correct unless its was like that in the demo."
+    }
+  ]
+}

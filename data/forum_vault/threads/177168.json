@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-equip-core-how-to-save-an-actors-equipment-to-a-variable-and-then-later-have-them-re-equip-every-equipment-within-the-variable.177168",
+  "title": "Yanfly Equip Core - How to save an actor's equipment to a variable, and then later have them re-equip every equipment within the variable",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T04:47:58.525946+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1510643",
+      "author": "VistayeTV",
+      "date": "2025-04-23T22:50:30+0900",
+      "body": "Hello!\nSo I'm attempting to create a system where an actor can have several equipment \"sets\" they can swap between without having to manually re-equip every single piece of equipment. For example, if there's equipment that's focused on killing fire enemies and water enemies, the player can simply swap between the Fire set of equipment and the Water set of equipment.\nI've already tried two different methods, neither of which have worked:\nSaving the First Equipment Set:\nvar actor = $gameActors.actor(1)\nvar equipset1 = JsonEx.makeDeepCopy(actor. Equips)\nSaving the Second Equipment Set:\nvar actor = $gameActors.actor(1)\nvar equipset2 = JsonEx.makeDeepCopy(actor. Equips)\nEquipping Set 1 or Two:\nactor. Equips = equipset1\nactor. Equips = equipset2\nThe issue with this is that it would have absolutely no effect whatsoever - my set equipment would not change when trying to use that last piece of code.\nThe second method I tried is as follows:\nThis would just result in a crash.\nAny suggestions / plugins that would help achieve what I'm after? Thank you"
+    },
+    {
+      "post_id": "js-post-1510645",
+      "author": "Robro33",
+      "date": "2025-04-23T23:09:18+0900",
+      "body": "VistayeTV said:\nSaving the First Equipment Set:\nvar actor = $gameActors.actor(1)\nvar equipset1 = JsonEx.makeDeepCopy(actor. Equips)\nSaving the Second Equipment Set:\nvar actor = $gameActors.actor(1)\nvar equipset2 = JsonEx.makeDeepCopy(actor. Equips)\nEquipping Set 1 or Two:\nactor. Equips = equipset1\nactor. Equips = equipset2\nClick to expand...\nim assuming some autocorrecting is happening there, but that as is wont work. syntax errors aside, unless youre using those equipset variables within the same scriptbox or this is is plugin code and its all in one function, they wont exist when youre ready to use them. You want to save the set somewhere you can retrieve it later like into a game variable or onto the actor\nYour second method is on the right track, but an actor's _equips is an entirely different structure than what gets returned by their equips(). you want to save their _equips and then set it back afterwards"
+    },
+    {
+      "post_id": "js-post-1510651",
+      "author": "caethyril",
+      "date": "2025-04-24T00:34:18+0900",
+      "body": "Have you tried the Memorise/Restore Equipment calls from the\nMV / MZ Script Call List\n?"
+    },
+    {
+      "post_id": "js-post-1510660",
+      "author": "VistayeTV",
+      "date": "2025-04-24T00:58:57+0900",
+      "body": "caethyril said:\nHave you tried the Memorise/Restore Equipment calls from the\nMV / MZ Script Call List\n?\nView attachment 338434\nClick to expand...\nYou're an absolute legend, thank you so so much! This worked perfectly even with the Equip Core plugin, cheers\nRobro33 said:\nim assuming some autocorrecting is happening there, but that as is wont work. syntax errors aside, unless youre using those equipset variables within the same scriptbox or this is is plugin code and its all in one function, they wont exist when youre ready to use them. You want to save the set somewhere you can retrieve it later like into a game variable or onto the actor\nYour second method is on the right track, but an actor's _equips is an entirely different structure than what gets returned by their equips(). you want to save their _equips and then set it back afterwards\nClick to expand...\nThank you for your time too, was also beneficial information that will help me out in other areas later on. Thank you both!"
+    }
+  ]
+}

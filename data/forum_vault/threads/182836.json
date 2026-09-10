@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/in-map-player-sprite-animations.182836",
+  "title": "\"in map\" player sprite animations?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T04:47:44.548861+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1550441",
+      "author": "SnailLover",
+      "date": "2026-03-12T19:24:38+0900",
+      "body": "Hello people! I feel like this is a very dumb question, but i can't even figure out how to phrase it to look for it on google, what i'm trying to understand is how \"in map\" characters sprites animations are done, i know about the basic set movement route stuff, so you can make a chracter jump, turn, move etc, and i know that a lot of times animations on the map are done using the stepping function, bascially what i'm looking to accomplish is animations like\nthis\n, on the sprite resource i found this sprite, but it is unnamed and i can't figure out if it's a character sprite with a stepping function\nthe tricky part, assuming it is a stepping animation, is the moment in between the animation and the interaction button, in my case, i'd like to have a save spot where, when the player interacts with it, it plays a little animation of the character sitting down and then goes to the save menu, the problems are the following:\nThe player already has a sprite sheet for walking, so i can't make a sprite sheet of that animation and put it on stepping when they touch the event, i believe there could be a way for replacing the sprite sheet, but i'm afraid that'd cause singles in between empty frames, or be unstable in general\nIf the player touches the save point from a different direction, the animation has to be different for each\nAgain, a very simple thing i believe, but i can't figure out a term for this,i hope i explaiend myself well, this would also apply to any other \"in map\" sprites animations, like the player sitting on a bench or stuff like that, thanks"
+    },
+    {
+      "post_id": "js-post-1550442",
+      "author": "SGHarlekin",
+      "date": "2026-03-12T19:45:24+0900",
+      "body": "With that description, I'd say put a player dummy event on your map with the save spot (I'm imagining a chair for this thought process).\nThen upon interaction, transfer your dummy event to the player location, turn your player invisible and instead of using the stepping frames, use the facing directions instead (The middle column for the \"idle\" frame), because step frames loop so that would be a hassle to time correctly for them to stop unless you prefer to use script calls to set specific frames.\nso once your player is invisible, and your dummy is in place, you'd simply do a moveroute \"Turn down, left,right,up\" or something, with each facing direction being one frame of the motion. After closing the save menu, you can have the event continue by reversing the moveroute, making your player visible again and making your dummy invisible.\nNow depending on what your safe spot actually is, you may need to do multiple different variations, depending on what angles the save spot can be interacted with. Or you could just always make sure it's only interact-able from the bottom side to save yourself some trouble."
+    },
+    {
+      "post_id": "js-post-1550563",
+      "author": "SnailLover",
+      "date": "2026-03-13T20:10:15+0900",
+      "body": "SGHarlekin said:\nWith that description, I'd say put a player dummy event on your map with the save spot (I'm imagining a chair for this thought process).\nThen upon interaction, transfer your dummy event to the player location, turn your player invisible and instead of using the stepping frames, use the facing directions instead (The middle column for the \"idle\" frame), because step frames loop so that would be a hassle to time correctly for them to stop unless you prefer to use script calls to set specific frames.\nso once your player is invisible, and your dummy is in place, you'd simply do a moveroute \"Turn down, left,right,up\" or something, with each facing direction being one frame of the motion. After closing the save menu, you can have the event continue by reversing the moveroute, making your player visible again and making your dummy invisible.\nNow depending on what your safe spot actually is, you may need to do multiple different variations, depending on what angles the save spot can be interacted with. Or you could just always make sure it's only interact-able from the bottom side to save yourself some trouble.\nClick to expand...\nThank you! i think i'll take the easier route and make it only interact-able from one side"
+    },
+    {
+      "post_id": "js-post-1550570",
+      "author": "Andar",
+      "date": "2026-03-13T21:30:07+0900",
+      "body": "SnailLover said:\ni can't figure out if it's a character sprite with a stepping function\nClick to expand...\nit's not a character sprite at all, because character sprites have four rows and three columns.\nYour sprite is 3x3 cells, not 3x4. And that ignores that you have a sequence of 8 frames scattered over the sprite, while the RPG maker uses either 3-frame (stepping) or 4-frame (turning) animations by default.\nSo in addition to the hints above, you'll have to use an image program to reformat the sprite.\nI think best is to use the turning animation type, which means you'll split your eight cells into two sprites with four frames top down in the middle column.\nand that means you'll have to change sprites during the animation with the turn commands as described above.\nIf you don't know how to do that, ask"
+    }
+  ]
+}

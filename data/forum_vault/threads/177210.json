@@ -1,0 +1,173 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/sending-captured-monsters-to-storage-dreamx_captureenemies.177210",
+  "title": "MV Sending Captured Monsters to Storage (DreamX_CaptureEnemies)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T04:47:57.603871+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1510837",
+      "author": "KayronDEV",
+      "date": "2025-04-25T09:53:36+0900",
+      "body": "Hi everyone! I’m working on a monster-catching game in RPG Maker MV, and I’m running into an issue combining two plugins via an event:\n[DreamX_CaptureEnemies.js]\nAllows capturing enemies and converting them into party members using <capture_actor_id:x> notetag.\n[MonsterStorageBox.js]\nAdds a PC-style monster storage box where you can deposit and withdraw actors.\nThey actually work fine, DreamXs plugin creates copies of actors and I can deposit and withdraw those copies without trouble. What I want is when I capture a monster during battle, I want the game to check if the party already has 6 members (which is the maximum) and if it's full, send the next captured monster to the storage box. This is exactly what games like Pokemon do when you reach maximum capacity in your party.\nDreamXs plugin has the notetag <capturedSwitch:x> ( with x as the switch ID as an enemy notetag to set the switch to true when the enemy is captured) so I think I can use this in an event, but I think that is too complicated, and I don't even know how to start this event.\nCan someone help me with this? That's a core mechanic in my game!\nThank you in advance for your help!\nLet me know if you need screenshots or a demo."
+    },
+    {
+      "post_id": "js-post-1510840",
+      "author": "DevRPG2k",
+      "date": "2025-04-25T10:17:41+0900",
+      "body": "KayronDEV said:\nDreamXs plugin has the notetag <capturedSwitch:x> ( with x as the switch ID as an enemy notetag to set the switch to true when the enemy is captured) so I think I can use this in an event, but I think that is too complicated, and I don't even know how to start this event.\nClick to expand...\nThis will depend entirely on what you intend to do, I imagine you understand what a Switch is for in RPG Maker, so the easiest example I'll give you is if you need to catch a creature as a simple challenge proposed by an NPC, like, catch a somewhat rare monster, then you discover that there is a difficult-to-access region where it can appear and capture it, then you can create ways as you prefer in the dialogue:\nAfter the award, simply use a local Switch instead of a standard Switch, so the dialogue will only occur once in the game:\nIf your RMMV is configured in Portuguese, the events will be like this:\nSpoiler:\nPORTUGUESE - BR\nPágina 1:\nCode:\n◆Texto：People1(4), Janela, Inferior\n：     ：Se você conseguir capturar um monstro XYZ\n：     ：eu te darei um prêmio\n◆Se：Switch41 XYZ Monster é ON\n  ◆Texto：People1(4), Janela, Inferior\n  ：     ：Ei! Você já tem um, tome está Água Mágica\n  ◆Mudar Itens：Magic Water + 1\n  ◆Controlar Switches Locais：A = ON\n  ◆\n：Fim\nPágina 2:\nAtivado pela Switch Local \"A\"\nCode:\n◆Texto：People1(4), Janela, Inferior\n：     ：Você realmente é um grande treinador"
+    },
+    {
+      "post_id": "js-post-1510945",
+      "author": "KayronDEV",
+      "date": "2025-04-26T00:59:28+0900",
+      "body": "Thanks for the response and for the Portuguese event page!\nSorry if I wasn't enough clear, my main intention with this event is to send monsters to the box automatically when my party is full. For the storage, I'm using\n[MonsterStorageBox.js]\nplugin, but I don't know how to create an event (or maybe I need a script) that could do this.\nI can store monsters manually, but I intend to also do it automatically in this specific condition."
+    },
+    {
+      "post_id": "js-post-1511138",
+      "author": "DevRPG2k",
+      "date": "2025-04-27T06:57:33+0900",
+      "body": "Maybe I didn't understand something, but I focused exactly where what seemed to be a second question was about how to use the DreamX Plugin, which is the purpose of this function that automatically activates the Switch by the selected ID."
+    },
+    {
+      "post_id": "js-post-1511157",
+      "author": "Showsni",
+      "date": "2025-04-27T11:46:07+0900",
+      "body": "Mm, so it sounds like you need to do two things; after catching a monster (with the first plugin), check to see if the party has more than 6 members, and if it does automatically trigger the second plugin to store the most recently caught monster.\nLooking at the thread for the second plugin, people have said that the script call\n$gameSystem.depositedActors.push(X);\n(where X is the ID of the actor in question from the database) will store that actor. (Possibly you also need to use\n$gameParty.removeActor(X);\nto remove them from your current party? Not sure, I haven't tested).\nSo, what we need to do is run some code after you catch an enemy to check the number of people in the party - I believe the script call for that is\nif($gameParty.members().length > 6)\nand then grab the actor ID of the last member:\n$gameParty.members()[6].actorId()\nand then use the\n$gameSystem.depositedActors.push(X);\nto deposit them.\nPut it all together, I think it would look like this (though again, this is untested!):\nCode:\nif($gameParty.members().length > 6) {\nvar actor = $gameParty.members()[6].actorId();\n$gameSystem.depositedActors.push(actor);\n}\nRun that snippet after every time you catch a monster, and hopefully it will work. Like I said, you might need to use\nCode:\nif($gameParty.members().length > 6) {\nvar actor = $gameParty.members()[6].actorId();\n$gameSystem.depositedActors.push(actor);\n$gameParty.removeActor(actor);\n}\nif it's storing them but not also removing a version from the party."
+    },
+    {
+      "post_id": "js-post-1511263",
+      "author": "KayronDEV",
+      "date": "2025-04-28T05:44:41+0900",
+      "body": "Showsni said:\nMm, so it sounds like you need to do two things; after catching a monster (with the first plugin), check to see if the party has more than 6 members, and if it does automatically trigger the second plugin to store the most recently caught monster.\nLooking at the thread for the second plugin, people have said that the script call\n$gameSystem.depositedActors.push(X);\n(where X is the ID of the actor in question from the database) will store that actor. (Possibly you also need to use\n$gameParty.removeActor(X);\nto remove them from your current party? Not sure, I haven't tested).\nSo, what we need to do is run some code after you catch an enemy to check the number of people in the party - I believe the script call for that is\nif($gameParty.members().length > 6)\nand then grab the actor ID of the last member:\n$gameParty.members()[6].actorId()\nand then use the\n$gameSystem.depositedActors.push(X);\nto deposit them.\nPut it all together, I think it would look like this (though again, this is untested!):\nCode:\nif($gameParty.members().length > 6) {\nvar actor = $gameParty.members()[6].actorId();\n$gameSystem.depositedActors.push(actor);\n}\nRun that snippet after every time you catch a monster, and hopefully it will work. Like I said, you might need to use\nCode:\nif($gameParty.members().length > 6) {\nvar actor = $gameParty.members()[6].actorId();\n$gameSystem.depositedActors.push(actor);\n$gameParty.removeActor(actor);\n}\nif it's storing them but not also removing a version from the party.\nClick to expand...\nInteresting. I'm going to try this! Where should I put dos lines of code? I'm not that familiar with eventing yet. That should be a common event or a battle event?"
+    },
+    {
+      "post_id": "js-post-1511277",
+      "author": "Showsni",
+      "date": "2025-04-28T07:05:56+0900",
+      "body": "Yeah, I'd imagine you can put it in as a script call in a battle event with the span of running once per Turn, and a condition at the end of Turn. Try it for a single battle to test it out, anyway. If it does work, you might want to use something like Yanfly's \"Base Troop Events\" plugin so you don't need to copy the code into every single troop. (I'm assuming you can't catch more than one monster per turn). I don't know exactly how the catching works, if it only works after a fight you might need to instead run it as a common event that gets called after each fight."
+    },
+    {
+      "post_id": "js-post-1511284",
+      "author": "KayronDEV",
+      "date": "2025-04-28T07:45:20+0900",
+      "body": "Ok, that's what I tried to do, but it didn't work:\nDreamXs plugin has the notetag <capturedSwitch:x> (with x as the switch ID as an enemy notetag to set the switch to true when the enemy is captured) so I created that switch and added to the enemy:\nThis is the battle event with the code that you mentioned:\nAgain, I'm not that familiar with eventing, but that was what I thought would make sense"
+    },
+    {
+      "post_id": "js-post-1511287",
+      "author": "Robro33",
+      "date": "2025-04-28T07:55:56+0900",
+      "body": "did capturing the enemy by chance end the battle? the engine prioritizes ending the battle over running any active troop events pages. youd need a plugin like\nHime's end phase triggers\nto bypass that if its an issue"
+    },
+    {
+      "post_id": "js-post-1511310",
+      "author": "KayronDEV",
+      "date": "2025-04-28T12:41:47+0900",
+      "body": "Robro33 said:\ndid capturing the enemy by chance end the battle? the engine prioritizes ending the battle over running any active troop events pages. youd need a plugin like\nHime's end phase triggers\nto bypass that if its an issue\nClick to expand...\nYes. The plugin that's responsible by capturing drops the enemy HP to zero and then captures it (that's not what I really intend it to be, but it works for now) and then adds the new actor to the party.\nShowsni said:\n(I'm assuming you can't catch more than one monster per turn).\nClick to expand...\nActually the player can, but that's also not what I want it to be, but I'm focusing on this problem that I'm having right now.\nWell, if someone could check this event that I created, if there is any chance that this will work."
+    },
+    {
+      "post_id": "js-post-1511313",
+      "author": "DevRPG2k",
+      "date": "2025-04-28T13:16:32+0900",
+      "body": "I didn't understand the purpose of this Switch in the battle event, what I believe is that the event triggering method is also wrong, the correct thing would be to check this at the end of each turn.\nSpan\nshould be changed to\nTurn\nbecause if it stays in\nBattle\nmode it will only happen once:"
+    },
+    {
+      "post_id": "js-post-1511315",
+      "author": "Robro33",
+      "date": "2025-04-28T13:47:56+0900",
+      "body": "it should just be the switch name, no? all switches inside a troop event page have curly braces around them. i think OP just named it capture(id1) because that enemy gets tied to actor 1"
+    },
+    {
+      "post_id": "js-post-1511316",
+      "author": "DevRPG2k",
+      "date": "2025-04-28T14:14:54+0900",
+      "body": "Edit:\nThe\n$gameParty.members()\nmethod only returns the number of Party members in battle, only 4, only on the map it returns the total, so the best option would be to use\n$gameParty._actors\nwhich returns an Array with the IDs directly.\nI also wouldn't use IF inside the Script command, as this would prevent the dev from including other event commands, such as a simple warning message.\nAnother thing, let's say that by chance you decide to have the option of capturing two or more monsters in the same battle, then in this case you will need to use a cycle (repeat until completed):\nCode:\n◆Loop\n  ◆If：Script：$gameParty._actors.length > 6\n    ◆Script：let actor = $gameParty._actors[6];\n    ：      ：alert(actor);\n    ：      ：$gameSystem.depositedActors.push(actor);\n    ：      ：$gameParty.removeActor(actor);\n    ◆Text：None, None, Dim, Top\n    ：    ：Este monstro foi enviado para o depósito...\n    ◆\n  ：Else\n    ◆Break Loop\n    ◆\n  ：End\n  ◆\n：Repeat Above\nIt is not possible to capture all the event fields, so I put the code directly"
+    },
+    {
+      "post_id": "js-post-1511411",
+      "author": "KayronDEV",
+      "date": "2025-04-29T04:22:03+0900",
+      "body": "Robro33 said:\nit should just be the switch name, no? all switches inside a troop event page have curly braces around them. i think OP just named it capture(id1) because that enemy gets tied to actor 1\nClick to expand...\nThat's what I thought, this is the same switch that I used in the enemy/monster notetag, as the plugin text suggests.\nDev_With_Coffee said:\nThe\n$gameParty.members()\nmethod only returns the number of Party members in battle, only 4, only on the map it returns the total, so the best option would be to use\n$gameParty._actors\nwhich returns an Array with the IDs directly.\nClick to expand...\nI just tested the script that you proposed, both of them. The enemy is captured and send to the party and no text is shown. So, it didn't work.\nI checked a AI code assistant to tell me how DreamX plugin capture system works, I hope that it can help:\nDreamX_CaptureEnemies uses two ways to add captured monsters:\nSometimes it adds during the battle ($gameParty.addActor(newId)).\nSometimes only after the battle (BattleManager._capturedEnemies → added in updateBattleEnd).\nI don't know, but maybe Before adding the monster (or immediately after), we need to calculate how many actors were there before. If the party already had 6 members before adding, the capture should go straight to storage."
+    },
+    {
+      "post_id": "js-post-1511418",
+      "author": "DevRPG2k",
+      "date": "2025-04-29T05:32:11+0900",
+      "body": "I tested it here and it worked perfectly. To make sure, I joined the party with 7, executed the caputara and waited for the end of the turn.\nIt removed the item in position\n[7]\nand automatically the item in position\n[8]\nreplaced it and because of the loop the event repeated itself until there were only 6 members in the Party."
+    },
+    {
+      "post_id": "js-post-1511423",
+      "author": "KayronDEV",
+      "date": "2025-04-29T05:59:00+0900",
+      "body": "I made a tested with 7 party members and this happened:\nI enter in the battle scene and this message appears, I clicked in OK and then the captured massage played (\"this monster was sent to the storage...\")\nI checked in the deposit and the 7th member was there, but when I captured another monster it was not sent to deposit:\nhere is the event:\nthe screenshot didn't show, but the event ended like this:\nCode:\n：End\n  ◆\n：Repeat Above"
+    },
+    {
+      "post_id": "js-post-1511434",
+      "author": "DevRPG2k",
+      "date": "2025-04-29T07:48:56+0900",
+      "body": "The alert is just for testing, you shouldn't put it in the script. The value 18 is the ID of the member that was found at\n[6]\nYou will need to analyze the console to see if there is an error due to the dialog message not appearing."
+    },
+    {
+      "post_id": "js-post-1511459",
+      "author": "KayronDEV",
+      "date": "2025-04-29T13:04:06+0900",
+      "body": "Dev_With_Coffee said:\nThe alert is just for testing, you shouldn't put it in the script. The value 18 is the ID of the member that was found at\n[6]\nYou will need to analyze the console to see if there is an error due to the dialog message not appearing.\nClick to expand...\nThanks for the help so far!\nI made a test with 6 party members and then capturing the 7th in battle. The new actor is added in the party normally, which is something I don't want. But when I try to start another battle, the message is shown and then the seventh member is immediately sent to the deposit.\nWhat I was looking for is when I captured the seventh enemy, he is sent to the deposit after the battle ends. But I think he is being sent to deposit when a new battle is started."
+    },
+    {
+      "post_id": "js-post-1511523",
+      "author": "DevRPG2k",
+      "date": "2025-04-29T22:09:28+0900",
+      "body": "Very strange, if the first one happens it means that the loop event has started... and from the screenshot you sent your event is correct.\nIt is not necessary to send the project, today or tomorrow I will send the test I did and you can analyze the difference."
+    },
+    {
+      "post_id": "js-post-1511550",
+      "author": "Showsni",
+      "date": "2025-04-30T01:15:15+0900",
+      "body": "KayronDEV said:\nThanks for the help so far!\nI made a test with 6 party members and then capturing the 7th in battle. The new actor is added in the party normally, which is something I don't want. But when I try to start another battle, the message is shown and then the seventh member is immediately sent to the deposit.\nWhat I was looking for is when I captured the seventh enemy, he is sent to the deposit after the battle ends. But I think he is being sent to deposit when a new battle is started.\nClick to expand...\nFeels like the code works, the issue is with the timing. It seems the in battle timing isn't working well; you could try changing the Span to \"Moment\" instead of Turn, with Conditions of \"Turn 0 + 1*X\". That's a bit risky, because it will try to run constantly, and could slow your game down; so you'd want to add a \"Wait 2\" command somewhere in the loop to give your game a little chance to breathe."
+    },
+    {
+      "post_id": "js-post-1511601",
+      "author": "KayronDEV",
+      "date": "2025-04-30T11:56:53+0900",
+      "body": "Dev_With_Coffee said:\nVery strange, if the first one happens it means that the loop event has started... and from the screenshot you sent your event is correct.\nIt is not necessary to send the project, today or tomorrow I will send the test I did and you can analyze the difference.\nClick to expand...\nThat would definitely help!"
+    },
+    {
+      "post_id": "js-post-1511681",
+      "author": "KayronDEV",
+      "date": "2025-05-01T08:40:24+0900",
+      "body": "Showsni said:\nFeels like the code works, the issue is with the timing. It seems the in battle timing isn't working well; you could try changing the Span to \"Moment\" instead of Turn, with Conditions of \"Turn 0 + 1*X\". That's a bit risky, because it will try to run constantly, and could slow your game down; so you'd want to add a \"Wait 2\" command somewhere in the loop to give your game a little chance to breathe.\nClick to expand...\nI just tried that. If I set Span to Moment it freezes the battle screen and I can't do anything"
+    },
+    {
+      "post_id": "js-post-1511685",
+      "author": "Showsni",
+      "date": "2025-05-01T09:01:09+0900",
+      "body": "KayronDEV said:\nI just tried that. If I set Span to Moment it freezes the battle screen and I can't do anything\nClick to expand...\nYeah, was afraid of that. If running it in the battle isn't working, you can try a plugin that will run a common event after every battle ends, and put the code into that common event. For example, SumRndmDde's Battle End Events plugin:\nhttp://sumrndm.site/battle-end-events/\nSet each parameter to the same common event, then in that common event run the code to check if the party is too large. This would mean you can have 7 members whilst still in the battle, but it should get rid of the extra one to the deposit box as soon as the battle ends."
+    },
+    {
+      "post_id": "js-post-1511689",
+      "author": "KayronDEV",
+      "date": "2025-05-01T10:03:16+0900",
+      "body": "Showsni said:\nYeah, was afraid of that. If running it in the battle isn't working, you can try a plugin that will run a common event after every battle ends, and put the code into that common event. For example, SumRndmDde's Battle End Events plugin:\nhttp://sumrndm.site/battle-end-events/\nSet each parameter to the same common event, then in that common event run the code to check if the party is too large. This would mean you can have 7 members whilst still in the battle, but it should get rid of the extra one to the deposit box as soon as the battle ends.\nClick to expand...\nIt worked! OMG I was so worried that I wouldn't be able to fix this. Thank you so much for the help!\nActually, thank you everyone for the help!"
+    },
+    {
+      "post_id": "js-post-1511812",
+      "author": "DevRPG2k",
+      "date": "2025-05-02T04:16:11+0900",
+      "body": "Perfect, so the method I used probably didn't happen to you because there were no more enemies on the screen. The Plugin really is the best solution. I'll ask you to close the topic if you agree.\nEdit:\nI tested it with several monsters being captured at a single time, and even with the victory message the cycle happened normally and they were all sent to the warehouse normally.\nDev_With_Coffee said:\nAnother thing, let's say that by chance you decide to have the option of capturing two or more monsters in the same battle, then in this case you will need to use a cycle (repeat until completed):\nCode:\n◆Loop\n◆If：Script：$gameParty._actors.length > 6\n◆Script：let actor = $gameParty._actors[6];\n： ：alert(actor);\n： ：$gameSystem.depositedActors.push(actor);\n： ：$gameParty.removeActor(actor);\n◆Text：None, None, Dim, Top\n： ：Este monstro foi enviado para o depósito...\n◆\n：Else\n◆Break Loop\n◆\n：End\n◆\n：Repeat Above\nIt is not possible to capture all the event fields, so I put the code directly\nClick to expand...\nI tested it with several monsters being captured at the same time, the cycle occurred normally and they were all sent to the warehouse normally and only then the victory message appears, probably the capture method works differently causing the battle to be canceled.\nI used the turn method precisely because I could capture more monsters in a single battle, which would be a differential in a safari-style system where you don't battle, you just try to capture.\nThe message appears with the monsters already dead:\nAnd at the end the victory message:"
+    },
+    {
+      "post_id": "js-post-1511861",
+      "author": "KayronDEV",
+      "date": "2025-05-02T10:11:05+0900",
+      "body": "Dev_With_Coffee said:\nPerfect, so the method I used probably didn't happen to you because there were no more enemies on the screen. The Plugin really is the best solution. I'll ask you to close the topic if you agree.\nClick to expand...\nIt's Ok for me! I'm not sure why that method didn't work, but now everything is working as expected. Your code in the common event with the SumRndmDude's plugin did the trick. Thank you very much for your help."
+    },
+    {
+      "post_id": "js-post-1516430",
+      "author": "KayronDEV",
+      "date": "2025-05-31T07:56:13+0900",
+      "body": "Hi guys!\nI just noticed that an error occurs when changing one of the parameters of the DreamX_CaptureEnemies plugin. The whole process works when the monster is added in battle, however, if I change it to add after the battle, the system allows the capture of the 7th monster in the party, when in fact it should send it to the box.\nHere are the plugin parameters.\nIf true, the enemy monster is added in the party and in the current battle.\nBut I don't want this. If I put false, the enemy is added at the end of the battle,\nBut is not sent to the deposit.\nCan someone help me with that?"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-to-create-the-one-more-mechanics-from-persona-saga-ayuda-para-crear-la-mecanica-del-one-more-de-la-saga-persona.177281",
+  "title": "MV Help to create the One More mechanics from Persona saga / Ayuda para crear la mecánica del One More de la saga Persona.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T04:47:48.050696+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1511296",
+      "author": "Reginord_ZS",
+      "date": "2025-04-28T08:52:43+0900",
+      "body": "English:\nHi, everyone. I'm developing in RPG Maker MV a Remake of Persona 1, I made the story from the begining to Deva Yuga.\nI recreate a battle system similar to Persona 5's battle system, using his elements and skills, but I have a problem that I don't know how resolve it.\nIn the Persona saga, from the 3, when you hit a enemy with his weakness (For example: Fire), the player gains a extra turn: \"One More\".\nIn the original saga, the player can hit enemies with their weakness until everyone get \"Down\", someone \"Down\" can't move in that turn and if all enemies are \"Down\", the player can execute the All-Out-Attack. If you hit a enemy with his weakness while that enemy are \"Down\", you're not receive the \"One More\".\nTo implement that mechanic I use the plugin \"ITB\" from DreamX and \"YEP_BattleEngineCore\" from Yanfly.\nIn ITB plugin, you can set the number of extra turns that you receive from the enemy's element weakness, and the number of extra turns that you can use per turn. I set both options in 1, if you hit the weakness, though hit other enemy with his weakness, you only receive 1 extra turn. I set that options because when you use a multitarget attack and you hit, for example, 4 enemies weaks to a same element, the player receive 4 extra turns.\nIn the plugin exist this note: <noExtraElemenWeaknessAction> . That prevent the extra turn.\nUsing the YEP_Action_Sequence I wanna evaluate in the multitarget attacks if more that one enemy in the troop are weak to the element of the skill and add a invisible state with this note to prevent more that one extra turn per turn to the player.\nEspañol:\nHola a todos. Estoy desarrollando en RPG Maker MV un remake de Persona 1. Creé la historia desde el principio hasta Deva Yuga.\nRecreé un sistema de batalla similar al de Persona 5, usando sus elementos y habilidades, pero tengo un problema que no sé cómo resolver.\nEn la saga Persona, a partir del tercero, al golpear a un enemigo con su debilidad (por ejemplo, Fuego), el jugador gana un turno extra: \"One More\".\nEn la saga original, el jugador puede golpear a los enemigos con su debilidad hasta que todos sean derribados. Alguien derribado, no puede moverse en ese turno y, si todos los enemigos están derribados, el jugador puede ejecutar el All-Out-Attack. Si golpea a un enemigo con su debilidad mientras este está derribado, no recibe el \"One More\".\nPara implementar esta mecánica, utilizo el plugin \"ITB\" de DreamX y \"YEP_BattleEngineCore\" de Yanfly.\nEn el plugin ITB, puedes configurar el número de turnos extras que recibes por la debilidad elemental del enemigo y el número de turnos adicionales que puedes usar por turno. Configuré ambas opciones en 1: si impactas la debilidad, aunque impactes a otro enemigo con su debilidad, solo recibes 1 turno extra. Establecí esta opción porque, al usar un ataque multiobjetivo, si por ejemplo, impactas a 4 enemigos débiles a un mismo elemento, el jugador recibe 4 turnos extras.\nEn el plugin existe la nota <noExtraElemenWeaknessAction>, que impide el turno extra.\nUsando YEP_Action_Sequence, quiero evaluar en los ataques multiobjetivo si más de un enemigo en la tropa es débil al elemento de la habilidad y añadir un estado invisible con esta nota para evitar que el jugador obtenga más de un turno extra por turno."
+    },
+    {
+      "post_id": "js-post-1511300",
+      "author": "Robro33",
+      "date": "2025-04-28T09:49:37+0900",
+      "body": "open up the plugin and go to line 545.\nclick the end of the line and press enter to add a new line.\npaste into that new line\nCode:\nthis._ITBActions = Math.min(this._ITBActions, 1);\nand once you saved the change, it should make it so that the number of bonus turns a battler can have gets caped at 1. using an aoe and hitting multiple weaknesses with one skill will only grant one one more, but if on that one more you hit another weakness youll be given another like how it works in P3-5"
+    },
+    {
+      "post_id": "js-post-1511302",
+      "author": "Reginord_ZS",
+      "date": "2025-04-28T10:05:11+0900",
+      "body": "now I have other problem, if I face 3 enemies or more and use diferents skills to exploit their weakness, I only gains in the turn one extra turn, its the same that my configuration in the plugin."
+    },
+    {
+      "post_id": "js-post-1511303",
+      "author": "Robro33",
+      "date": "2025-04-28T10:14:43+0900",
+      "body": "i forgot to mention. this is how i had set the parameters"
+    },
+    {
+      "post_id": "js-post-1511305",
+      "author": "Reginord_ZS",
+      "date": "2025-04-28T10:44:25+0900",
+      "body": "Its working, thank you!"
+    }
+  ]
+}
