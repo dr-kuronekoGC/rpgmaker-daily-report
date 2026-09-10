@@ -31,24 +31,31 @@ HEADERS = {
 # Settings
 # ==========================================
 
-# 1回のActionで取得するページ数。
+# 1回のActionで取得するページ数
 MAX_PAGES = 3
 
-
-# GuildからDaily Reportへ採用するカテゴリ。
+# Guildの対象カテゴリ
 #
-# 「RPG Makerプラグイン」は実際のGuild上で
-# 使用されている正式カテゴリ名。
-TARGET_CATEGORIES = {
-    "素材",
-    "プラグイン",
-    "RPG Makerプラグイン",
-    "RGSSx",
+# 現在のGuildでは、これらが独立した
+# サブカテゴリとして存在する。
+CATEGORY_URLS = {
+    "プラグイン": (
+        "https://guild.rpgmakerofficial.com/"
+        "c/14-category/17-category/17"
+    ),
+    "素材": (
+        "https://guild.rpgmakerofficial.com/"
+        "c/14-category/20-category/20"
+    ),
+    "RGSSx": (
+        "https://guild.rpgmakerofficial.com/"
+        "c/14-category/21-category/21"
+    ),
 }
 
 
 # ==========================================
-# Category Classification
+# Material Classification
 # ==========================================
 
 def classify_material(title, tags):
@@ -56,17 +63,15 @@ def classify_material(title, tags):
     Guildの「素材」カテゴリを、
     Daily Reportの表示カテゴリへ分類する。
 
-    Guild側に「グラフィック」「サウンド」の
-    細分類がないため、タイトルとタグから判定する。
-
-    判定できないものは「グラフィック素材」とする。
+    サウンドと明確に判断できない場合は
+    グラフィック素材とする。
     """
 
     text = " ".join(
         [title] + list(tags)
     ).lower()
 
-    # 日本語の明確なキーワード
+    # 日本語キーワード
     japanese_sound_keywords = [
         "bgm",
         "bgs",
@@ -86,8 +91,8 @@ def classify_material(title, tags):
 
     # 英語キーワード
     #
-    # 「se」は単純な部分一致にすると
-    # sprites / scene などに誤反応するため使用しない。
+    # 「se」は単純な部分一致にしない。
+    # sprites / scene などへの誤反応を防ぐ。
     english_sound_patterns = [
         r"\bbgm\b",
         r"\bbgs\b",
@@ -111,79 +116,13 @@ def classify_material(title, tags):
     return "グラフィック素材"
 
 
-def classify_category(
-    guild_category,
-    title,
-    tags,
-):
-    """
-    Guildの正式カテゴリを
-    Daily Reportのカテゴリへ変換する。
-
-    Guild側のカテゴリを信頼し、
-    タイトルからカテゴリを推測しない。
-    """
-
-    if guild_category in {
-        "プラグイン",
-        "RPG Makerプラグイン",
-        "RGSSx",
-    }:
-        return "プラグイン"
-
-    if guild_category == "素材":
-        return classify_material(
-            title,
-            tags,
-        )
-
-    return None
-
-
 # ==========================================
-# Helpers
+# Tag Extraction
 # ==========================================
-
-def get_topic_category(topic):
-    """
-    トピック一覧からGuild側のカテゴリ名を取得する。
-    """
-
-    category_name = topic.select_one(
-        ".badge-category .category-name"
-    )
-
-    if category_name is not None:
-
-        text = category_name.get_text(
-            " ",
-            strip=True,
-        )
-
-        if text:
-            return text
-
-    # 念のため別形式にも対応
-    category_name = topic.select_one(
-        ".category-name"
-    )
-
-    if category_name is not None:
-
-        text = category_name.get_text(
-            " ",
-            strip=True,
-        )
-
-        if text:
-            return text
-
-    return ""
-
 
 def get_tags(topic):
     """
-    Discourseトピックに付与されたタグを取得する。
+    Discourseトピックのタグを取得する。
     """
 
     tags = []
@@ -206,9 +145,20 @@ def get_tags(topic):
     return tags
 
 
-def extract_topics(html):
+# ==========================================
+# Topic Extraction
+# ==========================================
+
+def extract_topics(
+    html,
+    guild_category,
+):
     """
-    Guildのカテゴリ一覧からトピックを抽出する。
+    Guildのカテゴリ一覧から
+    トピックを抽出する。
+
+    カテゴリはHTMLから推測せず、
+    呼び出し元から明示的に渡す。
     """
 
     soup = BeautifulSoup(
@@ -252,23 +202,11 @@ def extract_topics(html):
             href,
         )
 
-        # DiscourseのトピックURLだけを対象にする。
+        # DiscourseのトピックURLのみ
         if not re.search(
             r"/t/[^/]+/\d+",
             url,
         ):
-            continue
-
-        # ----------------------------------
-        # Guild category
-        # ----------------------------------
-
-        guild_category = get_topic_category(
-            topic
-        )
-
-        # 対象外カテゴリはここで除外。
-        if guild_category not in TARGET_CATEGORIES:
             continue
 
         # ----------------------------------
@@ -283,13 +221,20 @@ def extract_topics(html):
         # Daily Report category
         # ----------------------------------
 
-        category = classify_category(
-            guild_category,
-            title,
-            tags,
-        )
+        if guild_category == "プラグイン":
+            category = "プラグイン"
 
-        if category is None:
+        elif guild_category == "RGSSx":
+            category = "プラグイン"
+
+        elif guild_category == "素材":
+            category = classify_material(
+                title,
+                tags,
+            )
+
+        else:
+            # 想定外のカテゴリは採用しない。
             continue
 
         # ----------------------------------
@@ -309,6 +254,10 @@ def extract_topics(html):
 
     return items
 
+
+# ==========================================
+# Page Fetch
+# ==========================================
 
 def get_page(
     session,
@@ -371,74 +320,100 @@ def get_items(seen):
 
     try:
 
-        # ----------------------------------
-        # Guildのメインカテゴリだけを見る
-        # ----------------------------------
+        # ==================================
+        # 対象カテゴリを順番に取得
+        # ==================================
 
-        for page in range(
-            1,
-            MAX_PAGES + 1,
+        for guild_category, category_url in (
+            CATEGORY_URLS.items()
         ):
 
-            try:
-
-                html = get_page(
-                    session,
-                    GUILD_URL,
-                    page,
-                )
-
-            except requests.RequestException as e:
-
-                print(
-                    "[RPG Maker Guild] "
-                    f"Page error: {e}"
-                )
-
-                break
-
-            items = extract_topics(
-                html
+            print(
+                "[RPG Maker Guild] "
+                f"Category: {guild_category}"
             )
 
-            for item in items:
+            category_new = 0
 
-                url = item[
-                    "url"
-                ]
+            for page in range(
+                1,
+                MAX_PAGES + 1,
+            ):
 
-                # 同一Action内の重複防止
-                if url in current_urls:
-                    continue
+                try:
 
-                current_urls.add(
-                    url
+                    html = get_page(
+                        session,
+                        category_url,
+                        page,
+                    )
+
+                except requests.RequestException as e:
+
+                    print(
+                        "[RPG Maker Guild] "
+                        f"Page error "
+                        f"({guild_category}, "
+                        f"page {page}): {e}"
+                    )
+
+                    # 取得できなかったページは
+                    # そこで終了する。
+                    break
+
+                items = extract_topics(
+                    html,
+                    guild_category,
                 )
 
-                # 過去に取得済みならスキップ
-                if url in seen_set:
-                    continue
+                for item in items:
 
-                adopted_items.append(
-                    item
-                )
+                    url = item[
+                        "url"
+                    ]
 
-                new_seen.append(
-                    url
-                )
+                    # 同一Action内の重複防止
+                    if url in current_urls:
+                        continue
 
-                seen_set.add(
-                    url
-                )
+                    current_urls.add(
+                        url
+                    )
 
-            # ページ間に少し間隔を置く。
-            # Guildへの過剰アクセスを避ける。
-            if page < MAX_PAGES:
-                time.sleep(1.0)
+                    # 過去に取得済みならスキップ
+                    if url in seen_set:
+                        continue
 
-        # ----------------------------------
+                    adopted_items.append(
+                        item
+                    )
+
+                    new_seen.append(
+                        url
+                    )
+
+                    seen_set.add(
+                        url
+                    )
+
+                    category_new += 1
+
+                # ページ間隔
+                if page < MAX_PAGES:
+                    time.sleep(1.0)
+
+            print(
+                "[RPG Maker Guild] "
+                f"{guild_category} New: "
+                f"{category_new}"
+            )
+
+            # カテゴリ間隔
+            time.sleep(1.0)
+
+        # ==================================
         # Result
-        # ----------------------------------
+        # ==================================
 
         print(
             "[RPG Maker Guild] New: "
