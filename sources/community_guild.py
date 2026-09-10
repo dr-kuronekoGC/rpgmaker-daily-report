@@ -3,6 +3,7 @@
 # ==========================================
 
 import re
+import time
 from urllib.parse import urljoin
 
 import requests
@@ -31,19 +32,17 @@ HEADERS = {
 # ==========================================
 
 # 1回のActionで取得するページ数。
-#
-# Guildの一覧は新しいトピック順なので、
-# 最新情報を拾う目的では数ページで十分。
 MAX_PAGES = 3
 
 
 # GuildからDaily Reportへ採用するカテゴリ。
 #
-# Guild側の正式なカテゴリ名を利用するため、
-# タイトルから推測する必要はない。
+# 「RPG Makerプラグイン」は実際のGuild上で
+# 使用されている正式カテゴリ名。
 TARGET_CATEGORIES = {
     "素材",
     "プラグイン",
+    "RPG Makerプラグイン",
     "RGSSx",
 }
 
@@ -125,10 +124,11 @@ def classify_category(
     タイトルからカテゴリを推測しない。
     """
 
-    if guild_category == "プラグイン":
-        return "プラグイン"
-
-    if guild_category == "RGSSx":
+    if guild_category in {
+        "プラグイン",
+        "RPG Makerプラグイン",
+        "RGSSx",
+    }:
         return "プラグイン"
 
     if guild_category == "素材":
@@ -147,13 +147,8 @@ def classify_category(
 def get_topic_category(topic):
     """
     トピック一覧からGuild側のカテゴリ名を取得する。
-
-    Discourseではカテゴリが
-    badge-wrapper / category-name
-    として表示される。
     """
 
-    # 最も明確なカテゴリ表示
     category_name = topic.select_one(
         ".badge-category .category-name"
     )
@@ -214,9 +209,6 @@ def get_tags(topic):
 def extract_topics(html):
     """
     Guildのカテゴリ一覧からトピックを抽出する。
-
-    ここではGuildの正式カテゴリを読み取り、
-    Daily Report対象だけを採用する。
     """
 
     soup = BeautifulSoup(
@@ -382,18 +374,6 @@ def get_items(seen):
         # ----------------------------------
         # Guildのメインカテゴリだけを見る
         # ----------------------------------
-        #
-        # 以前は
-        #   RPGツクールカテゴリ
-        #   プラグインカテゴリ
-        # の2箇所を取得していた。
-        #
-        # 今回はメインカテゴリだけ取得し、
-        # 各トピックに付いている正式カテゴリを
-        # 利用する。
-        #
-        # これにより、質問・雑談などを
-        # 誤って素材として扱う問題を防ぐ。
 
         for page in range(
             1,
@@ -420,15 +400,6 @@ def get_items(seen):
             items = extract_topics(
                 html
             )
-
-            if not items:
-
-                # 対象カテゴリが1件もない場合でも、
-                # 次ページに対象が存在する可能性がある。
-                #
-                # そのため、ここではページ取得を
-                # 即終了しない。
-                continue
 
             for item in items:
 
@@ -460,6 +431,11 @@ def get_items(seen):
                     url
                 )
 
+            # ページ間に少し間隔を置く。
+            # Guildへの過剰アクセスを避ける。
+            if page < MAX_PAGES:
+                time.sleep(1.0)
+
         # ----------------------------------
         # Result
         # ----------------------------------
@@ -469,7 +445,6 @@ def get_items(seen):
             f"{len(adopted_items)}"
         )
 
-        # デバッグ用にカテゴリ別件数も出す。
         category_counts = {}
 
         for item in adopted_items:
