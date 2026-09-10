@@ -1,0 +1,17 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/moghunter-scenemenu-plugin-help-scrolling-effect-on-new-experience-bar.176514",
+  "title": "MV Moghunter SceneMenu plugin help - scrolling effect on new experience bar",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T12:56:54.801719+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1506184",
+      "author": "Sirius270",
+      "date": "2025-03-24T13:40:09+0900",
+      "body": "Hello fellow game makers!\nI am looking to edit Moghunter's SceneMenu plugin and add the visual scrolling effect found on the HP and MP bars to my new experience bar (that works other than this little aesthetic thing). Any ideas? Mog's plugins can be found\nHERE\n, though you do need to download all of them, then parse out the SceneMenu one I'm using.\nSpoiler:\nExp bar scripts\nJavaScript:\n//==============================\n// * update Exp Meter (starts at line 1543)\n//==============================\nMCharStatus.prototype.refreshExpMeter = function() {\n    if (!this._actor) return;\n    var expValue = this.getExpPercentage();\n    var percentage = (expValue === \"Max\") ? 100 : expValue;\n    this.updateMeter(this._expMeter, this._expMeterData, percentage, 100);\n};\n\n//==============================\n// * update Meter (starts at line 1553)\n//==============================\nMCharStatus.prototype.updateMeter = function(sprite,data,v1,v2) {\n    if (!sprite || !sprite.bitmap) return;\n     var cw = data[0] * v1 / v2;\n     if (cw > data[0]) cw = data[0]; // Ensure we don't exceed the width\n     sprite.setFrame(data[3],0,cw,data[1]);\n     data[3] += 4;\n     if (data[3] > data[2]) {data[3] = 0};\n};\n\n//==============================\n// * create Exp Number (percentage) (starting at line 1639)\n//==============================\nMCharStatus.prototype.createExpNumber = function() {\n    this._exp_number = [];\n    this._NumberData4 = [this._numberImg4.width / 11, this._numberImg4.height];\n    var x = this._layout.x + Moghunter.scMenu_ExpNumberX;\n    var y = this._layout.y + Moghunter.scMenu_ExpNumberY;\n    for (var i = 0; i < 5; i++) {\n        this._exp_number[i] = new Sprite(this._numberImg4);\n        this._exp_number[i].visible = false;\n        this._exp_number[i].opacity = 255;\n        this._exp_number[i].x = x;\n        this._exp_number[i].y = y;\n        this.addChild(this._exp_number[i]);\n    }\n    this.refreshExpNumber();\n};\n\nMCharStatus.prototype.getExpPercentage = function() {\n    if (!this._actor) return 0;\n    if (this._actor.isMaxLevel()) return \"MAX\";\n    var currentExp = this._actor.currentExp() - this._actor.currentLevelExp();\n    var nextLevelExp = this._actor.nextLevelExp() - this._actor.currentLevelExp();\n    if (nextLevelExp === 0) return \"MAX\";\n    return Math.floor((currentExp / nextLevelExp) * 100);\n};\n\nMCharStatus.prototype.refreshExpNumber = function() {\n    if (!this._actor) return;\n    var expValue = this.getExpPercentage();\n    Moghunter.refresh_number(this._exp_number, expValue, this._NumberData4, this._layout.x + Moghunter.scMenu_ExpNumberX, true);\n};"
+    }
+  ]
+}

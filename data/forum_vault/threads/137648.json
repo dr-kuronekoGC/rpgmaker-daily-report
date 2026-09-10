@@ -1,0 +1,671 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/friendship-romance-system-frs.137648",
+  "title": "Friendship-Romance System (FRS)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T12:57:05.467717+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1195584",
+      "author": "lordvalinar",
+      "date": "2021-06-21T08:24:49+0900",
+      "body": "Friendship Romance System (FRS)\nv1.3 (by LordValinar)\n​\nIntroduction\nIntroduces a more in-depth relation system between actors (and events!)\nNew - Latest Update (\nv1.31\n-\nSep 24 2021\n):\nSpoiler:\nChangelog\nHotfix #3:\n-> Moved code that adds Relations to menu to only appear if dev is not using VisuMZ MainMenuCore\n-> Also added conditionals so that the Relations scene is only active if the selected actor has relations to show (same goes for the inMenu switching : no relations, will pop back to main menu)\n-> Added option in plugin parameters (if ON : entering Relations menu automatically loads up the party leader, skipping actor selection) per request (available in both FRS versions).\nAdded an alternative version (1.3) to include both friendship + romance bar simultaneously\nHotfix #2: Another syntax error.. whoops\nHotfix #1: A few syntax errors when running the plugin commands to change relations\nAdded formula arguments for actor IDs - now you can retrieve a variable as an actor ID: v[#]\nor get the indexed actor's ID: a[1] = party leader, a[3] = 3rd actor, etc\nFEATURES\n:\nNotetags(Actors, Skills, Items): Assign notetags that can:\nSet initial friendship/romance levels upon the starting party composition\nAdd friendship between party after every battle\nChecks if current friendship/romance level is above a certain threshold -> adds a state or learns a skill (as applicable), or if the level is below the threshold -> removes state or forgets a skill.\nOne-Time common events, switch flips (true or false), or variable adjustment based on certain friendship/romance level >= the threshold. Plugin command available to remove the DoOnce flag.\nSkill Notetag (can increase friendship/romance with a certain actor (or the target themselves!)\nItem Notetag (can increase friendship/romance between user[party leader] and target ally)\nCustom \"Relations\" menu displaying all available friends/romanced actors (and NPCs!) (see below for compatability with VisuStella's Main Menu Core)\nThis menu displays the actor/NPC graphic, name, relation bar (green = friendship; reddish = romanced) + Icon if \"engaged/married/lovers/significant other\", and then up 5 state icons representing any buffs applied.\nYou can befriend/romance NPCs, however you cannot switch to them in the relations menu (You will get a buzzer), but you can still get all the buffs as you would with an actor (conditionals are setup via the plugin command or script call - if you want any).\nPlugin command to save a relation value to a variable, so can use with message boxes.\nPLUGIN PARAMETERS:\nMinimum relations level (default 0): Lowest value to check for/set\nMaximum relations level (default 100): Highest value to check/set\n\"Engaged\" icon ID (default 84): When lovers/married/etc, this icon will appear in the Relations menu\n\"Engaged\" minimum (default 90): The romance value must be greater than or equal to this value to be considered \"engaged/married/lovers/etc\".\n\"Engaged\" state ID (default 0): If you want your lovers to get a buff while in the same party, the state with this ID will be applied to both (or all if multiple lovers). If one leaves the party, all lose the buff.\nNew Member Friendship (default 0): When you gain a new member, the current party gains this much friendship with them.\nNew Member Befriends Party (default false): If the '\nnew member friendship\n' value is > 0 and this is '\ntrue\n' then the new member will also add everyone in the party to their friends list.\nPrefix (string -> '' default '(npc)'): If you want to separate your NPC names in the Relations list, this prefix will be added before the event name. Can combine with Postfix.\nPostfix (string -> '' default\nblank\n): If you want to separate your NPC names in the Relations list, this postfix will be added after the event name. Can combine with Prefix.\nRelation Window Text (string -> '' default '\nRelations:\n'): This is the text that appears in the header box, displaying which is the current actor's friends list. Just added for user customization.\nCustomize the gradient fill for the friend/romance bars. Does use HEX code (so a simple google search- or leaving it alone- will help the dev out if they don't want to use the standards)\nVS Menu Core Compatability:\n1) Open up VisuMZ_1_MainMenuCore plugin settings\n2) Open the Command Window List\n3) Open up a new command on the last line\n4) Go to the \"Text\" tab and REPLACE (meaning delete -> then paste new text) with the text:\nCode:\n{\"Symbol:str\":\"relations\",\"Icon:num\":\"84\",\"TextStr:str\":\"\",\"TextJS:func\":\"\\\"return 'Relations';\\\"\",\"ShowJS:func\":\"\\\"return true;\\\"\",\"EnableJS:func\":\"\\\"return this.areRelationsEnabled();\\\"\",\"ExtJS:func\":\"\\\"return null;\\\"\",\"CallHandlerJS:func\":\"\\\"SceneManager._scene.commandPersonal();\\\"\",\"PersonalHandlerJS:func\":\"\\\"SceneManager.push(Scene_Relations);\\\"\"}\nAlternatively you can set it up manually:\n*\nSymbol\n:\nrelations\n*\nIcon\n:\n84 (\nor whatever you choose\n)\n*\nSTR: Text\n*\nJS: Text\nreturn 'Relations';\n*\nJS: Show\nreturn true;\n*\nJS: Enable\nreturn this.areRelationsEnabled();\n*\nJS: Ext\nreturn null;\n*\nJS: Run Code\nSceneManager._scene.commandPersonal();\n*\nJS: Personal Code\nSceneManager.push(Scene_Relations);\nSpoiler:\nScreenshots\nHow to Use:\nPlace into your project's js\\plugins\\.. folder, and activate in the plugin manager. Set your parameters to how you want the values to be (such as automatically adding friendship when adding a new member? Or you can control it manually in the event).\nPlugin Commands / Script Calls:\nExplained in detail in the plugin, but the TLDR:\nChange Relations (friendship or romance, by value towards target actor or event\nDelete DoOnce Flag (allows you to re-run a one-time event from a relation change)\nSave To Var (saves current friendship or romance data to a variable)\nDownload\n: Github (\ndownload\n)\nAlternate(Both bars) (\ndownload\n)\nTerms and Credits:\nFree to use and modify for commercial and noncommercial games, with credit.\nDo NOT remove my name from the Author of this plugin\nDo NOT reupload this plugin (modified or otherwise) anywhere other than these forums (RPG Maker Web.com)"
+    },
+    {
+      "post_id": "js-post-1195882",
+      "author": "Jrrkein",
+      "date": "2021-06-22T16:07:01+0900",
+      "body": "Is there something wrong because I got\nUnexpected token '='\nerror?"
+    },
+    {
+      "post_id": "js-post-1195956",
+      "author": "lordvalinar",
+      "date": "2021-06-22T23:58:33+0900",
+      "body": "Jrrkein said:\nIs there something wrong because I got\nUnexpected token '='\nerror?\nClick to expand...\nCan you post a screenshot of the console log? And explain what you were doing or when this error happens?"
+    },
+    {
+      "post_id": "js-post-1196008",
+      "author": "Jrrkein",
+      "date": "2021-06-23T05:36:19+0900",
+      "body": "I was just starting a new game also\nI can't acces the console for some reason"
+    },
+    {
+      "post_id": "js-post-1196051",
+      "author": "lordvalinar",
+      "date": "2021-06-23T08:27:45+0900",
+      "body": "Strange. Do you have other plugins running? Mine does not crash on new game. Also try F12 - I find it helpful with opening the console on certain errors that normally prevent you from doing so."
+    },
+    {
+      "post_id": "js-post-1196057",
+      "author": "Jrrkein",
+      "date": "2021-06-23T09:20:09+0900",
+      "body": "Several VS plugins and Testus's quest plugin right now that I'm using."
+    },
+    {
+      "post_id": "js-post-1196074",
+      "author": "Warilized",
+      "date": "2021-06-23T10:54:44+0900",
+      "body": "Whoa nice i've been looking for this system for a long time... For MV\nWell, if i bought MZ I'll try this."
+    },
+    {
+      "post_id": "js-post-1196112",
+      "author": "lordvalinar",
+      "date": "2021-06-23T16:29:31+0900",
+      "body": "Warilized said:\nWhoa nice i've been looking for this system for a long time... For MV\nWell, if i bought MZ I'll try this.\nClick to expand...\nStrangely enough, this was made as a free commission for an MV -> MZ conversion lol. Here's the thread on that (with the MV plugin by Moogle_X) if you want that:\nhttps://forums.rpgmakerweb.com/index.php?threads/friendship-system.127291/"
+    },
+    {
+      "post_id": "js-post-1196117",
+      "author": "Jrrkein",
+      "date": "2021-06-23T16:56:25+0900",
+      "body": "About the error, I just did check using console and it still said\n\"=\"\nerror thing\n@lordvalinar"
+    },
+    {
+      "post_id": "js-post-1196186",
+      "author": "DeusEsca",
+      "date": "2021-06-23T23:50:26+0900",
+      "body": "Got it to work(had unexpected ;  @ line 735\nChanged:\nJavaScript:\nconst actor      = (actorId > 0) ? $gameActors.actor(actorId) || $gameParty.leader();\nto:\nCode:\nconst actor      = (actorId > 0) ? $gameActors.actor(actorId) : $gameParty.leader();\nalso removed line 1587 to get rid of the Menu(Using the VS menu method):\nCode:\nthis.addRelationsCommand();\nWith this line I get 2 Buttons, the second one(VS one) crashed the game with a \"scene_releations not declared\" error if first Button is not  removed(which I had to anyway since I only need one xD)\nVersion is 1.1 I Think"
+    },
+    {
+      "post_id": "js-post-1196226",
+      "author": "lordvalinar",
+      "date": "2021-06-24T02:23:07+0900",
+      "body": "Jrrkein said:\nAbout the error, I just did check using console and it still said\n\"=\"\nerror thing\n@lordvalinar\nClick to expand...\nWell that doesn't exactly help us understand what the actual issue is\nCan you take a screenshot and post it here?"
+    },
+    {
+      "post_id": "js-post-1196352",
+      "author": "lordvalinar",
+      "date": "2021-06-24T11:01:22+0900",
+      "body": "On that screen, press F12 -> Should open the console. I need a screenshot of the console."
+    },
+    {
+      "post_id": "js-post-1196421",
+      "author": "DeusEsca",
+      "date": "2021-06-24T19:16:02+0900",
+      "body": "Jrrkein said:\nView attachment 193255\nClick to expand...\nLooks like u are using the first version (1.0 ?)\nIn the newest version there is no \"=\" at line 959.\nTry downloading the newest version."
+    },
+    {
+      "post_id": "js-post-1196441",
+      "author": "Jrrkein",
+      "date": "2021-06-24T20:49:58+0900",
+      "body": "lmao this is embarrassing."
+    },
+    {
+      "post_id": "js-post-1196449",
+      "author": "SilverR",
+      "date": "2021-06-24T21:20:51+0900",
+      "body": "Hi, I create a new project, but it also have some problem(SyntaxError: Unexpected token ';')\nI only use the plugin of visustella CoreEngine and MainmenuCore.\nThe console looks like this. Hope to be solved"
+    },
+    {
+      "post_id": "js-post-1196482",
+      "author": "lordvalinar",
+      "date": "2021-06-25T00:31:21+0900",
+      "body": "Alright yeah that was my mistake. Was trying out some ES6 syntax, and was an error on that - so changed it back, but forgot some stuff. Both github and main page updated with v1.2 now (sorry about that!)"
+    },
+    {
+      "post_id": "js-post-1196567",
+      "author": "Jrrkein",
+      "date": "2021-06-25T06:42:29+0900",
+      "body": "Er\nYou sure you patched this up, because It keeps giving me a looped error again"
+    },
+    {
+      "post_id": "js-post-1196588",
+      "author": "lordvalinar",
+      "date": "2021-06-25T08:39:23+0900",
+      "body": "Jrrkein said:\nEr\nYou sure you patched this up, because It keeps giving me a looped error again\nView attachment 193318\nClick to expand...\nAlright so I think I know what's happening. I tried using some newer ES6 syntax (and it works just fine on\nmy\nend... but doesn't seem to be as friendly to others..?) It was worth a try I guess... alright wait like 2-5 minutes, should be re-uploaded (and fixed... for good this time I hope) lol"
+    },
+    {
+      "post_id": "js-post-1196599",
+      "author": "Jrrkein",
+      "date": "2021-06-25T09:46:07+0900",
+      "body": "Ooop\nDisabled the enchanted TP"
+    },
+    {
+      "post_id": "js-post-1196605",
+      "author": "lordvalinar",
+      "date": "2021-06-25T10:19:11+0900",
+      "body": "The first error was supposed to happen if you selected an NPC in the relations list. As for the other one... I'm guessing you used an item that didn't have metaData (a normal potion or something). *sighs* I am so so sorry that I've missed all this stuff! (applyFRSeffects() didn't have a failsafe for that).\nI've... re-uploaded (again)"
+    },
+    {
+      "post_id": "js-post-1196606",
+      "author": "Jrrkein",
+      "date": "2021-06-25T10:42:05+0900",
+      "body": "Do you have a failsafe in case for this one too.."
+    },
+    {
+      "post_id": "js-post-1196612",
+      "author": "lordvalinar",
+      "date": "2021-06-25T11:03:52+0900",
+      "body": "Jrrkein said:\nView attachment 193338\nDo you have a failsafe in case for this one too..\nClick to expand...\nThat seems to have been called within a battle *\nscratches chin\n* I have not tested battles, although \"actor\" is the action's subject... ah! Which means in this case, it was calcuating an action for an enemy! Okay, will fix (again) lol\nCongrats, you've been selected by the government to be our unofficial tester xD\nNew version in 1-3 minutes!"
+    },
+    {
+      "post_id": "js-post-1196892",
+      "author": "scorlight",
+      "date": "2021-06-26T20:57:47+0900",
+      "body": "Amazing plugin you have there, it is exactly what I've been searching for, I can't wait to use it in my game\nThank you for making the plugin"
+    },
+    {
+      "post_id": "js-post-1197058",
+      "author": "lordvalinar",
+      "date": "2021-06-27T14:35:25+0900",
+      "body": "scorlight said:\nAmazing plugin you have there, it is exactly what I've been searching for, I can't wait to use it in my game\nThank you for making the plugin\nClick to expand...\nIt's what I do\n( hope you enjoy it <3 )"
+    },
+    {
+      "post_id": "js-post-1197073",
+      "author": "Jrrkein",
+      "date": "2021-06-27T16:45:45+0900",
+      "body": "I kinda wish items can alter friendship value with numbers though"
+    },
+    {
+      "post_id": "js-post-1197419",
+      "author": "lordvalinar",
+      "date": "2021-06-29T03:38:17+0900",
+      "body": "Jrrkein said:\nI kinda wish items can alter friendship value with numbers though\nClick to expand...\nHow do you mean? Items can alter friendship values (instructions are written in the help section):\nJavaScript:\n/*:\n * <frsItem type actorId: value>\n * TYPE   : friend | romance\n * ACTORID: Id of target actor to improve relations with leader\n * VALUE  : true | false | self\n * -> true: Saves relation between leader <-> target\n * -> false: Saves relation between leader -> target only\n * -> self: Saves relation between target -> leader only\n */"
+    },
+    {
+      "post_id": "js-post-1197460",
+      "author": "Jrrkein",
+      "date": "2021-06-29T06:57:03+0900",
+      "body": "Instead just a save thing, why not a number"
+    },
+    {
+      "post_id": "js-post-1197463",
+      "author": "lordvalinar",
+      "date": "2021-06-29T07:18:33+0900",
+      "body": "I'm sorry, I'm still quite confused as to what you mean :\\"
+    },
+    {
+      "post_id": "js-post-1197492",
+      "author": "Jrrkein",
+      "date": "2021-06-29T11:23:28+0900",
+      "body": "I mean take a look at mog x friendship, the item notetag have numbers than a bloean of true or false"
+    },
+    {
+      "post_id": "js-post-1198705",
+      "author": "lordvalinar",
+      "date": "2021-07-04T11:40:58+0900",
+      "body": "Jrrkein said:\nI mean take a look at mog x friendship, the item notetag have numbers than a bloean of true or false\nClick to expand...\nAh okay. ((sorry been busy working on the new battle system)), so I looked at it and it\ndoes\nfunction as you mean it to, but I flubbered up on the description. The tag is:\nJavaScript:\n<frsItem type value: mode>\n// type:  friend | romance\n// value: The value to add(+) or remove(-) from target (the actor the item is used on)\n// mode: true | false | self\nI'll update the plugin to reflect this more\naccurate\ndescription, but an update shouldn't be required."
+    },
+    {
+      "post_id": "js-post-1198716",
+      "author": "scorlight",
+      "date": "2021-07-04T12:21:08+0900",
+      "body": "If I understand it correctly then this plugin only builds friendship/romance level for parties members? And 1 npc can only have 1 type of relationship, if they are datable then they can't be friends, and vice versa?"
+    },
+    {
+      "post_id": "js-post-1198834",
+      "author": "lordvalinar",
+      "date": "2021-07-05T01:39:59+0900",
+      "body": "scorlight said:\nIf I understand it correctly then this plugin only builds friendship/romance level for parties members? And 1 npc can only have 1 type of relationship, if they are datable then they can't be friends, and vice versa?\nClick to expand...\nRegarding Actors:\n- You can build friendship and romance both ways (because actors have viewable data from the menu)\n- If you are romancing another actor, it does not remove the friendship level (same goes with NPCs), it's just the romance bar has higher priority and is thus displayed instead.\nRegarding NPCs:\n- You can have both friendship and romance with any number of NPCs you setup\n- However, like actors if you are romancing any of them, the romance bar(red) will show instead but does not remove the friendship points.\n- Also the relation goes one-way for NPCs (since you can't select NPCs in the relations menu), but it is on basis the relationship is shared both ways."
+    },
+    {
+      "post_id": "js-post-1199009",
+      "author": "Jrrkein",
+      "date": "2021-07-05T17:01:30+0900",
+      "body": "Ah that's make it more clearer on it's purpose now"
+    },
+    {
+      "post_id": "js-post-1207300",
+      "author": "SilverR",
+      "date": "2021-08-09T15:40:01+0900",
+      "body": "Is this plugin can show the friendship and romance bar of every character at the same time?\nand, if it is possible, should you consider to add [common event] when people click the character picture in this window?\nI think it can be used in a lot of plot.\nif it is disturbed you, I will apologise"
+    },
+    {
+      "post_id": "js-post-1207395",
+      "author": "lordvalinar",
+      "date": "2021-08-10T01:01:50+0900",
+      "body": "SilverR said:\nIs this plugin can show the friendship and romance bar of every character at the same time?\nand, if it is possible, should you consider to add [common event] when people click the character picture in this window?\nI think it can be used in a lot of plot.\nif it is disturbed you, I will apologise\nClick to expand...\nThe F+R bars on the same menu isn't a problem, I'll upload that as a separate download.\nAs for the common events(on click) that's outside the scope of this plugin sorry.\nUPDATE:\nJust added alternative version. Can download via github or on the first page"
+    },
+    {
+      "post_id": "js-post-1209643",
+      "author": "creatureftd",
+      "date": "2021-08-20T09:34:03+0900",
+      "body": "Having a few issues:\n1. There is a default 'relations' tab in the menu before I add it in VisuMZ mainmenu core, and once I add it using the code you provided, there is two 'relations' tabs. How do I get rid of the default?\n2. I click on relations tab, then a character, then it shows another window and if I click the game crashes with TypeError, cannot read property 'type' of undefined.\n3. Is there a way to, when clicking relations tab, go straight to main character's relationships only, instead of choosing a party member first?\nI have tested this with a completely new project, with newest version of MZ, VisuMZ and your plugin, and still have same errors."
+    },
+    {
+      "post_id": "js-post-1210650",
+      "author": "LilKnockerOut",
+      "date": "2021-08-26T12:11:01+0900",
+      "body": "I have a question. Is there a way to change the name of the relations between actors (i.e. Acquaintances, Best Friends, Lovers, Betrothed, etc)?"
+    },
+    {
+      "post_id": "js-post-1215037",
+      "author": "lordvalinar",
+      "date": "2021-09-15T05:43:50+0900",
+      "body": "creatureftd said:\nHaving a few issues:\n1. There is a default 'relations' tab in the menu before I add it in VisuMZ mainmenu core, and once I add it using the code you provided, there is two 'relations' tabs. How do I get rid of the default?\n2. I click on relations tab, then a character, then it shows another window and if I click the game crashes with TypeError, cannot read property 'type' of undefined.\n3. Is there a way to, when clicking relations tab, go straight to main character's relationships only, instead of choosing a party member first?\nI have tested this with a completely new project, with newest version of MZ, VisuMZ and your plugin, and still have same errors.\nClick to expand...\n1.) Odd, the menu never showed up for me - so I had to do it via the code. Have you tried not entering the code, see if the relation menu still works as intended (aka highlighting only after some relations are established, but greyed out until then)?\n- If that works, just remove the code.\n2.) I need the console log for more information. Hit F8 while running the game in test mode, and when it crashes printScreen and paste that into a visual editor program (ie. Paint.NET, Gimp, photoshop, etc) and post that here\n3.) The intent was to list the selected character's relations. Changing how it works right now is outside the scope of this plugin. However, to answer your question directly, you or whoever could alias one of the methods in Scene_Menu when selecting something (commandOk I think? Been a little bit since I've worked on this stuff) it could push the Scene_Relations scene instead of 'onPeronsalOk'.\nLilKnockerOut said:\nI have a question. Is there a way to change the name of the relations between actors (i.e. Acquaintances, Best Friends, Lovers, Betrothed, etc)?\nClick to expand...\nThere are no relations texts displayed, only gauges and icons. Unless that's not what you meant?"
+    },
+    {
+      "post_id": "js-post-1216721",
+      "author": "creatureftd",
+      "date": "2021-09-22T12:49:02+0900",
+      "body": "lordvalinar said:\n1.) Odd, the menu never showed up for me - so I had to do it via the code. Have you tried not entering the code, see if the relation menu still works as intended (aka highlighting only after some relations are established, but greyed out until then)?\n- If that works, just remove the code.\n2.) I need the console log for more information. Hit F8 while running the game in test mode, and when it crashes printScreen and paste that into a visual editor program (ie. Paint.NET, Gimp, photoshop, etc) and post that here\n3.) The intent was to list the selected character's relations. Changing how it works right now is outside the scope of this plugin. However, to answer your question directly, you or whoever could alias one of the methods in Scene_Menu when selecting something (commandOk I think? Been a little bit since I've worked on this stuff) it could push the Scene_Relations scene instead of 'onPeronsalOk'.\nThere are no relations texts displayed, only gauges and icons. Unless that's not what you meant?\nClick to expand...\n1. It does show only one if I remove the code however it doesn't have an icon and it sits after 'formation' and idk how I could edit it. I tried moving your plugin above VisuMZ mainmenu core in the plugins list, and it no longer shows the extra relations tab and shows the one with the icon, however, when I click on a character the game crashes. I assume it isn't intended this way.\n2. Was able to fix this somehow. I think I had it add points to the leader but not the new member and that somehow screwed it up.\n3. Ok thanks I may try this out.\nPlease let me know if you figure out the first issue. Or if anyone else is having this. Maybe it's from a new update of RPGMMZ or VisuMZ?\nHere's a screenshot. Both tabs work as normal."
+    },
+    {
+      "post_id": "js-post-1216767",
+      "author": "fizzly",
+      "date": "2021-09-22T19:15:44+0900",
+      "body": "Is there an option to add icons for both romance/friendship bars? Thank you."
+    },
+    {
+      "post_id": "js-post-1216804",
+      "author": "dm604",
+      "date": "2021-09-22T23:23:33+0900",
+      "body": "creatureftd said:\n1. It does show only one if I remove the code however it doesn't have an icon and it sits after 'formation' and idk how I could edit it. I tried moving your plugin above VisuMZ mainmenu core in the plugins list, and it no longer shows the extra relations tab and shows the one with the icon, however, when I click on a character the game crashes. I assume it isn't intended this way.\n2. Was able to fix this somehow. I think I had it add points to the leader but not the new member and that somehow screwed it up.\n3. Ok thanks I may try this out.\nPlease let me know if you figure out the first issue. Or if anyone else is having this. Maybe it's from a new update of RPGMMZ or VisuMZ?\nHere's a screenshot. Both tabs work as normal.\nClick to expand...\nI just tried it today and I have the same issue.\n1) I followed the instruction on page 1 and I got 2 relationship menus.  Both are grayed out and cannot be accessed.\n2) I managed to get rid of one of the menus.  However, the other one is still grayed out.\nMaybe they somehow updated the VZ menu plugin?\nBTW, I was using their latest sample project to test."
+    },
+    {
+      "post_id": "js-post-1216807",
+      "author": "dm604",
+      "date": "2021-09-22T23:38:42+0900",
+      "body": "I managed to get it to work.\nI first ran a CE, then the relationship menu becomes accessible for all party members, except the leader.\nIf I access it for the leader (Reid), I get an error message."
+    },
+    {
+      "post_id": "js-post-1217308",
+      "author": "lordvalinar",
+      "date": "2021-09-25T01:04:40+0900",
+      "body": "UPDATE SEP-24-2021:\n> Hotfix #3: Relations will now only show once (use steps in Page 1 for VZ MenuCore compatability as normal); Added failsafes that should prevent those errors... hopefully... and\n@creatureftd\nI added an option to the plugin parameters (turn it ON, and it'll auto-load the relations menu for the party leader -> I hope that's what you wanted?) Since I was fixing things, decided to add that for ya"
+    },
+    {
+      "post_id": "js-post-1217423",
+      "author": "creatureftd",
+      "date": "2021-09-25T12:57:49+0900",
+      "body": "lordvalinar said:\nUPDATE SEP-24-2021:\n> Hotfix #3: Relations will now only show once (use steps in Page 1 for VZ MenuCore compatability as normal); Added failsafes that should prevent those errors... hopefully... and\n@creatureftd\nI added an option to the plugin parameters (turn it ON, and it'll auto-load the relations menu for the party leader -> I hope that's what you wanted?) Since I was fixing things, decided to add that for ya\nClick to expand...\nAwesome! I will test it out thanks!"
+    },
+    {
+      "post_id": "js-post-1239825",
+      "author": "Sloff1155",
+      "date": "2021-12-30T05:37:42+0900",
+      "body": "I will check it out, thank you so much."
+    },
+    {
+      "post_id": "js-post-1241645",
+      "author": "lordvalinar",
+      "date": "2022-01-06T05:48:42+0900",
+      "body": "Sloff1155 said:\nI will check it out, thank you so much.\nView attachment 211233\nView attachment 211234\nClick to expand...\nThe issue in that would be the value of \"hex\". What do you have in fc1, fc2, rc1, rc2 parameters? They require a hex code (ie. #ff0000, #000000, #ffffff, etc)"
+    },
+    {
+      "post_id": "js-post-1244379",
+      "author": "Tentacurls",
+      "date": "2022-01-15T16:37:52+0900",
+      "body": "Is there any way to call the relations scene manually? Specifically for the party leader? SceneManager.push(Scene_Relations); doesn't work, assuming because it wants to call a specific actors relationship. I don't really understand coding so I'm lost, sorry ;;;\nI'm not using VisuStella"
+    },
+    {
+      "post_id": "js-post-1244712",
+      "author": "lordvalinar",
+      "date": "2022-01-17T03:48:13+0900",
+      "body": "Tentacurls said:\nIs there any way to call the relations scene manually? Specifically for the party leader? SceneManager.push(Scene_Relations); doesn't work, assuming because it wants to call a specific actors relationship. I don't really understand coding so I'm lost, sorry ;;;\nI'm not using VisuStella\nClick to expand...\nThe plugin is designed to integrate the Relations scene with the main menu. Just make sure you have the plugin parameter set to the party leader, open up the menu in-game, and go to Relations."
+    },
+    {
+      "post_id": "js-post-1244846",
+      "author": "InvictaNova",
+      "date": "2022-01-17T16:45:46+0900",
+      "body": "Hi loadvalinar. The plugin work great and its easy to use. But I am having trouble with using the\n[Save To Variable]\nPlugin Command. My requirement is to retrieve and save the \"\nRelationship\n\" points of event \"\n001\n\" in variable \"\n1\n\" between actor \"\n1\n\" and the event. See the attached image for more information. I am not sure if I am using the Plugin Command the right way. It keeps giving me \"\n0\n\" even though I have increased the relationship point of event 001. Your help on this is much appreciated. Thank you\nAfter Relationship has been increased:\nChecking to see if I have retrieve the relationship information:\nTo check if the [Save To Variable] plugin command is working so I saved it to variable 1 as you can see below:"
+    },
+    {
+      "post_id": "js-post-1253821",
+      "author": "Magenta-Fantasies",
+      "date": "2022-02-22T03:17:20+0900",
+      "body": "This seems like an awesome plugin! Unfortunately, I'm running into this error whenever I use the plugin command \"Change Relationship Points.\" It doesn't seem to matter if I use friendship or romance; I get the same error either way."
+    },
+    {
+      "post_id": "js-post-1253824",
+      "author": "Roninator2",
+      "date": "2022-02-22T03:31:08+0900",
+      "body": "@Magenta-Fantasies\nWhenever you provide a screenshot it should show the console output not the elements. Just click Console at the top next to the elements tab."
+    },
+    {
+      "post_id": "js-post-1254105",
+      "author": "lordvalinar",
+      "date": "2022-02-23T04:55:58+0900",
+      "body": "Spoiler\nInvictaNova said:\nHi loadvalinar. The plugin work great and its easy to use. But I am having trouble with using the\n[Save To Variable]\nPlugin Command. My requirement is to retrieve and save the \"\nRelationship\n\" points of event \"\n001\n\" in variable \"\n1\n\" between actor \"\n1\n\" and the event. See the attached image for more information. I am not sure if I am using the Plugin Command the right way. It keeps giving me \"\n0\n\" even though I have increased the relationship point of event 001. Your help on this is much appreciated. Thank you\nAfter Relationship has been increased:\nView attachment 213178\nChecking to see if I have retrieve the relationship information:\nView attachment 213179\nTo check if the [Save To Variable] plugin command is working so I saved it to variable 1 as you can see below:\nView attachment 213180\nClick to expand...\nJust to confirm, This Aleena is an event (ID: 1), and Reid's actorId is also 1? If so, the issue might be on the plugin's end and I can look into it. Just want to make sure first the settings in the plugin command were correct\n@Magenta-Fantasies\nWhere are you calling the plugin command from? (An event, common event, other?)"
+    },
+    {
+      "post_id": "js-post-1260681",
+      "author": "emkat93",
+      "date": "2022-03-17T12:59:56+0900",
+      "body": "I know you can change the relationship between the leader and an actor. Is there a way to affects two actors (not the leader) feeling toward each other? Like for example Leader gives Actor 2 flowers so Actor 3's friendship with Actor 2 goes down.\nAlso is there a way to check the relationship to trigger an ending?"
+    },
+    {
+      "post_id": "js-post-1261127",
+      "author": "Magenta-Fantasies",
+      "date": "2022-03-19T09:51:24+0900",
+      "body": "Roninator2 said:\n@Magenta-Fantasies\nWhenever you provide a screenshot it should show the console output not the elements. Just click Console at the top next to the elements tab.\nClick to expand...\nGood to know for the future!\nlordvalinar said:\nJust to confirm, This Aleena is an event (ID: 1), and Reid's actorId is also 1? If so, the issue might be on the plugin's end and I can look into it. Just want to make sure first the settings in the plugin command were correct\n@Magenta-Fantasies\nWhere are you calling the plugin command from? (An event, common event, other?)\nClick to expand...\nI am calling the plugin command \"Change Relationship Points\" from a common event."
+    },
+    {
+      "post_id": "js-post-1267872",
+      "author": "lordvalinar",
+      "date": "2022-04-14T13:33:23+0900",
+      "body": "emkat93 said:\nI know you can change the relationship between the leader and an actor. Is there a way to affects two actors (not the leader) feeling toward each other? Like for example Leader gives Actor 2 flowers so Actor 3's friendship with Actor 2 goes down.\nAlso is there a way to check the relationship to trigger an ending?\nClick to expand...\nAlright so in order to do this (the first part between Actor 2 and 3), you'll need to do it as a script call.\nJavaScript:\nconst actor2 = $gameActors.actor(2); // ActorID of 2 (example)\nconst actor3 = $gameActors.actor(3); // ActorID of 3 (example)\n\nactor2.loseFriendship(3, 5); // actor2 likes actor3 less by 5 points\nactor3.loseFriendship(2, 5); // actor3 likes actor2 less by 5 points\nThe second question, checking relationship, first call the plugin command to save it to a variable. After you save the variable, you can use that normally for any If-conditional checks.\n-----\n@Magenta-Fantasies\nI'll have a fixed version tomorrow (my time), I have an idea - since I don't actually need it to run off of Game_Interpreter\n.... actually... question - how are you running it from the common event? (are you calling the common event from an event on the map? Is it a triggered one, or parallel/autorun?) These details will matter.\nEDIT2: I tested it on my end to run a common event from the EventNPC and it worked fine. Send a screenshot (either PM or here if you're okay with that) of the plugin command parameters you set."
+    },
+    {
+      "post_id": "js-post-1269762",
+      "author": "Magenta-Fantasies",
+      "date": "2022-04-23T08:50:29+0900",
+      "body": "lordvalinar said:\n@Magenta-Fantasies\nI'll have a fixed version tomorrow (my time), I have an idea - since I don't actually need it to run off of Game_Interpreter\n.... actually... question - how are you running it from the common event? (are you calling the common event from an event on the map? Is it a triggered one, or parallel/autorun?) These details will matter.\nEDIT2: I tested it on my end to run a common event from the EventNPC and it worked fine. Send a screenshot (either PM or here if you're okay with that) of the plugin command parameters you set.\nClick to expand...\nI experimented with the plugin parameters and how I set up the variables and Actor IDs. It seems to be working now!\nThis is an awesome plugin."
+    },
+    {
+      "post_id": "js-post-1290214",
+      "author": "Winter Witch",
+      "date": "2022-07-26T20:22:18+0900",
+      "body": "Hi there,\nI'm so looking forward to using this plugin for my detective game with four possible love interests.\nI'm sure that I'm just blind, but I can't find a script call for the relations screen. Is there one?\nBecause I'm using a custom menu plugin and have to add every menu option manually.\nIn the plugin instructions I only found script calls for relationship changes, but not for showing the screen with the bars.\nThank you for providing this awesome plugin!"
+    },
+    {
+      "post_id": "js-post-1291058",
+      "author": "lordvalinar",
+      "date": "2022-07-30T08:22:12+0900",
+      "body": "Winter Witch said:\nHi there,\nI'm so looking forward to using this plugin for my detective game with four possible love interests.\nI'm sure that I'm just blind, but I can't find a script call for the relations screen. Is there one?\nBecause I'm using a custom menu plugin and have to add every menu option manually.\nIn the plugin instructions I only found script calls for relationship changes, but not for showing the screen with the bars.\nThank you for providing this awesome plugin!\nClick to expand...\nHello! Thank you for the kind words ^_^ I try my best. You can call the relations menu with this script call (Or well...\nshould\nbe able to? I have not officially tested it, but it's the script call that's made for the default menu):\nJavaScript:\nSceneManager.push(Scene_Relations);\nIf that doesn't work (because it's base class is the Scene_MenuBase) it didn't load an actor. If that's the case then do this:\nJavaScript:\n// Loads the menu actor manually (0 is party leader, 1 is 2nd party actor, etc);\n// these load the actorId; you can of course replace \"$gameParty._actors[index]\"\n// with the actual actorId if you already know which one you want to load in \n//(but those numbers are static and may change if you move party members around)\n$gameParty._menuActorId = $gameParty._actors[0];\nSceneManager.push(Scene_Relations);"
+    },
+    {
+      "post_id": "js-post-1291173",
+      "author": "Winter Witch",
+      "date": "2022-07-31T02:07:25+0900",
+      "body": "lordvalinar said:\nHello! Thank you for the kind words ^_^ I try my best. You can call the relations menu with this script call (Or well...\nshould\nbe able to? I have not officially tested it, but it's the script call that's made for the default menu):\nJavaScript:\nSceneManager.push(Scene_Relations);\nIf that doesn't work (because it's base class is the Scene_MenuBase) it didn't load an actor. If that's the case then do this:\nJavaScript:\n// Loads the menu actor manually (0 is party leader, 1 is 2nd party actor, etc);\n// these load the actorId; you can of course replace \"$gameParty._actors[index]\"\n// with the actual actorId if you already know which one you want to load in\n//(but those numbers are static and may change if you move party members around)\n$gameParty._menuActorId = $gameParty._actors[0];\nSceneManager.push(Scene_Relations);\nClick to expand...\nThank you very much! I tested it, and unfortunately it didn't work (\"Scene_Relations is not defined\"). I tried it again without the menu plugin, and the normal relations window works. However, if I create an item with a common events containing the script call, I still get the error :/"
+    },
+    {
+      "post_id": "js-post-1291191",
+      "author": "ShadowDragon",
+      "date": "2022-07-31T04:09:06+0900",
+      "body": "@Winter Witch\nit's more related to the PKD_SimpleQUestSystem.\nhowever, did you put it above PKD quest system or below?\nyou can try to swap them and see what happend.\notherwise, try turning PKD question system OFF and see if it\nstill crashes, to narrow down the issue."
+    },
+    {
+      "post_id": "js-post-1291205",
+      "author": "Winter Witch",
+      "date": "2022-07-31T05:11:09+0900",
+      "body": "ShadowDragon said:\n@Winter Witch\nit's more related to the PKD_SimpleQUestSystem.\nhowever, did you put it above PKD quest system or below?\nyou can try to swap them and see what happend.\notherwise, try turning PKD question system OFF and see if it\nstill crashes, to narrow down the issue.\nClick to expand...\nThank you for your answer. Unfortunately neither worked. I placed the FRS plugin beneath the PKD Quest System (it was above before) and deactivated it, too. The relations screen works fine, but the item that shall call it through a common event, doesn't.\nI'm sorry to bother you with this\nPerhaps i should just say goodbye to that menu plugin (Wanted to use the EST Phone Menu Plugin for my modern detective game). It doesn't show the relations button since it's not a default menu and that's the reason why I want to call it manually."
+    },
+    {
+      "post_id": "js-post-1291212",
+      "author": "ShadowDragon",
+      "date": "2022-07-31T05:49:50+0900",
+      "body": "you shouldn't, if the EST menu is for MZ, than I need to see how it work.\nanother way for testing purpose for now, make a common event with\nthe scriptcall, and a npc linked to it and see if it opens, if it does, than\nthe plugin require probably something to trigger.\nit may be the phone menu otherwise, so you could try to ask the creator\nof Phone Menu to see if there is somthing wrong?\nor the creator of this plugin can help you further, I can look tomorrow into\nthe phone menu if I can find it to see how it works and what is required."
+    },
+    {
+      "post_id": "js-post-1291263",
+      "author": "lordvalinar",
+      "date": "2022-07-31T12:56:54+0900",
+      "body": "EDIT: I moved Scene_Relations outside the IIFE - try this and tell me if it works?\nAnother possibility is that Scene_Relations is defined inside the IIFE and therefore ran as a function on the whole (which typically requires an already established RM function (like Scene_Menu as I have this system by default run off of) to register).\nIn short... it can't be called outside of the game's main functions."
+    },
+    {
+      "post_id": "js-post-1291300",
+      "author": "Winter Witch",
+      "date": "2022-07-31T19:06:54+0900",
+      "body": "lordvalinar said:\nEDIT: I moved Scene_Relations outside the IIFE - try this and tell me if it works?\nAnother possibility is that Scene_Relations is defined inside the IIFE and therefore ran as a function on the whole (which typically requires an already established RM function (like Scene_Menu as I have this system by default run off of) to register).\nIn short... it can't be called outside of the game's main functions.\nClick to expand...\nNow it says \"Window_Relations is not defined\".\nThen I'll just do without the phone menu plugin. It was merely visual, to look like the device the player uses, instead of the note book that many point n click adventures use and to move away from this RPGish menu, since I don't need most of its functions.\nBut the FRS is more important to me and I want the player to be able to watch over their relationship growths.\nThank you very much for your effort!"
+    },
+    {
+      "post_id": "js-post-1293787",
+      "author": "Iavasechui",
+      "date": "2022-08-11T11:02:43+0900",
+      "body": "Is it possible to increase friendship based on actions taken? For example if Character 1 casts heal on Character 2 their friendship increases, or if Character 4 guards Character 3 their friendship increases?"
+    },
+    {
+      "post_id": "js-post-1294392",
+      "author": "lordvalinar",
+      "date": "2022-08-14T15:09:18+0900",
+      "body": "Iavasechui said:\nIs it possible to increase friendship based on actions taken? For example if Character 1 casts heal on Character 2 their friendship increases, or if Character 4 guards Character 3 their friendship increases?\nClick to expand...\nYup. Attach a notetag to the appropriate skill (instructions also can be found in the plugin itself (as attached) or in the help section within the plugin parameter window.\nExample:\n<frsSkill friend 0: 3>\nThis will add 3 points in friendship for/between skill user and target. Guard might be trickier if it's used generically across the whole battle system, but you'll put a similar tag in:\n<frsSkill friend 3: 1>\n(if that character guards, friendship with Actor(ID:3) increases by 1)"
+    },
+    {
+      "post_id": "js-post-1294447",
+      "author": "Iavasechui",
+      "date": "2022-08-14T23:33:56+0900",
+      "body": "Thanks!"
+    },
+    {
+      "post_id": "js-post-1309145",
+      "author": "BakaTora",
+      "date": "2022-11-03T08:08:40+0900",
+      "body": "I'm having this error, when I use it on my actual project. At first I just think this because of incompatibility with certain plugin, because I use many plugins in my project.... maybe I dunno...lol.\nWhile it works like a charm when I try it on new project with only VisuStella & Lulu plugin..."
+    },
+    {
+      "post_id": "js-post-1309164",
+      "author": "nbgamemaker",
+      "date": "2022-11-03T11:48:50+0900",
+      "body": "looks cool man."
+    },
+    {
+      "post_id": "js-post-1316709",
+      "author": "MrBallins",
+      "date": "2022-12-19T07:59:17+0900",
+      "body": "Hello, this plugins seems to be giving me this issue, can someone help me out?"
+    },
+    {
+      "post_id": "js-post-1316862",
+      "author": "ShadowDragon",
+      "date": "2022-12-20T06:53:01+0900",
+      "body": "@MrBallins\nthat error is from the parameter if you dont use\nhex colors like #000000, #ff44dd  etc,  make sure those are correct."
+    },
+    {
+      "post_id": "js-post-1317986",
+      "author": "NintenVoice",
+      "date": "2022-12-27T17:43:06+0900",
+      "body": "I have a question. I wanted to play certain events when the FriendshipValue between the leader and an actor reaches certain values(for example first at 25, then 50 and so on). The way I had it in mind was to use a Script Call in a conditional branch checking for the value and if it is equal or more, it'll play the branch asking if you wanna play the event after which I would've activated a switch so next time I can check for a greater value.\nIs it at all possible and I'm just not seeing it? Or is there another way I just haven't realized?\nI also mean to only incorporate the FriendshipValue with the leader so it's not both ways but rather :\nLeader ---> Actor2\nLeader ---> Actor3\nLeader ---> Actor4\nMaybe that helps understanding what I exactly mean"
+    },
+    {
+      "post_id": "js-post-1318245",
+      "author": "MrBallins",
+      "date": "2022-12-29T00:05:22+0900",
+      "body": "ShadowDragon said:\n@MrBallins\nthat error is from the parameter if you dont use\nhex colors like #000000, #ff44dd  etc,  make sure those are correct.\nClick to expand...\nThe colour in the Plugin Settings, correct? I am using a hex colour, and it's still giving me the same error"
+    },
+    {
+      "post_id": "js-post-1318282",
+      "author": "ShadowDragon",
+      "date": "2022-12-29T02:08:35+0900",
+      "body": "@MrBallins\ncan you screenshot the parameters and the error log\nwhat you get?"
+    },
+    {
+      "post_id": "js-post-1318322",
+      "author": "MrBallins",
+      "date": "2022-12-29T04:22:17+0900",
+      "body": "ShadowDragon said:\n@MrBallins\ncan you screenshot the parameters and the error log\nwhat you get?\nClick to expand...\nIt's the exact same as what I sent above. Though, now that I think about it, I did not actually try setting up anyone to be in the friendship system, so maybe this could be causing an issue?"
+    },
+    {
+      "post_id": "js-post-1318350",
+      "author": "ShadowDragon",
+      "date": "2022-12-29T07:19:56+0900",
+      "body": "maybe, you can try, as I made mine to make it so that you can open it\nwithout any entries or discovered (but for MV), this one is based on\nMoogle_X friendsystem, so you can try to add one and see what happens."
+    },
+    {
+      "post_id": "js-post-1319068",
+      "author": "lordvalinar",
+      "date": "2023-01-02T15:15:57+0900",
+      "body": "BakaTora said:\nI'm having this error, when I use it on my actual project. At first I just think this because of incompatibility with certain plugin, because I use many plugins in my project.... maybe I dunno...lol.\nWhile it works like a charm when I try it on new project with only VisuStella & Lulu plugin...\nClick to expand...\nThis is odd. I should probably check the order of operations. It's basically saying the \"_npcList\" array wasn't initialized on the actor when the map update checked. Yet it works when only VS and lulu... Hmm."
+    },
+    {
+      "post_id": "js-post-1319070",
+      "author": "lordvalinar",
+      "date": "2023-01-02T15:20:11+0900",
+      "body": "MrBallins said:\nIt's the exact same as what I sent above. Though, now that I think about it, I did not actually try setting up anyone to be in the friendship system, so maybe this could be causing an issue?\nClick to expand...\nHe means more specifically in the RPG Maker engine, the plugin manager. Can we see what value you have in that parameter? The screenshots just show us the code and error, not what you have. It could be a small mistake \"Missing the #\" or something else. Just want visual confirmation"
+    },
+    {
+      "post_id": "js-post-1320612",
+      "author": "NikaraWorld",
+      "date": "2023-01-10T05:30:16+0900",
+      "body": "There seems to be an incompatibility with Burning Orca's Multiple Parties plugin or am I doing something wrong, because it crashes with Cannot read property '_npcList' of undefined error"
+    },
+    {
+      "post_id": "js-post-1320622",
+      "author": "ShadowDragon",
+      "date": "2023-01-10T06:48:12+0900",
+      "body": "@NikaraWorld\nor an incompability with the visustella plugin.\nas you didn't took the \"console log\", can you turn off all plugins\nand turn them on 1 by 1 till the error pops up, than see if it works\nbelow/above them, and continue the progress.\nif the error persist on 1+ plugins, send the console log error\nand the plugins names, and hte author can see what could be done.\nif it's the Visustella plugin, than it would be harder as those are obfuscated."
+    },
+    {
+      "post_id": "js-post-1320673",
+      "author": "NikaraWorld",
+      "date": "2023-01-10T09:26:32+0900",
+      "body": "I turned off Multiple parties first and it worked, then I turned multiple parties back on and then turned off VisuStella's party system and it worked. It seems anything that modifies parties is incompatible with this particular plugin and both Multiple Parties and Party System are integral  to my game"
+    },
+    {
+      "post_id": "js-post-1322755",
+      "author": "MrBallins",
+      "date": "2023-01-19T05:54:18+0900",
+      "body": "lordvalinar said:\nHe means more specifically in the RPG Maker engine, the plugin manager. Can we see what value you have in that parameter? The screenshots just show us the code and error, not what you have. It could be a small mistake \"Missing the #\" or something else. Just want visual confirmation\nClick to expand...\nSorry for the late reply, exams and holidays ended up taking my time\nI had the default settings on prior to removing the plugin, I also added the menu in the VisuStella Menu Core as per the OP's instructions"
+    },
+    {
+      "post_id": "js-post-1323182",
+      "author": "lordvalinar",
+      "date": "2023-01-20T15:57:35+0900",
+      "body": "I think I see what it is... in your last screen shot you have \"friendship menu.js\" - and even in that last one you have it the same. It has to be the original name of the plug  (either \"LvMZ_FRS.js\"  or \"LvMZ_FRS_Alt.js\" whichever one you downloaded). So it's not getting the parameters of the plugin, which is why you're getting the errors."
+    },
+    {
+      "post_id": "js-post-1324187",
+      "author": "MrBallins",
+      "date": "2023-01-25T07:57:38+0900",
+      "body": "lordvalinar said:\nI think I see what it is... in your last screen shot you have \"friendship menu.js\" - and even in that last one you have it the same. It has to be the original name of the plug  (either \"LvMZ_FRS.js\"  or \"LvMZ_FRS_Alt.js\" whichever one you downloaded). So it's not getting the parameters of the plugin, which is why you're getting the errors.\nClick to expand...\nWow, okay, this helped out a lot, thanks"
+    },
+    {
+      "post_id": "js-post-1333241",
+      "author": "alltheyuriz",
+      "date": "2023-03-08T09:13:43+0900",
+      "body": "Spoiler:\nI keep getting this and i followed everything"
+    },
+    {
+      "post_id": "js-post-1333321",
+      "author": "ShadowDragon",
+      "date": "2023-03-08T18:18:25+0900",
+      "body": "@alltheyuriz\ndid you use hexColor value (#00FF00)?\nare there any actors setting up in the list to draw those value?\nis the name of the plugin exact the same as it should be named?\nit was also someone on page 4 I think with the same screenshots."
+    },
+    {
+      "post_id": "js-post-1334991",
+      "author": "jaja",
+      "date": "2023-03-16T08:08:02+0900",
+      "body": "lordvalinar said:\nFriendship Romance System (FRS)\nv1.3 (by LordValinar)\n​\nIntroduction\nIntroduces a more in-depth relation system between actors (and events!)\nNew - Latest Update (\nv1.31\n-\nSep 24 2021\n):\nSpoiler:\nChangelog\nHotfix #3:\n-> Moved code that adds Relations to menu to only appear if dev is not using VisuMZ MainMenuCore\n-> Also added conditionals so that the Relations scene is only active if the selected actor has relations to show (same goes for the inMenu switching : no relations, will pop back to main menu)\n-> Added option in plugin parameters (if ON : entering Relations menu automatically loads up the party leader, skipping actor selection) per request (available in both FRS versions).\nAdded an alternative version (1.3) to include both friendship + romance bar simultaneously\nHotfix #2: Another syntax error.. whoops\nHotfix #1: A few syntax errors when running the plugin commands to change relations\nAdded formula arguments for actor IDs - now you can retrieve a variable as an actor ID: v[#]\nor get the indexed actor's ID: a[1] = party leader, a[3] = 3rd actor, etc\nFEATURES\n:\nNotetags(Actors, Skills, Items): Assign notetags that can:\nSet initial friendship/romance levels upon the starting party composition\nAdd friendship between party after every battle\nChecks if current friendship/romance level is above a certain threshold -> adds a state or learns a skill (as applicable), or if the level is below the threshold -> removes state or forgets a skill.\nOne-Time common events, switch flips (true or false), or variable adjustment based on certain friendship/romance level >= the threshold. Plugin command available to remove the DoOnce flag.\nSkill Notetag (can increase friendship/romance with a certain actor (or the target themselves!)\nItem Notetag (can increase friendship/romance between user[party leader] and target ally)\nCustom \"Relations\" menu displaying all available friends/romanced actors (and NPCs!) (see below for compatability with VisuStella's Main Menu Core)\nThis menu displays the actor/NPC graphic, name, relation bar (green = friendship; reddish = romanced) + Icon if \"engaged/married/lovers/significant other\", and then up 5 state icons representing any buffs applied.\nYou can befriend/romance NPCs, however you cannot switch to them in the relations menu (You will get a buzzer), but you can still get all the buffs as you would with an actor (conditionals are setup via the plugin command or script call - if you want any).\nPlugin command to save a relation value to a variable, so can use with message boxes.\nPLUGIN PARAMETERS:\nMinimum relations level (default 0): Lowest value to check for/set\nMaximum relations level (default 100): Highest value to check/set\n\"Engaged\" icon ID (default 84): When lovers/married/etc, this icon will appear in the Relations menu\n\"Engaged\" minimum (default 90): The romance value must be greater than or equal to this value to be considered \"engaged/married/lovers/etc\".\n\"Engaged\" state ID (default 0): If you want your lovers to get a buff while in the same party, the state with this ID will be applied to both (or all if multiple lovers). If one leaves the party, all lose the buff.\nNew Member Friendship (default 0): When you gain a new member, the current party gains this much friendship with them.\nNew Member Befriends Party (default false): If the '\nnew member friendship\n' value is > 0 and this is '\ntrue\n' then the new member will also add everyone in the party to their friends list.\nPrefix (string -> '' default '(npc)'): If you want to separate your NPC names in the Relations list, this prefix will be added before the event name. Can combine with Postfix.\nPostfix (string -> '' default\nblank\n): If you want to separate your NPC names in the Relations list, this postfix will be added after the event name. Can combine with Prefix.\nRelation Window Text (string -> '' default '\nRelations:\n'): This is the text that appears in the header box, displaying which is the current actor's friends list. Just added for user customization.\nCustomize the gradient fill for the friend/romance bars. Does use HEX code (so a simple google search- or leaving it alone- will help the dev out if they don't want to use the standards)\nVS Menu Core Compatability:\n1) Open up VisuMZ_1_MainMenuCore plugin settings\n2) Open the Command Window List\n3) Open up a new command on the last line\n4) Go to the \"Text\" tab and REPLACE (meaning delete -> then paste new text) with the text:\nCode:\n{\"Symbol:str\":\"relations\",\"Icon:num\":\"84\",\"TextStr:str\":\"\",\"TextJS:func\":\"\\\"return 'Relations';\\\"\",\"ShowJS:func\":\"\\\"return true;\\\"\",\"EnableJS:func\":\"\\\"return this.areRelationsEnabled();\\\"\",\"ExtJS:func\":\"\\\"return null;\\\"\",\"CallHandlerJS:func\":\"\\\"SceneManager._scene.commandPersonal();\\\"\",\"PersonalHandlerJS:func\":\"\\\"SceneManager.push(Scene_Relations);\\\"\"}\nAlternatively you can set it up manually:\n*\nSymbol\n:\nrelations\n*\nIcon\n:\n84 (\nor whatever you choose\n)\n*\nSTR: Text\n*\nJS: Text\nreturn 'Relations';\n*\nJS: Show\nreturn true;\n*\nJS: Enable\nreturn this.areRelationsEnabled();\n*\nJS: Ext\nreturn null;\n*\nJS: Run Code\nSceneManager._scene.commandPersonal();\n*\nJS: Personal Code\nSceneManager.push(Scene_Relations);\nSpoiler:\nScreenshots\nView attachment 192856\nHow to Use:\nPlace into your project's js\\plugins\\.. folder, and activate in the plugin manager. Set your parameters to how you want the values to be (such as automatically adding friendship when adding a new member? Or you can control it manually in the event).\nPlugin Commands / Script Calls:\nExplained in detail in the plugin, but the TLDR:\nChange Relations (friendship or romance, by value towards target actor or event\nDelete DoOnce Flag (allows you to re-run a one-time event from a relation change)\nSave To Var (saves current friendship or romance data to a variable)\nDownload\n: Github (\ndownload\n)\nAlternate(Both bars) (\ndownload\n)\nTerms and Credits:\nFree to use and modify for commercial and noncommercial games, with credit.\nDo NOT remove my name from the Author of this plugin\nDo NOT reupload this plugin (modified or otherwise) anywhere other than these forums (RPG Maker Web.com)\nClick to expand...\nIs it possible to use the romance system on RPG maker mv Nintendo switch?"
+    },
+    {
+      "post_id": "js-post-1335080",
+      "author": "ShadowDragon",
+      "date": "2023-03-16T19:26:50+0900",
+      "body": "@jaja\nthe plugin is for RPG Maker MZ, so it doesn't work on MV, and not sure how MV Nintendo Switch works.\nor if it could use any plugins, neither if it is supported by the degica company though.\nand based on the images of the RPG MV Switch, I dont see if you could add plugins to it.\nso you might need to event it all out as there are some tutorials on how to make it work."
+    },
+    {
+      "post_id": "js-post-1337668",
+      "author": "Sword_of_Dusk",
+      "date": "2023-03-28T03:31:36+0900",
+      "body": "jaja said:\nIs it possible to use the romance system on RPG maker mv Nintendo switch?\nClick to expand...\nThis is the fourth or fifth time you've come here asking about a plugin for MV on Switch, and I have told you numerous times that MV on Switch cannot use plugins. It is a PC only thing.\nI don't understand why you can't seem to grasp this."
+    },
+    {
+      "post_id": "js-post-1339672",
+      "author": "lordvalinar",
+      "date": "2023-04-06T14:28:36+0900",
+      "body": "ShadowDragon said:\n@alltheyuriz\ndid you use hexColor value (#00FF00)?\nare there any actors setting up in the list to draw those value?\nis the name of the plugin exact the same as it should be named?\nit was also someone on page 4 I think with the same screenshots.\nClick to expand...\nI just wanted to give you many thanks Shadow - you been there helping people with my plugins for awhile lol  I can only give you a virtual hug though\nAgain thanks though ^_^ I'm back to the coding scene so hopefully I can help too again, once I go through the Gajillion messages"
+    },
+    {
+      "post_id": "js-post-1340349",
+      "author": "MrBallins",
+      "date": "2023-04-10T03:43:39+0900",
+      "body": "Sword_of_Dusk said:\nThis is the fourth or fifth time you've come here asking about a plugin for MV on Switch, and I have told you numerous times that MV on Switch cannot use plugins. It is a PC only thing.\nI don't understand why you can't seem to grasp this.\nClick to expand...\nMV is on Switch? How would you even navigate the engine on a console?"
+    },
+    {
+      "post_id": "js-post-1340352",
+      "author": "Sword_of_Dusk",
+      "date": "2023-04-10T04:09:39+0900",
+      "body": "MrBallins said:\nMV is on Switch? How would you even navigate the engine on a console?\nClick to expand...\nThe same way you navigate Fes, I assume."
+    },
+    {
+      "post_id": "js-post-1360496",
+      "author": "Silvermane",
+      "date": "2023-06-30T07:52:09+0900",
+      "body": "So I followed the directions as I run Main Menu Core and this plugin and got the following errors. I attached what plugins I am working to one of the screenshots. (This happens when I try to test run the game or do a troop test battle. )"
+    },
+    {
+      "post_id": "js-post-1360516",
+      "author": "Silvermane",
+      "date": "2023-06-30T09:31:06+0900",
+      "body": "Well, I thought I fixed it and then got this error when trying to test a battle again. I moved around some of my plugins to fix some things."
+    },
+    {
+      "post_id": "js-post-1360519",
+      "author": "Silvermane",
+      "date": "2023-06-30T09:58:46+0900",
+      "body": "UPDATE: So playing around with it, basically this issue only happens if you \"Battle Test\". If I test the actual game and get into random encounters it creates no issue. But if you try to Battle test it is for some reason looking for a romance level that is not even relevant?\nRight now my work around is to either turn off main menu core and the relationship plug in if I want to battle test, or set up a map where I get random encounters instantly."
+    },
+    {
+      "post_id": "js-post-1361675",
+      "author": "ShadowDragon",
+      "date": "2023-07-05T05:59:22+0900",
+      "body": "@Silvermane\nits better to \"Edit\" your post than reply again.\nalso, \"undefined\" means that it doesn't exist in the database or is removed.\nthis also happen if you continue from a save file instead of a \"new game\" play.\nyou also show the wrong console log which should be the \"console tab\" and no the \"element\"\nwhich is useless.\nso we cannot tell which line or which plugin is the culprit or the cause of the issue."
+    },
+    {
+      "post_id": "js-post-1369034",
+      "author": "yamatoundine",
+      "date": "2023-07-30T03:58:37+0900",
+      "body": "This seems like it could be what I am looking for in a plugin, however, I want to be able to have different people have different friendships and romances. For instance, Actor 1 able to only romance Actors 2-5, friendship actors 6-8 and do nothing with actors 9 and 10, And actor 4 for instance only wanting to romance actors 1 and 8 while friending actors 5, 9 and 10 and nothing with the others, but be able to do so through interactions in battle. It doesn't seem to have to type of functionality to make specific actors able to Friend/Romance as a default from the point values in battle. Just friendship. And skill settings don't differentiate between who you are wanting to add the friendship points or romance points."
+    },
+    {
+      "post_id": "js-post-1375453",
+      "author": "SpyroFan67",
+      "date": "2023-08-23T06:19:02+0900",
+      "body": "Got a version of this for MV? Or can it still work with MV? I mean, one MZ plugin I got worked with it, so......"
+    },
+    {
+      "post_id": "js-post-1377113",
+      "author": "lordvalinar",
+      "date": "2023-08-29T15:01:53+0900",
+      "body": "yamatoundine said:\nThis seems like it could be what I am looking for in a plugin, however, I want to be able to have different people have different friendships and romances. For instance, Actor 1 able to only romance Actors 2-5, friendship actors 6-8 and do nothing with actors 9 and 10, And actor 4 for instance only wanting to romance actors 1 and 8 while friending actors 5, 9 and 10 and nothing with the others, but be able to do so through interactions in battle. It doesn't seem to have to type of functionality to make specific actors able to Friend/Romance as a default from the point values in battle. Just friendship. And skill settings don't differentiate between who you are wanting to add the friendship points or romance points.\nClick to expand...\nEvery actor has their own 'stored data' regarding friendship and romance. Someone asked this earlier I believe, and while I don't have commands that specifically modify actors other than the party leader, you can use a Script Call. For example if party leader was Actor 1, but you Wanted Actor 2 to romance Actor 4 you'd have something like this:\nJavaScript:\n// Increases both romance values by 5 points\n// Or remove the target and target.addRomance() line if you only \n// wanted Actor 2 to gain romance for (but not from) Actor 4\nconst source = $gameActors.actor(2);\nconst target = $gameActors.actor(4);\nsource.addRomance(4, 5);\ntarget.addRomance(2, 5);"
+    },
+    {
+      "post_id": "js-post-1378267",
+      "author": "GalacticRaphus",
+      "date": "2023-09-03T08:54:45+0900",
+      "body": "I was wondering if you need to use \"<frsSet type actorId: value>\" in order for the Relations menu to work? (For example: \"<frsSet friend actorId: 2 1>\" in the Actors tab)"
+    },
+    {
+      "post_id": "js-post-1379365",
+      "author": "lordvalinar",
+      "date": "2023-09-08T13:24:19+0900",
+      "body": "GalacticRaphus said:\nI was wondering if you need to use \"<frsSet type actorId: value>\" in order for the Relations menu to work? (For example: \"<frsSet friend actorId: 2 1>\" in the Actors tab)\nClick to expand...\nNot that specifically, no but I believe you have to have some kind of friendship/romance data in order for the menu to bring up anything (otherwise what's the point of looking at a blank window?)\nSo depending on your settings, or using a plugin command (or a script call like above for other actors than the party leader), then once data has been created you should be able to open the menu"
+    },
+    {
+      "post_id": "js-post-1379693",
+      "author": "GalacticRaphus",
+      "date": "2023-09-10T00:25:25+0900",
+      "body": "lordvalinar said:\nNot that specifically, no but I believe you have to have some kind of friendship/romance data in order for the menu to bring up anything (otherwise what's the point of looking at a blank window?)\nSo depending on your settings, or using a plugin command (or a script call like above for other actors than the party leader), then once data has been created you should be able to open the menu\nClick to expand...\nWhenever I use a plugin command, it does work, but whenever I try to put the \"frsSet\" tag into the notes of the actor's tab, it doesn't. I have no idea if I'm formatting it wrong (\"<frsSet friend actorId: 2 1>\") was how I put it."
+    },
+    {
+      "post_id": "js-post-1380317",
+      "author": "Reeecola",
+      "date": "2023-09-12T17:11:37+0900",
+      "body": "SpyroFan67 said:\nGot a version of this for MV? Or can it still work with MV? I mean, one MZ plugin I got worked with it, so......\nClick to expand...\nI assumed you already found it, but in case you haven't (and for those MV Users who struck here) there's a MV version of this called\nMoogle_X's Actors Friendship System\n."
+    },
+    {
+      "post_id": "js-post-1423634",
+      "author": "gomgom50",
+      "date": "2024-02-18T17:00:40+0900",
+      "body": "Hi, Is there a method to keep an NPC's information consistent across different events? For example, if an NPC moves from one map to another, by deactivating one event and activating the other one in the other map, they should still retain their state, is that possible somehow?\nAlso possibly across events / actors, so if an npc is recruited, it inherits its state and reverse."
+    },
+    {
+      "post_id": "js-post-1430814",
+      "author": "darkAlex",
+      "date": "2024-03-18T02:14:10+0900",
+      "body": "Hi\nI'm looking forward to using this plugin, but I can't get it to work.\nWhen i use version 1.4 i get: reference error Window_Relations not defined when I click on an actor in the relations menu.\nWhen i use version 1.3 the relations window closes instantly after opening when i click on party members inside the relations menu. And when i click main character I get: TypeError cannot read property 'character_Name' of null."
+    },
+    {
+      "post_id": "js-post-1466051",
+      "author": "lordvalinar",
+      "date": "2024-08-25T02:18:14+0900",
+      "body": "darkAlex said:\nHi\nI'm looking forward to using this plugin, but I can't get it to work.\nWhen i use version 1.4 i get: reference error Window_Relations not defined when I click on an actor in the relations menu.\nWhen i use version 1.3 the relations window closes instantly after opening when i click on party members inside the relations menu. And when i click main character I get: TypeError cannot read property 'character_Name' of null.\nClick to expand...\nAre you using LvMZ_FRS  or the Alternate version?\nI've been going over my plugins, and saw some things in LvMZ_FRS that were not brought over from the alternate version (latest), and I need to fix. Am thinking of rewriting the plugin entirely... including changes of how \"Change Relations\" plugin command works allowing the relations of separate Source/Target (rather than the current party leader -> target).\ngomgom50 said:\nHi, Is there a method to keep an NPC's information consistent across different events? For example, if an NPC moves from one map to another, by deactivating one event and activating the other one in the other map, they should still retain their state, is that possible somehow?\nAlso possibly across events / actors, so if an npc is recruited, it inherits its state and reverse.\nClick to expand...\nSorry, but everything is saved with the Map and Event IDs of that map/event respectively. My other plugin \"LvMZ_Factions\" saves relation data by the actor/event name instead, but doesn't have the relations menu stuff. I might take that into consideration with the FRS Redux"
+    },
+    {
+      "post_id": "js-post-1500865",
+      "author": "Sketch8Feather",
+      "date": "2025-02-24T08:35:10+0900",
+      "body": "Is it possible to add a function to show a portrait in the relationship menu instead of the actor's sprite?\nThe project I'm working on has large sprites and every time I open the menu I see pieces of the sprite."
+    },
+    {
+      "post_id": "js-post-1504765",
+      "author": "lordvalinar",
+      "date": "2025-03-17T13:40:21+0900",
+      "body": "Sketch8Feather said:\nIs it possible to add a function to show a portrait in the relationship menu instead of the actor's sprite?\nThe project I'm working on has large sprites and every time I open the menu I see pieces of the sprite.\nClick to expand...\nI apologize for the sass, but \"anything is possible\"\nBut for a serious answer, technically yes but it's not a simple addition, especially for a list of relations like I have it now.\nI am currently converting the plugin (using LvMZ_Factions for the heavy lifting), and could try to design a few UI variants, but honestly there's no guarantee on this (haven't been in the RPG Maker plugin scene for awhile, and when I do, it's minor edits or other plugins for my own project 1 or 2 times a month..). So there is a\npossibility\nthat I'll release a new version sometime down the road, but for now the plugin is going to remain as-is.\nI apologize"
+    },
+    {
+      "post_id": "js-post-1514682",
+      "author": "LuLight",
+      "date": "2025-05-20T04:58:28+0900",
+      "body": "lordvalinar said:\nI apologize for the sass, but \"anything is possible\"\nBut for a serious answer, technically yes but it's not a simple addition, especially for a list of relations like I have it now.\nI am currently converting the plugin (using LvMZ_Factions for the heavy lifting), and could try to design a few UI variants, but honestly there's no guarantee on this (haven't been in the RPG Maker plugin scene for awhile, and when I do, it's minor edits or other plugins for my own project 1 or 2 times a month..). So there is a\npossibility\nthat I'll release a new version sometime down the road, but for now the plugin is going to remain as-is.\nI apologize\nClick to expand...\nI'll be waiting for you"
+    },
+    {
+      "post_id": "js-post-1521889",
+      "author": "lordvalinar",
+      "date": "2025-07-11T14:41:38+0900",
+      "body": "LuLight said:\nI'll be waiting for you\nClick to expand...\nWell good news and bad news.\nGood News: I'm back ... working on scripts again.\nBad News: I'm working on a custom tailored Grid-based Tactical Battle System for my own game, so that's going to take me months (...probably), but if I get any chances where I feel like taking a break, I'll work on some of those overdue projects (like the FRS plugin)"
+    }
+  ]
+}

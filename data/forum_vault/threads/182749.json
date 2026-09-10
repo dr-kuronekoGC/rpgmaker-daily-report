@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-idle-gesture-in-galv-character-animations.182749",
+  "title": "MZ Help with Idle Gesture in GALV Character Animations?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T12:56:51.871526+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1549835",
+      "author": "madconvoy",
+      "date": "2026-03-06T04:54:54+0900",
+      "body": "Hello. I am a very new developer using RPG Maker MZ. I'm trying to use\nGALV's Character Animations script\nto have a character do a gesture if you stay idle for a certain period of time. Ideally, the character should play a looking around idle animation once, then return to his default idle animation. However, I can only get the character to play the animation properly if I activate the disableCharAnims method, change the sprite, use a Wait, then deactivate the disableCharAnims method. But with this approach, the player cannot move at all until the Wait event completes, which is annoying. If I exclude either the Wait or disableCharAnims methods, the sprite changes back to the default before the looking around animation is anywhere close to finishing, meaning the protagonist looks like he's having a seizure. If I only change the sprite and disable Repeat Common Event, the looking around animation never stops until the player moves.\nI tried to look up solutions to the problem but the closest I found to anything even discussing this was on\nthis comment by Aya\nfor the MV version of the script, and she was advised by GALV to go on the forums for help (or possibly use a loop?). I couldn't find anything like Aya's comment mentioned on these forums.\nI am also using\nGALV's Character Frames script\nwith the frame speed set to f/4 but no other plugins. My character uses eight frames, does not jump, and is in the default empty world map thing RPG Maker starts you with when you make a new project.\nThe below screenshot is the common event that gets me the closest to what I want to do."
+    },
+    {
+      "post_id": "js-post-1549877",
+      "author": "rpgLord69",
+      "date": "2026-03-06T19:24:17+0900",
+      "body": "Try to overwrite that move route in parallel event.\nLike at the start of that idle common event turn switch 10 ON\nThat controls a parallel common event that has:\nif button left is pressed\n->set move route player (empty)\n->turn switch 10 OFF\n->this.disableCharAnims = false;\nAdd that for all direction keys."
+    },
+    {
+      "post_id": "js-post-1549891",
+      "author": "madconvoy",
+      "date": "2026-03-07T02:09:31+0900",
+      "body": "rpgLord69 said:\nTry to overwrite that move route in parallel event.\nLike at the start of that idle common event turn switch 10 ON\nThat controls a parallel common event that has:\nif button left is pressed\n->set move route player (empty)\n->turn switch 10 OFF\n->this.disableCharAnims = false;\nAdd that for all direction keys.\nClick to expand...\nThat worked! Thank you!"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-make-npcs-schedules.175486",
+  "title": "How to make NPCs schedules",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-10T12:57:09.338454+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1499222",
+      "author": "Kad",
+      "date": "2025-02-16T00:18:17+0900",
+      "body": "Hello, I'm new at rpg maker MV. I've been using the engine for just some weeks and in my main project I ran in a problem.\nHow to do NPCs schedules\nI already have a day night common event system conting sec, min and hours, and have them all divided by switchs of 3 hours each\nMy biggest two issues are\n1. How do I make an NPC travel trough maps.\n2. How do I make that the player doesn't need to be on the map to the NPC start its schedule actions or that when the players enters after the NPC route was suppose to be finished, it is in the right place"
+    },
+    {
+      "post_id": "js-post-1499225",
+      "author": "Andar",
+      "date": "2025-02-16T00:37:33+0900",
+      "body": "1) you don't, because you have no NPCs.\nYou have events pretending to be NPCs, and no event exists outside its own map.\nwhat you do instead is having different events on different maps pretend to be the same NPC.\n2) again not possible because only the current map and its events exist at all.\nwhat you need to do instead is to have the events simulate the time when they didn't exist as soon as the player enters their map.\none method for the above is to use multiple event pages conditioned to a daily time variable to determine what the event should currently do, including when it should vanish because it is supposed to be on a different map in that time.\nDepending on how you work this might cause the event to suddenly vanish if the time steps per page is too long or changes while the player is near the event, but unfortunately there are limits to the number of event pages and that will limit how fine your control can be."
+    },
+    {
+      "post_id": "js-post-1499239",
+      "author": "Kad",
+      "date": "2025-02-16T02:26:01+0900",
+      "body": "Andar said:\n1) you don't, because you have no NPCs.\nYou have events pretending to be NPCs, and no event exists outside its own map.\nwhat you do instead is having different events on different maps pretend to be the same NPC.\n2) again not possible because only the current map and its events exist at all.\nwhat you need to do instead is to have the events simulate the time when they didn't exist as soon as the player enters their map.\none method for the above is to use multiple event pages conditioned to a daily time variable to determine what the event should currently do, including when it should vanish because it is supposed to be on a different map in that time.\nDepending on how you work this might cause the event to suddenly vanish if the time steps per page is too long or changes while the player is near the event, but unfortunately there are limits to the number of event pages and that will limit how fine your control can be.\nClick to expand...\nI was expecting that would be it. In this case, theres any plugin, tutorial or guide to do the NPC schedule? I've been trying to find one but I'm not getting anywhere."
+    },
+    {
+      "post_id": "js-post-1499252",
+      "author": "gstv87",
+      "date": "2025-02-16T03:48:11+0900",
+      "body": "you can do it without plugins if you figure out the back and forth of every NPC.\nlook around in the forums... the matter has been discussed before."
+    },
+    {
+      "post_id": "js-post-1499263",
+      "author": "Zia_",
+      "date": "2025-02-16T04:48:00+0900",
+      "body": "Kad said:\nI was expecting that would be it. In this case, theres any plugin, tutorial or guide to do the NPC schedule? I've been trying to find one but I'm not getting anywhere.\nClick to expand...\nYou should adjust your understanding of NPCs in RPG Maker.\nAn NPC that appears in your game in 3 different places isn't the same event with a schedule, but there will be 3 individual events that look like your NPC.\nYour NPC can be a hundet times on a map, but due to conditions, only one of them will show at once, so it seems as they have a daily routine.\nOnce you get your point of view right, you won't have any trouble to set up your \"schedule\".\nTo answer your specific questions:\n1. You set up your character on every map you need them and set up the conditions that have to be true to show up. Use several event pages, if this character will do different things (or is invisible) in specific situations.\nEvent pages will be checked from highest to lowest, and the first one, that has true conditions, will be executed. All other will be ignored. So, the right order and the right conditions matter.\n2. You said you have states already that will indicate specific times of the day. Personally I wouldn't use switches, but an upcounting variable.\nYou are asking for already running routines when the player is in different places. That won't work this way, as maps and events aren't active when you aren't there. Your conditions have to reflect the ongoing routine. If your 3-hour-switches aren't enough to do that, you have to split them up further.\nFor example:\nYou might want an NPC to cook, eat and do the dishes between 6-9pm.\nYour problem might be, they'll always start at the beginning, when you enter their home, as you only have an \"evening\" Switch.\nIf you have an \"hour\" Variable instead, you can set your event up like\nIf Hour Variable = 18, make the Event cooking\nIf Hour Variable = 19, make the Event eat\nIf Hour Variable = 20, make the Event doing dishes.\nIn theory, you could use even smaller time periods and define their actions on a second or even frame specific base."
+    }
+  ]
+}
