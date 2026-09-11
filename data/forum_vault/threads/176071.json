@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-footstepsounds-glitch.176071",
+  "title": "MV Yanfly FootstepSounds glitch?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T19:11:03.924333+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1503203",
+      "author": "FrozenFacade",
+      "date": "2025-03-08T06:54:23+0900",
+      "body": "I've been using the Yanfly FootstepSounds plugin for a while now and have had an odd experience on some maps with it but I can't seem to pinpoint what's causing the issue.\nDEMONSTRATION OF ISSUE\nBasically for some reason the tiles I highlighted in red play the Region 3 SE instead of the Region 2/18 SE.\nRegardless of what Region I change the Region 3 tiles to, the highlighted tiles will always play the SE of the tiles of the Region I changed the Region 3 tiles to... HOWEVER this doesn't always apply for some reason, as most of the Region 2 tiles function correctly even some located near the Region 3 tiles.\nIssues with Yanfly's FootstepsSounds plugin\nThe isse I'm having with this puglin is that sometimes, apparently random tiles are making the wrong sound when you step on it or not making any sound at all. I say they are \"random tiles\" because I can't find a pattern to it, but on every map the faulty tiles are always the same. I pretty sure...\nforums.rpgmakerweb.com\nThis person had a similar issue to me and I don't really see a solution. My entire game is already mapped out with footstep sound regions but only a very limited number of tiles on a couple maps are causing issues...every other one works just fine.\n(It MIGHT be tied to 1 tile thick regions as far as I can tell, but it's awkward to replicate.)\nAny help would be appreciated, I hope I provided enough information... I don't feel the need to list off other things I am using since this plugin functions properly in almost every other map."
+    },
+    {
+      "post_id": "js-post-1503215",
+      "author": "Showsni",
+      "date": "2025-03-08T07:58:30+0900",
+      "body": "Huh. Looking at the Yanfly plugin script, there are some very odd lines - it has:\nCode:\nvar x = this.x;\n  if (this.x === 6) {\n    x += 1;\n  } else if (this.x === 4) {\n    x -= 1;\n  }\n  var y = this.y;\n  if (this.y === 2) {\n    y += 1;\n  } else if (this.y === 8) {\n    y -= 1;\n  }\n  var regionId = $gameMap.regionId(x, y)\nAs I understand it, that means anything around (or maybe moving to?) x co-ordinate 6 or 4, and y co-ordinate 2 or 8, will act like it's one tile away instead. I'm not sure why it does this, but it would explain why you only get issues around those co-ordinates. You could try commenting out those lines in the plugin to see if it fixes things, maybe? So, just replace it with\nCode:\nvar x = this.x;\n//  if (this.x === 6) {\n//    x += 1;\n//  } else if (this.x === 4) {\n//    x -= 1;\n//  }\n  var y = this.y;\n//  if (this.y === 2) {\n//    y += 1;\n//  } else if (this.y === 8) {\n//    y -= 1;\n//  }\n  var regionId = $gameMap.regionId(x, y)\nand see if that helps... (And hopefully doesn't break anything else)."
+    },
+    {
+      "post_id": "js-post-1503217",
+      "author": "utunnels",
+      "date": "2025-03-08T08:31:05+0900",
+      "body": "I don't think that is the problem.\nIf so the OP should have the same issue all around region 3.\nThe code you posted refers to directions, not coords. I guess it is because when the character is moving it should use the coords in front of it.\nEdit* I just saw that part of code. Yeah you are right, they don't make sense.\nThe code should check direction of the character but instead it checks x and y?\nThis is what the code should be:\nvar x = this.x;\nif (this._direction === 6) {\nx += 1;\n} else if (this._direction === 4) {\nx -= 1;\n}\nvar y = this.y;\nif (this._direction === 2) {\ny += 1;\n} else if (this._direction === 8) {\ny -= 1;\n}"
+    },
+    {
+      "post_id": "js-post-1503225",
+      "author": "Nowis-337",
+      "date": "2025-03-08T09:38:50+0900",
+      "body": "I think I remember there's something funky in the original plugin that mixes up calculation of the next coordinates which was already done elsewhere and some mix up with direction values and coordinates.\nHere's a fix I made for another project, see if that works!:\nCode:\n//Overwrite - fixes bug of playing the wrong sound\n  Game_CharacterBase.prototype.playFootstepSound = function(volume, pitch, pan) {\n    if (volume <= 0) return;\n    if (pitch <= 0) return;\n    if (!$dataMap) return;\n    if (!$dataMap.regionFootstepSounds) DataManager.processMapFootstepNotetags();\n    var x = this.x;\n    var y = this.y;\n    var regionId = $gameMap.regionId(x, y)\n    var terrainTag = $gameMap.terrainTag(x, y);\n    if (regionId > 0) {\n      var footstepData = $dataMap.regionFootstepSounds[regionId];\n    }\n    if (!footstepData && terrainTag > 0) {\n      var footstepData = $gameMap.tileset().terrainTagFootstepSounds[terrainTag];\n    }\n    if (!footstepData) footstepData = $dataMap.regionFootstepSounds[0];\n    var se = {\n      name:   footstepData[0],\n      volume: footstepData[1] * volume,\n      pitch:  footstepData[2] * pitch,\n      pan:    pan.clamp(-100, 100)\n    };\n    AudioManager.playSe(se);\n  };"
+    },
+    {
+      "post_id": "js-post-1503232",
+      "author": "utunnels",
+      "date": "2025-03-08T10:02:56+0900",
+      "body": "I agree with you.\nI think the direction check is there because the plugin hooks increaseSteps to play sound.\nAnd increaseSteps is executed after the character is about to take a step forward.\nThat is the reason it uses the tile in font of the character (or the author thinks it should).\nBut the logic is incorrect because the position of the character will change the moment the step is taken. For example, if the character is at (1,1) and moves downward, its position will be (1,2) before the walk animation plays."
+    },
+    {
+      "post_id": "js-post-1503304",
+      "author": "FrozenFacade",
+      "date": "2025-03-09T01:42:21+0900",
+      "body": "Nowis-337 said:\nI think I remember there's something funky in the original plugin that mixes up calculation of the next coordinates which was already done elsewhere and some mix up with direction values and coordinates.\nHere's a fix I made for another project, see if that works!:\nCode:\n//Overwrite - fixes bug of playing the wrong sound\n  Game_CharacterBase.prototype.playFootstepSound = function(volume, pitch, pan) {\n    if (volume <= 0) return;\n    if (pitch <= 0) return;\n    if (!$dataMap) return;\n    if (!$dataMap.regionFootstepSounds) DataManager.processMapFootstepNotetags();\n    var x = this.x;\n    var y = this.y;\n    var regionId = $gameMap.regionId(x, y)\n    var terrainTag = $gameMap.terrainTag(x, y);\n    if (regionId > 0) {\n      var footstepData = $dataMap.regionFootstepSounds[regionId];\n    }\n    if (!footstepData && terrainTag > 0) {\n      var footstepData = $gameMap.tileset().terrainTagFootstepSounds[terrainTag];\n    }\n    if (!footstepData) footstepData = $dataMap.regionFootstepSounds[0];\n    var se = {\n      name:   footstepData[0],\n      volume: footstepData[1] * volume,\n      pitch:  footstepData[2] * pitch,\n      pan:    pan.clamp(-100, 100)\n    };\n    AudioManager.playSe(se);\n  };\nClick to expand...\nThank you! It worked perfectly. I was putting this problem off for so long since I couldn't find any documented fixes for it."
+    },
+    {
+      "post_id": "js-post-1503307",
+      "author": "ShadowDragon",
+      "date": "2025-03-09T02:13:37+0900",
+      "body": "utunnels said:\nI think the direction check is there because the plugin hooks increaseSteps to play sound.\nClick to expand...\neven if direction is hooked somehow, this might not work with reverse controls?\nas it would be vice versa, if the if condition is removed and works, why was it\nthere in the first place?"
+    },
+    {
+      "post_id": "js-post-1503380",
+      "author": "utunnels",
+      "date": "2025-03-09T09:00:26+0900",
+      "body": "ShadowDragon said:\neven if direction is hooked somehow, this might not work with reverse controls?\nas it would be vice versa, if the if condition is removed and works, why was it\nthere in the first place?\nClick to expand...\nYeah, and there are also fix direction characters.\nAs for why, who knows? Maybe the code was somewhere else, or a moment of thoughts.\nIf you don't use region sounds or your regions don't overlap with the bugged areas you may not find it."
+    }
+  ]
+}

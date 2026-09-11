@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-gamepad-script-call-for-text-boxes-rmmv.175936",
+  "title": "MV Yanfly Gamepad script call for text boxes? RMMV",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T19:11:06.304962+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1502199",
+      "author": "UncreativeMedia",
+      "date": "2025-03-02T20:33:03+0900",
+      "body": "Hi,\nI'm using the Yanfly Gamepad Config plugin, so the players to configure the controlls to their liking.\nIn the tutorial for my game, the tutorials are shown with the \"show text\" boxes.\nI need a script call that can detect which button is assigned to which action.\n(Like Button 1% is assigned to action, Button 2% is assigned to Dash, etc.)\nI need this as a script call for a conditional branch, that changes the text depending on which button is assigned.\nIs there such a thing, or a way to do this?\nMany thanks in advance C:"
+    },
+    {
+      "post_id": "js-post-1502202",
+      "author": "ShadowDragon",
+      "date": "2025-03-02T20:58:32+0900",
+      "body": "I think you can do that just fine if \"ok\" is press as this goes to the keyCode\nof the OK button, same for shift.\nif the\nInput.isTriggered(\"ok\")\nthan keyboad \"Z, Enter\" is used as for\ngamepad default \"A\", but if they change A to B, than B is \"ok\" button.\nI don't use gamepad plugin, but I think that is how it is used."
+    },
+    {
+      "post_id": "js-post-1502210",
+      "author": "UncreativeMedia",
+      "date": "2025-03-02T21:58:07+0900",
+      "body": "Either I don't quite understand what you mean, or that's not really what I meant ;-;\nThe problem I'm having is not that the buttons don't work or are assigned wrong.\nIt's more like: If the player changes A to B, I need to change a text box in-game.\nKinda like this: (just an example)\nSpoiler:\nExample"
+    },
+    {
+      "post_id": "js-post-1502221",
+      "author": "ShadowDragon",
+      "date": "2025-03-02T22:23:49+0900",
+      "body": "if you want it more dynamic on the icon shown, than I don't know.\nas \"ok\" changing to another stays on the \"ok\" input.\nif you want to show the \"button Icon\" to the button, than it's a bit\nmore complicated\nso I'm not entirely sure how to extract that info though."
+    },
+    {
+      "post_id": "js-post-1502225",
+      "author": "Robro33",
+      "date": "2025-03-02T22:32:32+0900",
+      "body": "UncreativeMedia said:\nKinda like this: (just an example)\nClick to expand...\nI cant find that plugin at all, so uhh... good luck?\nbest i can say is that you might be able to work out which button is mapped to ok with\nCode:\nObject.entries(Input.gamepadMapper).find(key => key[1]==\"ok\")[0]"
+    },
+    {
+      "post_id": "js-post-1502229",
+      "author": "UncreativeMedia",
+      "date": "2025-03-02T22:51:14+0900",
+      "body": "Robro33 said:\nI cant find that plugin at all, so uhh... good luck?\nClick to expand...\nThe one from the picture was just an example of what i want to achieve, not an actual plugin ^^,\nThe plugin I'm using came with the steam version of MV in the DLC folder\n(RPG Maker MV\\dlc\\RPGmakerWeb_plugins\\Yanfly) \"GamepadConfig\"\nRobro33 said:\nbest i can say is that you might be able to work out which button is mapped to ok with\nCode:\nObject.entries(Input.gamepadMapper).find(key => key[1]==\"ok\")[0]\nClick to expand...\nI'm gonna try to work with this. Can this be made into an if statement?\nSay: if key[1]==\"ok\" - Then\nI'm not a programmer myself sadly, sorry for the noob questions ;-;"
+    },
+    {
+      "post_id": "js-post-1502230",
+      "author": "Robro33",
+      "date": "2025-03-02T23:06:59+0900",
+      "body": "UncreativeMedia said:\nThe one from the picture was just an example of what i want to achieve, not an actual plugin ^^,\nClick to expand...\nno, i got that your picture is an example of how you plan on using it. i meant was that i couldnt find the Yanfly Gamepad Config plugin at all in either their paid pack or on google. didnt know it was a dlc\nUncreativeMedia said:\nI'm gonna try to work with this. Can this be made into an if statement?\nSay: if key[1]==\"ok\" - Then\nClick to expand...\nif it has to be in that form, then try\nCode:\nInput.gamepadMapper[1]==\"ok\"\ninside of the conditional branch as its script condition\nalthough, gamepad buttons as far as Input.gamepadMapper goes begin at 0.\n0 is the default \"ok\" button"
+    },
+    {
+      "post_id": "js-post-1502233",
+      "author": "UncreativeMedia",
+      "date": "2025-03-02T23:24:08+0900",
+      "body": "Aaah perfect! This is exactly what I'm looking for! Thank you so much ^o^"
+    },
+    {
+      "post_id": "js-post-1502338",
+      "author": "utunnels",
+      "date": "2025-03-03T10:22:56+0900",
+      "body": "Maybe you can also create a picture to show the player which button is which?\nI know you can set that in options menu, but sometimes the players just forget which is which.\nI recall when I was playing certain game which was ported from console to pc, it only showed xbox button names so every time I needed to response to a QTE I died because I had to think which keys on the keyboard were bound to the A/B/X/Y buttons.\nGamepad\nSpoiler"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/conditional-branches-and-variables-only-operation-condition-works-and-only-if-value-is-0.176095",
+  "title": "Conditional Branches and Variables, only \"==\" operation condition works and only if value is \"0\"",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T19:11:03.096910+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1503418",
+      "author": "Hugooo",
+      "date": "2025-03-09T18:58:57+0900",
+      "body": "Greetings, I'm trying to make a system where the TP is replaced with a fear gauge that displays certain dialogue in battle depending on the amount of tp the player actor has, the end goal of this system is to have it so that when tp(fear gauge) reaches 100 the enemies get different images (transform into different enemies altogether) as well as tint the screen and change the bgm. I managed the actual switching and the bgm changing working, but I ran into a problem with the triggering the actual event. im using a common event and have stored actor 1's tp as a variable, but when i use the variable in a conditional branch it only works if I use \"==\" or set the variable value to itself which is 0, Im pretty sure im doing things completely wrong but I dont even know how to begin to get things right.\nthanks so much for reading all my rambling, im new to RPG maker MV and am loving it so far, I appreciate any help I can get!"
+    },
+    {
+      "post_id": "js-post-1503419",
+      "author": "Andar",
+      "date": "2025-03-09T19:07:03+0900",
+      "body": "I'm not entirely sure but I think you messed up your script\nit should be\n.Tp\n.tp is undefined in that case"
+    },
+    {
+      "post_id": "js-post-1503424",
+      "author": "Robro33",
+      "date": "2025-03-09T19:46:04+0900",
+      "body": "Andar said:\nit should be\n.Tp\n.tp is undefined in that case\nClick to expand...\nthe opposite. \"tp\" is the name used for it and \"Tp\" would be undefined.\nits only Tp in function names like gainTp per camel case naming convention\n@Hugooo\nyour troop event's span is set to battle. that means itll only ever run once in a fight. even though you set the condition to be every turn, the span will restrict it to the first time the condition is true (i.e. only the first turn before you would have been able to gain any tp). change it to \"turn\" so that it runs every turn"
+    },
+    {
+      "post_id": "js-post-1503433",
+      "author": "ShadowDragon",
+      "date": "2025-03-09T20:14:58+0900",
+      "body": "the condtion you set is as follows\n20, 60, 80, 100  (this should check in a reversed settings.)\nif fear >= 100\nto scared to continue\nelse\nif fear >= 60\n>= 20\netc\nthan it works as it should, as => 20 is always fired first, so the else would\nbe false as long as the first condition is true.\nEdit:\nhere is a small sample to make it work (if you put battle to \"turn\" like Robro said.)\nwhen you have your common event like this, it should work after wards."
+    },
+    {
+      "post_id": "js-post-1503435",
+      "author": "Zia_",
+      "date": "2025-03-09T20:27:47+0900",
+      "body": "Also, you want to use else cases for your conditions.\nIn your current event, if you have 100 Fear, the event will step through every level you defined, so all 4 text messages will show. I assume, you only want one at a time.\nIf you don't use else cases and mondify it the other way around (like correctly suggested above), nothing would happen at all, before reaching 100 Fear, which would be incorrect aswell."
+    },
+    {
+      "post_id": "js-post-1503509",
+      "author": "Hugooo",
+      "date": "2025-03-10T04:01:07+0900",
+      "body": "I managed to get it working the way I intended thanks to you guys, I cant describe how happy I am now that its finally working. I've been bashing my head on a wall for a couple days trying to figure this out lol. also I'm completely new here so how do I ask to close the thread?"
+    },
+    {
+      "post_id": "js-post-1503526",
+      "author": "ShadowDragon",
+      "date": "2025-03-10T05:34:06+0900",
+      "body": "Hugooo said:\nhow do I ask to close the thread?\nClick to expand...\nreport your first post and being solved.\nas for the next time using this:\nthe sample above if tis >= 100 it will be false, so it check the next condition,\ntill it's true.\nwhile I didn't add text in the last else handler, that should be when none is true.\nbut check number start from highest, if start from smallest, the conditions\nbelow it will always be false"
+    },
+    {
+      "post_id": "js-post-1503528",
+      "author": "Ms Littlefish",
+      "date": "2025-03-10T06:07:48+0900",
+      "body": "This thread is closed due to being reported as solved. If you need it reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-needed-make-the-player-skid-to-a-stop-rpg-maker-mv.176176",
+  "title": "Help Needed! Make the player skid to a stop. RPG Maker MV .",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-11T19:11:00.644846+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1503946",
+      "author": "Evarcha",
+      "date": "2025-03-12T21:50:24+0900",
+      "body": "Hello everyone, I am sorry to come across as such a noob.\nI am wanting my player/ship to slow to a stop when moving from tile-to-tile...kinda like a skid/inertia.\nI find the movement rather sudden and the sudden stop when the destination is jarring, I'd like to be able to soften it if possible?"
+    },
+    {
+      "post_id": "js-post-1503956",
+      "author": "ShadowDragon",
+      "date": "2025-03-13T00:30:02+0900",
+      "body": "you could event it and set the event movement to slow down bit by bit.\nand reset when full stopped (this mostly works with an autorun event).\nif the player controls it, than it needs a plugin to slow speed up and slow down.\nno idea how to do it effectively aside from that though.\nbut have some idea's that I can work out, but cannot promise that.\nI believe there was a plugin to accelerate speed and slows down over X frames."
+    },
+    {
+      "post_id": "js-post-1504091",
+      "author": "Evarcha",
+      "date": "2025-03-14T01:32:25+0900",
+      "body": "Thank you for your help, I even tried using A.I but it was broken. If you were to help me I am sure I could find some way to repay you, either with some art or even a payment of some sort. Thank you"
+    },
+    {
+      "post_id": "js-post-1504157",
+      "author": "rakanishoo",
+      "date": "2025-03-14T06:28:21+0900",
+      "body": "I wrote something like this. Please place it under js/plugins and then add using plugin manager to give it a try. Is this what you ware looking for?\nHere is the code, you can remove checking for boat and ship if you want player to move like this also:\nJavaScript:\nvar DJ = DJ || {};\nDJ.SKID = DJ.SKID || {};\n\nconst _slowDownAt = 0.4;\n\nDJ.SKID.Game_CharacterBase_distancePerFrame = Game_CharacterBase.prototype.distancePerFrame;\nGame_CharacterBase.prototype.distancePerFrame = function() {\n    if($gamePlayer.isInBoat() || $gamePlayer.isInShip()) {\n        const xDist = Math.abs(this._x - this._realX);\n        const yDist = Math.abs(this._y - this._realY);\n        if(xDist > _slowDownAt || yDist > _slowDownAt) {\n            this.setMoveSpeed(5);\n        }\n        else {\n            this.setMoveSpeed(3);\n        }\n    }\n    return DJ.SKID.Game_CharacterBase_distancePerFrame.call(this);\n}"
+    },
+    {
+      "post_id": "js-post-1504252",
+      "author": "Evarcha",
+      "date": "2025-03-14T18:00:26+0900",
+      "body": "Thank you for trying! The slow-down/skid 'feels' absolutely perfect but when I hold down the key to move the movement feels rather jerky. It's nearly there though!\nAlso, I should mention, my game has every player in a ship, but what i mean is, instead of using people graphics I am simply using ship graphics as my game is set at sea\nThey will never get out of their tiny boats."
+    },
+    {
+      "post_id": "js-post-1504320",
+      "author": "rakanishoo",
+      "date": "2025-03-14T23:51:47+0900",
+      "body": "I can't test it right now, but you can try this: Instead of checking for boat which is irrelevant in your case I check whether the input is pressed and execute stop logic only when its not pressed.\nJavaScript:\nvar DJ = DJ || {};\nDJ.SKID = DJ.SKID || {};\nconst _slowDownAt = 0.4;\nDJ.SKID.Game_CharacterBase_distancePerFrame = Game_CharacterBase.prototype.distancePerFrame;\nGame_CharacterBase.prototype.distancePerFrame = function() {\n    if(this.isMoving()) {\n        const realXDist = $gameTemp.isDestinationValid() ? $gameTemp.destinationX() : this._realX;\n        const realYDist = $gameTemp.isDestinationValid() ? $gameTemp.destinationY() : this._realY;\n        const xDist = Math.abs(this._x - realXDist);\n        const yDist = Math.abs(this._y - realYDist);\n        if(xDist > _slowDownAt || yDist > _slowDownAt) {\n            this.setSlowDown(false);\n        }\n        else if (Input.dir4 === 0) {\n            this.setSlowDown(true)\n        }\n    }\n    else this.setSlowDown(false);\n    return DJ.SKID.Game_CharacterBase_distancePerFrame.call(this);\n}\nDJ.SKID.Game_CharacterBase_realMoveSpeed = Game_CharacterBase.prototype.realMoveSpeed;\nGame_CharacterBase.prototype.realMoveSpeed = function() {\n    if(!this.getSlowDown()) return DJ.SKID.Game_CharacterBase_realMoveSpeed.call(this);\n    else return 2 + (this.isDashing() ? 1 : 0);\n}\nGame_CharacterBase.prototype.setSlowDown = function(slowDown) {\n    this._slowDown = slowDown;\n}\nGame_CharacterBase.prototype.getSlowDown = function() {\n    return this._slowDown || false;\n}\nEDIT: fixed bugs. Ongoing issue is that if player uses touch the movement will again be jerky.\nEDIT2: This version seems to work with both touch and pressing keys. Please test it."
+    },
+    {
+      "post_id": "js-post-1504640",
+      "author": "Evarcha",
+      "date": "2025-03-16T23:46:02+0900",
+      "body": "Can I just say, thank you so much for your time on this, I really do appreciate you trying to help me so much. I just checked the plugin and it doesn't seem to work. I am sorry, I am starting to feel I am wasting your time here, so I won't be offended if your attentions are needed elsewhere."
+    },
+    {
+      "post_id": "js-post-1504644",
+      "author": "utunnels",
+      "date": "2025-03-17T00:03:56+0900",
+      "body": "Emm, just a question, how do you skid to stop in a grid based movement system?\nBecause the player can't stop between grids, like a pixel movement system.\nFor example you hold a direction key to move, then release it, there could be several situations:\n1) The character just start moving from Grid A to B\n2) The character already/almost in Grid B\n3) Somewhere between A and B\nFor 1), you can make it move slower every frame until it is very slow, so it has the effect you desired;\nFor 2), nothing seems to happen, unless you want to force it to move another step forward to say, Grid C;\nFor 3), the effect is not too obvious, depends on the progress of the movement."
+    },
+    {
+      "post_id": "js-post-1504648",
+      "author": "Evarcha",
+      "date": "2025-03-17T00:29:49+0900",
+      "body": "I am starting to think it's actually impossible to implement. It feels like the engine is simply rejecting the idea of this. I appreciate all of the help so far, so thank you to all that have tried to help me."
+    },
+    {
+      "post_id": "js-post-1504675",
+      "author": "rakanishoo",
+      "date": "2025-03-17T03:30:33+0900",
+      "body": "Strange it works in my project, with some minor issues that can't be prevented.\nIt works like this:\nIn RPG maker if you press an arrow character's x and y changes instantly but realX and realY stay the same. if realX is not equal to x or realY is not equal to y, the character moving animation kicks in and depending on speed param it moves character every few pixels each frame.\nI'f player made 60% of its way I modify the speed to a lower one unless player stil holds arrow button.\nSo of course as you mentioned if player releases the button exactly at the right time, the skid will not kick in. but if player  presses button and then releases it or releases the button earler than moving 60% of the way, the slow down will happen.\nSecond way it works is when mouse button or touch is used, then the $gameTemp.DestinationX and Y are set. I then base on these number to determine when slowdown should happen.\nMake sure you turn off all the plugins you are using when testing mine. Interference is possible so let me know with which plugins it interferes.\nEDIT: When I copied the code to the forum I missed a closing bracket }. Added it now, sorry. Please try now."
+    },
+    {
+      "post_id": "js-post-1504860",
+      "author": "Evarcha",
+      "date": "2025-03-17T23:00:17+0900",
+      "body": "Wow! That is the closest I have yet seen to what I am after. I have tested both controls and they both work, mouse seems to work consistently but buttons do have the occasional jarring-dead-stop. I am evry impressed with what you have done, thank you so much."
+    }
+  ]
+}

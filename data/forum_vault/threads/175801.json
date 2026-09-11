@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/the-use-of-gamesystem-to-save-data.175801",
+  "title": "MZ The use of $gameSystem to save data",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T19:10:56.964557+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1501128",
+      "author": "boomy",
+      "date": "2025-02-25T18:54:47+0900",
+      "body": "Dear plugin creators / javascript aficionados,\nWhats the consensus of using $gameSystem to store data for plugins in RPG maker MV/MZ?\nI am developing an item upgrade system for MZ and one of the challenges I have to tackle is creating independent items. Game_Item doesn't store any unique data (it only references $dataItems / $dataWeapons etc.) so I have created a map that is saved in $gameSystem that stores a reference to the item as well as assigning the item a unique id. I can now access unique items in the game by calling $gameSystem._uniqueItems (returns a map). As I expand the system to include tracking upgrades for items, all of this data will be saved in $gameSystem.\n$gameSystem seems like a noob friendly place to store data; not to mention its globally accessible. I see more advanced plugin makers such as Yanfly make their own class and then hook into the save/load methods to save their data. And then plugins such as SRPG Gear MZ using $gameSystem extensively despite being a fairly complex plugin ecosystem. But is there really any harm in using $gameSystem to store data?"
+    },
+    {
+      "post_id": "js-post-1501130",
+      "author": "caethyril",
+      "date": "2025-02-25T19:23:57+0900",
+      "body": "A couple of possible issues off the top of my head:\nNaming conflicts - another plugin might define a property on\nGame_System\nwith the same name as yours, creating an incompatibility. But this can apply to any approach.\nSave residue - in the unlikely event that you use the plugin, make a save, then remove the plugin, any custom data it added to\n$gameSystem\nwould generally remain as bloat.\nLike you say, the common alternative is to patch 3\nDataManager\nmethods:\ncreateGameObjects\n,\nmakeSaveContents\n, and\nextractSaveContents\n. That's not really much work either, but it can help to make the resulting plugin more robust."
+    },
+    {
+      "post_id": "js-post-1501154",
+      "author": "Aerosys",
+      "date": "2025-02-25T22:23:48+0900",
+      "body": "caethyril said:\nNaming conflicts - another plugin might define a property on\nGame_System\nwith the same name as yours, creating an incompatibility. But this can apply to any approach.\nClick to expand...\nExcellent answer; I just want to add one thing. If you are really concerned about conflicts, simply add something unique like your name to your attribute. I personally use _mk_ as my initials.\nCode:\n$gameSystem._mk_independentItems = { }"
+    },
+    {
+      "post_id": "js-post-1501155",
+      "author": "Trihan",
+      "date": "2025-02-25T22:25:27+0900",
+      "body": "I do use this method sometimes; if can be a quick-and-dirty way to conveniently add additional data without having to create a completely new game object to do so. I'm wary of it for the same potential risks as caethyril pointed out, though."
+    },
+    {
+      "post_id": "js-post-1501160",
+      "author": "boomy",
+      "date": "2025-02-25T23:34:17+0900",
+      "body": "caethyril said:\nA couple of possible issues off the top of my head:\nNaming conflicts - another plugin might define a property on\nGame_System\nwith the same name as yours, creating an incompatibility. But this can apply to any approach.\nSave residue - in the unlikely event that you use the plugin, make a save, then remove the plugin, any custom data it added to\n$gameSystem\nwould generally remain as bloat.\nLike you say, the common alternative is to patch 3\nDataManager\nmethods:\ncreateGameObjects\n,\nmakeSaveContents\n, and\nextractSaveContents\n. That's not really much work either, but it can help to make the resulting plugin more robust.\nClick to expand...\nGood points.\nWhat if I'm just wanting to create a global variable to track something?\nFor example, I have a custom font plugin that stores the previous font used.\nI'm just using $gameSystem to do this ($gameSystem._fontName)\nWould this be a legitimate use?\nIf I go down the Datamanager methods, I'll also have to use a Imported.Boomy = true (which I seem to see in many plugins), which will temporarily store data (which can then be read or written using dataManager) correct?"
+    },
+    {
+      "post_id": "js-post-1501227",
+      "author": "caethyril",
+      "date": "2025-02-26T06:28:22+0900",
+      "body": "boomy said:\nWhat if I'm just wanting to create a global variable to track something?\nFor example, I have a custom font plugin that stores the previous font used.\nClick to expand...\nIf you need it to be saved, then it's the same case as already mentioned.\nIf it doesn't need to be saved, then storing it on a saved object will bloat saves.\nA common approach for (unsaved) global plugin values is to define a global variable of type\nobject\n, i.e. a \"namespace\". That might be 1 namespace per plugin; it might be a single namespace for the author with properties that are plugin namespaces; it might be some other structure. Data can then be stored as properties of the applicable namespace.\nboomy said:\nIf I go down the Datamanager methods, I'll also have to use a Imported.Boomy = true (which I seem to see in many plugins), which will temporarily store data (which can then be read or written using dataManager) correct?\nClick to expand...\nNo. The\nImported\nnamespace is just a convention used by many plugin authors to make it easier to check for the existence and/or version of other plugins. It can be useful, e.g. for plugins that extend other plugins. It is not mandatory, and if used conventionally is just constant data.\nI guess plugins that create files might save version information etc to those files, but generally\nImported\nhas nothing to do with the\nDataManager\n."
+    }
+  ]
+}

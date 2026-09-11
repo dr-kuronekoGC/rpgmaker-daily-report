@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/battle-ends-after-enemy-transforms.175775",
+  "title": "Battle Ends after enemy transforms",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T19:10:57.311739+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1500878",
+      "author": "duo",
+      "date": "2025-02-24T11:06:11+0900",
+      "body": "So I'm trying to set up a capture type system where if the enemy has < 25% a status will effect them and they'll transform into a version of the monster inside a net. But any way I try to end the battle, the battle ends before the monster transforms.\nHow can I end the battle after the enemy transforms?"
+    },
+    {
+      "post_id": "js-post-1500882",
+      "author": "Canned_Dinosaur",
+      "date": "2025-02-24T11:36:48+0900",
+      "body": "First thought I had was to give the enemy immortal status.\nBut other than that... there's too little information in your post for me to gauge what your situation is. Please show us screenshots of what you currently have. Please try to follow\nthis template\n, as it will save a lot of guesswork."
+    },
+    {
+      "post_id": "js-post-1500887",
+      "author": "SGHarlekin",
+      "date": "2025-02-24T12:15:58+0900",
+      "body": "Another shot in the dark: Are you transforming the enemy and then immediately ending the battle? If so, maybe try a wait after the transform so it can actually happen."
+    },
+    {
+      "post_id": "js-post-1500889",
+      "author": "Andar",
+      "date": "2025-02-24T12:18:32+0900",
+      "body": "If the HP >1 at that moment, then the problem cannot be solved with the immortal state as that is only for the case with HP=0.\nWe need to see a screenshot of the troop event to check what went wrong in your case, most likely it is a wrong order of commands.\nand a screenshot of both the regular enemy page and the enemy page in a net."
+    },
+    {
+      "post_id": "js-post-1500892",
+      "author": "duo",
+      "date": "2025-02-24T12:54:43+0900",
+      "body": "This is my original enemy\nThis is the enemy trapped\nThis is the troop screen"
+    },
+    {
+      "post_id": "js-post-1500906",
+      "author": "Canned_Dinosaur",
+      "date": "2025-02-24T14:10:11+0900",
+      "body": "Hmmm? AFAICT, what happens on the third page is that:\nIf the enemy has 25% HP or less...\n...some text occurs...\n...a force action is reserved...\n(which in case you are using Visustella Battle Core, will only be processed at end of turn)\n...some switch is flipped...\n...and the enemy dies...\nThis (kind of) all happens at once, and with the enemy dying the battle will end.\nWhat I'm missing is, where are you transforming the enemy? Is that what is supposed to happen with Switch #1?"
+    },
+    {
+      "post_id": "js-post-1501010",
+      "author": "duo",
+      "date": "2025-02-25T03:17:09+0900",
+      "body": "So the player uses a skill called \"weighted net\"\nThat brings up a common event called \"Ferox Trap\"\n\"Ferox Trap checks the HP of the target and if it's less than or equal to 25, the skill causes a state called \"Trapped\" and transforms the enemy into \"Ferox Trapped\" which is the enemy trapped in a net."
+    },
+    {
+      "post_id": "js-post-1501018",
+      "author": "Andar",
+      "date": "2025-02-25T03:58:54+0900",
+      "body": "the order of commands is correct, it should have worked.\nso the next stop is seeing if there are any plugins messing with the sequence - can you post screenshots of your plugin manager to see what you have and in which order?"
+    },
+    {
+      "post_id": "js-post-1501019",
+      "author": "duo",
+      "date": "2025-02-25T04:06:06+0900",
+      "body": "Andar said:\nthe order of commands is correct, it should have worked.\nso the next stop is seeing if there are any plugins messing with the sequence - can you post screenshots of your plugin manager to see what you have and in which order?\nClick to expand...\nI actually dont use any plugins. At least not at the moment."
+    },
+    {
+      "post_id": "js-post-1501028",
+      "author": "Andar",
+      "date": "2025-02-25T05:06:18+0900",
+      "body": "Then the problem is likely in the timing of the command and its graphic updates.\nand that needs someone with more knowledge about the internal code of MZ to find out.\nyou can try if a wait(5) after the transform but before the change state solves it, but otherwise I'm at the end of my ideas, it'll probably need a script command to foce a display update."
+    },
+    {
+      "post_id": "js-post-1501030",
+      "author": "caethyril",
+      "date": "2025-02-25T05:11:24+0900",
+      "body": "Your event seems to check the value of a variable named \"Enemy HP\". But variables only update their value when you tell them to, and Parallel/Autorun events do not run during battle.\nSo it looks like you need to add a command at the start of the event to store the current HP of Enemy #1 in that variable before its value is checked: Control Variables -> Set -> Game Data -> Enemy -> HP.\n(You could also use Show Text commands to test which branches are actually running.)\nEdit: I had a look at the code and it looks like Force Action will only pause the interpreter until the action has started. So I think, without any delay after Enemy Transform, the battle will reliably end 2 frames afterwards? (1 to start the troop event, 1 to finish the stuff after Force Action.) Like Harlekin etc have suggested, try adding wait time or something equivalent (e.g. Show Battle Animation with \"Wait for Completion\", or Show Text) after the transformation."
+    },
+    {
+      "post_id": "js-post-1501039",
+      "author": "duo",
+      "date": "2025-02-25T06:41:53+0900",
+      "body": "So before, I had the wait in my Troops event for that fight. I changed it to the common event and that worked. The battle now ends after the enemy transforms\nThank you all for your time and help."
+    }
+  ]
+}

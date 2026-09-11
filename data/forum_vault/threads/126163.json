@@ -1,0 +1,179 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/moarmaps-you-can-never-have-too-many-maps.126163",
+  "title": "MoarMaps - You can never have too many maps",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T19:10:55.137202+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1110153",
+      "author": "Zeriab",
+      "date": "2020-08-27T03:47:38+0900",
+      "body": "Zeriab's MoarMaps\nWith RPG Maker MZ the map limit was bumped up to 2000 maps.\nClearly a limit only a select few developers can managed to stay within.\nUs true map makers need MOAR MAPS!\nThis plugin allows you to have subfolders with additional maps and then transfer between them. There is virtually no limit to the number of maps.\nTechnically you can manage each of the subfolders in a separate project.\nHere is an example where I want a church subfolder. I have created a separate RMMZ project for it.\nCopy the MapInfos.json and the MapXXX.json files to the subfolder.\nIn your main project you can transfer to these new maps with a plugin command.\nCopy the plugin to your helper project and there is a command you can use to transfer back to the main project.\nCode\nTo access the plugin you can either download the attached files or copy the code from pastebin.\nWhat to do when you want over 9000 maps?\nOnce you reach these numbers you start to notice that the maps actually take up a lot of harddrive space.\nTo help with this I have created a helper plugin that will compress all the maps in the subfolders. You can then configure your MoarMaps plugin to read from the compressed maps.\nPlease note: The maps of main project will not be compressed.\nTo access the helper plugin you can either download the attached files or copy the code from pastebin.\nP.s. feel free to use any part of my code as you please. I didn't make this plugin because I thought there was an actual need.\n*hugs*\n- Zeriab"
+    },
+    {
+      "post_id": "js-post-1110155",
+      "author": "Tsukihime",
+      "date": "2020-08-27T03:49:15+0900",
+      "body": "Finally, a way to use subfolders. Couldn't do it in ace"
+    },
+    {
+      "post_id": "js-post-1110156",
+      "author": "??????",
+      "date": "2020-08-27T03:51:10+0900",
+      "body": "moar is always good!"
+    },
+    {
+      "post_id": "js-post-1110157",
+      "author": "Takeshi014",
+      "date": "2020-08-27T03:56:58+0900",
+      "body": "Nice plugin"
+    },
+    {
+      "post_id": "js-post-1110159",
+      "author": "nio kasgami",
+      "date": "2020-08-27T03:57:44+0900",
+      "body": "woaaahhh there Zeriab you can't provide such POWER to the Mortal kind we will provoke the Mapocalypse!"
+    },
+    {
+      "post_id": "js-post-1110173",
+      "author": "Deleted member 113412",
+      "date": "2020-08-27T04:18:22+0900",
+      "body": "Time to make a Map RPG.\nYes, traverse all 500k maps only to find out there was no point."
+    },
+    {
+      "post_id": "js-post-1110187",
+      "author": "T34KEN",
+      "date": "2020-08-27T04:40:53+0900",
+      "body": "Its a time to create truly epic RPG!\nWell, Im not a mapper but I'd like to break MZ limit and use this.."
+    },
+    {
+      "post_id": "js-post-1110193",
+      "author": "Kupotepo",
+      "date": "2020-08-27T04:44:29+0900",
+      "body": "Finally, your plugins are miracle. So people cannot just say MZ has limited maps. You are indirectly helping the moderators with this one."
+    },
+    {
+      "post_id": "js-post-1110308",
+      "author": "Tsukihime",
+      "date": "2020-08-27T06:48:10+0900",
+      "body": "Kupotepo said:\nFinally, your plugins are miracle. So people cannot just say MZ has limited maps. You are indirectly helping the moderators with this one.\nClick to expand...\nBut can it make 1500x1500..."
+    },
+    {
+      "post_id": "js-post-1110316",
+      "author": "VideoWizard",
+      "date": "2020-08-27T06:54:10+0900",
+      "body": "Just link as many 256x256 maps with 2000 events as you want with this plugin. There is a way to make it look like a map has 1500 (or more) tiles across, make the neighboring maps match the edges of the map you start with.\nOver 9000 256x256 maps with 2000 events each, that sounds like a lot already"
+    },
+    {
+      "post_id": "js-post-1110337",
+      "author": "Silenity",
+      "date": "2020-08-27T07:31:39+0900",
+      "body": "Tsukihime said:\nBut can it make 1500x1500...\nClick to expand...\nhow will my vision of my first open world mega mmorpg skyrimscape be complete without a fully scaled 1:1 map of the entire planet work now?"
+    },
+    {
+      "post_id": "js-post-1110530",
+      "author": "Zeriab",
+      "date": "2020-08-27T15:01:45+0900",
+      "body": "Hehe, I am glad you all like this plugin.\nIn the helper plugin I use a lot of synchronous file system calls. They work well in this case because you will see the loading spinner going until the processing is complete. For other preprocessing needs, which follow the same style as mine, they work well. Take for example this piece of code that did not make it into the final plugin:\nJavaScript:\ndisablePlugin() {\n            // Load\n            const oldPlugins = this.fs.readFileSync(this.pluginsConfig, 'utf8');\n\n            // Generate new text\n            const before = '\"Zeriab_MoarMapsHelper\",\"status\":true';\n            const after = '\"Zeriab_MoarMapsHelper\",\"status\":false';\n            const newPlugins = oldPlugins.replace(before, after);\n\n            // Backup copy (old backup is overwritten)\n            this.fs.copyFileSync(this.pluginsConfig, 'js/plugins.js.backup');\n\n            // Save updated data\n            this.fs.writeFileSync(this.pluginsConfig, newPlugins, 'utf8');\n        }\nThis does work as expected. Problem is that you need to close the editor without saving and open it again to see the change. If you don't close the editor but keep working in it then any saves will set the status of the script back to ON. So I chose not include this method.\nYou can also use this method for loading JSON objects. Just need to parse the json where I generate the new text and do your changes.\nPlease do not use the synchronous file system commands in plugins that should run during the actual game. Here you definitely should go with an asynchronous approach. If you want to load data files check out\nDataManager.loadDataFile\n. If you want to save and load data you create during a game then check out\nStorageManager.saveZip\nand\nStorageManager.loadZip\n. They are all located in\nrmmz_managers.js\n.\nSorry nio, but I believe devs should have the ability to shoot themselves in their own foot off if they so desire.\nAs for bigger maps. That is true. This plugin along cannot truly free the map makers. Only once we have a plugin for stitching maps together will we truly be free! (I don't plan on making such a plugin)\n*hugs*"
+    },
+    {
+      "post_id": "js-post-1456956",
+      "author": "SpritesOnInstinct",
+      "date": "2024-07-13T14:42:01+0900",
+      "body": "wait is the  default 2000 not 999?\n2000 wow I shouldn't need a plugin for more maps"
+    },
+    {
+      "post_id": "js-post-1456970",
+      "author": "Zeriab",
+      "date": "2024-07-13T17:17:31+0900",
+      "body": "MZ raised the limit from 999 to 2000"
+    },
+    {
+      "post_id": "js-post-1459990",
+      "author": "SpritesOnInstinct",
+      "date": "2024-07-28T01:42:07+0900",
+      "body": "Zeriab said:\nMZ raised the limit from 999 to 2000\nClick to expand...\nHow come then when it displays the map number it only uses three digits (Example: Map001).  You are telling me that you can pass the three digit limit."
+    },
+    {
+      "post_id": "js-post-1459993",
+      "author": "ATT_Turan",
+      "date": "2024-07-28T02:31:59+0900",
+      "body": "SpritesOnInstinct said:\nHow come then when it displays the map number it only uses three digits (Example: Map001).  You are telling me that you can pass the three digit limit.\nClick to expand...\nYou've made three posts in the thread about it...why haven't you just opened your project and tried to make a new map to test?\nOr if you just Googled it, you'd find several threads about it with screenshots and such. But if you're not close to what you thought was the limit, why be considering a plugin for it in the first place?"
+    },
+    {
+      "post_id": "js-post-1460018",
+      "author": "SpritesOnInstinct",
+      "date": "2024-07-28T05:17:17+0900",
+      "body": "the information is rather li\nATT_Turan said:\nYou've made three posts in the thread about it...why haven't you just opened your project and tried to make a new map to test?\nOr if you just Googled it, you'd find several threads about it with screenshots and such. But if you're not close to what you thought was the limit, why be considering a plugin for it in the first place?\nClick to expand...\ninformation is rather limited and other places use 999 maps"
+    },
+    {
+      "post_id": "js-post-1460125",
+      "author": "Zeriab",
+      "date": "2024-07-28T17:07:19+0900",
+      "body": "RMMZ uses padZero to add the leading zeros when figuring out the filename:\nconst filename = \"Map%1.json\".format(mapId.padZero(3));\nYou can test out how it works with the DevTools during Test play\n\"Map%1.json\".format(\"1\".padZero(3));    //<- \"Map001.json\"\n\"Map%1.json\".format(\"12\".padZero(3));   //<- \"Map012.json\"\n\"Map%1.json\".format(\"123\".padZero(3));  //<- \"Map123.json\"\n\"Map%1.json\".format(\"1234\".padZero(3)); //<- \"Map1234.json\"\n\"Map%1.json\".format(\"9001\".padZero(3)); //<- \"Map9001.json\"\nIt handles mapIds that are above 999 just fine.\nThere's no real limit when you play the game. The map limit is an editor limit"
+    },
+    {
+      "post_id": "js-post-1461106",
+      "author": "SpritesOnInstinct",
+      "date": "2024-08-02T23:48:42+0900",
+      "body": "Can confirm RPG Maker MZ has over 999 maps probably the 2000 is accurate"
+    },
+    {
+      "post_id": "js-post-1463497",
+      "author": "SpritesOnInstinct",
+      "date": "2024-08-14T14:51:24+0900",
+      "body": "How can I tell if the plugin worked or not.  I moved all map files and put them into a subfolder under 'data' folder called Compressed 1.  How can I tell if the moar maps work. Is it to see if I can have 2001 or more maps.  Thought I could do it in 2000 but im not sure."
+    },
+    {
+      "post_id": "js-post-1468076",
+      "author": "SpritesOnInstinct",
+      "date": "2024-09-04T10:23:39+0900",
+      "body": "Anyone willing to help me get this to work?"
+    },
+    {
+      "post_id": "js-post-1468080",
+      "author": "SpritesOnInstinct",
+      "date": "2024-09-04T11:06:44+0900",
+      "body": "Could please someone help me with this plugin?"
+    },
+    {
+      "post_id": "js-post-1468133",
+      "author": "Ms Littlefish",
+      "date": "2024-09-04T19:46:09+0900",
+      "body": "[dpost]\n@SpritesOnInstinct\n[/dpost]"
+    },
+    {
+      "post_id": "js-post-1468487",
+      "author": "SpritesOnInstinct",
+      "date": "2024-09-06T14:04:19+0900",
+      "body": "I figured it out. Forums are so helpful. *uses edit tool* No seriously I would never have been able to make this map heavy game idea.  I think 2000 might be enough but cutting it close.  Now I can breathe a sigh of relief.\nIf your wondering it's because I am making many smaller maps Zelda-like (The first 1 on the NES)  It's true i can put many zones on bigger maps, but then I ran into lag issues."
+    },
+    {
+      "post_id": "js-post-1501471",
+      "author": "KRash92",
+      "date": "2025-02-27T06:07:13+0900",
+      "body": "I made a post somewhere else about having more than 999 maps in MV, but I'm also going to shoot my shot here and ask if there's anyway this plugin could work with MV somehow?"
+    },
+    {
+      "post_id": "js-post-1501573",
+      "author": "Zeriab",
+      "date": "2025-02-27T14:31:35+0900",
+      "body": "I recommend using the MV version of the plugin. It's called ExtraMaps.\nOn the Steam version of MV you can find it here\n[RPG Maker MV folder]\\dlc\\RPGmakerWeb_plugins\\Zeriab\\Zeriab_ExtraMaps.js"
+    },
+    {
+      "post_id": "js-post-1501588",
+      "author": "KRash92",
+      "date": "2025-02-27T17:37:38+0900",
+      "body": "Zeriab said:\nI recommend using the MV version of the plugin. It's called ExtraMaps.\nOn the Steam version of MV you can find it here\n[RPG Maker MV folder]\\dlc\\RPGmakerWeb_plugins\\Zeriab\\Zeriab_ExtraMaps.js\nClick to expand...\nThanks you very much! I wasn't aware it existed despite a *very* extensive search : )"
+    },
+    {
+      "post_id": "js-post-1501614",
+      "author": "KRash92",
+      "date": "2025-02-27T21:17:28+0900",
+      "body": "Zeriab said:\nI recommend using the MV version of the plugin. It's called ExtraMaps.\nOn the Steam version of MV you can find it here\n[RPG Maker MV folder]\\dlc\\RPGmakerWeb_plugins\\Zeriab\\Zeriab_ExtraMaps.js\nClick to expand...\nHello! I'm sorry to bother you again, but while I managed to make it work fairly easily, it seems the MV version is slightly more barebones. Is there anyway, like the MZ version, to transfer the character with a plugin command to a subfolder map while indicating the coordinates and the map id the character should transfer to within the plugin command?\nPS: Not sure this is the right thread to post in. I know this is technically MV support, but I wouldn't want to create an entirely new thread just for a question that's directly tied to this very plugin. Sorry if I'm wrong!\nEdit: Okay, after further testing, I've realized that when the maps are parallaxed, the subfolder map will retain the overlay of the main folder map with the same id. And since 90% of my maps have some sort of overlay, everything looks absolutely messy^^ Not blaming you, of course, but I'm cursing MV's devs for deciding to impose a very arbitrary limit of 999 maps.\nFortunately, my game is story-based, so no combats, fetch quests, or item gathering, which means that there's almost nothing I need to carry over from the 1st part to make it work (save for 1 variable that tracks dialogue choices)"
+    }
+  ]
+}
