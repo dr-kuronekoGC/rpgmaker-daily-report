@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-it-possible-to-have-a-player-death-animation-when-health-reaches-0-but-before-game-over-screen.174718",
+  "title": "Is it possible to have a player death animation when health reaches 0, but before game over screen...",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T12:51:02.644646+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1493865",
+      "author": "GrimRose",
+      "date": "2025-01-15T14:17:07+0900",
+      "body": "I wanted to implement simple enemies that chase/attack the player and either do damage to the player character's health or mind.\nWhen the player reaches 0 Health (HP) or 0 Mind (MP) stat it triggers the game over. I was wondering if it would be possible to change the player character sprite to have the character collapse/fall to the ground before triggering the game over screen.\nI would also like to possibly include an animated death scene for specific unique game overs.  I want to have the animation play when health reaches 0, but before triggering a game over."
+    },
+    {
+      "post_id": "js-post-1493869",
+      "author": "TheAM-Dol",
+      "date": "2025-01-15T14:49:11+0900",
+      "body": "GrimRose said:\nI wanted to implement simple enemies that chase/attack the player and either do damage to the player character's health or mind.\nClick to expand...\nHow are you implementing it?\nWhat your title implies is what I think most people would think when you say \"health reaches 0\" - that is to say, the default turn based system.\nHowever you text implies you have something non-standard.\nWe need to know how you are implementing it in order to tell you how to make it work.\nI've never used HP damage on the map, so I can't say with certainty whether running out of HP on the map will automatically trigger the game over screen.\nIf that is the case, a simple evented solution would be to track a variable instead of the default HP stat, but not knowing how this mechanic works or what your game is, my solution may vary from slightly janky to Jeff Jankos.\nYou can also use a conditional on the event to check player HP to trigger anything you want, such as checking if the HP is equal to or less than 0, and then run video files or sprite changes."
+    },
+    {
+      "post_id": "js-post-1493870",
+      "author": "Robro33",
+      "date": "2025-01-15T14:51:21+0900",
+      "body": "this is all on the map scene then? just events touching the player?\ninstead of dealing your damage on touch or whatever, check the player's hp and use a conditional branch first. if their hp is less than the damage thats about to be dealt, then play the animation and then kill them afterwards. if not, deal the damage right away."
+    },
+    {
+      "post_id": "js-post-1494008",
+      "author": "GrimRose",
+      "date": "2025-01-16T06:12:52+0900",
+      "body": "TheAM-Dol said:\nHow are you implementing it?\nWhat your title implies is what I think most people would think when you say \"health reaches 0\" - that is to say, the default turn based system.\nHowever you text implies you have something non-standard.\nWe need to know how you are implementing it in order to tell you how to make it work.\nI've never used HP damage on the map, so I can't say with certainty whether running out of HP on the map will automatically trigger the game over screen.\nIf that is the case, a simple evented solution would be to track a variable instead of the default HP stat, but not knowing how this mechanic works or what your game is, my solution may vary from slightly janky to Jeff Jankos.\nYou can also use a conditional on the event to check player HP to trigger anything you want, such as checking if the HP is equal to or less than 0, and then run video files or sprite changes.\nClick to expand...\nEnemies are Events that chase the player on the map. When the Event touches the player, the event is then triggered. It will then lower the character's MP/HP by a certain amount. I have a variable that also is changed by the same amount as the MP/HP.\nThe variable triggers sound effects and a certain event if the character's health/mind drops below 5. I already have the events check for health/mind variable being below 5.\nI think I have an idea of how to make this work now.... just need to test it out."
+    },
+    {
+      "post_id": "js-post-1494478",
+      "author": "Beregon",
+      "date": "2025-01-18T07:40:51+0900",
+      "body": "GrimRose said:\nEnemies are Events that chase the player on the map. When the Event touches the player, the event is then triggered. It will then lower the character's MP/HP by a certain amount. I have a variable that also is changed by the same amount as the MP/HP.\nThe variable triggers sound effects and a certain event if the character's health/mind drops below 5. I already have the events check for health/mind variable being below 5.\nI think I have an idea of how to make this work now.... just need to test it out.\nClick to expand...\nSo, I assume that you are using the default Change HP events commands to deal the \"damage\" to the character, right?\nBy default, whenever the HP of all party members reaches 0, a Game Over is triggered. So, you either need a workaround or a plugin.\nIf you want a workaround, then the simplest way to do this is to disregard the 0 HP and just have the Game Over common event happen when the character reaches 1 HP. Not ideal, but it works and if you adjust the UI for it accordingly, the player probably won't even notice. The Change HP event command  has an \"Allow Knockout\" option you can tick to make the damage from it lethal. If you don't tick it, then the damage can't reduce the character's HP below 1. So, it's quick and easy, just make all the damage the protagonist takes non-lethal and trigger the Common Event when they are at 1 HP.\nIf you want a plugin, then RPG Maker MZ has one included by default, but not MV. So, after a casual search for one, maybe this one will work for you:\nhttps://manugamingcreations.itch.io/rpg-maker-plugin-game-over-common-event"
+    },
+    {
+      "post_id": "js-post-1494616",
+      "author": "GrimRose",
+      "date": "2025-01-19T06:04:12+0900",
+      "body": "Beregon said:\nSo, I assume that you are using the default Change HP events commands to deal the \"damage\" to the character, right?\nBy default, whenever the HP of all party members reaches 0, a Game Over is triggered. So, you either need a workaround or a plugin.\nIf you want a workaround, then the simplest way to do this is to disregard the 0 HP and just have the Game Over common event happen when the character reaches 1 HP. Not ideal, but it works and if you adjust the UI for it accordingly, the player probably won't even notice. The Change HP event command  has an \"Allow Knockout\" option you can tick to make the damage from it lethal. If you don't tick it, then the damage can't reduce the character's HP below 1. So, it's quick and easy, just make all the damage the protagonist takes non-lethal and trigger the Common Event when they are at 1 HP.\nIf you want a plugin, then RPG Maker MZ has one included by default, but not MV. So, after a casual search for one, maybe this one will work for you:\nhttps://manugamingcreations.itch.io/rpg-maker-plugin-game-over-common-event\nClick to expand...\nSo I don't know if it's possible to close this thread, but I think I found a solution for what I'm looking for.\nIn the event I use the Change Hp/MP event command, but also have a variable that changes the same as the Hp/Mp. One variable for Mind and the other for Health. I already have the event check for if the variable is lower than 5, as it triggers a common event when the character's sanity slips below 5.\nThe plan is to do a conditional branch that checks if the Health/Mind variable is below 1, right after changing the variable, but before changing the HP. If variable is indeed below 1 then I will have it trigger a common event (death sequence) and then change the Hp/Mp to 0 to trigger the game over screen.\nI'm currently working on the death animation and will test it out when I've finished the death sprite animation."
+    },
+    {
+      "post_id": "js-post-1494693",
+      "author": "Beregon",
+      "date": "2025-01-19T13:34:19+0900",
+      "body": "GrimRose said:\nSo I don't know if it's possible to close this thread, but I think I found a solution for what I'm looking for.\nIn the event I use the Change Hp/MP event command, but also have a variable that changes the same as the Hp/Mp. One variable for Mind and the other for Health. I already have the event check for if the variable is lower than 5, as it triggers a common event when the character's sanity slips below 5.\nThe plan is to do a conditional branch that checks if the Health/Mind variable is below 1, right after changing the variable, but before changing the HP. If variable is indeed below 1 then I will have it trigger a common event (death sequence) and then change the Hp/Mp to 0 to trigger the game over screen.\nI'm currently working on the death animation and will test it out when I've finished the death sprite animation.\nClick to expand...\nWell, if you are doing it like this, then just disabling \"Allow Knockout\" on all Change HP event commands and triggering the Game Over common event on 1 HP seems much simpler, no? Unless your HP values are low enough that 1 HP matters a lot.\nAnd you don't need to reduce HP to 0. You can trigger a Game Over straight up via an event command. In fact, you should probably do that anyway, since you already have a Game Over animation common event and doing straight up via an event command has less chance of bugs. With the way you've described it, you are triggering the game over event before the actual HP reaches 0, so there's no real difference anyway.\nWhat you described should work, but seems unnecessarily complex and might bug out if you change something later or decide to add some plugin that affects this.\nGlad you found a solution either way!"
+    },
+    {
+      "post_id": "js-post-1494698",
+      "author": "GrimRose",
+      "date": "2025-01-19T15:05:26+0900",
+      "body": "Got it to work!"
+    }
+  ]
+}

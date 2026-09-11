@@ -1,0 +1,143 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpgmv-steam-achievements-failed-to-initialize-and-bad-arguments.174919",
+  "title": "RPG MV - Steam Achievements - Failed to Initialize and Bad Arguments",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T12:51:07.284038+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1495529",
+      "author": "RainingLamppost",
+      "date": "2025-01-25T00:35:41+0900",
+      "body": "Issue Summary:\nTrying to get an RPG Maker MV game to work with Steam Achievements, been trying for a week straight\nDetails:\nI'm using these as recommended and linked by KillerGin's guide (linked below):\nNW: 0.49.2\nSTEAM SDK: 1.50\nGreenworks Nodes: 0.49.2\nOrange - Greenworks: Version: 1.2\nGreenworks.js: greenworks-v0.14.0-nw-v0.33.3\nSo funnily enough, I had it almost working - achievements didn't fire and I'd get bad Argument but it said my Steam name in console at least\nBefore posting here I thought I should make absolutely sure I'd done all the steps (mostly from KillerGin though I've tried all of them before) - and now it's somehow broken itself a little further back with a \"Failed to initialize\" and I can't get it back to where it was after a couple more hours of trying things\nMore details:\nThe game has been accepted by Steam so it's public (set to Coming Soon)\nI've been testing it by uploading the entire thing over and over again to Steam as well as from the editor - both of which used to connect to Steam and show my username in console but achievement thing would always be a Bad Argument when using:\nOrangeGreenworks.activateAchievement('NEW_ACHIEVEMENT_1_1');\nFolder structure:\nFrankly I've been trying this for so long and so intensely I can't quite remember everything I've been doing but I've been following all advice I've seen as far as I know\nPrevious tutorials referenced:\nSetting up STEAM Integration in RPG Maker MV (using updated NW.js, super high performance)!\nHello everyone!  It's not easy to set up STEAM integration into RPG Maker MV. Who doesn't want to setup STEAM achievements, call players by their STEAM name, OR check to see if they have DLC installed (these are the things I set up in my game, I'm sure there is more you can do)  However, the...\nforums.rpgmakerweb.com\nImplementing Steamworks Achievements\nImplementing Steamworks Achievements Once you are on Steam you really should implement Steamworks Achievements      Summary This tutorial will give an overview of the possibilities for implementing Steamworks Achievements depending on your RPG Maker version.  Requirements Have access on steam...\nforums.rpgmakerweb.com\nI got my RPG Maker game on Steam and so can YOU! (HOW-TO) — The One-Man Indie\nLet's include popular terms like the baby shark and pewdiepie to really broaden the scope of the audience, and then give it more action by using the game among us or Minecraft, and also use new hit youtube sensation called Rust on the OTV server featuring twitch funny moments from jackscepticeye. I\none-manindie.com\nPlugins I'm using:\nFar too many but the game's been finished for a year and works (putting it on Steam now):\nI've been trying to do this for a week and the game's coming out soon, if achievements can be made to work I still need to actually make them then have them tested to make sure this massive deck of cards of plugins isn't knocked over by Orange Greenworks somehow...\nSo where I am now is it says that Greenworks failed to initialize but even if that gets fixed, it'll no doubt go to the next step of \"Bad argument\" - I don't know js or much about the technical side of things so you may need to explain plainly\nThank you for reading, I hope we get can get this figured out once and for all and others after me with the same problem can have an easier time with it"
+    },
+    {
+      "post_id": "js-post-1495531",
+      "author": "ShadowDragon",
+      "date": "2025-01-25T00:46:17+0900",
+      "body": "your YEP plugins are in the INCORRECT order, so correct them first.\nalso Olivia_Horror Effect has a nasty bug which\nrequire a patch\n.\nthe patch is needed or your game lags over time if you use it.\nbut incorrect order of plugin can cause many errors.\nso categorize it."
+    },
+    {
+      "post_id": "js-post-1495533",
+      "author": "RainingLamppost",
+      "date": "2025-01-25T01:03:32+0900",
+      "body": "Thanks I found that bug through testing so I just didn't specifically use the effects that trigger it\nI'm a little worried about messing with load order when the game's been out for a year with no problems but I can try, do you think that'll actually fix this issue?"
+    },
+    {
+      "post_id": "js-post-1495535",
+      "author": "utunnels",
+      "date": "2025-01-25T01:19:02+0900",
+      "body": "One thing to know: even if your setup is correct you can do achievement test from the editor because steam can't get your game id that way, it thinks you are playing MV.\nSo roll back to the step it says your steam user name and try to launch the game outside of the editor?\nAlso don't forget to put a steam_appid.txt with your game's id in the game's folder."
+    },
+    {
+      "post_id": "js-post-1495539",
+      "author": "RainingLamppost",
+      "date": "2025-01-25T01:32:40+0900",
+      "body": "ShadowDragon said:\nyour YEP plugins are in the INCORRECT order, so correct them first.\nalso Olivia_Horror Effect has a nasty bug which\nrequire a patch\n.\nthe patch is needed or your game lags over time if you use it.\nbut incorrect order of plugin can cause many errors.\nso categorize it.\nClick to expand...\nAlright for better or for worse (hoping there won't be random crashes or problems, it's a long game with RNG so testing is rough as is) - here's the new order and I put the plugin fixer in\nThere is no change in the Steam situation\nutunnels said:\nOne thing to know: even if your setup is correct you can do achievement test from the editor because steam can't get your game id that way, it thinks you are playing MV.\nSo roll back to the step it says your steam user name and try to launch the game outside of the editor?\nAlso don't forget to put a steam_appid.txt with your game's id in the game's folder.\nClick to expand...\nI've been testing it in all 3 things: the editor, the deployed game and by uploading the entire game to Steam over and over again\nSadly I can't roll it back as I've had to redo all the steps so many times I don't have backups since before I started trying to get it to work with Steam\nThere's a steam_appid.txt in the screenshot in the initial post"
+    },
+    {
+      "post_id": "js-post-1495541",
+      "author": "utunnels",
+      "date": "2025-01-25T01:49:58+0900",
+      "body": "Try replacing .initAPI() in orange greenworks with just .init() so it should print some error other than greenworks failed to initialize."
+    },
+    {
+      "post_id": "js-post-1495543",
+      "author": "RainingLamppost",
+      "date": "2025-01-25T01:59:17+0900",
+      "body": "I've done that now, it says Steam isn't running, though as I'm in-game, Steam turns my name green and says I'm in-game, how confusing"
+    },
+    {
+      "post_id": "js-post-1495616",
+      "author": "utunnels",
+      "date": "2025-01-25T08:15:12+0900",
+      "body": "OK at least you got something.\nThe API thinks steam is not running. Maybe you can try a different version of the sdk starting from the lower version. For example 1.4.3.\nMyself just upgraded everything to the newest version but if you need nw 0.49.2 you need to find the matching files."
+    },
+    {
+      "post_id": "js-post-1495630",
+      "author": "RainingLamppost",
+      "date": "2025-01-25T09:04:37+0900",
+      "body": "Alright, I tried changing the Steam SDK to 1.4.3 and there's no difference"
+    },
+    {
+      "post_id": "js-post-1495637",
+      "author": "utunnels",
+      "date": "2025-01-25T09:46:40+0900",
+      "body": "Ah, sorry. I don't know anyone who upgraded to nw 0.49.2 successfully used greenworks recently.\nThe forum search returns lots of topics about steam but most of them have different versions.\nThere must be some mismatch of something just we can't find which.\nI just used the newest of everything when I deployed my game (nw 0.8x at the time, and now it is 0.9x)."
+    },
+    {
+      "post_id": "js-post-1495639",
+      "author": "RainingLamppost",
+      "date": "2025-01-25T10:06:09+0900",
+      "body": "I appreciate your any any help whether or not I have to give up on achievements or not !"
+    },
+    {
+      "post_id": "js-post-1495644",
+      "author": "utunnels",
+      "date": "2025-01-25T10:35:54+0900",
+      "body": "Oh, it seems the original tutorial for 0.49.2 is here:\nSetting up STEAM Integration in RPG Maker MV (using updated NW.js, super high performance)!\nHello everyone!  It's not easy to set up STEAM integration into RPG Maker MV. Who doesn't want to setup STEAM achievements, call players by their STEAM name, OR check to see if they have DLC installed (these are the things I set up in my game, I'm sure there is more you can do)  However, the...\nforums.rpgmakerweb.com\ntl;dr\nIf you scroll down to page 2, it appears the site no longer has a link to the prebuild node file for nw 0.49.2, so you need to go to their github page to find by yourself:\nReleases · ElectronForConstruct/greenworks-prebuilds\nGreenworks Downloader Website:. Contribute to ElectronForConstruct/greenworks-prebuilds development by creating an account on GitHub.\ngithub.com\nThere must be a ton of files there you need to find the correct one. Follow the guide's steps, and replace the .node file. I wish you good luck."
+    },
+    {
+      "post_id": "js-post-1495647",
+      "author": "utunnels",
+      "date": "2025-01-25T10:52:29+0900",
+      "body": "Sorry, wrong again.\nYou need to change the filter of the site to find 0.49.2"
+    },
+    {
+      "post_id": "js-post-1495651",
+      "author": "RainingLamppost",
+      "date": "2025-01-25T11:01:44+0900",
+      "body": "That's what I've done before posting the thread yeah, it's such an extremely unintuitive design I had to have someone explain to me a few days ago\nEdit: I've tried downgrading everything, as Landshark said it worked for him:\nSetting up STEAM Integration in RPG Maker MV (using updated NW.js, super high performance)!\nDoes this work for RPG Maker MZ?\nforums.rpgmakerweb.com\n(Though my MV is 1.6.2 rather than 1.6.3, so don't know if that affects anything)\nI can revert it and may as well given I'm getting his earlier post about dynamic link:\nI am totally lost as to why I can't get it to work"
+    },
+    {
+      "post_id": "js-post-1495663",
+      "author": "utunnels",
+      "date": "2025-01-25T12:22:01+0900",
+      "body": "Yeah, it is a bit strange no one reported that before (2024?).\nSo I assume steam itself changed so their old APIs might act strangely?\nDespite that error message, although greenworks says steam is not running, I can still get steam id from the api. Also achievements\nThis is my test using greenworks directly in the console, you can see everything just works.\nEdit*\nWell, not everything. Still get bad argument error if the function actually needs an argument."
+    },
+    {
+      "post_id": "js-post-1495672",
+      "author": "utunnels",
+      "date": "2025-01-25T14:03:58+0900",
+      "body": "RainingLamppost said:\nThat's what I've done before posting the thread yeah, it's such an extremely unintuitive design I had to have someone explain to me a few days ago\nEdit: I've tried downgrading everything, as Landshark said it worked for him:\nSetting up STEAM Integration in RPG Maker MV (using updated NW.js, super high performance)!\nDoes this work for RPG Maker MZ?\nforums.rpgmakerweb.com\n(Though my MV is 1.6.2 rather than 1.6.3, so don't know if that affects anything)\nI can revert it and may as well given I'm getting his earlier post about dynamic link:\nView attachment 329765\nI am totally lost as to why I can't get it to work\nClick to expand...\nIt has nothing to do with MV, I tried that only blank html it still works. Don't forget to rename files.\nI read landshark's post, and downloaded nw 0.49.1 and steam sdk 1.43,\nnode file for nw 0.45.4-0.49.1\nI think you are a bit confused about those files, here's my folder:\nSo the node file for 0.49.2 must be bad for some reason."
+    },
+    {
+      "post_id": "js-post-1495711",
+      "author": "RainingLamppost",
+      "date": "2025-01-25T21:26:08+0900",
+      "body": "I tried a few things including downloading the node you linked there, and input the console code you used and it didn't recognise the command lines you showed\nBUT the top one said that the node needed to be 88 and that it was currently 83, (I switched back to NW: 0.49.2 last night) so I went and specifically got that one once again and now it says my Steam name like before...?\nNone of the commands you used work on it, but it'd connected now, so I think I'm back to my original Bad Argument problem - I don't even know what I changed to make it work, I think maybe it's using the slightly older Steam SDK 1.43 with NW 0.49.2...??\nI've no idea what's going on or why this is so capricious, but thank you for sticking with it so far - here's the console from the deployed but not uploaded to steam version (had an error about there not being a Steam_AppID in the topmost folder of the new deployment so added that in too:"
+    },
+    {
+      "post_id": "js-post-1495717",
+      "author": "utunnels",
+      "date": "2025-01-25T22:03:21+0900",
+      "body": "OK there's an easier way to do things. Since the node file for 0.49.2 doesn't work, there's no point to try again and again.\nYou can just download KillerGin's game and use his files (nw.js, lib, greenworks). I compared his node file with the one from the site and they were definitely different. It means at some point the site's files were changed( 1 years ago).\nKillerGin has a free demo and it seems he used the versions in his post.\nSetting up STEAM Integration in RPG Maker MV (using updated NW.js, super high performance)!\nHello everyone!  It's not easy to set up STEAM integration into RPG Maker MV. Who doesn't want to setup STEAM achievements, call players by their STEAM name, OR check to see if they have DLC installed (these are the things I set up in my game, I'm sure there is more you can do)  However, the...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1495721",
+      "author": "RainingLamppost",
+      "date": "2025-01-25T22:32:45+0900",
+      "body": "I got the demo and copied their lib, greenworks and OrangeGreenworks in and it gave me the achievement even in the RPG Maker itself, what on earth?? The NW is still 0.49.2 according to console\nSo it turns out that the guide is just incorrect now for anyone trying to follow it because of files being altered without warning? Gosh I hope they can change it (or people can find this and get the help they need!\nI honestly don't know what to say, it just seems to connect and work now without issue (not much testing yet obviously but literally it spoke to Steam and achieved the ment\nThank you very much utunnels, I'm certainly going to include your name in the \"Plugin/engine help\" section, you're a life saver - I was about to give up for my own health - I hope this thread helps others after me that are trying to do this <3"
+    },
+    {
+      "post_id": "js-post-1495723",
+      "author": "utunnels",
+      "date": "2025-01-25T22:38:44+0900",
+      "body": "lol\nI don't think the guide is incorrect. It is just the site's fault."
+    },
+    {
+      "post_id": "js-post-1501122",
+      "author": "Dust",
+      "date": "2025-02-25T18:02:57+0900",
+      "body": "RainingLamppost said:\nI got the demo and copied their lib, greenworks and OrangeGreenworks in and it gave me the achievement even in the RPG Maker itself, what on earth?? The NW is still 0.49.2 according to console\nView attachment 329785\nSo it turns out that the guide is just incorrect now for anyone trying to follow it because of files being altered without warning? Gosh I hope they can change it (or people can find this and get the help they need!\nI honestly don't know what to say, it just seems to connect and work now without issue (not much testing yet obviously but literally it spoke to Steam and achieved the ment\nView attachment 329786\nThank you very much utunnels, I'm certainly going to include your name in the \"Plugin/engine help\" section, you're a life saver - I was about to give up for my own health - I hope this thread helps others after me that are trying to do this <3\nClick to expand...\n​\nThis issue has caused me quite a headache as well. Would it be possible for someone to upload the working files somewhere?\nI can't download the Demo of that game because the author didn't provide the required ratings in my country"
+    },
+    {
+      "post_id": "js-post-1501123",
+      "author": "utunnels",
+      "date": "2025-02-25T18:20:39+0900",
+      "body": "Dust said:\n​\nThis issue has caused me quite a headache as well. Would it be possible for someone to upload the working files somewhere?\nI can't download the Demo of that game because the author didn't provide the required ratings in my country\nClick to expand...\nIt's here.\nHow to Update NW.js to Dramatically improve Game Performance!\nMZ users can use the ideas presented in this guide to update their NW.js from 44 to 50 if they like, but I'm not sure how much of a performance update this will be. (To update MV from 29 to 50 (or in my case 49.2) is a massive update!) It's actually easier to update MZ since the engine folders...\nforums.rpgmakerweb.com"
+    }
+  ]
+}

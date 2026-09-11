@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-needed-with-turning-on-a-switch-before-a-skill-without-using-visustella.175453",
+  "title": "Help needed with turning on a switch before a skill without using visustella",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T12:51:00.820280+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1499089",
+      "author": "azurezero",
+      "date": "2025-02-15T05:57:51+0900",
+      "body": "cant use action sequences to do it, I need a switch to turn on before a skill to trigger a parallel common event to trigger the live2d animation.\ncan't use visustella battle core because the live2d vanishes every time an animation plays in battle (and possibly on map)\neither that or i need a conditional branch for if actor is attacking and the skill number is n.\nIf this isn't the right place please tell me where is or move it."
+    },
+    {
+      "post_id": "js-post-1499100",
+      "author": "Andar",
+      "date": "2025-02-15T07:30:04+0900",
+      "body": "your first problem is that by default, no parallel will work on the battlescreen.\nso which plugin are you using to allow parallels to work on the battlescreen?\nsecond, what type of battlesystem are you using? the solution will be different depending on you using turn-based or ATB or CTB or whatever else."
+    },
+    {
+      "post_id": "js-post-1499103",
+      "author": "azurezero",
+      "date": "2025-02-15T08:07:22+0900",
+      "body": "Andar said:\nyour first problem is that by default, no parallel will work on the battlescreen.\nso which plugin are you using to allow parallels to work on the battlescreen?\nsecond, what type of battlesystem are you using? the solution will be different depending on you using turn-based or ATB or CTB or whatever else.\nClick to expand...\nim using sideview, so an invisible player under the live2d can get the animations (though damage num bers are still under the live2d)\nParallel Common Events in Battle\nParallel Common Events in Battle    \tAuthor: Barreytor    \tVersion: 1.0    \tIntroduction:   \tThis plugin loads the parallel-activated common events in the battle scene.   \tPlugin:   \t (Attachment, requires account)   \tMEGA Alternate download link   \tInstructions:   \tJust place it in your plugins...\nforums.rpgmakerweb.com\nim also using barreys plugin for common events, because ive always used it to detect when the player takes damage to trigger the hit animation in the live2d\nit'd be great if there were a conditional script call i could use to say is actor currently using a skill cause mz has last skill used as a control variable option (assuming the number updates near the start of a skill)\nim currently using an empty skill that calls a common event at skill end to trigger the attack animation and also force the action of the actual attack skill, but thats kinda slow because it has to display the non existent battle messages as well as have the sideview character move forward and back\nitd be great if visustella battle core was an option"
+    },
+    {
+      "post_id": "js-post-1499109",
+      "author": "Canned_Dinosaur",
+      "date": "2025-02-15T09:45:29+0900",
+      "body": "What plugin are you using for Live2D, and how is the animation being used? Can't you just export the animation as a sprite so that you can use the standard animation functionality in RPG Maker?"
+    },
+    {
+      "post_id": "js-post-1499121",
+      "author": "Andar",
+      "date": "2025-02-15T11:56:08+0900",
+      "body": "azurezero said:\nim using sideview,\nClick to expand...\nI didn't ask you for what view you're using, I asked you for what type of battle you're using.\nDoes your battle have turns or not? Does your battle have timed sequences or not?"
+    },
+    {
+      "post_id": "js-post-1499125",
+      "author": "azurezero",
+      "date": "2025-02-15T12:30:06+0900",
+      "body": "Andar said:\nI didn't ask you for what view you're using, I asked you for what type of battle you're using.\nDoes your battle have turns or not? Does your battle have timed sequences or not?\nClick to expand...\nit's standard turn based.\nCanned_Dinosaur said:\nWhat plugin are you using for Live2D, and how is the animation being used? Can't you just export the animation as a sprite so that you can use the standard animation functionality in RPG Maker?\nClick to expand...\nMv and MZ are terrible at loading images in succession, also i would need an impossible number of variants for every combination of slider\nim using a modified version of mrSlip's mz live2d plugin, which was originally unfit for purpose, with models resetting if you entered the menu or changed scenes\nMZ_talk_live2d_cubism4/README_en.md at master · MrSlip777/MZ_talk_live2d_cubism4\ndisplay live2d models for rpgmakrMZ. Contribute to MrSlip777/MZ_talk_live2d_cubism4 development by creating an account on GitHub.\ngithub.com\nbut it's kind of irrelevant, except for not being able to use visustella battle core because animations make it vanish which kind of ruins the point."
+    },
+    {
+      "post_id": "js-post-1499160",
+      "author": "Andar",
+      "date": "2025-02-15T17:50:35+0900",
+      "body": "I think your best option would be to request a custom plugin that reads a notetag to determine which switch to turn on, and do so at the beginning of the skill sequence.\nThere are other ways to turn a switch without a plugin, but they would all cause timing problems - for example the combination of instand cast and force action would have the switches go on long before the skill action (due to turn-based), damage coding would only trigger near the end of the skill action and so on.\nYou might want to compare this to decide when the best moment for the switch will be, and then tell that in the plugin request:\nRPG Maker VXA/MV/MZ Damage Flow\nAn infographic to teach people how the damage/recovery is calculated in vxace! This infographic is made by @Archeia and @rhyme.  Thank you to these people for helping me figure out the EXACT flow and formulas  :D   Recommended that you open this image in another tab or click on it over here if...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1499161",
+      "author": "rpgLord69",
+      "date": "2025-02-15T17:50:38+0900",
+      "body": "Did you try ATT_Turan's eval tags plugin? <Action Start Eval>\nEval Tags MZ\nEval Tags 2.0 ATT_Turan  Introduction I have found I often recommend plugins to people solely for the ability to use notetags to execute code at times when events are not accessible. However, there are situations where those plugins include many other features that the user may not want in their...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1499169",
+      "author": "azurezero",
+      "date": "2025-02-15T19:18:19+0900",
+      "body": "rpgLord69 said:\nDid you try ATT_Turan's eval tags plugin? <Action Start Eval>\nEval Tags MZ\nEval Tags 2.0 ATT_Turan  Introduction I have found I often recommend plugins to people solely for the ability to use notetags to execute code at times when events are not accessible. However, there are situations where those plugins include many other features that the user may not want in their...\nforums.rpgmakerweb.com\nClick to expand...\nThis actually works for triggering the slash animation, but crashes at the end of all enemy/actor turns\nive tried putting it both above and below visustella core (not battle core)\nEDIT - SOLVED! i had to gut the lines of the plugin that were clashing but i only had to remove onTurnEnd and regenerateAll"
+    },
+    {
+      "post_id": "js-post-1499220",
+      "author": "Andar",
+      "date": "2025-02-16T00:15:06+0900",
+      "body": "removing lines from a plugin can cause a lot more problems, it is never a real solution.\nyou should have asked the plugin programmer\n@ATT_Turan\nto check the problem.\nEDIT: did you start a new game after adding the plugin? \"undefined\" errors are often caused by incompatible older savefiles."
+    },
+    {
+      "post_id": "js-post-1499275",
+      "author": "azurezero",
+      "date": "2025-02-16T05:26:06+0900",
+      "body": "Andar said:\nremoving lines from a plugin can cause a lot more problems, it is never a real solution.\nyou should have asked the plugin programmer\n@ATT_Turan\nto check the problem.\nEDIT: did you start a new game after adding the plugin? \"undefined\" errors are often caused by incompatible older savefiles.\nClick to expand...\nmy game is currently only a test room, so ive always been hitting new game"
+    }
+  ]
+}

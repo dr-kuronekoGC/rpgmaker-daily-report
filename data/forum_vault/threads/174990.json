@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-way-for-a-common-event-to-play-in-battle.174990",
+  "title": "A way for a common event to play in battle?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T12:51:06.209690+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1496074",
+      "author": "LupineDev",
+      "date": "2025-01-28T05:48:57+0900",
+      "body": "I'm making a game where the player is a wolf, and I got the idea that when the player encounters a herd of deer that they can just kill one deer, get meat, bones, and organ meat from a common event, and if they wish to, leave the rest of the herd alone. Wolves don't kill entire herds of deer in one hunt and I wanted the player to, let's say, kill a fawn, get its loot and leave the mother deer because they don't need to kill her too.\nI got common events to play for the loot drops when an enemy reaches 0 HP, but it doesn't play when the last enemy dies because the victory thing overwrites it. Is there a plug in to help with this so that loot drops for the last enemy?"
+    },
+    {
+      "post_id": "js-post-1496076",
+      "author": "Robro33",
+      "date": "2025-01-28T06:09:16+0900",
+      "body": "try this plugin. its for MV, but its likely to still work on MZ\nEnd Phase Triggers MV\nhttps://youtu.be/M9NVCyovcuYHave you ever had a situation where your troop events didn't seem to run in battle? For example, when the last enemy has been defeated and you want more enemies to a\nhimeworks.com\nOtherwise, you could adjust your battles so that enemies are immortal at the start and then use troop events to process the drops, remove the immortal statem and kill them when their hp hits 0"
+    },
+    {
+      "post_id": "js-post-1496077",
+      "author": "DrFreeman",
+      "date": "2025-01-28T06:10:59+0900",
+      "body": "If I'm understanding right, you might not need a plugin for this.\nYou want something like a \"consume\" skill during battle when the enemy reaches 10% or less life.  If consume is successful then the enemy dies and \"fresh carcass\" is added to your inventory. Similarly, if the enemy reaches 0, enemy leaves the item \"fresh carcass.\"\nYou could use the information from this video to change it a bit to suit your needs:\nRPG Maker MV Tutorial -how to catch enemies-\nYou might modify the consume skill to cause a status effect called fear which frightens enemies to run away.\nhttps://forums.rpgmakerweb.com/index.php?threads/monster-flee-from-battle.92489/"
+    },
+    {
+      "post_id": "js-post-1496083",
+      "author": "Andar",
+      "date": "2025-01-28T06:59:31+0900",
+      "body": "it can be done completely without any plugin, just with troop events.\n1) create a troop event triggering on turn 0 that applies an immortal state to all enemies.\n2) in each of the troop events on HP=0, add an \"remove immortal state as the last command.\nthe result is that the enemy will only be killed after its kill processing troop event has been completed, because that is when the protection of the immortal state is removed."
+    },
+    {
+      "post_id": "js-post-1496092",
+      "author": "LupineDev",
+      "date": "2025-01-28T07:58:53+0900",
+      "body": "Andar said:\nit can be done completely without any plugin, just with troop events.\n1) create a troop event triggering on turn 0 that applies an immortal state to all enemies.\n2) in each of the troop events on HP=0, add an \"remove immortal state as the last command.\nthe result is that the enemy will only be killed after its kill processing troop event has been completed, because that is when the protection of the immortal state is removed.\nClick to expand...\nThat didn't work. I can't get the last enemy killed to give me their loot. I did the event for the other enemy, I just didn't take a pic of it."
+    },
+    {
+      "post_id": "js-post-1496100",
+      "author": "Robro33",
+      "date": "2025-01-28T09:00:53+0900",
+      "body": "dont remove the immortal state from all enemies. remove it only from the one that is supposed to be dead. if you kill one and it removes the immortal state from the rest, then the last one wont be immortal when their hp goes to 0"
+    },
+    {
+      "post_id": "js-post-1496247",
+      "author": "LupineDev",
+      "date": "2025-01-29T10:10:14+0900",
+      "body": "Andar said:\nit can be done completely without any plugin, just with troop events.\n1) create a troop event triggering on turn 0 that applies an immortal state to all enemies.\n2) in each of the troop events on HP=0, add an \"remove immortal state as the last command.\nthe result is that the enemy will only be killed after its kill processing troop event has been completed, because that is when the protection of the immortal state is removed.\nClick to expand...\nRobro33 said:\ndont remove the immortal state from all enemies. remove it only from the one that is supposed to be dead. if you kill one and it removes the immortal state from the rest, then the last one wont be immortal when their hp goes to 0\nClick to expand...\nI realized that I made that mistake when I was heading to bed last night and I just laid there like \"Well, crap, that was my bad.\"\nI just fixed it and everything works now. Thank you both for your help! <3"
+    }
+  ]
+}

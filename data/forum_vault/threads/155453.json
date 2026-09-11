@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/individual-animation-dimensions.155453",
+  "title": "Individual Animation Dimensions",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T12:50:59.051888+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1332015",
+      "author": "Coolie",
+      "date": "2023-03-03T04:18:50+0900",
+      "body": "Individual Animation Dimensions (RMMV)\nAuthor(s):\nCoolie, caethyril\nVersion:\n1.0\nUpdated Date:\nMarch 2nd, 2023​\nWhat does this plugin do?\nRPG Maker MV forces a very small 192x192 size for each cell in an animation. This is way too small for an engine that allows us to make games with much higher resolutions. This plugin allows you to set the width and height of the animation cells in individual animations in your database, so you can use anims with cell sizes bigger (or smaller) than 192x192.\nKeep in mind, each cell must be the same width and height on BOTH animation files (if you're using two) used to create the animation.\nWhen the notetag to customize the animation size does not exist, the animation will use the default 192x192 cell size, so the default RMMV animations will not be ruined.\nScreenshot\nHow do I use this plugin?\nDOWNLOAD the plugin from my Pastebin\nhere\n. Do not change the filename.\nAdd the plugin to your js/plugins/ folder in your RMMV project.\nPlace the plugin somewhere near the bottom of your plugin list and make sure the plugin is ON.\nUse the notetag described below.\nChanging an Animation's Dimensions\nTo change an animation's dimensions, you will need to add a note to the NAME of your animation (name refers to the animation's name in your game's database, not the filename of the animation).\nYourAnimationName<iad:W,H,[+/-]X,[+/-]Y>\nJust like this, do not use any spaces!\nW\n= the width of the animation cells for this animation (i.e. 256)\nH\n= the height of the animation cells for this animation (i.e. 128)\nX\n= the X offset of the animation, in case the editor doesn't allow you to get it in the perfect position. Needs a + or - before it.\nY\n= the Y offset of the animation, in case the editor doesn't allow you to get it in the perfect position. Needs a + or - before it.\nExample of an Animation name that would utilize this plugin:\nFire<iad:256,128,+45,-36>\nThe above example would expect an animation sheet of...\nFive columns at a width of 256 each, or 1,280 pixels wide\nImage height equaling 128 x the number of rows in the image file\nFor a 60 cell anim, this would be 12 rows of 5, or 1,536 pixels high.\nIn-game...\nThe animation would be placed in-game +45 pixels from its X position in the MV editor.\nThe animation would be placed in-game -36 pixels from its Y position in the MV editor.\nTIP! You can leave your animation at X/Y 0/0 in the editor and use the notetag on the name to position your animation anywhere on the screen!\nTIP! It may also be a good idea to always make each cell have an EVEN value (i.e. 500x250 rather than 501x249) to ensure that the animation is always properly centered where it is placed. Not required, though!\nCompatibility\nThis plugin was written for RPG Maker MV version 1.6.1! It may not work with earlier versions, which are unsupported. Please make sure you are using RPG Maker MV version 1.6.1 before making a bug report.\nThis plugin only overwrites one function in sprites.js:\nSprite_Animation.prototype.updateCellSprite\nIf you have another plugin which overwrites this function, it may be incompatible. I'll do my best to update the plugin for compatibility.\nTerms of Use\nThis plugin is free to use in both non-commercial and commercial projects. Credit is not required, but is always nice. If you do wish to credit the individuals responsible for this plugin, they are:\nCoolie\n(Author)\ncaethyril\n(Notetag Assistance)\nDownload Link\nPastebin:\nCoolie_IndividualAnimDimensions.js"
+    },
+    {
+      "post_id": "js-post-1382447",
+      "author": "Ghostfuneral93",
+      "date": "2023-09-21T02:45:22+0900",
+      "body": "This sounds great, what would be the maximum size/Hight for a 5 column animation with this?"
+    },
+    {
+      "post_id": "js-post-1382759",
+      "author": "Coolie",
+      "date": "2023-09-22T02:21:12+0900",
+      "body": "Ghostfuneral93 said:\nThis sounds great, what would be the maximum size/Hight for a 5 column animation with this?\nClick to expand...\nThe height of the image would be the defined height of your individual cells multiplied by the number of rows, and the width of the image would be the defined width of each cell multiplied by 5, the standard way that RPG Maker MV parses animation images for the editor.\nFor example, a 30 frame animation image (5 columns, 6 rows) with a cell size of 384 and height of 108 for each individual frame would be 1,920x648 (384x5 and 108x6). There is no maximum. The plugin will simply parse the animation from the cell size you specify, along with the width and height of the image as a whole.\nBe careful with very large images, as the RPG Maker MV editor itself can't handle super huge images sometimes. Be sure to\nsave your project\nbefore editing an animation using a really large image. The editor may crash on occasion."
+    },
+    {
+      "post_id": "js-post-1413832",
+      "author": "masterlobo",
+      "date": "2024-01-12T03:24:10+0900",
+      "body": "This plugin also works on RPG Maker MZ with a very minor edit.\nSimply rename\n`Sprite_Animation.prototype.updateCellSprite` in line 143 to\n`Sprite_AnimationMV.prototype.updateCellSprite` and voila!\nThanks a lot Coolie!\nEdit: BTW I added hue support by adding this line right before line 186:\n`sprite.setHue(pattern < 100 ? this._hue1 : this._hue2);` (only tested in RPG Maker MZ)"
+    },
+    {
+      "post_id": "js-post-1415175",
+      "author": "Coolie",
+      "date": "2024-01-17T08:57:57+0900",
+      "body": "Glad it's of use to you!"
+    },
+    {
+      "post_id": "js-post-1500207",
+      "author": "fishcenterliveking",
+      "date": "2025-02-21T06:24:33+0900",
+      "body": "Hi, would you happen to have any more information on how it works on MZ? I tried your fix on line 143 of the plugin but I can't figure out how to work it in the editor. When I place frames in I don't see the image in the cells at the bottom, I don't really know how I could place it down since the editor still only wants to use the 192x192 cells. Anyway, if you have any info I would be so grateful!\nmasterlobo said:\nThis plugin also works on RPG Maker MZ with a very minor edit.\nSimply rename\n`Sprite_Animation.prototype.updateCellSprite` in line 143 to\n`Sprite_AnimationMV.prototype.updateCellSprite` and voila!\nThanks a lot Coolie!\nEdit: BTW I added hue support by adding this line right before line 186:\n`sprite.setHue(pattern < 100 ? this._hue1 : this._hue2);` (only tested in RPG Maker MZ)\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1500425",
+      "author": "masterlobo",
+      "date": "2025-02-22T06:14:21+0900",
+      "body": "fishcenterliveking said:\nHi, would you happen to have any more information on how it works on MZ? I tried your fix on line 143 of the plugin but I can't figure out how to work it in the editor. When I place frames in I don't see the image in the cells at the bottom, I don't really know how I could place it down since the editor still only wants to use the 192x192 cells. Anyway, if you have any info I would be so grateful!\nClick to expand...\nYou have to use your imagination, the plugin doesn't modify the Editor. It is kind of annoying, but the best you can do is constantly check on \"Battle Test\".\nI'm sorry, AFAIK there is no way to modify the editor itself."
+    },
+    {
+      "post_id": "js-post-1537681",
+      "author": "Social_Knight",
+      "date": "2025-11-22T20:07:52+0900",
+      "body": "Appears to instantly explode the game if I'm using it with YEP_CoreEngine.\nThat section is it merely booting the scenes:\nCode:\nYanfly.Core.SceneManager_run = SceneManager.run;\nSceneManager.run = function(sceneClass) {\n  Yanfly.Core.SceneManager_run.call(this, sceneClass);\n  Yanfly.updateResolution();\n  if (!Utils.isNwjs()) return;\n  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= \"1.6.0\") return;\n  if (Yanfly.Param.OpenConsole) Yanfly.openConsole();\n};\nSpecifically 1371 is the third line.\nAny ideas? I was going to use this with extracted effekseeker anims so they could be larger but still use MV spritesheets.\nHm, nevermind, actually it seems that it doesn't like the fact that the script directly downloaded from pastebin has a 1.00 in the filename. That causes it to fail loading (due to the excess period presumably)."
+    },
+    {
+      "post_id": "js-post-1537684",
+      "author": "Coolie",
+      "date": "2025-11-22T21:07:16+0900",
+      "body": "Social_Knight said:\nView attachment 353409\nAppears to instantly explode the game if I'm using it with YEP_CoreEngine.\nThat section is it merely booting the scenes:\nCode:\nYanfly.Core.SceneManager_run = SceneManager.run;\nSceneManager.run = function(sceneClass) {\n  Yanfly.Core.SceneManager_run.call(this, sceneClass);\n  Yanfly.updateResolution();\n  if (!Utils.isNwjs()) return;\n  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= \"1.6.0\") return;\n  if (Yanfly.Param.OpenConsole) Yanfly.openConsole();\n};\nSpecifically 1371 is the third line.\nAny ideas? I was going to use this with extracted effekseeker anims so they could be larger but still use MV spritesheets.\nHm, nevermind, actually it seems that it doesn't like the fact that the script directly downloaded from pastebin has a 1.00 in the filename. That causes it to fail loading (due to the excess period presumably).\nClick to expand...\nJust to clarify, that's a Pastebin thing. The actual plugin has no name requirement, as it has no plugin parameters. You can name the file whatever you want to (just mentioning in case anyone else runs into this issue downloading from Pastebin)."
+    },
+    {
+      "post_id": "js-post-1537694",
+      "author": "Social_Knight",
+      "date": "2025-11-23T00:17:15+0900",
+      "body": "No worries, I figured it out when I sat and thought \"why wouldn't it be loading?\" for a moment.\nIt then clicked there was also no description when I popped it into the plugin manager, which is generally unusual. So I tried renaming it and reimporting, and lo behold, a description, and it works.\nThe annoying part is that it's not something one normally wants to try due to many plugins exploding if you DO change their name."
+    }
+  ]
+}
