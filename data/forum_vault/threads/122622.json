@@ -1,0 +1,1247 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/cross-engine-combining-chrono-engine-with-altimit-movement.122622",
+  "title": "CROSS ENGINE: Combining Chrono Engine with Altimit Movement",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T04:45:30.147681+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1073421",
+      "author": "Restart",
+      "date": "2020-06-09T14:38:33+0900",
+      "body": "Latest Version:\nCross Engine Alpha 0.20.06.26 Demo Project\nWhat is Cross Engine?\nOver the course of the last few months I've been working on my game, and I decided I wanted to combine\nAltimit Movement\nand\nMog's Chrono Engine\n.  Cross Engine is what I call the big pile of functions that makes both of them work together, giving both pixel movement and ABS mode.\nIt also includes bugfixes, and QoL features that came up when I was doing things (most of my\nnotes to self\nthread is included).  Basically, this is all stuff I found useful, and hope that other people will find useful as well.\nWhy's it called Cross Engine?  Partially because it's a\nCross\n-Compatible Engine for making games, but mostly because it's a followup to a beloved classic which killed off Chrono.\nCompatibility Patches\nCross Engine now works with yanfly's itemcore, altimit movement, yanfly's item spawner, yanfly's doodads, and galv's camera plugin (the last of which is actually essential to avoiding event/doodad jitter).\nAlso, Ultra Mode 7.\nSpoiler:\nOther New Features:\n8-directional, 2 directional, and 1-directional Spritesheets:\nSure, a lot of people have 8-directional spritesheets (and I support all the major formats), but how many people have ONE-directional spritesheets?\nWith Cross Engine, you can take any old image, give it a filename, and put it in.\nSave it as $Angel(f1)(d1).png, and BAM, it's usable as an event.  No mucking around in photoshop making a spritesheet with four versions of the same sprite.\nBut that's not all!  I also added intelligent sprite flipping, as well. If you named that angel $Angel(f1)(d\n-1\n).png instead, it will flip to face left if it moves left, and flip to face right if it moves right.\nSplit poses and actions\nOne of the things really dragging down the pace of a chrono engine game is that characters were locked in place while they animated.  I have changed the engine so now you have a separate 'pose duration' and 'act duration'.  Pose duration means your character is playing an animation, act duration means they can't move or cast anything.  I've also added a 'cooldown duration', which lets you move, but doesn't let you cast any abilities.\nIntelligent Tag Parsing\n1) Tags parse from right-to-left, instead of left-to-right.  This seems super minor, but it means that if your base character sprite is $Harold(f4)(d8), and he has a casting pose \"_casting(f8)(d1)\", then the new spritesheet sizes will take precedence!\n2) Filename Completion: Let's say your idle sprite for harold is \"$Harold(f4)(d8)_idle(f1)(d1)\".  In base Chrono engine this would cause rpgmaker to screech to a halt, because it can't find \"$Harold(f4)(d8)_idle\".\nHowever, upon starting up the game, Cross Engine makes a list of every file in your characters folder.  When it checks for poses, it will first check for an exact match.  If it doesn't get it, it will check to see if there's any longer versions of that filename.  If it checks for \"$Harold(f4)(d8)_idle\", and can't find it, it will return \"$Harold(f4)(d8)_idle(f1)(d1)\".\nWhat if there's no match at all?  The event keeps its base sprite.  In playtesting, it will whine about it in the console.\nNo crashing.\n3) Negative values are now allowed for x and y offsets.\nWalking actions\nYou know how in megaman you can shoot your little gun and megaman keeps on walking?  Using the tag (walking) will keep your character in the same part of the animation cycle when transitioning into the new pose.  Practically speaking, that means you can do the megaman things.  If the character isn't moving, it will fall back onto a _static pose, so you don't run in place whenever you shoot.\nStanding Pose\nOne of the big constraints on having fluid animation in rmmv is that your walking frames have to include a static pose used for standing.  If you define a 'standing' pose, your character will use that instead when they aren't moving.  While you can technically do this with an idle pose, I wanted to have both in my project.\nFaint Poses\nMog was going to implement faint/death poses distinct from damage poses, but didn't end up finishing it. I have an implementation of this, so you can have a robot get banged up a bit when it gets hit, then violently explode into a miserable pile of circuits when it dies.\nBasic Preloader Function\nOne thing you'll notice using chrono engine is that whenever creatures change poses for the first time, you'll sometimes see a flicker as the file loads.  I have added a function which preloads all poses for a creature.  If you enter ImageManager.preloadPoses('Ralph'), it will find 'Ralph_attack', 'Ralph_defense', 'Ralph_is_unstoppable(F4)(d8)(s2)(x4)', et cetera, and preload them.  This doesn't happen automatically - you have to invoke it each time you're worried about preloading.\nNew plugin command: disable_idleposes\nTurns off idle poses.  Good for cutscenes where characters mugging at the camera is unwanted.  Turn them back on with enable_idleposes\nIntelligent Rotations\nDo you want a magic circle of spinning runes?  I've got you covered.  In chrono engine, rotations are around the bottom center of the sprite, wherever it is.  In Cross Engine, the axis of rotation is the base of the\nevent\n- the offsets you put into filenames, (y124) or (x12) or whatever, move the sprite without changing where rotations are - so if you have a 128 pixel tall wheel and put  (y64) into the filename, rotating it will spin it!\nI also have functions that let you tell an event to spin its sprite, and whether or not there's an angle it should stop at.  So you can have a compass that always points at the player or at a monster or something.\nAnd if you use the this.rotFaceTarg() function, your bullets will point to face the direction that they're going to move towards. In a move route, put it on the same line, directly after one of the motion-ordering commands (like rLoc, tLoc, shootForward, or shootPastPlayer)\nA big pile of helper functions\nI've got a bunch of functions with short names for stuff that I ended up doing often, like converting directions to vectors or angles, or making characters move in a specific direction.  For instance, being able to type in tLoc(x,y) to get a character to move directly to the location x,y makes writing moveroutes and scripts a lot easier.\nSpoiler:\nHow To Use\nJust like the Chrono Engine which preceded it, you're best off starting with the working demo project and building outwards.  The cross engine plugin itself should be reasonably drop-in for an existing Chrono Engine project, but I honestly haven't tried it.\nSpoiler:\nQ & A:\n1) Will you make a compatibility patch for (this random plugin)?\nIf I end up using that plugin in my game, yes.  Otherwise probably not, there's a lot of plugins out there.\n2) I have a compatibility patch for chrono engine and (some plugin) - will you add it?\nIf it doesn't break anything, sure.\n3) I have a bug report!\nIf it's in ABS mode, upload either a minimal test case or a bugfix.\n4) What if I'm reporting a bug that isn't in ABS Mode?\nWe've moved on past Chrono Engine.  This is the sequel, Cross Engine.  Chrono died in the timeskip.  It's sad but we all have to live with it.  You can report Chrono bugs but I probably won't do anything about it.\n4) But what if I have a bugfix for a bug in Chrono mode.\nOh well in that case, sure.  Just because I don't care about poor dead Chrono doesn't mean other people don't.\n5) I'm using yanfly item core with this and I'm just getting a 'cancel' beep when I try to use a sword or my shield isn't working or whatever\nTurn on midgame note parsing.\n6) What are the future plans?\nI'll keep adding features that I personally find useful, and fix bugs I encounter.\n7) I want to take cross engine and make my own thing based on it.\nGo ahead, just credit with a linkback, and stick a link in this thread to wherever your project is.\nPLUGIN ORDER:\nSpoiler\nThis is from the demo project, but I'm putting this here as well\nLICENSE:\nThis is a cross compatibility patch, which means that it borrows heavily from the underlying plugins.\nDo whatever you want with my contributions\n, but don't take that as permission to violate any terms for the underlying plugins I'm stitching together.  Use it commerically, noncommerically, as a basis for your own compatibility engine, whatever.  Please credit.\nCREDIT INSTRUCTIONS for using Cross Engine:\nFor Cross Engine specifically, credit 'Restart', and make sure you also credit Moghunter and Altimit Community Contributors for their massive contributions.  Neither of those plugins' terms require it but I think they deserve it\n.\nDEMO CREDITS:\n* Moghunter made the original Chrono Engine, as well as the original chrono engine demo which I'm including.\n* The Altimit Community Contributors is the official copyright group listed for Altimit Movement, but I think we all know that it wouldn't have happened without Xilefian.\n*\nGalv's Camera Plugin\nis included (with permission) in the bundle as well, because it's needed to control the unholy jitter this stack of plugins creates.\n* Yanfly gave me permission to include some of the original code when making the YEP_EventSpawner compatibility patch."
+    },
+    {
+      "post_id": "js-post-1073632",
+      "author": "KaYsEr",
+      "date": "2020-06-10T04:33:17+0900",
+      "body": "This is a really good job; I tried your demo for 30 minutes and found some glitches when it comes to collisions though. Mainly when spamming attacks on an enemy near a wall, sometimes the enemy can clip through it and can't come back in the map, and the \"final hit\" is almost guaranteed to push an enemy into the wall (that one is less \"game breaking\"), also when charging an attack the enemies are pushed back super-fast, this is actually the game breaking bug I got on my MC when fighting the Behemoth, I don't know what happened but I was probably dashing and got hit, suddenly I became super-fast (never to come back at the regular speed) and was able to go through wall when holding the dash button, and only when holding it. Weird.\nRestart said:\nThe cross engine plugin itself should be reasonably drop-in for an existing Chrono Engine project, but I honestly haven't tried it.\nClick to expand...\nI get an error \"this.isPosing is not a function\" when trying to do this, I have a lot of plugins that could be problematic though, I'll try to check deeper but right now the motivation isn't that high considering your demo brings new problems with collision so it's kind of a 'pick your poison\" situation, too bad because it feels really good to play with an analog controller. Again, it's an impressive work you've done and I'm sure it's possible to iron out some of the remaining glitches. Good luck, you’ve made something really interesting and it feels like it’s almost there."
+    },
+    {
+      "post_id": "js-post-1073634",
+      "author": "Restart",
+      "date": "2020-06-10T04:42:23+0900",
+      "body": "The problem with knockback collision is inherited from altimit (fast enough characters can go through the thin walls on some tiles, particularly A-tiles).  I thought setting a speed of 5.8 was low enough to avoid issues in testing but I can tune that speed down a little bit, it's no biggie.  Probably should have it (and the getting stuck in a permanent super fast knockback state) patched by tomorrow.\nKnocking back things super far with the charged sword is intentional; Mog actually set the Knockback_Strength parameter for it super high, but it wasn't actually implemented in code for the demo.\nEDIT: Okay, think I probably fixed the knockback issues in the -B release.  If clipping keeps happening I'll lower speed all the way to 5, and if the player retains speed after knockbacking even after that, there are a few other places I can reset the speed."
+    },
+    {
+      "post_id": "js-post-1073658",
+      "author": "KaYsEr",
+      "date": "2020-06-10T06:04:32+0900",
+      "body": "It's perfect now I think, after trying my best to push slimes and bats in the walls I coudn't, and the Behemoth fight didn't have any problem too, of course that kind of test needs more than 30 minutes but so far so good.\nNow that I've seen how great it is to move with an analog stick it will be hard to go back haha, I wish I could make it work on an existing Chrono project, out of despair I even turned ALL my plugins OFF except for Altimit, Chrono-engine and your Cross-engine (in that order) and I still have an error, a different one though \"cannot read property '_actionWalk' of undefined\" hmmm, I wonder what's wrong here, maybe I need some rest because I'm out of ideas.\nGreat job nonetheless! That combination of smooth pixel movement + ABS is pretty much a first in RM history."
+    },
+    {
+      "post_id": "js-post-1073660",
+      "author": "Restart",
+      "date": "2020-06-10T06:16:37+0900",
+      "body": "It might be a plugin order issue; the stack of plugins is kind of sensitive since I built it around an existing chrono engine setup and never tried moving things around.\nOtherwise, if you have a console log for me to check, it sounds most likely that Cross Engine is looking for a mog plugin that it doesn't find, and RPG maker dumps the whole Cross Engine - if so I can see if I can check if that plugin doesn't exist, and disable any features depending on it."
+    },
+    {
+      "post_id": "js-post-1073668",
+      "author": "KaYsEr",
+      "date": "2020-06-10T06:29:27+0900",
+      "body": "Yes it's possible, it's the first time in 5 years using MV that I can't solve a problem like that by moving plugins around or deactivate some of them, here is a screencap of my console log."
+    },
+    {
+      "post_id": "js-post-1073670",
+      "author": "Restart",
+      "date": "2020-06-10T06:32:23+0900",
+      "body": "okay yeah, it's looking for mog's weather plugin.  I'll put in an if statement to check if it's imported."
+    },
+    {
+      "post_id": "js-post-1073674",
+      "author": "KaYsEr",
+      "date": "2020-06-10T06:39:28+0900",
+      "body": "Seems to be the plugin that causes problems indeed, here is what I get when I turn it back on, it's basically the first error it gave me. Maybe that weather plugin needs to be setup in a specific way idk."
+    },
+    {
+      "post_id": "js-post-1073709",
+      "author": "Restart",
+      "date": "2020-06-10T08:59:30+0900",
+      "body": "Now that you've got things working with your plugin stack, would you mind posting whatever tweaks you needed to do in thread?"
+    },
+    {
+      "post_id": "js-post-1073735",
+      "author": "KaYsEr",
+      "date": "2020-06-10T10:54:08+0900",
+      "body": "Sure, what do you need to know? It's quite easy in fact, just get the plugin and put it UNDER everything needed for your cross-engine (included galv camera and anti jitter) then you're good to go.\nHere's what I recently achieved with it:"
+    },
+    {
+      "post_id": "js-post-1073766",
+      "author": "Restart",
+      "date": "2020-06-10T12:17:58+0900",
+      "body": "Latest Version should be reasonably compatible with ultra mode seven - at least, it works in my initial tests, I haven't tried anything fancy."
+    },
+    {
+      "post_id": "js-post-1073774",
+      "author": "KaYsEr",
+      "date": "2020-06-10T12:35:36+0900",
+      "body": "Looks promising indeed! Well you can add some random trees (using events or doodadds) to get a quick idea, but I confirm that it works.\n(77fps? Unusual number, I assume you have a high refresh-rate monitor? I got a 120hz one, which means MV always tell me I'm at 120/119fps, does it mean you have any kind of performance issue on your side, could be a frame pacing problem, I have to remember to try all of it on a weak laptop in order to see if everything is still running fine.)"
+    },
+    {
+      "post_id": "js-post-1074059",
+      "author": "Restart",
+      "date": "2020-06-11T08:44:28+0900",
+      "body": "Updated version with a little tweak to enemy pathing (randomly moving enemies should bonk into walls less).\nTemporary invulnerability has been enhanced a bit.  Weapons can have custom temp invulnerability defined (so the first two slashes of the sword combo don't cause it, but the third one does).  Also, characters with temporary invulnerability now flash while they have it (technically this invokes an animation on the character every 5 frames, so it's customizable and toggleable).\nI'll probably add a configurable temp invulnerability on touch damage, at the moment it's only slightly longer than your knockback duration.  The homing slime in the demo gives you a few moments between its constant attacks to respond, but it's probably a little too short (that said, this is the worst case scenario of a super-fast enemy that only knows how to attack, and scripting the AI would avoid this situation as well)."
+    },
+    {
+      "post_id": "js-post-1076252",
+      "author": "TheGameAfter",
+      "date": "2020-06-15T04:17:05+0900",
+      "body": "Wow, very nice work, to be honest from starting with MV I been looking at your posts, every time got new knowledge the help me a lot when working on my game, I'm very thankful I can check another one of your great add-ons to mog abs, and this time you did it in big haha."
+    },
+    {
+      "post_id": "js-post-1076359",
+      "author": "Restart",
+      "date": "2020-06-15T06:39:05+0900",
+      "body": "^Thanks!\nNew update: this version has some basic enemy scripts.\nI have a wall follower, and a wall reflector, both of which are great for replicating classic zelda enemies.  I think everyone hates those anti-fairy things which move diagonally around the screen, constantly bouncing, and now you can inflict those on your players too!\nI also tossed in a dumb little horizontal charger, which will wander around and charge the player if it sees the player is horizontally aligned - and if it misses the player and hits the wall, it can get stunned for a few free hits.\nSince this is all enemy logic unrelated to the core engine, I'm putting them all in their own file - CrossBattleScripts.js"
+    },
+    {
+      "post_id": "js-post-1077497",
+      "author": "Restart",
+      "date": "2020-06-17T10:49:04+0900",
+      "body": "Another update, should have improved ultra mode seven support when dealing with yaw angles other than 0 degrees.  At least in my tests, it looks like shooting diagonal weapons when the entire map is tilted works fine.\nOne thing I did notice is that if you're using altimit + ultra mode seven that the default altimit colliders are located a little low, and you should probably move the y center of the circle to something like 0.25"
+    },
+    {
+      "post_id": "js-post-1077509",
+      "author": "TheGameAfter",
+      "date": "2020-06-17T11:07:51+0900",
+      "body": "Restart said:\nAnother update, should have improved ultra mode seven support when dealing with yaw angles other than 0 degrees.  At least in my tests, it looks like shooting diagonal weapons when the entire map is tilted works fine.\nOne thing I did notice is that if you're using altimit + ultra mode seven that the default altimit colliders are located a little low, and you should probably move the y center of the circle to something like 0.25\nClick to expand...\nSince I'm all about resources, I want to let you know about another 3D mod you can try, is basically adding the\n3D mod using common events\n(he does use a plugin but just for the base, all the functions store in the 'common events'). It is a paid plugin but I fighter if it is something you think you use for your game you might as well have more options.\nThis is the link\n, I would love to know what you think about it (comper to the 'ultra-mod')."
+    },
+    {
+      "post_id": "js-post-1077513",
+      "author": "Restart",
+      "date": "2020-06-17T11:15:01+0900",
+      "body": "YoraeRasante is actually already working on a chrono engine/mv3d compatibility plugin.\nI've tested an early build, and the chrono compatibility plugin seems to not have any major problems with cross engine instead of just chrono, but since Yorae's not done with it yet I'm obviously not going to include what he sent me in the demo.\nBasically once it comes out I'll add official support (which'll almost certainly need to include some special case updates in crossgraphicsfix), but until then I'm holding off on it.  No point in me working on it when someone else is already doing a great job."
+    },
+    {
+      "post_id": "js-post-1077519",
+      "author": "TheGameAfter",
+      "date": "2020-06-17T11:31:24+0900",
+      "body": "Restart said:\nYoraeRasante is actually already working on a chrono engine/mv3d compatibility plugin.\nI've tested an early build, and the chrono compatibility plugin seems to not have any major problems with cross engine instead of just chrono, but since Yorae's not done with it yet I'm obviously not going to include what he sent me in the demo.\nBasically once it comes out I'll add official support (which'll almost certainly need to include some special case updates in crossgraphicsfix), but until then I'm holding off on it.  No point in me working on it when someone else is already doing a great job.\nClick to expand...\nGot it, I will look up on YoraeRasante work then, Thanks"
+    },
+    {
+      "post_id": "js-post-1077572",
+      "author": "KaYsEr",
+      "date": "2020-06-17T13:28:33+0900",
+      "body": "Restart said:\nOne thing I did notice is that if you're using altimit + ultra mode seven that the default altimit colliders are located a little low, and you should probably move the y center of the circle to something like 0.25\nClick to expand...\nIndeed.\nAdjusting the Y would be a good enough solution but, what if your project uses both 2D and Mode7 maps.\nHopefully this is only a problem for the MC and no other collisions.\n(EDIT: worst case scenario it's possible to adjust on the fly)"
+    },
+    {
+      "post_id": "js-post-1078753",
+      "author": "Sissel Cabanela",
+      "date": "2020-06-19T11:10:50+0900",
+      "body": "...man, your Cross Engine came out after I had butchered the two(Altimit and Chrono) into working with my custom project, but yours is far superior: THANK GOD, because I couldn't get diagonals working well and my knockback system kept glitching. Now I have a question, is the mod done mostly via your plugin, or are there edits to the base plugins of Altimit and Chrono as well? The reason I ask is because I believe I made some edits to my Chrono Engine to work with some Yanfly Plugins and also commissioned a number of Chrono Engine plugins so I'm unsure of compatibility."
+    },
+    {
+      "post_id": "js-post-1078772",
+      "author": "Restart",
+      "date": "2020-06-19T11:26:35+0900",
+      "body": "I have a few small edits in the version of altimit bundled with it (like fixing random movement and deleting bullets when they hit the edge of the map instead of sliding along it), but nothing particularly major.  The chrono engine file is totally stock\nIf you're able to send me the yanfly compatibility changes I can see if I can incorporate them into the next version."
+    },
+    {
+      "post_id": "js-post-1078822",
+      "author": "Sissel Cabanela",
+      "date": "2020-06-19T12:35:05+0900",
+      "body": "Hm, I'm looking at the line of code where this error references, and I'm a bit lost.\nI have tried to run the project with the 'Standing' option in parameters both on and off and get the same issue. Perhaps related to the issue mentioned above? But half of the plugins here are below Cross Engine."
+    },
+    {
+      "post_id": "js-post-1078830",
+      "author": "Restart",
+      "date": "2020-06-19T12:48:53+0900",
+      "body": "show me the console - cannot find property 'standing' is usually because it choked at some point on an incompatibility and threw out a plugin, and the console will usually show what happened."
+    },
+    {
+      "post_id": "js-post-1078833",
+      "author": "Sissel Cabanela",
+      "date": "2020-06-19T13:07:28+0900",
+      "body": "Er, actually, it's just more of the same BUT I do see that it starts in Core Engine, here. Odd."
+    },
+    {
+      "post_id": "js-post-1078843",
+      "author": "Restart",
+      "date": "2020-06-19T13:19:29+0900",
+      "body": "do you have mog's character poses plugin working and enabled?\nif not, turn it on.\nif you do, try disabling the random map generator - a lot of map generators make events that aren't 100% rpg maker standard, and sometimes that makes weird things happen"
+    },
+    {
+      "post_id": "js-post-1078854",
+      "author": "Sissel Cabanela",
+      "date": "2020-06-19T13:58:08+0900",
+      "body": "Restart said:\ndo you have mog's character poses plugin working and enabled?\nif not, turn it on.\nif you do, try disabling the random map generator - a lot of map generators make events that aren't 100% rpg maker standard, and sometimes that makes weird things happen\nClick to expand...\nSo update, you were correct. I had that disabled because, uh, I don't really have many sprites so I just disabled it. Turned it on, no issues at the moment in that regard. That said, I do have an...interesting issue now, unrelated to outright errors.\nI had been commissioning someone to make plugins for my project which uses the Chrono Engine before the shift to Pixel Movement, and when I tried to get everything working with Altimit Movement before, one of the plugins I commissioned didn't quite work well. The plugin in question has the ability to create proper reflective abilities, from equipment to actual tools/attacks that can reflect attacks back at the user at varying rates of damage. Since you are making a project with the engine yourself, is there a chance I can PM you the plugin and you might be able to doctor it so we can both use it with Cross Engine? It seems to just be an issue of the new pixel movement options."
+    },
+    {
+      "post_id": "js-post-1078873",
+      "author": "Restart",
+      "date": "2020-06-19T14:33:27+0900",
+      "body": "I can take a quick peek, but I'd prefer not to spend too much time working on compatibility with something that isn't available to the general public."
+    },
+    {
+      "post_id": "js-post-1080708",
+      "author": "TheGameAfter",
+      "date": "2020-06-24T04:16:23+0900",
+      "body": "Hi, for some reason I get this error only when using the cross engine, when using the Chrono engine the game not show any error. It seems to be something about the function/option  -SX and -SY, do you have any idea how to solve this?\nEdit: I try to remove it all, no error there, however, I still get an error 'this.collider is not a function', I added a console log picture for this one as well. I'm not sure if that connects to the first error or not."
+    },
+    {
+      "post_id": "js-post-1080954",
+      "author": "#Blessed sun#",
+      "date": "2020-06-24T17:21:17+0900",
+      "body": "Hello Sir, is this version compatible with yanfly item core? I tried using item core and it starts the game but the weapon doesnt work. It doesnt fire/Attack when I press z."
+    },
+    {
+      "post_id": "js-post-1082103",
+      "author": "Restart",
+      "date": "2020-06-26T16:16:28+0900",
+      "body": "Small update: there's now a plugin parameter to tell it not to do idle poses while a text box is on screen.  Some idle poses can make it seem like your character isn't paying attention to npcs, and this is easier than using the enable_idleposes and disable_idleposes commands every time.\nAlso fixed hookshot poses.\n#Blessed sun# said:\nHello Sir, is this version compatible with yanfly item core? I tried using item core and it starts the game but the weapon doesnt work. It doesnt fire/Attack when I press z.\nClick to expand...\nYou need to enable midgame notetag parsing in plugin parameters.\nI probably should just override that plugin setting in the next version, since I don't think there's any reason to have it off when using cross engine.\nTheGameAfter said:\nHi, for some reason I get this error only when using the cross engine, when using the Chrono engine the game not show any error. It seems to be something about the function/option  -SX and -SY, do you have any idea how to solve this?\nEdit: I try to remove it all, no error there, however, I still get an error 'this.collider is not a function', I added a console log picture for this one as well. I'm not sure if that connects to the first error or not.\nClick to expand...\nWhat other plugins do you have in the project?  setDirectionVector should be in altimit movement, as should the collider stuff - it seems like altimit isn't being detected."
+    },
+    {
+      "post_id": "js-post-1082222",
+      "author": "TheGameAfter",
+      "date": "2020-06-26T22:49:24+0900",
+      "body": "What other plugins do you have in the project?  setDirectionVector should be in altimit movement, as should the collider stuff - it seems like altimit isn't being detected.\nClick to expand...\nThanks for the answer, you right, when Altimat enables these errors not show up anymore, however for some reason I get a bigger error,  again only when  'Altimat' enable (that why I try not to use it in the first place):  \"Maximum call stack size exceeded\". I tried to replace all the 'Cross' plugins from your last version just in case, but I get the same error."
+    },
+    {
+      "post_id": "js-post-1082306",
+      "author": "Restart",
+      "date": "2020-06-27T02:11:41+0900",
+      "body": "seems likely there's some conflict with altimit and some other plugin you have, but without knowing the full list of what plugins are in your project, and their order, I can't say what it is.\nI noticed that you've got some JS files renamed, I know some plugins react badly to that"
+    },
+    {
+      "post_id": "js-post-1082328",
+      "author": "TheGameAfter",
+      "date": "2020-06-27T03:31:14+0900",
+      "body": "Restart said:\nseems likely there's some conflict with altimit and some other plugin you have, but without knowing the full list of what plugins are in your project, and their order, I can't say what it is.\nI noticed that you've got some JS files renamed, I know some plugins react badly to that\nClick to expand...\nOk yes, I forgat I added the 'MOG_Poses_CrossEngnie.js', I remove it and this time I get a different error \"Cannot read property 'scrollType' of null\".\nFrom the consol is looks like the error happened from the mog plugins and not from the other in my plugin list, and as I said earlier all of the Chrono engine plugins work fine if the 'cross engine/altimat is off, but when adding this two, the game show this error for some reason.\nSince I use many plugins, I upload the pictures of my plugin list to this link and I name the pictures on the order they list in my game:\nhttps://drive.google.com/drive/folders/1nuiO9RlFfGMlvcNW27aH0Gpw305yUfPA?usp=sharing"
+    },
+    {
+      "post_id": "js-post-1082330",
+      "author": "Restart",
+      "date": "2020-06-27T03:52:32+0900",
+      "body": "Honestly it could be anything, - your plugin list is really messy, and I noticed you have at least one duplicated plugins ( MOG_PickupThrow ).  I'd suggest you systematically test switching on/off to see what's interfering with altimit."
+    },
+    {
+      "post_id": "js-post-1082335",
+      "author": "TheGameAfter",
+      "date": "2020-06-27T04:28:54+0900",
+      "body": "Restart said:\nHonestly it could be anything, - your plugin list is really messy, and I noticed you have at least one duplicated plugins ( MOG_PickupThrow ).  I'd suggest you systematically test switching on/off to see what's interfering with altimit.\nClick to expand...\nThanks! I checked and the only plugin who case this error case by \"JAH_NewGameEvent\", when turning it off everything works fine, I will just find an alternative. It's embarrassing, sometimes my focus to finding a deep error let me forgot the simple solution, thanks again."
+    },
+    {
+      "post_id": "js-post-1082339",
+      "author": "Restart",
+      "date": "2020-06-27T04:37:35+0900",
+      "body": "Good to figure it out.\nIf you're looking for a replacement, I *believe* SRD's skip title screen plugin (so you can event it) and mog's various title screen prettiness plugins are compatible with cross/altimit, but that's from testing on my personal plugin stack, and your results might vary."
+    },
+    {
+      "post_id": "js-post-1083217",
+      "author": "TheGameAfter",
+      "date": "2020-06-29T03:57:08+0900",
+      "body": "I don't seem to find a way/script the will let me use 'Event Hitbox' (size) plugin with AltimIte Movement... at the moment when I'm adding the 'Event Hitbox' note script to my event using either 'Event Hitbox', Orange 'Event Hitbox', or EST - EVENT SIZE AND TRIGGER, none of them work, I try to use a parallel event as well but still nothing, the event (in the same page or another page) are not bigger than 1 tile.\nFor example:\nIf I put an image the bigger then 1 tile size, I can still walk through it. I also tried to add the Plugin command\nAltMovement move_align set false\nto the event stop Altimit on this specific event, but it doesn't seem to work. any idea what can be done? maybe is there any collider script I can add to the specific event instead to change his size?"
+    },
+    {
+      "post_id": "js-post-1083227",
+      "author": "Restart",
+      "date": "2020-06-29T04:10:15+0900",
+      "body": "Altimit has a different way of defining hitboxes - it's totally incompatible with other hitbox plugins because it rips out the default rpg maker one and puts in a totally different framework.\nYou'll need to use altimit's\nCode:\n<collider>\n<rect x='0' y='0' width='1' height='1' />\n</collider>\ntype notetags in order to define your hitbox shapes.  (You can attach multiple hit boxes to the same event by putting in multiple colliders in a row, and use circles and polygons as well - check the documentation)"
+    },
+    {
+      "post_id": "js-post-1083232",
+      "author": "TheGameAfter",
+      "date": "2020-06-29T04:14:31+0900",
+      "body": "Restart said:\nAltimit has a different way of defining hitboxes - it's totally incompatible with other plugins because it operates under a totally different framework.\nYou'll need to use altimit's\nCode:\n<collider>\n<rect x='0' y='0' width='1' height='1' />\n</collider>\ntype notetags in order to define your hitbox shapes.  (You can attach multiple hit boxes to the same event by putting in multiple colliders in a row, and use circles and polygons as well - check the documentation)\nClick to expand...\nI will try this out. Thanks!\nEdit:\nSo I try to put this code in a 'comment' in the event, but for some reason, he didn't affect. I mast missed something. my event is a house object (character) the need to show up on another map, I need to stop the player from walking through it, what and where should I place it?  I added my event pages for you to look. (i tried <rect x='2' y='2' width='1' height='1' /> first, then i tried bigger number to see if it change anything (5,5) but nothing (I'm using your 'cross' demo as the base for this project)."
+    },
+    {
+      "post_id": "js-post-1083266",
+      "author": "Restart",
+      "date": "2020-06-29T05:23:58+0900",
+      "body": "enable altimit debug plugin, which will show you what the hitboxes look like.\nThe X and Y are the coordinates of a rectangle relative to the upper-left corner of the tile the event is on, so setting x=5, y=5, will mean that you have a hitbox that's pretty far away down and to the right.  Width and height determine how big the hitbox is.\nThe comment tags for altimit are active for the specific event page they're on  (so changing pages can change how big your event is)"
+    },
+    {
+      "post_id": "js-post-1083399",
+      "author": "TheGameAfter",
+      "date": "2020-06-29T12:46:55+0900",
+      "body": "Restart said:\nenable altimit debug plugin, which will show you what the hitboxes look like.\nThe X and Y are the coordinates of a rectangle relative to the upper-left corner of the tile the event is on, so setting x=5, y=5, will mean that you have a hitbox that's pretty far away down and to the right.  Width and height determine how big the hitbox is.\nThe comment tags for altimit are active for the specific event page they're on  (so changing pages can change how big your event is)\nClick to expand...\nI already try to add all the collider script type, I think it my be something with this events type the need a specific Hitbox plugin in order to work, (it's few plugins the need eachother to work properly), I check the plugin script itself and still didn't find why is that, I will have to do more checking, thanks for the help."
+    },
+    {
+      "post_id": "js-post-1083400",
+      "author": "TheGameAfter",
+      "date": "2020-06-29T12:48:13+0900",
+      "body": "Bug, Animation number 0008 and small idea/request:\nHey, I hope you doing well,\nI notice a small thing, it seems like if I change animation number 0008 to normal 'effect' it will show up every time I use item/skill on an enemy or when the enemy attack player even if I didn't set it to do that.\nI guess its something with the one you already set it there call: \"Temp Invulerability Damage Flash\", are this animation number connect to some script in your cross plugins? if so what this animation set to do?\nSmall request/ thought\n(if possible):\nYou know when you use the \"collision_id :\" comment the event will 'remove' if using the 'item' you set there... I was looking for a way to add extra setting the only if use the item set 'amount' of times, only then it will be 'remove', something like \"collision_id : 6 : 3\" currently that's doesn't work).\nIf the 'cross' only changes the 'enemy' script, you may change the enemy react to only get damage from a specific item/weapon? and then add a similar option as above?\nAlso, I go even deeper with this idea, if possible, set up with a script how each item/weapon will affect the event (one item will light it up, the other will change active a switch...), that will be even better... maybe that's too hard to get that too work, just a thought\nIt can be helpful for making stronger items/tools that affect the event faster/differently.\nEdit:\nBug?\nI might be wrong but it seems like the 'mog_pickup_throw' plugin doesn't set up %100 with altimit, I take it from the fact\nPlayer can't 'throw up' an object\n(for example: 'bam') after pickup, (it works fine when turning cross/altimit off). there is any script, setup the can fix that?"
+    },
+    {
+      "post_id": "js-post-1091991",
+      "author": "TigerJazz",
+      "date": "2020-07-19T02:32:21+0900",
+      "body": "How could i use Cross Engine with\nMOG DestinationPointer\n? It is possible to run them together or they just wont fit? Because i tried and the pointer just doesn't show ://"
+    },
+    {
+      "post_id": "js-post-1092696",
+      "author": "TheGameAfter",
+      "date": "2020-07-20T21:32:42+0900",
+      "body": "TigerJazz said:\nHow could i use Cross Engine with\nMOG DestinationPointer\n? It is possible to run them together or they just wont fit? Because i tried and the pointer just doesn't show ://\nClick to expand...\nThe reason\nwhy 'MOG DestinationPointer' not working for my understanding: It's something to do with 'collider' checking, the original 'MOG DestinationPointer' plugin probably only have a function to check y,x in tiles, and there are 100 colliders in each tile... so we will have to add a 'collider location' script to check that,\nRestart\nmentioned this type of script in the official 'altimit' post.\nThe solution:\nWhat I did, instead of using\nMOG DestinationPointer\nto get a mouse point picture, I use TDDP_MouseSystemEx. However, if you using mv version 1.6 or up you will have to use a specific version of the plugin edit by Krimer, the original plugin not working properly on that version of mv (unless you using mv vir 1.5.1 version or lower than use the original one). I added the js file with the fixed version (for mv 1.6+)."
+    },
+    {
+      "post_id": "js-post-1092952",
+      "author": "rafman2k",
+      "date": "2020-07-21T06:53:37+0900",
+      "body": "This is great work! I was hoping the new MZ version would have this same exact chrono like functionality built in but no such luck.. I have heard that MOG Hunter will be porting his Chrono engine over to MZ . Would be nice to see this ported over as well ."
+    },
+    {
+      "post_id": "js-post-1093298",
+      "author": "TigerJazz",
+      "date": "2020-07-22T01:21:52+0900",
+      "body": "TheGameAfter said:\nThe reason\nwhy 'MOG DestinationPointer' not working for my understanding: It's something to do with 'collider' checking, the original 'MOG DestinationPointer' plugin probably only have a function to check y,x in tiles, and there are 100 colliders in each tile... so we will have to add a 'collider location' script to check that,\nRestart\nmentioned this type of script in the official 'altimit' post.\nThe solution:\nWhat I did, instead of using\nMOG DestinationPointer\nto get a mouse point picture, I use TDDP_MouseSystemEx. However, if you using mv version 1.6 or up you will have to use a specific version of the plugin edit by Krimer, the original plugin not working properly on that version of mv (unless you using mv vir 1.5.1 version or lower than use the original one). I added the js file with the fixed version (for mv 1.6+).\nClick to expand...\nThanks! I will take a look!"
+    },
+    {
+      "post_id": "js-post-1094260",
+      "author": "Morganis",
+      "date": "2020-07-24T13:07:47+0900",
+      "body": "hello, how does galves cam plugin help with event and doodad jiter? Any chance you can share how to do that?"
+    },
+    {
+      "post_id": "js-post-1100951",
+      "author": "Zyeard",
+      "date": "2020-08-09T06:46:55+0900",
+      "body": "Hello, I just wanted a help if anyone knows how to thank you.\nWell the boomerang tool doesn't work as it should with normal settings, how can I configure it?"
+    },
+    {
+      "post_id": "js-post-1101295",
+      "author": "TheGameAfter",
+      "date": "2020-08-10T04:04:16+0900",
+      "body": "zyeard said:\nHello, I just wanted a help if anyone knows how to thank you.\nWell the boomerang tool doesn't work as it should with normal settings, how can I configure it?\nClick to expand...\nHey, zyeard, you need to change some numbers to configure with altimit, I added an example of a boomerang Tool event that's work, you can copy and post it, then you can play with it a bit to see how it's work (focus on the 2 blue singes I added)."
+    },
+    {
+      "post_id": "js-post-1101352",
+      "author": "Zyeard",
+      "date": "2020-08-10T07:09:54+0900",
+      "body": "TheGameAfter said:\nHey, zyeard, you need to change some numbers to configure with altimit, I added an example of a boomerang Tool event that's work, you can copy and post it, then you can play with it a bit to see how it's work (focus on the 2 blue singes I added).\nClick to expand...\nThank you very much it really helped !!!"
+    },
+    {
+      "post_id": "js-post-1107903",
+      "author": "TheGameAfter",
+      "date": "2020-08-24T03:44:57+0900",
+      "body": "@Restart\nJust want to apologize and say thank you, apologize for trying to ask about MZ, a system like that takes a lot of time to import. I decided to stick with MV to use the power of the cross engine, I appreciate all the effort and time you put into it, and for sharing it. Any updates/other plugins commutability for MV will be very helpful, however, after all the people asking about MZ, it might pull you off, and that understandable. In any case, my game plan was not possible to have the freedom I wanted without your cross engine, I didn't fully understand that until now, I can't thank you enough. Have a wonderful day/week."
+    },
+    {
+      "post_id": "js-post-1126410",
+      "author": "Drake-_-Azric",
+      "date": "2020-10-07T07:17:46+0900",
+      "body": "First of all, this is amazing, and thank so much!\nI have some weird enemy/character shapes, and can't figure out how to make the collisions/hits to work properly.\nIs there a way to see and/or customize the 'hurtbox' size? I see it mentioned a few times in the code, but don't quite see where I could change it.\nI thought using 2 Altimit Colliders might work, but that seems to just be for changing the shape, not having different collisions.\nEdit: hit post too soon, finished question and reposted."
+    },
+    {
+      "post_id": "js-post-1187640",
+      "author": "yiling",
+      "date": "2021-05-14T21:29:29+0900",
+      "body": "Hi Restart!\nThank you for sharing this amazing plugin together with the demo file. This is all really fascinating, and I really appreciate your work!"
+    },
+    {
+      "post_id": "js-post-1187777",
+      "author": "Restart",
+      "date": "2021-05-15T11:12:31+0900",
+      "body": "Drake-_-Azric said:\nFirst of all, this is amazing, and thank so much!\nI have some weird enemy/character shapes, and can't figure out how to make the collisions/hits to work properly.\nIs there a way to see and/or customize the 'hurtbox' size? I see it mentioned a few times in the code, but don't quite see where I could change it.\nI thought using 2 Altimit Colliders might work, but that seems to just be for changing the shape, not having different collisions.\nEdit: hit post too soon, finished question and reposted.\nClick to expand...\nIIRC, hurtbox is totally differently from map collision, it's a circle centered on the bottom of the event's main tile and defined in the enemy's note tags as body size.  Defaults to radius of 1, I think?"
+    },
+    {
+      "post_id": "js-post-1239869",
+      "author": "DouglasOliveira",
+      "date": "2021-12-30T08:47:03+0900",
+      "body": "Hi. How did you make spells or arrows (for example) disappear at the edges of the screen? On Chrono Engine, it reaches the edge of the screen and stops. I'm racking my brain to fix this problem.\n----------------\n>>>> I found the solution. Ignore this coment rs"
+    },
+    {
+      "post_id": "js-post-1245954",
+      "author": "LazyTime",
+      "date": "2022-01-22T01:36:02+0900",
+      "body": "uhhh...anyone helps ?\n, why my game look like this when I play test it\n(No nevermind I fix it, I have to turn off AltMovement I hope it's not imported to the battle plugin)\nRestart said:\nLatest Version:\nCross Engine Alpha 0.20.06.26 Demo Project\nWhat is Cross Engine?\nOver the course of the last few months I've been working on my game, and I decided I wanted to combine\nAltimit Movement\nand\nMog's Chrono Engine\n.  Cross Engine is what I call the big pile of functions that makes both of them work together, giving both pixel movement and ABS mode.\nIt also includes bugfixes, and QoL features that came up when I was doing things (most of my\nnotes to self\nthread is included).  Basically, this is all stuff I found useful, and hope that other people will find useful as well.\nWhy's it called Cross Engine?  Partially because it's a\nCross\n-Compatible Engine for making games, but mostly because it's a followup to a beloved classic which killed off Chrono.\nCompatibility Patches\nCross Engine now works with yanfly's itemcore, altimit movement, yanfly's item spawner, yanfly's doodads, and galv's camera plugin (the last of which is actually essential to avoiding event/doodad jitter).\nAlso, Ultra Mode 7.\nSpoiler:\nOther New Features:\n8-directional, 2 directional, and 1-directional Spritesheets:\nSure, a lot of people have 8-directional spritesheets (and I support all the major formats), but how many people have ONE-directional spritesheets?\nWith Cross Engine, you can take any old image, give it a filename, and put it in.\nSave it as $Angel(f1)(d1).png, and BAM, it's usable as an event.  No mucking around in photoshop making a spritesheet with four versions of the same sprite.\nBut that's not all!  I also added intelligent sprite flipping, as well. If you named that angel $Angel(f1)(d\n-1\n).png instead, it will flip to face left if it moves left, and flip to face right if it moves right.\nSplit poses and actions\nOne of the things really dragging down the pace of a chrono engine game is that characters were locked in place while they animated.  I have changed the engine so now you have a separate 'pose duration' and 'act duration'.  Pose duration means your character is playing an animation, act duration means they can't move or cast anything.  I've also added a 'cooldown duration', which lets you move, but doesn't let you cast any abilities.\nIntelligent Tag Parsing\n1) Tags parse from right-to-left, instead of left-to-right.  This seems super minor, but it means that if your base character sprite is $Harold(f4)(d8), and he has a casting pose \"_casting(f8)(d1)\", then the new spritesheet sizes will take precedence!\n2) Filename Completion: Let's say your idle sprite for harold is \"$Harold(f4)(d8)_idle(f1)(d1)\".  In base Chrono engine this would cause rpgmaker to screech to a halt, because it can't find \"$Harold(f4)(d8)_idle\".\nHowever, upon starting up the game, Cross Engine makes a list of every file in your characters folder.  When it checks for poses, it will first check for an exact match.  If it doesn't get it, it will check to see if there's any longer versions of that filename.  If it checks for \"$Harold(f4)(d8)_idle\", and can't find it, it will return \"$Harold(f4)(d8)_idle(f1)(d1)\".\nWhat if there's no match at all?  The event keeps its base sprite.  In playtesting, it will whine about it in the console.\nNo crashing.\n3) Negative values are now allowed for x and y offsets.\nWalking actions\nYou know how in megaman you can shoot your little gun and megaman keeps on walking?  Using the tag (walking) will keep your character in the same part of the animation cycle when transitioning into the new pose.  Practically speaking, that means you can do the megaman things.  If the character isn't moving, it will fall back onto a _static pose, so you don't run in place whenever you shoot.\nStanding Pose\nOne of the big constraints on having fluid animation in rmmv is that your walking frames have to include a static pose used for standing.  If you define a 'standing' pose, your character will use that instead when they aren't moving.  While you can technically do this with an idle pose, I wanted to have both in my project.\nFaint Poses\nMog was going to implement faint/death poses distinct from damage poses, but didn't end up finishing it. I have an implementation of this, so you can have a robot get banged up a bit when it gets hit, then violently explode into a miserable pile of circuits when it dies.\nBasic Preloader Function\nOne thing you'll notice using chrono engine is that whenever creatures change poses for the first time, you'll sometimes see a flicker as the file loads.  I have added a function which preloads all poses for a creature.  If you enter ImageManager.preloadPoses('Ralph'), it will find 'Ralph_attack', 'Ralph_defense', 'Ralph_is_unstoppable(F4)(d8)(s2)(x4)', et cetera, and preload them.  This doesn't happen automatically - you have to invoke it each time you're worried about preloading.\nNew plugin command: disable_idleposes\nTurns off idle poses.  Good for cutscenes where characters mugging at the camera is unwanted.  Turn them back on with enable_idleposes\nIntelligent Rotations\nDo you want a magic circle of spinning runes?  I've got you covered.  In chrono engine, rotations are around the bottom center of the sprite, wherever it is.  In Cross Engine, the axis of rotation is the base of the\nevent\n- the offsets you put into filenames, (y124) or (x12) or whatever, move the sprite without changing where rotations are - so if you have a 128 pixel tall wheel and put  (y64) into the filename, rotating it will spin it!\nI also have functions that let you tell an event to spin its sprite, and whether or not there's an angle it should stop at.  So you can have a compass that always points at the player or at a monster or something.\nAnd if you use the this.rotFaceTarg() function, your bullets will point to face the direction that they're going to move towards. In a move route, put it on the same line, directly after one of the motion-ordering commands (like rLoc, tLoc, shootForward, or shootPastPlayer)\nA big pile of helper functions\nI've got a bunch of functions with short names for stuff that I ended up doing often, like converting directions to vectors or angles, or making characters move in a specific direction.  For instance, being able to type in tLoc(x,y) to get a character to move directly to the location x,y makes writing moveroutes and scripts a lot easier.\nSpoiler:\nHow To Use\nJust like the Chrono Engine which preceded it, you're best off starting with the working demo project and building outwards.  The cross engine plugin itself should be reasonably drop-in for an existing Chrono Engine project, but I honestly haven't tried it.\nSpoiler:\nQ & A:\n1) Will you make a compatibility patch for (this random plugin)?\nIf I end up using that plugin in my game, yes.  Otherwise probably not, there's a lot of plugins out there.\n2) I have a compatibility patch for chrono engine and (some plugin) - will you add it?\nIf it doesn't break anything, sure.\n3) I have a bug report!\nIf it's in ABS mode, upload either a minimal test case or a bugfix.\n4) What if I'm reporting a bug that isn't in ABS Mode?\nWe've moved on past Chrono Engine.  This is the sequel, Cross Engine.  Chrono died in the timeskip.  It's sad but we all have to live with it.  You can report Chrono bugs but I probably won't do anything about it.\n4) But what if I have a bugfix for a bug in Chrono mode.\nOh well in that case, sure.  Just because I don't care about poor dead Chrono doesn't mean other people don't.\n5) I'm using yanfly item core with this and I'm just getting a 'cancel' beep when I try to use a sword or my shield isn't working or whatever\nTurn on midgame note parsing.\n6) What are the future plans?\nI'll keep adding features that I personally find useful, and fix bugs I encounter.\n7) I want to take cross engine and make my own thing based on it.\nGo ahead, just credit with a linkback, and stick a link in this thread to wherever your project is.\nPLUGIN ORDER:\nSpoiler\nThis is from the demo project, but I'm putting this here as well\nLICENSE:\nThis is a cross compatibility patch, which means that it borrows heavily from the underlying plugins.\nDo whatever you want with my contributions\n, but don't take that as permission to violate any terms for the underlying plugins I'm stitching together.  Use it commerically, noncommerically, as a basis for your own compatibility engine, whatever.  Please credit.\nCREDIT INSTRUCTIONS for using Cross Engine:\nFor Cross Engine specifically, credit 'Restart', and make sure you also credit Moghunter and Altimit Community Contributors for their massive contributions.  Neither of those plugins' terms require it but I think they deserve it\n.\nDEMO CREDITS:\n* Moghunter made the original Chrono Engine, as well as the original chrono engine demo which I'm including.\n* The Altimit Community Contributors is the official copyright group listed for Altimit Movement, but I think we all know that it wouldn't have happened without Xilefian.\n*\nGalv's Camera Plugin\nis included (with permission) in the bundle as well, because it's needed to control the unholy jitter this stack of plugins creates.\n* Yanfly gave me permission to include some of the original code when making the YEP_EventSpawner compatibility patch.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1245981",
+      "author": "DouglasOliveira",
+      "date": "2022-01-22T03:50:09+0900",
+      "body": "@Restart\nBug Report:\nIn Chrono Engine, there is a plugin command to change the speed above the natural value 6. However, if you use speeds 7, 8 and 9 the character ignores the collision and goes through walls and events.\nIt's the only thing stopping me from using your system. Is there any chance of correction? It would be awesome if you could."
+    },
+    {
+      "post_id": "js-post-1251511",
+      "author": "swickster",
+      "date": "2022-02-13T04:00:37+0900",
+      "body": "I seem to keep getting errors every time I try to use Khas's lighting plugin. The property number keeps changing on every crash.\nEdit: This actually seems to be having issues with other lighting plugins."
+    },
+    {
+      "post_id": "js-post-1266978",
+      "author": "DreamWorld",
+      "date": "2022-04-10T19:50:09+0900",
+      "body": "View attachment 222824\nError on Android phone"
+    },
+    {
+      "post_id": "js-post-1302159",
+      "author": "McDohl",
+      "date": "2022-09-23T15:34:55+0900",
+      "body": "Hello, I was playing/testing with the plugin but there's something wrong with the sprite image\nI don't know why the box only fill that small portion\nand the result when testing the game is like this\nwhy is that, and how to fix something like this ?\nand I don't change anything from the plugins demo"
+    },
+    {
+      "post_id": "js-post-1306452",
+      "author": "TheSevenWonders",
+      "date": "2022-10-18T07:01:13+0900",
+      "body": "Hey there, I recently tried using this plugin and it stops Yanfly's Region restrictions and region events plugin. It also stops Mog's weather plugin. I've rearranged the plugins and it just causes more glitches. Is there a way around this? I've also noticed the download for the file comes with Mog's character poses plugin turned off which causes graphical glitches, there's another thread looking for a solution to this, but it is old."
+    },
+    {
+      "post_id": "js-post-1306453",
+      "author": "TheSevenWonders",
+      "date": "2022-10-18T07:02:20+0900",
+      "body": "McDohl said:\nHello, I was playing/testing with the plugin but there's something wrong with the sprite image\nView attachment 241070\nI don't know why the box only fill that small portion\nand the result when testing the game is like this\nView attachment 241071\nwhy is that, and how to fix something like this ?\nand I don't change anything from the plugins demo\nClick to expand...\nTry going into the plugins settings and turning on MOG's Character poses. It seems it was turned off in when it came with the download by accident."
+    },
+    {
+      "post_id": "js-post-1325806",
+      "author": "jackass__",
+      "date": "2023-02-02T09:21:41+0900",
+      "body": "Hi there!\nThanks for your work,\nmy game with the cross engine run well on desktop but when I tried to play it on web/html it doesn't work and show \"require is not define\"\nIt worked when it was only chrono engine but doesn't with cross engine, and to be sure I try to upload only the demo without any modification and the same problem here\nCan you help me please ?\nThanks again for this!"
+    },
+    {
+      "post_id": "js-post-1325819",
+      "author": "jackass__",
+      "date": "2023-02-02T10:29:55+0900",
+      "body": "This line seems to be the problem\nI tried to change it to this\nvar fs = require? (\"fs\");\nAnd it work i can launch the game but animations of fight like sword are junky and doesnt work well\nsounds like it's searching image files on computer so it works on desktop but not on html or android...\nAny idea how to fix that ? anyone already made a game for browser or mobile using crossengine ?\nthanks again"
+    },
+    {
+      "post_id": "js-post-1325888",
+      "author": "TheSevenWonders",
+      "date": "2023-02-02T17:25:00+0900",
+      "body": "Hello there!\nI too have tried to upgrade my existing project from Chrono Engine to Cross Engine and it didn’t work out well. Some of the features that were supposed to be upgraded in the updated engine did not work. The Cross Engine play test also had some issues, I believe the author incorrectly named some files which messed up animations.\nOverall Cross Engine butchered my project and I was disappointed because it has great features. You may have to revert to Chrono Engine like I did, also keep a backup of your project before Cross Engine so it doesn’t break your game."
+    },
+    {
+      "post_id": "js-post-1328001",
+      "author": "AquaEcho",
+      "date": "2023-02-13T00:37:55+0900",
+      "body": "The ._inMotion fix works for the player but not for events. Is this intentional and is there any way to detect if an event is moving (since .isMoving() doesn't work either)?\nWorks: $gamePlayer._inMotion\nDoesn't work: this._inMotion, this.character(0)._inMotion, $gameMap.event(id)._inMotion\nEdit: Finally figured it out. I had the block of code in CrossEngine.js and it doesn't work there for some reason. I had to create a Conditional Branch on the event page with Script:\nthis.character(0)._inMotion\nand this block of code had to go at the end of rpg_objects.js\nCode:\nvar Game_CharacterBase_update_for_ismoving = Game_CharacterBase.prototype.update;\n  Game_CharacterBase.prototype.update = function() {\n    //.isMoving doesn't really work in altimit\n    //this fixes it with the addition of a new function which I can use to tell\n    //if the character is actually like, moving\n    // the problem seems to be that the isMoving gets cleared midway through\n    // this update step (because the .updateMove in rpg_objects sets ._realX to equal .x)\n    // but lots of things break if I monkey around with _isMoving\n    // so I'm creating my own clone of it here.\n    // this is true if the character is in motion and false if they aren't.\n    if (this.isMoving())\n    {\n      this._inMotion=true;\n    }else{\n      this._inMotion=false;\n    }\n    \n  Game_CharacterBase_update_for_ismoving.call( this );\n}"
+    },
+    {
+      "post_id": "js-post-1328191",
+      "author": "Gabiszon",
+      "date": "2023-02-14T00:39:08+0900",
+      "body": "Hello! I'm making a game with cross engine and I have some (maybe dumb questions)\nHow does the hurtboxes work and is it possible to edit them?\nFrom what I noticed the collision box from Altimi movement is different than the hurtbox - if so, can I change how big the hurtbox is for enemies? like change numbers etc?\nThanks in advance!"
+    },
+    {
+      "post_id": "js-post-1367338",
+      "author": "SushiAssado",
+      "date": "2023-07-24T16:46:22+0900",
+      "body": "For me the only problem was the hookshot, its collision is all buggy, even using the debug I didn't understand why it's buggy. I activate the hookshot forward and it grabs what I don't want it to grab, if anyone knows a solution I'd appreciate it.\nIn the screenshots below I'm trying to miss the hook on purpose, but it hits the wrong hitbox and pulls my character"
+    },
+    {
+      "post_id": "js-post-1374697",
+      "author": "Durance_Gaming",
+      "date": "2023-08-20T19:00:07+0900",
+      "body": "AquaEcho said:\nThe ._inMotion fix works for the player but not for events. Is this intentional and is there any way to detect if an event is moving (since .isMoving() doesn't work either)?\nWorks: $gamePlayer._inMotion\nDoesn't work: this._inMotion, this.character(0)._inMotion, $gameMap.event(id)._inMotion\nEdit: Finally figured it out. I had the block of code in CrossEngine.js and it doesn't work there for some reason. I had to create a Conditional Branch on the event page with Script:\nthis.character(0)._inMotion\nand this block of code had to go at the end of rpg_objects.js\nCode:\nvar Game_CharacterBase_update_for_ismoving = Game_CharacterBase.prototype.update;\n  Game_CharacterBase.prototype.update = function() {\n    //.isMoving doesn't really work in altimit\n    //this fixes it with the addition of a new function which I can use to tell\n    //if the character is actually like, moving\n    // the problem seems to be that the isMoving gets cleared midway through\n    // this update step (because the .updateMove in rpg_objects sets ._realX to equal .x)\n    // but lots of things break if I monkey around with _isMoving\n    // so I'm creating my own clone of it here.\n    // this is true if the character is in motion and false if they aren't.\n    if (this.isMoving())\n    {\n      this._inMotion=true;\n    }else{\n      this._inMotion=false;\n    }\n   \n  Game_CharacterBase_update_for_ismoving.call( this );\n}\nClick to expand...\nAquaEcho did you try something like this in a conditional branch?\nev = $gameMap.event(this.eventId()); ev.isMoving();\nThat's what I use to detect my event's movement.\nSpeaking of which, does this version do anything to fix states like poison on a moving enemy in ABS mode? Or does anyone know a way to combine this event move check with a way to see if that event's enemy has a current state? That way you could manually assign damage by calling a 1 tile radius skill on top of the event. I do that right now to combine GALV's projectiles with MOG's Chrono ABS."
+    },
+    {
+      "post_id": "js-post-1374700",
+      "author": "AquaEcho",
+      "date": "2023-08-20T19:31:40+0900",
+      "body": "OgreLeg said:\nAquaEcho did you try something like this in a conditional branch?\nev = $gameMap.event(this.eventId()); ev.isMoving();\nThat's what I use to detect my event's movement.\nSpeaking of which, does this version do anything to fix states like poison on a moving enemy in ABS mode? Or does anyone know a way to combine this event move check with a way to see if that event's enemy has a current state?\nClick to expand...\nI'll look at this issue later today but poison is probably something I'd use Galv Event Timers for."
+    },
+    {
+      "post_id": "js-post-1376431",
+      "author": "DTurtle",
+      "date": "2023-08-26T19:50:40+0900",
+      "body": "Hi! Does anyone know how to set up the new enemy defeated sheets that Restart added as a new feature? I wasn't able to find anything for that in the demo file."
+    },
+    {
+      "post_id": "js-post-1376663",
+      "author": "Gabiszon",
+      "date": "2023-08-27T23:08:55+0900",
+      "body": "DTurtle said:\nHi! Does anyone know how to set up the new enemy defeated sheets that Restart added as a new feature? I wasn't able to find anything for that in the demo file.\nClick to expand...\nyou can make it appear by adding Death(Xframes etc) suffix like in my screen, though before the enemy vanishes you can display 1, max two frames. You can also do a damage sheet that way"
+    },
+    {
+      "post_id": "js-post-1376766",
+      "author": "DTurtle",
+      "date": "2023-08-28T08:00:00+0900",
+      "body": "Gabiszon said:\nyou can make it appear by adding Death(Xframes etc) suffix like in my screen, though before the enemy vanishes you can display 1, max two frames. You can also do a damage sheet that way\nClick to expand...\nthanks! Have you experimented with jump commands at all? Running into an issue where you can jump straight into regions restricted by YEP Region Restriction and YEP Smart Jump because of how Altimit works I assume."
+    },
+    {
+      "post_id": "js-post-1376962",
+      "author": "Gabiszon",
+      "date": "2023-08-29T03:29:49+0900",
+      "body": "DTurtle said:\nthanks! Have you experimented with jump commands at all? Running into an issue where you can jump straight into regions restricted by YEP Region Restriction and YEP Smart Jump because of how Altimit works I assume.\nClick to expand...\nI actually did in the past but i dunno as well, you might try to post in Altimit thread for this though"
+    },
+    {
+      "post_id": "js-post-1376966",
+      "author": "AquaEcho",
+      "date": "2023-08-29T03:33:14+0900",
+      "body": "DTurtle said:\nthanks! Have you experimented with jump commands at all? Running into an issue where you can jump straight into regions restricted by YEP Region Restriction and YEP Smart Jump because of how Altimit works I assume.\nClick to expand...\nYou'll need to put a conditional check on your jump commands to check for region id of the destination tile and not allow it if it's a restricted region. Altimit just draws borders around impassable tiles, you can jump over them, and Yanfly Region Restrictions won't stop a jump into it either.\nThis will check region ID of the tile\n$gameMap.regionId(x,y)\nThis will check terrain tag if you want to check terrain instead\n$gameMap.terrainTag(x,y)"
+    },
+    {
+      "post_id": "js-post-1377030",
+      "author": "AquaEcho",
+      "date": "2023-08-29T07:09:22+0900",
+      "body": "OgreLeg said:\nSpeaking of which, does this version do anything to fix states like poison on a moving enemy in ABS mode? Or does anyone know a way to combine this event move check with a way to see if that event's enemy has a current state? That way you could manually assign damage by calling a 1 tile radius skill on top of the event.\nClick to expand...\nI wrote this code to check every battler on screen every 60 frames/1 second for status conditions/states/buffs. Put it in a parallel common event. There's a line in there for poison damage (default state 4) to do 10 percent of the battler's max hp every second. Don't forget the Wait 60 frames at the end, otherwise it'll run 60 times a second. To control how long the state lasts you need to go to the MOG_ChronoEngine in the plugin list and change the States Duration value in the parameters.\nCode:\nfor (var i = 0; i < $gameMap._battlersOnScreen.length; i++) {\nbattler = $gameMap._battlersOnScreen[i].battler();\nif (!battler.isDead()){\nif(battler.isStateAffected(4)){\nthis.changeHp(battler, -(Math.floor(battler.mhp*.10)), true);}\nbattler.startDamagePopup();\nbattler.updateStateTurns();\nbattler.updateBuffTurns();\nbattler.removeStatesAuto(1);\nbattler.removeStatesAuto(2);}}"
+    },
+    {
+      "post_id": "js-post-1377077",
+      "author": "DTurtle",
+      "date": "2023-08-29T10:09:35+0900",
+      "body": "AquaEcho said:\nYou'll need to put a conditional check on your jump commands to check for region id of the destination tile and not allow it if it's a restricted region. Altimit just draws borders around impassable tiles, you can jump over them, and Yanfly Region Restrictions won't stop a jump into it either.\nThis will check region ID of the tile\n$gameMap.regionId(x,y)\nThis will check terrain tag if you want to check terrain instead\n$gameMap.terrainTag(x,y)\nClick to expand...\nSorry, novice at scripting so I'm sure I'm missing something here, I added the if check as the following:\nCode:\n$gameMap.regionId(x,y) != 10\nand it returns an error: \"X is not defined\"\nEDIT:\nThink I got it, I set additional if checks for direction and defined the x and y based on the facing direction and that's working so far. will do some more testing. thank you!"
+    },
+    {
+      "post_id": "js-post-1377080",
+      "author": "AquaEcho",
+      "date": "2023-08-29T10:13:05+0900",
+      "body": "DTurtle said:\nSorry, novice at scripting so I'm sure I'm missing something here, I added the if check as the following:\nCode:\n$gameMap.regionId(x,y) != 10\nand it returns an error: \"X is not defined\"\nClick to expand...\nYes...you need to define what x (and y) are. What are the coordinates you are jumping to? You know, I don't, so I gave you variables to fill in. If it is 5, 6 then you need to put in (5, 6)."
+    },
+    {
+      "post_id": "js-post-1377081",
+      "author": "DTurtle",
+      "date": "2023-08-29T10:15:54+0900",
+      "body": "AquaEcho said:\nYes...you need to define what x (and y) are. What are the coordinates you are jumping to? You know, I don't, so I gave you variables to fill in. If it is 5, 6 then you need to put in (5, 6).\nClick to expand...\nFigured it out while you were typing and updated my post, thanks for solving this for me!\nEDIT: your method does not work. oh well"
+    },
+    {
+      "post_id": "js-post-1377229",
+      "author": "AquaEcho",
+      "date": "2023-08-30T03:44:07+0900",
+      "body": "DTurtle said:\nEDIT: your method does not work. oh well\nClick to expand...\nYes, it does. I've personally implemented jumping in my game and I use CrossEngine.\nIf you want help you'll need to post your event page where you're calling the jump command."
+    },
+    {
+      "post_id": "js-post-1377294",
+      "author": "DTurtle",
+      "date": "2023-08-30T08:47:20+0900",
+      "body": "AquaEcho said:\nYes, it does. I've personally implemented jumping in my game and I use CrossEngine.\nIf you want help you'll need to post your event page where you're calling the jump command.\nClick to expand...\nMy apologies. I tried to implement what you suggested like this in the attachment. I have my jump command behind a skill and I'm using YEP Smart Jump to command the jump, and I've set region 10 to be blocked off. Ideally I would have it set for each direction, so no matter which way you're facing if there's a region 10 tiles two spots away then you can't jump -- I know that'll be different xy coords for each one but I was just testing with jumping down first. However, the player will still jump straight into region 10 even if it's 2 spaces down. I also tried to simplify the if check to \"\n$gamePlayer.direction(2) && $gameMap.regionId(0,2) != 10\" and that also doens't work. I then tried using \"$gameMap.regionId(0,2) == 5\" to allow jumping while facing down only if y2 is region 5 but that doesn't allow jumping at all even when on a map full of region 5."
+    },
+    {
+      "post_id": "js-post-1377328",
+      "author": "AquaEcho",
+      "date": "2023-08-30T12:32:13+0900",
+      "body": "DTurtle said:\nMy apologies. I tried to implement what you suggested like this in the attachment. I have my jump command behind a skill and I'm using YEP Smart Jump to command the jump, and I've set region 10 to be blocked off. Ideally I would have it set for each direction, so no matter which way you're facing if there's a region 10 tiles two spots away then you can't jump -- I know that'll be different xy coords for each one but I was just testing with jumping down first. However, the player will still jump straight into region 10 even if it's 2 spaces down. I also tried to simplify the if check to \"\n$gamePlayer.direction(2) && $gameMap.regionId(0,2) != 10\" and that also doens't work. I then tried using \"$gameMap.regionId(0,2) == 5\" to allow jumping while facing down only if y2 is region 5 but that doesn't allow jumping at all even when on a map full of region 5.\nClick to expand...\nYour current code is saying \"If the players is facing down, and if the tile (0,2), which is a fixed tile on the map, is not region 10, then jump. What you actually want is ($gamePlayer.x+.5, $gamePlayer.y+.5+2). This won't be perfect because the player is not on a fixed position on a tile, because this is pixel movement and the player can actually be on four tiles at once. Which tile is 2 tiles south of the player if the player is standing on the corner of a tile?\nYou're going to have to adjust the offsets and rounding of the player's position to define what tile you want to check the region of before you jump, and you'll have to tell the player to jump to the middle of that tile, which may not be directly south of the player but a few pixels right or left."
+    },
+    {
+      "post_id": "js-post-1377346",
+      "author": "DTurtle",
+      "date": "2023-08-30T14:22:16+0900",
+      "body": "AquaEcho said:\nYour current code is saying \"If the players is facing down, and if the tile (0,2), which is a fixed tile on the map, is not region 10, then jump. What you actually want is ($gamePlayer.x+.5, $gamePlayer.y+.5+2). This won't be perfect because the player is not on a fixed position on a tile, because this is pixel movement and the player can actually be on four tiles at once. Which tile is 2 tiles south of the player if the player is standing on the corner of a tile?\nYou're going to have to adjust the offsets and rounding of the player's position to define what tile you want to check the region of before you jump, and you'll have to tell the player to jump to the middle of that tile, which may not be directly south of the player but a few pixels right or left.\nClick to expand...\nahh, that got it! Thank you so much! One more dumb question, do you know how I might activate a player touch event that's below character by jumping on it? I found\nthis thread\nasking the same question, but when I tried the provided script with the specific xy coordinates of the event (in my case, a pitfall at 11,6) it still only triggers when walking into it. This is in a parallel process.\nCode:\n$gamePlayer.startMapEvent(11, 6, 1, true);"
+    },
+    {
+      "post_id": "js-post-1377439",
+      "author": "AquaEcho",
+      "date": "2023-08-31T02:33:03+0900",
+      "body": "DTurtle said:\nahh, that got it! Thank you so much! One more dumb question, do you know how I might activate a player touch event that's below character by jumping on it? I found\nthis thread\nasking the same question, but when I tried the provided script with the specific xy coordinates of the event (in my case, a pitfall at 11,6) it still only triggers when walking into it. This is in a parallel process.\nCode:\n$gamePlayer.startMapEvent(11, 6, 1, true);\nClick to expand...\nPlayer touch in Altimit triggers when you touch the border of the event. Event touch should trigger if you're inside the boundaries of the event"
+    },
+    {
+      "post_id": "js-post-1377505",
+      "author": "DTurtle",
+      "date": "2023-08-31T08:42:01+0900",
+      "body": "AquaEcho said:\nPlayer touch in Altimit triggers when you touch the border of the event. Event touch should trigger if you're inside the boundaries of the event\nClick to expand...\nRight, but it doesn't actually trigger until another direction key is pressed. So for example, if use a Jump to move 2 tiles down and onto a tile that has a player touch event that's supposed to play a fall animation, wait, then move you back, none of that actually happens if you Jump or use a move route onto the tile."
+    },
+    {
+      "post_id": "js-post-1377518",
+      "author": "AquaEcho",
+      "date": "2023-08-31T10:16:15+0900",
+      "body": "DTurtle said:\nRight, but it doesn't actually trigger until another direction key is pressed. So for example, if use a Jump to move 2 tiles down and onto a tile that has a player touch event that's supposed to play a fall animation, wait, then move you back, none of that actually happens if you Jump or use a move route onto the tile.\nClick to expand...\nThen at the end of the jump command, try this\nJavaScript:\n$gamePlayer.startMapEvent(this.character(0).x, this.character(0).y, [1, 2], false);"
+    },
+    {
+      "post_id": "js-post-1377543",
+      "author": "DTurtle",
+      "date": "2023-08-31T15:00:42+0900",
+      "body": "AquaEcho said:\nThen at the end of the jump command, try this\nJavaScript:\n$gamePlayer.startMapEvent(this.character(0).x, this.character(0).y, [1, 2], false);\nClick to expand...\nThat didn't work BUT it gave me an idea that has it pretty close. I'm testing a parallel event (see attached) that sets the player's xy and checks for that specific pithole I have on the map. The problem now is that with Altimit the xy is the bottom half of the tile rather than the full tile and I'm not sure how to account for that here."
+    },
+    {
+      "post_id": "js-post-1377557",
+      "author": "wecanfayo",
+      "date": "2023-08-31T19:40:34+0900",
+      "body": "Hi, i have question. How can i disable diagonal movement for enemies?"
+    },
+    {
+      "post_id": "js-post-1377584",
+      "author": "AquaEcho",
+      "date": "2023-08-31T22:23:42+0900",
+      "body": "DTurtle said:\nThat didn't work\nClick to expand...\nI do actually test the script calls I post before posting them and it worked for me.  If the event is below the player and set to player touch or event touch it should trigger.\nThe problem now is that with Altimit the xy is the bottom half of the tile rather than the full tile and I'm not sure how to account for that here.\nClick to expand...\nIn Altimit using the default X of Player or Y of Player, or $gamePlayer.x/$gamePlayer.y references will return the pixel coordinate of the the top left pixel of the player. It is why I gave you $gamePlayer.x+.5 and $gamePlayer.y+.5 earlier to get you the middle pixel of the box.\nwecanfayo said:\nHi, i have question. How can i disable diagonal movement for enemies?\nClick to expand...\nYou would have to edit ChronoEngine's code to disable odd-numbered directions and only allow 2,4,6, and 8."
+    },
+    {
+      "post_id": "js-post-1377625",
+      "author": "wecanfayo",
+      "date": "2023-09-01T01:16:14+0900",
+      "body": "AquaEcho said:\nYou would have to edit ChronoEngine's code to disable odd-numbered directions and only allow 2,4,6, and 8.\nClick to expand...\nI'm afraid I'm not that good at java scripting for this, is there a simpler solution?"
+    },
+    {
+      "post_id": "js-post-1377629",
+      "author": "AquaEcho",
+      "date": "2023-09-01T01:23:47+0900",
+      "body": "wecanfayo said:\nI'm afraid I'm not that good at java scripting for this, is there a simpler solution?\nClick to expand...\nNo, it's not built into the engine to disable diagonal movement for enemies, there are checks for diagonal movement in a lot of the enemy moveroute commands. The only way is to dig into that code and alias the functions allowing it."
+    },
+    {
+      "post_id": "js-post-1377631",
+      "author": "wecanfayo",
+      "date": "2023-09-01T01:26:51+0900",
+      "body": "Okay, Then if we take mog_chronoengine as an example, can i change speed of diagonal movement.\nIn standard chrono, the diagonal is faster than the cross movement."
+    },
+    {
+      "post_id": "js-post-1377637",
+      "author": "AquaEcho",
+      "date": "2023-09-01T01:40:38+0900",
+      "body": "wecanfayo said:\nOkay, Then if we take mog_chronoengine as an example, can i change speed of diagonal movement.\nIn standard chrono, the diagonal is faster than the cross movement.\nClick to expand...\nThis is an issue with other diagonal movement plugins too and some have their own fixes for it. Are you using Altimit or just ChronoEngine by itself? I thought Restart made a fix for this in CrossEngine but I'd have to double check."
+    },
+    {
+      "post_id": "js-post-1377646",
+      "author": "wecanfayo",
+      "date": "2023-09-01T02:11:22+0900",
+      "body": "AquaEcho said:\nThis is an issue with other diagonal movement plugins too and some have their own fixes for it. Are you using Altimit or just ChronoEngine by itself? I thought Restart made a fix for this in CrossEngine but I'd have to double check.\nClick to expand...\nI returned to the chrono engine, because the restart has a broken collision, the enemies do not go around the walls, the main character also sometimes gets stuck in the walls. That's why I decided to try just chrono without the altimit, but the diagonal speed is broken there. I would like to solve this problem."
+    },
+    {
+      "post_id": "js-post-1377659",
+      "author": "AquaEcho",
+      "date": "2023-09-01T02:55:53+0900",
+      "body": "wecanfayo said:\nI returned to the chrono engine, because the restart has a broken collision, the enemies do not go around the walls, the main character also sometimes gets stuck in the walls. That's why I decided to try just chrono without the altimit, but the diagonal speed is broken there. I would like to solve this problem.\nClick to expand...\nThat isn't an issue specific to Altimit. Events don't automatically avoid walls without using pathfinding algorithms which are an expensive process in terms of system resources and will lag the game if you have more than one going at a time. You can see in\nthis thread\nthe topic creator is having problems with enemies running into walls and he's using the default engine.\nYou could use a parallel process to check if an event, or several events, is facing a wall, or if it hasn't moved after x number of frames, trigger the pathfinding algorithm, or force it to turn left or right, but those will have their own complications.\nCross Engine does have built in functions to check if player is stuck in a tile, then allow him to escape. If you're still getting stuck despite those checks you may need to adjust those functions to make them more sensitive or add another one your own."
+    },
+    {
+      "post_id": "js-post-1377661",
+      "author": "wecanfayo",
+      "date": "2023-09-01T03:07:44+0900",
+      "body": "AquaEcho said:\nThat isn't an issue specific to Altimit. Events don't automatically avoid walls without using pathfinding algorithms which are an expensive process in terms of system resources and will lag the game if you have more than one going at a time. You can see in\nthis thread\nthe topic creator is having problems with enemies running into walls and he's using the default engine.\nYou could use a parallel process to check if an event, or several events, is facing a wall, or if it hasn't moved after x number of frames, trigger the pathfinding algorithm, or force it to turn left or right, but those will have their own complications.\nCross Engine does have built in functions to check if player is stuck in a tile, then allow him to escape. If you're still getting stuck despite those checks you may need to adjust those functions to make them more sensitive or add another one your own.\nClick to expand...\nThe problem with Altimit is that the enemies behave like idiots, he can stand in front of the corner and not move, instead of going around it, in the mog hunter chrono engine, the enemies bypass the objects. But, mog hunter demo has problem with diagonal speed. A friend of a Java programmer, could not figure it out..."
+    },
+    {
+      "post_id": "js-post-1377662",
+      "author": "AquaEcho",
+      "date": "2023-09-01T03:10:18+0900",
+      "body": "wecanfayo said:\nThe problem with Altimit is that the enemies behave like idiots, he can stand in front of the corner and not move, instead of going around it, in the mog hunter chrono engine, the enemies bypass the objects. But, mog hunter demo has problem with diagonal speed. A friend of a Java programmer, could not figure it out...\nClick to expand...\nAgain, that is not specific to Altimit. I linked you to a thread where that happens in the vanilla, default RPG engine with no Altimit."
+    },
+    {
+      "post_id": "js-post-1377671",
+      "author": "DTurtle",
+      "date": "2023-09-01T03:45:05+0900",
+      "body": "AquaEcho said:\nI do actually test the script calls I post before posting them and it worked for me.  If the event is below the player and set to player touch or event touch it should trigger.\nClick to expand...\nDo you mind sharing the configuration you tested so I can see how it differs from mine?"
+    },
+    {
+      "post_id": "js-post-1377677",
+      "author": "AquaEcho",
+      "date": "2023-09-01T04:04:05+0900",
+      "body": "DTurtle said:\nDo you mind sharing the configuration you tested so I can see how it differs from mine?\nClick to expand...\nCode:\n$gamePlayer.startMapEvent(this.character(0).x, this.character(0).y, [1, 2], false);\nHowever I don't use your jump plugin, I use the jump_to function from Galv move route extras\nCode:\nthis.character(-1).jump_to($gameVariables.value(30),$gameVariables.value(31));"
+    },
+    {
+      "post_id": "js-post-1377693",
+      "author": "DTurtle",
+      "date": "2023-09-01T04:53:05+0900",
+      "body": "AquaEcho said:\nCode:\n$gamePlayer.startMapEvent(this.character(0).x, this.character(0).y, [1, 2], false);\nHowever I don't use your jump plugin, I use the jump_to function from Galv move route extras\nCode:\nthis.character(-1).jump_to($gameVariables.value(30),$gameVariables.value(31));\nClick to expand...\nah, I also use Move Route Extras but for some reason they never work within tool page stuff, even if they're called by a common event. Works fine in any event outside of that though."
+    },
+    {
+      "post_id": "js-post-1377695",
+      "author": "AquaEcho",
+      "date": "2023-09-01T04:57:03+0900",
+      "body": "DTurtle said:\nah, I also use Move Route Extras but for some reason they never work within tool page stuff, even if they're called by a common event. Works fine in any event outside of that though.\nClick to expand...\nIf you call a function that normally goes in a move route from the event page instead, or a common event page, you need to change this to this.character(0)"
+    },
+    {
+      "post_id": "js-post-1377716",
+      "author": "DTurtle",
+      "date": "2023-09-01T05:56:49+0900",
+      "body": "AquaEcho said:\nIf you call a function that normally goes in a move route from the event page instead, or a common event page, you need to change this to this.character(0)\nClick to expand...\nyeah, it doesn't move the character either way. Only thing that happens is the tool pose plays. I've tried -1 and 0 both inside and outside of a move route call. Testing trying to move it to a specific point before I spend a day trying to figure out how to move down 2 from any spot."
+    },
+    {
+      "post_id": "js-post-1377718",
+      "author": "AquaEcho",
+      "date": "2023-09-01T06:00:36+0900",
+      "body": "DTurtle said:\nyeah, it doesn't move the character either way. Only thing that happens is the tool pose plays. I've tried -1 and 0 both inside and outside of a move route call. Testing trying to move it to a specific point before I spend a day trying to figure out how to move down 2 from any spot.\nClick to expand...\nI just told you if you're using a move route then it's just \"this\", with \"this\" being the object of the movement route.\nthis.character(0) refers to the object where the code is called from), this.character(-1) is the player but those are object references you use on an event page\noutside\na move route.\nIn your movement route you're already declaring the player as the object for the function to act on. If you do not use a movement route then the object is the Game Interpreter itself which movement functions don't work on, so you need to define this.character(eventNumber), or 0, or -1 so the Game Interpreter knows which event you actually want to move."
+    },
+    {
+      "post_id": "js-post-1377721",
+      "author": "DTurtle",
+      "date": "2023-09-01T06:09:39+0900",
+      "body": "AquaEcho said:\nI just told you if you're using a move route then it's just \"this\", with this being the tool event itself.\nthis.character(0) refers to the tool event (more specifically the object where the code is called from), this.character(-1) is the player but those are object references you use on an event page\noutside\na move route.\nClick to expand...\nLooking through your replies and you didn't state this anywhere, I mean I appreciate the help but in general you're incredibly unclear. \"this.jump_to(xy)\" moves the character but doesn't trigger the event it lands on"
+    },
+    {
+      "post_id": "js-post-1377726",
+      "author": "AquaEcho",
+      "date": "2023-09-01T06:26:22+0900",
+      "body": "DTurtle said:\nLooking through your replies and you didn't state this anywhere, I mean I appreciate the help but in general you're incredibly unclear. \"this.jump_to(xy)\" moves the character but doesn't trigger the event it lands on\nClick to expand...\nCould you post your jump tool event page again?"
+    },
+    {
+      "post_id": "js-post-1378908",
+      "author": "TheSevenWonders",
+      "date": "2023-09-06T16:07:47+0900",
+      "body": "Restart said:\nLatest Version:\nCross Engine Alpha 0.20.06.26 Demo Project\nWhat is Cross Engine?\nOver the course of the last few months I've been working on my game, and I decided I wanted to combine\nAltimit Movement\nand\nMog's Chrono Engine\n.  Cross Engine is what I call the big pile of functions that makes both of them work together, giving both pixel movement and ABS mode.\nIt also includes bugfixes, and QoL features that came up when I was doing things (most of my\nnotes to self\nthread is included).  Basically, this is all stuff I found useful, and hope that other people will find useful as well.\nWhy's it called Cross Engine?  Partially because it's a\nCross\n-Compatible Engine for making games, but mostly because it's a followup to a beloved classic which killed off Chrono.\nCompatibility Patches\nCross Engine now works with yanfly's itemcore, altimit movement, yanfly's item spawner, yanfly's doodads, and galv's camera plugin (the last of which is actually essential to avoiding event/doodad jitter).\nAlso, Ultra Mode 7.\nSpoiler:\nOther New Features:\n8-directional, 2 directional, and 1-directional Spritesheets:\nSure, a lot of people have 8-directional spritesheets (and I support all the major formats), but how many people have ONE-directional spritesheets?\nWith Cross Engine, you can take any old image, give it a filename, and put it in.\nSave it as $Angel(f1)(d1).png, and BAM, it's usable as an event.  No mucking around in photoshop making a spritesheet with four versions of the same sprite.\nBut that's not all!  I also added intelligent sprite flipping, as well. If you named that angel $Angel(f1)(d\n-1\n).png instead, it will flip to face left if it moves left, and flip to face right if it moves right.\nSplit poses and actions\nOne of the things really dragging down the pace of a chrono engine game is that characters were locked in place while they animated.  I have changed the engine so now you have a separate 'pose duration' and 'act duration'.  Pose duration means your character is playing an animation, act duration means they can't move or cast anything.  I've also added a 'cooldown duration', which lets you move, but doesn't let you cast any abilities.\nIntelligent Tag Parsing\n1) Tags parse from right-to-left, instead of left-to-right.  This seems super minor, but it means that if your base character sprite is $Harold(f4)(d8), and he has a casting pose \"_casting(f8)(d1)\", then the new spritesheet sizes will take precedence!\n2) Filename Completion: Let's say your idle sprite for harold is \"$Harold(f4)(d8)_idle(f1)(d1)\".  In base Chrono engine this would cause rpgmaker to screech to a halt, because it can't find \"$Harold(f4)(d8)_idle\".\nHowever, upon starting up the game, Cross Engine makes a list of every file in your characters folder.  When it checks for poses, it will first check for an exact match.  If it doesn't get it, it will check to see if there's any longer versions of that filename.  If it checks for \"$Harold(f4)(d8)_idle\", and can't find it, it will return \"$Harold(f4)(d8)_idle(f1)(d1)\".\nWhat if there's no match at all?  The event keeps its base sprite.  In playtesting, it will whine about it in the console.\nNo crashing.\n3) Negative values are now allowed for x and y offsets.\nWalking actions\nYou know how in megaman you can shoot your little gun and megaman keeps on walking?  Using the tag (walking) will keep your character in the same part of the animation cycle when transitioning into the new pose.  Practically speaking, that means you can do the megaman things.  If the character isn't moving, it will fall back onto a _static pose, so you don't run in place whenever you shoot.\nStanding Pose\nOne of the big constraints on having fluid animation in rmmv is that your walking frames have to include a static pose used for standing.  If you define a 'standing' pose, your character will use that instead when they aren't moving.  While you can technically do this with an idle pose, I wanted to have both in my project.\nFaint Poses\nMog was going to implement faint/death poses distinct from damage poses, but didn't end up finishing it. I have an implementation of this, so you can have a robot get banged up a bit when it gets hit, then violently explode into a miserable pile of circuits when it dies.\nBasic Preloader Function\nOne thing you'll notice using chrono engine is that whenever creatures change poses for the first time, you'll sometimes see a flicker as the file loads.  I have added a function which preloads all poses for a creature.  If you enter ImageManager.preloadPoses('Ralph'), it will find 'Ralph_attack', 'Ralph_defense', 'Ralph_is_unstoppable(F4)(d8)(s2)(x4)', et cetera, and preload them.  This doesn't happen automatically - you have to invoke it each time you're worried about preloading.\nNew plugin command: disable_idleposes\nTurns off idle poses.  Good for cutscenes where characters mugging at the camera is unwanted.  Turn them back on with enable_idleposes\nIntelligent Rotations\nDo you want a magic circle of spinning runes?  I've got you covered.  In chrono engine, rotations are around the bottom center of the sprite, wherever it is.  In Cross Engine, the axis of rotation is the base of the\nevent\n- the offsets you put into filenames, (y124) or (x12) or whatever, move the sprite without changing where rotations are - so if you have a 128 pixel tall wheel and put  (y64) into the filename, rotating it will spin it!\nI also have functions that let you tell an event to spin its sprite, and whether or not there's an angle it should stop at.  So you can have a compass that always points at the player or at a monster or something.\nAnd if you use the this.rotFaceTarg() function, your bullets will point to face the direction that they're going to move towards. In a move route, put it on the same line, directly after one of the motion-ordering commands (like rLoc, tLoc, shootForward, or shootPastPlayer)\nA big pile of helper functions\nI've got a bunch of functions with short names for stuff that I ended up doing often, like converting directions to vectors or angles, or making characters move in a specific direction.  For instance, being able to type in tLoc(x,y) to get a character to move directly to the location x,y makes writing moveroutes and scripts a lot easier.\nSpoiler:\nHow To Use\nJust like the Chrono Engine which preceded it, you're best off starting with the working demo project and building outwards.  The cross engine plugin itself should be reasonably drop-in for an existing Chrono Engine project, but I honestly haven't tried it.\nSpoiler:\nQ & A:\n1) Will you make a compatibility patch for (this random plugin)?\nIf I end up using that plugin in my game, yes.  Otherwise probably not, there's a lot of plugins out there.\n2) I have a compatibility patch for chrono engine and (some plugin) - will you add it?\nIf it doesn't break anything, sure.\n3) I have a bug report!\nIf it's in ABS mode, upload either a minimal test case or a bugfix.\n4) What if I'm reporting a bug that isn't in ABS Mode?\nWe've moved on past Chrono Engine.  This is the sequel, Cross Engine.  Chrono died in the timeskip.  It's sad but we all have to live with it.  You can report Chrono bugs but I probably won't do anything about it.\n4) But what if I have a bugfix for a bug in Chrono mode.\nOh well in that case, sure.  Just because I don't care about poor dead Chrono doesn't mean other people don't.\n5) I'm using yanfly item core with this and I'm just getting a 'cancel' beep when I try to use a sword or my shield isn't working or whatever\nTurn on midgame note parsing.\n6) What are the future plans?\nI'll keep adding features that I personally find useful, and fix bugs I encounter.\n7) I want to take cross engine and make my own thing based on it.\nGo ahead, just credit with a linkback, and stick a link in this thread to wherever your project is.\nPLUGIN ORDER:\nSpoiler\nThis is from the demo project, but I'm putting this here as well\nLICENSE:\nThis is a cross compatibility patch, which means that it borrows heavily from the underlying plugins.\nDo whatever you want with my contributions\n, but don't take that as permission to violate any terms for the underlying plugins I'm stitching together.  Use it commerically, noncommerically, as a basis for your own compatibility engine, whatever.  Please credit.\nCREDIT INSTRUCTIONS for using Cross Engine:\nFor Cross Engine specifically, credit 'Restart', and make sure you also credit Moghunter and Altimit Community Contributors for their massive contributions.  Neither of those plugins' terms require it but I think they deserve it\n.\nDEMO CREDITS:\n* Moghunter made the original Chrono Engine, as well as the original chrono engine demo which I'm including.\n* The Altimit Community Contributors is the official copyright group listed for Altimit Movement, but I think we all know that it wouldn't have happened without Xilefian.\n*\nGalv's Camera Plugin\nis included (with permission) in the bundle as well, because it's needed to control the unholy jitter this stack of plugins creates.\n* Yanfly gave me permission to include some of the original code when making the YEP_EventSpawner compatibility patch.\nClick to expand...\nHello there, I want to use this plugin for a project, but the demo has graphical issues. Character attack animations do not work, and the sprites seem to be labeled incorrectly which make the 8 directional movement along with others glitch out. I hoped there would be an update as I tried using this a year ago but it's still the same. Can you possibly update the errors, so it works as intended?"
+    },
+    {
+      "post_id": "js-post-1378953",
+      "author": "Durance_Gaming",
+      "date": "2023-09-06T23:12:47+0900",
+      "body": "AquaEcho said:\nI wrote this code to check every battler on screen every 60 frames/1 second for status conditions/states/buffs. Put it in a parallel common event. There's a line in there for poison damage (default state 4) to do 10 percent of the battler's max hp every second. Don't forget the Wait 60 frames at the end, otherwise it'll run 60 times a second. To control how long the state lasts you need to go to the MOG_ChronoEngine in the plugin list and change the States Duration value in the parameters.\nCode:\nfor (var i = 0; i < $gameMap._battlersOnScreen.length; i++) {\nbattler = $gameMap._battlersOnScreen[i].battler();\nif (!battler.isDead()){\nif(battler.isStateAffected(4)){\nthis.changeHp(battler, -(Math.floor(battler.mhp*.10)), true);}\nbattler.startDamagePopup();\nbattler.updateStateTurns();\nbattler.updateBuffTurns();\nbattler.removeStatesAuto(1);\nbattler.removeStatesAuto(2);}}\nClick to expand...\nI finally got around to trying this out. It did not work for me, but I was still able to find a solution because of it. That .battler() function was exactly what I needed.\nvar battler = this.battler(); if(battler.isStateAffected(4)){ this.act(73) };\nI tacked that into the front of my NPC's custom move route and it ticks poison damage like a charm. Effectively, it gets the NPC to basically damage itself with a 0 range on-user projectile to simulate a DOT tick. Thanks for the help!"
+    },
+    {
+      "post_id": "js-post-1378958",
+      "author": "Durance_Gaming",
+      "date": "2023-09-06T23:31:31+0900",
+      "body": "DTurtle said:\nLooking through your replies and you didn't state this anywhere, I mean I appreciate the help but in general you're incredibly unclear. \"this.jump_to(xy)\" moves the character but doesn't trigger the event it lands on\nClick to expand...\nIf you post this as a script call right after the player lands from jumping it will activate any event the player happens to be standing on:\nJavaScript:\n$gameMap.refresh();\nvar radius = 0\nvar mapEv = $gameMap.events();\nvar listEv = mapEv.length;\nvar player = $gamePlayer;\nfor (var i = 0; (i < $gameMap.events().length + 1); i++) {\nvar thatEv = mapEv[i];\nif (!!$gameMap.event(i) && $gameMap.event(i) != player) {\nif (Math.round(Math.hypot($gameMap.event(i).x - player.x, $gameMap.event(i).y - player.y)) <= radius) {\n$gameMap.event(i).start();\n} } };\nThat \"var radius = 0\" part is the range of activation. If you want some sort of splash activation you can change that number. For example, a 2 would activate the event you landed on and also all events within a 2 tile radius.\nIf you're scripting inside a move route just put it all together as one line and paste it into your move route as a script call:\nJavaScript:\n$gameMap.refresh(); var radius = 0; var mapEv = $gameMap.events(); var listEv = mapEv.length; var player = $gamePlayer; for (var i = 0; (i < $gameMap.events().length + 1); i++) { var thatEv = mapEv[i]; if (!!$gameMap.event(i) && $gameMap.event(i) != player) { if (Math.round(Math.hypot($gameMap.event(i).x - player.x, $gameMap.event(i).y - player.y)) <= radius) { $gameMap.event(i).start(); } } };\nP.S.\n- Keep in mind that when working with move route scripting the Event's movement option for \"Frequency\" (Freq: under Speed\nwill effect how quickly your scripts fire off just like it does with an event's movements."
+    },
+    {
+      "post_id": "js-post-1378961",
+      "author": "AquaEcho",
+      "date": "2023-09-06T23:42:33+0900",
+      "body": "OgreLeg said:\nI finally got around to trying this out. It did not work for me, but I was still able to find a solution because of it. That .battler() function was exactly what I needed.\nvar battler = this.battler(); if(battler.isStateAffected(4)){ this.act(73) };\nI tacked that into the front of my NPC's custom move route and it ticks poison damage like a charm. Effectively, it gets the NPC to basically damage itself with a 0 range on-user projectile to simulate a DOT tick. Thanks for the help!\nClick to expand...\nYou implemented something wrong because it does work. As I told DTurtle, I do in fact test the scripts I post before posting them. Also, my script checks for ALL status and buffs and will clear them up after so many frames. Just those two lines is for poison damage.\nAs an aside, I (and RCXGaming) recently fixed the hookshot to bounce against walls as defined by either a region ID or terrain tag\nPut this script in a new plugin file at the end of your project's plugin list. Change where it says 100 to the region ID of your wall.\nCode:\n// altered hookshot so it retracts faster than it flies out.\nGame_Character.prototype.processMoveCommandTool = function(command) {\n    if (this._tool.boomerang[0]) {\n        if (this._tool.boomerang[1] > 0) {\n            this._tool.boomerang[1]--;\n            this.moveForward();\n        } else {\n            this.moveTowardCharacter(this._tool.user);\n            this._tool.forcingMove = 2;\n        };\n    } else if (this._tool.hookshot.enabled) {\n    if($gameMap.regionId(this.x+.5,this.y+.5) === 100){\n      this.hookShotTink();\n      this.erase();\n                  this.moveTowardCharacter(this._tool.user);\n        this._tool.forcingMove = 2;\n    }\n        if (!this._tool.hookshot.locked) {\n            this._directionFix = true;\n            if (this._tool.hookshot.range > 0) {\n                this._tool.hookshot.range--;\n                this.moveForward();\n            } else {\n                if (this._tool.forcingMove != 2)\n                {\n                    //first time we change to retracting, increase speed\n                    this._moveSpeed+=1;\n                }\n            \n                this.moveTowardCharacter(this._tool.user);\n                this._tool.forcingMove = 2;\n            };\n        } else {\n            this._tool.forcingMove = 2;\n        };\n    };\n};\nIf you want to use terrain tag instead change\nCode:\n$gameMap.regionId(this.x+.5,this.y+.5)\nto\nCode:\n$gameMap.terrainTag(this.x+.5,this.y+.5)\nUse it with the below hookshot settings"
+    },
+    {
+      "post_id": "js-post-1378964",
+      "author": "Durance_Gaming",
+      "date": "2023-09-07T00:10:17+0900",
+      "body": "AquaEcho said:\nYou implemented something wrong because it does work. As I told DTurtle, I do in fact test the scripts I post before posting them. Also, my script checks for ALL status and buffs and will clear them up after so many frames. Just those two lines is for poison damage.\nClick to expand...\nThe code was fine, I was just saying it didn't work for me. I've got a lot of custom code flying around my project on top of various plugins. I didn't see any reason it shouldn't, it just wasn't firing off for me on my project for whatever reason. I saw what you were going for, though, and learned something new out of it that solved my problem so it all worked out in the end. Much obliged! o7\nEDIT: Like, seriously thank you. I'd been at this particular issue a while and you saved me a lot of time."
+    },
+    {
+      "post_id": "js-post-1378991",
+      "author": "AquaEcho",
+      "date": "2023-09-07T02:12:20+0900",
+      "body": "OgreLeg said:\nEDIT: Like, seriously thank you. I'd been at this particular issue a while and you saved me a lot of time.\nClick to expand...\nIt's fine. I just updated the script again because there was a bug: enemies that died from poison damage weren't being erased, toggling their self switch, and dropping treasure. This should fix that.\nEdit: Updated again with a better damage function\nCode:\nfor (var i = 0; i < $gameMap._battlersOnScreen.length; i++) {\nchar = $gameMap._battlersOnScreen[i];\nbattler = $gameMap._battlersOnScreen[i].battler();\n if(battler.isStateAffected(4)){battler.gainHp(-Math.floor(battler.mhp*.10));\n  if(battler.isDead() && battler.isEnemy()){char.setDeadEnemy(char, battler);}}\nbattler.startDamagePopup();\nbattler.updateStateTurns(); battler.updateBuffTurns();\nbattler.removeStatesAuto(1); battler.removeStatesAuto(2);}"
+    },
+    {
+      "post_id": "js-post-1379588",
+      "author": "AquaEcho",
+      "date": "2023-09-09T09:41:27+0900",
+      "body": "OgreLeg said:\nI was just saying it didn't work for me.\nClick to expand...\nOk, I think I know what your issue is: BattlersOnScreen wasn't being initialized in ABS mode unless you force it, but that has its own issues, in that it will either not affect enemies outside of when you force it, or crash the game if you refresh it with a new screen of enemies but an enemy from the previous screen is still affected by a state.\nTry this instead, it'll sample the player and every enemy on the map\nCode:\nfor (var i = 0; i < $gameMap.allEnemiesOnMap().length; i++) {\nchar = $gameMap.allEnemiesOnMap()[i];\nbattler = $gameMap.allEnemiesOnMap()[i].battler();\n if(battler.isStateAffected(4)){battler.gainHp(-Math.floor(battler.mhp*.10));\n  if(battler.isDead() && battler.isEnemy()){char.setDeadEnemy(char, battler);}}\nbattler.startDamagePopup();\nbattler.updateStateTurns(); battler.updateBuffTurns();\nbattler.removeStatesAuto(1); battler.removeStatesAuto(2);}\nJavaScript:\nplayer = $gameMap.players()[0].battler();\nif(player.isStateAffected(4)){player.gainHp(-Math.floor(player.mhp*.10));}\nplayer.startDamagePopup();\nplayer.updateStateTurns(); player.updateBuffTurns();\nplayer.removeStatesAuto(1); player.removeStatesAuto(2);"
+    },
+    {
+      "post_id": "js-post-1382392",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-20T23:29:58+0900",
+      "body": "Hello everyone, I just want to ask you something when I test the game by using guns, when I equipped as a gun, It's good thing I can shoot while I walk, but it stop like 1 second and then move, it's break attack-move break attack-move break attack-move, I need to make this character can walk and run while he shooting without break.\nAlso, is there way to make a gun 4 directions? I just saw there a megagun only 2 direction (left and right)."
+    },
+    {
+      "post_id": "js-post-1382418",
+      "author": "AquaEcho",
+      "date": "2023-09-21T00:54:48+0900",
+      "body": "Ancient_Eagle said:\nHello everyone, I just want to ask you something when I test the game by using guns, when I equipped as a gun, It's good thing I can shoot while I walk, but it stop like 1 second and then move, it's break attack-move break attack-move break attack-move, I need to make this character can walk and run while he shooting without break.\nAlso, is there way to make a gun 4 directions? I just saw there a megagun only 2 direction (left and right).\nClick to expand...\nThere is a thread about gun tools here:\nAutomatic Firearms. Chrono Engine ABS\nHello, folks. I was wondering if there's a way to make automatic firearms on Chrono Engine ABS Mode, sort of like holding down the button (Z in this case) and the weapon keeps shooting. I know this would make it unable to use charged skills, but I don't mind. This is for a ranger sort of hero...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1382451",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-21T02:50:01+0900",
+      "body": "I did the same thing, but it keeps break 1 second and walk.\nThis script I found move route:\nthis.locate(this.user().x+Math.sign(this.user()._zoomData[0])*0.8,this.user().y-0.6);  this._direction=5+Math.sign(this.user()._zoomData[0]);this.rLoc(20*this.user()._zoomData[0],0)"
+    },
+    {
+      "post_id": "js-post-1382453",
+      "author": "AquaEcho",
+      "date": "2023-09-21T02:54:38+0900",
+      "body": "Did you try setting the pose duration to 0? From that thread:\nmoving while firing can be accomplished by setting the pose duration on the arrow to 0.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1382454",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-21T02:57:33+0900",
+      "body": "I did like I said, it still break 1 sec and walk"
+    },
+    {
+      "post_id": "js-post-1382458",
+      "author": "AquaEcho",
+      "date": "2023-09-21T03:20:22+0900",
+      "body": "Could you try changing the tool cooldown duration to 0?"
+    },
+    {
+      "post_id": "js-post-1382459",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-21T03:23:05+0900",
+      "body": "It goes faster, but still break and walk.\nEdit: maybe there's something we can modify this event id 73, but I don't know how."
+    },
+    {
+      "post_id": "js-post-1382468",
+      "author": "AquaEcho",
+      "date": "2023-09-21T03:41:19+0900",
+      "body": "Ancient_Eagle said:\nIt goes faster, but still break and walk.\nEdit: maybe there's something we can modify this event id 73, but I don't know how.\nClick to expand...\nCould you show your other event page, event 74? According to the help file if the tool_act_duration is 0 you can walk and fire."
+    },
+    {
+      "post_id": "js-post-1382471",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-21T03:43:15+0900",
+      "body": "ID 73 is like a gun, but when hold attack button like charge shot, it goes ID 74."
+    },
+    {
+      "post_id": "js-post-1382481",
+      "author": "AquaEcho",
+      "date": "2023-09-21T04:00:31+0900",
+      "body": "I can't reproduce the issue. If I set cooldown to 0 I can rapidfire spam bullets. What does the move route look like?"
+    },
+    {
+      "post_id": "js-post-1382484",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-21T04:08:44+0900",
+      "body": "this.locate(this.user().x+Math.sign(this.user()._zoomData[0])*0.8,this.user().y-0.6); this._direction=5+Math.sign(this.user()._zoomData[0]);this.rLoc(20*this.user()._zoomData[0],0)"
+    },
+    {
+      "post_id": "js-post-1382502",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-21T04:42:55+0900",
+      "body": "Anything that involves splitting apart the shooting animation from being stuck in place is going to require rewriting large portions of the act code\nClick to expand...\nAutomatic Firearms. Chrono Engine ABS\nHello, folks. I was wondering if there's a way to make automatic firearms on Chrono Engine ABS Mode, sort of like holding down the button (Z in this case) and the weapon keeps shooting. I know this would make it unable to use charged skills, but I don't mind. This is for a ranger sort of hero...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1382503",
+      "author": "AquaEcho",
+      "date": "2023-09-21T04:46:35+0900",
+      "body": "Oh, you're using the gun from Restart's demo project. To be honest I never tried that demo until now. That gun is designed that way, why don't you use the other guns in that project (the freerunner's machine bow or the megamachine gun)?"
+    },
+    {
+      "post_id": "js-post-1382504",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-21T04:48:48+0900",
+      "body": "I test them, same issue still break-walk break-walk\nIt will need a few things to fix it a code, or maybe modify the events"
+    },
+    {
+      "post_id": "js-post-1382514",
+      "author": "AquaEcho",
+      "date": "2023-09-21T05:32:32+0900",
+      "body": "Ancient_Eagle said:\nI test them, same issue still break-walk break-walk\nIt will need a few things to fix it a code, or maybe modify the events\nClick to expand...\nWhat you're actually asking is how to make a tool event stay on the map permanently (or as long as you're holding down a button) as they're designed to be spawned and unspawned. I have some ideas but I'll need to test it out. I'll get back to you later today."
+    },
+    {
+      "post_id": "js-post-1382518",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-21T05:39:34+0900",
+      "body": "See the video, this is what I want when player shoot the guns while walking without break\nEdit: I didn't make it, I just record it to play"
+    },
+    {
+      "post_id": "js-post-1382524",
+      "author": "AquaEcho",
+      "date": "2023-09-21T05:48:30+0900",
+      "body": "Use the machine bow. The third number in autofireweapon() is the max number of bullets you can fire so set in to something really high."
+    },
+    {
+      "post_id": "js-post-1382533",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-21T06:22:28+0900",
+      "body": "Ok cool! but the problem when I am shooting while walk, it's only 1 frame sprite, and it's good one there's no break"
+    },
+    {
+      "post_id": "js-post-1382540",
+      "author": "AquaEcho",
+      "date": "2023-09-21T06:50:43+0900",
+      "body": "Yes, as stated in the other thread, to change poses while firing an automatic weapon you need to put commands to update the player sprite in the weapon move route. You could probably do it with a parallel common event too that runs if the player is using a certain weapon\nAutomatic Firearms. Chrono Engine ABS\nHello, folks. I was wondering if there's a way to make automatic firearms on Chrono Engine ABS Mode, sort of like holding down the button (Z in this case) and the weapon keeps shooting. I know this would make it unable to use charged skills, but I don't mind. This is for a ranger sort of hero...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1384261",
+      "author": "Ancient_Eagle",
+      "date": "2023-09-28T04:25:57+0900",
+      "body": "Hello everyone!\nAquaEcho said:\nYes, as stated in the other thread, to change poses while firing an automatic weapon you need to put commands to update the player sprite in the weapon move route. You could probably do it with a parallel common event too that runs if the player is using a certain weapon\nAutomatic Firearms. Chrono Engine ABS\nHello, folks. I was wondering if there's a way to make automatic firearms on Chrono Engine ABS Mode, sort of like holding down the button (Z in this case) and the weapon keeps shooting. I know this would make it unable to use charged skills, but I don't mind. This is for a ranger sort of hero...\nforums.rpgmakerweb.com\nClick to expand...\nThanks for wonderful tutorial, it's working now!\nI just do need something like a beam (kamehameha, galick gun, masenko, etc...)\nDo you now how I can make it? I am trying to find answers, but no one did that\nKAMEHAMEHA"
+    },
+    {
+      "post_id": "js-post-1385918",
+      "author": "jackass__",
+      "date": "2023-10-03T09:43:53+0900",
+      "body": "Hi everyone,\nI use the Cross Engine on MZ with Fossil and I'm trying to change the move speed of the player but when I do, I get different speed depending of the direction, like normal increase speed to the right and down, and laggy slower speed to the up and left.\nSeems to bug with decimals, if I put 5 as speed it works, but I need 4.1 (same I used on MV) and\nI doesn't work (tried also 4.5 and more, same problem)\nI use this command to change speed $gamePlayer.setMoveSpeed(4.1)\nand on the MV version of my project with altimit it worked great but not on MZ.\nAny idea how to fix this ? I tried move speed plugins also, like SpeedManager, but same issue as the code up there."
+    },
+    {
+      "post_id": "js-post-1386082",
+      "author": "AquaEcho",
+      "date": "2023-10-04T01:09:22+0900",
+      "body": "jackass__ said:\nHi everyone,\nI use the Cross Engine on MZ with Fossil and I'm trying to change the move speed of the player but when I do, I get different speed depending of the direction, like normal increase speed to the right and down, and laggy slower speed to the up and left.\nSeems to bug with decimals, if I put 5 as speed it works, but I need 4.1 (same I used on MV) and\nI doesn't work (tried also 4.5 and more, same problem)\nI use this command to change speed $gamePlayer.setMoveSpeed(4.1)\nand on the MV version of my project with altimit it worked great but not on MZ.\nAny idea how to fix this ? I tried move speed plugins also, like SpeedManager, but same issue as the code up there.\nClick to expand...\nI don't have MZ so I can't look into it but I would try to isolate the issue by turning on and off plugins. Once youve figured out what plugin is causing it, look through its code. I suspect it has to do with rounding in the math of diagonal vectors or how the player's position is determined."
+    },
+    {
+      "post_id": "js-post-1386183",
+      "author": "jackass__",
+      "date": "2023-10-04T08:43:11+0900",
+      "body": "Thanks for your answer, I did isolate the issue I made a clean project with only altimit mz version as plugin and I have the same problem.\nI use the Tyruswoo_AltimitMovement version for mz here (dual choice dialogue box fixed on it), but the same problem occurs on this original portage of altimit for mz.\nAnd I didn't had it on mv with standard cross engine altimit version so it might be the mz adaptation but I can't find where is the problem.\nIt was to do with decimals cause I can put move speed to 5 or 6 but not 4.2 or 5.3 without glitch in upwards and left direction."
+    },
+    {
+      "post_id": "js-post-1386198",
+      "author": "AquaEcho",
+      "date": "2023-10-04T09:37:37+0900",
+      "body": "Since it's affecting up-left diagonal it most likely has to do with the player position being read as the top left pixel of the tile he is on. Even when the player is in the middle of the tile, the game places him at the whole number coordinates rounded down"
+    },
+    {
+      "post_id": "js-post-1386203",
+      "author": "jackass__",
+      "date": "2023-10-04T10:07:13+0900",
+      "body": "AquaEcho said:\nSince it's affecting up-left diagonal it most likely has to do with the player position being read as the top left pixel of the tile he is on. Even when the player is in the middle of the tile, the game places him at the whole number coordinates rounded down\nClick to expand...\nAll four diagonals are fine, it's really a problem with upwards or left direction.\nI tried something, If I set 'player_circular_movement' to true, I get the same glitch problem with diagonal mouvement except with down+right diagonal (the two directions who already works) and if I set it back to false, all 4 diagonals works.\nThink I got it, it was some updates Restart made in the original altimit who were missing in the Mz update, so this part solved it (line 1094 to 1128)"
+    },
+    {
+      "post_id": "js-post-1388645",
+      "author": "Ancient_Eagle",
+      "date": "2023-10-15T00:10:16+0900",
+      "body": "Is there way to make reloading for any guns? for example, I have 60 ammos for pistol, 16 shots, when I reloading, it should be 44 ammos left, and so on...\nAny weapons I can use it."
+    },
+    {
+      "post_id": "js-post-1388648",
+      "author": "AquaEcho",
+      "date": "2023-10-15T00:29:45+0900",
+      "body": "Ancient_Eagle said:\nIs there way to make reloading for any guns? for example, I have 60 ammos for pistol, 16 shots, when I reloading, it should be 44 ammos left, and so on...\nAny weapons I can use it.\nClick to expand...\nYou would probably have to combine the properties of the regular bow and arrow that has consumable bullets and the machine bow. I'll look at it later if you haven't figured it out yourself but I won't be online much today."
+    },
+    {
+      "post_id": "js-post-1404522",
+      "author": "Vladar458",
+      "date": "2023-12-10T02:28:58+0900",
+      "body": "I know it have been some moths since nobody writes in this thread, but i have two issues i would greatly appreciate if someone could help me.\nI´m using the codes to display the enemy and player damage from status ailments, this being the enemies one:\nSpoiler:\nEnemy damage from status ailments code\nfor (var i = 0; i < $gameMap.allEnemiesOnMap().length; i++) {\nchar = $gameMap.allEnemiesOnMap()\n;\nbattler = $gameMap.allEnemiesOnMap()\n.battler();\nif(battler.isStateAffected(15)){battler.gainHp(-Math.floor(battler.mhp*0.003 + 12));}\nif(battler.isDead() && battler.isEnemy()){char.setDeadEnemy(char, battler);\n$gameParty.gainGold(battler.gold());\nvar oldLevel = $gameParty.leader()._level; $gameParty.leader().gainExpCN(battler.exp());\n$gamePlayer.requestAnimation(Number(Moghunter.ras_levelAnimationID))}\nbattler.startDamagePopup(); battler.updateStateTurns(); battler.updateBuffTurns();\nbattler.removeStatesAuto(1); battler.removeStatesAuto(2);}\nAnd this one the code for the player:\nSpoiler:\nPlayer damage from status ailments code\nplayer = $gameMap.players()[0].battler();\nif(player.isStateAffected(15)){player.gainHp(-Math.floor(battler.mhp*0.003 + 12));}\nplayer.startDamagePopup();\nplayer.updateStateTurns(); player.updateBuffTurns();\nplayer.removeStatesAuto(1); player.removeStatesAuto(2);\nThe first issue is that in the enemies one, the state 15 is poison, and i have poison to last 30 turns, which means deal damage 30 times. When the player is poisoned, the state works well and suffers the damage 30 times, but then is the enemies, for some reason they only take damage 8 times. And i don´t know why that happen.\nAnd the second issue is that when the player is poisoned, the damage number only display if the player is not moving. If the player moves not only the number don´t display, also the poison runs out faster, dealing less damage. I don´t know why this also happens.\nHow could i fix this two issues? I did something wrong with the codes?"
+    },
+    {
+      "post_id": "js-post-1420426",
+      "author": "ilmania",
+      "date": "2024-02-05T16:55:25+0900",
+      "body": "Heya everyone, I have a little bit of problem with this cross engine.\nby default (original chrono engine) you need to include\ntool_diagonal\ncomment on the tool event\nif you want your bullet shoot diagonally, without that the projectile would just fire in the basic 4dir.\nBut in cross engine, with or without the\ntool_diagonal\ncomment, it still have the ability to move diagonally.\nthe problem is, I need to disable this diagonal movement in some of my tool event. been looking at the script for two days but alas I can't figure anything out"
+    },
+    {
+      "post_id": "js-post-1420428",
+      "author": "AquaEcho",
+      "date": "2024-02-05T17:58:24+0900",
+      "body": "ilmania said:\nI need to disable this diagonal movement in some of my tool event. been looking at the script for two days but alas I can't figure anything out\nClick to expand...\nI believe there is a way to rotate an event until it reaches a multiple of 90?"
+    },
+    {
+      "post_id": "js-post-1420434",
+      "author": "ilmania",
+      "date": "2024-02-05T19:09:20+0900",
+      "body": "AquaEcho said:\nI believe there is a way to rotate an event until it reaches a multiple of 90?\nClick to expand...\nI don't know if thisa god will, but, the moment you give me a reply, I just found the solution\nthank you for the reply though !\nI'll leave the fix here in case anyone have the same problem.\nfirst find this function on cross engine script:\nToolEvent.prototype.setInitialDirection\nthere, in the first IF's you'll find this chunk of code\nJavaScript:\nif (Input.dir8 > 0) {\n      var keyboardDir = Input.dir8;\n\n      if (Imported.Blizzard_UltraMode7) {\n        //if we're using ultra mode seven, then we need to rotate our angle appropriately.\n        keyboardDir = UltraMode7.rotateDirection(keyboardDir, false);\n      }\n\n      if (this.user()._user.spcShoot[2] != 0) {\n        this.setSpcDirection();\n      } else {\n        this.setDirection(keyboardDir);\n        this._user.diagonal = [keyboardDir % 2 == 1, keyboardDir];\n      }\n    }\nthen, lets replace this line\nthis.setDirection(keyboardDir);\n        this._user.diagonal = [keyboardDir % 2 == 1, keyboardDir];\ninto this one\nif (this._tool.diagonal) {\n          this.setDirection(keyboardDir);\n          this._user.diagonal = [keyboardDir % 2 == 1, keyboardDir];\n        } else {\n          var d = this.user()._direction;\n          this.setDirection(d);\n          this._user.diagonal = this.user()._user.diagonal;\n        }\nnow the event comment\ntool_diagonal\nwill work like the default chrono engine behavior,"
+    },
+    {
+      "post_id": "js-post-1429580",
+      "author": "PauloWanderson",
+      "date": "2024-03-13T10:45:40+0900",
+      "body": "jackass__ said:\nTodas as quatro diagonais estão bem, é realmente um problema com a direção para cima ou para a esquerda.\nEu tentei algo, se eu definir 'player_circular_movement' como verdadeiro, recebo o mesmo problema de falha com movimento diagonal, exceto com diagonal para baixo + direita (as duas direções que já funcionam) e se eu definir de volta para falso, todas as 4 diagonais funcionam.\nView attachment 278923\nAcho que entendi, foram algumas atualizações Restart feitas no altimit original que estavam faltando na atualização Mz, então essa parte resolveu (linha 1094 a 1128)\nView attachment 278927\nClick to expand...\nHello, were you able to solve the problem with the engine running on Android? If so, can you help me resolve it?"
+    },
+    {
+      "post_id": "js-post-1447289",
+      "author": "TheBoblob",
+      "date": "2024-05-28T09:06:30+0900",
+      "body": "Hey, someone have an idea on what's happening? I was using the original Chrono Engine version and it was working pretty well but when I try using this version with Alrimit Movement there are some visual issues (I did nothing but play the demo) so Idk if I need to do something to activate the plugin before using or if its a problem in my computer but as I said the original version works good, my bad for my english and thanks in advance"
+    },
+    {
+      "post_id": "js-post-1447314",
+      "author": "AquaEcho",
+      "date": "2024-05-28T16:32:06+0900",
+      "body": "TheBoblob said:\nHey, someone have an idea on what's happening? I was using the original Chrono Engine version and it was working pretty well but when I try using this version with Alrimit Movement there are some visual issues (I did nothing but play the demo) so Idk if I need to do something to activate the plugin before using or if its a problem in my computer but as I said the original version works good, my bad for my english and thanks in advance\nView attachment 306599\nClick to expand...\nOne of the plugins, I think it's MOG CharPoses is turned off that needs to be turned on."
+    },
+    {
+      "post_id": "js-post-1480439",
+      "author": "Ancient_Eagle",
+      "date": "2024-11-08T13:39:21+0900",
+      "body": "I do have a problem by using CrossEngine, I used fossil MZ, but it shows the diagonal is missing picture, I mean it should be fully image like I did.\nSee it the video"
+    },
+    {
+      "post_id": "js-post-1501196",
+      "author": "AquaEcho",
+      "date": "2025-02-26T02:19:29+0900",
+      "body": "I have made several patches for Chrono Engine and Cross Engine including HP bars over enemies, fighting followers/ party members, and redefining the hitboxes to be the same as Altimit colliders unless you use the Body Size notetag. They are all free on my itch.io page\nAquaEcho - itch.io\nIf anyone has any other feature requests I'll look at it when I have the time"
+    },
+    {
+      "post_id": "js-post-1504448",
+      "author": "sakku",
+      "date": "2025-03-15T11:33:33+0900",
+      "body": "Helloo so apparently Cross Engine has incompatibility issues and bugs with Yanfly's Move Route Core plugin, causing weird things to happen and a ton of actions to execute simultaneously (I suppose the issue is with Altimit Movement). Has no one made a plugin to fix this? I tried doing it myself, but it's been difficult"
+    },
+    {
+      "post_id": "js-post-1504456",
+      "author": "AquaEcho",
+      "date": "2025-03-15T12:42:43+0900",
+      "body": "sakku said:\nHelloo so apparently Cross Engine has incompatibility issues and bugs with Yanfly's Move Route Core plugin, causing weird things to happen and a ton of actions to execute simultaneously (I suppose the issue is with Altimit Movement). Has no one made a plugin to fix this? I tried doing it myself, but it's been difficult\nClick to expand...\nWithout knowing what exactly you tried to do I can't help you. You can try changing the plugin order (I have all Yanfly plugins above the Cross Engine ones). Also generally speaking Altimit makes it so moving forward goes by pixels instead of tiles."
+    },
+    {
+      "post_id": "js-post-1504463",
+      "author": "Hiroshikano",
+      "date": "2025-03-15T13:58:31+0900",
+      "body": "Hey guys, is there a (not too complex) way to use something like YEP_MoveRouteCore without lagging a lot because of Altimit? Making a boss move route has been giving me headaches.\nI wanted to make an event that goes to some X,Y points, and the easiest way to do that is using the \"MOVE TO: x, y\" from this YEP plugin, but it seems Altimit is too complex for that. I tried to find a command in Altimit, but it does not work with specific x,y points. I tried also making it move to events and place that events on the points, but it gets very complex and does not run well, the event does not stop on the right spots.\nI don't intend to make the event teleport to these spots, I really want it to walk."
+    },
+    {
+      "post_id": "js-post-1504467",
+      "author": "AquaEcho",
+      "date": "2025-03-15T14:31:28+0900",
+      "body": "Cross Engine has a function tLoc(x,y) you can use.\nFor example,\nMake the player move to coordinates 7,7:\n$gamePlayer.tLoc(7,7)\nOr in the event's move route:\nMake this move to the player's coordinates:\nthis.tLoc($gamePlayer.x,$gamePlayer.y)"
+    },
+    {
+      "post_id": "js-post-1504470",
+      "author": "Hiroshikano",
+      "date": "2025-03-15T14:46:39+0900",
+      "body": "AquaEcho said:\nCross Engine has a function tLoc(x,y) you can use.\nFor example,\nMake the player move to coordinates 7,7:\n$gamePlayer.tLoc(7,7)\nOr in the event's move route:\nMake this move to the player's coordinates:\nthis.tLoc($gamePlayer.x,$gamePlayer.y)\nClick to expand...\nthanks, i'll try it.\nedit: it worked fine, thank you a lot! I'm sad that didn't see those scripts down in the description before."
+    },
+    {
+      "post_id": "js-post-1507096",
+      "author": "leo_nightogames",
+      "date": "2025-03-31T06:03:53+0900",
+      "body": "Please explain this error!\nI added Cross Engine into my DS parody project, and I got this."
+    },
+    {
+      "post_id": "js-post-1507101",
+      "author": "AquaEcho",
+      "date": "2025-03-31T06:09:10+0900",
+      "body": "Could you post your plugin list order and press F8 or F12 when that error comes up again?\nAlso could you check if rpg_core.js is 1.6.2 or higher?"
+    },
+    {
+      "post_id": "js-post-1507102",
+      "author": "leo_nightogames",
+      "date": "2025-03-31T06:15:40+0900",
+      "body": "AquaEcho said:\nCould you post your plugin list order and press F8 or F12 when that error comes up again?\nAlso could you check if rpg_core.js is 1.6.2 or higher?\nView attachment 336028\nClick to expand...\nI see. Let me inspect the files at 'js' folder.\n[Edit]\nOn the other topic, I discovered a minor bug.\nI tried making a shockwave attack from the boss using multiple tool effects. For some reason, I got frozen when the attack occurs. (Please ignore the missing emblem bug, it's a HUDMaker event)\nPossibly a Chrono Engine bug or something else. Any fixes?"
+    },
+    {
+      "post_id": "js-post-1507112",
+      "author": "AquaEcho",
+      "date": "2025-03-31T07:05:48+0900",
+      "body": "leo_nightogames said:\nI see. Let me inspect the files at 'js' folder.\n[Edit]\nOn the other topic, I discovered a minor bug.\nI tried making a shockwave attack from the boss using multiple tool effects. For some reason, I got frozen when the attack occurs. (Please ignore the missing emblem bug, it's a HUDMaker event)\nPossibly a Chrono Engine bug or something else. Any fixes?\nView attachment 336033\nClick to expand...\nCould you post the tool event page and press F8 or F12 to see if there are any errors in the console?"
+    },
+    {
+      "post_id": "js-post-1507113",
+      "author": "leo_nightogames",
+      "date": "2025-03-31T07:15:01+0900",
+      "body": "AquaEcho said:\nCould you post the tool event page and press F8 or F12 to see if there are any errors in the console?\nClick to expand...\nNo errors found.\nIf the enemy attacks with the custom tool event (SmasherController or any guide projectile) with another tool event (shockwave attack event), it freezes the player until the tool event is finished.\nI use this combo method for special effects."
+    },
+    {
+      "post_id": "js-post-1507114",
+      "author": "AquaEcho",
+      "date": "2025-03-31T07:32:50+0900",
+      "body": "Why do you have the tool event set to parallel? I don't think that would do anything. You also might get bugs telling a tool event to \"act\" to use another tool event.\nthis.act() is meant to be used by a battler, e.g. the player, followers or enemies, that has actor/enemy stats.\nYour tool also isn't linked to any database entry for item/skill/weapon but can still collide with the player so the engine might bug out if it tries to look for that data on collision."
+    },
+    {
+      "post_id": "js-post-1507222",
+      "author": "leo_nightogames",
+      "date": "2025-04-01T05:42:30+0900",
+      "body": "Need Help?\nThrowable items such as TNT and Bodypillow are bugged while testing the game with this plugin set.\nI use MOG_PickupThrow.\nAny fixes?"
+    },
+    {
+      "post_id": "js-post-1507224",
+      "author": "AquaEcho",
+      "date": "2025-04-01T05:49:05+0900",
+      "body": "leo_nightogames said:\nNeed Help?\nThrowable items such as TNT and Bodypillow are bugged while testing the game with this plugin set.\nI use MOG_PickupThrow.\nAny fixes?\nClick to expand...\nTNT and Bodypillow aren't in the demo so they are custom tools that you made. If you want help you'll need to post their tool event pages and explain how exactly they are bugged"
+    },
+    {
+      "post_id": "js-post-1507225",
+      "author": "leo_nightogames",
+      "date": "2025-04-01T05:52:00+0900",
+      "body": "Same as the Cross Engine Demo (bomb). I can pick up the bomb (or any throwable item using tool event), but cannot throw directly.\nEdit: The bomb from cross engine demo at the tool event map has the same event commands as the chrono one, also the character movements"
+    },
+    {
+      "post_id": "js-post-1507228",
+      "author": "AquaEcho",
+      "date": "2025-04-01T06:06:29+0900",
+      "body": "If you move MOG_PickupThrow after CrossEngine in your plugin list it will work"
+    },
+    {
+      "post_id": "js-post-1507235",
+      "author": "leo_nightogames",
+      "date": "2025-04-01T06:32:00+0900",
+      "body": "It finally worked!\n[Edit/Update]\nI was trying to find a plugin/patch for CT (Sprint Bar) efficiency using states/items, but nothing found in this forum, I think [MOG's ChronoCT]\nAlso, explain this while using Galv's Cam Control"
+    },
+    {
+      "post_id": "js-post-1507549",
+      "author": "AquaEcho",
+      "date": "2025-04-03T10:39:13+0900",
+      "body": "leo_nightogames said:\n[Edit/Update]\nI was trying to find a plugin/patch for CT (Sprint Bar) efficiency using states/items, but nothing found in this forum, I think [MOG's ChronoCT]\nClick to expand...\nThe comments won't take a variable but you can bypass using a comment for ct cost and put whatever cost you want in the tool's move route\nCode:\nthis._tool.ctCost = $gameVariables.value(1); this.payCTCost();\n\"This tool's CT cost is Control Variable 1. Then pay the CT cost.\"\nOtherwise you'd have to edit the plugin code. This method lets you do it from the engine without editing the plugin.\nIf you want a different CT cost if the user is affected by a state use\nCode:\nthis._tool.ctCost = 50; if(this.user().battler().isStateAffected(28)){this._tool.ctCost = 25;} this.payCTCost();\n\"This tool's CT (base) cost is 50. If the user is affected by state 28, overwrite the CT cost so it's 25. Then pay the CT cost\"\nleo_nightogames said:\nAlso, explain this while using Galv's Cam Control\nView attachment 336202\nClick to expand...\nI don't ever get that bug so I can't tell you. When exactly does it happen and could you press F8 or F12 and show the console log?"
+    },
+    {
+      "post_id": "js-post-1508181",
+      "author": "Codename01",
+      "date": "2025-04-07T18:05:01+0900",
+      "body": "I've added a collider in a comment on an enemy event, and if I stand facing the enemy one tile away. The player character tries to interact with the enemy instead of using attack. I have found a work around where I set the trigger to event touch/player touch instead of action button. However I would like to know if there's other workarounds. As event touch would mean the enemies trigger each other's events when touching and player touch might interrupt the player's input (maybe?) The other skills work fine as they don't use the action button.\nThis is one of the colliders, there's nothing else aside from other chrono engine related comments on the event page."
+    },
+    {
+      "post_id": "js-post-1508257",
+      "author": "AquaEcho",
+      "date": "2025-04-08T03:41:34+0900",
+      "body": "Codename01 said:\nI've added a collider in a comment on an enemy event, and if I stand facing the enemy one tile away. The player character tries to interact with the enemy instead of using attack. I have found a work around where I set the trigger to event touch/player touch instead of action button. However I would like to know if there's other workarounds. As event touch would mean the enemies trigger each other's events when touching and player touch might interrupt the player's input (maybe?) The other skills work fine as they don't use the action button.\nThis is one of the colliders, there's nothing else aside from other chrono engine related comments on the event page.\nView attachment 336658\nClick to expand...\nCould you show the full event page? Also are you using my perfect collision patch plugin? If you don't use the patch, default Cross Engine will only have the hitbox as a circle at the base of the sprite. The patch makes it so hitbox is the same as Altimit colliders\nMy enemy pages just look like this and you can see there's no issue hitting them in my video"
+    },
+    {
+      "post_id": "js-post-1508305",
+      "author": "Codename01",
+      "date": "2025-04-08T11:59:00+0900",
+      "body": "AquaEcho said:\nCould you show the full event page? Also are you using my perfect collision patch plugin? If you don't use the patch, default Cross Engine will only have the hitbox as a circle at the base of the sprite. The patch makes it so hitbox is the same as Altimit colliders\nClick to expand...\nEven if there's only the collider comment on the event, it would try to trigger the event instead of doing an attack when I get too close."
+    },
+    {
+      "post_id": "js-post-1508307",
+      "author": "Jenai",
+      "date": "2025-04-08T13:04:22+0900",
+      "body": "Could you show Page 1?"
+    },
+    {
+      "post_id": "js-post-1508321",
+      "author": "Codename01",
+      "date": "2025-04-08T15:36:19+0900",
+      "body": "Jenai said:\nCould you show Page 1?\nClick to expand...\nJust the usual enemy info, everything's setup properly in the database too. I only got this bug when I added cross engine and the collider comment"
+    },
+    {
+      "post_id": "js-post-1508323",
+      "author": "AquaEcho",
+      "date": "2025-04-08T15:48:37+0900",
+      "body": "If you're not using\nmy patch\nand going by default Cross Engine then I think the hitbox can be made unreachable by your weapon if you expand the Altimit collider much larger than the hitbox. By default the hitbox is a .5 (diameter?) circle centered on the event's base\nIf you want the hitbox to be larger you have to either use my patch or use the Body Size note in the enemy's database entry like the werewolves and bosses have."
+    },
+    {
+      "post_id": "js-post-1508482",
+      "author": "Codename01",
+      "date": "2025-04-09T15:26:55+0900",
+      "body": "AquaEcho said:\nIf you're not using\nmy patch\nand going by default Cross Engine then I think the hitbox can be made unreachable by your weapon if you expand the Altimit collider much larger than the hitbox. By default the hitbox is a .5 (diameter?) circle centered on the event's base\nIf you want the hitbox to be larger you have to either use my patch or use the Body Size note in the enemy's database entry like the werewolves and bosses have.\nClick to expand...\nWhere do I put it? I've tried putting it at the very top and bottom of the list and right above and below cross engine plugin, but the PC still can't attack when the enemy event is around one tile away. I've also tried to shrink the hitbox but it still doesn't let me attack when I stand too close, even with your patch activated. It's just recognizing the enemy as a normal event if I have the collider comment in."
+    },
+    {
+      "post_id": "js-post-1508485",
+      "author": "AquaEcho",
+      "date": "2025-04-09T16:24:54+0900",
+      "body": "You put it after Cross Engine because it overwrites a Cross Engine function.\nI can't replicate your issue at all. Could you  post your tool event page? Or can you tell me how to replicate the issue in the demo project?"
+    },
+    {
+      "post_id": "js-post-1508508",
+      "author": "Codename01",
+      "date": "2025-04-09T21:26:56+0900",
+      "body": "AquaEcho said:\nYou put it after Cross Engine because it overwrites a Cross Engine function.\nI can't replicate your issue at all. Could you  post your tool event page? Or can you tell me how to replicate the issue in the demo project?\nClick to expand...\nI think it might be a hardware thing then, even when I don't touch anything in the cross engine demo and just add a collider to one of the werewolf events it would stop me from attacking. I'm using windows 10 though so not sure what's causing the problem. I'll just ignore it for now and change the trigger to event touch.\nThanks for helping though."
+    },
+    {
+      "post_id": "js-post-1508535",
+      "author": "AquaEcho",
+      "date": "2025-04-10T01:23:22+0900",
+      "body": "Codename01 said:\nI think it might be a hardware thing then, even when I don't touch anything in the cross engine demo and just add a collider to one of the werewolf events it would stop me from attacking. I'm using windows 10 though so not sure what's causing the problem. I'll just ignore it for now and change the trigger to event touch.\nThanks for helping though.\nClick to expand...\nOk, I was able to replicate the issue. It looks like what's happening is the tool event can't \"spawn\" if its spawn point is entirely inside the enemy's collider. It's also only an issue if the enemy event is set to normal priority. Let me see if I can find a good solution."
+    },
+    {
+      "post_id": "js-post-1508605",
+      "author": "leo_nightogames",
+      "date": "2025-04-10T15:16:30+0900",
+      "body": "AquaEcho said:\nThe comments won't take a variable but you can bypass using a comment for ct cost and put whatever cost you want in the tool's move route\nCode:\nthis._tool.ctCost = $gameVariables.value(1); this.payCTCost();\n\"This tool's CT cost is Control Variable 1. Then pay the CT cost.\"\nOtherwise you'd have to edit the plugin code. This method lets you do it from the engine without editing the plugin.\nView attachment 336246\nIf you want a different CT cost if the user is affected by a state use\nCode:\nthis._tool.ctCost = 50; if(this.user().battler().isStateAffected(28)){this._tool.ctCost = 25;} this.payCTCost();\n\"This tool's CT (base) cost is 50. If the user is affected by state 28, overwrite the CT cost so it's 25. Then pay the CT cost\"\nI don't ever get that bug so I can't tell you. When exactly does it happen and could you press F8 or F12 and show the console log?\nClick to expand...\nYou are a lifesaver!"
+    },
+    {
+      "post_id": "js-post-1516127",
+      "author": "Midona018",
+      "date": "2025-05-29T04:08:07+0900",
+      "body": "I just want to warn that the Cross Engine is not compatible with Galv's layer plugin (that I use for parallax mapping). The game crashes when I go on a parallaxed map. (I'm not asking for a patch, I just want to report.)"
+    },
+    {
+      "post_id": "js-post-1516464",
+      "author": "Hiroshikano",
+      "date": "2025-05-31T14:17:31+0900",
+      "body": "Midona018 said:\nI just want to warn that the Cross Engine is not compatible with Galv's layer plugin (that I use for parallax mapping). The game crashes when I go on a parallaxed map. (I'm not asking for a patch, I just want to report.)\nClick to expand...\ni use both and I got no problem with them, but I don't really like Galv's layer because of the memory leak. They do work together for me tho. Are you sure that it is an issue with them?"
+    },
+    {
+      "post_id": "js-post-1516484",
+      "author": "Midona018",
+      "date": "2025-05-31T18:13:02+0900",
+      "body": "Yes, I turned off all my plugins and this one was the only one to bug"
+    },
+    {
+      "post_id": "js-post-1516519",
+      "author": "Hiroshikano",
+      "date": "2025-06-01T03:32:01+0900",
+      "body": "Midona018 said:\nYes, I turned off all my plugins and this one was the only one to bug\nClick to expand...\nare you using the latest version of each plugin? That's really strange. Can you test it on a clean new game or at least a clean map? Maybe there's other things that makes it crash like a parallel event, idk. I just tested it again to make sure and yeah, it is working. I'm also on MV.\nI am using galv's layer above all mog plugins, on 2.0v and crossengine is on alpha0.20.6.26.\nedit: also, how big are your parallax images? I have a lot of problems when using big images with this plugin, even with smaller images in big maps, standalone it works but when i start to put other plugins it increases a lot the memory use and eventually will lead to a memory leak. At least for me this was the only thing that made it crash."
+    },
+    {
+      "post_id": "js-post-1516521",
+      "author": "AquaEcho",
+      "date": "2025-06-01T03:47:23+0900",
+      "body": "A memory overload can cause a crash if the images are very large or you have a lot of them"
+    },
+    {
+      "post_id": "js-post-1517423",
+      "author": "Acinder",
+      "date": "2025-06-08T10:50:21+0900",
+      "body": "I'm getting some odd behavior using cross engine.\n1. When I attack, I see double animation of every attack for the first use. There's only one actor so I'm confused on this.\n2. altimitMovementDebug crashes on new game with \"Cannot read property \"0\" of null.\n3. player touch events are makes the player move slow when walking over them. I think they trigger the event with every small step. I had to put a self switch to wait 30 frames before reactivating to fix this. Is there a way to make the event only work once?\nAny thoughts?"
+    },
+    {
+      "post_id": "js-post-1517439",
+      "author": "AquaEcho",
+      "date": "2025-06-08T13:33:22+0900",
+      "body": "Acinder said:\nI'm getting some odd behavior using cross engine.\n1. When I attack, I see double animation of every attack for the first use. There's only one actor so I'm confused on this.\nClick to expand...\nWhat attack are you using (tool event) and what does your attacking spritesheet look like?\n2. altimitMovementDebug crashes on new game with \"Cannot read property \"0\" of null.\nClick to expand...\nCould you show your plugin list and the console log when this error comes up (press F8 or F12)?\nMy first thought is plugins out of order.\n3. player touch events are makes the player move slow when walking over them. I think they trigger the event with every small step. I had to put a self switch to wait 30 frames before reactivating to fix this. Is there a way to make the event only work once?\nAny thoughts?\nClick to expand...\nI'll have to check when I'm at my laptop but I believe event touch is trigger once."
+    },
+    {
+      "post_id": "js-post-1517756",
+      "author": "Hiroshikano",
+      "date": "2025-06-10T08:41:23+0900",
+      "body": "is there a way to mark the event who was hit by a projectile? I was trying to use this.target() but it seems that it does not work for abs, or I am having some sort of problem with other plugins because it says either \"TypeError: Cannot read properties of undefined (reading 'setPosition')\" or TypeError: this.target is not a function. I am trying to set up a tool that \"teleports\" the event to another place, but i still don't know how to \"mark\" the event.\nedit: just to clarify, i tried some of the \"subject.action\" but i cant make it work with target() in abs."
+    },
+    {
+      "post_id": "js-post-1517787",
+      "author": "AquaEcho",
+      "date": "2025-06-10T11:03:45+0900",
+      "body": "You can do it with states and\nmy patch\nfor Yanfly Buffs and States Core (it's under patches for Yanfly plugins). I made the Crystal Sword relocate any enemy it hits to 5,5"
+    },
+    {
+      "post_id": "js-post-1517789",
+      "author": "Hiroshikano",
+      "date": "2025-06-10T11:11:33+0900",
+      "body": "AquaEcho said:\nYou can do it with states and\nmy patch\nfor Yanfly Buffs and States Core (it's under patches for Yanfly plugins). I made the Crystal Sword relocate any enemy it hits to 5,5\nView attachment 342561\nView attachment 342562\nClick to expand...\nthat's clever, i was hoping for something native from chronoengine but thank you, i'm gonna check it.\nEDIT: well, it did not work as yours... I am using the same script and  even the same location, 5,5, the patch, everything, it runs the code as you can see by the log. The yep plugins order is correct too. I can use the poison state, but the code inside returns:\nYEP_BuffsStatesCore.js:2191 TypeError: Cannot read properties of undefined (reading 'locate')\nAquaEcho said:\nYou can do it with states and\nmy patch\nfor Yanfly Buffs and States Core (it's under patches for Yanfly plugins). I made the Crystal Sword relocate any enemy it hits to 5,5\nView attachment 342561\nView attachment 342562\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1517807",
+      "author": "AquaEcho",
+      "date": "2025-06-10T13:01:10+0900",
+      "body": "Could you change the apply effect to a console.log(target)\nThen playtest the game, hit the enemy and press F8 to see if shows the enemy data?\nEdit: Ok, I see the issue. Apparently I added an extra line of code to my game when enemies are created to also store the enemy's eventId. Well, if you want to do the same, you need to edit the ChronoEngine file to add this highlighted line under checkToolComments"
+    },
+    {
+      "post_id": "js-post-1517894",
+      "author": "Hiroshikano",
+      "date": "2025-06-11T06:33:24+0900",
+      "body": "AquaEcho said:\nCould you change the apply effect to a console.log(target)\nView attachment 342576\nThen playtest the game, hit the enemy and press F8 to see if shows the enemy data?\nView attachment 342577\nEdit: Ok, I see the issue. Apparently I added an extra line of code to my game when enemies are created to also store the enemy's eventId. Well, if you want to do the same, you need to edit the ChronoEngine file to add this highlighted line under checkToolComments\nView attachment 342578\nClick to expand...\nyeah it was this, thank you very much!"
+    },
+    {
+      "post_id": "js-post-1518437",
+      "author": "Acinder",
+      "date": "2025-06-15T12:00:29+0900",
+      "body": "AquaEcho said:\nWhat attack are you using (tool event) and what does your attacking spritesheet look like?\nCould you show your plugin list and the console log when this error comes up (press F8 or F12)?\nMy first thought is plugins out of order.\nClick to expand...\nIssues 1 and 2 were caused by ocRam_Passages. I guess it creates several actors at once. It also broke the debugger. It also doesn't work so I may have to get rid of it if patching it is too hard. Thanks for the assist! I didn't think to read the logs for some reason.\nAquaEcho said:\n3. I'll have to check when I'm at my laptop but I believe event touch is trigger once.\nClick to expand...\nI tried event touch but same issue. Anyone else experiencing this? Setting up a self switch to wait before turning off helps to some degree but i'd like to ensure it fires once per step in square.\nThanks again for your assistance\nEDIT Found an issue with deploying CrossEngine to web or android. The cross-engine script uses an fs which is node only. Is there a way to get passed this?"
+    },
+    {
+      "post_id": "js-post-1518506",
+      "author": "AquaEcho",
+      "date": "2025-06-16T00:20:33+0900",
+      "body": "Acinder said:\nI tried event touch but same issue. Anyone else experiencing this? Setting up a self switch to wait before turning off helps to some degree but i'd like to ensure it fires once per step in square.\nThanks again for your assistance\nClick to expand...\nI believe this is an issue with all pixel movement plugins in that stepping triggers fire off every pixel you move instead of tile. You'll notice every pixel movement has an issue with rapid-firing footsteps too.\nYou might have to just make the events parallels that check once every 10-15 frames or so (about the length of time it takes for the player to move over a tile) to see if the player is on the event. You can use this script in a conditional\nCode:\n$gamePlayer.x+.5 == this.character(0).x && $gamePlayer.y+.5 == this.character(0).y\n\"If the (middle) of the player's position is in this event's position\". Then put a wait 10-15 frames.\nYou could also use\nCode:\n$gameMap.isTouchingAB(this.character(0),$gamePlayer)\n\"If the colliders for this event is touching the player's colliders\"\nAcinder said:\nFound an issue with deploying CrossEngine to web or android. The cross-engine script uses an fs which is node only. Is there a way to get passed this?\nClick to expand...\nI can't really help you with this as I've never tried web or mobile deployment. Personally my game is intended for PC download only (I don't think this type of game would work as well as web or mobile, I see web and mobile as more for lightweight casual games and I'd rather use GDevelop for that, not RPG Maker) so I've just never bothered with it. You may have to hire a programmer to look at the issue and come up with a workaround."
+    },
+    {
+      "post_id": "js-post-1519063",
+      "author": "ilmania",
+      "date": "2025-06-19T13:57:34+0900",
+      "body": "Good day everyone.\nI have a little question here.\nI know that there's notetags for enemy note page if you want that certain enemies Invulnerable to certain tools ID.\nThe question is, is there a way to make a notetags for enemies that make certain enemies CAN ONLY TAKE DAMAGE from ID we specified? like, the opposite of that 'Invulnerable Actions : X' notetags?\nThank you!"
+    },
+    {
+      "post_id": "js-post-1519064",
+      "author": "AquaEcho",
+      "date": "2025-06-19T14:04:40+0900",
+      "body": "ilmania said:\nThe question is, is there a way to make a notetags for enemies that make certain enemies CAN ONLY TAKE DAMAGE from ID we specified? like, the opposite of that 'Invulnerable Actions : X' notetags?\nThank you!\nClick to expand...\nYou could use Yanfly Buffs and States Core + Autopassive states to give the enemy a state that checks for a propety of the skill like its id or type. Use\n<Custom React Effect>"
+    },
+    {
+      "post_id": "js-post-1519150",
+      "author": "Acinder",
+      "date": "2025-06-20T06:41:48+0900",
+      "body": "ilmania said:\nGood day everyone.\nI have a little question here.\nI know that there's notetags for enemy note page if you want that certain enemies Invulnerable to certain tools ID.\nThe question is, is there a way to make a notetags for enemies that make certain enemies CAN ONLY TAKE DAMAGE from ID we specified? like, the opposite of that 'Invulnerable Actions : X' notetags?\nThank you!\nClick to expand...\nIf you want to code it, the code in chrono_engine at line 6622 and maybe 2 other places should be all that needs to be changed. I've been coding a lot of add ons to cross engine lately, if I decide on this one too, I'll post it here.\nAnother three maybe possible options:\n1. There are collision ids you can use to start an action by a tool in this engine. (i.e. stage 1 examples). Maybe you can remove health by that event call\n2. You could detect if the enemy is overlapping the attack event with a certain name. Then use event to attack enemy. You may need to loop through $gameMap.events for that.\n3. You could probably use a conditional within the invulnerable enemy to check if the player has said weapon equipped. You can turn on and off its vulnerability. A script call may be needed.\nI think a mix of these has potential for no - low code, but I'm new to rpg maker (not coding) so take what I say with a grain of salt. Happy devving!"
+    },
+    {
+      "post_id": "js-post-1519201",
+      "author": "ilmania",
+      "date": "2025-06-20T16:28:18+0900",
+      "body": "AquaEcho said:\nYou could use Yanfly Buffs and States Core + Autopassive states to give the enemy a state that checks for a propety of the skill like its id or type. Use\n<Custom React Effect>\nClick to expand...\nIsn't yanfly paywalled now? didn't have any fund for that\nAcinder said:\nIf you want to code it, the code in chrono_engine at line 6622 and maybe 2 other places should be all that needs to be changed. I've been coding a lot of add ons to cross engine lately, if I decide on this one too, I'll post it here.\nAnother three maybe possible options:\n1. There are collision ids you can use to start an action by a tool in this engine. (i.e. stage 1 examples). Maybe you can remove health by that event call\n2. You could detect if the enemy is overlapping the attack event with a certain name. Then use event to attack enemy. You may need to loop through $gameMap.events for that.\n3. You could probably use a conditional within the invulnerable enemy to check if the player has said weapon equipped. You can turn on and off its vulnerability. A script call may be needed.\nI think a mix of these has potential for no - low code, but I'm new to rpg maker (not coding) so take what I say with a grain of salt. Happy devving!\nClick to expand...\nThat no.3 seems doable, let's see if I can pull it off (if not, well, let's just do the hard way and add EVERY SKILL I have into 'Invulnerable Actions : X' notetags except the one that can deal damage to it\n)\nGlad knowing there's someone who still using this plugin\nThank you for the reply\n@AquaEcho\n@Acinder\n!"
+    },
+    {
+      "post_id": "js-post-1519215",
+      "author": "AquaEcho",
+      "date": "2025-06-20T22:38:36+0900",
+      "body": "ilmania said:\nIsn't yanfly paywalled now?\nClick to expand...\nThe core plugins are still free. Buffs and States core and autopassive states are both free.\nJust use this patch in a plugin file at the end of your plugin list\nCode:\n//Yanfly Buffs States Core ChronoEngine Fix\nYanfly.BSC.Game_Action_executeDamage = Game_Action.prototype.executeDamageCN;\nGame_Action.prototype.executeDamageCN = function(target, value) {\n    value = this.onPreDamageStateEffects(target, value);\n    value = this.onReactStateEffects(target, value);\n    Yanfly.BSC.Game_Action_executeDamage.call(this, target, value);\n    value = this.onRespondStateEffects(target, value);\n    value = this.onPostDamageStateEffects(target, value);\n};"
+    },
+    {
+      "post_id": "js-post-1519514",
+      "author": "Acinder",
+      "date": "2025-06-23T08:41:58+0900",
+      "body": "If anyone wants to deploy to web and possibly mobile, I found a way to get passed the \"fs\" problem I had. More can be learned here:\nhttps://forums.rpgmakerweb.com/index.php?threads/cross-engine-cant-deploy-to-web-or-mobile.178444/"
+    },
+    {
+      "post_id": "js-post-1521838",
+      "author": "Somnus",
+      "date": "2025-07-11T02:40:39+0900",
+      "body": "Hookshot is an issue for me as well. When I have AltimitMovement turned off it works fine, but with it on the hookshot suddenly doesn't travel far at all, less than a tiles worth of distance. I turned off all other plugins to see if there was interference but nothing there fixed it, same issue even with just the core plugins enabled. So I have to ask, is anyone else having major issues with the hookshot?"
+    },
+    {
+      "post_id": "js-post-1521839",
+      "author": "AquaEcho",
+      "date": "2025-07-11T02:45:22+0900",
+      "body": "Use these settings for boomerang and hookshot"
+    },
+    {
+      "post_id": "js-post-1521841",
+      "author": "Somnus",
+      "date": "2025-07-11T02:59:53+0900",
+      "body": "Thank you!!!!!!\nIve been bashing my head for hours"
+    },
+    {
+      "post_id": "js-post-1521842",
+      "author": "AquaEcho",
+      "date": "2025-07-11T03:11:34+0900",
+      "body": "No problem. Those tool pages were posted somewhere earlier thread, I didn't come up with them. The issue is that Altimit makes events move 1 pixel forward at a time instead of 1 tile so you need to adjust the tool settings to account for that."
+    },
+    {
+      "post_id": "js-post-1527797",
+      "author": "RapunzelMaker",
+      "date": "2025-08-26T06:43:06+0900",
+      "body": "Hey everyone. I recently downloaded Mog Hunter’s Cross Engine plugin, but it’s not working. Every time I start the game I get this error message, and my character’s sprite just stands still like there’s no animation. Does anyone know how I can fix this and add sword and breathing animations, please??"
+    },
+    {
+      "post_id": "js-post-1527900",
+      "author": "AquaEcho",
+      "date": "2025-08-27T02:45:55+0900",
+      "body": "RapunzelMaker said:\nHey everyone. I recently downloaded Mog Hunter’s Cross Engine plugin, but it’s not working. Every time I start the game I get this error message, and my character’s sprite just stands still like there’s no animation. Does anyone know how I can fix this and add sword and breathing animations, please??\nView attachment 348308\nView attachment 348309\nClick to expand...\nThat isn't a fresh project. You either changed the tool event comment, the main character's image, or the image file names.\nIt looks like the second one so go to the actor database and change the image back."
+    },
+    {
+      "post_id": "js-post-1535979",
+      "author": "Gabiszon",
+      "date": "2025-11-06T06:02:38+0900",
+      "body": "hiiiiiiii everyone i got MZ so I experimented with moving Cross demo to it (with FOSSIL ofc) (and to be clear i'm not so sure if cross engine is supposed to be compatible with fossil in the first place even tho restart made both of them? I know chrono engine is supposed to work so idk) anyway\nIts “mostly working” and working suprisingly well but i got a few bugs trying so and i dont feel its fully functional (shield equip, these events with chickens clinging to the table, minotaur rush)\nso my point would be is it even worth to try using cross engine in mz over mv?? anyone using chrono in mz??"
+    },
+    {
+      "post_id": "js-post-1535985",
+      "author": "AquaEcho",
+      "date": "2025-11-06T06:53:22+0900",
+      "body": "Last I tested Cross Engine worked fine in MZ with FOSSIL but my MZ trial ran out so I can't doublecheck. MOG Damage Popups will throw an error this._digitWidth which is why I made a MZ port of it. You also have to add a ? to one line of code to stop the \"cannot find property length\" error after an attack animation\nI noted the errors and fixes for MZ at the bottom of the first post in my Chrono Engine thread\nMV - MV + MZ : Make an Action Game! Chrono Engine Beginner Guide - On Map Tools and Battles!\nThis is a beginner introductory guide. I also have another guide Advanced Features!  What is Chrono Engine? Chrono Engine is a free, open-source suite of plugins used to make action games by adding on-map tools and battles for MV (and MZ compatible with FOSSIL (see MZ notes at bottom)). It can...\nforums.rpgmakerweb.com\nI would also double check that your plugins are in the same order Restart has them in the opening post of this thread. The plugin order matters because some code has to load first before other code can work."
+    },
+    {
+      "post_id": "js-post-1536159",
+      "author": "Gabiszon",
+      "date": "2025-11-07T06:08:06+0900",
+      "body": "AquaEcho said:\nLast I tested Cross Engine worked fine in MZ with FOSSIL but my MZ trial ran out so I can't doublecheck. MOG Damage Popups will throw an error this._digitWidth which is why I made a MZ port of it. You also have to add a ? to one line of code to stop the \"cannot find property length\" error after an attack animation\nI noted the errors and fixes for MZ at the bottom of the first post in my Chrono Engine thread\nMV - MV + MZ : Make an Action Game! Chrono Engine Beginner Guide - On Map Tools and Battles!\nThis is a beginner introductory guide. I also have another guide Advanced Features!  What is Chrono Engine? Chrono Engine is a free, open-source suite of plugins used to make action games by adding on-map tools and battles for MV (and MZ compatible with FOSSIL (see MZ notes at bottom)). It can...\nforums.rpgmakerweb.com\nI would also double check that your plugins are in the same order Restart has them in the opening post of this thread. The plugin order matters because some code has to load first before other code can work.\nClick to expand...\nOh hi!! And yay thank you so much, turns out shield didnt work properly because i didnt copy all files from 'data' folder from MV to MZ like a dumbass + adding ? to chrono, thanks for making these fixes!!\nall the new code tips and plugins you made seem very useful i gotta check them out when i have time'"
+    }
+  ]
+}

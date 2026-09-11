@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-call-on-a-visustella-custom-parameter.176706",
+  "title": "MZ How to call on a VisuStella custom parameter?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-11T04:45:31.126447+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1507499",
+      "author": "Allusion",
+      "date": "2025-04-03T04:18:48+0900",
+      "body": "Hi, all!\nI'm having an issue in trying to develop an idea for my game which would require some custom parameters to rise/fall over the course of gameplay. VisuStella gives support with adding them easily enough, but I'm lost as to how to go about targeting each one, specifically, in an event to increase or decrease it's value.\nI'd like to use their plugin because the stats are reflected in the status screen, (vs just using variables) so any help with this would be appreciated! The best I've come up with is;\nJavaScript:\n$gameActors.actor(1)._CustomParam['wisdom'] += 10;\n$gameActors.actor(1).refresh();\nBut it does nothing. (◞‸◟,)"
+    },
+    {
+      "post_id": "js-post-1507507",
+      "author": "rpgLord69",
+      "date": "2025-04-03T04:58:38+0900",
+      "body": "Hmmm, aren't they referenced with just the abbreviation? Like in their example 'str', so it'd be:\n$gameActors.actor(1).str\nAlso, the way I understand it is that the value is set with the formula you give in the plugin parameters. Like the example return formula for 'str' is:\nreturn (user.atk * 0.75) + (user.def * 0.25);\nSo I think you need to affect it with stuff that's in the return formula."
+    },
+    {
+      "post_id": "js-post-1507527",
+      "author": "Allusion",
+      "date": "2025-04-03T07:06:57+0900",
+      "body": "Hi, thank you so much for your reply! Yes, the custom stats can be referenced with their abbreviation or their full name, according to the instructions. Setting the value in the plugin parameters is definitely where I started, but I'm having trouble adjusting them via events. (I'm trying to make it so that the custom stats can increase or decrease based on the player's choices/actions! Vs leveling up or so. I just don't know if that's even possible...)"
+    },
+    {
+      "post_id": "js-post-1507528",
+      "author": "Another Fen",
+      "date": "2025-04-03T07:16:55+0900",
+      "body": "I may be a bit out of the loop here. The one thing I found regarding VisuStellas menu was\nthis here\n, which allows you to plug your own variables/parameters into the menu, but does not provide any parameter logic on its own.\nAre you using this method, and if yes, how did you set up the \"JS: Value\" part, and if no, what are you currently using for extra parameters?\nEdit\n: If you are looking for a plugin to handle extra parameters,\nthis one\nwould be the first I could find. You should be able to plug in the custom parameters into VisuStellas menu by putting\nreturn this.cparam(127);\nas the \"JS: Value\" (replace 127 with the ID of your parameter)."
+    },
+    {
+      "post_id": "js-post-1507539",
+      "author": "Allusion",
+      "date": "2025-04-03T08:51:40+0900",
+      "body": "Hey, there! Thanks for taking the time to reply! I see, so VS doesn't have the logic necessary to have it's parameters called on. I'm using the VS core engine method yes! I haven't touched the default JS so it looks like this;\nJavaScript:\n// Declare Constants\nconst user = this;\n\n// Calculations\nreturn (user.agi * 0.75) + (user.atk * 0.25);\nI put your edit into the strength stat's JS field, and it returns 0, which is great! I just don't know how to increase it from there via events/scripting. I thought there was a way to have a script reference the custom stat and then allow me to adjust it? But like you said, that doesn't seem to be the case... (And even if it was, I'm not sure how I would separate the values among the party members? (So that all their numbers aren't the same.))\nEli's plugin is a dream! But I don't think it's custom stats are reflected in any menus? If it had a VS status window patch, that would be perfect!\nBut most likely, I'll need to re-think this whole idea. ^A^;;"
+    },
+    {
+      "post_id": "js-post-1507547",
+      "author": "Another Fen",
+      "date": "2025-04-03T09:56:55+0900",
+      "body": "I have not tried this myself, but from what I gathered you'd have to set your parameters up in both plugins:\nYou can make VisuStella mimic Elis custom parameters by giving them the same name, abbreviation, and use the code from the last post for \"JS: value\"\n(The parameters ID is its position in Elis plugin parameter list, starting at 0)\nNote: I am not 100% sure if giving the VisuStella version the same abbreviation as the Eli versions short name won't cause an error; it should be fine, but you might want to try it out first.\nIf the Eli-Parameter is a HP/MP/TP type parameter, then the VisuStella abbreviation should have a \"max\" in front of the short name as well.\nTo increase a parameter, you can use\n$gameActors.actor(1).addCParam( ParamId , Amount );\nor the corresponding plugin commands."
+    },
+    {
+      "post_id": "js-post-1507570",
+      "author": "rpgLord69",
+      "date": "2025-04-03T15:25:23+0900",
+      "body": "Allusion said:\nHi, thank you so much for your reply! Yes, the custom stats can be referenced with their abbreviation or their full name, according to the instructions. Setting the value in the plugin parameters is definitely where I started, but I'm having trouble adjusting them via events. (I'm trying to make it so that the custom stats can increase or decrease based on the player's choices/actions! Vs leveling up or so. I just don't know if that's even possible...)\nClick to expand...\nI'm a bit confused what's the problem?\nIf your return formula is dependent on user.atk (like in the example), then you change the attack value in the events to change the custom parameter. If your return value is dependent on variables, then you change those variables.\nEDIT:\nIf you want different variables for your actors, it's (worked for me at least):\nif (user.actorId() == 1) {\nreturn $gameVariables.value(99);\n} else if (user.actorId() == 2) {\nreturn $gameVariables.value(100);\n}"
+    },
+    {
+      "post_id": "js-post-1507594",
+      "author": "Allusion",
+      "date": "2025-04-03T20:18:48+0900",
+      "body": "rpgLord69 said:\nI'm a bit confused what's the problem?\nIf your return formula is dependent on user.atk (like in the example), then you change the attack value in the events to change the custom parameter. If your return value is dependent on variables, then you change those variables.\nEDIT:\nIf you want different variables for your actors, it's (worked for me at least):\nif (user.actorId() == 1) {\nreturn $gameVariables.value(99);\n} else if (user.actorId() == 2) {\nreturn $gameVariables.value(100);\n}\nClick to expand...\nQAAAAAAAAAAAAQ I see what you mean, now!! Omg it works! Thank you so much\n@rpgLord69\nI'm sorry I was slow on the pick up lol! But yes, when I apply\n@Another Fen\n's little snippet\nreturn this.cparam(1); it works beautifully!\nThank you both so, so much! You've saved my game haha! ♡⸜(˶˃ ᵕ ˂˶)⸝♡"
+    },
+    {
+      "post_id": "js-post-1507600",
+      "author": "rpgLord69",
+      "date": "2025-04-03T21:18:36+0900",
+      "body": "Cool.\nYeah, Eli's plugin is only necessary if you want the \"parameter logic\", like for battle buffs and whatever. If you just want to display and change a custom parameter, just VisuStella is enough."
+    }
+  ]
+}
