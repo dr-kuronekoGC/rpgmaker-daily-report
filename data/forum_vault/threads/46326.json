@@ -1,0 +1,359 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/xp-to-mv-conversion-script-version-1-00-released.46326",
+  "title": "XP to MV conversion script - Version 1.00 released.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T18:26:16.260217+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-465566",
+      "author": "Schlangan",
+      "date": "2015-10-23T11:21:19+0900",
+      "body": "Hello everyone,\nSince MV is out, let's start serious business. As you all know, a Ace to MV converter has been developed by Shaz, but we're currently lacking a XP to MV converter.\nUnlike VXAce which is similar to MV in terms of database, XP is a tad older, and uses different mechanics. Because of this, a conversion is more difficult to achieve. Several choices are to be done. I will propose here one possibility of conversion, but I'd also like to discuss with you other opportunities to transfer from XP to MV.\nThe converter is in two parts. First, you'll have to use a RGSS script to include in your RPG Maker XP project. The script will convert the database items to JSON files for MV. It will also list all resources in use and analyze the maps for the second part, a separate program. This program will read the export result from the RGSS script and look through your project folder and the RTP folder, in order to copy or convert the resources of your XP project to MV.\nAnyone owning XP and MV can use the script. If you convert your project using this script, simply credit me if you want.\nIf you do not want to read all specifications, here is a summary of the most important parts :\n- As any RPG Maker XP project, it can only run while the game window is active. You must wait for it to be completed by keeping the window active.\n- Elements absorption have been removed in MV.\n- Fog graphics cannot be ported to MV for now.\n- You'll have to check the balance of damages of the actor and the enemies.\n- You may obtain wrong graphics for charsets restricted to the first column in XP, since the columns has been removed.\n- There is no passability property converted for the autotiles, you'll have to do it manually.\n- Each maps is associated to its own tilesets.\n- Waterfall and deep water autotiles will probably fail upon conversion, as there was no way to deduce them.\n- Graphics conversion will leave semi transparent borders for now on the tiles; use that as a placeholder more than real graphics.\nPart 1 - RGSS script\nIn order to open the discussion about what was done, I will list here any changes made by the conversion from XP to MV. First, concerning the database, then concerning the event commands and maps.\nDatabase\n· Actors and Classes\nIn RPG Maker XP, the possible equips were Actor dependent, while it has become Class dependent in RPG Maker MV. To reproduce XP's data, a single class was created per actor in MV. Also, in MV is set one equipment type per XP's item.\nConcerning the stats, XP had STR,DEX,AGI,INT, while the items were giving ATK,PDEF and MDEF. MV's system is different. It works based on ATK,AGI,MATK,LUK,PDEF,MDEF. This time all actors have base PDEF and MDEF too. For now, I used the following conversion, but i'll probably need to make changes since the battles end up with misses only.\n- MV:ATK = XP:STR + XP:ATK\n- MV:AGI = (XP\nEX + XP:AGI) / 2\n- MV:MAT = XP:INT\n- MV:LUK = (XP:STR+XP\nEX+XP:AGI+XP:INT) / 4\n- MV\nEF = XP:STR\n- MV:MDF = XP:INT\nThe experience curve has been changed between XP and MV. Since MV has one more growth parameter, it now takes the value of Xp's growth parameter. The experience for the first levels will be higher in MV for now. A plugin should also fix that.\nClasses can not absorb elements anymore. Instead, a no damage behavior is set in MV.\nFor now, I couldn't convert the charset hue, since the options has disappeared from MV. A later plugin should fix that.\nStats will have to changed too, since the formula are far too different.\nArmors\nArmor automatic states do not exist in MV. For now this option is not converted. Later, creating a plugin to reproduce this behavior should fix it.\nEnemies\nWhile a single enemy command in XP could have many conditions, MV only allows one. Hence, only one of the XP conditions is given, in the following priority order : Switch, Turn, HP, level.\nElemental absorption having disappeared from MV, it is set to zero damages instead.\nItems\nIn XP, variance was possible for HP and SP recovery at the same time. However, the option is not directly possible in MV, hence the Item variance has been removed for now.\nSkills\nMV requires four default skills for the basic XP commands, Attack, Guard, Escape and Do Nothing. The four default skills of MV are ket, and the other XP skills are added below.\nThe skill damage formula in MV have been set to reproduce XP's variance formulas coming from the stats of the user. The EVA parameter of XP has not been converted.\nYou will have to change the animation for the default MV attack skill, in order to set it to the animation you used in XP. Or else, it will take the first animation by default.\nStates\nMV requires default states for K.O., Guard and Immortality. Hence, the default MV states have been kept, and XP states have been added below.\nStates do not have animations anymore in MV. It has been replaced by icons. Since there is no default icon in XP for states, it will remain blank. Another change comes from the probability of state auto-removal. The probability has become a range of turns in MV. Hence, they have been recalculated from the probability.\nXP's states could remove other states. It isn't possible in MV anymore, and I have no fix for now.\nSystem\nAs weapon and armor types did not exist in XP, each item is given a type. Concerning the battle mode, XP was front view. Also, no caterpillar system existed without script at that time.\nTroops\nIn MV, there is no immortal monster from the start, while it was possible in XP. To reproduce XP's behaviour, a 0th turn event page has been added to the troop to add the Immortality states to the enemies.\nWeapons\nStates removal during an attack are not possible anymore in MV. Only added states are converted.\nEvents\nSome event commands have changed between XP and MV, or have been simply removed. Any removed command is replaced by a comment to indicate it was at this place.\n- Change Text Option : Removed\n- Button Input Processing : Removed\n- Map settings : Removed for Fog settings, since Fog does not exist anymore\n- Wait for move completion : Removed. MV includes it in other events, but it was not possible to deduce it from the following Wait commands.\n- Prepare for transition : Removed\n- Execute transition : Removed\n- Battle animation : Removed for actors since they do not appear in battle.\n- Deal damage : Not possible on actors anymore since the index changed. A script will be required.\n- MoveRoute - Always on top ON/OFF : Removed (commented in a script to keep track of it)\nFor some other commands, changes take place.\n- Message : The \\G escape character of XP has been replaced to \\$ to properly show the gold window in MV.\n- Wait : XP's wait was 20 FPS, while it is 60 FPS in MV. Hence, the wait has been multiplied by three.\n- Conditional button : MV has less buttons than XP. The following conversion has been applied : B=cancel, C=ok, X=shift, L=pageup, R=pagedown, A=shift, Y=shift, Z=shift.\n- Conditional script : Set by default to TRUE. The former RGSS script is written in comment besides it.\n- Variables set to parameters : Use of the converted parameters, and MV's Luck instead of XP's Evasion.\n- Variable set to Event's terrain Tag : MV's command is based to variables, while XP's was directly event dependant. The command has been replaced by A JS script call that will give the event's terrain tag.\n- Change windowskin : The color tone is set to the new windowskin.\n- Pictures : The SUB blend mode of XP does not exist in MV, and has been replaced by normal.\n- Battle force action : In MV all actions are set to NOW, because the option is now page dependent instead of command dependent.\n- Script : The whole script is commented of course.\n- MoveRoute - ChangeGraphics : In order to reproduce XP's possibility to turn a character by changing its graphic, the corresponding turn command has been added in MV.\nMaps\nThe conversion of maps is tricky, as MV's tileset are not unlimited like XP's. Fortunately, the double layer of MV can reproduce XP's layers.\nFirst, one tileset will be created by XP map. It is mandatory to save spaces, getting rid of unused ground resources. To do so, the tiles use on XP first layer are analyzed, and put in the A5 tileset. Then, the layer 2 and layer 3 are done using B-E tiles and the new double layer system.\nPossible issue : MV does not have the priorities of XP. Doing so, some tiles might be wrongly shown as the converter puts layer 3 over layer 2.\nConcerning autotiles, they are converted as much as I could. Animated auto tiles are placed into A1 tilesets, while the other autotiles are set in A2 tilesets. Since the A2 tileset right part can overlap the left part, I set the autotiles accordingly to their position in the maps; layer 2-3 autotiles end up in the right part of the A2 tileset.\nIssue : The current setting does not work for multiple water autotiles from XP. I don't know how to fix that for now. Autotiles at layer 2 and 3 might also completely bug for now. I'll try to solve that problem later on.\nPart 2 - Resource converter\nHere comes a screen capture of the software. It only requires to select the path to the RPG Maker XP project and the RTP path. Normally, the RTP path is automatically determined from the registry, but if for some reason it could not find it, you can browse yourself to the folder.\nI will now list here what was done for the conversions, and the possible issues coming along.\n· Animations\nThe size of XP animations frames are exactly the same size as MV's frames. Hence, everything was kept in the same size. This could however result in smaller animations in MV.\n· Autotiles\nAutotiles are converte dand put in A1 and A2 tilesets. Only multiple water tiles fail for now.\n· Battlebacks\nWhile XP had only a single 640x480 battleback, MV works with two 1000x740 battlebacks, representing ground and back. To keep the same battlebacks as before, it is exported for both battlebacks, and resized to 1000x740. Hence, the battleback is slightly vertically deformed.\n· Battlers\nFor XP, battlers were either actors or enemies. In MV, actors do not appear anymore in front view, so the folder has been renamed enemies. The format is the same as XP, a single picture. The size as been multiplied by 1.5 to fit in MV increased resolution.\n· Characters\nThe base character format in XP was 4 frames of 32x48 pixels for 4 directions. MV however only uses 3 frames of 48x48 for 4 directions, and many characters in a single file. To be able to use a single character per file, the $ sign has been added to the resource names. Since MV can also use taller sprites, the base size of XP sprites has been multiplied by 1.5. Also, the first frame has been removed to fit in MV style. However, this might incur a problem if the first column of XP was specifically selected for events. A way to prevent this problem would be to create a single charset for every columns for events.\n· Fogs\nAs MV do not possess a fog option by default, the resources are not converted. If I finally create a plugin to mimic XP's behavior in XP, I'll add them back.\n· GameOver\nThe GameOver picture selected in the options will be set in MV's project. Only one GameOver file may be set in MV by default.\n· Icons\nIcons in XP were separate files in the icons folder. However, they have become a single IconSheet in MV img/system folder. The software will hence adapt the icon to MV's size and place them in a single sheet, following the order set by the RGSS script.\n· Panoramas\nPanoramas have become parallaxes in RPG Maker MV, and are also properly grown by 1.5.\n· Pictures\nI didn't work on them yet. They'll probably have to be resized to fit RPG Maker MV screen.\n· Tilesets\nThe Tilesets were a bit more tricky as MV do not work with a single file. In order to properly reproduce XP behaviour while working with MV, the first layer tiles have been analyzed and put in a A5 tileset. Here, only the tiles in use are set, allowing up to 128 different tiles. Then, the XP tileset has been entirely split into B,C,D,E tilesets for MV. Since the first cell of the B tileset must remain blank in MV, the XP tileset has been shifted by one tile down. Hence, any XP tileset less than 4064 pixels high can be completely inserted into MV.\n· Titles\nThe title screen has been increased to fit MV resolution, while losing 16 pixels on the left and right. It is set in title1 for MV, since the foreground title screen did not exist in XP.\n· Transitions\nTransition have disappeared in MV, so they are not converted from XP.\n· WindowSkin\nThe Windowskin selected in XP database is converted to MV. However, MV does not include a possibility to change the windowskin without plugin. The corresponding command will hence only change the tone of the windowskin.\nNote : You can now choose to keep the graphics on a 32 pixels grid instead of 48. Simply check the \"do not resize characters and tilesets\" box.\nDownload\nEverything is inside the Zip File. Extract everything in a Folder, and maker sure that the ColorSet.png file stays besides the executable file. Open the .rb file with a text editor and copy the contents inside a script in RPG Maker, just over Main.\nDownload link - MediaFire\nThe installer of the software is here :"
+    },
+    {
+      "post_id": "js-post-473976",
+      "author": "Schlangan",
+      "date": "2015-10-26T23:44:58+0900",
+      "body": "Update of the post, with all what the current version does. As of now, the converter is 80% ready."
+    },
+    {
+      "post_id": "js-post-476020",
+      "author": "HalcyanStudio",
+      "date": "2015-10-27T23:11:32+0900",
+      "body": "Great work! I'm planning to move my XP project to MV one day. I'll definitely keep a look on your software."
+    },
+    {
+      "post_id": "js-post-479692",
+      "author": "thanatos2k1",
+      "date": "2015-10-29T22:35:06+0900",
+      "body": "How about a VX to MV Converter?"
+    },
+    {
+      "post_id": "js-post-480176",
+      "author": "HalcyanStudio",
+      "date": "2015-10-30T03:36:22+0900",
+      "body": "Hmm, I have some more questions. I'd like to export all my custom animations from XP to MV sooner. Will your software be able to convert animations too? You have an idea when you can release it?"
+    },
+    {
+      "post_id": "js-post-480223",
+      "author": "Schlangan",
+      "date": "2015-10-30T03:55:59+0900",
+      "body": "Animations in MV have the same file size as XP, so yes it is easily convertible. As for the release, I still need to figure out how the tileset flags work."
+    },
+    {
+      "post_id": "js-post-481053",
+      "author": "Shaz",
+      "date": "2015-10-30T13:42:18+0900",
+      "body": "thanatos2k1 said:\nHow about a VX to MV Converter?\nClick to expand...\nThat will be done after I finish debugging the Ace to MV Converter.  This has been asked and answered many times.  Search is your friend."
+    },
+    {
+      "post_id": "js-post-482717",
+      "author": "Schlangan",
+      "date": "2015-10-31T12:35:01+0900",
+      "body": "And here it is, version 1.00 !\nDownlaod link (MediaFire)\nTell me if any bug encountered or anything, since it is the first version"
+    },
+    {
+      "post_id": "js-post-484845",
+      "author": "HalcyanStudio",
+      "date": "2015-11-02T01:23:28+0900",
+      "body": "Awesome! I'll try this very soon to convert my animations at first! I'll report back how it went."
+    },
+    {
+      "post_id": "js-post-485270",
+      "author": "HalcyanStudio",
+      "date": "2015-11-02T08:50:42+0900",
+      "body": "It works! Thank you so much! Looking forward to using all my animation in MV again and one day import my old XP project to MV"
+    },
+    {
+      "post_id": "js-post-485297",
+      "author": "Schlangan",
+      "date": "2015-11-02T09:10:44+0900",
+      "body": "I'm glad it worked as you expected"
+    },
+    {
+      "post_id": "js-post-488423",
+      "author": "microhamster",
+      "date": "2015-11-04T11:09:10+0900",
+      "body": "Hey tried this converter and couldn't get it to work, could you put up a video?"
+    },
+    {
+      "post_id": "js-post-488924",
+      "author": "Schlangan",
+      "date": "2015-11-04T23:13:14+0900",
+      "body": "Unfortunately I don't have any software to create videos, nor the time to do so. Did you follow exactly the steps that were indicated ? Did you get an error ?"
+    },
+    {
+      "post_id": "js-post-490651",
+      "author": "microhamster",
+      "date": "2015-11-06T07:17:40+0900",
+      "body": "@\nSchlangan\nMy files are in a diffrent location because i built my computer and arranged them in different spots. I think i am selecting the right files but i am not 100% sure."
+    },
+    {
+      "post_id": "js-post-504141",
+      "author": "Seriel",
+      "date": "2015-11-20T03:28:26+0900",
+      "body": "Hey,\nIs there any chance of making this compatible with Shaz's Change Tile Size plugin instead of resizing the tiles and characters?\nAlso, my Music files didn't convert properly. They won't play.\nbgm.zip"
+    },
+    {
+      "post_id": "js-post-504150",
+      "author": "Schlangan",
+      "date": "2015-11-20T03:40:41+0900",
+      "body": "Hello,\nYes for the music unfortunately I had no means to convert midi in ogg, so I simply renamed them to avoid any crash during playtest.\nFor the graphics, I can create something that do not resize the resources, just copy them. You'll have to add Shaz's plugin yourself and checks if it works, I don't know the specifications of this plugin."
+    },
+    {
+      "post_id": "js-post-504153",
+      "author": "Seriel",
+      "date": "2015-11-20T03:43:07+0900",
+      "body": "Schlangan said:\nFor the graphics, I can create something that do not resize the resources, just copy them. You'll have to add Shaz's plugin yourself and checks if it works, I don't know the specifications of this plugin.\nClick to expand...\nYeah it's the tilesets i'm concerned about. If you could output the generated tilesets as 32x32 size that would be grand.\nAnd also not stretch the characters."
+    },
+    {
+      "post_id": "js-post-504204",
+      "author": "Schlangan",
+      "date": "2015-11-20T04:41:27+0900",
+      "body": "Version 1.01 released. You can now force the charsets and tilesets to be converted on 32 px base grid by checking the new checkbox."
+    },
+    {
+      "post_id": "js-post-504206",
+      "author": "Seriel",
+      "date": "2015-11-20T04:45:15+0900",
+      "body": "Schlangan said:\nVersion 1.01 released. You can now force the charsets and tilesets to be converted on 32 px base grid by checking the new checkbox.\nClick to expand...\nYayyyyyyyyyyyyyyyyyyy~"
+    },
+    {
+      "post_id": "js-post-521995",
+      "author": "microhamster",
+      "date": "2015-12-14T03:58:27+0900",
+      "body": "Well i got it to work, however my maps are totally ruined. Guess i am going to have to hand make some new assets for mv. Was really hoping for them to convert, i really like xp style more. Also if anyone wants a video tutorial on how to do this just message me and ill record up a video."
+    },
+    {
+      "post_id": "js-post-523501",
+      "author": "Schlangan",
+      "date": "2015-12-16T07:25:25+0900",
+      "body": "What do you mean ruined ? Did the conversion fail ? If yes, can you send me a sample project with a map that failed ? I'll see if I can fix that."
+    },
+    {
+      "post_id": "js-post-537569",
+      "author": "microhamster",
+      "date": "2016-01-10T15:14:48+0900",
+      "body": "The auto tiles wonked out on me, its ok already started a new project. Also it gives my maps a fuzz look, because it has to upscale the old stuff."
+    },
+    {
+      "post_id": "js-post-550267",
+      "author": "felsenstern",
+      "date": "2016-02-02T06:45:49+0900",
+      "body": "Damn, how could I overlook this... amazing work. I gave it a quick shot and bam. I've already given up on many maps with tons of dialoges inside which I simply was too lazy to convert manually and now here they are. Thanks, that's one hell of a late Christmas present for me ;-)."
+    },
+    {
+      "post_id": "js-post-550272",
+      "author": "Schlangan",
+      "date": "2016-02-02T06:51:58+0900",
+      "body": "I'm happy that it helped you a bit. Late Merry Christmas then"
+    },
+    {
+      "post_id": "js-post-574882",
+      "author": "caim",
+      "date": "2016-03-25T17:33:51+0900",
+      "body": "i got an error\nhttp://pichost.me/2033652/"
+    },
+    {
+      "post_id": "js-post-574886",
+      "author": "Schlangan",
+      "date": "2016-03-25T17:42:31+0900",
+      "body": "Did you first use the RGSS script in your RPG Maker XP Project ? You need to launch the script for the corresponding file to be created. Once you get the file, you can select the project folder with the software."
+    },
+    {
+      "post_id": "js-post-574911",
+      "author": "caim",
+      "date": "2016-03-25T20:44:29+0900",
+      "body": "Thank for the reply. I have successfully export to MV\nbut the map kind of mess up because there a coloured edge on some tile\nmay be it's a miscalculate when export tileset."
+    },
+    {
+      "post_id": "js-post-574946",
+      "author": "Schlangan",
+      "date": "2016-03-25T22:22:11+0900",
+      "body": "Yes, the converter helps you to place the tiles, but it is not made for a perfect resource conversion; since the tile size is 1.5x that of RPG Maker XP, defects are bound to appear. I suggest you to edit the tileset picture by yourself; the main idea of the converter is to properly recreate the database, events and tiles locations."
+    },
+    {
+      "post_id": "js-post-591975",
+      "author": "orochii",
+      "date": "2016-04-30T20:38:56+0900",
+      "body": "Hi, I'm trying out your tool. It works pretty well, though there is a little restriction that I just found out. One of my armors had quotation marks, so when it was transferred to the JSON file, it made the files unreadable. Fortunately I fixed it by hand, just by removing the quotation marks from both the Armors.json and System.json (since it makes one armor type per each existant armor).\nAnyway, it works well now. But just wanted to report that. Cheers, it's pretty neat! This actually gave me a jumpstart to remake a game I made in XP."
+    },
+    {
+      "post_id": "js-post-591977",
+      "author": "Schlangan",
+      "date": "2016-04-30T20:46:39+0900",
+      "body": "Indeed, I didn't expect quotation marks in the names. I'll take a look sometimes to see if I can fix this."
+    },
+    {
+      "post_id": "js-post-619306",
+      "author": "YunaFFX",
+      "date": "2016-07-02T01:36:17+0900",
+      "body": "Sorry if this is kind of a silly question, but I'm just interested in converting all the XP RTP character sprites to be useable in MV.\nDoes this program convert everything from the default RTP to MP size, or just files that are used in a specific game project?"
+    },
+    {
+      "post_id": "js-post-620657",
+      "author": "Schlangan",
+      "date": "2016-07-05T01:06:41+0900",
+      "body": "First, it only converts (through the software) the resources of the project. Also, the conversion is rough and presents some pixels errors. It is more used as a placeholder than real conversion, because of the resizing by 1.5."
+    },
+    {
+      "post_id": "js-post-620772",
+      "author": "taarna23",
+      "date": "2016-07-05T05:19:48+0900",
+      "body": "There would be some work involved in actually getting your graphics into an MV format, but for the actual resizing, I find this utility works exceptionally well:\nI've linked to the post with the actual download. For XP graphics, I'd suggest using the \"fast\" method this utility provides. The other is more for painted style graphics, like Ace."
+    },
+    {
+      "post_id": "js-post-624146",
+      "author": "Boss",
+      "date": "2016-07-12T21:17:54+0900",
+      "body": "hey anybody pls make a tutorial and upload it on youtube plsssssssss\ni really need help i dont know how to convert rgss file and then rcproject pls help me"
+    },
+    {
+      "post_id": "js-post-631545",
+      "author": "HalcyanStudio",
+      "date": "2016-08-01T05:17:30+0900",
+      "body": "When converting a bigger project, I get an error when opening the fresh MV project:\nI added the json file in attachement. Hope this help to clear this up\nView attachment Tilesets.json"
+    },
+    {
+      "post_id": "js-post-632493",
+      "author": "Schlangan",
+      "date": "2016-08-03T20:27:33+0900",
+      "body": "It has been a while since I looked at json files. I think that somehow there is a mistake somewhere in the conversion, maybe due to the size of a tileset. However I won't have time to work on this for now.\nLater, I'll work on an enhanced version of the script, but I can't tell you when."
+    },
+    {
+      "post_id": "js-post-632517",
+      "author": "HalcyanStudio",
+      "date": "2016-08-03T22:29:28+0900",
+      "body": "Hey, that's okay. I decided to export the maps to TileD format and export them from there to MV so I don't need the tileset.json after all\nEverything else worked so i'm on track"
+    },
+    {
+      "post_id": "js-post-652431",
+      "author": "Jesso",
+      "date": "2016-09-21T10:52:13+0900",
+      "body": "I hope this isn't a dead topic, I was trying the script on an old RPG XP game and I got this Error:\n\"Too big for A5 For now\""
+    },
+    {
+      "post_id": "js-post-652448",
+      "author": "Schlangan",
+      "date": "2016-09-21T11:57:48+0900",
+      "body": "@Jesso\n: The topic isn't dead, but I haven't been working on this for a long time. From what I remember, this error means the tileset you used in RMXP is too big to be converted into RMMV tileset format. Unlike XP, your tilesets cannot have unlimited sizes."
+    },
+    {
+      "post_id": "js-post-801743",
+      "author": "westingtyler",
+      "date": "2017-12-03T07:59:56+0900",
+      "body": "For anyone getting the \"Too Big for A5 for now\" error when hitting the play button to compile it, I found out why, at least for my project.\nUSING tiles on your map that were taken from below the 512 pixel point of the tileset, crashes the rpg maker xp to rpg maker mv exporter. the tileset images (and their database entries) themselves can be however big you want, but all squares on the actual map MUST be stamped from earlier than that point. In the attached image, you can see my park map. The duplicated tile on the right side, is the topmost square in my tileset. the HIGHLIGHTED square in the map and the tileset, is what crashes the exporter. If I remove this single tile and replace it with a tile from earlier in the tileset (higher in the tileset .png image than the vertical 512 pixel mark) everything exports fine.\nWhat I will do for my project is stamp an \"early\" tile over the right side of all my maps before export. the actual tile layout of the maps may have to be brushed up and reconstructed in MV, but that's no problem considering how much effort this tool saves.\nAfter a year or so I don't expect updates to this great tool, but if it ever is updated, it would be great to have a little explanation when it creates this error, which a reference to which map has the error. The project-wide process of elimination to solve this, while fun for me, is a pain in the boo-boo, and a note would save some headaches.\nWhat would be even more awesome is if the exporter just automatically replaced all those tiles with an \"early\" tile, so everything goes smoothly, with a note that comes up and says \"map layouts have been simplified for export and will need reconstruction in MV. for now.\""
+    },
+    {
+      "post_id": "js-post-801842",
+      "author": "Schlangan",
+      "date": "2017-12-03T16:35:11+0900",
+      "body": "If I remember correctly what I scraped in the past for this converter, the Too big for A5 meant that it was impossible to get the whole XP tileset converted to MV. The reason being, tilesets are limited in MV while they were not in XP, and this is the limit.\nNow the problem with the simplification of the layout, is, which tile should be used then ?"
+    },
+    {
+      "post_id": "js-post-929818",
+      "author": "Reptalia1994",
+      "date": "2019-01-03T13:46:53+0900",
+      "body": "And Scripts Transform tu Javascript Pluggins?"
+    },
+    {
+      "post_id": "js-post-929850",
+      "author": "Shaz",
+      "date": "2019-01-03T16:29:50+0900",
+      "body": "Schlangan said:\nThe script will convert the database items to JSON files for MV. It will also list all resources in use\nClick to expand...\nSo, no.  Script conversion is up to you."
+    },
+    {
+      "post_id": "js-post-949118",
+      "author": "Shoninya",
+      "date": "2019-03-05T00:32:41+0900",
+      "body": "Hey everybody. Im new to this forum but have been to several other rpg maker forums yet.\nCause most of these messages is 3-4 years old. How far is the progress with that RM XP to MV converter?\nI tried to read everything but my english is not the best so thats why im asking.\nCan i convert an RM XP project to MV?\ni know that i have to convert the tilessets (takes some effort but okay) but do i have to map everything again or can i import that then?\ni have a very nice project and want to finish it but i would like to finish it for mv to make it able to play with mobil.\nwould be very nice to get an answer (for example from\n@Schlangan\n) thanks"
+    },
+    {
+      "post_id": "js-post-949392",
+      "author": "Schlangan",
+      "date": "2019-03-05T14:25:04+0900",
+      "body": "You can somehow convert the database and the tilesets. If your tilesets from XP were too big, you will have to manually adjust them and remap the corresponding parts. As for the scripts, you cannot convert them directly.\nPlease keep in mind I have not been working on this converter since I released it, and I do not plan to for now."
+    },
+    {
+      "post_id": "js-post-950595",
+      "author": "Shoninya",
+      "date": "2019-03-08T23:18:36+0900",
+      "body": "Schlangan said:\nYou can somehow convert the database and the tilesets. If your tilesets from XP were too big, you will have to manually adjust them and remap the corresponding parts. As for the scripts, you cannot convert them directly.\nPlease keep in mind I have not been working on this converter since I released it, and I do not plan to for now.\nClick to expand...\nthanks for replying.\ni dont have scripts!\ni tried your converter and im suprised that he also converted my maps. but a lot have mistakes on them i need to fix, but anyhow better than map everything again. but some of the events are a bit buggy too, maybe because not everything could be converted that easily,\none major event (after the tutorial is completed in this moment when the char gets created and teleportet to 1 of the possability maps) i dont know why the event isnt starting, the condition is fullfilled but i dont know if its a convert error or an logical error ^^"
+    },
+    {
+      "post_id": "js-post-1133114",
+      "author": "LostXLe9acy",
+      "date": "2020-10-30T12:47:07+0900",
+      "body": "Sorry to revive this thread but I'm getting this error when trying to run my game. I put the script in the Main script. Is this a common error or am I a special case?"
+    },
+    {
+      "post_id": "js-post-1133149",
+      "author": "KK20",
+      "date": "2020-10-30T17:20:49+0900",
+      "body": "Window_Base is a default script that comes in every project. Does your project not have any of the default scripts or did it rewrite them in some way?"
+    },
+    {
+      "post_id": "js-post-1164055",
+      "author": "hc phoenix",
+      "date": "2021-02-16T23:34:14+0900",
+      "body": "Hey, I know this is an old tool and no longer maintained but I'm getting an error with the exported data that I didn't see anyone else in the thread mention, and don't really know what else to do except post here. When I copy the exported files over into a fresh MV project and open it, I get the error \"Unable to read file Skills.json.\" I replace that file with the default Skills.json and get a similar error with a different data file, on down the line until every database file is tossed except, inexplicably, Common Events, which seemingly convert just fine. Maps also fail to appear at all in the editor for probably-related reasons. I open the exported JSON files in a text editor and at a glance I don't see any glaring issues, so I really have no clue how to proceed. The project is big (999 map limit big) so it's hard to know where to begin.\nAnyone have any ideas what could be happening? Should I upload and link the project folder here?"
+    },
+    {
+      "post_id": "js-post-1297101",
+      "author": "PARCB",
+      "date": "2022-08-26T22:53:31+0900",
+      "body": "Schlangan said:\nAlso, the first frame has been removed to fit in MV style. However, this might incur a problem if the first column of XP was specifically selected for events. A way to prevent this problem would be to create a single charset for every columns for events.\nClick to expand...\nI know you won't continue working on this, but i have a question regarding character conversion. I actually don't really mind getting duplicates, but i wanna ask if it is possible to modify somehow the RGSS script in order to cut from the XP charset the last column instead of the first one.\nWith this, one run elliminating the first column and exporting and another one elliminating the last column and exporting can lead to 2 charsets at least...\nWhat do you think of it,\n@Schlangan\n?\nI ask you because i hardly know anything about Ruby rather than the array basics..."
+    },
+    {
+      "post_id": "js-post-1298562",
+      "author": "PARCB",
+      "date": "2022-09-03T02:38:30+0900",
+      "body": "Schlangan said:\nA way to prevent this problem would be to create a single charset for every columns for events.\nClick to expand...\nWould you be able to say how to create a single charset for every column in order  to the converter to work? or you mean a blank full-template charset with only the column you want to convert?\nEDIT:\nGotta say also, the size converter interpolator may work wrong as the character images don't 'save' the bit depth used in XP when converted. When I realised this today, i was dissapointed because I converted loads of resources from XP but the bit depth has not been correctly set."
+    },
+    {
+      "post_id": "js-post-1324414",
+      "author": "legalizenuclearbombs",
+      "date": "2023-01-26T12:58:51+0900",
+      "body": "Where can I find the script in question that needs to be put in my XP project (don't know where else to ask other than this 8 year old thread\n)"
+    },
+    {
+      "post_id": "js-post-1442329",
+      "author": "Nafraju",
+      "date": "2024-05-06T08:25:54+0900",
+      "body": "Hi,\nI got this error."
+    },
+    {
+      "post_id": "js-post-1442450",
+      "author": "AkiraKotatsuhime",
+      "date": "2024-05-06T23:38:31+0900",
+      "body": "Going from the script linked in mainpost, line 5138 referenced in your error does not have any\neach\n.\nActually, the entire script doesn't even use this type of iteration.\nSo what is this happening in then? It's impossible it's related to this.\n～炬燵あ"
+    },
+    {
+      "post_id": "js-post-1443919",
+      "author": "cremnophobia",
+      "date": "2024-05-12T19:06:53+0900",
+      "body": "for\ncalls\neach\n."
+    },
+    {
+      "post_id": "js-post-1487783",
+      "author": "ShinyLugia12",
+      "date": "2024-12-15T07:41:20+0900",
+      "body": "not sure if this is a dead thread or not, but i tried this program and its just telling me that theres a missing file called something like resource_lists.txt, how can i fix that?"
+    },
+    {
+      "post_id": "js-post-1487874",
+      "author": "Schlangan",
+      "date": "2024-12-15T16:37:02+0900",
+      "body": "I'm going to post here what I replied to you, according to your complete need, so any other reader can grasp the issue.\nAs a matter fact, I'll also remind I created this conversion script when I was still using RPG Maker XP; I have stopped doing so since many years ^^"
+    },
+    {
+      "post_id": "js-post-1516570",
+      "author": "lucincus",
+      "date": "2025-06-01T11:25:10+0900",
+      "body": "So I tried using the converter but its saying there is syntax errors when running the script in the game im trying to convert what would be a way to bypass the errors?"
+    }
+  ]
+}
