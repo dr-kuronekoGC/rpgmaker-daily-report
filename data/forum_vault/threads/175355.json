@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/creating-candles-that-go-out-after-walking-x-number-of-steps.175355",
+  "title": "Creating candles that go out after walking x number of steps",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:34:47.056786+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1498441",
+      "author": "PancakeToast",
+      "date": "2025-02-11T17:15:47+0900",
+      "body": "Hello! So I have a current setup where the Player has a lantern, and can use candles as an item to light her lantern. I have it set up as a common event that's triggered whenever you consume the candle item:\nThis is how I have the common event set up.\nIt works. I'm using VisuStella's Lighting FX plugin to create a radial light around the character whenever this common event is triggered.\nHowever, I want to make it so this plugin fx disables itself\nafter\nthe Player takes X number of steps after consuming the candle item. There's an option in the plugin command to disable the effect, so that part is easy enough.\nLet's say for example, after using a candle, the radial light turns off after 15 steps are taken after the item has been used. I've tried a lot of different ways to set this up, but none of them have worked. I'm having difficulty calling up the number of steps AND triggering the plugin fx to be disabled once steps + 15 steps takes place. I think pushing this all through a Common Event is also confusing me. Please help!"
+    },
+    {
+      "post_id": "js-post-1498479",
+      "author": "rpgLord69",
+      "date": "2025-02-11T22:35:02+0900",
+      "body": "If using a candle activates that common event, then why do you have inside the common event an if/else branch for if you have candles? If you don't have candles, you can't use the candle item to call the common event? Also, the trigger shouldn't be parallel, set the trigger to 'none'. Also in the common event control a variable (name \"steps start\") to game data: steps + turn on your switch called 'lantern on'.\nThen make another common event (lantern timing). That one is set to parallel and switch 'lantern on'.\nIn this second common event you control another variable (name \"steps total\") to game data: steps. Then you need to subtract the variables: 'steps total' - 'steps start' and check in a conditional branch if that is greater or equal to 15 -> use plugin command to turn off light + turn off the switch 'lantern on'."
+    },
+    {
+      "post_id": "js-post-1498978",
+      "author": "PancakeToast",
+      "date": "2025-02-14T13:39:42+0900",
+      "body": "rpgLord69 said:\nIf using a candle activates that common event, then why do you have inside the common event an if/else branch for if you have candles? If you don't have candles, you can't use the candle item to call the common event?\nClick to expand...\nGood question\nI figured I should have the character complain about not having enough candles if you run out and try to use them, but I guess that's pretty unnecessary lol\nrpgLord69 said:\nAlso, the trigger shouldn't be parallel, set the trigger to 'none'. Also in the common event control a variable (name \"steps start\") to game data: steps + turn on your switch called 'lantern on'.\nThen make another common event (lantern timing). That one is set to parallel and switch 'lantern on'.\nIn this second common event you control another variable (name \"steps total\") to game data: steps. Then you need to subtract the variables: 'steps total' - 'steps start' and check in a conditional branch if that is greater or equal to 15 -> use plugin command to turn off light + turn off the switch 'lantern on'.\nClick to expand...\nAhh I got it working!! Thank you so much."
+    }
+  ]
+}

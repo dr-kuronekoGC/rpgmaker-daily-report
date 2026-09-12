@@ -1,0 +1,131 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rmmz-plugin-for-a-full-extension-of-troop-not-visustella.175013",
+  "title": "MZ RMMZ plugin for a full extension of troop, not visustella",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:35:29.013401+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1496180",
+      "author": "KekOriginal",
+      "date": "2025-01-29T00:51:44+0900",
+      "body": "Tell me the rmmz plugin for a full extension of troop, not visustella\nPlease"
+    },
+    {
+      "post_id": "js-post-1496181",
+      "author": "Robro33",
+      "date": "2025-01-29T01:09:34+0900",
+      "body": "it is unclear what you are asking for. what do you mean by \"extending\" the troop? are you trying to have more than 8 enemies at a time?"
+    },
+    {
+      "post_id": "js-post-1496182",
+      "author": "KekOriginal",
+      "date": "2025-01-29T01:27:31+0900",
+      "body": "Robro33 said:\nit is unclear what you are asking for. what do you mean by \"extending\" the troop? are you trying to have more than 8 enemies at a time?\nClick to expand...\nYes, that's what I mean."
+    },
+    {
+      "post_id": "js-post-1496185",
+      "author": "Robro33",
+      "date": "2025-01-29T02:12:32+0900",
+      "body": "you can try this plugin\nRPGMakerMV/TroopUnlimited.js at mz_master · triacontane/RPGMakerMV\nRPGツクールMV、MZで動作するプラグインです。. Contribute to triacontane/RPGMakerMV development by creating an account on GitHub.\ngithub.com"
+    },
+    {
+      "post_id": "js-post-1496186",
+      "author": "KekOriginal",
+      "date": "2025-01-29T02:19:49+0900",
+      "body": "Robro33 said:\nyou can try this plugin\nRPGMakerMV/TroopUnlimited.js at mz_master · triacontane/RPGMakerMV\nRPGツクールMV、MZで動作するプラグインです。. Contribute to triacontane/RPGMakerMV development by creating an account on GitHub.\ngithub.com\nClick to expand...\nUnfortunately it doesn't give control over added enemies through events"
+    },
+    {
+      "post_id": "js-post-1496188",
+      "author": "SGHarlekin",
+      "date": "2025-01-29T02:32:03+0900",
+      "body": "I don't think there's a plugin for that, because the editor will only provide event commands for what is possible to do in the editor, which is 8 enemies."
+    },
+    {
+      "post_id": "js-post-1496191",
+      "author": "bgillisp",
+      "date": "2025-01-29T02:52:17+0900",
+      "body": "No plugin can edit the editor, so it is impossible to get the ability to access more than 8 enemies via event commands. You'd need to go all in on script calls and plugin commands to access that."
+    },
+    {
+      "post_id": "js-post-1496195",
+      "author": "KekOriginal",
+      "date": "2025-01-29T03:03:29+0900",
+      "body": "bgillisp said:\nNo plugin can edit the editor, so it is impossible to get the ability to access more than 8 enemies via event commands. You'd need to go all in on script calls and plugin commands to access that.\nClick to expand...\nOh, how is it possible to do this?"
+    },
+    {
+      "post_id": "js-post-1496197",
+      "author": "caethyril",
+      "date": "2025-01-29T03:18:02+0900",
+      "body": "Feature D20 of my plugin Cae_Tweaks has a plugin command \"D20: Enemy Reinforcements\":\nMZ - Cae_Tweaks - lots of little features\nCae_Tweaks v19 updated 2026-06-16 (UTC+0)  Terms of Use MIT License: https://opensource.org/licenses/mit-license.html  Description The plugin file must be named Cae_Tweaks.js.  This plugin contains a bunch of different things. It's mostly just me slowly making a game and coding some more stuff...\nforums.rpgmakerweb.com\nIt lets you select a troop to add to the current one, mid-battle.\n(Obviously I know about this plugin because I wrote it, but I imagine there's another one somewhere.)\nEdit: also, since this is requesting a plugin~\nI've moved this thread to Plugin Requests (from MZ Support). Thank you."
+    },
+    {
+      "post_id": "js-post-1496206",
+      "author": "KekOriginal",
+      "date": "2025-01-29T03:58:04+0900",
+      "body": "caethyril said:\nFeature D20 of my plugin Cae_Tweaks has a plugin command \"D20: Enemy Reinforcements\":\nMZ - Cae_Tweaks - lots of little features\nCae_Tweaks v19 updated 2026-06-16 (UTC+0)  Terms of Use MIT License: https://opensource.org/licenses/mit-license.html  Description The plugin file must be named Cae_Tweaks.js.  This plugin contains a bunch of different things. It's mostly just me slowly making a game and coding some more stuff...\nforums.rpgmakerweb.com\nIt lets you select a troop to add to the current one, mid-battle.\n(Obviously I know about this plugin because I wrote it, but I imagine there's another one somewhere.)\nEdit: also, since this is requesting a plugin~\n[move]Plugin Requests (from MZ Support)[/move]\nClick to expand...\nWhen it comes to reinforcement, an error occurs, I also use plugins from visustella"
+    },
+    {
+      "post_id": "js-post-1496211",
+      "author": "caethyril",
+      "date": "2025-01-29T05:24:18+0900",
+      "body": "Oh! OK, that seems to be a bug that I missed. In some cases, reinforcing with 2+ enemies can cause an out-of-bounds via\naddChildAt\nbased on relative enemy Y-coordinates. Because it sorts the enemies, then tries to add the sprites at the correct places.\nI think you can fix it by replacing this part of the plugin's code (line ~23053):\nJavaScript:\nfor (const s of es) {\n                ss._battleField.addChildAt(s, ss._enemySprites.indexOf(s));\n                if (s._battler.isAppeared())\n                    s.startEffect(\"appear\");\n            }\n...with this:\nJavaScript:\nfor (const s of es) {\n                ss._battleField.addChild(s);\n                if (s._battler.isAppeared())\n                    s.startEffect(\"appear\");\n            }\n            const b = ss._battleField.children;\n            for (const s of ss._enemySprites) {\n                const t = b[b.indexOf(s)];\n                if (t)   // jic\n                    ss._battleField.swapChildren(s, t);\n            }\nThat seemed to fix the problem for me, without VisuStella.\nKekOriginal said:\nTell me the rmmz plugin for a full extension of troop, not visustella\nClick to expand...\nKekOriginal said:\nI also use plugins from visustella\nClick to expand...\nVisuStella makes their code deliberately difficult to read, so if there is an incompatibility issue then you're basically forced to work with what VisuStella offers (or find an alternative to their plugins)."
+    },
+    {
+      "post_id": "js-post-1496268",
+      "author": "KekOriginal",
+      "date": "2025-01-29T17:11:17+0900",
+      "body": "caethyril said:\nOh! OK, that seems to be a bug that I missed. In some cases, reinforcing with 2+ enemies can cause an out-of-bounds via\naddChildAt\nbased on relative enemy Y-coordinates. Because it sorts the enemies, then tries to add the sprites at the correct places.\nI think you can fix it by replacing this part of the plugin's code (line ~23053):\nJavaScript:\nfor (const s of es) {\n                ss._battleField.addChildAt(s, ss._enemySprites.indexOf(s));\n                if (s._battler.isAppeared())\n                    s.startEffect(\"appear\");\n            }\n...with this:\nJavaScript:\nfor (const s of es) {\n                ss._battleField.addChild(s);\n                if (s._battler.isAppeared())\n                    s.startEffect(\"appear\");\n            }\n            const b = ss._battleField.children;\n            for (const s of ss._enemySprites) {\n                const t = b[b.indexOf(s)];\n                if (t)   // jic\n                    ss._battleField.swapChildren(s, t);\n            }\nThat seemed to fix the problem for me, without VisuStella.\nVisuStella makes their code deliberately difficult to read, so if there is an incompatibility issue then you're basically forced to work with what VisuStella offers (or find an alternative to their plugins).\nClick to expand...\nThank you, this helped, but how do I interact with the enemies that appeared?"
+    },
+    {
+      "post_id": "js-post-1496294",
+      "author": "caethyril",
+      "date": "2025-01-29T21:25:47+0900",
+      "body": "Great!\nKekOriginal said:\nhow do I interact with the enemies that appeared?\nClick to expand...\nThe added enemies should be selectable as usual. If not, then that is probably a plugin conflict.\nI did notice another bug though (sorry!). This part (line ~23042):\nJavaScript:\nfor (const nme of M)\n            nme.setLetter(\"\");\n...should include an\nonBattleStart\ncall:\nJavaScript:\nfor (const nme of M) {\n            nme.setLetter(\"\");\n            nme.onBattleStart();\n        }\nThis should make the reinforcements do something (e.g. attack) rather than just stand there. I think I had that in an earlier version but it got lost at some point.\nIf you're actually asking how to reference enemies 9+ through event commands: like others said, you need to use script calls for that. You may find the spreadsheet here helpful:\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1496295",
+      "author": "KekOriginal",
+      "date": "2025-01-29T22:07:45+0900",
+      "body": "caethyril said:\nGreat!\nThe added enemies should be selectable as usual. If not, then that is probably a plugin conflict.\nI did notice another bug though (sorry!). This part (line ~23042):\nJavaScript:\nfor (const nme of M)\n            nme.setLetter(\"\");\n...should include an\nonBattleStart\ncall:\nJavaScript:\nfor (const nme of M) {\n            nme.setLetter(\"\");\n            nme.onBattleStart();\n        }\nThis should make the reinforcements do something (e.g. attack) rather than just stand there. I think I had that in an earlier version but it got lost at some point.\nIf you're actually asking how to reference enemies 9+ through event commands: like others said, you need to use script calls for that. You may find the spreadsheet here helpful:\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nClick to expand...\nI noticed another bug, when reinforcing, the enemy layers are displayed incorrectly, meaning the bottom layer of enemies moves forward"
+    },
+    {
+      "post_id": "js-post-1496306",
+      "author": "caethyril",
+      "date": "2025-01-29T23:42:51+0900",
+      "body": "KekOriginal said:\nwhen reinforcing, the enemy layers are displayed incorrectly, meaning the bottom layer of enemies moves forward\nClick to expand...\nI cannot reproduce that, so it is probably one of your other plugins causing it. Cae_Tweaks D20 does not even look at enemy screen positions. Also, by default MZ has no such thing as \"the bottom layer\" of enemies: enemies are positioned on screen via the Troops tab of the Database.\nYou may want to share screenshot(s) of your Plugin Manager so people can see which plugins you're using and make better suggestions."
+    },
+    {
+      "post_id": "js-post-1496405",
+      "author": "KekOriginal",
+      "date": "2025-01-30T14:56:33+0900",
+      "body": "caethyril said:\nI cannot reproduce that, so it is probably one of your other plugins causing it. Cae_Tweaks D20 does not even look at enemy screen positions. Also, by default MZ has no such thing as \"the bottom layer\" of enemies: enemies are positioned on screen via the Troops tab of the Database.\nYou may want to share screenshot(s) of your Plugin Manager so people can see which plugins you're using and make better suggestions.\nClick to expand...\nHow can I activate the event window in battle using scripts?"
+    },
+    {
+      "post_id": "js-post-1496427",
+      "author": "Andar",
+      "date": "2025-01-30T20:31:51+0900",
+      "body": "KekOriginal said:\nHow can I activate the event window in battle using scripts?\nClick to expand...\nwhat does that question have to do with anything in this topic?\nplease help us solving one problem by posting the screenshots\n@caethyril\nasked for before trying anything else."
+    },
+    {
+      "post_id": "js-post-1496454",
+      "author": "KekOriginal",
+      "date": "2025-01-31T00:06:10+0900",
+      "body": "Andar said:\nwhat does that question have to do with anything in this topic?\nplease help us solving one problem by posting the screenshots\n@caethyril\nasked for before trying anything else.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1496531",
+      "author": "Ms Littlefish",
+      "date": "2025-01-31T09:38:40+0900",
+      "body": "[dpost]\n@KekOriginal\n[/dpost]"
+    },
+    {
+      "post_id": "js-post-1496606",
+      "author": "caethyril",
+      "date": "2025-01-31T21:20:03+0900",
+      "body": "Hm, OK. If you're using that many VisuStella plugins then you might be stuck with a VisuStella solution (or workaround).\nI did a bit of searching and found this feature-rich Enemy Reinforcements plugin by taaspider:\nTAA_EnemyReinforcements - v1.2.2\nTAA_EnemyReinforcements - v1.2.2 Created by taaspider  Terms of Use Any plugins developed by taaspider are free for use for both commercial and noncommercial RPG Maker games, unless specified otherwise. Just remember to credit \"taaspider\".  Redistribution of parts or the whole of taaspider...\nforums.rpgmakerweb.com\nLooks worth a try!\nI couldn't find an \"add enemies mid-battle\" feature in Visu Battle Core but a workaround might be:\nUse Visu Battle Core's\n<Extend: x>\ntag to add enemies from 1+ other troop(s);\nRight-click the enemies in those troops and choose \"Appear Mid-Battle\" to make them hidden.\nUse the Enemy Appear command, or its Script equivalent, to make them show up mid-battle:\nJavaScript:\n// Make the 9th enemy appear, if it exists. (The first enemy is index 0.)\n$gameTroop.members()[8]?.appear();\n$gameTroop.makeUniqueNames();\nThat approach is more limited/awkward, but might be OK for your situation."
+    }
+  ]
+}

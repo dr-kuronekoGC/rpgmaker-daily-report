@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/modifying-skills-with-commands.175051",
+  "title": "MV Modifying Skills with Commands",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:35:26.206298+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1496476",
+      "author": "KayronDEV",
+      "date": "2025-01-31T03:05:50+0900",
+      "body": "Hello everyone, I need some help with a battle mechanic I want to implement in my game. I searched quite a bit on the forum but couldn’t find anything quite like this, so I’ll explain:\nWhen a character levels up, besides gaining new skills, they also gain new commands (not to be confused with standard commands like attack or defend, though they serve a similar function here).\nWhen selecting these commands, you are immediately forced to choose one of your skills. The selected skill will gain a new effect in battle. For example, if I select the \"spin\" command, a skill that previously hit a single target will now hit all targets, though with reduced power.\nIn short, the skills remain the same, but what changes them is the command used. Other effects could include transforming a skill into a multi-hit attack (reducing its power but increasing its critical hit chance).\nThe commands themselves do not work alone; they only function when combined with skills. I was thinking that the cost could be tied to BP or even TP, while skills would continue using MP. The stronger the command, the more BP it would require.\nI can imagine that some Yanfly plugins would help here, such as Skill Core and Target Core, but the one that caught my attention the most is this plugin:\nhttps://fallenangelolivia.itch.io/boost-point-system\nIt seems to have a lot of what I need, but I have doubts about whether I could customize it enough to serve all my purposes.\nMy question is whether anyone thinks this plugin would be sufficient for what I want or if some modifications would be necessary (I’m not sure if it’s possible to modify plugins like this, if permission would be needed) or if it would be better to combine it with other plugins.\nOr even, would I need a completely new plugin for this?\nBTW I'm using MV!"
+    },
+    {
+      "post_id": "js-post-1496482",
+      "author": "Robro33",
+      "date": "2025-01-31T03:32:00+0900",
+      "body": "KayronDEV said:\nMy question is whether anyone thinks this plugin would be sufficient for what I want or if some modifications would be necessary (I’m not sure if it’s possible to modify plugins like this, if permission would be needed) or if it would be better to combine it with other plugins.\nClick to expand...\nthe problem with olivia's plugin is that that one like most of her others are obfuscated. anyone with the JS knowledge to to make/edit plugins would have an incredibly difficult time reading, much less editing that one.\ndepending on how your command system is planned, theres a few approaches you can take that i can see.\nyou can use Yanfly's skill core to hide and show skills depending on if a command is active and then make separate versions of each skills that the actors learn that only appear if no commands/the corresponding command is active. if you do it right, itll appear that the skills actively transformed into command versions. Dependign on how you want it done, the command skill may have to be an\ninstant skill\nyou could use\nSRD's skill extend\nto make the a container skill for each command and then each command contains their versions of the skills and bake the extra costs into the skills.\nyou could use the target core and/or action sequences to play around with turning single target skills aoe, but im not entirely sure of all the impacts thatd have in other places. like anything that uses the skill's scope (action.isForOne() as an example) will only reference the scope set on the skill's database entry and will not treat a single target skill as an all enemies skill because you used the notetag to push additional targets into its target set."
+    },
+    {
+      "post_id": "js-post-1496483",
+      "author": "ZimXero",
+      "date": "2025-01-31T03:42:59+0900",
+      "body": "Another thing you could do... is use\nYanfly Skill Learn System\n. The primary power would be a base skill and a prerequisite to learning the variations using skill/ability points acquired through leveling, monster drops, achievement, purchase etc...   It's not perfect to your request and might require adjustments, but it also may add things you like along with it."
+    },
+    {
+      "post_id": "js-post-1496484",
+      "author": "Andar",
+      "date": "2025-01-31T03:44:13+0900",
+      "body": "There is an additional possible approach to this, that requires a dynamic trait plugin but otherwise nothing else.\nyou make each command into a skill type of its own.\nfor every base skill you have and every command, you'll make a new skill that is the modified skill but has the same name (or a modified name, your choice). these variant skills get the skill type of the command that supposedly created/modified them.\nwhenever one skill is learned, all other variants of the skill are learned at the same time.\nand when the actor learns of one of the commands, all you need to do is to use the dynamic trait plugin to add the skill type trait for that command to the actor.\nthe rest would then be handled by the engine, making the skill type visible in the next battle (which is the name of the command) and allow the actor to use skills of that type (which pretend to be modifications of the base skills)."
+    },
+    {
+      "post_id": "js-post-1497061",
+      "author": "KayronDEV",
+      "date": "2025-02-03T23:03:18+0900",
+      "body": "Andar said:\nThere is an additional possible approach to this, that requires a dynamic trait plugin but otherwise nothing else.\nyou make each command into a skill type of its own.\nfor every base skill you have and every command, you'll make a new skill that is the modified skill but has the same name (or a modified name, your choice). these variant skills get the skill type of the command that supposedly created/modified them.\nwhenever one skill is learned, all other variants of the skill are learned at the same time.\nand when the actor learns of one of the commands, all you need to do is to use the dynamic trait plugin to add the skill type trait for that command to the actor.\nthe rest would then be handled by the engine, making the skill type visible in the next battle (which is the name of the command) and allow the actor to use skills of that type (which pretend to be modifications of the base skills).\nClick to expand...\nInteresting ideas, but I plan to have a lot of skills in my game, so this method could get out of hand. Is it possible to add this thread to plugin request? Maybe I can get some luck."
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-make-a-background-event-continue-to-move-during-another-event.175302",
+  "title": "How to make a background event continue to move during another event?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:34:51.456703+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1498129",
+      "author": "Madre_Joshua",
+      "date": "2025-02-10T04:11:58+0900",
+      "body": "I am currently trying to make a cutscene in which one character is watching television. For this, I have made a special television animation and an event that displays said animation. This event has the following custom movement route.\nThe intention here is that the character on the television is moving around, with each frame of animation changing every 30 frames, as to not make it look too rapid, like it does if I simply turn the \"stepping\" animation on. This is the TV in question.\nNow, the issue I have is that, while the cutscene plays, the television program ceases to move; The story event is occuring, during which characters talk and move around, but throughout its entire playtime, the television event that's meant to passively cycle through its animations, pauses until the story event is over. How do I prevent the television event from ceasing to move while the story event is occurring?\nWhile one may say \"simply turn the story event and the tv event into one, so that the TV is autorunning the cutscene\" while something along those lines may be possible, I do want to also just know how to do this in general for future reference, especially when I have multiple events happening during a cutscene that are meant to keep moving, since this solution obviously would not work in taht scenario.\nThank you very much for any possible advice."
+    },
+    {
+      "post_id": "js-post-1498151",
+      "author": "Andar",
+      "date": "2025-02-10T06:39:39+0900",
+      "body": "you need to give us full screenshots of both events.\nwhat you want should work automatically by using autonomous movement for the TV.\nIf it doesn't work automatically, you either made a istake with the events or you have an antilag plugin configured wrong or something like that."
+    },
+    {
+      "post_id": "js-post-1498161",
+      "author": "Madre_Joshua",
+      "date": "2025-02-10T07:35:49+0900",
+      "body": "Here is the television event, the one that is meant to be acting passively in the background while the story one occurs. The movement route is the one given in the original post. The additional notetag that can be seen up there is simply<no shadow>.\nThe story cutscene event is a bit too long to fit into a reasonable amount of screenshots, but here is the relevant part. It is meant to fade into the scene and after 360 frames, the A switch for the television event is triggered, which activates page 2 of said event, which has the custom movement route. (page 1 is the exact same, but without the custom movement route; This is because I only want the television event to start animating after the initial 360 frames are over."
+    },
+    {
+      "post_id": "js-post-1498166",
+      "author": "Zia_",
+      "date": "2025-02-10T08:34:12+0900",
+      "body": "I have no clue about the Visustella thing, but wouldn't it be enough to set up a separate event with Parallel, to cycle the move route, as soon as the TV is on?"
+    },
+    {
+      "post_id": "js-post-1498169",
+      "author": "Noree",
+      "date": "2025-02-10T08:49:34+0900",
+      "body": "Madre_Joshua said:\nHere is the television event, the one that is meant to be acting passively in the background while the story one occurs. The movement route is the one given in the original post. The additional notetag that can be seen up there is simply<no shadow>.\nView attachment 331083\nThe story cutscene event is a bit too long to fit into a reasonable amount of screenshots, but here is the relevant part. It is meant to fade into the scene and after 360 frames, the A switch for the television event is triggered, which activates page 2 of said event, which has the custom movement route. (page 1 is the exact same, but without the custom movement route; This is because I only want the television event to start animating after the initial 360 frames are over.\nView attachment 331084\nClick to expand...\nYou have to specify the \"Map ID\" where the event is on, you can see it at the bottom of your RPG Maker when you are on the map.\nHere:\nI was analyzing everything a little and I could also suggest this way:\nI already tested it and it is completely functional."
+    },
+    {
+      "post_id": "js-post-1498182",
+      "author": "Madre_Joshua",
+      "date": "2025-02-10T11:04:13+0900",
+      "body": "Noree said:\nYou have to specify the \"Map ID\" where the event is on, you can see it at the bottom of your RPG Maker when you are on the map.\nView attachment 331091\nHere:\nView attachment 331090\nI was analyzing everything a little and I could also suggest this way:\nI already tested it and it is completely functional.\nView attachment 331092\nClick to expand...\nThank you very much! Doing it like that with the parallel event did in fact result in the TV actually animating in game!\nThough, I should note, both for this and the other reply, the Visustella plugin allows to activate self switches of other events (so that it moves to the page triggered by self switch A), and the map ID isn't defined on purpose; if it is set to 0 it will simply default to whatever map the player is currently on (which is the intended case here)."
+    },
+    {
+      "post_id": "js-post-1498188",
+      "author": "Andar",
+      "date": "2025-02-10T12:05:01+0900",
+      "body": "while you have found a solution, the mistake in your original event was a different one.\nyou should have added an \"wait(1)\" after the plugin command.\nBackground:\nThe main game loop processes one event after another, and unless said event is a parallel process that means completing any command sequence before going to the next event.\nHowever due to the way waits work internally, they are also breaking command sequences up and allow the game loop to process the other events at that time.\nyour TV event simply has no time to switch to the second page after the plugin command, and you'll need to give that time with a wait - even a short one should be enough"
+    },
+    {
+      "post_id": "js-post-1498287",
+      "author": "Madre_Joshua",
+      "date": "2025-02-10T23:26:28+0900",
+      "body": "Andar said:\nwhile you have found a solution, the mistake in your original event was a different one.\nyou should have added an \"wait(1)\" after the plugin command.\nBackground:\nThe main game loop processes one event after another, and unless said event is a parallel process that means completing any command sequence before going to the next event.\nHowever due to the way waits work internally, they are also breaking command sequences up and allow the game loop to process the other events at that time.\nyour TV event simply has no time to switch to the second page after the plugin command, and you'll need to give that time with a wait - even a short one should be enough\nClick to expand...\nWhile the parallel idea did already solve my problem, I also tried this out and it unfortunately did not work; adding a wait right after the visustella script part makes no difference; the tv event wont play."
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/selection-issue.175135",
+  "title": "MV Selection issue",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:35:12.280191+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1497093",
+      "author": "slickdeath97",
+      "date": "2025-02-04T04:29:04+0900",
+      "body": "So, I am using SRD Skill extention and noticed an issue with the extended skills. I have them so they can only target allies, but with Yanfly's Selection Control plugin, the skills only target the enemy and not the allies. How do I fix this? Thanks for any help.\nPlugins:\nSelection Control (YEP) - Yanfly.moe Wiki\nwww.yanfly.moe\nSkill Extender – MV Plugin – RPG Maker MZ Plugins\nsumrndm.site"
+    },
+    {
+      "post_id": "js-post-1497098",
+      "author": "Robro33",
+      "date": "2025-02-04T05:35:26+0900",
+      "body": "can you show screenshots of your skills and plugin manager. i use both plugins in my main project and have never encountered such an issue"
+    },
+    {
+      "post_id": "js-post-1497102",
+      "author": "slickdeath97",
+      "date": "2025-02-04T06:22:40+0900",
+      "body": "Robro33 said:\ncan you show screenshots of your skills and plugin manager. i use both plugins in my main project and have never encountered such an issue\nClick to expand...\nAll of the heal skills only target one ally."
+    },
+    {
+      "post_id": "js-post-1497106",
+      "author": "ShadowDragon",
+      "date": "2025-02-04T07:06:20+0900",
+      "body": "your YEP pluins arent in the correct order.\nScreenResolution could be OFF while its in YEP_EngineCore.\nPXD_Lockpick does have some serious issues as I made an overhaul\nto fix all the bugs and glitches inside of it.\nmost of the settings are the same (check the data from it what you can do)\nas there are also some new features added.\nalso in SRD_MapSlipDamage is a small bug of flashing (easy fix) but don't\nknow what line, but it was missing * in the code after the \"\\s\" which should be \"\\s*\".\nso re-order YEP plugins and best in category so the compability is far less."
+    },
+    {
+      "post_id": "js-post-1497108",
+      "author": "Robro33",
+      "date": "2025-02-04T07:30:47+0900",
+      "body": "Is there a reason you positioned it there? Have you tried other places like after all the yanfly plugins?"
+    },
+    {
+      "post_id": "js-post-1497111",
+      "author": "slickdeath97",
+      "date": "2025-02-04T07:52:12+0900",
+      "body": "ShadowDragon said:\nyour YEP pluins arent in the correct order.\nScreenResolution could be OFF while its in YEP_EngineCore.\nPXD_Lockpick does have some serious issues as I made an overhaul\nto fix all the bugs and glitches inside of it.\nmost of the settings are the same (check the data from it what you can do)\nas there are also some new features added.\nalso in SRD_MapSlipDamage is a small bug of flashing (easy fix) but don't\nknow what line, but it was missing * in the code after the \"\\s\" which should be \"\\s*\".\nso re-order YEP plugins and best in category so the compability is far less.\nClick to expand...\nI have the YEP plugins in the right order. The screenshot are the exact order the plugins are in. I made sure to follow the exact order from yanfly's site.\nWhere is the fix for the lockpick? I think I might already have it implemented.\nEdit 1: Found the fix and overhaul and got it implemented. Thanks for that info.\nIf the mapslip plugin needs fixed, let me know if you remember the lines that need the fix.\nRobro33 said:\nIs there a reason you positioned it there? Have you tried other places like after all the yanfly plugins?\nClick to expand...\nI tried it both above and below. Still has the issue."
+    },
+    {
+      "post_id": "js-post-1497189",
+      "author": "ShadowDragon",
+      "date": "2025-02-04T19:25:24+0900",
+      "body": "slickdeath97 said:\nIf the mapslip plugin needs fixed, let me know if you remember the lines that need the fix.\nClick to expand...\nthis line:\nJavaScript:\nconst tagColor = /<Slip\\s*Damage's*Flash\\s*Color\\s*:\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*>/im;\n\n// should be\nconst tagColor = /<Slip\\s*Damage\\s*Flash\\s*Color\\s*:\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*>/im;\nother wise, this flash damage wont work of a tiny misplaced typo."
+    },
+    {
+      "post_id": "js-post-1497264",
+      "author": "slickdeath97",
+      "date": "2025-02-05T03:55:45+0900",
+      "body": "ShadowDragon said:\nthis line:\nJavaScript:\nconst tagColor = /<Slip\\s*Damage's*Flash\\s*Color\\s*:\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*>/im;\n\n// should be\nconst tagColor = /<Slip\\s*Damage\\s*Flash\\s*Color\\s*:\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*>/im;\nother wise, this flash damage wont work of a tiny misplaced typo.\nClick to expand...\nGot that fixed. What do I do about the other problem I am having though? All of my Yanfly plugins are in the right order, but the problem is still happening no matter where I put the skill extender plugin. If I turn the selection control plugin off, the extention one works fine, but I need the selection control one for a specific part of battles in my game."
+    },
+    {
+      "post_id": "js-post-1497266",
+      "author": "ShadowDragon",
+      "date": "2025-02-05T04:01:58+0900",
+      "body": "hard to tell, is your mouse over the enemy so you cant target the allies?\nas class_change_fix should be below YEP_ClassChangeCore I believe, not above.\nbut I don't use either of them, so I cannot really help further on the issue though."
+    },
+    {
+      "post_id": "js-post-1497285",
+      "author": "slickdeath97",
+      "date": "2025-02-05T05:38:47+0900",
+      "body": "ShadowDragon said:\nhard to tell, is your mouse over the enemy so you cant target the allies?\nas class_change_fix should be below YEP_ClassChangeCore I believe, not above.\nbut I don't use either of them, so I cannot really help further on the issue though.\nClick to expand...\nMy mouse is not on the screen when testplaying the battles. So I tested the plugin out and when I put the selection control into a new blank project, it still only allows me to target the enemies for skills that only target my allies.\nEdit: Nevermind. Found the issue. The issue is with VE- UnreachableTarget plugin.\nHow would I fix the issue?\nPlugin:\nhttps://victorenginescripts.wordpress.com/rpg-maker-mv/unreachable-targets/"
+    }
+  ]
+}

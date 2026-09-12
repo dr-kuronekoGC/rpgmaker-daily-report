@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/ally-keep-attacking-even-after-enemy-died.175257",
+  "title": "Ally keep attacking even after enemy died",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:35:10.194223+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1497844",
+      "author": "Vyndicate",
+      "date": "2025-02-08T15:40:05+0900",
+      "body": "So I made an assist feature using force action. Assist will active when it reach turn limit (Increase assist turn every ally action), and do action on next turn. But turns out, after all enemy died, the ally keep attacking before victory phase\nI also trying to use BattleManager.processVictory(), but got issue on next battle, the troop event doesn't run properly\nHow to solve this problem"
+    },
+    {
+      "post_id": "js-post-1497860",
+      "author": "rpgLord69",
+      "date": "2025-02-08T19:24:32+0900",
+      "body": "Can you just put a conditional to the assist that $gameTroop.aliveMembers().length > 0"
+    },
+    {
+      "post_id": "js-post-1497885",
+      "author": "Vyndicate",
+      "date": "2025-02-08T23:13:52+0900",
+      "body": "rpgLord69 said:\nCan you just put a conditional to the assist that $gameTroop.aliveMembers().length > 0\nClick to expand...\nThat's what I did too when trying to use BattleManager.processVictory() with something like this in skill notetag\n<finish action>\nif ($gameTroop.aliveMembers().length == 0)\neval: BattleManager.processVictory()\nend\n</finish action>\nBut this cause broken on next battle, which is doesn't run troop event with this condition\nI also made a custom function that contains processVictory() and updateBattleEnd(), but still doesn't work properly"
+    },
+    {
+      "post_id": "js-post-1497888",
+      "author": "rpgLord69",
+      "date": "2025-02-08T23:23:37+0900",
+      "body": "Why try and change the functions? Can't you just put a conditional on your assist mechanic? It's best if you show people how you did your assist."
+    },
+    {
+      "post_id": "js-post-1498011",
+      "author": "Vyndicate",
+      "date": "2025-02-09T11:02:32+0900",
+      "body": "rpgLord69 said:\nWhy try and change the functions? Can't you just put a conditional on your assist mechanic? It's best if you show people how you did your assist.\nClick to expand...\noh yeah I forgot about that\nHere's how the assist work:\nAdd state and run the script inside notetag for every ally action\nAfter that, it will check on every actor that do the assist\nEach common event has their own moves (Different turn limit, different skill usage)\nThere's also initialize before battle begin using common event\nAfter reach threshold (In this case, Schumaker has 2 turn to trigger), it will trigger the assist\nHere's the skill in skill tab. I was adding the finish action but messed up when doing another battle in next one (Won't trigger the troop event)\nEdit:\nI was changing from Action Start to Action End and it works fine now to prevent redundant attack\nSorry to bother before. It seems the issue is in myself . It's quite clear now\nI can close this"
+    },
+    {
+      "post_id": "js-post-1498073",
+      "author": "Ms Littlefish",
+      "date": "2025-02-09T22:02:34+0900",
+      "body": "This thread is closed due to being reported as solved. If you need it reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

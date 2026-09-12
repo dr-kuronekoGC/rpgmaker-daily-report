@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-skill-that-varies-based-on-a-variable.175276",
+  "title": "A skill that varies based on a variable",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:34:48.203180+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1497962",
+      "author": "ap9lsyn",
+      "date": "2025-02-09T06:30:06+0900",
+      "body": "The title says it all. I'm trying to implement skills that change it's damage and effects depending on a variable. I tried implement this by using common events, but when using it the skill has a pause before preforming common event, so it's not really ideal, although it works. I tried to use java script and visustella's battle core, but it had zero change."
+    },
+    {
+      "post_id": "js-post-1497981",
+      "author": "Robro33",
+      "date": "2025-02-09T07:49:48+0900",
+      "body": "ap9lsyn said:\nThe title says it all\nClick to expand...\nyou would have to give more details\nap9lsyn said:\nI'm trying to implement skills that change it's damage and effects depending on a variable\nClick to expand...\ndoes it use entirely different formulas based on the variable? is the variable just a factor of in formula? what effects are you trying to do?\nap9lsyn said:\nI tried to use java script and visustella's battle core, but it had zero change.\nClick to expand...\nyou would have to tell us what exactly you want and show us exactly what you did for us to say what you did wrong"
+    },
+    {
+      "post_id": "js-post-1497984",
+      "author": "ap9lsyn",
+      "date": "2025-02-09T08:16:37+0900",
+      "body": "Robro33 said:\nyou would have to give more details\ndoes it use entirely different formulas based on the variable? is the variable just a factor of in formula? what effects are you trying to do?\nyou would have to tell us what exactly you want and show us exactly what you did for us to say what you did wrong\nClick to expand...\nOK, so basically I'm trying to implement a mechanic that allows to boost moves. To activate it, you need to use a special skill. This skill simply uses up 1 MP and increases a variable by one point.\nThen, when you use a skill, it runs a common event and nothing else. (no damage, no formulas, nothing.) It just checks the value in a variable. After that, it selects one of the four versions of that skill, which actually have formulas, animations, and other effects.\nSpoiler:\nscreenshot\nIn case of this skill, using more boost points allows you to use the skill multiple times in a single turn. However, if 0 points are used, the skill won't work at all. Just in case, this system IS working, it just has a slight delay when using it. I'm just wondering is there more refined way to implement what I'm trying to do.\nI mentioned that \"I tried to use JavaScript and VisuStella's battle core\" because I was testing out the note tag for the skill. I wanted to see if there is a way to trigger a common event before the damage calculation, hoping it would eliminate any delay. Unfortunately, it didn’t change anything. From what i understand, when using this skill it tries to preform a nonexistent formula, and only THEN preforms the common event and actual move. Engine treats those two skills as two different ones, which is why there is a delay. So, is there any way to make it more straightforward for the engine, with or without using plugins?"
+    },
+    {
+      "post_id": "js-post-1497987",
+      "author": "Robro33",
+      "date": "2025-02-09T08:55:30+0900",
+      "body": "ap9lsyn said:\nI'm just wondering is there more refined way to implement what I'm trying to do.\nClick to expand...\nim fairly certain you can pull it off with visustella action sequences, but im not familiar with that version enough to be able to give concrete suggestions on how. It would be my go-to for setting this up though if i were you. you should be able to set up the skill to run its action animation and effect within a loop based on the loop variable.\nap9lsyn said:\nI wanted to see if there is a way to trigger a common event before the damage calculation, hoping it would eliminate any delay. Unfortunately, it didn’t change anything. From what i understand, when using this skill it tries to preform a nonexistent formula, and only THEN preforms the common event and actual move.\nClick to expand...\ntheres 2 issues there. yes, by default the common events of skills execute some time after the damage execution, but the other thing is that the engine *only* looks to run common events at specific times. using a script call to reserve a CE earlier wouldnt cause it to be executed earlier without changing that part of the engine.\nyou might be able to use a post-apply effect notetag and the engine's\nscript call\nfor forcing actions to force the skill a few times. Forcing the action worked with the equivalent setup using yanfly's battle core plugin where the current skill was interrupted for the second."
+    },
+    {
+      "post_id": "js-post-1498381",
+      "author": "ap9lsyn",
+      "date": "2025-02-11T07:37:51+0900",
+      "body": "Robro33 said:\nim fairly certain you can pull it off with visustella action sequences, but im not familiar with that version enough to be able to give concrete suggestions on how. It would be my go-to for setting this up though if i were you. you should be able to set up the skill to run its action animation and effect within a loop based on the loop variable.\ntheres 2 issues there. yes, by default the common events of skills execute some time after the damage execution, but the other thing is that the engine *only* looks to run common events at specific times. using a script call to reserve a CE earlier wouldnt cause it to be executed earlier without changing that part of the engine.\nyou might be able to use a post-apply effect notetag and the engine's\nscript call\nfor forcing actions to force the skill a few times. Forcing the action worked with the equivalent setup using yanfly's battle core plugin where the current skill was interrupted for the second.\nClick to expand...\nHello! Sorry for replying so lately!\nYou were spot on! Using Visustella Action Sequences really solved the delay problem. It took me a bit to understand how to set up the skills the way I wanted, but it definitely paid off! Thank you so much for the help!"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-use-variables-to-make-a-fuel-system.175285",
+  "title": "How to use variables to make a \"fuel\" system?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:34:52.993519+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1498019",
+      "author": "OldSchoolFool",
+      "date": "2025-02-09T12:03:45+0900",
+      "body": "Hi, this is my first post here, so apologies in advance if it's in the wrong place.\nI'm currently making a SciFi Space game in RPG Maker MZ, and I want to have a rudimentary \"fuel\" system for the space ship.  This is based on having a variable set up to equal 30% at the start of the game, and then to drop based on the number of steps the player takes.  I've got the variables set up this way so far:\n\"Helium-3\" set to 30\nThen later,\n\"Helium-3 Loss\" set to \"Game Data\" \"steps\"\n\"Helium-3 Loss\" divided by 200\n\"Helium-3\" subtract \"Helium-3 Loss\"\nThis does accomplish exactly what I want, and I have an event in a computer terminal where the player can check the fuel level.  The problem I have is that every time the player checks the fuel level, the fuel level goes down.  It's obvious to me why, but I can't figure out how to prevent it.\nHas anyone tried to do something similar to this before?  Is there a simpler or better way that anyone knows or can think of, including plugins?"
+    },
+    {
+      "post_id": "js-post-1498089",
+      "author": "rpgLord69",
+      "date": "2025-02-10T00:29:06+0900",
+      "body": "Store the step value you've already subtracted, use 2 variables.\nvariable 2 = 'game data: steps'\nvariable 2 - variable 1\nvariable 2 / 200\nhelium - variable 2\nvariable 1 = 'game data: steps'"
+    },
+    {
+      "post_id": "js-post-1498098",
+      "author": "OldSchoolFool",
+      "date": "2025-02-10T01:09:55+0900",
+      "body": "That works perfectly!  Thank you so much.  I was pulling my hair out trying to figure out how to preserve that data every time it was called."
+    },
+    {
+      "post_id": "js-post-1505979",
+      "author": "OldSchoolFool",
+      "date": "2025-03-23T01:34:48+0900",
+      "body": "Hi folks, sorry to be asking for more help with this particular issue again, but now I need help with how to \"stop\" calculating the fuel drain when the player leaves the space ship.  (I've got dyscalculia and the arithmetic involved is melting my brain.)\nI'm thinking about two approaches to this problem.  First, inside the event when the player exits the space ship, I would create a variable to store how much Helium-3 fuel is currently onboard at the time of exit.  When the player boards the ship and checks the fuel again, the amount in that variable will be added to the amount of fuel after the \"steps\" calculation which I already received help with above.\nor...\nWhen the player exits the space ship, the number of steps is instead stored in a variable.  When the player returns to the ship and checks the fuel level, then a calculation is made to subtract the difference between the number of steps taken while away from the ship while calculating the amount of fuel used.\nI don't know which of these two approaches is right or will work best, and I really don't know exactly how to implement either one of them.  Thank you again if someone can provide some detailed help to me."
+    },
+    {
+      "post_id": "js-post-1505993",
+      "author": "ZimXero",
+      "date": "2025-03-23T03:11:56+0900",
+      "body": "I cannot write the code for it but I can see a way to make this work.\nMethod - Logic Using an IF statement for if in the spaceship\nvariable: Shipstate ( 0 or 1)\nvariable: SpaceSteps  (# steps since entering the ship)\nvariable: EntryStepCount  (# of total steps when player entered the ship)\nIF the player is in a space ship ShipState=1 (true):else ShipState=0 (false)\nIF Shipstate=0   EntryStepCount= 'game data: steps' : else SpaceSteps = 'game data: steps' - EntryStepCount\nThis captures the stepcount when entering a spaceship.  Then it subtracts this captured stepcount # from the game's Steps total to store the difference as a running total of SpaceSteps, which you can use for fuel calculations."
+    },
+    {
+      "post_id": "js-post-1505994",
+      "author": "OldSchoolFool",
+      "date": "2025-03-23T03:20:50+0900",
+      "body": "Thanks for this advice.  I'll try working with it when I get back to working on the fuel calculations."
+    }
+  ]
+}

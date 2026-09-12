@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/looking-for-a-menu-fade-plugin-compatible-with-mz.175241",
+  "title": "MZ Looking for a Menu Fade plugin compatible with MZ",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:34:54.916489+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1497764",
+      "author": "Noree",
+      "date": "2025-02-08T06:33:50+0900",
+      "body": "Hi! I've been looking for a plugin for a while that would allow me to fade in/out when entering any menu.\nLuckily, I found one that does exactly what I'm looking for and that can easily explain what I'm looking for.\nUnfortunately, this plugin is only compatible with MV. (I've already checked this in my game made in MZ)\nThis would be the plugin I'm talking about:\nGalv's Menu Fade\nIf someone could make the plugin compatible with MZ or make a new one that does the same thing but for MZ it would be very helpful!\nI read the plugin\ncreator's terms of use\nand saw that he has no problem with the plugin being modified as long as it gives credit and follows the rules!\nThank you in advance for reading my request!"
+    },
+    {
+      "post_id": "js-post-1497785",
+      "author": "vr_scar",
+      "date": "2025-02-08T08:49:37+0900",
+      "body": "Hey there. I do plugins for my own games etc, but I am happy to help.\nWhat do you want the parameters of the plugin to be?\nExamples: Speed, Opacity colors etc.\nI am looking at making plugins and becoming a merchant and sell some of them as singles or collections but I don't know how to yet."
+    },
+    {
+      "post_id": "js-post-1497798",
+      "author": "Noree",
+      "date": "2025-02-08T09:40:46+0900",
+      "body": "vr_scar said:\nHey there. I do plugins for my own games etc, but I am happy to help.\nWhat do you want the parameters of the plugin to be?\nExamples: Speed, Opacity colors etc.\nI am looking at making plugins and becoming a merchant and sell some of them as singles or collections but I don't know how to yet.\nClick to expand...\nOh! Thank you very much for your interest!\nIf is possible, yes! Parameters for opacity, speed and for ignore/don't fade Scenes, I think those would be fine ^^"
+    },
+    {
+      "post_id": "js-post-1497805",
+      "author": "utunnels",
+      "date": "2025-02-08T10:22:07+0900",
+      "body": "You can save this as a plugin.\n(function(alias){Scene_Menu.prototype.createWindowLayer=function(){alias.call(this);this._windowLayer.alpha=0;};})(Scene_Menu.prototype.createWindowLayer);\n(function(alias){Scene_Menu.prototype.update=function(){alias.call(this);this._windowLayer.alpha+=0.05;};})(Scene_Menu.prototype.update);"
+    },
+    {
+      "post_id": "js-post-1497836",
+      "author": "Noree",
+      "date": "2025-02-08T14:48:51+0900",
+      "body": "utunnels said:\nYou can save this as a plugin.\n(function(alias){Scene_Menu.prototype.createWindowLayer=function(){alias.call(this);this._windowLayer.alpha=0;};})(Scene_Menu.prototype.createWindowLayer);\n(function(alias){Scene_Menu.prototype.update=function(){alias.call(this);this._windowLayer.alpha+=0.05;};})(Scene_Menu.prototype.update);\nClick to expand...\nThis works great with objects/content inside windows in the scene, but unfortunately, however, the scene background image still appears without Fade in/out.\nI would like the background of the scene to also fade in/out so that everything looks more natural."
+    },
+    {
+      "post_id": "js-post-1497838",
+      "author": "utunnels",
+      "date": "2025-02-08T14:51:34+0900",
+      "body": "Do you use a background image or just the default blurred map screenshot?"
+    },
+    {
+      "post_id": "js-post-1497843",
+      "author": "Noree",
+      "date": "2025-02-08T15:20:51+0900",
+      "body": "utunnels said:\nDo you use a background image or just the default blurred map screenshot?\nClick to expand...\nI use a background image, yes!"
+    },
+    {
+      "post_id": "js-post-1497845",
+      "author": "utunnels",
+      "date": "2025-02-08T15:40:45+0900",
+      "body": "What plugin do you use to add the background? There should be a second background showing the map for the fading to work."
+    },
+    {
+      "post_id": "js-post-1497848",
+      "author": "Noree",
+      "date": "2025-02-08T16:04:54+0900",
+      "body": "utunnels said:\nWhat plugin do you use to add the background? There should be a second background showing the map for the fading to work.\nClick to expand...\nI use this plugin made by Triacontane: It's to add background images to any Scene Menu."
+    },
+    {
+      "post_id": "js-post-1497851",
+      "author": "utunnels",
+      "date": "2025-02-08T16:40:11+0900",
+      "body": "This should work.\nBut there is a problem, the plugin adds the background outside of the window layer, so it can't fade with the menu itself. It still looks like 2 layers. Unless you also modify the extraimage plugin to put the image inside the window layer.\nJavaScript:\n(function (alias) {\n  Scene_Menu.prototype.create = function () {\n    alias.apply(this, arguments);\n    this._windowLayer.alpha = 0;\n    this._extraImages.forEach(extraImage => {\n      extraImage.alpha = 0;\n    });\n  };\n})(Scene_Menu.prototype.create);\n(function (alias) {\n  Scene_Menu.prototype.update = function () {\n    alias.apply(this, arguments);\n    this._windowLayer.alpha += 0.01;\n  };\n})(Scene_Menu.prototype.update);\n\nSprite_SceneExtra.prototype.updateOpacity = function(){\n  this.opacity = this._data.Opacity * (SceneManager._scene._windowLayer?SceneManager._scene._windowLayer.alpha:1);\n}"
+    },
+    {
+      "post_id": "js-post-1497935",
+      "author": "Noree",
+      "date": "2025-02-09T03:45:21+0900",
+      "body": "utunnels said:\nThis should work.\nBut there is a problem, the plugin adds the background outside of the window layer, so it can't fade with the menu itself. It still looks like 2 layers. Unless you also modify the extraimage plugin to put the image inside the window layer.\nJavaScript:\n(function (alias) {\n  Scene_Menu.prototype.create = function () {\n    alias.apply(this, arguments);\n    this._windowLayer.alpha = 0;\n    this._extraImages.forEach(extraImage => {\n      extraImage.alpha = 0;\n    });\n  };\n})(Scene_Menu.prototype.create);\n(function (alias) {\n  Scene_Menu.prototype.update = function () {\n    alias.apply(this, arguments);\n    this._windowLayer.alpha += 0.01;\n  };\n})(Scene_Menu.prototype.update);\n\nSprite_SceneExtra.prototype.updateOpacity = function(){\n  this.opacity = this._data.Opacity * (SceneManager._scene._windowLayer?SceneManager._scene._windowLayer.alpha:1);\n}\nClick to expand...\nOh!! It works perfectly, thanks!!"
+    },
+    {
+      "post_id": "js-post-1497937",
+      "author": "Ms Littlefish",
+      "date": "2025-02-09T03:54:03+0900",
+      "body": "This thread is closed due to being reported as solved. If you need it reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

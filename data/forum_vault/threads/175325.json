@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-use-parameter-arrays.175325",
+  "title": "MV How to use parameter arrays",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:34:49.874800+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1498290",
+      "author": "SirRule",
+      "date": "2025-02-10T23:57:26+0900",
+      "body": "Hello, I'm new to js and I'm trying to figure out parameters and using arrays inside them.\nThe idea is that the plugin hides sealed skill types from the user during a battle. I got the basic functionality working but I decided to try to extend it by checking if the skill type ID is contained within an array modified by the exposed parameter.\nWhen trying to edit the paramter in the visual mode it says that the parameter is \"malformed\" too.\nJavaScript:\n/*\n*@plugindesc Hides sealed skill types during battle.\n*@author SirRule     \n*@param SkillTypeIDs\n*@desc Only these skill types with these IDs will be affected. Leave blank for all.\n*@type number[]\n*@default 3,0\n\n*/\n\n(function () {\n    var parameters = PluginManager.parameters('HideSealedActions');\n    var paramArray = parameters['SkillTypeIDs'].split(',');\n\n\n    var _Window_ActorCommand_BuildSkillCommandWindow = Window_ActorCommand.prototype.addSkillCommands;\n    var _WIndow_ActorCommand_ModifyAttackCommand = Window_ActorCommand.prototype.addAttackCommand;\n\n    Window_ActorCommand.prototype.addSkillCommands = function () {\n        var skillTypes = this._actor.addedSkillTypes().filter(function (stypeId) {\n\n            if (!paramArray.includes(stypeId)) { return true; }\n            return !this._actor.isSkillTypeSealed(stypeId);\n        }, this);\n\n\n        skillTypes.sort(function (a, b) {\n            return a - b;\n        });\n        skillTypes.forEach(function (stypeId) {\n            var name = $dataSystem.skillTypes[stypeId];\n            this.addCommand(name, 'skill', true, stypeId);\n        }, this);\n    };\nWhat am I doing wrong?\nEDIT:\nI have won a victory today against this silly language.\nSo the problem I was having is that the skill types are stored as numbers and despite the parameters taking in what look like numbers, they were actually \"Arrays of elements\" that the computer assumed were letters. This meant that when I was comparing the skilltypes against the parameters that I was actually searching an array of characters looking for a number. So I looked online and found a way of converting the letters into numbers.\nThen there may have been a problem with array.include which may be comparing against the position in memory instead of the value so that came out and was replaced with array.indexOf. Not too sure about that one, whatever this works now.\nThe number[] typing became string[] typing:\nJavaScript:\n*@type string[]\n*@default [\"4\"]\nConverting the strings to numbers:\nJavaScript:\nvar parameters = PluginManager.parameters('HideSealedActions');\nvar paramArray = JSON.parse(parameters['SkillTypeIDs']);\nvar numArray = [];\nparamArray.forEach(ele => numArray.push(+ele));\nSearching the array:\nJavaScript:\nvar skillTypes = this._actor.addedSkillTypes().filter(function (stypeId) {\n    if (numArray.indexOf(stypeId) != -1) {\n        return !this._actor.isSkillTypeSealed(stypeId);\n    }\n    return true;\n   \n}, this);\nThanks for the help."
+    },
+    {
+      "post_id": "js-post-1498292",
+      "author": "TobyYasha",
+      "date": "2025-02-11T00:01:51+0900",
+      "body": "Remove the \"@type number[]\" part and just treat it as a regular string.\nBecause \"number[]\" doesn't seem to be supported by the RPG Maker MZ Plugin System."
+    },
+    {
+      "post_id": "js-post-1498293",
+      "author": "ShadowDragon",
+      "date": "2025-02-11T00:02:04+0900",
+      "body": "type number[] might not work as your default is 3,0\nbut should output [3,2].\nI don't think you need to split the array with a comma when using an array.\narrays are mostly read when you use JSON.parse (same for booleans)\nso in your case, remove \"type number[]\" and use\nJSON.parse(parameters['SkillTypeIDs']);\nso your default can be [1,3,4,5,6,7,8] to be readed."
+    },
+    {
+      "post_id": "js-post-1498298",
+      "author": "utunnels",
+      "date": "2025-02-11T00:24:16+0900",
+      "body": "I'm pretty sure number[] is also valid in MZ.\nAlso if you are not sure how to input default value, just input using the editor and copy the text.\nActually it will be converted to a string array. But you can use number input to edit it."
+    },
+    {
+      "post_id": "js-post-1498312",
+      "author": "SirRule",
+      "date": "2025-02-11T01:19:32+0900",
+      "body": "I removed the type and am using JSON.parse but still not having any luck.\nI've noticed that if I changed the value in the editor to be only one, it throws an error that paramArray does not have an include function. I'm used to c# where if you want something to be a list or an array you declare it as such. Is there a way to force JS to see it as an array even if it only has one item in it?\nJavaScript:\nvar parameters = PluginManager.parameters('HideSealedActions');\n var paramArray = JSON.parse(parameters['SkillTypeIDs']);"
+    },
+    {
+      "post_id": "js-post-1498345",
+      "author": "SirRule",
+      "date": "2025-02-11T03:25:14+0900",
+      "body": "Sorry about the double post but this issue is solved now."
+    }
+  ]
+}

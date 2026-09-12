@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/reduce-the-accuracy-of-an-enemy-based-on-its-type.175032",
+  "title": "MV Reduce the accuracy of an enemy based on its type",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:35:26.578241+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1496344",
+      "author": "Domagames",
+      "date": "2025-01-30T04:02:32+0900",
+      "body": "Good afternoon, I have a small doubt regarding the \"enemy types\". I managed to create enemy types thanks to the use of YEP_AutoPassiveStates and while this helps me to modify the elemental damage they receive for being of a certain type, I wanted to know how I can alter other parameters, such as the precision of an enemy, towards a certain character.\nI have a character class, called \"bird hunter\", this class not only causes extra damage to a bird-type enemy, but the enemy will have a harder time landing a hit on that character.\nIs there a special plugin for that case or a line of script code that I can use to adjust that parameter?"
+    },
+    {
+      "post_id": "js-post-1496350",
+      "author": "Robro33",
+      "date": "2025-01-30T04:48:15+0900",
+      "body": "Domagames said:\nIs there a special plugin for that case\nClick to expand...\nYanfly's hit accuracy plugin would allow you to do it, but the issue is that the plugin making it a single line plugin parameter makes it messy if youre trying to add different rules and exceptions.\nDomagames said:\nor a line of script code that I can use to adjust that parameter?\nClick to expand...\nthe issue with that approach that i can see is that what you want is no longer a single value on a single battler. birds having a harder time hitting bird hunters requires an adjustment based on an external factor - the target of their current attack.\nyou could try using Yanfly's Buffs & States' custom state effect notetags to make it so that the bird state applies an accuracy decreasing state to the bird if their target has the bird hunter state and then remove it after the skill. try it with <Custom Initiate Effect> and either <Custom Conclude Effect> or <Custom Action End Effect>\nEDIT:\nalso, if your birds have unique skills you can use victor's hit formula plugin to give the bird skills a lower hit chance on bird hunter targets\nHit Formula\nPlugin Download This plugin allows you to setup different formulas to decide hit success of actions. You can use that to change the default hit/evade algorithm or create actions with special hit co…\nvictorenginescripts.wordpress.com"
+    },
+    {
+      "post_id": "js-post-1496371",
+      "author": "Domagames",
+      "date": "2025-01-30T08:14:56+0900",
+      "body": "Robro33 said:\nthe issue with that approach that i can see is that what you want is no longer a single value on a single battler. birds having a harder time hitting bird hunters requires an adjustment based on an external factor - the target of their current attack.\nyou could try using Yanfly's Buffs & States' custom state effect notetags to make it so that the bird state applies an accuracy decreasing state to the bird if their target has the bird hunter state and then remove it after the skill. try it with <Custom Initiate Effect> and either <Custom Conclude Effect> or <Custom Action End Effect>\nClick to expand...\nThanks! This was the clue that helped me solve this.\nWith \"YEP_AutoPassiveState\" create the state/enemy type \"Bird\".\nNote/Script:\n<Custom Initiate Effect>\nif (target.isStateAffected(178))    --------------> 178 is a \"Hunter Bird\" State\n{\nuser.addState(130);    --------------------> 130 is \"Decrease accuracy\" State\n}\n</Custom Initiate Effect>\n<Custom Conclude Effect>\nuser.removeState(130);\n</Custom Conclude Effect>\nworks perfectly!"
+    }
+  ]
+}

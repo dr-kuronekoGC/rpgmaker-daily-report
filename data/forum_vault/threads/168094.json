@@ -1,0 +1,353 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/mv-mz-make-an-action-game-chrono-engine-advanced-features-and-scripts-gamepad-status-effects-fighting-followers.168094",
+  "title": "MV MV + MZ Make an Action Game! Chrono Engine Advanced Features and Scripts (gamepad, status effects, fighting followers)!",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:34:59.131636+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1440090",
+      "author": "AquaEcho",
+      "date": "2024-04-27T02:14:46+0900",
+      "body": "Following up from my\nChrono Engine beginner guide\n, I bring you an advanced features guide!\nI have a lot of Chrono Engine scripts I've written over the past year so I will be organizing them here, and regularly adding new ones. Feel free to share your own!\nHow to add controller support to Chrono Engine:\nBy default the following gamepad buttons are mapped in the engine:\nCode:\nInput.gamepadMapper = {\n    0: 'ok',        // A\n    1: 'cancel',    // B\n    2: 'shift',     // X\n    3: 'menu',      // Y\n    4: 'pageup',    // LB\n    5: 'pagedown',  // RB\n    12: 'up',       // D-pad up\n    13: 'down',     // D-pad down\n    14: 'left',     // D-pad left\n    15: 'right',    // D-pad right\n};\nIn the Chrono Engine plugin settings it's simple enough to assign or change buttons among the default keys\nMETHOD 1\nTo add the missing controller buttons (Start/Select, LT/RT), or overwrite those buttons, or if you want to add new keyboard keys, create a new plugin file (create a new file in a text editor like Notepad and save it as a .js file.  You can name this file whatever you want because it has no parameters. Paste the following code in it and add the plugin to your project after Chrono Engine.\nCode:\nGame_Temp.prototype.loadInput = function() {\n    //keyboard\n    Input.keyMapper[65] = 'item';//A key\n    Input.keyMapper[67] = 'c';//C key\n    Input.keyMapper[68] = 'shield';//D key\n    Input.keyMapper[83] = 'skill';//S key\n    //gamepad\n    Input.gamepadMapper[0] = 'ok'; //A\n    Input.gamepadMapper[1] = 'cancel'; //B\n    Input.gamepadMapper[2] = 'skill'; // X\n    Input.gamepadMapper[3] = 'item'; // Y\n    Input.gamepadMapper[4] = 'pageup'; //LB\n    Input.gamepadMapper[5] = 'pagedown'; //RB\n    Input.gamepadMapper[6] = 'lt';//LT\n    Input.gamepadMapper[7] = 'shield';//RT\n    Input.gamepadMapper[8] = 'start';//start\n    Input.gamepadMapper[9] = 'select';//select\n};\nYou will need to edit what's in the ' ' quotation marks of each key to what you want it to do, and update the plugin parameters in Chrono Engine to refer to that command instead of the button/key name. This is because Chrono Engine can only take one reference at a time in those plugin parameters, and 'a', 'b' , 'x' and 'y' mean different things for the keyboard and gamepad.\nIf you want to add keyboard keys, you need the key's keycode number. To get the keycode use\nthis link\nThen add it in the Input.keyMapper[x] section above\nAs you can see in the Chrono Engine plugin settings below I have the Shield button set to 'shield'. In the plugin we just made we have the D keyboard key and RT gamepad key set to 'shield' so pressing either of those will use the shield in game.\nRebinding keys during the game:\nYou can remap keys or buttons during the game using the script calls for a key or gamepad button. For example, if I want to remap the S key to the use an item I just redeclare it in a script call. Running these scripts during gameplay will only apply the rebind for the current gameplay session, you will have to reapply it every time the game is loaded.\nInput.keyMapper[83] = 'item';//S key\nIf I want to set the X gamepad button to item\nInput.gamepadMapper[2] = 'item'; // X gamepad button\nSpoiler:\nMethod 2 (Old)\nNote: This is an old method that had issues with registering a button being held down (e.g. the shield)\nI use,\nHakuen Studio Button Common Events\nbecause it offers support for all the buttons on common controllers.\nThe list of scripts you'll need is:\nUse item: $gamePlayer.commandRasItem()\nUse weapon: $gamePlayer.commandRasWeapon()\nUse skill: $gamePlayer.commandRasSkill()\nUse shield (note: doesn't work in a common event,\nyou need to redirect the button\nif it's RT/LT/Start/Select): $gamePlayer.battler()._ras.guard.active = true; $gamePlayer.updateGuardDirection();\nSkill menu: $gamePlayer.commandToolMenuSkill()\nItem menu: $gamePlayer.commandToolMenuItem()\nMain menu:  SceneManager.push(Scene_Menu)\nCreate a common event for each button. Name it after the button, then put in the script for what you want the button to do.\nGo to the plugin settings for Eli Button Common Events and add your buttons\nThat's it! Plug in your controller, then start a new playtest. It may not work if you plug it in after you start the game. Also, make sure you are testing from a new game and not a save file as plugin settings may not take effect on a save file.\nAn additional script that someone requested to make dashing share the 'Ok' button. This overwrites an engine method so you need to copy and paste it in .js file and add it as a plugin to your project.\nCode:\n//Make Dashing share the ok button\nGame_Player.prototype.isDashButtonPressed = function() {\n    var shift = Input.isPressed('ok');\n    if (ConfigManager.alwaysDash) {\n        return !shift;\n    } else {\n        return shift;\n    }\n};\nHP Bars over the Enemies!\nRPG Maker MV + MZ Chrono Engine HP Bars over Map Enemies by AquaEcho\nA mod to MOG_EventIndicators to allow Chrono Engine to show HP bars above Enemies\naquaecho.itch.io\nMake status effects work in ABS mode (also see Yanfly Buffs and States Core patch below):\nBy default status effects don't work in ABS mode because they use turns and turns don't happen in ABS mode. This will force a \"turn\" to happen every 60 frames (1 second). Create a parallel common event and give it a switch that would be on whenever there are enemies on the map, or any time your party can have a status effect. If there are no enemies or anything that can inflict status on your party you don't need this script to be running so you can switch it off.\nSpoiler:\nCopy/Paste version\nJavaScript:\nfor (var i = 0; i < $gameMap.allEnemiesOnMap().length; i++) {\nchar = $gameMap.allEnemiesOnMap()[i];\nbattler = $gameMap.allEnemiesOnMap()[i].battler();\n if(battler.isStateAffected(4)){battler.gainHp(-Math.floor(battler.mhp*.10));}\nif(battler.isDead() && battler.isEnemy()){char.setDeadEnemy(char, battler); $gameParty.gainGold(battler.gold());\nvar oldLevel = $gameParty.leader()._level; $gameParty.leader().gainExpCN(battler.exp());\nif ($gameParty.leader()._level > oldLevel) {$gamePlayer.requestAnimation(Number(Moghunter.ras_levelAnimationID));}}\nbattler.startDamagePopup(); battler.updateStateTurns(); battler.updateBuffTurns();\nbattler.removeStatesAuto(1); battler.removeStatesAuto(2);}\nJavaScript:\nfor (var i = 0; i<$gameMap.players().length; i++){\nplayer = $gameMap.players()[i].battler();\nif(player.isStateAffected(4)){player.gainHp(-Math.floor(player.mhp*.10));}\nplayer.startDamagePopup(); player.updateStateTurns(); player.updateBuffTurns();\nplayer.removeStatesAuto(1); player.removeStatesAuto(2);\n}\nThis script has the poison status set as state 4, and does 10 percent of the battler's max HP per turn. You can edit those numbers if you want something different.\nIf an enemy dies from poison, the leader will get XP for it (tracking who inflicted the poison would be a lot more complicated so I just defaulted to the leader).\nCROSS ENGINE\nCross Engine\nis basically Chrono Engine on steroids. It adds a lot of new features like pixel movement through Altimit, character animations with any # of frames, diagonal movement frames, aimed attack targeting, Zelda enemy scripts, compatibility patches with other plugins and more. It's what I use and I highly recommend it.\nIf you are using Cross Engine with MZ you  may need to use one of the MZ ports of Altimit like\nTyrusWoo's\n.\nFighting Followers / CPU Party Members\nYou can have CPU party members that attack alongside you! Full guide on\npage 2\nof this thread! The guide uses Cross Engine.\nOffset a tool upward for Tall Characters\nSee post on\npage 2\nLine of Sight / Vision Cones for Enemies (Cross Engine method)\nSee post on\npage 3\nMake a tool have no knockback\n(\noriginal thread\n):\nCopy and paste this in a new plugin file or one you've added the other fixes/scripts in this thread to.\nIn the tool event page put comment: tool_knockback_power : 0\nCode:\n//If tool_knockback_power is set to 0 don't make the target jump\nToolEvent.prototype.executeKnockback = function(target,battler) {\n    if (this._tool.knockbackPower!=0){\n        this.setKnockbackDuration(target,battler);\n        this.setKnockbackDirection(target,battler);\n       target.battler().clearRasCombo();\n    }\n};\nMake your own HUDs (Scripts for SRD HUD Maker)!\nSee post in the\nBeginner Guide\nSpoiler:\nPatches for Yanfly Plugins\nYanfly Buffs and States Core:\nCode:\n//Yanfly Buffs States Core ChronoEngine Fix\nYanfly.BSC.Game_Action_executeDamage = Game_Action.prototype.executeDamageCN;\nGame_Action.prototype.executeDamageCN = function(target, value) {\n    value = this.onPreDamageStateEffects(target, value);\n    value = this.onReactStateEffects(target, value);\n    Yanfly.BSC.Game_Action_executeDamage.call(this, target, value);\n    value = this.onRespondStateEffects(target, value);\n    value = this.onPostDamageStateEffects(target, value);\n};\nYanfly Item Core:\nThis script comes courtesy of Restart and is taken from his\nCross Engine\n. Please follow his terms of use for Cross Engine if you use it. If you are already using Cross Engine it's included in its file. Note: this script may conflict with Yanfly Party Manager (?)\nMake sure to turn on Midgame Note Parsing in Yanfly Item Core or it won't work.\nJavaScript:\n//compatibilty patch for yanfly itemcore\nGame_Map.prototype.setup = function(mapId) {\n    _mog_toolSys_gmap_setup.call(this,mapId);  // not defining this because I am leaping over mog's edit of this funciton\n    //if we have the event spawner in play, make sure that we bracket both\n    //ends of it, so we don't overwrite yan events with mog events\n    if (Imported.YEP_EventSpawner)\n    {\n        this._events[CrossEngine.MaxEventSpawn+Yanfly.Param.EventSpawnerID]=undefined;\n    }\n \n    this._treasureEvents = [];\n    this._battlersOnScreen = [];\n    this._enemiesOnScreen = [];\n    this._actorsOnScreen = [];\n    $gameSystem._toolsOnMap = [];\n    $gameTemp.clearToolCursor();\n    //console.log($gameSystem._toolsData);// with itemcore, this always returns an empty array []\n    //without itemcore, it returns 'null', then an the proper item  list, so clearly _toolsdata isn't getting set right\n    //I assume the 'null' gets overridden by one of yanfly's blanket definitions, and since I can't find that\n    // I'm just testing to see if the list is empty.  If it is, grab the tools again\n    // it seems to work!\n    //if (!$gameSystem._toolsData) {this.dataMapToolClear()};\n    if (!$gameSystem._toolsData) {this.dataMapToolClear()\n        }else{ if ($gameSystem._toolsData.length == 0) {this.dataMapToolClear()};\n        }\n    for (var i = 0; i < $gameParty.members().length; i++) {\n        var actor = $gameParty.members()[i];\n        actor.clearActing();\n        $gameSystem._toolHookshotSprite = [null,null,0];\n    };\n};\nBugfixes\nCopy and paste these scripts in a .js file in your plugins folder and add it to your game in the plugin manager at the bottom of the list.\nSpoiler:\nGeneral bugfixes\nSoftlock on Victory in Chrono Mode\nCourtesy of bass2yang.\nOriginal thread\n:\nCode:\nGame_Chrono.prototype.checkBattleResult = function() {\n    var clearParameters = false\n    if (this.isAllPartyDead()) {\n        // Clear out all skills that are hanging over\n        $gameMap.enemiesF().forEach(x=>{\n            x.battler()._chrono.action = null;\n            x.battler().clearRasCast();\n        });\n        this.clearCommandPhase();\n        $gameSystem.clearChronoEscape();\n        AudioManager.fadeOutBgm(3);\n        $gameSystem._chronoMode.phaseDuration = 120;\n        $gameSystem._chronoMode.phaseEndPhaseDuration = 120;\n        clearParameters = true;\n        // Move the phase change to the bottom so that all things can clear out\n        $gameSystem._chronoMode.phase = 6;\n    } else if (this.isAllEnemiesDead()) {\n        // Clear out all skills that are hanging over\n        $gameMap.players().forEach(x=>{\n            x.battler()._chrono.action = null;\n            x.battler().clearRasCast();\n        });\n        this.clearCommandPhase();\n        $gameSystem.clearChronoEscape();\n        AudioManager.fadeOutBgm(3);\n        $gameSystem._chronoMode.phaseDuration = 120;\n        $gameSystem._chronoMode.phaseEndPhaseDuration = 120;\n        clearParameters = true;\n        // Move the phase change to the bottom so that all things can clear out\n        $gameSystem._chronoMode.phase = 4;\n    };\n    if (clearParameters) {this.forceClearBaseParameters()}\nThe game doesn't switch to the next party member if the player dies from touch damage\nMV - TouchDamage(true) Chrono engine problem\nHey guys, when i died to this.act(skillId) my leader change to another member party, but when i died to touchdamage, the game doesnt change and i cant controll any member. Do you know some easy fix for touchdamage problem?\nforums.rpgmakerweb.com\nChrono Engine in MZ bugfixes:\nIf using Chrono Engine with FOSSIL you may get the errors this.digitWidth is not a function and cannot read property length of undefined\nSee the MZ section in the\nbeginner guide\nfor fixes\nChrono Mode in MZ\nSee\nSchala Z System\nNotes on Chrono Engine and Event Spawners\nChrono Engine does not always work with other event spawners because Chrono Engine itself is an event spawner (the tools and skills are spawned to the map when you use them). What can happen for example is if you spawn an enemy with Galv spawner then use your tool right after, or the tool/skill is being erased off the map at the same time, the wires get crossed as to what the last spawned event is and you'll have reference \"cannot be found\" errors. Restart has a fix for Yanfly's spawner in Cross Engine that makes it so all Chrono Engine tool events take IDs of 1000+, so does\nRitter's\nspawner (what I use), so they're not fighting for the same event IDs as their own spawner. However, Yanfly's spawner (and morpher) reportedly doesn't carry over notetags of spawned events, so if you need notetags you may need to purchase Ritter's spawner (which can also replace Yanfly Event Morph).\nMisc features from other threads\nAdd random percent chance blocks and counters when receiving damage (\noriginal thread\n)\nSpawn multiple events (items, hearts, money) on enemy death (\noriginal thread\n)\nHookshot/Boomerang additions (\noriginal thread\n)\nBoss phases/HP triggers (\noriginal thread\n)\nAdding more attack, skill and item hotkeys (\noriginal thread\n)\nEditing sound effects (\noriginal thread\n)"
+    },
+    {
+      "post_id": "js-post-1446646",
+      "author": "MiguelRPG",
+      "date": "2024-05-25T06:12:48+0900",
+      "body": "I hope you write the next article! Very good"
+    },
+    {
+      "post_id": "js-post-1446716",
+      "author": "AquaEcho",
+      "date": "2024-05-25T13:24:58+0900",
+      "body": "Thank you for the interest. I've realized some of the features I want to share would be best if I write a plugin for it and I will not always be here so I am looking to recreate the guides on my itch.io page with plugin download pages."
+    },
+    {
+      "post_id": "js-post-1447445",
+      "author": "Vladar458",
+      "date": "2024-05-29T07:20:50+0900",
+      "body": "I remember telling you about the issue i had with the status effects that, when the player is, for example, poisoned, and is walking/running, the damage number doesn´t pop up, and the status effect goes away way faster. This don´t happen with the enemies, you know what the solution could be?"
+    },
+    {
+      "post_id": "js-post-1447517",
+      "author": "AquaEcho",
+      "date": "2024-05-29T20:18:45+0900",
+      "body": "Vladar458 said:\nI remember telling you about the issue i had with the status effects that, when the player is, for example, poisoned, and is walking/running, the damage number doesn´t pop up, and the status effect goes away way faster. This don´t happen with the enemies, you know what the solution could be?\nClick to expand...\nThat isn't an issue with status effects. It will happen sometimes without my script if the player is moving while taking damage. I also recall you had some complicated setup where you gave enemies a different poison status than the player."
+    },
+    {
+      "post_id": "js-post-1447520",
+      "author": "Vladar458",
+      "date": "2024-05-29T20:26:52+0900",
+      "body": "AquaEcho said:\nThat isn't an issue with status effects. It will happen sometimes without my script if the player is moving while taking damage. I also recall you had some complicated setup where you gave enemies a different poison status than the player.\nClick to expand...\nThat happen when you try it? And i gave different poison status to the player and the enemies because of this, otherwise i would give them the same poison to both."
+    },
+    {
+      "post_id": "js-post-1447631",
+      "author": "AquaEcho",
+      "date": "2024-05-30T07:08:46+0900",
+      "body": "I will look into the damage popups issue since it also happens to me but I already have a lot to do right so it may have to be next week."
+    },
+    {
+      "post_id": "js-post-1447635",
+      "author": "Vladar458",
+      "date": "2024-05-30T07:12:16+0900",
+      "body": "AquaEcho said:\nI will look into the damage popups issue since it also happens to me but I already have a lot to do right so it may have to be next week.\nClick to expand...\nOk, thank you for looking it. There´s no need to rush."
+    },
+    {
+      "post_id": "js-post-1453648",
+      "author": "Vladar458",
+      "date": "2024-06-27T19:25:36+0900",
+      "body": "AquaEcho said:\nI will look into the damage popups issue since it also happens to me but I already have a lot to do right so it may have to be next week.\nClick to expand...\nYou have done it?"
+    },
+    {
+      "post_id": "js-post-1454455",
+      "author": "AquaEcho",
+      "date": "2024-07-02T01:37:47+0900",
+      "body": "Your issue with the poison state ending early when the player is moving is because there is some function in the core engine that causes the player (and follower) state turn countdown to happen when walking.\nI don't know what function that is, I would have to ask or look through the core files.\nI figured it out with the help of the Javascript questions thread, paste this in a new .js file (or the file you've been pasting my other Chrono Engine fixes in)\nJavaScript:\n//Overwrite onPlayerWalk\nGame_Actor.prototype.onPlayerWalk = function() {\n    this.clearResult();\n    this.checkFloorEffect();\n};"
+    },
+    {
+      "post_id": "js-post-1454493",
+      "author": "Vladar458",
+      "date": "2024-07-02T03:41:34+0900",
+      "body": "AquaEcho said:\nYour issue with the poison state ending early when the player is moving is because there is some function in the core engine that causes the player (and follower) state turn countdown to happen when walking.\nI don't know what function that is, I would have to ask or look through the core files.\nI figured it out with the help of the Javascript questions thread, paste this in a new .js file (or the file you've been pasting my other Chrono Engine fixes in)\nJavaScript:\n//Overwrite onPlayerWalk\nGame_Actor.prototype.onPlayerWalk = function() {\n    this.clearResult();\n    this.checkFloorEffect();\n};\nClick to expand...\nTank you so much! Now it works perfectly, just how i wanted! The only weird thing i find is it seems that the game only register half of the turns or something, because for my intended 30 damage ticks, i have to put the duration of the state in 60, but i don´t care, it works like i want."
+    },
+    {
+      "post_id": "js-post-1459576",
+      "author": "Acinder",
+      "date": "2024-07-26T01:33:44+0900",
+      "body": "I tried the gamepad plugin but I haven't been able to get it working. Do you see what I did wrong? I moved just the Eli_ButtonCommonEvents.js into my plugins and have set it up accordingly:\nI've tried 3 buttons: start - menu, b - shield, back - random text. None have worked. The common events are set to none as seem to be the requirements in the documentation. The controller still works with defaults but doesn't change or add start and back. Any clue what I did wrong?"
+    },
+    {
+      "post_id": "js-post-1459591",
+      "author": "AquaEcho",
+      "date": "2024-07-26T03:27:45+0900",
+      "body": "spitice said:\nI tried the gamepad plugin but I haven't been able to get it working. Do you see what I did wrong? I moved just the Eli_ButtonCommonEvents.js into my plugins and have set it up accordingly:\nView attachment 312550\nI've tried 3 buttons: start - menu, b - shield, back - random text. None have worked. The common events are set to none as seem to be the requirements in the documentation. The controller still works with defaults but doesn't change or add start and back. Any clue what I did wrong?\nClick to expand...\nYou need to also have Eli book installed"
+    },
+    {
+      "post_id": "js-post-1459706",
+      "author": "Acinder",
+      "date": "2024-07-26T14:01:18+0900",
+      "body": "That worked! Thanks a bunch!\nI found out why the guard button was glitching. There's a conditional that says it's usable only if the specified chrono engine button is pressed. When I switched catch all return to true, it worked!\nI wonder if just switching it to true will work without any future bugs. Here's hoping\nEdit: Found the bugs quick.. you now never stop shielding lol. I can look more into it tomorrow"
+    },
+    {
+      "post_id": "js-post-1459709",
+      "author": "AquaEcho",
+      "date": "2024-07-26T14:31:07+0900",
+      "body": "spitice said:\nThat worked! Thanks a bunch!\nI found out why the guard button was glitching. There's a conditional that says it's usable only if the specified chrono engine button is pressed. When I switched catch all return to true, it worked!\nView attachment 312623\nI wonder if just switching it to true will work without any future bugs. Here's hoping\nEdit: Found the bugs quick.. you now never stop shielding lol. I can look more into it tomorrow\nClick to expand...\nThe issue is actually with Eli Button Common Events as I confirmed with Eli himself. It won't register a button being held down, and it's not meant to. What you can do is try this code in a plugin file to set a gamepad button to point to whatever keyboard key you set the shield to. This code is just a band-aid fix and I'll have to refine it to something more elegant later.\nCode:\n//Overwrite Chrono Engine Keypad Mapping\n//==============================\n// * Load Input\n//==============================\nGame_Temp.prototype.loadInput = function() {\n    Input.keyMapper[65] = 'a';\n    Input.keyMapper[67] = 'c';\n    Input.keyMapper[68] = 'd';\n    Input.keyMapper[83] = 's';\n    Input.gamepadMapper[6] = 'lt';//lt\n    Input.gamepadMapper[7] = 'd';//rt. This will make RT point to d (e.g. make RT the shield)\n    Input.gamepadMapper[8] = 'start';//start\n    Input.gamepadMapper[9] = 'select';//select\n};"
+    },
+    {
+      "post_id": "js-post-1460985",
+      "author": "Acinder",
+      "date": "2024-08-02T07:09:16+0900",
+      "body": "AquaEcho said:\nThe issue is actually with Eli Button Common Events as I confirmed with Eli himself. It won't register a button being held down, and it's not meant to. What you can do is try this code in a plugin file to set a gamepad button to point to whatever keyboard key you set the shield to. This code is just a band-aid fix and I'll have to refine it to something more elegant later.\nCode:\n//Overwrite Chrono Engine Keypad Mapping\n//==============================\n// * Load Input\n//==============================\nGame_Temp.prototype.loadInput = function() {\n    Input.keyMapper[65] = 'a';\n    Input.keyMapper[67] = 'c';\n    Input.keyMapper[68] = 'd';\n    Input.keyMapper[83] = 's';\n    Input.gamepadMapper[6] = 'lt';//lt\n    Input.gamepadMapper[7] = 'd';//rt. This will make RT point to d (e.g. make RT the shield)\n    Input.gamepadMapper[8] = 'start';//start\n    Input.gamepadMapper[9] = 'select';//select\n};\nClick to expand...\nThanks for that! With your solution, I was able to figure out how to change all of the gamepad controls. I was able to put the following in a personal js plugin to get the controls I wanted:\nJavaScript:\nInput.gamepadMapper = {\n    0: 'ok',        // A\n    1: 'cancel',    // B\n    2: 'a',     // X\n    3: 's',      // Y\n    4: 'pageup',    // LB\n    5: 'pagedown',  // RB\n    6: 'shift',     // LT\n    7: 'd',         // RT\n    8: 'cancel',      // Select\n    9: 'menu',    // Start\n    12: 'up',       // D-pad up\n    13: 'down',     // D-pad down\n    14: 'left',     // D-pad left\n    15: 'right',    // D-pad right\n};\nLooks like rpg maker has special names for actions like \"ok\", \"menu\", and \"cancel\". Moghunter created his own personal action names with \"a\", \"d\", \"s\". (maybe not the best names but still major respect to him, haha!)\nI found out where Input.gamepadMapper was initially called, then copy and pasted it into a script, mixed it with your code, and was able to create a one-stop-shop for changing all of the gamepad buttons. Maybe this will be useful to you. Also, if you see any downfalls to this approach that I may be missing, please let me know!"
+    },
+    {
+      "post_id": "js-post-1475497",
+      "author": "Aandel",
+      "date": "2024-10-15T02:40:56+0900",
+      "body": "Hello! I've been using MOG plugins mainly in ABS mode!\nI have two questions and I was wondering if you could help me with them?\n1-In Chrono mode there is an enemy HP bar on each of them, is there a way to add this bar to ABS mode?\n2-Deal Damage to Enemies on the map using a Box with the Throw System: I managed to a certain extent, but I cannot cause damage to enemies even using the Script call: this.character(EVENTID)._user.battler._hp- =NUMBERHERE\nI probably don't know how to use it clearly. Could you help me with this? Thanks"
+    },
+    {
+      "post_id": "js-post-1481105",
+      "author": "AquaEcho",
+      "date": "2024-11-12T03:15:26+0900",
+      "body": "Aandel said:\n1-In Chrono mode there is an enemy HP bar on each of them, is there a way to add this bar to ABS mode?\nClick to expand...\nYes, although by default you can only have one health bar drawn at a time with Moghunter's plugins. It's actually pretty easy to move it to any given enemy or actor, but having one above every enemy will require heavy edits to the code.\nAandel said:\n2-Deal Damage to Enemies on the map using a Box with the Throw System: I managed to a certain extent, but I cannot cause damage to enemies even using the Script call: this.character(EVENTID)._user.battler._hp- =NUMBERHERE\nClick to expand...\nI haven't tried this mechanic but you could try CT_Bolt's event trigger event which works with Mog pickup and throw.\n[RMMV] Event Trigger Event by CT_Bolt\nAllows Events to Run Code When Touches Other Events\nct-bolt.itch.io"
+    },
+    {
+      "post_id": "js-post-1497450",
+      "author": "AquaEcho",
+      "date": "2025-02-06T06:06:46+0900",
+      "body": "HP bars over enemies now possible with my mod of MOG_EventIndicators!\nRPG Maker MV + MZ Chrono Engine HP Bars over Map Enemies by AquaEcho\nA mod to MOG_EventIndicators to allow Chrono Engine to show HP bars above Enemies\naquaecho.itch.io"
+    },
+    {
+      "post_id": "js-post-1499624",
+      "author": "AquaEcho",
+      "date": "2025-02-18T08:11:12+0900",
+      "body": "I figured out an easy way to have CPU party members (fighting followers) anyone can use so a guide is coming tomorrow!"
+    },
+    {
+      "post_id": "js-post-1499625",
+      "author": "Vladar458",
+      "date": "2025-02-18T08:20:47+0900",
+      "body": "One question: In the game i'm currently making there is an issue with a state. The game have an item called \"Regenerative herb\", as the name suggest, is an item that gives the player a state that regenerates HP over 30 seconds. And in the beginning it works fine. But then later i introduced an accesory that have the same effect when equipped, but infinite and much weaker. But because of this second effect, the first one is reduced by half. Which means that the first regenerations only heals over 15 seconds instead of 30. Probably because the two events run at the same time and that makes the state counter go twice as fast. How i could change that?"
+    },
+    {
+      "post_id": "js-post-1499626",
+      "author": "AquaEcho",
+      "date": "2025-02-18T08:23:31+0900",
+      "body": "Vladar458 said:\nOne question: In the game i'm currently making there is an issue with a state. The game have an item called \"Regenerative herb\", as the name suggest, is an item that gives the player a state that regenerates HP over 30 seconds. And in the beginning it works fine. But then later i introduced an accesory that have the same effect when equipped, but infinite and much weaker. But because of this second effect, the first one is reduced by half. Which means that the first regenerations only heals over 15 seconds instead of 30. Probably because the two events run at the same time and that makes the state counter go twice as fast. How i could change that?\nClick to expand...\nBoth the item and accessory are applying the same state? Maybe have the accessory apply a different state with the same effects so they're not both counting down the same state."
+    },
+    {
+      "post_id": "js-post-1499630",
+      "author": "Vladar458",
+      "date": "2025-02-18T08:52:51+0900",
+      "body": "AquaEcho said:\nBoth the item and accessory are applying the same state? Maybe have the accessory apply a different state with the same effects so they're not both counting down the same state.\nClick to expand...\nThis is the item's regeneration.\nThis is the accesory's regeneration."
+    },
+    {
+      "post_id": "js-post-1499632",
+      "author": "AquaEcho",
+      "date": "2025-02-18T08:57:03+0900",
+      "body": "So when you equip the accessory, you're turning on the switch for a common event that heals the player every 60 frames (1 second)? In that case it is not applying a state and there is no reason for the last two lines in that common event because it's not a state."
+    },
+    {
+      "post_id": "js-post-1499633",
+      "author": "Vladar458",
+      "date": "2025-02-18T09:02:38+0900",
+      "body": "AquaEcho said:\nSo when you equip the accessory, you're turning on the switch for a common event that heals the player every 60 frames (1 second)? In that case it is not applying a state and there is no reason for the last two lines in that common event because it's not a state.\nClick to expand...\nI activate the Switch the moment the player get the accesory, and is always activated. But there is a check that only applies the code when the character have the accesory equipped. Yeah, is not a state, but i don't know why that happens."
+    },
+    {
+      "post_id": "js-post-1499635",
+      "author": "AquaEcho",
+      "date": "2025-02-18T09:05:57+0900",
+      "body": "You're making the accessory also count down every state which is why the number of turns of every active state is going to be cut in half (or more accurately, be applied twice as often). That is why I'm telling you to remove the last two lines on the accessory common event."
+    },
+    {
+      "post_id": "js-post-1499637",
+      "author": "Vladar458",
+      "date": "2025-02-18T09:10:41+0900",
+      "body": "AquaEcho said:\nYou're making the accessory also count down every state which is why the number of turns of every active state is going to be cut in half (or more accurately, be applied twice as often). That is why I'm telling you to remove the last two lines on the accessory common event.\nClick to expand...\nI guess that could be it, but weirdly enough, poison is not affected by this. Poison last the intended 30 seconds. And even removing the last two lines it still healing half, but this could be because i'm trying it in a sabe where the switch is already active, maybe in a new one It wouldn't happen.\nEdit: Poison is affected by this, but i didn't realize i put them to 60 turns instead of 30. And thinking about poison, i'm beginning to think that maybe is poison which cause this and not the accesory.\nEdit 2: Yeah, Poison was the cause of the issue, and not the accesory. The only way i had to \"fix it\" was to add a conditional branch that do the check if the player have the state applied. Like that the only moment when the issue would still be there is if both the regeneration state and the poison are applied at the same time."
+    },
+    {
+      "post_id": "js-post-1499791",
+      "author": "AquaEcho",
+      "date": "2025-02-19T07:34:40+0900",
+      "body": "I might not have my \"Fighting Followers\" video done today as I got little sleep after hearing the sad news about chaucer. But I will post a general update.\nDownload\nRPG Maker MV + MZ Fighting Followers Party Action Battle System by AquaEcho\nAdds fighting followers (CPU party members) for party battles for Cross Engine ABS\naquaecho.itch.io\nEdit: Video available now and all event pages below!\nNOTE: The below guide is for Cross Engine and is full of Cross Engine scripts!\nSo in Chrono Engine the followers already take damage from enemy attacks (and can actually fire attacks at enemies and damage them if you tell them through script calls.) This is because this is all already implemented in Chrono Mode. The real issue for ABS mode is controlling the followers so they move around independently. Followers don't have event pages like events so normally you would have to do this all through scripts, which is beyond the ability of average users.\nHowever, there is a more user-friendly, free plugin, TyrusWoo Follower Control which has\nMV\nand\nMZ\nversions.\nSo the idea is, when an NPC joins your party (e.g. Silvia), use TyrusWoo commands to stop the default follower movement, allowing you to define custom movement. Then use common events to be their \"event pages\" where you tell them how to move. Each follower would have their own common event page which defines their attack pattern. There would also be a \"All Followers Control\" for general movement pattern that applies to all followers (e.g. move to player when more than 3 tiles away).\nCode:\nfor (var i = 1; i<=$gameMap.players().length-1; i++){\nif(!$gameMap.players()[i]._chrono.target){if($gameMap.players()[i].distanceToPoint($gamePlayer.x,$gamePlayer.y)>3){$gameMap.players()[i].shootPastPlayer(1+Math.random());}}else{if($gameMap.players()[i].distanceToPoint($gamePlayer.x,$gamePlayer.y)>8){$gameMap.players()[i].shootPastPlayer(1+Math.random());}}}\nThere are some long scripts here to make the follower check all the events around it to see if there are any enemies that aren't dead, set the first enemy that meets those conditions as the follower's target, then attack it until it's dead or out of range.\nCode:\nif(!this.battler().isDead() && !this._chrono.target){$gameMap.events().forEach(event => {if(event && event._user.battler instanceof Game_Enemy && !(event instanceof ToolEvent) && this.distanceToPoint(event.x,event.y)<6 && !event.battler().isDead() && !event._erased){this._chrono.target=event; return;}})}\nCode:\nvar t=this._chrono.target; if(t && !this.battler().isDead()){var dist= this.distanceToPoint(t.x,t.y)}; if(t && !t.battler().isDead() && !t.battler()._erased && dist<6){if(dist<1){this.turnTowardCharacter(t);this.act(14);}else{this.shootSelfPastTarget(2);}}else{this._chrono.target=null;}\nCode:\nif(!this.battler().isDead() && !this._chrono.target){$gameMap.events().forEach(event => {if(event && event._user.battler instanceof Game_Enemy && !(event instanceof ToolEvent) && this.distanceToPoint(event.x,event.y)<6 && !event.battler().isDead() && !event._erased){this._chrono.target=event; return;}})}\nCode:\nvar t=this._chrono.target; if(t && !this.battler().isDead()){var dist= this.distanceToPoint(t.x,t.y)}; if(t && !t.battler().isDead() && !t.battler()._erased && dist<6){if(dist<5){this.turnTowardCharacter(t);this.act(15);}else{this.shootSelfPastTarget(2);}}else{this._chrono.target=null;}"
+    },
+    {
+      "post_id": "js-post-1500462",
+      "author": "AquaEcho",
+      "date": "2025-02-22T09:35:24+0900",
+      "body": "Part 2!\nTool pages\nCode:\nthis.turnTowardCharacter(this.user()._chrono.target);this.shootPastTarget(1);this.rotFaceTarg();this._transparent=false;\nCode:\nthis.turnTowardCharacter(this.user()._chrono.target);this.shootPastTarget(5);this.rotFaceTarg();this._transparent=false;\nEnemy\nCode:\n$gameMap.players().forEach(player => {if(player._user.battler && this.distanceToPoint(player.x,player.y)<6 && !player.battler().isDead()){this._chrono.target=player; this.setSelf('D',true); return;}})\nCode:\nif(this._chrono.target._user.battler.isDead()){this.setSelf('D',false);}\nCode:\nthis.turnTowardCharacter(this._chrono.target);\nCode:\nthis.act(80)\nCode:\nthis.turnTowardCharacter(this.user()._chrono.target);this.shootPastTarget();this.rotFaceTarg();this._transparent=false;\nRun this script on every map entry (either with a plugin or with an event set to autorun, with this common event and then erase event itself\nCode:\nfor (var i = 1; i<=$gameMap.players().length-1; i++){\n$gameMap.players()[i]._chrono.target=null; $gameMap.players()[i].setThrough(false);}\nLINE OF SIGHT/VISION CONES\nNote: The scripts above are only checking for distance between the enemies and players (the player and followers). If you want line of sight / vision cones download\nDahlys Distance Calculator\nand use the script calls:\nCan the follower see the enemy?\nInstead of this.distanceToPoint(event.x,event.y)<6\nDahlys.distCalc.canSee(-2, event._eventId, 6*48, 120)\nCan the enemy see the player or follower?\nInstead of this.distanceToPoint(player.x,player.y)<6\nDahlys.distCalc.canSee(this._eventId, -2, 6*48, 120)\nDahyls distance calculator goes by pixels instead of tilesize so multiply 6 by 48 (or whatever your tile size is)\nCode:\n* Can Char1 see Char2:\n *   - Script call: Dahlys.distCalc.canSee(char1, char2, dist, aov)\n *   - dist and aov are optional and the plugin parameters Default View Distance\n *     and Angle of View will be used if they are left blank.\n *   - Char1 will not be able to see Char2 if blocked by: 1) tiles with Blocked\n *     Terrain Tags, 2) tiles with Blocked Region Ids, 3) other characters\n *   - Player can see through followers but event vision can be blocked by\n *     followers. Using char2 = -2 to check if Event char1 can see either the\n *     Player or any Follower.\n *   - e.g.\n *     Dahlys.distCalc.canSee(-1, 1) is true if the Player can see Event 1 at\n *     the default distance and angle of view.\n *     Dahlys.distCalc.canSee(1, -2) is true if Event 1 can see the Player or any\n *     of the Followers at the default distance and angle of view.\n *     Dahlys.distCalc.canSee(-1, 1, 100, 360) is true if the Player can see Event\n *     1 at a radius of 100 pixels (360 degrees)."
+    },
+    {
+      "post_id": "js-post-1500680",
+      "author": "ubiquitous",
+      "date": "2025-02-23T12:39:24+0900",
+      "body": "could this be worked around to have non party npcs attacking enemies like guards attacking npcs that wander too close into their range?\nalso currently in the midst of trying out the follower Ai but for some reason when enabling tyruswoo plugin my project basically jumps to 5 fps and stays that way so I'm working on figuring it out"
+    },
+    {
+      "post_id": "js-post-1500687",
+      "author": "AquaEcho",
+      "date": "2025-02-23T13:14:49+0900",
+      "body": "Yes, I have a patch that lets you assign actor data to events the same way as enemies. There is just some weird knock-on effects that happen on the event death and when you use spells or items where you can select a target that it starts requiring overwriting a lot of Chrono Engine functions. You could also make the guard an enemy that attacks other enemies. I'll have to test it out\nIf you have a lot of parallel events without wait commands it can cause massive framerate drops. I would check those first. It's why I have wait commands on every parallel."
+    },
+    {
+      "post_id": "js-post-1502980",
+      "author": "AquaEcho",
+      "date": "2025-03-07T03:13:32+0900",
+      "body": "I've had a couple people ask me how to offset a tool upward (because they're using a tall character sprite). Just put in the tool event move route (before any movement commands):\nthis.locate(this.user().x, this.user().y-0.6);\nYou can adjust the 0.6 to however much you need offset"
+    },
+    {
+      "post_id": "js-post-1511194",
+      "author": "vampy_graveyard",
+      "date": "2025-04-27T19:02:46+0900",
+      "body": "Hello, I need your help because I can't get this to work. Is there something wrong at how I tried? Second image is a screenshot of the plugin with the code to link the gamepad with my project."
+    },
+    {
+      "post_id": "js-post-1511199",
+      "author": "ShadowDragon",
+      "date": "2025-04-27T19:39:51+0900",
+      "body": "@AquaEcho\nI know  you made keyboard/gamepad control above, but I have a more powerful solution.\nnot that this method works, but I made a function that checked \"pressed\" and \"released\" as gamepad\ndon't have a released function.\nwhat ever you want to do with a button, you bound them to 1 single command and it works both\non keyboard and and gamepad, so it could be used both (if your interested to test it out)?"
+    },
+    {
+      "post_id": "js-post-1511218",
+      "author": "AquaEcho",
+      "date": "2025-04-27T23:33:35+0900",
+      "body": "ShadowDragon said:\n@AquaEcho\nwhat ever you want to do with a button, you bound them to 1 single command and it works both\non keyboard and and gamepad, so it could be used both (if your interested to test it out)?\nClick to expand...\nI'd be interested in trying it out"
+    },
+    {
+      "post_id": "js-post-1511219",
+      "author": "AquaEcho",
+      "date": "2025-04-27T23:40:50+0900",
+      "body": "vampy_graveyard said:\nHello, I need your help because I can't get this to work. Is there something wrong at how I tried? Second image is a screenshot of the plugin with the code to link the gamepad with my project.\nView attachment 338788\nView attachment 338787\nClick to expand...\nThe plugin should be after Chrono Engine in your list. The controller also has to be already plugged in when you start the game. Also what controller are you using? I tested those keybindings on an Xbox controller."
+    },
+    {
+      "post_id": "js-post-1511273",
+      "author": "vampy_graveyard",
+      "date": "2025-04-28T06:58:59+0900",
+      "body": "AquaEcho said:\nThe plugin should be after Chrono Engine in your list. The controller also has to be already plugged in when you start the game. Also what controller are you using? I tested those keybindings on an Xbox controller.\nClick to expand...\nI already did these stuff and still have no luck. I use a generic PC joystick of a brand that i suppose isn't very popular, at least outside my country (brand is Nippongame)\nCould this problem be because of the generic joystick?"
+    },
+    {
+      "post_id": "js-post-1511288",
+      "author": "AquaEcho",
+      "date": "2025-04-28T08:09:16+0900",
+      "body": "vampy_graveyard said:\nCould this problem be because of the generic joystick?\nClick to expand...\nYou could try the script in this thread to see if your gamepad is recognized.\nIs there a way to check for a controller and what type is being used?\nI'm just curious if there's a way to check if a player has a controller plugged into their computer when playing the game. I've got a bunch of controller icons for PS4, Switch and Xbox buttons so if I could check what kind of controller they have in would be nice too.\nforums.rpgmakerweb.com\nApparently it has to do with the GamePad API in Chromiun web browser compatibility which RPG Maker uses and not every controller model is supported."
+    },
+    {
+      "post_id": "js-post-1523999",
+      "author": "AquaEcho",
+      "date": "2025-07-26T08:03:35+0900",
+      "body": "I added a couple links to the first post for how sound effects work and how to add extra skill and item hotkeys"
+    },
+    {
+      "post_id": "js-post-1524444",
+      "author": "Vladar458",
+      "date": "2025-07-30T00:20:46+0900",
+      "body": "AquaEcho said:\nI added a couple links to the first post for how sound effects work and how to add extra skill and item hotkeys\nClick to expand...\nHello, I want to add something. It's known how to make status effects, but when you have more than one state at the same time (Let's say poison and bleed) they both check the turn count, making both states end twice as fast. And I figured out a way to make several at the same time work fine. Should I post it here?"
+    },
+    {
+      "post_id": "js-post-1524477",
+      "author": "AquaEcho",
+      "date": "2025-07-30T03:12:39+0900",
+      "body": "Vladar458 said:\nHello, I want to add something. It's known how to make status effects, but when you have more than one state at the same time (Let's say poison and bleed) they both check the turn count, making both states end twice as fast. And I figured out a way to make several at the same time work fine. Should I post it here?\nClick to expand...\nThe parallel event checks every state. You should not be using that block of code more than once. If you have another state that can do damage, or recover it, you copy and paste the line checking for the poison state that many times and then just change what number state you're checking and the percentage life damge it does."
+    },
+    {
+      "post_id": "js-post-1524614",
+      "author": "Vladar458",
+      "date": "2025-07-31T06:04:30+0900",
+      "body": "AquaEcho said:\nThe parallel event checks every state. You should not be using that block of code more than once. If you have another state that can do damage, or recover it, you copy and paste the line checking for the poison state that many times and then just change what number state you're checking and the percentage life damge it does.\nClick to expand...\nA question: In Chrono engine, by default, events are only able to spot the player by proximity, not sight. There is a way to make an enemy activate and begin to attack the player on sight?"
+    },
+    {
+      "post_id": "js-post-1524620",
+      "author": "AquaEcho",
+      "date": "2025-07-31T06:18:10+0900",
+      "body": "Vladar458 said:\nA question: In Chrono engine, by default, events are only able to spot the player by proximity, not sight. There is a way to make an enemy activate and begin to attack the player on sight?\nClick to expand...\nIf you are using Cross Engine use Dahlys Distance Calculator which has vision cones. I gave scripts and examples on how to use it in my\nFighting Followers post."
+    },
+    {
+      "post_id": "js-post-1524629",
+      "author": "Vladar458",
+      "date": "2025-07-31T07:59:47+0900",
+      "body": "AquaEcho said:\nIf you are using Cross Engine use Dahlys Distance Calculator which has vision cones. I gave scripts and examples on how to use it in my\nFighting Followers post.\nClick to expand...\nI don't understand it very well. I don't use followers, so how could I make it to the enemy noticing the player, attacking the player, and then leave the player alone if the player goes too far?"
+    },
+    {
+      "post_id": "js-post-1524633",
+      "author": "AquaEcho",
+      "date": "2025-07-31T08:26:27+0900",
+      "body": "Code:\nif(Dahlys.distCalc.canSee(this._eventId,-1)){this.setSelf('D', true);}\nThat will make it so if the enemy sees the player, it will toggle its self switch D.\nCode:\nif(Dahlys.distCalc.distance(this._eventId, -1) >256){this.setSelf('D', false);}\nIf the distance between this event and the player is more than 256 pixels turn off self switch D.\nCode:\nif(Dahlys.distCalc.distance(this._eventId, -1) >128){this.tLoc($gamePlayer.x,$gamePlayer.y);}else{this.turnTowardCharacter($gamePlayer);this.act(73);}\nIf the distance is greater than 128 pixels (but less than 256 pixels), move toward the player, else turn toward the player and attack with tool 73."
+    },
+    {
+      "post_id": "js-post-1524637",
+      "author": "Vladar458",
+      "date": "2025-07-31T09:07:02+0900",
+      "body": "I'm using the first two codes in the enemy and is not working. Is not activating the Self Switch D."
+    },
+    {
+      "post_id": "js-post-1524638",
+      "author": "AquaEcho",
+      "date": "2025-07-31T09:08:00+0900",
+      "body": "You need to be using Dahlys Distance Calculator and Cross Engine"
+    },
+    {
+      "post_id": "js-post-1524639",
+      "author": "Vladar458",
+      "date": "2025-07-31T09:10:08+0900",
+      "body": "AquaEcho said:\nYou need to be using Dahlys Distance Calculator and Cross Engine\nClick to expand...\nYes, I'm using both. I tried the third code in a moment and it worked."
+    },
+    {
+      "post_id": "js-post-1524664",
+      "author": "AquaEcho",
+      "date": "2025-07-31T11:30:49+0900",
+      "body": "Does the enemy or the player have a custom collider? Could you delete any custom collider and see if that fixes the issue? Also place Dahlys Distance Calculator right under Altimit in your plugin list."
+    },
+    {
+      "post_id": "js-post-1524711",
+      "author": "Vladar458",
+      "date": "2025-07-31T20:28:28+0900",
+      "body": "AquaEcho said:\nDoes the enemy or the player have a custom collider? Could you delete any custom collider and see if that fixes the issue? Also place Dahlys Distance Calculator right under Altimit in your plugin list.\nClick to expand...\nOk, I think the Issue was that I placed the plugin in a wrong place. And how I would make it that the enemy can't see the player if he or she is behind a wall."
+    },
+    {
+      "post_id": "js-post-1524737",
+      "author": "AquaEcho",
+      "date": "2025-08-01T00:04:08+0900",
+      "body": "Vladar458 said:\nOk, I think the Issue was that I placed the plugin in a wrong place. And how I would make it that the enemy can't see the player if he or she is behind a wall.\nClick to expand...\nYou make the wall a certain region ID or terrain tag and set it in the plugin parameters"
+    },
+    {
+      "post_id": "js-post-1524839",
+      "author": "Vladar458",
+      "date": "2025-08-01T22:29:22+0900",
+      "body": "AquaEcho said:\nYou make the wall a certain region ID or terrain tag and set it in the plugin parameters\nClick to expand...\nOk, Thank you. Now I have it like I want. I guess the enemy lose aggro when you leave it's vision cone? Or how it lose aggro exactly?"
+    },
+    {
+      "post_id": "js-post-1524845",
+      "author": "AquaEcho",
+      "date": "2025-08-01T23:29:50+0900",
+      "body": "I literally explained the scripts line by line how they worked"
+    },
+    {
+      "post_id": "js-post-1533541",
+      "author": "vampy_graveyard",
+      "date": "2025-10-15T22:21:54+0900",
+      "body": "I have a new xbox controller and i managed it to partially work fine with Chrono Engine but I get this error everytime I press RB button.  I used the plugin code for gamepad mapping and key mappings. How can i remove this bug?"
+    },
+    {
+      "post_id": "js-post-1533556",
+      "author": "AquaEcho",
+      "date": "2025-10-16T01:47:45+0900",
+      "body": "If it's only happening with the RB button and none of the others then something is wrong with the line of code where you assigned the RB button"
+    },
+    {
+      "post_id": "js-post-1547189",
+      "author": "vampy_graveyard",
+      "date": "2026-02-10T08:13:04+0900",
+      "body": "Is there a way I can make the follower have different pattern attacks depending on equiped weapon?"
+    },
+    {
+      "post_id": "js-post-1547192",
+      "author": "AquaEcho",
+      "date": "2026-02-10T08:33:54+0900",
+      "body": "vampy_graveyard said:\nIs there a way I can make the follower have different pattern attacks depending on equiped weapon?\nClick to expand...\nYou'd edit the common event where the follower's attack and movement pattern are stored to have conditional sections where you check that party member's equipped weapon"
+    }
+  ]
+}

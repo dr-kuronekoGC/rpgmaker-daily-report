@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/issue-of-player-character-shaking-when-adjusting-movement-speed-while-using-yanflys-core-engine-plugin.175128",
+  "title": "MV Issue of Player Character shaking when adjusting movement speed while using Yanfly's Core Engine plugin",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T15:35:13.890986+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1497050",
+      "author": "Power_Intterrales",
+      "date": "2025-02-03T21:31:07+0900",
+      "body": "I have observed that when setting the Move Speed below 4 in Karberus's Speed Manager plugin while Yanfly's Core Engine plugin is enabled, the player character experiences a shaking effect. This issue can also occur when setting\n$gamePlayer.setMoveSpeed(x)\ndirectly without using Karberus's Speed Manager plugin.\nHowever, disabling Yanfly's Core Engine plugin allows the character to move normally without any shaking.\nI would appreciate any insights or recommendations on how to enable the player character to move at a low speed without experiencing this shaking effect while still benefiting from Yanfly's Core Engine plugin.\nLink :\n- Karberus's Speed Manager plugin :\nhttps://forums.rpgmakerweb.com/index.php?threads/speed-manager.52639/\n- Yanfly's Core Engine plugin :\nhttp://www.yanfly.moe/wiki/Core_Engine_(YEP)"
+    },
+    {
+      "post_id": "js-post-1497066",
+      "author": "ShadowDragon",
+      "date": "2025-02-03T23:58:15+0900",
+      "body": "have you try to set the speed manager below YEP_CoreEngine?\nand see what happened?\nas I modify the speed with YEP_CoreEngine, I don't have the problem."
+    },
+    {
+      "post_id": "js-post-1497078",
+      "author": "DrFreeman",
+      "date": "2025-02-04T01:54:34+0900",
+      "body": "What happens when you change the plugin order?"
+    },
+    {
+      "post_id": "js-post-1497168",
+      "author": "Power_Intterrales",
+      "date": "2025-02-04T16:31:23+0900",
+      "body": "ShadowDragon said:\nhave you try to set the speed manager below YEP_CoreEngine?\nand see what happened?\nas I modify the speed with YEP_CoreEngine, I don't have the problem.\nClick to expand...\nDrFreeman said:\nWhat happens when you change the plugin order?\nClick to expand...\nI have changed order of it and even removing other plugins, but there is no change in the result.\nI have found that the player character begins to shake when the movement speed is set below 4 units while using Yanfly's Core Engine, while the map is larger than 17x13 that causing the map to scroll when the player character attempts to move away from the starting position that time the player start shaking."
+    },
+    {
+      "post_id": "js-post-1497170",
+      "author": "utunnels",
+      "date": "2025-02-04T17:08:27+0900",
+      "body": "I‘m 100% sure it is yanfly core's screen jittering fix.\nBut if you remove yanfly core, your other events on map will begin to jitter.\nSo it is either your character or them, pick one."
+    },
+    {
+      "post_id": "js-post-1497172",
+      "author": "Power_Intterrales",
+      "date": "2025-02-04T17:24:35+0900",
+      "body": "utunnels said:\nI‘m 100% sure it is yanfly core's screen jittering fix.\nBut if you remove yanfly core, your other events on map will begin to jitter.\nSo it is either your character or them, pick one.\nClick to expand...\nI agree because when I removed(or make comment) \"Game_Map\" code in Yanfly's Core engine, my player character stopped shaking, but I am not sure if it affact other things."
+    },
+    {
+      "post_id": "js-post-1497173",
+      "author": "utunnels",
+      "date": "2025-02-04T17:28:19+0900",
+      "body": "You can place fixed events on the map and observe.\nIf they don't shake then everything is good.\nIf you can, just avoid decimal values like 2.5 or 3.5, use whole number like 2 or 3."
+    },
+    {
+      "post_id": "js-post-1497181",
+      "author": "Power_Intterrales",
+      "date": "2025-02-04T18:26:16+0900",
+      "body": "utunnels said:\nYou can place fixed events on the map and observe.\nIf they don't shake then everything is good.\nIf you can, just avoid decimal values like 2.5 or 3.5, use whole number like 2 or 3.\nClick to expand...\nI think I have to choose between my character or other event to be not jitter, as you told.\nI observed it.\nWhen no original Game_Map code, the character not shaking but fixed event was shaking as you told.\nWhen with original Game_Map code, the fixed event was not shaking but my character was shaking."
+    },
+    {
+      "post_id": "js-post-1497188",
+      "author": "ShadowDragon",
+      "date": "2025-02-04T19:22:11+0900",
+      "body": "I think it does not happen on my end because of a fix of my own.\nbut even without  the 2, I don't experience it much, might be the nwjs\nbeing 0.48.4 and not 0.29 that comes with default.\ncan be a 1.5 issue and no in 1.6.x, but I could be wrong there."
+    },
+    {
+      "post_id": "js-post-1497190",
+      "author": "utunnels",
+      "date": "2025-02-04T19:35:58+0900",
+      "body": "ShadowDragon said:\nI think it does not happen on my end because of a fix of my own.\nbut even without  the 2, I don't experience it much, might be the nwjs\nbeing 0.48.4 and not 0.29 that comes with default.\ncan be a 1.5 issue and no in 1.6.x, but I could be wrong there.\nClick to expand...\nPart of the OP's problem is because his speed is not integer. So even if yanfly makes the scrolling smooth, the characters still moves 1 or 2 pixels at a time."
+    }
+  ]
+}
