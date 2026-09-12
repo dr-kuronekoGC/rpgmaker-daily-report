@@ -11,3 +11,4 @@ from . import official_deviantart
 from . import asset_itchio
 from . import official_makerdevs
 from . import official_caspergaming
+from . import official_triacontane
