@@ -24,6 +24,7 @@ from sources import (
     official_deviantart,
     asset_itchio,
     official_makerdevs,
+    official_caspergaming,
 )
 
 from asset_metadata import enrich_items
@@ -50,6 +51,7 @@ SOURCES = [
     community_forum,
     community_guild,
     official_makerdevs,
+    official_caspergaming,
 ]
 
 
