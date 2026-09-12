@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/follow-up-attack-when-enemy-is-afflicted-with-a-state-help.173170",
+  "title": "MV Follow-Up Attack when enemy is afflicted with a state help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T22:20:59.770341+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1481166",
+      "author": "squidnogi",
+      "date": "2024-11-12T09:52:09+0900",
+      "body": "Hello! First off I'd like to apologize if I'm posting this in the wrong area or something, its my first time posting on the forum\nI have a character called Robbie, who inflicts a state called Destabilized on enemies. I want it so that when an ally hits an enemy with the Destabilized state, Robbie launches his follow-up attack onto that enemy. I understand the basics of what I'm trying to do but I can't seem to get it to work via scripts (which is how I'd like to do it to avoid having to paste a common event into every single skill in my database.\nMy JS knowledge is very very limited, so I asked chatGPT to help me hoping that it would be a simple enough task for it to handle, and this is what I have\nJavaScript:\nif ($gameTroop.members().some(enemy => enemy === target && enemy.isStateAffected(24))) {\n\n    $gameTemp.reserveCommonEvent(7);\n\n}\nand I have it under the Battle Events Page like so:\nSpoiler:\nBattle Event Image\nThe Common Event that I am running is simply a Force Action event:\nSpoiler:\nCommon Event\nIf someone could help me, I'd really appriciate it!!!!"
+    },
+    {
+      "post_id": "js-post-1481211",
+      "author": "ATT_Turan",
+      "date": "2024-11-12T22:45:08+0900",
+      "body": "squidnogi said:\nI'd like to apologize if I'm posting this in the wrong area or something\nClick to expand...\nThere's no need to apologize to anyone; it would go in Plugin Requests, which is not a problem. However:\nsquidnogi said:\nMy JS knowledge is very very limited, so I asked chatGPT to help me\nClick to expand...\nIt's against the rules to ask for help correcting AI code. Largely because:\nsquidnogi said:\nhoping that it would be a simple enough task for it to handle\nClick to expand...\nThere's almost no such thing. AI generators\ngenerate\nthings, they make things up. Code can't function if it's made up. That's why humans learn how to do it.\nIn the example you give, it's done in completely the wrong way (troop event) with completely the wrong code (there's no such thing as target).\nYou should be using a plugin like Yanfly's Buffs & States to do the force action script call when the battler with the state gets hit."
+    },
+    {
+      "post_id": "js-post-1481504",
+      "author": "squidnogi",
+      "date": "2024-11-14T05:44:30+0900",
+      "body": "ATT_Turan said:\nThere's no need to apologize to anyone; it would go in Plugin Requests, which is not a problem. However:\nIt's against the rules to ask for help correcting AI code. Largely because:\nThere's almost no such thing. AI generators\ngenerate\nthings, they make things up. Code can't function if it's made up. That's why humans learn how to do it.\nIn the example you give, it's done in completely the wrong way (troop event) with completely the wrong code (there's no such thing as target).\nYou should be using a plugin like Yanfly's Buffs & States to do the force action script call when the battler with the state gets hit.\nClick to expand...\nMy bad! I didn't know that was a rule.\nI wasn't trying to edit the AI Code, I knew that it was wrong since I figured it would be hard for an AI to understand the library of RPG Maker (if that's even the right way of putting it), I just thought the code may give a better understanding of what I was trying to accomplish.\nI am using Buffs and States Core, but the main problem is that I can only get the follow-up to function once per turn and I'm using Yanfly's CTB battle system (only casts once all allies + all enemies take action.) I think I'm pretty close to figuring it out, Thank you!"
+    },
+    {
+      "post_id": "js-post-1481507",
+      "author": "ATT_Turan",
+      "date": "2024-11-14T05:59:18+0900",
+      "body": "So I don't know what your criteria are for \"hit\" - if it's just physical skills, anything anyone does to damage the enemy, etc.\nBut on a basic level, you'd do something like this in the state. I'm pretending Robbie is actor ID 1.\nCode:\n<Custom Respond Effect>\n// Is the attacker NOT Robbie?\nif (user.actorId() != 1)\n{\n// Make Robbie attack\n    $gameActors.actor(1).forceAction(1, target.index());\n    BattleManager.forceAction($gameActors.actor(1));\n}\n</Custom Respond Effect>\nWhen you get into talking about the CTB and stuff, the risk can be that using force action might take up that battler's next actual action; so you might have to do something like incorporating this into an action sequence.\nBut this ought to do something."
+    },
+    {
+      "post_id": "js-post-1481568",
+      "author": "squidnogi",
+      "date": "2024-11-14T13:36:14+0900",
+      "body": "ATT_Turan said:\nSo I don't know what your criteria are for \"hit\" - if it's just physical skills, anything anyone does to damage the enemy, etc.\nBut on a basic level, you'd do something like this in the state. I'm pretending Robbie is actor ID 1.\nCode:\n<Custom Respond Effect>\n// Is the attacker NOT Robbie?\nif (user.actorId() != 1)\n{\n// Make Robbie attack\n    $gameActors.actor(1).forceAction(1, target.index());\n    BattleManager.forceAction($gameActors.actor(1));\n}\n</Custom Respond Effect>\nWhen you get into talking about the CTB and stuff, the risk can be that using force action might take up that battler's next actual action; so you might have to do something like incorporating this into an action sequence.\nBut this ought to do something.\nClick to expand...\nOH MY GOSH THIS WORKED EXACTLY HOW I WANTED!!! thank you so much I've been struggling with this for two days\nATT_Turan said:\nSo I don't know what your criteria are for \"hit\" - if it's just physical skills, anything anyone does to damage the enemy, etc.\nBut on a basic level, you'd do something like this in the state. I'm pretending Robbie is actor ID 1.\nCode:\n<Custom Respond Effect>\n// Is the attacker NOT Robbie?\nif (user.actorId() != 1)\n{\n// Make Robbie attack\n    $gameActors.actor(1).forceAction(1, target.index());\n    BattleManager.forceAction($gameActors.actor(1));\n}\n</Custom Respond Effect>\nWhen you get into talking about the CTB and stuff, the risk can be that using force action might take up that battler's next actual action; so you might have to do something like incorporating this into an action sequence.\nBut this ought to do something.\nClick to expand...\nOne extra thing actually-- I have a skill type in my game called \"followup\" reserved for any followup attack. is there a way I could check if the damage is NOT followup type just so that the player doesn't have followup attacks triggering each other endlessly?\nI tried editing the code, but it didn't work for me.\nJavaScript:\n<Custom Respond Effect>\n\n// Is the attacker NOT Robbie?\n\nif (user.actorId() != 22){\n\nif (skill.stypeId() !=5)\n\n{\n\n// Make Robbie attack\n\n    $gameActors.actor(22).forceAction(50, target.index());\n\n    BattleManager.forceAction($gameActors.actor(22));\n\n}}\n\n</Custom Respond Effect>\nI wrote if (skill.stypeId != 5) but that just stopped the followup from triggering at all. I imagine I'm not supposed to use \"skill\" but I couldn't find out how to write this looking through the RPG maker library."
+    },
+    {
+      "post_id": "js-post-1481574",
+      "author": "Robro33",
+      "date": "2024-11-14T15:11:59+0900",
+      "body": "squidnogi said:\nI wrote if (skill.stypeId != 5) but that just stopped the followup from triggering at all.\nClick to expand...\nmaking random guesses rarely gets you where you need to be. not saying you cant, but there should be no expectation that it should work without a reason to.\nWhen playing around with JS, its a good habit to have the devtools console open to check for errors. there is no skill variable within that tag, so youd get an error for trying to get the stypeId of undefined. the console would have said it. because of that error, the rest of the notetag wouldnt run.\nsquidnogi said:\nI couldn't find out how to write this looking through the RPG maker library\nClick to expand...\nits not the only resource youd need in this case. once you start dealing with stuff introduced by plugins, youd also have to be mindful of what the plugin says and does either by reading the documentation or looking into the plugin itself if the documentation is lacking.\nrespond effects are ran from the Game_Action triggering it, so you would want to do something like\nCode:\nif (user.actorId() != 22 && this.item().stypeId!=5){\n    // Make Robbie attack\n    $gameActors.actor(22).forceAction(50, target.index());\n    BattleManager.forceAction($gameActors.actor(22));\n}"
+    },
+    {
+      "post_id": "js-post-1481579",
+      "author": "squidnogi",
+      "date": "2024-11-14T15:40:14+0900",
+      "body": "Robro33 said:\nmaking random guesses rarely gets you where you need to be. not saying you cant, but there should be no expectation that it should work without a reason to.\nWhen playing around with JS, its a good habit to have the devtools console open to check for errors. there is no skill variable within that tag, so youd get an error for trying to get the stypeId of undefined. the console would have said it. because of that error, the rest of the notetag wouldnt run.\nits not the only resource youd need in this case. once you start dealing with stuff introduced by plugins, youd also have to be mindful of what the plugin says and does either by reading the documentation or looking into the plugin itself if the documentation is lacking.\nrespond effects are ran from the Game_Action triggering it, so you would want to do something like\nCode:\nif (user.actorId() != 22 && this.item().stypeId!=5){\n    // Make Robbie attack\n    $gameActors.actor(22).forceAction(50, target.index());\n    BattleManager.forceAction($gameActors.actor(22));\n}\nClick to expand...\nI know\nI have very very little js knowledge, and coding knowledge in general.\nI am going to be taking classes soon on it for my compsci minor, but I tried to just piece together things from the code he sent and form my own solution before asking for help.\nAlso, your code worked perfectly! Thank you so much, you all have been a big help"
+    }
+  ]
+}

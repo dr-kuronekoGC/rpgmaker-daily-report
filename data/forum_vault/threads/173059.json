@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/why-cant-i-use-the-boat-on-water.173059",
+  "title": "Why cant i use the boat on water",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T22:21:08.488647+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1480125",
+      "author": "bw21",
+      "date": "2024-11-06T11:38:55+0900",
+      "body": "I'm running into an issue with my project in RPG Maker MV and could use some help or advice. Here's the situation:\nI'm using the\nA1 tileset\nfor my maps, but I've noticed that this tileset doesn't have the passability options that I need for the\nboat\n(or ships) to move on water.\nNormally, you’d use the\nB, C, D, or E\ntilesets to define passability for water, but I can't switch to these tilesets because they contain essential tiles for my environment design. I’ve already customized my map with specific details that rely on the tiles from those other sets, so changing tilesets would mess up the design.\nThe\nA1 tileset\nseems to be missing the required boat passability markers, so my boat cannot move across water areas even though it’s supposed to.\nIs there a way to either:\n1:Enable or customize passability for\nA1 tiles\nso boats can move across water areas, or\n2:Work around this issue without changing the tilesets I’ve already set up?"
+    },
+    {
+      "post_id": "js-post-1480128",
+      "author": "Andar",
+      "date": "2024-11-06T12:26:25+0900",
+      "body": "you misunderstood several facts on vehicle passability.\nfirst, the boat and ship passability (which are NOT the same) are based on positioning of the tiles on the A1 sheet. you can get the definitions in the help file for the A1 tilesets.\nSecond, the boat can only travel tiles that are impassable to the player. Think of it this way: if a watertile is shallow enough for the player to walk, then it is too shallow for a boat or ship to float there.\nSo making all water passable like you did in your screenshot will block all boat travel.\nSo basically you have to change your tilesets back to the original settings at least for the A1 water to make use of the boat and ship at all."
+    },
+    {
+      "post_id": "js-post-1480129",
+      "author": "ATT_Turan",
+      "date": "2024-11-06T12:28:12+0900",
+      "body": "Welcome.\nbw21 said:\nI'm using the\nA1 tileset\nfor my maps, but I've noticed that this tileset doesn't have the passability options that I need for the\nboat\n(or ships) to move on water.\nClick to expand...\nYes, it does.\nbw21 said:\nNormally, you’d use the\nB, C, D, or E\ntilesets to define passability for water\nClick to expand...\nNo, you wouldn't? Water is only a ground tile, and B+ are all by definition above the ground layer.\nI'm a bit confused as to where you're getting these starting premises from.\nThe boat and ship are hard coded to have passability for the first A1 tile (boat) and the second one (ship).\nIf you open a new project with the default assets in MV, and look at the Overworld tileset, it's the tiles marked Sea and Deep Sea.\nThere are a number of vehicle-oriented plugins floating around that I'm sure can modify this, but that's the default functionality."
+    },
+    {
+      "post_id": "js-post-1480159",
+      "author": "fizzly",
+      "date": "2024-11-06T18:46:04+0900",
+      "body": "Like ATT_Turan said, some data are hardcoded in the engine, like where water tiles should be. I recommend reading the program documentation to understand it better.\nHelp -> Contents or just press F1, look in Documentation tab for Asset Standards."
+    },
+    {
+      "post_id": "js-post-1480168",
+      "author": "caethyril",
+      "date": "2024-11-06T19:31:10+0900",
+      "body": "Might be related to this bug reported for MZ?\nBug - In a newly created tileset, boat/ship passability is broken\nBug: In a newly created tileset, the boat can travel through A2 ground tiles  In the existing tilesets, if you make a lake and place the boat there its movement is blocked by the grass around. But if you make a new tileset (tested with tileset ID 20 for example) the passability is broken and the...\nforums.rpgmakerweb.com\nIf so, you could try:\nSave your project, close the editor, reopen the editor, save again, then test.\nCopy+paste an existing, working tileset and edit that (rather than making a new one from scratch)."
+    },
+    {
+      "post_id": "js-post-1480170",
+      "author": "fizzly",
+      "date": "2024-11-06T19:39:08+0900",
+      "body": "@caethyril\n, I bet he's talking about RMMV, not MZ. Hope the bug was not transferred to MZ."
+    },
+    {
+      "post_id": "js-post-1480175",
+      "author": "Andar",
+      "date": "2024-11-06T20:53:40+0900",
+      "body": "@fizzly\nit was, the linked bug report is specifically for MZ.\nit's just that a lot of people use the sequence that corrects the bug automatically without even knowing that.\nand the problem of the OP is not that bug - he got the water impassable for boats because he made all water tiles to be passable for the player, as I explained in my post above."
+    },
+    {
+      "post_id": "js-post-1480180",
+      "author": "caethyril",
+      "date": "2024-11-06T22:34:58+0900",
+      "body": "Oh, oops. Yea, like Andar stated in the first reply, it's almost certainly the fact that the water tiles in the screenshot are marked O instead of X."
+    }
+  ]
+}

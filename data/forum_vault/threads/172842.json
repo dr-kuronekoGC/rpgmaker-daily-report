@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/exchanging-tilesets-between-maps.172842",
+  "title": "Exchanging tileset s between maps?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T22:21:10.881758+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1477650",
+      "author": "kR1pt0n1t3",
+      "date": "2024-10-26T22:53:12+0900",
+      "body": "Hi.\nI need a small script to work with RGSS2 (RMVX) that does this.\nUpon the player entering maps 80, 399, 397, 398, and 400 the script should copy all files from the Graphics\\System\\Tileset2 folder to the Graphics\\System folder.\nAfter that, if the next map player enters isn't one of the mentioned above, the script should copy all files from Graphics\\System\\Tileset1 folder to the Graphics\\System.\nIt's the only way around the limitations of RPG MAKER VX tileset system. I prefer the one used in RPG MAKER XP. I don't know why they decided to limit the tileset in the newer version.\nIn any case, could someone help out flesh something? Pathing isn't a problem. It should always be the one set in the editor.\nI only need the TileD file swapped, but let's make it swap all if it's not a problem (just in case in the future I need more tiles).\nThrough google I found that a script exists that might potentially do the things I need done, but I can't find it anywhere. Only things I found are the name and the author. It's Modern Algebra's Tileset Swap Script.\nI also tried using ChatCPT but I better not post that  here. It just kept popping method errors so I just gave up. Sometimes it writes something usable and working but today it's just not working.\nAny help with this is appreciated."
+    },
+    {
+      "post_id": "js-post-1477715",
+      "author": "kyonides",
+      "date": "2024-10-27T04:15:15+0900",
+      "body": "You could try this one:\nRuby:\n# * KTilesetDir VX * #\n#   Scripter : Kyonides Arkanthes\n#   2024-10-26\n\n# This scriptlet allows you to define a custom tileset directory located in the\n# Graphics folder.\n\nmodule KTileset\n  TILESET_DIR = \"Tilesets\"\n  # Add as Many Map ID's as deemed necessary, i.e. [1,2,3,4]\n  MAP_IDS = []\nend\n\nmodule Cache\n  def self.tileset(filename)\n    load_bitmap(\"Graphics/#{KTileset::TILESET_DIR}/\", filename)\n  end\nend\n\nclass Spriteset_Map\n  alias :kyon_tileset_dirs_sprtst_map_crt_tilemap :create_tilemap\n  def create_tilemap\n    if KTileset::MAP_IDS.include?($game_map.map_id)\n      create_custom_tilemap\n    else\n      kyon_tileset_dirs_sprtst_map_crt_tilemap\n    end\n  end\n\n  def create_custom_tilemap\n    @tilemap = Tilemap.new(@viewport1)\n    @tilemap.bitmaps[0] = Cache.tileset(\"TileA1\")\n    @tilemap.bitmaps[1] = Cache.tileset(\"TileA2\")\n    @tilemap.bitmaps[2] = Cache.tileset(\"TileA3\")\n    @tilemap.bitmaps[3] = Cache.tileset(\"TileA4\")\n    @tilemap.bitmaps[4] = Cache.tileset(\"TileA5\")\n    @tilemap.bitmaps[5] = Cache.tileset(\"TileB\")\n    @tilemap.bitmaps[6] = Cache.tileset(\"TileC\")\n    @tilemap.bitmaps[7] = Cache.tileset(\"TileD\")\n    @tilemap.bitmaps[8] = Cache.tileset(\"TileE\")\n    @tilemap.map_data = $game_map.data\n    @tilemap.passages = $game_map.passages\n  end\nend"
+    },
+    {
+      "post_id": "js-post-1477763",
+      "author": "kR1pt0n1t3",
+      "date": "2024-10-27T16:06:47+0900",
+      "body": "Thank you very much. Works beautifully.\nSince it seems you're amazing at this I have another question. It's regarding zooming. Is it possible to zoom in on the camera with a script? I have some events that I'd like to zoom in on when a sprite animation is playing.\nIf I could use a script call to zoom in and out on an event I specify would be perfect but dunno if something like that is possible using VX."
+    },
+    {
+      "post_id": "js-post-1477896",
+      "author": "kyonides",
+      "date": "2024-10-28T07:26:27+0900",
+      "body": "That would require you to start a new thread...\nHonestly, zooming in and out can be, err, problematic. I don't remember if there was such a script for VX. I know there's one for VX ACE."
+    }
+  ]
+}

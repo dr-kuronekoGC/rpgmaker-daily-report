@@ -1,0 +1,161 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-make-an-end-turn-battle-command-and-one-extra-question.175152",
+  "title": "How to Make an End Turn Battle Command (and one extra question)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T22:20:44.922665+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1497253",
+      "author": "funkyvibes",
+      "date": "2025-02-05T03:19:42+0900",
+      "body": "Getting to the point, I am trying to make a battle system like the RPG Panic at the Dojo and there are two elements I'm struggling to emulate. Apologies if I use the wrong terms or seem out of my depth, I'm new to Maker.\nThe first big one is an end turn feature. I would like to add one to my battle commands but no plugin I've found seems to let me do so. The Himeworks Actor Battle Command only lets me edit preexisting commands or add a skill as a command. I saw someone use Yanfly's Battle Command List plugin to add a \"command execute\" (\nhttps://forums.rpgmakerweb.com/index.php?threads/a-way-to-promptly-end-the-players-turn.75396/\n) but that plugin is for Ace and I'm using RMMV.\nI really need this command because I'm using Instant Cast on every skill to let players take as many actions as they need a turn, so they need to have the ability to end a turn on their own terms.\nThe second one is letting Armor and Weapons perform a \"dice roll\" for how much Mana an Actor gets at the start of the turn. I assume I can do some javascripting in the notes of either to make them choose a random number within a range and add that to the MP gauge. But I'd like someone to walk me through the best plugins to do so I don't brute force it.\n(Oh and if you know how to make the MP icon look like a bunch of ticks, kind of like how ammo looks in some games, rather than a bar that'd be great so I don't come back in two days asking that. I'll include an image of what I mean.)\nThanks and I hope I did this thread thing right."
+    },
+    {
+      "post_id": "js-post-1497272",
+      "author": "Andar",
+      "date": "2025-02-05T04:29:01+0900",
+      "body": "simply make the end turn command the one skill that is not instant cast"
+    },
+    {
+      "post_id": "js-post-1497305",
+      "author": "funkyvibes",
+      "date": "2025-02-05T07:01:02+0900",
+      "body": "Took a bit of fiddling and using the \"Use Skill\" extension of the plugin but I got it working like I wanted and now have a better understanding of how to use Himeworks plugin. Thanks!\nAny idea how to do the second paragraph of stuff?"
+    },
+    {
+      "post_id": "js-post-1497329",
+      "author": "funkyvibes",
+      "date": "2025-02-05T10:44:32+0900",
+      "body": "Looking into it myself, the main issue is finding a way to set the MP to 0 at the start of the turn and then doing a \"roll\" afterward before the player can act. Some threads discuss setting the MP to 0 by doing so at the start of the encounter but to keep full control I'd like to have it isolated to the armor/weapon and happen at every turn.\nI don't know how to put into javascript in the armor notes that I want it to set the Actor's MP to zero and then roll at the start of the turn..."
+    },
+    {
+      "post_id": "js-post-1497337",
+      "author": "Nox_Aeternae",
+      "date": "2025-02-05T12:42:54+0900",
+      "body": "funkyvibes said:\nLooking into it myself, the main issue is finding a way to set the MP to 0 at the start of the turn and then doing a \"roll\" afterward before the player can act. Some threads discuss setting the MP to 0 by doing so at the start of the encounter but to keep full control I'd like to have it isolated to the armor/weapon and happen at every turn.\nI don't know how to put into javascript in the armor notes that I want it to set the Actor's MP to zero and then roll at the start of the turn...\nClick to expand...\nI have a somewhat similar mechanic where Actors have unlimited actions limited by their MP. What I do is give my actors a passive state that regens mana at the start of each turn. In your case, you could do it similarly and have a passive state that checks for specific armor and weapons, and then sets that actor's MP to the appropriate amount at the start of each turn.\nYanfly's BuffStateCore and AutoPassiveStates should be able to do that.\nSomeone who's much better at scripting can probably write up a script that does exactly that, but if nobody has done so by the time I have more time on my hands, I'll try to write one myself."
+    },
+    {
+      "post_id": "js-post-1497339",
+      "author": "funkyvibes",
+      "date": "2025-02-05T12:57:34+0900",
+      "body": "Nox_Aeternae said:\nI have a somewhat similar mechanic where Actors have unlimited actions limited by their MP. What I do is give my actors a passive state that regens mana at the start of each turn. In your case, you could do it similarly and have a passive state that checks for specific armor and weapons, and then sets that actor's MP to the appropriate amount at the start of each turn.\nYanfly's BuffStateCore and AutoPassiveStates should be able to do that.\nSomeone who's much better at scripting can probably write up a script that does exactly that, but if nobody has done so by the time I have more time on my hands, I'll try to write one myself.\nClick to expand...\nThat could work if nothing else does, the only problem is that I'd want to keep the script localized entirely inside the armor/weapon to allow for mix and matching. Is there a way to make a state and then say this armor gives that state?"
+    },
+    {
+      "post_id": "js-post-1497340",
+      "author": "Nox_Aeternae",
+      "date": "2025-02-05T13:08:01+0900",
+      "body": "funkyvibes said:\nThat could work if nothing else does, the only problem is that I'd want to keep the script localized entirely inside the armor/weapon to allow for mix and matching. Is there a way to make a state and then say this armor gives that state?\nClick to expand...\nI'm not sure as I don't use many equipment in my own project but another way to do that would be to make a passive state for each equipment you want to have and set their requirement condition to check if that equipment is equipped on that particular actor.\nIf there's a way to attach states to equipment, I don't know of it."
+    },
+    {
+      "post_id": "js-post-1497347",
+      "author": "funkyvibes",
+      "date": "2025-02-05T13:36:43+0900",
+      "body": "Nox_Aeternae said:\nI'm not sure as I don't use many equipment in my own project but another way to do that would be to make a passive state for each equipment you want to have and set their requirement condition to check if that equipment is equipped on that particular actor.\nIf there's a way to attach states to equipment, I don't know of it.\nClick to expand...\nDoing baby steps here. How do I make it so the passive state makes the user gain MP? I can see in the battle test that the state is active due to an icon I gave it but it's not doing what I want it to."
+    },
+    {
+      "post_id": "js-post-1497349",
+      "author": "Nox_Aeternae",
+      "date": "2025-02-05T13:50:48+0900",
+      "body": "funkyvibes said:\nDoing baby steps here. How do I make it so the passive state makes the user gain MP? I can see in the battle test that the state is active due to an icon I gave it but it's not doing what I want it to.\nClick to expand...\nYou need notetags. Check out the documentation for Yanfly BuffStateCore. For a turn start effect, this what you need to have around your code:\n<Custom Turn Start Effect>\ncode\ncode\n</Custom Turn Start Effect>"
+    },
+    {
+      "post_id": "js-post-1497351",
+      "author": "funkyvibes",
+      "date": "2025-02-05T14:04:13+0900",
+      "body": "Nox_Aeternae said:\nYou need notetags. Check out the documentation for Yanfly BuffStateCore. For a turn start effect, this what you need to have around your code:\n<Custom Turn Start Effect>\ncode\ncode\n</Custom Turn Start Effect>\nClick to expand...\nAdded those and I'm trying that but I don't think I'm doing the scripting right.\nAnd from the images I can tell that the state is active, it's just not doing what I want it to do."
+    },
+    {
+      "post_id": "js-post-1497353",
+      "author": "Nox_Aeternae",
+      "date": "2025-02-05T14:45:13+0900",
+      "body": "@funkyvibes\n.gainMP() won't work, the correct version of that is .gainMp()\nAlso, you shouldn't need to do the whole $gameActors thing. That notetag should allow you to use target instead and it will target the actor that is affected by the state.\nSo try:  target.gainMp(20);\nEdit: So, I double checked and to make the state look for equipment, you'd use this script:\ntarget.hasWeapon($dataWeapons[ID])\ntarget.hasArmor($dataArmors[ID])\ndepending on if you're searching for armor or weapon, and then you change the ID to the database ID of the specific equipment you're checking for. You want to create a conditional on the Passive state based on that, and that would look something like this:\nJavaScript:\n<Custom Passive Condition>\n  if (target.hasWeapon($dataWeapons[ID])) {\n    condition = true;\n  } else {\n    condition = false;\n  }\n  </Custom Passive Condition>\n\n<Custom Turn Start Effect>\n\ntarget.gainMp(20);\n\n </Custom Turn Start Effect>"
+    },
+    {
+      "post_id": "js-post-1497359",
+      "author": "Robro33",
+      "date": "2025-02-05T16:23:28+0900",
+      "body": "Nox_Aeternae said:\nEdit: So, I double checked and to make the state look for equipment, you'd use this script:...\nClick to expand...\ntheres no need to. the plugin allows you to attach passive states to armors and weapons with a notetag. giving an actor a passive and making its requirement being to have the gear on is a roundabout way of attaching the passive state to the gear"
+    },
+    {
+      "post_id": "js-post-1497361",
+      "author": "Nox_Aeternae",
+      "date": "2025-02-05T17:04:48+0900",
+      "body": "Robro33 said:\ntheres no need to. the plugin allows you to attach passive states to armors and weapons with a notetag. giving an actor a passive and making its requirement being to have the gear on is a roundabout way of attaching the passive state to the gear\nClick to expand...\nI just read through the documentation and yeah. That is definitely a much better way to go about it. I don't have any equipment in my project so far, so I wasn't sure if this was a thing.\n@funkyvibes\nDisregard my script about checking equipment and read through the documentation for AutoPassiveStates. It shows you how to attach passive states to equipment."
+    },
+    {
+      "post_id": "js-post-1497387",
+      "author": "funkyvibes",
+      "date": "2025-02-05T22:50:38+0900",
+      "body": "Nox_Aeternae said:\nI just read through the documentation and yeah. That is definitely a much better way to go about it. I don't have any equipment in my project so far, so I wasn't sure if this was a thing.\n@funkyvibes\nDisregard my script about checking equipment and read through the documentation for AutoPassiveStates. It shows you how to attach passive states to equipment.\nClick to expand...\nThe putting <Passive State: #> in the notes of the armor/weapon right? That's what I've been using but thanks for confirming it's the best way.\nAlso, thanks a bunch, I got everything up and running! The only annoying thing to me is wondering if I can change what RMMV considers the start of a turn and if I can add a delay between when the code activates.\nBecause I want the script to activate AFTER the enemy's attack and I'd like to see the MP hit zero BEFORE the random numbers for the MP come in.\nVideo:"
+    },
+    {
+      "post_id": "js-post-1497390",
+      "author": "Robro33",
+      "date": "2025-02-05T23:19:16+0900",
+      "body": "funkyvibes said:\nThe only annoying thing to me is wondering if I can change what RMMV considers the start of a turn and if I can add a delay between when the code activates.\nBecause I want the script to activate AFTER the enemy's attack and I'd like to see the MP hit zero BEFORE the random numbers for the MP come in.\nClick to expand...\nwe're missing details here about your setup. im assuming that \"End Turn\" is a skill with high action speed so that it always goes first? if thats the case, then yes, immediately before that skill gets executed is the start of the turn.\nThe whole point of the instant actions is that theyre executed during the input phase, which is before the turn starts. if you want the MP regen to happen after the enemies act, then it cant be at the start of the turn. youd have to use something later like a <Custom Turn End Effect> or a <Custom Regenerate Effect>\nEdit: also double check your state notetag. the actor lost MP on that second turn. is that intentional?"
+    },
+    {
+      "post_id": "js-post-1497403",
+      "author": "funkyvibes",
+      "date": "2025-02-06T00:19:58+0900",
+      "body": "Robro33 said:\nwe're missing details here about your setup. im assuming that \"End Turn\" is a skill with high action speed so that it always goes first? if thats the case, then yes, immediately before that skill gets executed is the start of the turn.\nThe whole point of the instant actions is that theyre executed during the input phase, which is before the turn starts. if you want the MP regen to happen after the enemies act, then it cant be at the start of the turn. youd have to use something later like a <Custom Turn End Effect> or a <Custom Regenerate Effect>\nEdit: also double check your state notetag. the actor lost MP on that second turn. is that intentional?\nClick to expand...\nI haven't messed with the speed of the \"End Turn\" skill, it's an empty skill that's the only non-instant so that RMMV knows to end the turn.\nThe MP loss is intentional, at the start of battle and at the start of the turn I want to set the players MP to zero and then give them a random amount of MP. Then they use all the skills they can, \"end turn\", let the enemies attack, and then do it all again.\nWhat you said about Instants is interesting and I'm wondering if you can elaborate so that I understand RMMV's battle system better.\nGoing by what you're saying, RMMV goes Battle Start, Turn Start, Action Start, Action End, Turn End, Enemy Turn, and then Turn Start again and eventually Battle End, right?\nThe way I have it set up I have a passive state that at the start of the battle sets the MP to 0 and subsequently gives a random amount of MP. I have instants on all attacks so that the player can use every move they can during their turn. I have the \"End Turn\" skill so that when the player is satisfied they can end their turn. The timeline I'm imagining goes:\nBattle Start (do MP setup here since RMMV won't do it on the first turn), Turn Start (do MP setup), All instants go here (I believe this is the input phase you mentioned?, hit the \"End Turn\" skill, Action Start, Action End, Turn End, Enemy Turn, Turn Start (do MP setup)\nWhich is wrong because I'm missing a bunch of phases here or misunderstanding them. I tried out the end turn and the regenerate effect and it does work the way I want the battle system to work but I want to make sure I understand the order of battles in RMMV so that when I build on this battle system I don't mess anything up."
+    },
+    {
+      "post_id": "js-post-1497409",
+      "author": "Robro33",
+      "date": "2025-02-06T01:59:12+0900",
+      "body": "funkyvibes said:\nGoing by what you're saying, RMMV goes Battle Start, Turn Start, Action Start, Action End, Turn End, Enemy Turn, and then Turn Start again and eventually Battle End, right?\nClick to expand...\nUnless you have a plugin that changes it, actors and enemies do their actions within the turn based on their AGI and action speed. actors do not always go first and enemies do not always go last unless the relevant calculations and comparisons makes it so. Before turns begin is an input phase for the player to select the actions their actors perform\nfunkyvibes said:\nWhat you said about Instants is interesting and I'm wondering if you can elaborate so that I understand RMMV's battle system better.\nClick to expand...\nthis is the reason why the normal recommendation is to make a small project to learn what the engine does before using plugins to alter it. Once youre familiar with the engine, understanding plugin changes becomes easier as plugin creators tend to use the same technical terms as the engine. From the Instant Cast plugin's introduction:\nWhen an action has an instant cast property, that action is used immediately\non the spot\nwithout needing to wait for the turn to start\n.\nClick to expand...\nInstant actions for actors are executed during the Input phase immediately as the skill is chosen. they are done before the turn actually begins. An instant action taken by the player on the first turn for example, is done on turn 0 (just like turn 0 troop events). once the input phase is over does turn 1 begin.\nfunkyvibes said:\nBattle Start (do MP setup here since RMMV won't do it on the first turn), Turn Start (do MP setup), All instants go here (I believe this is the input phase you mentioned?, hit the \"End Turn\" skill, Action Start, Action End, Turn End, Enemy Turn, Turn Start (do MP setup)\nClick to expand...\nBattle Start -> Input -> Turn Start -> Action Start -> Action End -> Turn End -> Input -> Turn Start ->->-> Battle End\nfunkyvibes said:\nBattle Start (do MP setup here since RMMV won't do it on the first turn),\nClick to expand...\nIf you want to do things as battles start, Yanfly's Buffs and States core plugin already has a notetag for that. Then after then but still before Input are turn 0 troop events"
+    },
+    {
+      "post_id": "js-post-1497420",
+      "author": "funkyvibes",
+      "date": "2025-02-06T02:48:39+0900",
+      "body": "Robro33 said:\nthis is the reason why the normal recommendation is to make a small project to learn what the engine does before using plugins to alter it. Once youre familiar with the engine, understanding plugin changes becomes easier as plugin creators tend to use the same technical terms as the engine.\nClick to expand...\nOh, this is my smaller project, I tried following some tutorials on making a full game to get familiar but kept getting bored so I decided to do the other route, taking a small part of my dream project (the battle system in this case) and trying to do it and learning from mistakes. Which has been fruitful with all the insights I'm getting from you guys, so thanks again.\nRobro33 said:\nBattle Start -> Input -> Turn Start -> Action Start -> Action End -> Turn End -> Input -> Turn Start ->->-> Battle End\nClick to expand...\nOk I'm understanding now, then where does regenerate come into this? I really hope it's also before turn starts.\nOh and one extra question, is there a way to give the MP bar a filling-up animation whenever I do the gainMp thing?"
+    },
+    {
+      "post_id": "js-post-1497448",
+      "author": "Robro33",
+      "date": "2025-02-06T05:40:44+0900",
+      "body": "funkyvibes said:\nOk I'm understanding now, then where does regenerate come into this? I really hope it's also before turn starts.\nClick to expand...\nits just before turn end.\nfunkyvibes said:\nOh and one extra question, is there a way to give the MP bar a filling-up animation whenever I do the gainMp thing?\nClick to expand...\nadd the line\nCode:\nuser.startAnimation(x)\nto your state and replace the x with the id of the animation you want from within the animation tab of the database without the leading zeroes"
+    },
+    {
+      "post_id": "js-post-1497452",
+      "author": "funkyvibes",
+      "date": "2025-02-06T06:48:30+0900",
+      "body": "Robro33 said:\nadd the line\nCode:\nuser.startAnimation(x)\nto your state and replace the x with the id of the animation you want from within the animation tab of the database without the leading zeroes\nClick to expand...\nWhere do I put that and how exactly do I write that?"
+    },
+    {
+      "post_id": "js-post-1497456",
+      "author": "Robro33",
+      "date": "2025-02-06T07:38:50+0900",
+      "body": "funkyvibes said:\nWhere do I put that\nClick to expand...\ninside any notetag that changes the battler's mp that you want to show an animation during\nfunkyvibes said:\nhow exactly do I write that?\nClick to expand...\nyou dont have to. copy what i posted, paste it where it needs to go, and replace the x\nthat being said, was it that you wanted to play an animation in general, or an animation directly on the MP bar of it filling? I assumed you had a general mp bar fill animation that was to be played, but if its the latter you'd need a plugin like\npretty sleek gauges\nthat introduces animated bars.\nAs a heads up, youll probably want to to use setMp(0) instead of setting the _mp property to 0 in the future. you skip a refresh that happens by not using setMp()"
+    },
+    {
+      "post_id": "js-post-1497468",
+      "author": "funkyvibes",
+      "date": "2025-02-06T08:34:11+0900",
+      "body": "Robro33 said:\nthat being said, was it that you wanted to play an animation in general, or an animation directly on the MP bar of it filling? I assumed you had a general mp bar fill animation that was to be played, but if its the latter you'd need a plugin like\npretty sleek gauges\nthat introduces animated bars.\nClick to expand...\nIt's the latter, I want the MP bar to fill up when I do \"target.gainMp\" I've been looking over prettysleekgauges but I don't know how to make it animate the bar filling up. Is there documentation anywhere?"
+    },
+    {
+      "post_id": "js-post-1497469",
+      "author": "funkyvibes",
+      "date": "2025-02-06T08:36:29+0900",
+      "body": "Nevermind, it turns out I just had to turn RMMV on and off again to get the plugin working\nOh, but if there is documentation or a guide on prettysleekgauges so I can understand how it works better I'd still appreciate that."
+    },
+    {
+      "post_id": "js-post-1497470",
+      "author": "Robro33",
+      "date": "2025-02-06T08:43:07+0900",
+      "body": "funkyvibes said:\nNevermind, it turns out I just had to turn RMMV on and off again to get the plugin working\nClick to expand...\nAny changes made within the plugin window and inside of noteboxes do not register until you save your project.\nfunkyvibes said:\nif there is documentation or a guide on prettysleekgauges so I can understand how it works better\nClick to expand...\nMost plugins youll find will have a help section within the plugin that shows up in the Rpg maker editor thatll tell you the info you need to use it without needing to know JS. Configure the plugin and the gauges moving when the values are changed should be automatic."
+    },
+    {
+      "post_id": "js-post-1497473",
+      "author": "funkyvibes",
+      "date": "2025-02-06T09:19:59+0900",
+      "body": "Robro33 said:\nMost plugins youll find will have a help section within the plugin that shows up in the Rpg maker editor thatll tell you the info you need to use it without needing to know JS. Configure the plugin and the gauges moving when the values are changed should be automatic.\nClick to expand...\nYeah, but those help section aren't as in-depth enough for someone like me who needs everything spelled out.\nAlso YIPPEE, everything works like I need it too! Instant Attacks happen during the Input phase, End Turn puts us into the Turn Start phase where the MP depletes to zero (I plan to do more with that later), and then the enemy attacks, and then during the Regenerate phase they get MP again, before the Turn End phase.\nThanks a bunch! I'm new to this but how do I close a thread? I've heard that's good practice."
+    }
+  ]
+}
