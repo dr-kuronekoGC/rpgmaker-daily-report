@@ -72,13 +72,16 @@ def classify_url(url):
         return "プラグイン"
 
     # --------------------------------------
-    # Audio
+    # Audio / Sound
     # --------------------------------------
 
-    if "/resources/mz/audio/" in normalized:
+    # 現在のCasper Gamingでは
+    # /resources/mz/sound/ が使用されている。
+    if "/resources/mz/sound/" in normalized:
         return "サウンド素材"
 
-    if "/resources/sound/" in normalized:
+    # 旧構造にも対応
+    if "/resources/mz/audio/" in normalized:
         return "サウンド素材"
 
     # --------------------------------------
@@ -92,6 +95,12 @@ def classify_url(url):
     # Maps
     # --------------------------------------
 
+    # 現在のCasper Gamingでは
+    # /resources/mz/maps/ が使用されている。
+    if "/resources/mz/maps/" in normalized:
+        return "グラフィック素材"
+
+    # 旧構造にも対応
     if "/resources/mz/map/" in normalized:
         return "グラフィック素材"
 
@@ -114,9 +123,18 @@ def is_target_url(url):
     normalized = url.lower()
 
     patterns = [
+        # Plugins
         r"/plugins/cgmz/[^/]+/?$",
+
+        # Graphics
         r"/resources/mz/graphics/[^/]+/?$",
+
+        # Sound
+        r"/resources/mz/sound/[^/]+/?$",
         r"/resources/mz/audio/[^/]+/?$",
+
+        # Maps
+        r"/resources/mz/maps/[^/]+/?$",
         r"/resources/mz/map/[^/]+/?$",
     ]
 
@@ -136,11 +154,13 @@ IGNORE_TITLES = {
     "map info",
     "download graphic",
     "download sound",
+    "download map pack",
     "get pack",
     "get plugin",
     "forum",
     "itch",
     "view on itch",
+    "view itch page",
     "access",
     "preview",
     "buy",
