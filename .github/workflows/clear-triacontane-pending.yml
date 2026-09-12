@@ -1,0 +1,95 @@
+name: Clear triacontane Pending
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  clear:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Clear triacontane pending items
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("pending_items.json")
+
+          if not path.exists():
+              print("[Pending] pending_items.json がありません。")
+              raise SystemExit(0)
+
+          with path.open("r", encoding="utf-8") as f:
+              items = json.load(f)
+
+          if not isinstance(items, list):
+              raise ValueError(
+                  "pending_items.json の形式がリストではありません。"
+              )
+
+          before = len(items)
+
+          triacontane_items = [
+              item
+              for item in items
+              if isinstance(item, dict)
+              and item.get("source") == "triacontane"
+          ]
+
+          remaining = [
+              item
+              for item in items
+              if not (
+                  isinstance(item, dict)
+                  and item.get("source") == "triacontane"
+              )
+          ]
+
+          removed = len(triacontane_items)
+
+          print(f"[Pending] Before: {before}")
+          print(f"[Pending] triacontane: {removed}")
+          print(f"[Pending] Remaining: {len(remaining)}")
+
+          if removed == 0:
+              print("[Pending] triacontane はありません。")
+              raise SystemExit(0)
+
+          with path.open("w", encoding="utf-8") as f:
+              json.dump(
+                  remaining,
+                  f,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+              f.write("\n")
+
+          print("[Pending] triacontane のみ削除しました。")
+          PY
+
+      - name: Commit and push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add pending_items.json
+
+          if git diff --cached --quiet; then
+            echo "変更なし。"
+            exit 0
+          fi
+
+          git commit -m "Clear triacontane pending backlog"
+          git push
