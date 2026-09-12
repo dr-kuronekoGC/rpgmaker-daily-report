@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/multiple-game-over-screens.174266",
+  "title": "Multiple game over screens",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T12:12:16.330612+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1490710",
+      "author": "knuckles_the_chuckles",
+      "date": "2024-12-29T21:53:07+0900",
+      "body": "Hello, Ive been looking for a way to add more than one game over screen for my rpg maker vx ace game\nI found a code snippet what allows me to add one extra game over screen\nSpoiler:\ncode snippet\nclass Scene_Gameover < Scene_Base\ndef create_background\n@sprite = Sprite.new\nif !$game_switches[55]\n@sprite.bitmap = Cache.system(\"GameOver\")\nelse\n@sprite.bitmap = Cache.system(\"GameOver2\")\nend\nend\nend\nThe problem I'm having is that I want to add at least 2 or 3 more screens and if I try to add another else brach or another if branch it doesnt' work\nNote that I'm very new to coding so it surely is something I'm doing wrong\nCan anyone tell me how I can add more game over screens and what I'm doing wrong?\nThank you"
+    },
+    {
+      "post_id": "js-post-1490722",
+      "author": "TobyYasha",
+      "date": "2024-12-29T23:37:08+0900",
+      "body": "My Ruby knowledge is very limited, but let's see if i can do this.\nTry this:\nRuby:\nclass Scene_Gameover < Scene_Base\n\ndef create_background\n\n@sprite = Sprite.new\n\nif $game_switches[55]\n\n@sprite.bitmap = Cache.system(\"GameOver2\")\n\nelsif $game_switches[56]\n\n@sprite.bitmap = Cache.system(\"GameOver3\")\n   \nelsif $game_switches[57]\n\n@sprite.bitmap = Cache.system(\"GameOver4\")\n   \nelse\n   \n@sprite.bitmap = Cache.system(\"GameOver\")\n\nend\n\nend\n\nend\nSo what this is meant to do is check if the one of the following switches is active.\n- If\nswitch 55\nis active use image \"GameOver2\"\n- If\nswitch 56\nis active use image \"GameOver3\"\n- If\nswitch 57\nis active use image \"GameOver4\"\n- If none of the switches are active then load the default image which is \"GameOver\" in this case.\nYou just have to change the numbers between the square brackets so that the game looks at the switches you actually want it to.\nAnd of course, make sure to also change the \"GameOver2\", \"GameOver3\", \"GameOver4\" filenames to the actual files you plan on using.\nIf you want to add more ending screens just add something like this above \"else\" keyword, with the switch number and correct filename.\nRuby:\nelsif $game_switches[57]\n\n@sprite.bitmap = Cache.system(\"GameOver4\")\n\n# add an \"elsif\" statement above the \"else\" statement"
+    },
+    {
+      "post_id": "js-post-1490726",
+      "author": "knuckles_the_chuckles",
+      "date": "2024-12-29T23:54:19+0900",
+      "body": "TobyYasha said:\nend\nClick to expand...\nTobyYasha said:\nMy Ruby knowledge is very limited, but let's see if i can do this.\nTry this:\nRuby:\nclass Scene_Gameover < Scene_Base\n\ndef create_background\n\n@sprite = Sprite.new\n\nif $game_switches[55]\n\n@sprite.bitmap = Cache.system(\"GameOver2\")\n\nelsif $game_switches[56]\n\n@sprite.bitmap = Cache.system(\"GameOver3\")\n  \nelsif $game_switches[57]\n\n@sprite.bitmap = Cache.system(\"GameOver4\")\n  \nelse\n  \n@sprite.bitmap = Cache.system(\"GameOver\")\n\nend\n\nend\n\nend\nSo what this is meant to do is check if the one of the following switches is active.\n- If\nswitch 55\nis active use image \"GameOver2\"\n- If\nswitch 56\nis active use image \"GameOver3\"\n- If\nswitch 57\nis active use image \"GameOver4\"\n- If none of the switches are active then load the default image which is \"GameOver\" in this case.\nYou just have to change the numbers between the square brackets so that the game looks at the switches you actually want it to.\nAnd of course, make sure to also change the \"GameOver2\", \"GameOver3\", \"GameOver4\" filenames to the actual files you plan on using.\nIf you want to add more ending screens just add something like this above \"else\" keyword, with the switch number and correct filename.\nRuby:\nelsif $game_switches[57]\n\n@sprite.bitmap = Cache.system(\"GameOver4\")\n\n# add an \"elsif\" statement above the \"else\" statement\nClick to expand...\nIt works!\nThank you so much"
+    }
+  ]
+}

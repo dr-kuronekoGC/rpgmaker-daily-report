@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-edit-default-character-sprite-offsets-in-rpg-maker-mv.174547",
+  "title": "How to Edit Default Character Sprite Offsets in RPG Maker MV?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-12T12:12:12.750016+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1492686",
+      "author": "fabula-requiei",
+      "date": "2025-01-09T09:56:05+0900",
+      "body": "Hello, RPG Maker community!\nI’m trying to remove or edit a default feature of rpgmaker about character sprites being slightly off the grid in RPG Maker MV project ...as it is by default.\nBy default, character sprites, including the player sprite and events, are offset vertically by about 24px, if I’m not mistaken. While adding a ! to the file name of the sprite sheets can remove this offset, it also disables certain features, such as showing part of the sprite when walking through bushes or similar effects.\nFor my game, I want to remove this default vertical offset entirely, but I need to keep these features intact.\nI’ve searched on Google and through other posts with similar issues or requests, but most of the solutions I found are about adding the ! or using plugins, which don’t address this specific need.\nI remember there’s a way to edit the default offset values for character sprites by modifying a specific file in the js folder (possibly rpg_sprites.js or rpg_objects.js). This would allow me to adjust the extra pixels that might cause alignment problems.\nHowever, I can’t find again in google or remember the exact steps or the specific part of the script that controls these offsets. I hope anyone could guide me on:\nThe exact file I need to edit.\nThe function or section of code where these offsets are defined.\nHow to adjust the offset values for better alignment of sprites.\nI’d also appreciate any tips on alternative ways to manage sprite alignment if editing the core files isn’t recommended.\nIf it helps, I found a plugin by FUEL that makes something similar but I don't know what exactly it is editing about the core defaults.\n// Change this value to move the character sprites.\n// Larger values move the character up and vice-versa.\n// This variable is initialized to the default offset.\n/* var defaultOffsetY = 6; // The default offset value. */\nvar charOffsetY = -24;\n// -- Game_CharacterBase Alias -- : Needed to ensure compatability.\nvar _GameCharacterBase_shiftY_ = Game_CharacterBase.prototype.shiftY;\n// Redefinition of Game_CharacterBase.shiftY function.\nGame_CharacterBase.prototype.shiftY = function() {\nvar v = _GameCharacterBase_shiftY_.call(this);\nreturn v > 0 ? charOffsetY : 0;\n};\nThank you in advance for your help!\nI hope this post and answers will help other users too"
+    },
+    {
+      "post_id": "js-post-1492692",
+      "author": "fabula-requiei",
+      "date": "2025-01-09T10:32:21+0900",
+      "body": "... I found it.\nIf anyone else need it you need to:\nin rpg_objects find\nGame_CharacterBase.prototype.shiftY = function() {\nreturn this.isObjectCharacter() ? 0 : 6;\nyou have to change that 6 to 0\nI was a bit stressed out and now a bit shame about posting it and now have found it ...but if anyone know any issue about doing this it will help a lot too!"
+    },
+    {
+      "post_id": "js-post-1492700",
+      "author": "utunnels",
+      "date": "2025-01-09T11:09:47+0900",
+      "body": "Yeah the default bush tile logic is a bit harsh. The shift value is also hard coded and is only good for average sized resources."
+    }
+  ]
+}

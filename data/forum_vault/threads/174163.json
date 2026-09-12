@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/actor-swapping-vs-party-system-battle-grid-system.174163",
+  "title": "MZ Actor Swapping: VS Party System + Battle Grid System",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T12:12:17.666960+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1489940",
+      "author": "tumsterfest",
+      "date": "2024-12-26T15:36:56+0900",
+      "body": "Hi,\nI'm trying to create a Skill that lets\nonly\nmy main character, Avery,\ntemporarily\nswap out for an inactive ally (who we'll call Quin for reference) mid-battle.\nCurrently this involves the core VisuStella plugins, as well as\nVS Battle Grid\nand\nVS Party System\n. By using some notetags and weird workarounds, I've successfully made it so Avery can swap out for Quin.\nHowever, while Quin's HP/MP status box and CTB turn order are being displayed after the swap, her actual sprite is nowhere to be found. It does seem like the enemies are able to target her, as during testing I've noticed her HP being depleted after attacks.\nQuin appears just fine if I turn off the Battle Grid System plugin. Someone suggested I try resetting the graphics cache with ImageManager.clear(); ... However, this just makes all the battlers disappear.\nI have no idea if any of them are relevant to the visibility issue, but here are the steps I took to create this skill:\n1A. A Common Event before a battle starts that uses Party System notetags to \"unlock\" Avery (as she's normally a required party member) and lock her two active allies.\n1B. Corresponding Switches that activate for each ally so I can reference them in the ensuing steps.\n2. A second Common Event that opens the Party System's \"Switch Member\" screen and allows Avery to swap out for any currently inactive ally. The event then checks whether an ally is active in battle yet has their Switch mentioned in step 1 to OFF -- this is how the event determines which ally needs to receive step 3 ...\n3. The newly active battler receives a State that, when it expires 1-2 turns later, triggers ...\n4. A third Common Event, which uses conditional checks to swap Avery back in and the ally back out.\nCan anyone help me find my missing Quin? I didn't include screenshots since I'm guessing the solution is a more involved version of the \"clear your cache\" suggestion, but I can take some if that'd help.\nThanks!"
+    },
+    {
+      "post_id": "js-post-1489983",
+      "author": "ATT_Turan",
+      "date": "2024-12-26T22:38:45+0900",
+      "body": "tumsterfest said:\nSomeone suggested I try resetting the graphics cache with ImageManager.clear(); ... However, this just makes all the battlers disappear.\nClick to expand...\nYeah, that's not a good suggestion, anyone who knows what the ImageManager does would have expected that result\nThere must be a plugin-specific (the turn order comes from the CTB plugin?) script call to refresh or rebuild the turn order display.\nIn Yanfly's, as I recall, it was actually a couple of steps to first empty it and then rebuild it; I don't know if it's the same in VisuStella's or if they made one more convenient function.\nRegardless, if the script call isn't included in the documentation, you're down to someone trying to find it rooting around in the console or the obfuscated code.\nHave you tried asking in the VisuStella Discord? I know some number of people have gotten answers for questions like this. To be clear, you want to know how to refresh the turn order displayed by the CTB, which is the one plugin you didn't link to\nThe others really have nothing to do with it."
+    },
+    {
+      "post_id": "js-post-1490014",
+      "author": "tumsterfest",
+      "date": "2024-12-27T01:00:00+0900",
+      "body": "Despite writing and rewriting my post a million times, I think I caused confusion. Haha.\nIt's the SV battler that is failing to appear on-screen."
+    },
+    {
+      "post_id": "js-post-1490015",
+      "author": "ATT_Turan",
+      "date": "2024-12-27T01:07:42+0900",
+      "body": "Oh, I guess I misunderstood.\nUm. If you're not using the command built into the Party System to swap the actor in battle, I guess show screenshots of how you've rigged it up?\nIt may end up being a similar answer with \"use VisuStella's instructions to report a bug,\" but we can see whether your method has an obvious error.\nYou say enemies can target her - do the attack animations and damage popups play in the correct space?"
+    },
+    {
+      "post_id": "js-post-1490248",
+      "author": "tumsterfest",
+      "date": "2024-12-28T00:54:16+0900",
+      "body": "Yeah, my \"genius methods\" don't follow typical use of the VS Party System plugin due to my need for the skill to have restricted usage and a temporary effect. I'm also an illiterate bozo when it comes to coding, so I may have made things unnecessarily complicated.\nAnywho, here we go:\nSpoiler:\nSix Screens-a-Laying\n1.\nCommon Event #1, whose purpose is to unlock Avery's placement in the party once a battle starts and lock the other two active allies. It also activates related switches for reference later. (Ignore the Halo Hood stuff; it has nothing to do w/ this situation.)\n2.\nThe Recess skill, which activates the ol' switcheroo by calling the next Common Event ...\n3.\nCommon Event #2, which calls the VS Party System scene so the player can switch out Avery. Then, a script checks whether the switched-in ally (Quin) is now present in the party even though her corresponding switch is OFF. This tells the event to add the following state ...\n4.\nThis state exists for the purpose of being able to apply a\nSkills & States Core\nnotetag upon expiration. The notetag plays Common Event #3 ...\n5.\nCommon Event #3 checks whether the ally is in the party despite her switch being set to OFF. If so, the event removes the ally and adds Avery.\nATT_Turan said:\nYou say enemies can target her - do the attack animations and damage popups play in the correct space?\nClick to expand...\nSmart question. I just double-checked, and no, they're also off-screen unless I deactivate the Battle Grid System plugin."
+    },
+    {
+      "post_id": "js-post-1490250",
+      "author": "ATT_Turan",
+      "date": "2024-12-28T01:07:58+0900",
+      "body": "The part that sets off alarms in my mind is when you're doing the actual actor switching by calling the Party\nScene\n.\nTypically, unless a plugin makes specific accommodations for it, going to another scene from the Battle Scene is\nexpected\nto break the battle.\nThat's why if you look at the screenshots on the plugin page, the scene you go to from the menu is visually different from the in-battle switching, which just opens a dedicated window in the middle of battle. It does\nnot\ngo to a different scene there.\nI'm uncertain because you use different wording between your posts, but several times it seems quite specific that this switching is between Quin and Avery - if it's specifically between those two actors, why bother with the Party System stuff for that at all? Just make a skill that uses the regular Change Party Member event command to swap those two actors."
+    },
+    {
+      "post_id": "js-post-1490306",
+      "author": "tumsterfest",
+      "date": "2024-12-28T05:11:48+0900",
+      "body": "One of the core features of the VS Party System plugin is mid-battle actor switching. Using the term \"scene\" was probably just me not fully understanding the implication attached to that word.\nAs for the Quin/Avery switching, it was my first attempt at this and just meant for example. I didn't want to set up switching options for the other three allies until I knew I had the first one correct.\nHowever\n-- to your point -- maybe the easiest way out of this mess is to only use the Party System for locking/unlocking actor access ... and then DIY the rest of the skill? I assume there's some way to work around it by creating individual skills for each \"to-be-switched\" character and nesting them under the main skill using the\nSkill Containers plugin\n."
+    },
+    {
+      "post_id": "js-post-1490344",
+      "author": "ATT_Turan",
+      "date": "2024-12-28T07:51:36+0900",
+      "body": "Or inquire with VisuStella if there's a script call to pull up the actor switching window in battle without enabling the menu command."
+    },
+    {
+      "post_id": "js-post-1490966",
+      "author": "tumsterfest",
+      "date": "2024-12-31T01:14:26+0900",
+      "body": "Not getting a response thus far on VisuStella's Discord, so I'll probably just slog through this manually.\nIn any event (hilarious pun not intended), you helped set me on the right path, so thank you for your patience/wisdom."
+    }
+  ]
+}

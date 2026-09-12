@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/what-is-the-difference-between-showpicture-and-loadbitmap.174356",
+  "title": "MV what is the difference between showPicture and loadBitmap",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T12:12:14.445479+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1491399",
+      "author": "ws6tbz",
+      "date": "2025-01-02T19:28:33+0900",
+      "body": "I want to make a variable v[1] changes after a turn in a battle, and picture shows depending on the value. So I made a plugin to achieve this.\nI'm not very familiar with javascript and engine, so I use the showPicture in my script.\nJavaScript:\nUpdateIndicator = function () {\n    $gameScreen.erasePicture(1);\n    switch ($gameVariables.value(1)) {\n    case 0:\n        $gameScreen.showPicture(1, \"SigA\", 0, 0, 0,100, 100, 255, 0);\n        break;\n    case 1:\n        $gameScreen.showPicture(1, \"SigB\", 0, 0, 0,100, 100, 255, 0);\n        break;\n    case 2:\n        $gameScreen.showPicture(1, \"SigC\", 0, 0, 0,100, 100, 255, 0);\n        break;\n    case 3:\n        $gameScreen.showPicture(1, \"SigD\", 0, 0, 0,100, 100, 255, 0);\n        break;\n    }\n};\nThe code works now.\nBut then I referred to other plugins, I found that most authors do not use the \"showPicture\", instead they use \"loadBitmap\".\nI wonder if the 2 methods are equally effective.\nIf not, which one is better and why?"
+    },
+    {
+      "post_id": "js-post-1491400",
+      "author": "ShadowDragon",
+      "date": "2025-01-02T19:43:28+0900",
+      "body": "loadBitmap is used to load picture inside window.\nshowPicture you use is directly from $gameScreen so loadBitmap is\nnot required as loadBitmap as no specific ID like showPicture or reference to it.\nbut I see you use IndicatorX,IndicatorY that does nothing, so why add it?"
+    },
+    {
+      "post_id": "js-post-1491405",
+      "author": "Aerosys",
+      "date": "2025-01-02T20:24:27+0900",
+      "body": "$gameScreen.showPicture is the RPG Maker's mechanism to show \"Pictures\". This is why you need to pass a picture ID from 1 to 50 to it which is maybe not what you want because your game already uses Pictures for some other context. Besides, this function is very simple to use, but you are bound to the rules of \"Pictures\", e.g., only work on the map and during battles.\nloadBitmap loads a bitmap directly from disk (or by URL when it's a browser game), but does nothing more. It does not add the bitmap to the screen. You need to wrap it in a Sprite and then add this sprite either to the scene by this.addChild or to another sprite/spriteset that has already been added to the scene.\nCode:\nScene_Map.prototype.myExampleFunction() {\n  const bitmap = ImageManager.loadBitmap(directory, name);\n  const sprite = new Sprite(bitmap);\n  this.addChild(sprite);\n}\nAs you can see, this method is more complex but also more powerful."
+    },
+    {
+      "post_id": "js-post-1491411",
+      "author": "ws6tbz",
+      "date": "2025-01-02T21:28:57+0900",
+      "body": "ShadowDragon said:\nbut I see you use IndicatorX,IndicatorY that does nothing, so why add it?\nClick to expand...\nSorry, that was my previous incorrect version and I forgot to modify it when pasting.\nI edited the post.\nThank you all.\nSo in a word, the showPIcture can only work where this command can be called, e.g., in a map or in a battle.\nWhile the bitmap can be load everywhere, e.g., in a text box or in a menu.\nAm I right?"
+    }
+  ]
+}
