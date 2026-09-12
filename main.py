@@ -25,6 +25,7 @@ from sources import (
     asset_itchio,
     official_makerdevs,
     official_caspergaming,
+    official_triacontane,
 )
 
 from asset_metadata import enrich_items
@@ -52,6 +53,7 @@ SOURCES = [
     community_guild,
     official_makerdevs,
     official_caspergaming,
+    official_triacontane,
 ]
 
 
