@@ -177,3 +177,17 @@ PENDING_ITEMS_FILE = "pending_items.json"
 # 1回のSlackレポートに掲載する
 # 1サイトあたりの最大件数
 MAX_ITEMS_PER_SOURCE = 20
+
+# ==========================================
+# triacontane
+# ==========================================
+
+TRIACONTANE_REPO_URL = (
+    "https://github.com/triacontane/RPGMakerMV"
+)
+
+TRIACONTANE_BRANCH = "mz_master"
+
+TRIACONTANE_SEEN_FILE = (
+    "seen_triacontane.json"
+)
