@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-parallax-mapping-galv.168432",
+  "title": "Help with parallax mapping (galv)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T04:39:59.794916+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1442635",
+      "author": "GreenOx97",
+      "date": "2024-05-07T13:35:39+0900",
+      "body": "Hi\nSo, I've been using galv's parallax mapping plugin for my project and it's been working perfectly up until now.\nBut I've suddenly hit a problem where the layer on my latest map is now on covering about a quarter of the screen. As in, the layer is shrunk down and isn't lined up with the rest of the map.\nIt is a larger map than normal, is it that the reason why? It's worked fine up until now. I've posted a pic of what i mean.\nFor reference, my map is 50 x 70, and this is the script I've put in the notes: LAYER_S 0 redvalley 0 0 255 0.5 10 0 0\nI've just copy and pasted that script from my other maps that are working.\nI've been using gimp to create my maps, is it perhaps something with the export settings? Still works fine when I try it on new test maps, copy and paste the same script and everything."
+    },
+    {
+      "post_id": "js-post-1442657",
+      "author": "Plueschkatze",
+      "date": "2024-05-07T17:03:06+0900",
+      "body": "Is your parallax map the right size for your map resolution?\nYour parallax maps would need to be 2400x3360 to fit a 50x70 map.\n(50 x 48 and 70 x 48 if you use the 48px grid)\nAlso your plugin call seems to be a little messed up.\nSimplest version of the call, if you don't use parallax offsets or anything:\nCalling from an event:\nLAYER_S MAPID ID GRAPHIC X Y OPACITY Z BLEND\nUsed in Maps Notes:\nLAYER_S ID GRAPHIC X Y OPACITY Z BLEND\nBased on these your Z depth would be 0.5 (I think it's full numbers only? but I might be incorrect)\nnegative and 0 are below the tileset, 1 is above the tileset, 5 and higher above the player\nYour blend mode would be 10, which doesn't exist.\nBlend modes are:\nBlend mode (0 = normal, 1 = add, 2 = multiply, 3 = screen)\n*NOTE RPG Maker MV version 1.1 mutliply isn't supported\nAlso if you just saved the maps via rightclick onto the maps to explort them, those are never to scale. You'd need a plugin that actually exports them in 1:1 scale, like orange mapshots for RPGMaker MV. (not sure if there's a MZ version or if it would still work in MZ or via Fossil)"
+    },
+    {
+      "post_id": "js-post-1487843",
+      "author": "GreenOx97",
+      "date": "2024-12-15T12:19:46+0900",
+      "body": "Plueschkatze said:\nIs your parallax map the right size for your map resolution?\nYour parallax maps would need to be 2400x3360 to fit a 50x70 map.\n(50 x 48 and 70 x 48 if you use the 48px grid)\nAlso your plugin call seems to be a little messed up.\nSimplest version of the call, if you don't use parallax offsets or anything:\nCalling from an event:\nLAYER_S MAPID ID GRAPHIC X Y OPACITY Z BLEND\nUsed in Maps Notes:\nLAYER_S ID GRAPHIC X Y OPACITY Z BLEND\nBased on these your Z depth would be 0.5 (I think it's full numbers only? but I might be incorrect)\nnegative and 0 are below the tileset, 1 is above the tileset, 5 and higher above the player\nYour blend mode would be 10, which doesn't exist.\nBlend modes are:\nBlend mode (0 = normal, 1 = add, 2 = multiply, 3 = screen)\n*NOTE RPG Maker MV version 1.1 mutliply isn't supported\nAlso if you just saved the maps via rightclick onto the maps to explort them, those are never to scale. You'd need a plugin that actually exports them in 1:1 scale, like orange mapshots for RPGMaker MV. (not sure if there's a MZ version or if it would still work in MZ or via Fossil)\nClick to expand...\nForgot to reply before, but this worked, thanks. Rescaled the image in GIMP to the 2400 x 3360 size and it fit perfectly."
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/animations-speeding-up-when-simulating-input-instead-of-clicking.176161",
+  "title": "Animations speeding up when simulating input instead of clicking",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-12T04:39:45.444215+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1503852",
+      "author": "chris-cote",
+      "date": "2025-03-12T07:16:32+0900",
+      "body": "(See bottom for update - it gets weirder!)\nWhen a player clicks a rock event in my game, it plays a mining animation using a movement route. If the player clicks the rock repeatedly, it will trigger this movement route again each time the event is activated with no problems.\nWhere I am getting into trouble is when I add anything to the event which checks to see if the player has either OK or touchInput pressed, and if so, either restarts the event with a script call, or waits a few frames after the event ends and triggers a virtual OK input (to trigger the rock again).\nThis all works just fine mechanically, as it will re-trigger the event if the input was held, but the confusing issue is that, when the virtual input triggers the rock event again, the animation plays much faster. Clicking the event repeatedly plays the animation at a normal speed, and holding the mouse click down or OK key down, which retriggers the event, speeds the animation up super fast. This means that clicking the rock repeatedly mines it at the intended animation speed (about 10 frames between the animation frames), and holding the OK button down to re-trigger it spams through the animation with nearly no wait between the frames, and breaks the rock significantly faster.\nHere are my events:\nSpoiler:\nEVENTS\nThis is the rock. it just plays an animation, then enables the switch that runs the \"repeat check\" parallel event\nThis is the parallel event which the above triggers. This checks to see if the mouse or OK key are pressed, and if so, triggers an event which waits a few frames and then simulates another OK input.\nAnd this is the final event, triggered by the above. It just waits and then triggers OK\nAt first, I was using a simpler process (checking if the input is pressed, and if so, using the $gameMap.event(this.eventId()).start() script to just re-trigger the event, but after having these issues, I assumed maybe it was a problem with starting the event this way, so switched to the above so that I would literally be waiting and then triggering an OK press again, just like if the player were actually clicking the event repeatedly. Even despite this, the animation still plays at different speeds when actually clicking repeatedly vs holding the click and triggering the above events.\nUPDATE:\nI did a bunch more testing and realized that this is actually somehow being caused by the act of holding down the OK input or the left mouse input. I made a test project which just runs the above move route and restarts the event endlessly (no condition check, it just always restarts after it ends), and when running that event, clicking once will make the animation repeat at the normal speed, but holding the OK or left mouse input will instantly speed up the looping animations. It is very bizarre.\nI've made a test project if anyone wants to see if they can figure it out:\nDOWNLOAD\nIn that project, if you click on the rock, you will start mining it on a loop. If you hold down the left mouse button or Z (\"ok\"), the animation will speed up while the key is held. As soon as you stop holding the key, the animation returns to its normal speed.\nThis is with no plugins active except a basic zoom plugin, and an extremely stripped down event. RPG Maker seems to be doing something very weird while the OK or left mouse are held, and I have no clue what."
+    },
+    {
+      "post_id": "js-post-1503862",
+      "author": "utunnels",
+      "date": "2025-03-12T08:21:13+0900",
+      "body": "Why does it have to be so complex? If you want to interact with the rock again you can remove the wait check box of the route. Or split the route into two parts if you want the player to wait some time."
+    },
+    {
+      "post_id": "js-post-1503866",
+      "author": "chris-cote",
+      "date": "2025-03-12T08:35:35+0900",
+      "body": "utunnels said:\nWhy does it have to be so complex? If you want to interact with the rock again you can remove the wait check box of the route. Or split the route into two parts if you want the player to wait some time.\nClick to expand...\nI don't really understand what you mean. Wait for move route is enabled so that it fully plays the animation before moving on to the next process. Changing this doesn't really have any effect on how it all plays out, since it is waiting anyways, so it may as well be enabled.\nThere are no issues in terms of interacting with the rock again. The problem is that when a repeat interaction is triggered based on a condition, the animation plays at a much faster speed."
+    },
+    {
+      "post_id": "js-post-1503875",
+      "author": "utunnels",
+      "date": "2025-03-12T09:24:48+0900",
+      "body": "Oh, I don't know if I understand you correctly.\nSo to make it simple, you want the player to play a mining animation when you click or press OK on the event.\nDuring the animation, the user may click/press OK again, so the animation will restart after it completes?"
+    },
+    {
+      "post_id": "js-post-1503887",
+      "author": "chris-cote",
+      "date": "2025-03-12T11:36:01+0900",
+      "body": "utunnels said:\nOh, I don't know if I understand you correctly.\nSo to make it simple, you want the player to play a mining animation when you click or press OK on the event.\nDuring the animation, the user may click/press OK again, so the animation will restart after it completes?\nClick to expand...\nClose - the idea is that the event will check at the end of its process (or an external event will check) to see if the OK button or left mouse are currently pressed down. If so, it will re-trigger the event (either using a start script, or repeating an OK input).\nThis has the effect of allowing the player to just hold down the OK button or left mouse to repeatedly swing their pickaxe at the rock, rather than repeatedly clicking (similar to Stardew Valley, Minecraft etc.).\nThe problem is that, when the event was being triggered this way, it would run through the event's animation again very fast, as if it were skipping all of the wait commands.\nI did a bunch more testing and realized that this is actually somehow being caused by the act of holding down the OK input or the left mouse input. I made a test project which just runs the above move route and restarts the event endlessly (no condition check, it just always restarts after it ends), and when running that event, clicking once will make the animation repeat at the normal speed, but holding the OK or left mouse input will instantly speed up the looping animations. It is very bizarre.\nI've made a test project if anyone wants to see if they can figure it out:\nDOWNLOAD\nIn that project, if you click on the rock, you will start mining it on a loop. If you hold down the left mouse button or Z (\"ok\"), the animation will speed up while the key is held. As soon as you stop holding the key, the animation returns to its normal speed.\nThis is with no plugins active except a basic zoom plugin, and an extremely stripped down event. RPG Maker seems to be doing something very weird while the OK or left mouse are held, and I have no clue what."
+    },
+    {
+      "post_id": "js-post-1503890",
+      "author": "utunnels",
+      "date": "2025-03-12T12:22:22+0900",
+      "body": "I recall I replied you in another topic about a parallel event page.\nMaybe you can have a check their to active a self switch when OK is pressed down, but deactive the swtich if not.\nSo in that mining event page make a loop, if the self switch is not on, break loop.\nMZ - Multiple Active Event Pages\nHi folks,   I swear I've seen a plugin which does this somewhere before, but I can't seem to find it.   I need a plugin which lets an event have both a parallel process event page and an \"action button\" page active at the same time. Perhaps by having a notetag on the Action Button page to denote...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1503891",
+      "author": "bass2yang",
+      "date": "2025-03-12T12:28:04+0900",
+      "body": "This is a part of the corescript for MZ:\nJavaScript:\nScene_Map.prototype.isFastForward = function() {\n    return (\n        $gameMap.isEventRunning() &&\n        !SceneManager.isSceneChanging() &&\n        (Input.isLongPressed(\"ok\") || TouchInput.isLongPressed())\n    );\n};\nYou could tie that function to a switch so that you can allow the player to fast forward during other scenes and disable to switch to stop the fast forward during the mining.\nEdit: so something like this - tie it to game switch 1. When you turn switch 1 ON, you can fast forward. When you turn it OFF, it will prevent fast forwarding with the ok button or left mouse press:\nJavaScript:\nScene_Map.prototype.isFastForward = function() {\n    return (\n        $gameSwitches.value(1) && \n        $gameMap.isEventRunning() && !SceneManager.isSceneChanging() &&\n        (Input.isLongPressed(\"ok\") || TouchInput.isLongPressed())\n    );\n};\nchris-cote said:\nholding the OK or left mouse input will instantly speed up the looping animations. It is very bizarre.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1503976",
+      "author": "chris-cote",
+      "date": "2025-03-13T03:08:30+0900",
+      "body": "bass2yang said:\nThis is a part of the corescript for MZ:\nJavaScript:\nScene_Map.prototype.isFastForward = function() {\n    return (\n        $gameMap.isEventRunning() &&\n        !SceneManager.isSceneChanging() &&\n        (Input.isLongPressed(\"ok\") || TouchInput.isLongPressed())\n    );\n};\nYou could tie that function to a switch so that you can allow the player to fast forward during other scenes and disable to switch to stop the fast forward during the mining.\nEdit: so something like this - tie it to game switch 1. When you turn switch 1 ON, you can fast forward. When you turn it OFF, it will prevent fast forwarding with the ok button or left mouse press:\nJavaScript:\nScene_Map.prototype.isFastForward = function() {\n    return (\n        $gameSwitches.value(1) &&\n        $gameMap.isEventRunning() && !SceneManager.isSceneChanging() &&\n        (Input.isLongPressed(\"ok\") || TouchInput.isLongPressed())\n    );\n};\nClick to expand...\nThank you so much! That fixed it.\nI had no idea that this was even a thing, haha."
+    }
+  ]
+}
