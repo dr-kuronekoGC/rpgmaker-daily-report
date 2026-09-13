@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/need-help-making-an-battle-escape-plugin.174436",
+  "title": "MZ Need help making an battle escape plugin",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:19:56.548675+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1491927",
+      "author": "james5272",
+      "date": "2025-01-05T23:17:22+0900",
+      "body": "I feel the current battle escape rate is too high, it seems that however it's set up, I can escape on 2nd try every time.\nWhat I want is a base 25% chance to escape, that goes up 10% every failure until you escape. And a way to edit that base value in case I decide it needs tweaking."
+    },
+    {
+      "post_id": "js-post-1491930",
+      "author": "ShadowDragon",
+      "date": "2025-01-05T23:26:08+0900",
+      "body": "JavaScript:\nBattleManager.makeEscapeRatio = function() {\n    this._escapeRatio = (0.25 * $gameParty.agility()) / $gameTroop.agility();\n};\nsave this as JS and it works.\ndefault is 0.5 and it adds 0.1 on escape failure"
+    },
+    {
+      "post_id": "js-post-1491934",
+      "author": "Wisepot",
+      "date": "2025-01-05T23:50:42+0900",
+      "body": "ok, i got you covered, i just made simple plugin, with base escape rate is 25% and will increase 10% every time you use escape command, till you get out of battle you can check it on my itchio page\nfree to download\nyou can also change base escape rate and increment rate according to your choice\nBattle Escape Plugin - RPG Maker MZ by WisePot^\nBattle Escape Plugin - RPG Maker MZ\nwisepot.itch.io"
+    },
+    {
+      "post_id": "js-post-1491935",
+      "author": "james5272",
+      "date": "2025-01-05T23:51:02+0900",
+      "body": "There must be something else going on, even if I set escape rate to 0 and delete the party and troop calculations, the party escapes 2nd try every time. EDIT: This was in response to ShadowDragon, I'll try the other plugin later. If that doesn't change anything, I will try disabling other plugins, then if that affects it try to isolate what plugin is causing the issue. Thanks for the help so far!\nEDIT: Yeah even if all plugins disabled but Wisepot's, and I set both values to 0, party always escapes on 2nd attempt. Any ideas?"
+    },
+    {
+      "post_id": "js-post-1491964",
+      "author": "Wisepot",
+      "date": "2025-01-06T01:57:23+0900",
+      "body": "james5272 said:\nThere must be something else going on, even if I set escape rate to 0 and delete the party and troop calculations, the party escapes 2nd try every time. EDIT: This was in response to ShadowDragon, I'll try the other plugin later. If that doesn't change anything, I will try disabling other plugins, then if that affects it try to isolate what plugin is causing the issue. Thanks for the help so far!\nEDIT: Yeah even if all plugins disabled but Wisepot's, and I set both values to 0, party always escapes on 2nd attempt. Any ideas?\nClick to expand...\nHI, i just test out doing escape rate 0 for both, and it took minimum 4-9 turns for me to escape the battle its working fine with my project,\nif both rate become zero, still you can not make you cant escape battle fully, it will always have chance to escape but its minor took me 4-9 fail attempts to run out of battle ,\ntested more than 6 battles\nif you check the code it will , try to take base game rate, if plugin rate are zero or not availble"
+    },
+    {
+      "post_id": "js-post-1491972",
+      "author": "james5272",
+      "date": "2025-01-06T02:09:28+0900",
+      "body": "Hmm yeah I loaded a new project to test escaping, with your plugin it is working as expected in the new project. Not sure what I have to do to fix it in existing project... I'll see what I can find...\nEDIT: So even though the issue is still there with all my plugins disabled, it's still an issue with one of the plugins.  When I use the original plugins.js file in the js directory, escape behaves as expected. When I use my plugins.js file (which I assume has all my plugin configuration info), escape is wonky.\nAttached is a picture of my plugins. I'll take a look through their settings and see if I can find what is doing this, but if anyone might know where to look to help speed things up, it would be appreciated."
+    },
+    {
+      "post_id": "js-post-1491976",
+      "author": "Wisepot",
+      "date": "2025-01-06T02:20:55+0900",
+      "body": "try to put in top may be other plugin making it go wrong something like that"
+    },
+    {
+      "post_id": "js-post-1491979",
+      "author": "james5272",
+      "date": "2025-01-06T02:31:33+0900",
+      "body": "That didn't fix it, but I have isolated it to being from Visu CoreEngine. When I delete the entire plugin's entry from the plugin.js file, your plugin works. So now I have to either find what exactly is causing it, or just do Visu CoreEngine from scratch and retweak things."
+    },
+    {
+      "post_id": "js-post-1491981",
+      "author": "Wisepot",
+      "date": "2025-01-06T02:34:43+0900",
+      "body": "james5272 said:\nThat didn't fix it, but I have isolated it to being from Visu CoreEngine. When I delete the entire plugin's entry from the plugin.js file, your plugin works. So now I have to either find what exactly is causing it, or just do Visu CoreEngine from scratch and retweak things.\nClick to expand...\nmy plugin is kind of very simple and should not have any problem with any other plugins, my other plugins work with visustella plugins\nhope so it work for your game"
+    },
+    {
+      "post_id": "js-post-1491983",
+      "author": "james5272",
+      "date": "2025-01-06T02:39:39+0900",
+      "body": "Good news (kind of)! It seemed it was Visu CoreEngine because when it was activated the bug happened, but actually it's Visu BattleCore. So there's a setting in there I must have messed with that's doing this. If I figure it out without resorting putting the plugin to its original values and tweaking everything else again, I'll post how it's done in case someone has a similar problem down the line.\nEDIT: See attached image. No matter what I set Escape Ratio and Escape Raise to (even if 0.0000001), escape *always* succeeds on 2nd try. No matter where I place your plugin and do with it, same issue. It's something with specifically Visu BattleCore. And I want to use the BattleCore plugin if for nothing else but HP bars on enemies, I've seen other plugins that do only this but they don't look as clean."
+    },
+    {
+      "post_id": "js-post-1491984",
+      "author": "Wisepot",
+      "date": "2025-01-06T02:41:13+0900",
+      "body": "james5272 said:\nGood news (kind of)! It seemed it was Visu CoreEngine because when it was activated the bug happened, but actually it's Visu BattleCore. So there's a setting in there I must have messed with that's doing this. If I figure it out without resorting putting the plugin to its original values and tweaking everything else again, I'll post how it's done in case someone has a similar problem down the line.\nClick to expand...\nsend me to when u find solution, so if any one watch my video on YouTube and got same problem with visustella battle plugin i can explain them"
+    },
+    {
+      "post_id": "js-post-1491986",
+      "author": "Maliki79",
+      "date": "2025-01-06T03:02:25+0900",
+      "body": "Those two VS Settings SHOULD work to fix your issue.\nYou should share SS of what is IN those settings.\nThat would probably help a LOT here."
+    },
+    {
+      "post_id": "js-post-1491988",
+      "author": "james5272",
+      "date": "2025-01-06T03:17:03+0900",
+      "body": "Maybe it's the agility + party alive members calculation? I do just want a flat % base + flat % increase per failure. What's the safe way to remove these to test?\nEDIT: I think I'm just going to use a plugin to have currency drop on escape, and have escape always be successful.\nhttps://forums.rpgmakerweb.com/index.php?threads/kotonoha-escape-lost-gold-escape-penalty.121729/"
+    },
+    {
+      "post_id": "js-post-1492000",
+      "author": "Maliki79",
+      "date": "2025-01-06T04:06:12+0900",
+      "body": "You can comment // out the value += line to fix, but do whatever you like.\nMy game guarantees escapes as well.\nThe penalty there is a temporary increase in the chance for a surprise attack which builds up on subsequent escapes."
+    },
+    {
+      "post_id": "js-post-1492006",
+      "author": "ShadowDragon",
+      "date": "2025-01-06T04:42:21+0900",
+      "body": "the way I did it should work, but it also has it's party and game troop agility\nthat plays a role so it has a higher change.\nJavaScript:\nBattleManager.makeEscapeRatio = function() {\n    this._escapeRatio = 0.25 ; // always 25% change + 0.1 from failure\n};\n\nBattleManager.makeEscapeRatio = function() {\n    this._escapeRatio = 0; // fails the first time, 10% afterwards\n};\nyou can always set it not able to as well, but require further modification."
+    },
+    {
+      "post_id": "js-post-1492079",
+      "author": "james5272",
+      "date": "2025-01-06T11:22:26+0900",
+      "body": "So now that I have changed my mind on what I want to do, and I hate to ask this after everyone has tried to help me with my previous request... but that \"drop currency on escape\" plugin I found, drops based on how much the monsters would have if killed. I want to have a value I can modify that is just % of personal currency. And it would need to have a customizable text for what the currency is, since in my game it is not called gold. I am thinking drop 5% of personal currency on every escape, but I want to balance it, so want to be able to fiddle. I am willing to pay a buck or two for this as well, if it's on itch.io to make it easy to pay.\nEDIT: And, barring that, I got custom escape rates working. In addition to putting // in front of the previously shown lines, also had to do it with this one:"
+    }
+  ]
+}

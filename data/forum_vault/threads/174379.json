@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/compatibility-issue-with-galv-message-styles-and-galv-timed-messages.174379",
+  "title": "MZ Compatibility issue with Galv Message Styles and Galv Timed Messages",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:19:58.324237+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1491544",
+      "author": "Zia_",
+      "date": "2025-01-03T13:57:27+0900",
+      "body": "Hi all,\nI have a very specific compatibility issue with these plugins:\nGALV_MessageStylesMZ\n(Turning normal textboxes into a speech bubble design).\nGALV_TimedMessagePopups\n+ FOSSIL\n(Adding passive textboxes to spawn above events; they don't hold the game, so you can add sidewalk conversations by NPCs with it, as you walk by).\nThe setup is shaky already, as they both render speech bubble textboxes, and one of them is an MV plugin running with FOSSIL. But they work well, except for one issue.\nIf both plugins happen to render a textbox in the exact same frame, the GALV_MessageStylesMZ textbox won't be displayed as a speechbubble but a regular RPG Maker textbox. I have a cutscene, where you talk inside of a noisy crowd, so it happes a few times.\nDo you guys have an idea on how to fix it? I'm sure, there is a way, but it's beyond my abilities.\nI'd love to fix it in the plugin. Changing the events would be a pain.\nThanks!"
+    },
+    {
+      "post_id": "js-post-1491549",
+      "author": "utunnels",
+      "date": "2025-01-03T15:36:43+0900",
+      "body": "I haven't read all of the code but I can tell you where to look.\nPerhaps they both modified command101?"
+    },
+    {
+      "post_id": "js-post-1491600",
+      "author": "Ms Littlefish",
+      "date": "2025-01-03T22:48:15+0900",
+      "body": "This thread was moved from RPG Maker MZ Support to JavaScript/Plugin Support."
+    },
+    {
+      "post_id": "js-post-1491602",
+      "author": "Zia_",
+      "date": "2025-01-03T23:06:20+0900",
+      "body": "utunnels said:\nI haven't read all of the code but I can tell you where to look.\nPerhaps they both modified command101?\nClick to expand...\nYes, they do. Is there any best practice to approach this?\nGALV_TimedMessagePopups\nJavaScript:\nGalv.Mpup.Game_Interpreter_command101 = Game_Interpreter.prototype.command101;\nGame_Interpreter.prototype.command101 = function() {\n    var cap = this._list[this._index + 1].parameters[0].match(/<c:(.*)>/i);\n\n    var pos = 2; //this._params[3];\n    var data = this._params.clone();\n\n    if (!cap) {\n        return Galv.Mpup.Game_Interpreter_command101.call(this);\n    } else {\n        this.createCaption(cap,pos,data);\n        this._index++; // skip the original command101 execution\n    };\n};\nGALV_MessageStylesMZ\nJavaScript:\nGalv.Mstyle.Game_Interpreter_command101 = Game_Interpreter.prototype.command101;\nGame_Interpreter.prototype.command101 = function(params) {\n    const ispop = this._list[this._index + 1].parameters[0].match(/\\\\pop/i);\n    if (ispop) {\n        // Is a pop message\n        Galv.Mstyle.thisEvent = this._eventId;\n        Galv.Mstyle.target = Galv.Mstyle.setTarget(Galv.Mstyle.checkTarget(this._list[this._index + 1].parameters[0]));\n\n        if (Galv.Mstyle.target == false) {\n            while (this.nextEventCode() === 401) {  // Text data\n                this._index++;\n            };\n            return false;\n        };\n    } else {\n        // Not a pop message\n        Galv.Mstyle.thisEvent = null;\n        Galv.Mstyle.target = null;\n    };\n    return Galv.Mstyle.Game_Interpreter_command101.call(this,params);\n};"
+    },
+    {
+      "post_id": "js-post-1491609",
+      "author": "utunnels",
+      "date": "2025-01-03T23:25:48+0900",
+      "body": "Have you tried changing the order of the two plugins first?"
+    },
+    {
+      "post_id": "js-post-1491612",
+      "author": "Zia_",
+      "date": "2025-01-03T23:40:32+0900",
+      "body": "At first I had them this way:\n1. GALV_TimedMessagePopups\n2. GALV_MessageStylesMZ\nI swapped them, and now - I think - the timed message will be dropped if there's a MessageStyle text spawning at the same time. I could live with that. I'll run the cutscene for a couple of times to see if there's anything odd."
+    },
+    {
+      "post_id": "js-post-1491615",
+      "author": "utunnels",
+      "date": "2025-01-03T23:58:13+0900",
+      "body": "Hmm, that's strange. I think I'm getting senile as I can't see any obvious reason why it would happen.\nThere maybe one place:\nreturn Galv.Mpup.Game_Interpreter_command101.call(this);\nThis line calls the original function without any arguments, I wonder if it will cause any problem.\nMaybe you can try changing it like this:\nreturn Galv.Mpup.Game_Interpreter_command101.apply(this,arguments);\nEdit*\nMZ:\nGame_Interpreter.prototype.command101 = function(params)  ...\nMV:\nGame_Interpreter.prototype.command101 = function() ..."
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/action-sequence-1-yanfly-if-else-conditions-need-help.174566",
+  "title": "MV Action Sequence 1(Yanfly) if else conditions, need help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:20:09.038290+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1492794",
+      "author": "reifferm",
+      "date": "2025-01-10T04:44:39+0900",
+      "body": "Hello everyone, i may start saying i'm sorry for any mispell or wrong typing, 'cause english is not my native language and i'm not fluent.\nSo, i'm using rpg maker mv just a couple of months, and have just a little of code knowledge, i'm using a bunch of plugins, my question is about [\nif else conditions]\nin action sequence from Yanfly specifically.\nSo, i need to make a condition to check the elementrate of the target, the type of attack did by the user and if it hits the target, if all this 3 conditions met, an animation will play on the target.\nSo, by now i get to work the elementrate part by doing this:\nif target elementRate(10) > 1\nanimation 79: target\nend\nK, now i need to add the other 2 conditions on the check, i know the operator for that is \" && \" i just don't know how i can check the type of the attack the user is using, like element type of the weapon, type of the weapon, or something like that. I found somewhere a code, just don't remember now for checking if the attack hitted, is something like this.result()hit(), whatever, i have this noted somewhere, my main question is about checking the type of weapon used on the attack by the user or element of attack used by the user. Anyone can help or show where i can find how to check those game datas?"
+    },
+    {
+      "post_id": "js-post-1492822",
+      "author": "ShadowDragon",
+      "date": "2025-01-10T07:35:11+0900",
+      "body": "what you could try (untested as I don't aim for it)\nif condition 1\nif condition 2\nif condition 3\nanimation 79: target\nend\nend\nend\nso nothing happens if 1 fails.\nit is possible you need a nested if else condition for this (forgot the name)\nbut if you search for nested condition for yanfly seq, I think you can find it\nif the above fails"
+    },
+    {
+      "post_id": "js-post-1492829",
+      "author": "Robro33",
+      "date": "2025-01-10T08:04:47+0900",
+      "body": "reifferm said:\nSpoiler:\nwhoops\nreifferm said:\ni'm using a bunch of plugins, my question is about [\nif else conditions]\nin action sequence from Yanfly specifically.\nClick to expand...\nif you happen to be using yanfly's element core plugin as well then...\nreifferm said:\nhow i can check the type of the attack the user is using, like element type of the weapon, type of the weapon, or something like that. I found somewhere a code, just don't remember now for checking if the attack hitted, is something like this.result()hit()\nClick to expand...\ngame actions have a getItemElements() function you can use to get the elements for the action, so if you wanted to see if your skill contained 3 specific elements it becomes something like\nCode:\n[1,2,3].every(e => action.getItemElements().includes(e))\nwhere the array is the list of elements youre checking\nreifferm said:\njust don't remember now for checking if the attack hitted, is something like this.result()hit(),\nClick to expand...\nthis.result().isHit() works specifically in notetags where the \"this\" refers to the action being done. youll have to change the \"this\" to \"target\" within the action sequence for the same effect.\ndo keep in mind, this only check if the most recent hit didnt miss. if a skill hits multiple times, then the code will only check if the hit immediately before the check missed or not\nClick to expand...\nEdit:\nWow, i was in a bigger rush than i thought and misunderstood everything lmao\nreifferm said:\nSo, i need to make a condition to check the elementrate of the target, the type of attack did by the user and if it hits the target\nClick to expand...\nShadowdragon has the logic laid out. you just have to nest the if statements. check the elementRate with target.elementRate(10) , use action.item().hitType to get the type of attack (however is this needed? this is already in the skill and wont change), and target.result().isHit() after the action effect to see if it hit."
+    },
+    {
+      "post_id": "js-post-1492987",
+      "author": "reifferm",
+      "date": "2025-01-11T03:56:08+0900",
+      "body": "Robro33 said:\nEdit:\nWow, i was in a bigger rush than i thought and misunderstood everything lmao\nShadowdragon has the logic laid out. you just have to nest the if statements. check the elementRate with target.elementRate(10) , use action.item().hitType to get the type of attack (however is this needed? this is already in the skill and wont change), and target.result().isHit() after the action effect to see if it hit.\nClick to expand...\nThanks for the help. So, i'm pretty close to attain what i need, and just to clarify the necessity of inputing the type of the weapon or damage. I'm looking for, to when you use your normal attack on a monster and you use a slashing weapon, some blood will lash out of him, thus the need to verifiy the type of the damage,.\nI'm pretty close to the result that i want with:\nif target.result().isHit() && target.elementRate(10) > 1\nanimation 79: target\nend\nThe code above is already working, the problem any damage will spill the blood out, strike, blunt, etc (i'm using the normal attack here). I'm questioning myself if is really needed to use nested condition for that, or i can just add a one more && with the condition i wish to check, so it will only work if the 3 conditions are met (hit succes, element rate and type of damage)"
+    },
+    {
+      "post_id": "js-post-1493034",
+      "author": "Robro33",
+      "date": "2025-01-11T08:23:20+0900",
+      "body": "reifferm said:\nI'm questioning myself if is really needed to use nested condition for that, or i can just add a one more && with the condition i wish to check\nClick to expand...\nyou never *needed* the nested conditions for this, but nesting multiple IFs is logically equivalent to using multiple &&s. if you only want one damage type to trigger the thing you want, then it can be done in one IF. if you want a different animation for the \"damage types\" youll want to do some nesting since the 3rd condition has different outcomes.\nreifferm said:\nthe problem any damage will spill the blood out, strike, blunt, etc (i'm using the normal attack here)....\ni wish to check...the... type of damage\nClick to expand...\nbut how is this slash/blunt determined? Default rpgmaker mv doesnt have any special physical damage types. are these also elements? is it from a plugin? is it the weapon's attack animation? the weapon's weapon type?"
+    },
+    {
+      "post_id": "js-post-1493061",
+      "author": "reifferm",
+      "date": "2025-01-11T10:46:33+0900",
+      "body": "Robro33 said:\nyou never *needed* the nested conditions for this, but nesting multiple IFs is logically equivalent to using multiple &&s. if you only want one damage type to trigger the thing you want, then it can be done in one IF. if you want a different animation for the \"damage types\" youll want to do some nesting since the 3rd condition has different outcomes.\nbut how is this slash/blunt determined? Default rpgmaker mv doesnt have any special physical damage types. are these also elements? is it from a plugin? is it the weapon's attack animation? the weapon's weapon type?\nClick to expand...\nHey, thanks for helping. The Slash is determined by the element slash i created, wich is index 10, so when that enemy receives that element damage and his elemental damage is above 100% the animation will occur. So, my doubt is, how o check the element used on the attac, or type of weapon used by the actor in the attack. I guess either of these could work."
+    },
+    {
+      "post_id": "js-post-1493065",
+      "author": "Robro33",
+      "date": "2025-01-11T11:21:23+0900",
+      "body": "reifferm said:\nhow o check the element used on the attac\nClick to expand...\nuser.attackElements().includes(10) should be true if the user has a slashing attack element trait present on them"
+    },
+    {
+      "post_id": "js-post-1493237",
+      "author": "reifferm",
+      "date": "2025-01-12T08:58:34+0900",
+      "body": "Thank you very much Robro, it's working as intended, i ended with this:\nif target.result().isHit()\nif user.attackElements(10) && target.elementRate(10) > 1\nanimation 76: target\nend\nend\nMy last question, if i want to check the weapon type of attacking actor, what sould i type? And, where do i look for these functions or data if i wanna do check other possibilities?\nRobro33 said:\nuser.attackElements().includes(10) should be true if the user has a slashing attack element trait present on them\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1493255",
+      "author": "Robro33",
+      "date": "2025-01-12T12:40:14+0900",
+      "body": "reifferm said:\nif i want to check the weapon type of attacking actor, what sould i type?\nClick to expand...\nthen the function you use is isWtypeEquipprd(x) where x is the id of the weapon type, but as enemies dont have equipment, they dont have that function and itll cause an error when an enemy uses it.\nYoud have to either give enemies a version of the attack without that function or use isActor() at the start to make sure it doesnt get ran on an a enemy.\nreifferm said:\nAnd, where do i look for these functions or data if i wanna do check other possibilities?\nClick to expand...\nGame_Actor | RPGMakerMV Library\nthis website is an organized documentation of MV's code. All of the code is also inside the js files within the js folder of your project. If you know how to look for it, everything youll want to fine *will* be there"
+    }
+  ]
+}

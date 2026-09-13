@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/parallax-mapping-blurry-based-on-player-characters-coordinates.174339",
+  "title": "MZ Parallax Mapping blurry based on player character's coordinates",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:20:04.087651+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1491268",
+      "author": "squigglycalamari",
+      "date": "2025-01-02T00:51:37+0900",
+      "body": "Hello,\nI have reached an impasse when developing my game. I'm currently using parallax mapping per the instructions provided by\nLvL Up Design [1] on how to use Galv's Layer Graphics [2] for RPG Maker MZ.\nHowever, I noticed something strange during the development of my first three maps, my maps are blurry at least depending on which perspective you have when entering the map. It seems to be that when the player loads in the map on the left most side of the screen (west most) the parallax map is clear and focused. Yet, if the player where to load in anywhere else the parallax map is blurry. I filed this down to specific \"strange zones\" (tile columns required to reach to load in the texture) that seem to change in small variances across different maps.\nI have been testing this for the last few days as it has a significant impact on how my maps can be crafted. Below I will try to articulate and describe what is happening.\nHere is an image of the blurriness, the red box I drew is the tile or tile column that the player character MUST reach to focus the parallax texture.\n(Figure 1. Blurry Crossbows/Windows)\nThe texture loading is independent of time, I have waited for beyond an hour and confirmed the texture will continue to be blurry indefinitely till the player reaches a strange zone.\nHere is an image of the same street but clear, the player character was initially loaded into the map on the left most side thus the map is fully clear.\n(Figure 2. Clear Crossbows/Windows)\nThere are a few things I observed:\n1) Strange zones are always placed on the left most side of the map\n2) The parallax map will never be in focus until the player character moves onto a strange zone, or the player character is loaded into the map left of a strange zone.\n3) Event placement doesn't impact the parallax map being in focus, only the player characters own coordinates.\n4) Windowed/fullscreen game doesn't change the blurryness.\nFinally I will show a more in-depth real world example, the number 1s are strange zones that must be interacted with for the parallax map to be loaded in without blurriness. Thus loading in via the bridge on the left is never an issue since that area is left of the strange zones, however loading in from up the street will always cause problems till the player characters move onto a strange zone tile.\n(Figure 3. The highlighted red 1s are the strange zones for this  37x36 map)\nI have tried disabling plugins, and using the Cyclone-Engine by Hudell [3] and the issue is the same. I would really appreciate some help as this is starting to get a little stressful as I really want to decorate my maps well and I want parallax mapping for that reason. I also would need to redraw everything to design my maps around this which I don't want to do.\nYes, I have changed the width of a map to something absurd and it didn't move the strange zone either. I have tried adjusted the parallax image resolution to be larger than the size from the default save map image so its oversized and that did not change anything.\nSystem information:\nTile Size: 48x48\nScreen Width: 1280\nScreen Height: 720\n[1]\n[2]\nhttps://galvs-scripts.com/2020/08/24/mz-layer-graphics/\n[3]\nhttps://github.com/Hudell/cyclone-engine"
+    },
+    {
+      "post_id": "js-post-1499737",
+      "author": "snakes_wayne",
+      "date": "2025-02-19T01:09:12+0900",
+      "body": "Did you ever find out what was causing this? I'm experiencing the same issue using Galv's Layers. I noticed that my layers look slightly blurry unless my character steps into a specific place on the map.\nEdit: I've discovered that mine is being caused by DotMoveSystem.js, a plugin which allows off-grid movement."
+    },
+    {
+      "post_id": "js-post-1499743",
+      "author": "Andar",
+      "date": "2025-02-19T02:34:33+0900",
+      "body": "In both cases it's either a zoom issue or due to wrong numbers.\nthere are a few rules for maps in general and for parallax maps specifically:\nParallax rules:\n1) map size in tiles multiplied by tilesize in pixel has to be background picture size in pixel\n2) minimum map size is screen size\n3) if using the background parallax slot, begin the filename with ! to disable parallax (movement)\nGeneral:\n4) if at all possible, have screen size fully divisable by tilesize\nthe last means your screensize should be 1248x720, NOT 1280.\nThat will give you two tiny black frames left and right on the monitor, but reduces jittering and blurring.\nfor more help you'll need to give your size numbers, preferably in a different post for\n@snakes_wayne"
+    },
+    {
+      "post_id": "js-post-1499746",
+      "author": "snakes_wayne",
+      "date": "2025-02-19T02:58:13+0900",
+      "body": "Andar said:\nIn both cases it's either a zoom issue or due to wrong numbers.\nthere are a few rules for maps in general and for parallax maps specifically:\nParallax rules:\n1) map size in tiles multiplied by tilesize in pixel has to be background picture size in pixel\n2) minimum map size is screen size\n3) if using the background parallax slot, begin the filename with ! to disable parallax (movement)\nGeneral:\n4) if at all possible, have screen size fully divisable by tilesize\nthe last means your screensize should be 1248x720, NOT 1280.\nThat will give you two tiny black frames left and right on the monitor, but reduces jittering and blurring.\nfor more help you'll need to give your size numbers, preferably in a different post for\n@snakes_wayne\nClick to expand...\nThank you, I've made a new thread with my info as well:\nRMMZ - Blurry images when using pixel-movement plugins\nI'm experiencing blurry pixel art when I use any plugin that utilizes off-grid movement.  I'm attaching a screenshot. I think what's happening is that the camera is stopping in between whole pixels, causing slight stretching of the artwork.  My graphics are set up like this:  - Screen Width 816...\nforums.rpgmakerweb.com"
+    }
+  ]
+}

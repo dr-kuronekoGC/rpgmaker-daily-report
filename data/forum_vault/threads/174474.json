@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/equip-weapons-through-script.174474",
+  "title": "MV Equip Weapons through script",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:19:53.811835+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1492220",
+      "author": "Pearlie",
+      "date": "2025-01-07T04:24:50+0900",
+      "body": "Hi, i would like to do something like this :\n$gameParty.equipItem($dataWeapons[$gameVariables.value(21)], 1);\nbut doesn't work, can someone help me ?"
+    },
+    {
+      "post_id": "js-post-1492223",
+      "author": "Arcaines",
+      "date": "2025-01-07T04:29:30+0900",
+      "body": "Need to know more of what your trying to do.\nIs change equipment to based on a variable?"
+    },
+    {
+      "post_id": "js-post-1492239",
+      "author": "Robro33",
+      "date": "2025-01-07T06:15:33+0900",
+      "body": "Pearlie said:\nbut doesn't work, can someone help me ?\nClick to expand...\nequipItem is a Game_Actor function, not a Game_Party function. what youre thinking of is equipItems, which just gives you a list of the party's equips. once you have a reference to the actor, its\nCode:\nactor.equipItem(1, $dataWeapons[$gameVariables.value(21)])\nthe first argument is the slot, the 2nd is the equipment"
+    },
+    {
+      "post_id": "js-post-1492495",
+      "author": "Pearlie",
+      "date": "2025-01-08T13:11:27+0900",
+      "body": "so, if i store the actorId currently played in a variable, I can do something like :\nactor.equipItem.actorX(1, $dataWeapons[$gameVariables.value(21)])\nOr\nactor.addSpell.actorX($dataSpells[$gameVariables.value(22)]\nActually, i'm doing a rogue like, where when you open a chest, it drop a random item on the floor or a spell, also you can only play one character, you can find other ones, but never play more than one\nand you have to choose if you take it or not, and it auto equips it and leave the old one on the floor (a bit like binding of isaac).\nI'm also wandering how to change the apparence of the event through script, something like in common event,\nif event.Note = chest\nevent.Apparence = \"Item\" + $gameVariables.value(21)"
+    },
+    {
+      "post_id": "js-post-1492506",
+      "author": "Robro33",
+      "date": "2025-01-08T13:54:37+0900",
+      "body": "theres a number of issues with the snippets that youve provided.\nPearlie said:\nactor.equipItem.actorX(1, $dataWeapons[$gameVariables.value(21)])\nClick to expand...\nif you put \"actor\" in the scriptbox, youll immediately get an error as that wont be defined. thats why i said \"once you have a reference to the actor\". you already stored the actor's id into a variable, so $gameActors.actor([$gameVariables.value(21)) would be your reference\nequipItem is a function and is the function youre supposed to use.\nequipItems doesnt return anything. its call wouldnt have any properties. what is actorX supposed to be?\ni told you about the arguments equipItem takes, but i assumed the value of the variable an id for the weapon. Even though you didnt call it, what you did try to call would use the weapon that shares the id as the actor whose id you stored in the variable. if that isnt the case, you need to use another variable or place an id in manually\nPearlie said:\nactor.addSpell.actorX($dataSpells[$gameVariables.value(22)]\nClick to expand...\nsame as above, but also\naddSpell isnt a function\n$dataSpells isnt a thing within RPGMaker MV\nWhere did you get these from?"
+    },
+    {
+      "post_id": "js-post-1492509",
+      "author": "Pearlie",
+      "date": "2025-01-08T14:26:16+0900",
+      "body": "if you put \"actor\" in the scriptbox, youll immediately get an error as that wont be defined. thats why i said \"once you have a reference to the actor\". you already stored the actor's id into a variable, so $gameActors.actor([$gameVariables.value(21)) would be your reference\nequipItem is a function and is the function youre supposed to use.\nequipItems doesnt return anything. its call wouldnt have any properties. what is actorX supposed to be?\ni told you about the arguments equipItem takes, but i assumed the value of the variable an id for the weapon. Even though you didnt call it, what you did try to call would use the weapon that shares the id as the actor whose id you stored in the variable. if that isnt the case, you need to use another variable or place an id in manually\nClick to expand...\nOk , here's how i see it :\nFirst as a common event(lets say common event 1) I store the id of the only actor in the party (let's say between 1..20) in variable no22\nthen secondary, when a chest is activated with the ok button, I roll a random number within 0 and 1 (variable no 23), to determine if its a weapon chest or a spell chest,\nand for the third part, I roll the variable no21, so it makes a thing like this :\nroll var21 1..0\nif var23 = 0\nroll Var21 : 1..12\ngiveActor(var22.value) Weapon(var21.value)\nif\nroll Var21 : 1..20\ngiveActor(var22.value) Skill(var21.value)\nactor.addSpell.actorX($dataSpells[$gameVariables.value(22)]\nsame as above, but also\naddSpell isnt a function\n$dataSpells isnt a thing within RPGMaker MV\nWhere did you get these from?\nClick to expand...\nI haven't read it anywhere, i'm just trying to explain how i see the thing, i'm kinda new to object base coding (js tho)\nthanks a lot for your help"
+    },
+    {
+      "post_id": "js-post-1492510",
+      "author": "Pearlie",
+      "date": "2025-01-08T14:29:34+0900",
+      "body": "and can't find a proper documentation on internet, with all the commands and all"
+    },
+    {
+      "post_id": "js-post-1492511",
+      "author": "Robro33",
+      "date": "2025-01-08T14:38:39+0900",
+      "body": "Pearlie said:\nI haven't read it anywhere, i'm just trying to explain how i see the thing, i'm kinda new to object base coding (js tho)\nClick to expand...\ni would work on getting more familiar with js first before the rest. w3schools has some js tutorials that could be helpful.\nPearlie said:\nand can't find a proper documentation on internet, with all the commands and all\nClick to expand...\ntheres 2 documents i can suggest to you.\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nthe script call list shows you functions grouped by their utility and shows examples of their use.\nRPGMakerMV Library\nthe MV Library doc has everything grouped by their class.\nshort of those, all of the code exists within your project inside of the js folder. once you know js and the engine well enough, its just as easy to look there"
+    },
+    {
+      "post_id": "js-post-1492512",
+      "author": "Pearlie",
+      "date": "2025-01-08T14:47:38+0900",
+      "body": "okay ^^, thank you, imma look at those, thank you a lot"
+    }
+  ]
+}

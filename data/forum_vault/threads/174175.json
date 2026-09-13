@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/fixed-camera.174175",
+  "title": "MZ Fixed camera",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:20:03.213182+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1490030",
+      "author": "Renchu",
+      "date": "2024-12-27T02:09:58+0900",
+      "body": "Hey everyone!\nMy game has a lot of small maps, so I decided to look for a plugin that kept the game's camera fixed in a determined place, no matter where the player's walking at the moment.\nI tried using\nGalv's MZ Cam Control\n, and it was really good up to a certain point because it can lock the camera to a X,Y coordinate. BUT. Unfortunately, it comes with a compulsory sliding motion, and it also doesn't have the option of locking the camera to a certain axis (X\nor\nY instead of only \"X,Y\").\nCan someone help me out, please?"
+    },
+    {
+      "post_id": "js-post-1491034",
+      "author": "Renchu",
+      "date": "2024-12-31T05:06:10+0900",
+      "body": "It's been over 72 hours, which means I'm now allowed to officially bump this thread"
+    },
+    {
+      "post_id": "js-post-1491060",
+      "author": "utunnels",
+      "date": "2024-12-31T08:43:20+0900",
+      "body": "MZ - Bound Camera\nAuthor: LuciusAxelrod  Description: This plugin allows you to set the bounds of the camera scroll to something other than the edges of the map. This allows you to limit the player's view temporarily. You can use this to create effects such as single screen areas that scroll when the player would...\nforums.rpgmakerweb.com\nHave you tried other plguins, for example this one."
+    },
+    {
+      "post_id": "js-post-1491337",
+      "author": "Renchu",
+      "date": "2025-01-02T08:12:33+0900",
+      "body": "utunnels said:\nMZ - Bound Camera\nAuthor: LuciusAxelrod  Description: This plugin allows you to set the bounds of the camera scroll to something other than the edges of the map. This allows you to limit the player's view temporarily. You can use this to create effects such as single screen areas that scroll when the player would...\nforums.rpgmakerweb.com\nHave you tried other plguins, for example this one.\nClick to expand...\nHey there! Thanks for the suggestion, this plugin partially solved my issue.\nIt works flawlessly when binding the X axis. But for some reason, my game gets the following issue:\nSpoiler\nAt first I thought it had something to do with my game's custom window size, so I changed its height to a perfect multiple of 32. Same problem occurred.\nThis is especially strange given that I analyzed the code with the little knowledge I have and verified there wasn't anything out of ordinary with it -- the same principles used for adjusting X were applied for adjusting Y. Why is this happening?"
+    },
+    {
+      "post_id": "js-post-1491339",
+      "author": "Zia_",
+      "date": "2025-01-02T08:31:30+0900",
+      "body": "I didn't use this plugin yet, but to me it looks like scroll limits overlap.\nSince you can set the min and max coordinates ...\n<minX:#>\n<maxX:#>\n<minY:#>\n<maxY:#>\n... I'd assume, the set values push each other out of bounds. For example, if the minY tries to be 2 from the top, but the maxY also tries to be 2 from the bottom, and they cannot both be true.\nDid you try to set other min/max values?"
+    },
+    {
+      "post_id": "js-post-1491347",
+      "author": "Renchu",
+      "date": "2025-01-02T09:00:09+0900",
+      "body": "Zia_ said:\nI didn't use this plugin yet, but to me it looks like scroll limits overlap.\nSince you can set the min and max coordinates ...\n<minX:#>\n<maxX:#>\n<minY:#>\n<maxY:#>\n... I'd assume, the set values push each other out of bounds. For example, if the minY tries to be 2 from the top, but the maxY also tries to be 2 from the bottom, and they cannot both be true.\nDid you try to set other min/max values?\nClick to expand...\nYes, I tried. ^^;\nI also increased the size of the map and tried to keep the camera centered, but unfortunately this issue doesn't seem to be the case...\nHowever, I have good news! At least I managed to remove the sliding motion from Galv's plugin by myself -- I just had to delete the\nGame_Map.prototype.updateScroll\npart. This is not what's going to stop me from using it in my game anymore.\nThe problem with the Y axis when I use the other plugin is still very puzzling, though\nEDIT:\nTested the game in a big map and turns out deleting the\nGame_Map.prototype.updateScroll\npart of the plugin causes the camera to completely stop moving. Oops!\nBut no worries, I found an\nexcellent plugin\nthat does exactly everything I need. This one quite literally saved the life of my entire project!"
+    },
+    {
+      "post_id": "js-post-1491349",
+      "author": "Eternidade_1",
+      "date": "2025-01-02T09:11:32+0900",
+      "body": "Why not make a map the size of your screen, so the camera won't move. Or if you display an image over the map the size of your screen, you won't see the player wherever they are.\nIf you want to show a scene on the map, you can move the camera there and then back, which is exactly how we display large structures that can't be seen on the whole screen."
+    },
+    {
+      "post_id": "js-post-1491351",
+      "author": "Renchu",
+      "date": "2025-01-02T09:20:59+0900",
+      "body": "Eternidade_1 said:\nWhy not make a map the size of your screen, so the camera won't move. Or if you display an image over the map the size of your screen, you won't see the player wherever they are.\nIf you want to show a scene on the map, you can move the camera there and then back, which is exactly how we display large structures that can't be seen on the whole screen.\nClick to expand...\nRight now I'm using a custom screen size that isn't fully compatible with the tile size (32x32), and also walls with custom size. Due to this, scrolling is sometimes inevitable, even though the content of the map may graphically fit perfectly inside the screen.\nNow that I edited Galv's plugin I think my game will work just fine.\nEDIT:\nNo, it didn't work just fine, but... Turns out I managed to find a super cool replacement, which I linked in an edit to my previous message ^^"
+    }
+  ]
+}

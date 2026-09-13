@@ -1,0 +1,131 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/deployed-windows-game-stuck-on-now-loading-upon-launch.174498",
+  "title": "Deployed Windows Game stuck on \"Now Loading\" upon launch",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:19:54.943278+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1492381",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T02:37:32+0900",
+      "body": "Preface: I'm new to RPG Maker MV and this is my first game (and my first forum post) so I might be a bit slow and need more detailed explanation, sorry for that.\nAs the title said, I recently finished my game, deployed it for the Windows platform + exclude unused files and sent it to some beta players. One of them (+myself) uses MacOS and played it using\nthis method here\nand the game ran perfectly. The others use Windows and when they open the \"Game.exe\" file it always shows the black \"Now Loading...\" screen.\nEdit: The game also runs normally during playtest.\nEdit2: I tried copying the game to a new project but the same thing still happened.\nI have checked the font folder and replace it with one from a brand new project. I have tried turning off some plugins but the issue remains. Here are my plugins:\nI have the Steam copy of RPG Maker MV and use it on Macbook. Please tell me if I can provide any more information, thanks a lot in advance."
+    },
+    {
+      "post_id": "js-post-1492499",
+      "author": "fonewearl",
+      "date": "2025-01-08T13:21:44+0900",
+      "body": "now loading for me has always been trying to load a save after changes have been made or some other kind of file error I think.\nmake a new project and deploy it to test to make sure it's not the editor itself.\nyou kind of have to go into the game files and see if anything is out of place so you should probably take the new project and compare each folder to yours to see if anything looks odd.\nthere was this I saw:\nhttps://forums.rpgmakerweb.com/index.php?threads/now-loading-stuck.120549/\nwhich said like the project folder cannot have spaced, or perhaps you need to uninstall and reinstall rpg maker to fix it\nbut yeah usually \"now loading\" is some kind of file error, either something is missing, placed wrong, named wrong or a plugin is breaking things"
+    },
+    {
+      "post_id": "js-post-1492501",
+      "author": "utunnels",
+      "date": "2025-01-08T13:36:47+0900",
+      "body": "Well you can go to your deloyed game folder/www and copy your Game.rpgproject file from your original game and open the deployed project (if it is not encrypted) and do a playtest there to see if there's any error?"
+    },
+    {
+      "post_id": "js-post-1492503",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T13:44:16+0900",
+      "body": "fonewearl said:\nmake a new project and deploy it to test to make sure it's not the editor itself.\nyou kind of have to go into the game files and see if anything is out of place so you should probably take the new project and compare each folder to yours to see if anything looks odd.\nClick to expand...\nWhat I did was copying the data folder + the plugin.js file to a new project, then add individually each new asset (audio, tileset, character sprites) to said project.\nThe old and the new project both run fine during playtest so I don't think it is a problem with the editor nor the path (I also checked that just in case, and I made sure there is no spaces in the name. I tried putting the new project in a new folder to see if that fixes anything but it didn't).\nMy main issue is that when deployed into a package, Windows users get stuck on the now loading screen. If I runs a http-server using Terminal on Mac then it runs fine again.\nutunnels said:\nWell you can go to your deloyed game folder/www and cop your Game.rpgproject file from your original game and open the deployed project (if it is not encrypted) and do a playtest there to see if there's any error?\nClick to expand...\nI'm not sure if this is what you meant, but here is what I did: I copied the game.rpgproject to the www folder of the deployed package, then opened that project file on RPGMaker for a playtest. I sped through the opening and it ran fine."
+    },
+    {
+      "post_id": "js-post-1492508",
+      "author": "utunnels",
+      "date": "2025-01-08T14:11:24+0900",
+      "body": "Ah that is unexpected.\nWhat if you copy the files from your\nMV install directory/nwjs-win-test\nand replace those outside of the www folder (delete all of them except package.json), and run game.exe there so you can use F8 or F12 to open the console. The idea is to use the playtest version instead of the release version so you can actually see the console."
+    },
+    {
+      "post_id": "js-post-1492514",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T15:07:22+0900",
+      "body": "utunnels said:\nAh that is unexpected.\nWhat if you copy the files from your\nMV install directory/nwjs-win-test\nand replace those outside of the www folder (delete all of them except package.json), and run game.exe there so you can use F8 or F12 to open the console. The idea is to use the playtest version instead of the release version so you can actually see the console.\nClick to expand...\nI deleted all files outside of folders except package.json and replaced them with those from nwjs-win-test as you said. The game gets stuck on now loading again and f12 shows this:\nWhich lead me to look into the font folder, but I dont see anything wrong with it:\nNote that I originally made the entire game and playtested on Macbook, while I have done all of this on a Windows PC (since Mac cant run the deployed game.exe for Windows anyway)."
+    },
+    {
+      "post_id": "js-post-1492516",
+      "author": "utunnels",
+      "date": "2025-01-08T15:27:23+0900",
+      "body": "Strange, place your mouse over the file name, what does the path say?"
+    },
+    {
+      "post_id": "js-post-1492518",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T15:36:33+0900",
+      "body": "utunnels said:\nView attachment 328307\nStrange, place your mouse over the file name, what does the path say?\nClick to expand...\nIt shows this."
+    },
+    {
+      "post_id": "js-post-1492519",
+      "author": "utunnels",
+      "date": "2025-01-08T15:46:18+0900",
+      "body": "So the path is wrong (without www).\nDo you have a plugin that changes the font file?\ne.g., maybe it is using\n/fonts/\ninstead of\nfonts/"
+    },
+    {
+      "post_id": "js-post-1492520",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T15:53:55+0900",
+      "body": "utunnels said:\ne.g., maybe it is using\n/fonts/\ninstead of\nfonts/\nClick to expand...\nI'm not sure what this means, but the two plugins that I think might mess with font are YanflyMessageCore and SRDShakingText since it affects text. I have never tried using a different font ingame tho. I have a list of my plugins here:\nLuckyGrass said:\nClick to expand...\nNot sure if it helps but this is the current path, any chance I can redirect it?"
+    },
+    {
+      "post_id": "js-post-1492522",
+      "author": "utunnels",
+      "date": "2025-01-08T16:05:43+0900",
+      "body": "Do you have another fonts folder outside of www?\nWhat is the content of your www/index.html?\nIt looks like some paths are incorret for some reason."
+    },
+    {
+      "post_id": "js-post-1492523",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T16:17:48+0900",
+      "body": "utunnels said:\nDo you have another fonts folder outside of www?\nClick to expand...\nI don't think so. Here is what the files look like now:\nutunnels said:\nWhat is the content of your www/index.html?\nClick to expand...\n<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">\n<meta name=\"viewport\" content=\"user-scalable=no\">\n<link rel=\"icon\" href=\"icon/icon.png\" type=\"image/png\">\n<link rel=\"apple-touch-icon\" href=\"icon/icon.png\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"fonts/gamefont.css\">\n<title>That Isekai Game </title>\n</head>\n<body style=\"background-color: black\">\n<script type=\"text/javascript\" src=\"js/libs/pixi.js\"></script>\n<script type=\"text/javascript\" src=\"js/libs/pixi-tilemap.js\"></script>\n<script type=\"text/javascript\" src=\"js/libs/pixi-picture.js\"></script>\n<script type=\"text/javascript\" src=\"js/libs/fpsmeter.js\"></script>\n<script type=\"text/javascript\" src=\"js/libs/lz-string.js\"></script>\n<script type=\"text/javascript\" src=\"js/libs/iphone-inline-video.browser.js\"></script>\n<script type=\"text/javascript\" src=\"js/rpg_core.js\"></script>\n<script type=\"text/javascript\" src=\"js/rpg_managers.js\"></script>\n<script type=\"text/javascript\" src=\"js/rpg_objects.js\"></script>\n<script type=\"text/javascript\" src=\"js/rpg_scenes.js\"></script>\n<script type=\"text/javascript\" src=\"js/rpg_sprites.js\"></script>\n<script type=\"text/javascript\" src=\"js/rpg_windows.js\"></script>\n<script type=\"text/javascript\" src=\"js/plugins.js\"></script>\n<script type=\"text/javascript\" src=\"js/main.js\"></script>\n</body>\n</html>"
+    },
+    {
+      "post_id": "js-post-1492524",
+      "author": "utunnels",
+      "date": "2025-01-08T16:27:09+0900",
+      "body": "The html's content seems correct.\nHowever you have another index.html out there. Are you sure it is not the one you posted?\nYou can delete the outside one just in case."
+    },
+    {
+      "post_id": "js-post-1492526",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T16:36:17+0900",
+      "body": "utunnels said:\nHowever you have another index.html out there. Are you sure it is not the one you posted?\nClick to expand...\nI just deleted the one outside, and I rechecked just to make sure (I copied directly from here the last time too):"
+    },
+    {
+      "post_id": "js-post-1492527",
+      "author": "utunnels",
+      "date": "2025-01-08T16:48:22+0900",
+      "body": "Maybe there's some kind of bug on the mac version? Since it is discontinued, maybe something is just old. Either the core scripts or its deployment files.\nWhat is the version of the game.exe inside nwjs-win-test? You can run it without a game from MV's install directory."
+    },
+    {
+      "post_id": "js-post-1492528",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T17:00:51+0900",
+      "body": "utunnels said:\nWhat is the version of the game.exe inside nwjs-win-test? You can run it without a game from MV's install directory.\nClick to expand...\nIt is the exact same thing as your picture:\nI thought it might have something to do with the Mac version too, so I zip the entire project file and moved over to my Windows PC (also have the Steam RPG Maker), opened the project and made a new deployment package there. The same thing happened: playtest went well, but the game.exe in the deployment package got stuck."
+    },
+    {
+      "post_id": "js-post-1492529",
+      "author": "utunnels",
+      "date": "2025-01-08T17:13:32+0900",
+      "body": "Yeah so something is changing the path.\nThe first thing in the suspect list is those SRD plugins, like the super tool engine.\nMaybe you can try disabling it/them and copy a fresh package.json from a fresh project if it is modified."
+    },
+    {
+      "post_id": "js-post-1492532",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T17:47:59+0900",
+      "body": "utunnels said:\nYeah so something is changing the path.\nThe first thing in the suspect list is those SRD plugins, like the super tool engine.\nMaybe you can try disabling it/them and copy a fresh package.json from a fresh project if it is modified.\nClick to expand...\nSo I just tried replacing the gamefolder/package.json file with one from a fresh project after turning off all SRD plugins (I alrdy have super tool engine turned off before I made this thread, since I suspect it the most too). The playtest ran fine, again, but the deployment package didn't, again. I opened the console while playtest too and it didn't pick up anything."
+    },
+    {
+      "post_id": "js-post-1492533",
+      "author": "utunnels",
+      "date": "2025-01-08T17:55:10+0900",
+      "body": "At least you confirmed it is not one of the game files that is modified.\nDo you have any luck with other plugins? Disable the suspicious ones one by one?"
+    },
+    {
+      "post_id": "js-post-1492534",
+      "author": "LuckyGrass",
+      "date": "2025-01-08T18:20:48+0900",
+      "body": "Good news! I copied the data folder and other asset folders (audio, img) to a fresh project, then I installed each plugin one by one. I haven't touched the para of them yet so Im not sure if changing them will mess the game again, but it is now running with this plugin set up:\nI will try changing the para and report on that later.\nUpdate: I don't want to double post so I will update here. The game runs fine now, even after I adjust the plugins para! I basically made a fresh project on my Windows PC and transfer data over that fresh project, then install & adjust plugins one by one again. I still can't pinpoint the issue, but it's either one of the deleted plugins messed the font up or something was wrong with the Mac version, so if any of you run into the same problem, consider that.\nThanks a lot to all that helps, especially\n@utunnels\n!"
+    }
+  ]
+}

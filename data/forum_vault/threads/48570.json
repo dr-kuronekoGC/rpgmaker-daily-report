@@ -1,0 +1,125 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/gamejolt-achievement-plugin.48570",
+  "title": "GameJolt Achievement plugin",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:19:50.108958+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-482384",
+      "author": "flori9",
+      "date": "2015-10-31T07:51:59+0900",
+      "body": "GameJolt achievement plugin for RPG Maker MV\nThis plugin adds support for the GameJolt Achievement API to RPG Maker MV games. This API allows you to reward your players with online trophies and highscores that will show up on the GameJolt site and give your players EXP there. This is a great way to promote your game on GameJolt, as many people like games with trophies. Also, some players will play your game for longer as they want to get all trophies.\nMy aim is to make using this plugin as easy as possible, so that everybody can add online trophies and/or highscores to their games.\nThis plugin is still work in progress, but it's already useable. However, there may be bugs and some features will be added later.\nCurrent features:\n- Logging in to GameJolt. If the player is playing a web-based version on gamejolt.com, this will happen automatically. Otherwise, an easy-to-use login dialog will be shown.\n- A button can be added to the main menu of the game to allow the user to log in and off.\n- Sessions. This means you can see for how long your game is being played (by logged-in users). Also, a message will be shown on profiles of people that are playing your game.\n- Trophies. You can easily give your players a trophy for doing something in-game. This will be displayed on the GameJolt site. The plugin also has support for showing basic trophy notifications. If a player is offline while reaching a trophy, the trophy will automatically be given the next time he/she is online.\n- It's quite configurable. Please check out the help text for more information on what the different settings do.\nComing soon:\n- Highscores.\n- An example game.\n- Possibly more if this is going to be used a bit. For example, I could add online save files or other data storage.\nHow to use:\nCopy all files from the zip file and paste them into your plugin directory. Then enable the plugin and fill in the Game ID and Private Key in the plugin manager. They can be found on the dashboard page of your game on the GameJolt site. From the main dashboard page, go to the Game API tab. Then click on \"API Settings\" to the left. The Game ID and Private Key should be shown there. Copy them to the plugin parameters.\nAfter you've entered these parameters, sessions will work automatically! You can use the following command to give a trophy:\nGameJolt award trophy <id><id> is the ID of the trophy, which can be found on the Game API tab of your game dashboard on the \"Trophies\" tab after having added your trophy.\nIf you'd like more help, please click the help button in the plugin manager. If you still have a question then, feel free to post it below.\nLicence:\nCredits would be appreciated, but they're not required. If you do want to credit me, please use my name \"Florian van Strien\". I'm fine with this plugin being used commercially, but you'd have to talk to the GameJolt people if they'd be okay with a commercial game using their web services if you want to do so.\nDownload!\nLearn more about the GameJolt Game API\nFeedback is very welcome!"
+    },
+    {
+      "post_id": "js-post-483244",
+      "author": "gametubertje",
+      "date": "2015-10-31T22:19:52+0900",
+      "body": "You... are.... AMAZING!"
+    },
+    {
+      "post_id": "js-post-483270",
+      "author": "Ramiro",
+      "date": "2015-10-31T22:44:48+0900",
+      "body": "I don't really like the idea of displaying a private key on a text file than evryone can check, the idea is great, but this is a beta so it's expected, but you should resolve those problems on the long run."
+    },
+    {
+      "post_id": "js-post-483300",
+      "author": "flori9",
+      "date": "2015-10-31T23:08:03+0900",
+      "body": "@Ramiro:\nI understand your concern and have thought about this as well. However, it's actually impossible to protect this well as everything is (and has to be) client side. I could, of course, encrypt the private key. However, that would make the plugin harder to use because you couldn't just input the private key in a plugin parameter anymore. It wouldn't actually increase security by much, too, as a hacker could just get hold of the private key after it has been decrypted (that has to be done somewhere, anyway). And even if they couldn't do that, they could still simply call\nGameJolt.awardTrophy(\"<id>\")\nfrom the JavaScript console of the browser. And even if that wouldn't be possible in some magical way, they could change the game variable that impacts the score.\nIf you're concerned about this, I think the best you could do is running your whole project through a JavaScript compressor/obfuscator when it's done. That's still very much security through obscurity so it's totally not safe, but it might stop some people.\nFor highscores, I'll try to automatically add some extra information to each score so that it's a bit easier to detect and scores hacked scores.\nAnyway, I think trophies and highscores are mostly just a bit of extra fun, so I don't think it is that's much of a problem if someone can hack them. Most people wouldn't do that anyway. Having a private key doesn't give anyone access to your account or something like that; and it's a per-game thing, so\nit'll not make your GameJolt account or game page insecure\n.\nHowever, if you (or someone else) have(/has) any idea on how to protect the plugin some more, especially if that works without impacting ease-of-use, please do post here or send me a PM. I'd be very interested in your methods."
+    },
+    {
+      "post_id": "js-post-483589",
+      "author": "Tsukihime",
+      "date": "2015-11-01T02:44:47+0900",
+      "body": "Can you provide more information on how GameJolt's security system works?\nIt looks like they use session tokens, as well as something like a\npublic-private key pair\nin the form of a short token?\nAssuming they're using public-private key, I'm assuming the private key is stored on the server (ie: gamejolt, or where your game is hosted), and they're simply offering a public key."
+    },
+    {
+      "post_id": "js-post-483823",
+      "author": "Ramiro",
+      "date": "2015-11-01T05:54:28+0900",
+      "body": "The probably work with something called oauth to handle the logcin process.\nThey do have a private key for them, a private key for your server and a public key for clients...\nYep, that many"
+    },
+    {
+      "post_id": "js-post-483850",
+      "author": "flori9",
+      "date": "2015-11-01T06:13:07+0900",
+      "body": "I'm afraid I don't know much about security, so I'm not sure if they're using a public-private key pair or session token. I\nthink\nthe system is not nearly as advanced at that. Communicating with the servers basically works like this:\n- I create a URI for the request I want to make. For example, this could be\nh\nttp://gamejolt.com/api/game/v1/users/auth?game_id=103321&username=flori9&user_token=token&format=json\n.\n- I generate a MD5/SHA1 (I chose SHA1 here) hash of that URI plus a private key. For example, in this case I would generate a SHA1 of\nh\nttp://gamejolt.com/api/game/v1/users/auth?game_id=103321&username=flori9&user_token=token&format=json0a836f26612f3f5108f1939162f14765\n(where the private key is\n0a836f26612f3f5108f1939162f14765\n). This SHA1 would be\ne619d2ca1726310007988298f2dd587eb4f084d2\n.\n- I append an extra parameter (named\nsignature\n) to the URI with the generated hash. The full URI would be\nh\nttp://gamejolt.com/api/game/v1/users/auth?game_id=103321&username=flori9&user_token=token&format=json&signature=e619d2ca1726310007988298f2dd587eb4f084d2\n.\n- I send off a GET request to this URI and receive a (unencrypted) response in JSON format. In this case, the response would be:\n{\"response\":{\"success\":\"false\",\"message\":\"No such user with the credentials passed in could be found.\"}}\n, as my user token isn't correct, but it would be\n{\"response\":{\"success\":\"true\"}}\nif it were. (The private key\nis\ncorrect, as I'm going to include it in the example game anyway.)\nThe only security element here is the private key. This key is hard-coded into the game. The user token is basically just an alternative for a password so that the user doesn't have to input their actual GameJolt password into games. This makes sure creators of games can't steal GameJolt passwords (and probably to make sure passwords aren't sent over insecure connections as well), but it doesn't add any security for the creator.\nPlease note that the engine is fully open source, so feel free to look at the code if you think something is unclear.\nEdit:\nBy the way, to be clear, the private key is a per-game thing that's generated by GameJolt when you create the game. It can be found on the \"dashboard\" page of the game.\nEdit 2:\nMade URI's in the post fully readable. The automatic link converter on here is\nagressive\n, wow."
+    },
+    {
+      "post_id": "js-post-483969",
+      "author": "Tsukihime",
+      "date": "2015-11-01T07:53:09+0900",
+      "body": "Is there a particular reason why you've decided to hash the token?"
+    },
+    {
+      "post_id": "js-post-483997",
+      "author": "flori9",
+      "date": "2015-11-01T08:12:57+0900",
+      "body": "Yes, because that's the way the API works. I didn't design the URI format or server backend in any way, that's the work of GameJolts developers. If I wouldn't hash the URI + private key exactly this way the GameJolt API would simply deny all requests.\nFor the GJ API the idea basically is that GameJolt creates the backend while users make plugins/libraries for all the different languages and platforms. I'm just an user making such a plugin, I don't have any control over the backend."
+    },
+    {
+      "post_id": "js-post-516846",
+      "author": "Radis3D",
+      "date": "2015-12-06T16:03:49+0900",
+      "body": "excuse me, and sorry if i do necropost..\ni just wondering..\nis this plugin still in development?"
+    },
+    {
+      "post_id": "js-post-528268",
+      "author": "Val",
+      "date": "2015-12-23T02:26:54+0900",
+      "body": "Humm seem very interesting plugins... do you have a update on the subject? thx U"
+    },
+    {
+      "post_id": "js-post-528280",
+      "author": "flori9",
+      "date": "2015-12-23T02:40:56+0900",
+      "body": "Hi! I have been quite busy so I haven't been able to work on the plugin for a while, but I'll probably have some time soon. For now, it should be possible to give the users trophies with the current version (see the download link above). If you need any more functionality from the GameJolt API right now, feel free to tell me so I know what to develop first when do I resume work on it."
+    },
+    {
+      "post_id": "js-post-565756",
+      "author": "Radis3D",
+      "date": "2016-03-06T09:02:09+0900",
+      "body": "Hope this plugin will, updated..\nNeed the highscore and cloud storage..  :')"
+    },
+    {
+      "post_id": "js-post-607346",
+      "author": "RODRIGO234",
+      "date": "2016-06-06T06:34:26+0900",
+      "body": "pls help, i cant log in\nthe game say:  We couldn't log you in! Please check your username and game token and try again.\nbut the information its whitout errors\n(sorry for my english, im from argentina\n)\nemm... sorry, i proved and now functions, sorry for my stupid post\nEmm, an question more, ¿how to colocate a trophie in the game? for example: You defeated a rghergesg , how to make this and the player adquiries the trophie"
+    },
+    {
+      "post_id": "js-post-1112506",
+      "author": "GamerFun",
+      "date": "2020-08-30T23:40:35+0900",
+      "body": "When I Activate The Plugin It Says Failed to load: js/plugins/GamejoltLogin.js"
+    },
+    {
+      "post_id": "js-post-1178578",
+      "author": "MisterFu",
+      "date": "2021-04-10T04:48:21+0900",
+      "body": "Hello together.\nI've updated this plugin. It can now handle Highscores, the trophy support is complete and you can fetch the public data of the user logged in. I've fixed one gamebraking bug and made the loginwindow running out of a new window. So you can start the login process via an event and the game does not restart.\nYou can download the latest version here:\nLink\nThis plugin is still work in progress."
+    },
+    {
+      "post_id": "js-post-1472474",
+      "author": "MeloettaBros9",
+      "date": "2024-09-28T07:53:10+0900",
+      "body": "But does it work on RPG Maker MZ as will?"
+    },
+    {
+      "post_id": "js-post-1472478",
+      "author": "ATT_Turan",
+      "date": "2024-09-28T08:01:51+0900",
+      "body": "MeloettaBros9 said:\nBut does it work on RPG Maker MZ as will?\nClick to expand...\nThe author hasn't been here since before MZ came out.\nThe person who updated the plugin in the author's absence did so three years ago, and said it's unfinished.\nSo I wouldn't bet it works on anything, never mind an engine it wasn't made for\nThat said, nothing is stopping you from downloading it, installing it, and seeing if it works. This thread looks like maybe two people have actually used it, so I don't think you'll get anyone else answering your question."
+    },
+    {
+      "post_id": "js-post-1493029",
+      "author": "MisterFu",
+      "date": "2025-01-11T07:51:15+0900",
+      "body": "MeloettaBros9 said:\nBut does it work on RPG Maker MZ as will?\nClick to expand...\nI updated it today and now it is fully compatible with MZ. But it's still WIP. You can get it here:\nGameJolt-API-Plugin"
+    }
+  ]
+}

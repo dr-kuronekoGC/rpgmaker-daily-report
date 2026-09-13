@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/what-kind-of-error-would-cause-window-to-force-close-quit-working-with-arrays.173387",
+  "title": "What kind of error would cause window to force close/quit? Working with arrays.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:20:27.770283+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1482868",
+      "author": "Chocodile",
+      "date": "2024-11-22T11:12:47+0900",
+      "body": "I built a minigame that involves a deck of cards and a lot of array manipulation. It works fine 99.7% of the time. Once in a blue moon, something,\nsomewhere\n, within the minigame will cause the game to crash so hard the entire thing exits instantly. No error popup window is generated, and because it happens instantaneously, I can't retrieve the contents of the console. It happens when the discard pile is added to the player's hand... but only very, very, very rarely.\nI've seen almost every other error under the sun that RPG Maker VX Ace can throw. It's nothing as mundane as a missing quotation mark or closing bracket. Has anyone seen a crash like this before? What kind of error could cause the game to force quit instantly like that?\nMy assumption is that I've got an off by one error somewhere that's making it try to grab card data from beyond the end of the array, or... something. But any leads from folks more knowledgable about Ruby than I would be appreciated before I spend all weekend tracing my minigame code line by line in those tiny \"no horizontal scroll\" RPG Maker windows!\nSo, TL;DR... here is my question, plus two unlikely pipe dreams...\nAnybody know what kind of script error (probably involving arrays) would cause VX Ace to instantly force quit, skipping the normal error handling for script errors?\nIs there a plugin or other tool to pipe the VX Ace debut console to a permanent log file?\nIs there any plugin, tool, or bit of script I can edit that makes VX Ace's post-crash stack traces a little more... helpful? (If the error's coming from a specific Common Event or Event ID, I'd love to know! Even better if I can know what line it's happening on!)\nThank you in advance to anyone who read all that."
+    },
+    {
+      "post_id": "js-post-1482873",
+      "author": "ATT_Turan",
+      "date": "2024-11-22T11:28:33+0900",
+      "body": "Um...memory? Somehow adding so much to an array that it manages to max out usable RAM for the software? I'm not sure what else would crash the game directly without an error."
+    },
+    {
+      "post_id": "js-post-1482875",
+      "author": "kyonides",
+      "date": "2024-11-22T11:32:37+0900",
+      "body": "If you're pretty sure it's not the typical newbie kind of mistake making your game crash, there are a few things that could trigger an early termination of the engine. Reading a bad sector in your RAM, pointing to a non existing object in an illegal way, reading a sector outside the RAM portion allotted initially, and probably some other stuff as well. Usually, the last 2 are impossible in CRuby & RGSS."
+    },
+    {
+      "post_id": "js-post-1482879",
+      "author": "Zahawk",
+      "date": "2024-11-22T12:12:44+0900",
+      "body": "This has happened many times to me since starting to use arrays, it just means you've written one wrong. pretty sure it means you're trying to reference an arrayed NIL value or something. Give me a moment to see if I've still got the broken array lines saved somewhere...\nEdit: Nope deleted all the broken ones so I can't really give you an example, but if you want to send through your code we can look it over for errors.\nEdit2: Ah just remembered one, a situation where I made v[2]=v[1][0] or similar, somehow this line will eventually (after performing other math opperations) instantly close the game at 'random' due to the two variables now being linked rather than just setting v[2]'s value, the correct code would be v[2]=v[1][0].dup for this case, its the same for v[2].push(v[1].dup), etc."
+    },
+    {
+      "post_id": "js-post-1483093",
+      "author": "Chocodile",
+      "date": "2024-11-24T02:05:02+0900",
+      "body": "Zahawk said:\nThis has happened many times to me since starting to use arrays, it just means you've written one wrong. pretty sure it means you're trying to reference an arrayed NIL value or something. Give me a moment to see if I've still got the broken array lines saved somewhere...\nEdit: Nope deleted all the broken ones so I can't really give you an example, but if you want to send through your code we can look it over for errors.\nEdit2: Ah just remembered one, a situation where I made v[2]=v[1][0] or similar, somehow this line will eventually (after performing other math opperations) instantly close the game at 'random' due to the two variables now being linked rather than just setting v[2]'s value, the correct code would be v[2]=v[1][0].dup for this case, its the same for v[2].push(v[1].dup), etc.\nClick to expand...\nOh! So it would be a copy by reference error, then.\nThank you very much for the response... this sounds like exactly the symptoms I'm having and exactly what I'm doing wrong (failing to use .dup when moving stuff between arrays). I like this solution because it means I just have to look through the code once and fix this error instead of having to trace it all in my mind for hours and hours trying to figure out what weird corner case is sending the array index out of bounds.\nInteresting that the code still works as intended 99.7% of the time. I would have figured I'd see some other symptom, like the NPCs making impossible card plays or something... I'll have to check the other places I'm using arrays for this problem, too.\nThanks to everyone who responded to this! So glad I asked here instead of trying to puzzle it out on my own."
+    },
+    {
+      "post_id": "js-post-1483095",
+      "author": "Ms Littlefish",
+      "date": "2024-11-24T02:31:44+0900",
+      "body": "This thread is closed due to being marked solved. If you need it reopened, report it to let us know. Thank you!\nEDIT: This thread has been reopened at the OP's request."
+    },
+    {
+      "post_id": "js-post-1483115",
+      "author": "Chocodile",
+      "date": "2024-11-24T05:42:52+0900",
+      "body": "Alright, so I took a look at my code, looking for an error like what Zahawk mentioned. I have also been reading up on Ruby's whole \"pass by reference value\"/\"pass by object reference\" thing, but my understanding is pretty hazy.\nMy arrays are one-dimensional and contain only integers. I move things from one array to the other with $array1.push($array2.pop). I added debug code to print the object_id of the last item in the array while running my \"move discard pile to player's hand\" code and this is what I got:\n(yes, I know optimization can be improved significantly here...)\nSo, I can see that the object_id of the integer being passed from DP (discard pile) to PH (player's hand) references the same object.\nQUESTION\n: Is this a problem, or is this the expected way to perform an operation like this? Is this likely the cause of my mysterious force-quit crash?\nThank you in advance for the assistance."
+    },
+    {
+      "post_id": "js-post-1483143",
+      "author": "kyonides",
+      "date": "2024-11-24T10:09:05+0900",
+      "body": "An array full of numbers can't be individually duplicated. The array can be duplicated partially or as a whole, though. Numbers are immutable in Ruby so to say. So pushing the last value of another array to the $player_hand is totally possible as long as you're not duplicating that number.\nSomething I noticed in RMXP a few years ago, and it still might happen in RMVX ACE, was that passing an empty array as the only argument or passing nothing and let the engine get an empty array as the default value for a particular method might cause some weird error message to pop up on screen or show up in a backtrace file. I\nthink\nit's not easy to replicate on any project, though.\nHonestly, it shouldn't be failing at that point as long as there's a number stored in that position. Isn't there any other piece of code that could have cause it right before or after pushing the last value of $discard_pile to $player_hand ?"
+    },
+    {
+      "post_id": "js-post-1483159",
+      "author": "Chocodile",
+      "date": "2024-11-24T12:53:41+0900",
+      "body": "The only other script that runs in the problematic section of code is this:\nA loop that pulls played cards (marked by an inverted negative value) out of the player's hand, reverts them to their standard positive value, and puts them in the discard pile.\nThe order of events for this chunk of code is:\ntext box #1\nscript: send marked cards to discard pile\nscript: add discard pile to player's hand\ntext box #2\nMy beta tester confirmed that text box #1 does display, but the game crashed before text box #2 displayed.\nAdditionally, I made a little test event where I pulled values from an array:\nRuby:\n$test = [1, 2, 3]\n\nvar1 = $test[5] #var1 = 0\nvar2 = $test[-1] #var2 = 3\nRPG Maker happily pulled values from both of those indices without throwing any errors. This makes me think it's unlikely to be something as simple as an off by one error causing such a dramatic crash, though a negative index grabbing the wrong value from an array would certainly cause other issues.\nkyonides said:\nAn array full of numbers can't be individually duplicated. The array can be duplicated partially or as a whole, though. Numbers are immutable in Ruby so to say. So pushing the last value of another array to the $player_hand is totally possible as long as you're not duplicating that number.\nClick to expand...\nBy \"as long as you're not duplicating that number\", you mean trying to .dup an integer, right? Or are you referring to something else?\n(Thank you again for the assistance, as well as patience with my lack of familiarity with Ruby!)"
+    },
+    {
+      "post_id": "js-post-1483386",
+      "author": "Zahawk",
+      "date": "2024-11-26T07:58:40+0900",
+      "body": "Chocodile said:\nBy \"as long as you're not duplicating that number\", you mean trying to .dup an integer, right? Or are you referring to something else?\nClick to expand...\nCorrect. Thanks\n@kyonides\nfor properly explaining that.\nCode:\n$game_variables[1]=[[0,0],1,2]\n\n$game_variables[2]=$game_variables[1][1].dup #.dup integer, crashes RM\n$game_variables[2]=$game_variables[1][1] #set integer, works\n#vs\n$game_variables[2]=$game_variables[1][0].dup #.dup partial/full array, works\n$game_variables[2]=$game_variables[1][0] #set partial/full array, weird variable linking interaction"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/skill-that-applies-states-must-wait-a-full-turn-to-reapply-states.174352",
+  "title": "MV Skill that applies states must wait a full turn to reapply states?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:20:03.549095+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1491331",
+      "author": "redtide89",
+      "date": "2025-01-02T07:40:41+0900",
+      "body": "My skill applies a state to the user and a different state to the target, 100% of the time.\nBoth states are removed from the user and the target at the start of the user's next turn.\nRight now there are no other ways to add, remove, or modify these states other than battler death or end of battle, afaik.\nThe problem: if the skill was used on the user's previous turn, using the skill on the current turn will not apply either state to the user.\nThat is, after using the skill on any target on his first turn, then targeting himself with the skill on his second turn...\nExpectation\n: both states are applied to the user\nReality\n: neither state is added to the user\nIf the user targets anything on the first turn, then targets an ally/enemy on the second turn...\nExpectation\n: state applied to the target, and other state applied to the user.\nReality\n: state only applied to the target. This state then gets stuck on the target forever.\nAs long as the skill is not used on consecutive turns, everything works as expected.\n=== More details ===\nThis is a ~3 year old RPG Maker MV project, using RPG Maker MZ version v1.5.0 as the editor with a few of its features.\nI'm using like 75 MV plugins in total.\nHere's most of the ones related to battle:\nYEP_CoreEngine\n// required for most of these plugins\nYEP_BattleEngineCore\n// default system set to ctb. This does raise issues with states and turn timings.\nYEP_TargetCore\n// lets the skill target enemies, allies, and the user\nYEP_BuffsStatesCore\n// State Settings set to Reapply rules 1 (reset when reapplying an already existing state). Note that the states are not present (afaik) when attempting to reapply them.\nYEP_AutoPassiveStates\n// the state applied to the user makes use of this plugin, but disabling this plugin only disables the state's in-game use.\nYEP_X_ActSeqPack1\n// this is how I am applying the states, via two action sequence lines: \"add state 21: target, (show)\" and \"add state 22: user, (show)\"\nYEP_X_ActSeqPack2\nYEP_X_ActSeqPack3\nYEP_X_BattleSysCTB\n// the turn order battle system plugin; the problem persists with this disabled and the default battle engine being used\nYEP_X_SelectionControl\n// I'm using this one for its intended purpose, but I'll say that when I first got it and enabled it, it kept most of my custom evented menus outside of battle from working. The very poor javascript I wrote completely broke when I first added this plugin. Since then I have fixed my own code to be more compatible with it (mostly just keeping some things from being undefined at times). None of this happens on the battle screen, but disabling the plugin let my old code seemingly work just fine. So I find this plugin suspicious.\nYEP_X_PassiveAuras\n// same situation as AutoPassiveStates\nOlivia_SideBattleUI\n// req YEP Battle Engine Core; my game's battles are currently built around this plugin. Disabling it (and anything associated with it) leaves the same problem\nYEP_Z_PassiveCases\n// (req AutoPassiveStates) i dont know where to put this plugin in the plugin list order, so I put it below all of the other yanfly ones. It can be disabled and the problem persists, but I plan on using it once I get this problem solved.\nSergeofBIBEKActionSequenceLoops\n// (req Yanfly Battle Engine Core) these three suspicious plugins are great and do what you'd expect. All three can be disabled and the problem persists except for the last one on the list, in which the skill won't really do anything at all without rewriting the skill (copy/pasting the proxy's code to the skill itself).\nSergeofBIBEKActionSequenceNestedIF\n// (req Yanfly Battle Engine Core)\nSergeofBIBEKActionSequenceProxy\n// (req Yanfly Battle Engine Core) this one can be disabled as long as I move the proxy action sequence to the skill's action sequence note tag, in which case the problem persists and all three SergeofBIBEK plugins are disabled.\nThe Skill\nNote:\nCode:\n<Select Conditions>\nNot State: 1\nNot State: 21\n</Select Conditions>\n<target action>\nadd state 21: target, (show)\nadd state 22: user, (show)\n</target action>\nThe target's state: State 21 defended\neverything is empty/blank/default, and/or unchecked\nThe user's state: State 22 Origin\nalso everything blank/unchecked, except for the Note:\nCode:\n<Custom Turn Start Effect>\nvar members = target.friendsUnit().aliveMembers();\nconsole.log(target)\nfor (i = 0; i < members.length; ++i) {\n var member = members[i];\n if (member && member.isStateAffected(21))  {\n  member.removeState(21);\n  target.removeState(22);\n  break;\n }\n}\n</Custom Turn Start Effect>\nBear in mind that my goal isn't to simply make this work, it is to understand why it's doing what it is.\nThere are plenty of other ways to make a simple skill perform the way it's supposed to.\nI want to know WHY the states aren't being added every other turn."
+    },
+    {
+      "post_id": "js-post-1491333",
+      "author": "Sword_of_Dusk",
+      "date": "2025-01-02T07:48:38+0900",
+      "body": "Always better to just post screenshots of your skill and state information."
+    },
+    {
+      "post_id": "js-post-1491338",
+      "author": "redtide89",
+      "date": "2025-01-02T08:28:36+0900",
+      "body": "okay, then I'll do just that"
+    },
+    {
+      "post_id": "js-post-1491340",
+      "author": "Robro33",
+      "date": "2025-01-02T08:34:43+0900",
+      "body": "redtide89 said:\nThe problem: if the skill was used on the user's previous turn, using the skill on the current turn will not apply either state to the user.\nClick to expand...\nIt sounds like you need to clear the battlers' action results.\nI cant check it for you now, but iirc theres a check somewhere within the addState process that if the state being added is in the battler's action result's removed states list then it cannot be added.\nWhen you remove a state with a notetag that doesn't involve the battler being targetted with a skill, their action result isnt cleared, theyll keep the removed states property, and they wont be able to get the state again until it is reset manually or from something that does like taking a hit\nDepending on how often you do things like this, you may want to remove that check entirely"
+    },
+    {
+      "post_id": "js-post-1491364",
+      "author": "redtide89",
+      "date": "2025-01-02T11:12:43+0900",
+      "body": "Awesome.\nSo if I clear result for the user and target after removing the effect, it should be safe to remove a state with a notetag or something manually?\nI put\nuser.clearResult();\ninto the custom turn start effect tag and it seems to have worked so far, but I need to test a bunch of things first to be sure."
+    }
+  ]
+}

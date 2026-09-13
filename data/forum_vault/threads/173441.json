@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/edit-text-sound-script-to-use-multiple-sounds-pitches.173441",
+  "title": "Edit Text Sound Script to Use Multiple Sounds/Pitches???",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:20:26.350056+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1483256",
+      "author": "luigiman0640",
+      "date": "2024-11-25T08:15:23+0900",
+      "body": "So, I'm using a script I found\nhere,\nand it works well enough, absolutely gets the job done, but I'm wondering if there's a way to allow it to use multiple sounds or pitches of the same sound instead of just one sound per variable count. I would also accept the use of another script, since I do know about and have downloaded\nmodern algebra's Advanced Text System\n. Thanks in advance!"
+    },
+    {
+      "post_id": "js-post-1483283",
+      "author": "Roninator2",
+      "date": "2024-11-25T12:06:01+0900",
+      "body": "luigiman0640 said:\nuse multiple sounds or pitches of the same sound instead of just one sound per variable count\nClick to expand...\nHow do you want it to work?\nRandomly pick a sound by making it an array? (all the same sound but you change the pitch)\nUsing extra variables for the pitch or volume?\nSome other way?"
+    },
+    {
+      "post_id": "js-post-1483308",
+      "author": "luigiman0640",
+      "date": "2024-11-25T18:34:54+0900",
+      "body": "Roninator2 said:\nRandomly pick a sound by making it an array? (all the same sound but you change the pitch)\nClick to expand...\nThis would probably be the best solution, since I could use that to have some arrays that just use different sounds as well."
+    },
+    {
+      "post_id": "js-post-1483320",
+      "author": "Roninator2",
+      "date": "2024-11-25T21:19:51+0900",
+      "body": "Didn't work as an array, made it a hash instead.\nSpoiler:\nVaried text sound\nRuby:\n#==============================================================================\n# Text Sound Effect (version 3)\n# NEW FEATURE: randomly pick a sound\n#------------------------------------------------------------------------------\n# by Zerbu\n#==============================================================================\n\nmodule Text_Sound_Effect\n  #--------------------------------------------------------------------------\n  # Options\n  #--------------------------------------------------------------------------\n  # The sound effect to play\n  MESSAGE_SOUND = {\n    0 => {0 => RPG::SE.new(\"Knock\", 70, 80),\n          1 => RPG::SE.new(\"Knock\", 70, 90),\n          },\n    1 => {0 => RPG::SE.new(\"Cursor1\", 70, 80),\n          1 => RPG::SE.new(\"Cursor1\", 70, 90),\n          },\n    2 => {0 => RPG::SE.new(\"Cursor2\", 70, 80),\n          1 => RPG::SE.new(\"Cursor2\", 70, 90),\n          },\n  }\n\n  # ID of the Variable that stores the current sound\n  SOUND_VAR = 1\n  # The number of characters to display before each time the sound plays\n  # The default is 3, it's recommended you keep it as this unless you\n  # know what you're doing\n  MESSAGE_SOUND_FRAMES = 3\n  # Switch to disable sound effect\n  # If you need to turn off the sound effect for any part of the game,\n  # turn this switch on\n  MESSAGE_SOUND_DISABLE = 2\nend\n\nclass Window_Base < Window\n  include Text_Sound_Effect\n  #--------------------------------------------------------------------------\n  # alias method: process_characer\n  #--------------------------------------------------------------------------\n  alias textsound_process_character_normal process_character\n  def process_character(c, text, pos)\n    if !$game_switches[MESSAGE_SOUND_DISABLE]\n       #---\n       if !defined?(@sound_frames)\n         @sound_frames = 0\n       end\n       #---\n       if @sound_frames == 0\n         r = rand(MESSAGE_SOUND[$game_variables[SOUND_VAR]].size)\n         MESSAGE_SOUND[$game_variables[SOUND_VAR]][r].play\n       end\n       #---\n       @sound_frames+=1\n       #---\n       if @sound_frames == MESSAGE_SOUND_FRAMES\n         @sound_frames = 0\n       end\n       #---\n    end\n    textsound_process_character_normal(c, text, pos)\n  end\n  #---\nend"
+    },
+    {
+      "post_id": "js-post-1483391",
+      "author": "luigiman0640",
+      "date": "2024-11-26T09:12:08+0900",
+      "body": "I think that works like a charm! Thanks a lot!"
+    }
+  ]
+}

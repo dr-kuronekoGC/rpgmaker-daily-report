@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/using-a-plugin-for-holding-data.174393",
+  "title": "MZ Using a plugin for holding data?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:19:57.981882+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1491647",
+      "author": "lilydark",
+      "date": "2025-01-04T03:46:17+0900",
+      "body": "I just started using RPG Maker (MZ), so I'm a total beginner. I'm kinda just hacking my way thru, just for context, so I definitely need the \"explain it to me like I'm an idiot\" version of stuff.\nAnyway, I had this idea that instead of using a bunch of global variables for some things I need to set and have the game remember, I could define stuff in a plugin and then access it in my main plugin. I know there's parameters that can be accessed, but I need to be able to change them over time, and I dunno how to do that.\nI looked at a bunch of other plugins that use registerCommand, and I thought there might be a way to make a command that would change params when I need to do that? I dunno. If anyone has a suggestion, that'd be cool. Thanks!"
+    },
+    {
+      "post_id": "js-post-1491651",
+      "author": "AquaEcho",
+      "date": "2025-01-04T04:03:38+0900",
+      "body": "lilydark said:\nI could define stuff in a plugin and then access it in my main plugin\nClick to expand...\nIf your \"main plugin\" is what's utilizing these variables why not just define them in your \"main plugin\"?"
+    },
+    {
+      "post_id": "js-post-1491653",
+      "author": "lilydark",
+      "date": "2025-01-04T04:09:10+0900",
+      "body": "Yeah, so, what I'm trying to do is make something that lets me set up dungeons really easily. So the storage plugin holds all that stuff, and only gets called when you first enter the dungeon. But then the main plugin gets called every time you move to a different floor, and I don't wanna have to set all that stuff every floor. I wanna have it set up once and then just use it or change it in that central place. Like I said, I know I could do it with global variables, but I also know that global variables are kinda scary, so I figured maybe this way would be better. Maybe it isn't better, tho."
+    },
+    {
+      "post_id": "js-post-1491656",
+      "author": "AquaEcho",
+      "date": "2025-01-04T04:18:44+0900",
+      "body": "It's hard to recommend anything when your descriptions are all very vague and you say things like \"storage plugin that holds all that stuff\". What type of data, how and when it's being called, referenced, and modified, does the player modify it through inputs, is it being saved to the save file, etc?\nAlso when you say things like \"global variables are kinda scary\", it implies you don't know what you're doing when it comes to scripting, in which case you should not be writing your own plugins."
+    },
+    {
+      "post_id": "js-post-1491668",
+      "author": "lilydark",
+      "date": "2025-01-04T05:45:51+0900",
+      "body": "Lemme try to give a more concrete example or whatever.\nJavaScript:\nvar mymap2 = PluginManager.parameters('DungeonDefiner')['topmap'];\nconsole.log(mymap2);\nWhat I get back in the console right now is \"undefined\" which I'm sure makes perfect sense to other people, but what was the right way to write this so I actually got a number back instead?\nAnd here's another related question/example. This works\nJavaScript:\nPluginManager.registerCommand(pluginName, \"setTop\", args => {\n        var mymap = Number(args.topmap);\n        console.log(mymap);\n    });\nbut if I reference args.topmap other places (not in the registerCommand {} things), it's, like, \"wtf is args?\""
+    },
+    {
+      "post_id": "js-post-1491815",
+      "author": "ShadowDragon",
+      "date": "2025-01-05T05:16:03+0900",
+      "body": "can you show the paramters you set up?\nJavaScript:\n/*\n* @command setTop\n* @text Set Top Map\n* @desc any text\n*\n* @arg topmap\n* @text topmap\n* @desc set the top map\n* @default 1\n*/\nso setTop is not defined so make sure you have it defined somewhere.\nI don't know how MZ plugin commands works, but parameters are defined\nlike this,  the parameter  is more the MV way, MZ is different.\nso make sure the plugin name is exactly you defined as well in order to be readed."
+    },
+    {
+      "post_id": "js-post-1492194",
+      "author": "lilydark",
+      "date": "2025-01-07T01:17:59+0900",
+      "body": "That's how it's set up. Is there something else that needs to be in there?\nShadowDragon said:\ncan you show the paramters you set up?\nJavaScript:\n/*\n* @command setTop\n* @text Set Top Map\n* @desc any text\n*\n* @arg topmap\n* @text topmap\n* @desc set the top map\n* @default 1\n*/\nso setTop is not defined so make sure you have it defined somewhere.\nI don't know how MZ plugin commands works, but parameters are defined\nlike this,  the parameter  is more the MV way, MZ is different.\nso make sure the plugin name is exactly you defined as well in order to be readed.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1492204",
+      "author": "ShadowDragon",
+      "date": "2025-01-07T02:44:11+0900",
+      "body": "plugin commands works inside the register, not outside.\nif you want to call it outside that, you need to call it different.\ndepending what the plugin does.\nJavaScript:\n//sample\n\nfunction dataTopMap(...args) {\n    let mymap = Number.args[\"topmap\"]\n    return $gameSystem._topMap\n}\nI cannot tell how the data is stored and where, but this is just a sample.\nso you probably need to return the value to the sprite map is used there or\nwhatever you target it for.\nif it's more for parallax, there are some out there for MZ, so you can look\nhow they did that as I'm not familiar with MZ, only MV, but the commands works\ndifferent there, so it's hard to tell.\nas both support ES5 through ES8, MZ maybe higher, console log should\nprint correctly, if it does, target it correctly as well to be shown."
+    },
+    {
+      "post_id": "js-post-1492214",
+      "author": "lilydark",
+      "date": "2025-01-07T03:58:29+0900",
+      "body": "ShadowDragon said:\nplugin commands works inside the register, not outside.\nif you want to call it outside that, you need to call it different.\ndepending what the plugin does.\nJavaScript:\n//sample\n\nfunction dataTopMap(...args) {\n    let mymap = Number.args[\"topmap\"]\n    return $gameSystem._topMap\n}\nI cannot tell how the data is stored and where, but this is just a sample.\nso you probably need to return the value to the sprite map is used there or\nwhatever you target it for.\nif it's more for parallax, there are some out there for MZ, so you can look\nhow they did that as I'm not familiar with MZ, only MV, but the commands works\ndifferent there, so it's hard to tell.\nas both support ES5 through ES8, MZ maybe higher, console log should\nprint correctly, if it does, target it correctly as well to be shown.\nClick to expand...\nSorry to ask a super dumb question, but what is \"inside the register\" versus outside?"
+    },
+    {
+      "post_id": "js-post-1492226",
+      "author": "ShadowDragon",
+      "date": "2025-01-07T04:35:00+0900",
+      "body": "like you did on the screenshot\nwhere args works inside pluginRegister\nand not outside"
+    },
+    {
+      "post_id": "js-post-1492232",
+      "author": "lilydark",
+      "date": "2025-01-07T05:04:58+0900",
+      "body": "ShadowDragon said:\nlike you did on the screenshot\nwhere args works inside pluginRegister\nand not outside\nClick to expand...\nSee? I knew it was a dumb question!"
+    }
+  ]
+}

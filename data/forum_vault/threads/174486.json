@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/questions-on-skills-and-enemy-names.174486",
+  "title": "Questions on Skills and enemy names",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:19:55.616974+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1492290",
+      "author": "Balthazar",
+      "date": "2025-01-07T13:46:23+0900",
+      "body": "I'm thinking of adding an all out attack skill that reduces the user's defense for the rest of the turn and an attack that makes the user attack first regardless of agility differences. Anyone know how I could do that?\nAs for enemy names I want to make it so that when the enemy's HP reaches 50% their name changes to yellow and when it's below 25% it changes to red. Anyone know if there's a plugin for that or if I could simply code that in myself?\nThanks in advance."
+    },
+    {
+      "post_id": "js-post-1492293",
+      "author": "Kenen",
+      "date": "2025-01-07T13:54:18+0900",
+      "body": "1. It would be helpful if you described the skills and their effects in more detail. \"All out attack skill\" means nothing to us.\n2. What enemy names? Enemy names show up in battle in a couple of places by default, but you may also be using plugins that add new instances where the enemy name is displayed. It would be helpful if you posted a screenshot showing the specific instance of text you are referring to. Otherwise, if you are using custom plugins, someone would have to spend several replies trying to coerce said plugin(s) out of you."
+    },
+    {
+      "post_id": "js-post-1492298",
+      "author": "Timeline_man",
+      "date": "2025-01-07T14:08:45+0900",
+      "body": "Well, for the skill I can give... what I think you're asking. You can add a debuff to defense for 1 turn, simple enough, I think.\nYou can also increase the skill speed, that plays a part in determining turn order, so just... crank that up to an absurd level and it should work in most cases, I think\nBut yeah, what Kenen said about the enemy names"
+    },
+    {
+      "post_id": "js-post-1492304",
+      "author": "Balthazar",
+      "date": "2025-01-07T15:10:42+0900",
+      "body": "Kenen said:\n1. It would be helpful if you described the skills and their effects in more detail. \"All out attack skill\" means nothing to us.\n2. What enemy names? Enemy names show up in battle in a couple of places by default, but you may also be using plugins that add new instances where the enemy name is displayed. It would be helpful if you posted a screenshot showing the specific instance of text you are referring to. Otherwise, if you are using custom plugins, someone would have to spend several replies trying to coerce said plugin(s) out of you.\nClick to expand...\nIt's pretty simple. All out attack just means a strong attack (I took care of that with regular damage calculation). The attack itself makes user get lowered defense for that turn which makes them vulnerable to getting counterattacked. The lowered defense part is what i have problems with since I can only get the debuffs to affect enemies through the effect menu.\nAs for enemy names I mean right here\nWhere it mentions Gnome A and Gnome B. I want to make so that if their HP drops to 50% those names become yellow and when they drop to 25% they become red.\nI'm not using any plugins whatsoever this is the default version of things."
+    },
+    {
+      "post_id": "js-post-1492305",
+      "author": "Balthazar",
+      "date": "2025-01-07T15:13:10+0900",
+      "body": "Timeline_man said:\nWell, for the skill I can give... what I think you're asking. You can add a debuff to defense for 1 turn, simple enough, I think.\nYou can also increase the skill speed, that plays a part in determining turn order, so just... crank that up to an absurd level and it should work in most cases, I think\nBut yeah, what Kenen said about the enemy names\nClick to expand...\nWhen I try adding a debuff to defense it only ends up affecting the enemy and not the user. Do I have to do some coding for this or is there a way to do it in the database without any coding?\nAbout enemy names I mean right here.\nI don't have any plugins or anything, I just want the names here in this menu to change color to reflect the respective enemy's HP."
+    },
+    {
+      "post_id": "js-post-1492311",
+      "author": "Kes",
+      "date": "2025-01-07T15:51:24+0900",
+      "body": "Create a state for the debuff.  You can make it last as many turns as you want.\nIn the damage formula :\na.addState(x); damage formula\nx is the state id from the data base."
+    },
+    {
+      "post_id": "js-post-1492312",
+      "author": "Balthazar",
+      "date": "2025-01-07T16:03:02+0900",
+      "body": "Kes said:\nCreate a state for the debuff.  You can make it last as many turns as you want.\nIn the damage formula :\na.addState(x); damage formula\nx is the state id from the data base.\nClick to expand...\nI got it to work thanks a bunch! Do you know where I can find a list of the commands I can put in the damage formula?"
+    },
+    {
+      "post_id": "js-post-1492313",
+      "author": "Kes",
+      "date": "2025-01-07T16:12:30+0900",
+      "body": "For future reference, there is an alternative.\na.addDebuff(paramID, turns)\nParam ids start at zero, not one.  Defence, therefore, is id 3, not id 4 as you might expect looking at the list.  If you want the debuff to last e.g. 2 turns it would be:\na.addDebuff(3, 2); damage formula\nI tend not to use this because I can make the states exactly as I want.  For example, the standard debuff rate is 25%.  But I might want 20% or 30% or whatever."
+    },
+    {
+      "post_id": "js-post-1492314",
+      "author": "Robro33",
+      "date": "2025-01-07T16:22:14+0900",
+      "body": "Kes said:\nYou didn't specify that the debuff was to apply to the user, so people naturally assumed you meant the enemy.\nClick to expand...\nthey did\nBalthazar said:\nattack skill that reduces the user's defense for the rest of the turn\nClick to expand...\nBalthazar said:\nThe attack itself makes user get lowered defense for that turn which makes them vulnerable to getting counterattacked\nClick to expand...\nBalthazar said:\nAs for enemy names I want to make it so that when the enemy's HP reaches 50% their name changes to yellow and when it's below 25% it changes to red. Anyone know if there's a plugin for that or if I could simply code that in myself?\nClick to expand...\nas for the hp, if thats the only place you want that to happen in, then try saving this as a .js file and adding it to your project as a plugin\nCode:\nWindow_BattleEnemy.prototype.drawItem = function(index) {\n    this.resetTextColor();\n    const name = this._enemies[index].name();\n    const rect = this.itemLineRect(index);\n    if (this._enemies[index].hpRate()<.5)\n        this.changeTextColor(\"#ffff40\");\n    if (this._enemies[index].hpRate()<.25)\n        this.changeTextColor(\"#ff2020\");\n    this.drawText(name, rect.x, rect.y, rect.width);\n    this.resetTextColor()\n};"
+    },
+    {
+      "post_id": "js-post-1492323",
+      "author": "Kes",
+      "date": "2025-01-07T18:08:01+0900",
+      "body": "Robro33 said:\nthey did\nClick to expand...\nI know, which is why it was edited out from my post almost immediately, some 20+ minutes before you posted, and why the OP didn't comment some 10 minutes before."
+    },
+    {
+      "post_id": "js-post-1492336",
+      "author": "Robro33",
+      "date": "2025-01-07T20:36:18+0900",
+      "body": "Kes said:\nI know, which is why it was edited out from my post almost immediately, some 20+ minutes before you posted, and why the OP didn't comment some 10 minutes before.\nClick to expand...\ni didnt refresh the page or get the blue banner that new posts were made before posting, so i never saw the edit or replies after i stepped away and tested the plugin. my b\nKes said:\nI tend not to use this because I can make the states exactly as I want. For example, the standard debuff rate is 25%. But I might want 20% or 30% or whatever.\nClick to expand...\ntheres also one additional caveat that may or may not be relevant and makes states a bit better for this in the damage formula - that code gets ran per hit it makes. so if by chance the skill hits multiple targets, the user gains multiple debuffs / loses multiple buffs per use. multiple applications of the state wouldnt do any harm\nBalthazar said:\nI got it to work thanks a bunch! Do you know where I can find a list of the commands I can put in the damage formula?\nClick to expand...\nCheck out both of these threads and it should be a good start\nDamage Formulas 101\nPlease note: A discussion has already been started about different things you can do with these formulas so please direct those comments and question to the appropriate thread. https://forums.rpgmakerweb.com/index.php?threads/rmmv-damage-formula-ideas-and-help.47099/  A link to the list of...\nforums.rpgmakerweb.com\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1492446",
+      "author": "Balthazar",
+      "date": "2025-01-08T09:03:09+0900",
+      "body": "Robro33 said:\nthey did\nas for the hp, if thats the only place you want that to happen in, then try saving this as a .js file and adding it to your project as a plugin\nCode:\nWindow_BattleEnemy.prototype.drawItem = function(index) {\n    this.resetTextColor();\n    const name = this._enemies[index].name();\n    const rect = this.itemLineRect(index);\n    if (this._enemies[index].hpRate()<.5)\n        this.changeTextColor(\"#ffff40\");\n    if (this._enemies[index].hpRate()<.25)\n        this.changeTextColor(\"#ff2020\");\n    this.drawText(name, rect.x, rect.y, rect.width);\n    this.resetTextColor()\n};\nClick to expand...\nI put your code in a .js file and put it in the plugins folder but when I turned it on in the plugin manager, nothing happened. Did I screw it up somewhere?"
+    },
+    {
+      "post_id": "js-post-1492447",
+      "author": "Robro33",
+      "date": "2025-01-08T09:05:46+0900",
+      "body": "did you save your project? plugin changes dont register till you do."
+    },
+    {
+      "post_id": "js-post-1492450",
+      "author": "Balthazar",
+      "date": "2025-01-08T09:21:26+0900",
+      "body": "Robro33 said:\ndid you save your project? plugin changes dont register till you do.\nClick to expand...\nIT WORKS! HUZZAH!\nThanks a bunch for the help!"
+    }
+  ]
+}

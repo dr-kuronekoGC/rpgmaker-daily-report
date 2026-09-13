@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/show-a-message-in-menu-screen-rpg-maker-mv.174635",
+  "title": "MV Show a message in Menu Screen ( RPG Maker MV )",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:20:06.642058+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1493316",
+      "author": "Vyndicate",
+      "date": "2025-01-12T22:46:53+0900",
+      "body": "So I was planning to show a message in Menu Screen. How to do it? I've been search but quite confused how to make it work\nFor context, I was create a custom formation menu where specific hero cannot be main party and it will show the message that you can't place it on main party if it's still want to change it\nI also try to use SRD HUD but it didn't work"
+    },
+    {
+      "post_id": "js-post-1493318",
+      "author": "ShadowDragon",
+      "date": "2025-01-12T22:49:10+0900",
+      "body": "do you mean a popup info that you cannot change actors?\nor where do you want to show it?"
+    },
+    {
+      "post_id": "js-post-1493404",
+      "author": "Vyndicate",
+      "date": "2025-01-13T09:25:39+0900",
+      "body": "ShadowDragon said:\ndo you mean a popup info that you cannot change actors?\nor where do you want to show it?\nClick to expand...\nYes, I want to show a popup info about not allowed to change actors in Formation\nI was trying to show normal message but it will show after the menu is closed\nUpdate:\nI was referring to this post, and it works well\nMV - How To Display Text Anywhere On Screen, and Include In Game Variables, Also How To Hide/Show And Update The Text\nHey Makers, how's it going?  I'm not that skilled when it comes to using JavaScript. The only stuff I know is from when I was taking web development 1 in college, plus we barely touch it in that course. So, little to say, my knowledge when it comes to JavaScript, is next to none. That's why I've...\nforums.rpgmakerweb.com\nI was use a reference from plugin from Zero_G\nAnd here's the result\nThe only left is to make box window so it will readable\nHere's the code I use so far\nJavaScript:\n/*:\n * Prevent Assist Main Party\n *\n * @plugindesc v1.0.0 This plugin prevent Assist to be in Main Party.\n * @author Vyndicate\n *\n *\n * @help\n * There is no Plugin Command for this plugin.\n *\n * ============================================================================\n * Prevent actor to change\n *\n * Reference from Plugin Zero_G\n *\n * ============================================================================\n */\n\n(function () {\n    var popupMessage;\n    var _Scene_Base_start = Scene_Base.prototype.start;\n    Scene_Base.prototype.start = function () {\n        _Scene_Base_start.call(this);\n\n        popupMessage = new Sprite(new Bitmap(Graphics.width, Graphics.height));\n        popupMessage.opacity = 255;\n        this.addChild(popupMessage);\n    };\n\n    SceneManager.showMessagePreventChange = function () {\n        popupMessage.bitmap.clear();\n        popupMessage.opacity = 255;\n\n        popupMessage.bitmap.drawText(\"Assist hero cannot be in Main Party!\", 0, Graphics.height / 2, Graphics.width, 30, 'center');\n    };\n\n    var _Scene_Base_update = Scene_Base.prototype.update;\n    Scene_Base.prototype.update = function () {\n        _Scene_Base_update.call(this);\n\n        if (typeof popupMessage !== 'undefined') {\n            if (popupMessage.opacity > 0) {\n                popupMessage.opacity -= 3;\n            }\n        }\n    }\n\n    var _Swapping_Actor = Scene_Menu.prototype.onFormationOk\n    Scene_Menu.prototype.onFormationOk = function() {\n        var index = this._statusWindow.index();\n        var actor = $gameParty.members()[index];\n        var pendingIndex = this._statusWindow.pendingIndex();\n        if (pendingIndex >= 0) {\n            if(!this.preventSwap(index, pendingIndex)) {\n                $gameParty.swapOrder(index, pendingIndex);\n                this._statusWindow.setPendingIndex(-1);\n                this._statusWindow.redrawItem(index);\n            }\n        } else {\n            this._statusWindow.setPendingIndex(index);\n        }\n        this._statusWindow.activate();\n    };\n\n    var _Prevent_Swap = Scene_Menu.prototype.preventSwap\n    Scene_Menu.prototype.preventSwap = function(index, pendingIndex) {\n        if((index < 4 || pendingIndex < 4) && ($gameParty.members()[index].currentClass().name == \"Assist\" || $gameParty.members()[pendingIndex].currentClass().name == \"Assist\")) {\n            console.log(\"You can't use Assist in main party\")\n            SceneManager.showMessagePreventChange()\n            return true\n        }\n        return false\n    }\n}());\nThanks for Reply\n@ShadowDragon\n! I just found what I want. Sorry for late reply because I was sleeping\nI will close this"
+    },
+    {
+      "post_id": "js-post-1493461",
+      "author": "ShadowDragon",
+      "date": "2025-01-13T19:45:05+0900",
+      "body": "if you want a window, you need to call a window scene for it.\nor try to add a gradientfill if possible.\nI don't know how that works inside a sprite, but you can make a rectangle in a different way or filler.\nbut I think you could find that too.\nanother way it to make the actor name greyed out for swapping for visibility, and instead of text,\na buzzer sound (which could be cleaner too) or use both.\nsee what works best"
+    },
+    {
+      "post_id": "js-post-1493472",
+      "author": "Ms Littlefish",
+      "date": "2025-01-13T22:02:13+0900",
+      "body": "This thread is closed due to being reported as solved. If you need it reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

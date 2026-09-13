@@ -1,0 +1,311 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/tomoaky-tmcard-english-translated.140259",
+  "title": "Tomoaky TMCard (English Translated)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:20:17.151290+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1213499",
+      "author": "xabileug",
+      "date": "2021-09-08T13:56:11+0900",
+      "body": "Tomoaky TMCard for MV version\n0.1.7.b\nCreator name Tomoaky\n(twitter :\nhttps://twitter.com/tomoaky\n)\nLast Updated :  2019/05/14\nwebsite :\nhttps://hikimoki.sakura.ne.jp/\nCopyright : (c) 2016 tomoaky\nReleased under the MIT license\nThe MIT License\nCopyright <YEAR> <COPYRIGHT HOLDER> Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software…\nopensource.org\nSpoiler:\nMIT license\nMIT License\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\nClick to expand...\nModified and English translation by xabileug\nModification version\n0.1.7e\nRequires RS_MessageAlign : for text align\nIntroduction\nThis is an automatic card battle game, can be used as mini game or main game. Very similar to .hack's Crimson VS.\nHowever, this has 3 cards (by default, can have more) fight each other until wipeout. Skills activate and have some cooldown. Unit Skills are not carried over, while Support Skills are carried over to the next card. Making the Card on the 3rd Slot have 3 skills for activation. Strategy can have depth depending on the creator's design and balance.\nFeatures\nCreate unlimited number of cards, unlimited number of decks\nDeck size 3 up\nCards generated in game by combining card parts in the pictures folder\nWin Condition : Wipe out all enemy cards\nFeatures added from modification\ncustom battle back + BGM control\npatch allowing moghunter particles in battle scene\ndeck renaming\nbattle grade (SS, S, A, B, C, D)\nNew win condition : A card survives for 10 turns\nadded option to set font for card sprite\nplugin command ChangeCard, ClearDeck\nCard Restriction by Switch\nCard Album - with card stats, break, craft, sell\nSpoiler:\nWishlist\nanimation for Card Win, Card Lose, Battle Start, Battle End\nConcealed Card\nSwap Card Position\nAddition Victory Conditions : when card reaches X turn, when card at position X is eliminated, when total X damage is dealt, when total X HP is healed\nTrigger Common events after X Turns\nConditional Card Equip\nCard Almanac/Statistics Scene\nCard Item/Bag/List Scene\nCard Shop Scene\nCard Booster Pack Scene\nCard Upgrade System\nCard Hologram Layer Effect for Legend Cards\nplugin command for showing a card sprite in map\nplugin command to remove cards or force equip cards\nScreenshots\nDeck Edit Scene\n​\nCard Battle Scene\n​\nHow to Use\nCopy all plugins in the js folder or better make the demo as your base project.\nCopy all images required.\nName all variables and switches as in the demo.\nPlease check inside the demo how to call card battle scene.\nPlease check the text file included for adding skill note tags\nDemo includes 4 events (1) Deck Rename (2) Random Shop (3) Gachapon Shop (4) Fusion\nDemo\nDownload\nhere\nFAQ\nQ: The demo won't open, how to open it?\nA: Download Winrar and try again.\nCredit and Thanks\n- xabileug (english translation)\n- moghunter (particles embed in card battle scene)\n- tomoaky (original author)\n- yuyu! (random shop + random names)\n- biud436 (RS_MessageAlign)\nAuthor's Notes\nFeel Free to check existing games\nRagnarok Card Battle\nCard Battle\nParty x Night\nfeel free to further edit the script as long as credit the original author tomoaky, and include in credits where you obtain snippets"
+    },
+    {
+      "post_id": "js-post-1214088",
+      "author": "akingofcrows",
+      "date": "2021-09-11T10:53:30+0900",
+      "body": "Love it!"
+    },
+    {
+      "post_id": "js-post-1214167",
+      "author": "Passingbyposts",
+      "date": "2021-09-11T18:59:46+0900",
+      "body": "Nice, is this ever going over to MZ?"
+    },
+    {
+      "post_id": "js-post-1214321",
+      "author": "akingofcrows",
+      "date": "2021-09-12T11:38:29+0900",
+      "body": "Passingbyposts said:\nNice, is this ever going over to MZ?\nClick to expand...\nConsidering Tomoaky disappeared a while back, I doubt it, unless someone wants to try and port it!"
+    },
+    {
+      "post_id": "js-post-1333001",
+      "author": "xabileug",
+      "date": "2023-03-07T10:09:39+0900",
+      "body": "I've got the script call for changing cards on a deck thanks to dopan..\nJavaScript:\n// deckId, slotId, item\nvar item = $dataItems[12];\n$gameParty.changeCard(0, 0, item);\nBut now i need the conditional card equip.\nI'm also needing to insert the category window or item pockets into the deck edit view. :C"
+    },
+    {
+      "post_id": "js-post-1339670",
+      "author": "xabileug",
+      "date": "2023-04-06T14:27:52+0900",
+      "body": "For an update:\nCard Restriction based on card type has been implemented, when the game switch ID TypeBan<CardType> is ON, the battle cannot proceed, when any deck has the banned card.\nThree new plugin commands added\nChangeCard X Y Z\nex ChangeCard 0 0 12, changes the card in slot[0] of deck[0] to card12\nJavaScript:\nelse if (command === 'changeEquipCard') { //deckId, slotId, item\n            var arr = args.map(this.convertEscapeCharactersTM, this);\n            var deckId = Number(arr[0]);\n            var slotId = Number(arr[0]);\n            var item = Number(arr[2]);\n            var card = $dataItems[item];\n            $gameParty.changeCard(deckId, slotId, card);\n        }\nClearDeck X\nex ClearDeck 0, removes all the cards equipped in deck[0]\nJavaScript:\nelse if (command === 'clearDeck') { //deckId\n            var arr = args.map(this.convertEscapeCharactersTM, this);\n            var deckId = Number(arr[0]);\n            var deck = $gameParty.deck(deckId);\n            for (var i = 0; i < deck.length; i++) {\n                var cardId = deck[i];\n                if (cardId) {\n                    var card = $dataItems[cardId];\n                    $gameParty.gainItem(card, 1);\n                }\n                deck[i] = 0;\n            }\n        }\nGambitLose\n, lose a random card from active deck\nJavaScript:\nelse if (command === 'gambitlose') { //remove random card when lose\n            var activeDeck = $gameParty.activeDeck();\n            var randomSlotId = -1;\n            \n            // Find a random slot that is not empty\n            while (activeDeck.length > 0) {\n                randomSlotId = Math.floor(Math.random() * activeDeck.length);\n                if (activeDeck[randomSlotId] !== 0) {\n                    break;\n                }\n            }\n            \n            if (randomSlotId !== -1) {\n                var randomCardId = activeDeck[randomSlotId];\n                $gameParty.changeCard($gameParty._activeDeck, randomSlotId, null);\n                $gameParty.loseItem($dataItems[randomCardId], 1);\n                $gameVariables.setValue(12, randomCardId);\n            }\n        }"
+    },
+    {
+      "post_id": "js-post-1360938",
+      "author": "akingofcrows",
+      "date": "2023-07-02T10:31:39+0900",
+      "body": "xabileug said:\nFor an update:\nCard Restriction based on card type has been implemented, when the game switch ID TypeBan<CardType> is ON, the battle cannot proceed, when any deck has the banned card.\nThree new plugin commands added\nChangeCard X Y Z\nex ChangeCard 0 0 12, changes the card in slot[0] of deck[0] to card12\nJavaScript:\nelse if (command === 'changeEquipCard') { //deckId, slotId, item\n            var arr = args.map(this.convertEscapeCharactersTM, this);\n            var deckId = Number(arr[0]);\n            var slotId = Number(arr[0]);\n            var item = Number(arr[2]);\n            var card = $dataItems[item];\n            $gameParty.changeCard(deckId, slotId, card);\n        }\nClearDeck X\nex ClearDeck 0, removes all the cards equipped in deck[0]\nJavaScript:\nelse if (command === 'clearDeck') { //deckId\n            var arr = args.map(this.convertEscapeCharactersTM, this);\n            var deckId = Number(arr[0]);\n            var deck = $gameParty.deck(deckId);\n            for (var i = 0; i < deck.length; i++) {\n                var cardId = deck[i];\n                if (cardId) {\n                    var card = $dataItems[cardId];\n                    $gameParty.gainItem(card, 1);\n                }\n                deck[i] = 0;\n            }\n        }\nGambitLose\n, lose a random card from active deck\nJavaScript:\nelse if (command === 'gambitlose') { //remove random card when lose\n            var activeDeck = $gameParty.activeDeck();\n            var randomSlotId = -1;\n           \n            // Find a random slot that is not empty\n            while (activeDeck.length > 0) {\n                randomSlotId = Math.floor(Math.random() * activeDeck.length);\n                if (activeDeck[randomSlotId] !== 0) {\n                    break;\n                }\n            }\n           \n            if (randomSlotId !== -1) {\n                var randomCardId = activeDeck[randomSlotId];\n                $gameParty.changeCard($gameParty._activeDeck, randomSlotId, null);\n                $gameParty.loseItem($dataItems[randomCardId], 1);\n                $gameVariables.setValue(12, randomCardId);\n            }\n        }\nClick to expand...\nAnything new to add, Xabileug?"
+    },
+    {
+      "post_id": "js-post-1361217",
+      "author": "xabileug",
+      "date": "2023-07-03T21:48:55+0900",
+      "body": "do you have anything in mind?\nakingofcrows said:\nAnything new to add, Xabileug?\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1362424",
+      "author": "akingofcrows",
+      "date": "2023-07-07T22:38:30+0900",
+      "body": "xabileug said:\ndo you have anything in mind?\nClick to expand...\nOh, i wasn't sure if you've attempted any of the other things listed in the wishlist. I sorta wrote a neat little booster pack opening thingy"
+    },
+    {
+      "post_id": "js-post-1362582",
+      "author": "xabileug",
+      "date": "2023-07-08T06:36:10+0900",
+      "body": "Thats nice! A booster pack scene?\nI just use common events for\nCard shop\nCard album\nCard fusion\nI have attempted on the card inventory, so that there would be item pockets, easier to equip cards, but its beyond my skills\nI wanted the aesthetics of tween animations and card animated layer.\nOh yeah, there's still the delta combo not implemented. Its works like an additional skill activation when you have a certain combination of set cards."
+    },
+    {
+      "post_id": "js-post-1362613",
+      "author": "akingofcrows",
+      "date": "2023-07-08T09:02:03+0900",
+      "body": "xabileug said:\nThats nice! A booster pack scene?\nI just use common events for\nCard shop\nCard album\nCard fusion\nI have attempted on the card inventory, so that there would be item pockets, easier to equip cards, but its beyond my skills\nI wanted the aesthetics of tween animations and card animated layer.\nOh yeah, there's still the delta combo not implemented. Its works like an additional skill activation when you have a certain combination of set cards.\nClick to expand...\nIts a common event, the booster pack opening thing...it's nothing extraordinary, but...\nCode:\n◆Play BGM：Town7 (20, 100, 0)\n◆Tint Screen：(-255,-255,-255,0), 20 frames\n◆Script：$gameScreen.showPicture(2, 'booster1', 0, 452, 212, 50, 50, 255, 0);\n◆Fadein Screen\n◆Wait：20 frames\n◆Plugin Command：PlaceAnim 242 552 212 0 5\n◆Wait：20 frames\n◆Show Picture：#2, booster1open, Upper Left (452,212), (50%,50%), 255, Normal\n◆Shake Screen：1, 8, 45 frames (Wait)\n◆Flash Screen：(255,255,255,170), 60 frames (Wait)\n◆Show Picture：#2, booster1open, Upper Left (452,212), (50%,50%), 200, Normal\n◆Wait：5 frames\n◆Show Picture：#2, booster1open, Upper Left (452,212), (50%,50%), 155, Normal\n◆Wait：5 frames\n◆Show Picture：#2, booster1open, Upper Left (452,212), (50%,50%), 100, Normal\n◆Wait：5 frames\n◆Show Picture：#2, booster1open, Upper Left (452,212), (50%,50%), 0, Normal\n◆Wait：5 frames\n◆Erase Picture：#2\n◆Comment：Card 1\n◆Script：var aa = $gameVariables.value(200); // array legend\n：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n：      ：$gameVariables.setValue(118, bb); //ID\n◆Play SE：Book2 (90, 90, 0)\n◆Script：var vv = $gameVariables.value(118);\n：      ：$gameVariables.setValue(116, vv);\n◆Script：$gameScreen.showPicture(10, 'card_' + $gameVariables.value(116), 0, 452, 212, 75, 75, 255, 0);\n◆Text：None, Dim, Bottom\n：    ：<CENTER> You just pulled a \\IN[\\v[118]] card! </CENTER>\n◆Script：var reward = $dataItems[$gameVariables.value(118)];\n：      ：$gameParty.gainItem(reward, 1);\n：      ：this.setWaitMode(\"message\");\n◆Wait：20 frames\n◆Move Picture：#10, Upper Left (100,20), (100%,100%), 255, Normal, 10 frames (Wait)\n◆Wait：20 frames\n◆Comment：Card 2\n◆Script：var aa = $gameVariables.value(200); // array legend\n：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n：      ：$gameVariables.setValue(118, bb); //ID\n◆Play SE：Book2 (90, 90, 0)\n◆Script：var vv = $gameVariables.value(118);\n：      ：$gameVariables.setValue(116, vv);\n◆Script：$gameScreen.showPicture(11, 'card_' + $gameVariables.value(116), 0, 452, 212, 75, 75, 255, 0);\n◆Text：None, Dim, Bottom\n：    ：<CENTER> You just pulled a \\IN[\\v[118]] card! </CENTER>\n◆Script：var reward = $dataItems[$gameVariables.value(118)];\n：      ：$gameParty.gainItem(reward, 1);\n：      ：this.setWaitMode(\"message\");\n◆Wait：20 frames\n◆Move Picture：#11, Upper Left (300,20), (100%,100%), 255, Normal, 10 frames (Wait)\n◆Wait：20 frames\n◆Comment：Card 3\n◆Script：var aa = $gameVariables.value(200); // array legend\n：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n：      ：$gameVariables.setValue(118, bb); //ID\n◆Play SE：Book2 (90, 90, 0)\n◆Script：var vv = $gameVariables.value(118);\n：      ：$gameVariables.setValue(116, vv);\n◆Script：$gameScreen.showPicture(12, 'card_' + $gameVariables.value(116), 0, 452, 212, 75, 75, 255, 0);\n◆Text：None, Dim, Bottom\n：    ：<CENTER> You just pulled a \\IN[\\v[118]] card! </CENTER>\n◆Script：var reward = $dataItems[$gameVariables.value(118)];\n：      ：$gameParty.gainItem(reward, 1);\n：      ：this.setWaitMode(\"message\");\n◆Wait：20 frames\n◆Move Picture：#12, Upper Left (500,20), (100%,100%), 255, Normal, 10 frames (Wait)\n◆Wait：20 frames\n◆Comment：Card 4\n◆Control Variables：#0161 Booster Rarity = Random 0..1\n◆If：Booster Rarity = 0\n  ◆Script：var aa = $gameVariables.value(200); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆If：Booster Rarity = 1\n  ◆Script：var aa = $gameVariables.value(201); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆Script：var vv = $gameVariables.value(118);\n：      ：$gameVariables.setValue(116, vv);\n◆Script：$gameScreen.showPicture(13, 'card_' + $gameVariables.value(116), 0, 452, 212, 75, 75, 255, 0);\n◆Text：None, Dim, Bottom\n：    ：<CENTER> You just pulled a \\IN[\\v[118]] card! </CENTER>\n◆Script：var reward = $dataItems[$gameVariables.value(118)];\n：      ：$gameParty.gainItem(reward, 1);\n：      ：this.setWaitMode(\"message\");\n◆Wait：20 frames\n◆Move Picture：#13, Upper Left (700,20), (100%,100%), 255, Normal, 10 frames (Wait)\n◆Wait：20 frames\n◆Comment：Card 5\n◆Control Variables：#0161 Booster Rarity = Random 0..1\n◆If：Booster Rarity = 0\n  ◆Script：var aa = $gameVariables.value(200); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆If：Booster Rarity = 1\n  ◆Script：var aa = $gameVariables.value(201); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆Script：var vv = $gameVariables.value(118);\n：      ：$gameVariables.setValue(116, vv);\n◆Script：$gameScreen.showPicture(14, 'card_' + $gameVariables.value(116), 0, 452, 212, 75, 75, 255, 0);\n◆Text：None, Dim, Bottom\n：    ：<CENTER> You just pulled a \\IN[\\v[118]] card! </CENTER>\n◆Script：var reward = $dataItems[$gameVariables.value(118)];\n：      ：$gameParty.gainItem(reward, 1);\n：      ：this.setWaitMode(\"message\");\n◆Wait：20 frames\n◆Move Picture：#14, Upper Left (100,320), (100%,100%), 255, Normal, 10 frames (Wait)\n◆Wait：20 frames\n◆Comment：Card 6\n◆Control Variables：#0161 Booster Rarity = Random 0..2\n◆If：Booster Rarity = 0\n  ◆Script：var aa = $gameVariables.value(200); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆If：Booster Rarity = 1\n  ◆Script：var aa = $gameVariables.value(201); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆If：Booster Rarity = 2\n  ◆Script：var aa = $gameVariables.value(202); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆Script：var vv = $gameVariables.value(118);\n：      ：$gameVariables.setValue(116, vv);\n◆Script：$gameScreen.showPicture(15, 'card_' + $gameVariables.value(116), 0, 452, 212, 75, 75, 255, 0);\n◆Text：None, Dim, Bottom\n：    ：<CENTER> You just pulled a \\IN[\\v[118]] card! </CENTER>\n◆Script：var reward = $dataItems[$gameVariables.value(118)];\n：      ：$gameParty.gainItem(reward, 1);\n：      ：this.setWaitMode(\"message\");\n◆Wait：20 frames\n◆Move Picture：#15, Upper Left (300,320), (100%,100%), 255, Normal, 10 frames (Wait)\n◆Wait：20 frames\n◆Comment：Card 7\n◆Control Variables：#0161 Booster Rarity = Random 0..1\n◆If：Booster Rarity = 0\n  ◆Script：var aa = $gameVariables.value(201); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆If：Booster Rarity = 1\n  ◆Script：var aa = $gameVariables.value(202); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆Script：var vv = $gameVariables.value(118);\n：      ：$gameVariables.setValue(116, vv);\n◆Script：$gameScreen.showPicture(16, 'card_' + $gameVariables.value(116), 0, 452, 212, 75, 75, 255, 0);\n◆Text：None, Dim, Bottom\n：    ：<CENTER> You just pulled a \\IN[\\v[118]] card! </CENTER>\n◆Script：var reward = $dataItems[$gameVariables.value(118)];\n：      ：$gameParty.gainItem(reward, 1);\n：      ：this.setWaitMode(\"message\");\n◆Wait：20 frames\n◆Move Picture：#16, Upper Left (500,320), (100%,100%), 255, Normal, 10 frames (Wait)\n◆Wait：20 frames\n◆Comment：Card 8\n◆Control Variables：#0161 Booster Rarity = Random 0..2\n◆If：Booster Rarity = 0\n  ◆Script：var aa = $gameVariables.value(201); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆If：Booster Rarity = 1\n  ◆Script：var aa = $gameVariables.value(202); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆\n：End\n◆If：Booster Rarity = 2\n  ◆Script：var aa = $gameVariables.value(203); // array legend\n  ：      ：var bb = aa[Math.floor(Math.random()*aa.length)];\n  ：      ：$gameVariables.setValue(118, bb); //ID\n  ◆Play SE：Book2 (90, 90, 0)\n  ◆Plugin Command：PlaceAnim 48 552 382 0 5\n  ◆\n：End\n◆Script：var vv = $gameVariables.value(118);\n：      ：$gameVariables.setValue(116, vv);\n◆Script：$gameScreen.showPicture(17, 'card_' + $gameVariables.value(116), 0, 452, 212, 75, 75, 255, 0);\n◆Text：None, Dim, Bottom\n：    ：<CENTER> You just pulled a \\IN[\\v[118]] card! </CENTER>\n◆Script：var reward = $dataItems[$gameVariables.value(118)];\n：      ：$gameParty.gainItem(reward, 1);\n：      ：this.setWaitMode(\"message\");\n◆Wait：20 frames\n◆Move Picture：#17, Upper Left (700,320), (100%,100%), 255, Normal, 10 frames (Wait)\n◆Wait：60 frames\n◆Fadeout Screen\n◆Tint Screen：(0,0,0,0), 60 frames\n◆Control Variables：#0161 Booster Rarity = 0\n◆Fadeout BGM：10 seconds\n◆Erase Picture：#10\n◆Erase Picture：#11\n◆Erase Picture：#12\n◆Erase Picture：#13\n◆Erase Picture：#14\n◆Erase Picture：#15\n◆Erase Picture：#16\n◆Erase Picture：#17\n◆Erase Picture：#1\n◆Erase Picture：#2\n◆Erase Picture：#3\n◆Fadein Screen"
+    },
+    {
+      "post_id": "js-post-1362716",
+      "author": "akingofcrows",
+      "date": "2023-07-08T22:38:56+0900",
+      "body": "xabileug said:\nThats nice! A booster pack scene?\nI just use common events for\nCard shop\nCard album\nCard fusion\nI have attempted on the card inventory, so that there would be item pockets, easier to equip cards, but its beyond my skills\nI wanted the aesthetics of tween animations and card animated layer.\nOh yeah, there's still the delta combo not implemented. Its works like an additional skill activation when you have a certain combination of set cards.\nClick to expand...\nWhat kind of common event are you using for the album?"
+    },
+    {
+      "post_id": "js-post-1362923",
+      "author": "xabileug",
+      "date": "2023-07-09T21:34:52+0900",
+      "body": "the card album is quite long\nPage Controllers\nPage Switch\nTemplate common event for displaying slot in coordinate\ninitialize the map scene when first map transfer\nAnother Template Event for displaying all cards in page\nHere's the choices when selecting the picture\nhere's another graying out the picture when not owned\nHere's the event manager when transfering to the card album map\nthose plugin commands are from triacontane picture call common\nI don't have a full tutorial on this. i dont know if those screen shots help"
+    },
+    {
+      "post_id": "js-post-1383028",
+      "author": "ninerise",
+      "date": "2023-09-23T01:58:24+0900",
+      "body": "do you know if this would be ok to use in a commercial game?\nI read the MIT but my concern is im not sure if bandi owns the rules to the game and if the similarities are too close P.S. haven't used it yet juts found this while looking for mini games for my project at work :3 also thanks for sharing your updates and findings\n@xabileug\nit was really insightful"
+    },
+    {
+      "post_id": "js-post-1384005",
+      "author": "xabileug",
+      "date": "2023-09-27T08:03:49+0900",
+      "body": "ninerise said:\ndo you know if this would be ok to use in a commercial game?\nI read the MIT but my concern is im not sure if bandi owns the rules to the game and if the similarities are too close P.S. haven't used it yet juts found this while looking for mini games for my project at work :3 also thanks for sharing your updates and findings\n@xabileug\nit was really insightful\nClick to expand...\nrules? the rules and mechanics for these card game is totally different. if you play the other games, they used it for different mechanics. you are free to modify the plugins."
+    },
+    {
+      "post_id": "js-post-1384436",
+      "author": "ninerise",
+      "date": "2023-09-28T21:16:02+0900",
+      "body": "Thank you for the quick reply :3"
+    },
+    {
+      "post_id": "js-post-1423540",
+      "author": "Rainy_Frog",
+      "date": "2024-02-18T05:10:20+0900",
+      "body": "Hi, I know it's been a long time since this post was made but this has been the only thing that's remotely close to what I've been looking for and I was wondering, is there a way to make this into an actual battle instead of auto? I'm too broke to pay for any of the available Card game plugins... >_<"
+    },
+    {
+      "post_id": "js-post-1423695",
+      "author": "xabileug",
+      "date": "2024-02-19T00:31:52+0900",
+      "body": "Rainy_Frog said:\nHi, I know it's been a long time since this post was made but this has been the only thing that's remotely close to what I've been looking for and I was wondering, is there a way to make this into an actual battle instead of auto? I'm too broke to pay for any of the available Card game plugins... >_<\nClick to expand...\nNo. if you have heard of Crimson VS, this is that card game. you will need to event your own card game for a card battle you are wanting to make. There is a tutorial on making a card shuffle deck on playing poker cards."
+    },
+    {
+      "post_id": "js-post-1452049",
+      "author": "jmenocchi",
+      "date": "2024-06-20T17:37:42+0900",
+      "body": "Hello, I am from China, and I have a few questions to ask. I don't understand what '2,0 and 3,3' in <cardEffect:2,0> and <cardRules:3,3> mean. There is no tutorial about this plugin on domestic websites. Tomoky's personal website no longer exists. So this problem has troubled me for a long time.\n你好，我来自中国，有几个问题想请教一下。我不明白<cardEffect:2,0>和<cardRules:3,3>中的'2,0和3,3'是什么意思。国内网站上没有关于这个插件的教程。Tomoaky的个人网站已经不存在了。所以这个问题困扰了我很久了。"
+    },
+    {
+      "post_id": "js-post-1452672",
+      "author": "xabileug",
+      "date": "2024-06-23T22:37:53+0900",
+      "body": "jmenocchi said:\nHello, I am from China, and I have a few questions to ask. I don't understand what '2,0 and 3,3' in <cardEffect:2,0> and <cardRules:3,3> mean. There is no tutorial about this plugin on domestic websites. Tomoky's personal website no longer exists. So this problem has troubled me for a long time.\n你好，我来自中国，有几个问题想请教一下。我不明白<cardEffect:2,0>和<cardRules:3,3>中的'2,0和3,3'是什么意思。国内网站上没有关于这个插件的教程。Tomoaky的个人网站已经不存在了。所以这个问题困扰了我很久了。\nClick to expand...\nhello\n@jmenocchi\nCode:\nNote tag (skill):\n  <cardEffect:1,2>\n    set card effect as effect, param\n    in this case effect 1 is extra damage\n    param is 2\n    deal extra 2 damage\n\n  <cardRules:2,0,7,2>\n    set the activation condition rule, param\n    multiple conditions can be used, separate by single space\n    2 is enemy turn, 0 is prep phase\n    7 is enemy position, 2 is(3rd card)\ngo inside the plugin find the skill ID, values 1-73,\nyou can add custom if you can code\nfind the skill conditions , values 1-59"
+    },
+    {
+      "post_id": "js-post-1452883",
+      "author": "jmenocchi",
+      "date": "2024-06-24T19:11:06+0900",
+      "body": "xabileug said:\nhello\n@jmenocchi\nCode:\nNote tag (skill):\n  <cardEffect:1,2>\n    set card effect as effect, param\n    in this case effect 1 is extra damage\n    param is 2\n    deal extra 2 damage\n\n  <cardRules:2,0,7,2>\n    set the activation condition rule, param\n    multiple conditions can be used, separate by single space\n    2 is enemy turn, 0 is prep phase\n    7 is enemy position, 2 is(3rd card)\ngo inside the plugin find the skill ID, values 1-73,\nView attachment 309287\nyou can add custom if you can code\nfind the skill conditions , values 1-59\nView attachment 309288\nClick to expand...\nThank you very much!  You have solved the doubts that have plagued me for a long time."
+    },
+    {
+      "post_id": "js-post-1467563",
+      "author": "xabileug",
+      "date": "2024-09-01T09:39:15+0900",
+      "body": "I already forgot about the upgrades I've been doing on this plugin, but let me show you guys this mode.\nWhen you enter this mode, you get to open a booster pack and use those cards immediately in battle. When you WIN, you get to keep them, when you LOSE, you won't get to keep them."
+    },
+    {
+      "post_id": "js-post-1476534",
+      "author": "xabileug",
+      "date": "2024-10-20T09:11:26+0900",
+      "body": "here's some update you can add. add these to easily export card images!\nuse the plugin command:\nthis will export card ID 1 from the data base\nCode:\nexportCardImage 1\nthis will export card ID from 20 to 25\nCode:\nexportCardImage 20 25\nthe cards will be saved in the img/cards/ folder. also you need to wait for it to load in game. the first time it runs it will be blank and black images. but after a few seconds it will then be outputted correctly 192 x 288 pixels as png file with filenames 000 to 999. you can edit the finalname format. i run it twice, and for sure on the second try it not black anymore. it takes less than 5 seconds on my end for all my 140 cards to be generated.\nthis very useful for devs as the current setup of the card sprites are layered.\nSpoiler:\nExport Card Images\nJavaScript:\nelse if (command === 'exportCardImage') { // x24\n            // Check if a range is provided (args[1] will be the end of the range if given)\n            var startId = Number(args[0]); // Starting card ID\n            var endId = Number(args[1]) || startId; // Ending card ID, defaults to startId if not provided\n\n            var fs = require('fs');\n            var path = require('path');\n\n            // Create the folder path if it doesn't exist\n            var folderPath = path.join(process.cwd(), 'img/cards');\n            if (!fs.existsSync(folderPath)) {\n                fs.mkdirSync(folderPath, { recursive: true });\n            }\n\n            // Function to export a single card image\n            var exportCardImage = function(cardId) {\n                if (!cardId || !$dataItems[cardId]) {\n                    console.error(\"Invalid card ID or card not found: \" + cardId);\n                    return;\n                }\n\n                // Set up the card image size (192x288)\n                var cardBitmap = new Bitmap(192, 288);\n\n                // Use the actual card sprite rendering\n                var card = new Game_Card(cardId);\n                var sprite = new Sprite_Card(card);\n                sprite.bitmap = cardBitmap;\n\n                // Update sprite logic to render onto the bitmap\n                sprite.setFrame(0, 0, 192, 288);\n                sprite.update();\n\n                // Save the card image as a PNG\n                var fileName = String(cardId).padStart(3, '0') + '.png'; // Pad the filename with zeroes\n                var filePath = path.join(folderPath, fileName);\n\n                cardBitmap.addLoadListener(function() {\n                    try {\n                        var base64Data = cardBitmap._canvas.toDataURL().replace(/^data:image\\/png;base64,/, \"\");\n                        fs.writeFileSync(filePath, base64Data, 'base64');\n                        console.log(\"Card image saved at:\", filePath);\n                    } catch (error) {\n                        console.error(\"Error saving card image:\", error);\n                    }\n                });\n            };\n\n            // Loop through the range and export each card image\n            for (var cardId = startId; cardId <= endId; cardId++) {\n                exportCardImage(cardId);\n            }\n        }"
+    },
+    {
+      "post_id": "js-post-1478382",
+      "author": "xabileug",
+      "date": "2024-10-30T11:23:03+0900",
+      "body": "So it occurred to me, if we can make in-game generated cards. ive got the image export. just need a scene to create one. This idea is from digimon card battle where they have partner cards. they level up increase stats and equip skill effects. i think this will be a complex add-on, as item instances aren't normal in rpg maker mv itself.\nEDIT:\nOh my, i just realized you can make the card stats depend on a variable!\n<cardHp=\\v[10]>\nThis just made it more insane.\nreplace this in the Game_Card\nJavaScript:\nGame_Card.prototype.cost = function() {\n    return this.getDynamicNotetagValue('cardCost');\n};\n\nGame_Card.prototype.hp = function() {\n    return this.getDynamicNotetagValue('cardHp');\n};\n\nGame_Card.prototype.atk = function() {\n    return this.getDynamicNotetagValue('cardAtk');\n};\n\nGame_Card.prototype.type = function() {\n    return this.getDynamicNotetagValue('cardType');\n};\n\nGame_Card.prototype.element = function() {\n    return this.getDynamicNotetagValue('cardElement');\n};\n\nGame_Card.prototype.rare = function() {\n    return this.getDynamicNotetagValue('cardRare');\n};\nGame_Card.prototype.unitSkill = function() {\n    return this.getDynamicNotetagValue('unitSkill');\n};\n\nGame_Card.prototype.partySkill = function() {\n    return this.getDynamicNotetagValue('partySkill');\n};\n\nGame_Card.prototype.getDynamicNotetagValue = function(tagName) {\n    if (this._item && this._item.meta[tagName]) {\n        const interpreter = new Game_Interpreter();\n        let textValue = interpreter.convertEscapeCharactersTM(this._item.meta[tagName]);\n        return parseInt(textValue, 10) || 0;\n    }\n    return 0;\n};"
+    },
+    {
+      "post_id": "js-post-1479075",
+      "author": "xabileug",
+      "date": "2024-11-02T13:43:21+0900",
+      "body": "You can actually turn this plugin into an original battle system just by turning ON two params\nfixCardNum = 0   --> allows deck to be valid even if it only has 1 card\nsameCard = 0 --> turns on same cards in the deck, all cards must be unique\nyou can even set upto X number of cards, as long as you define their position inside the plugin\nNow that i've made an updated on the dynamic card values as with plugin usage. this battle system will even be more unique!\nSo, imagine this card battle system. You have a main card, that can be upgraded - HP , AP, Type, Element, Cost, Skill1, Skill 2. It can be reflected in the Card Album and Deck Edit and Deck Select. You can modify the params via plugin command or script call, for that randomization!"
+    },
+    {
+      "post_id": "js-post-1491661",
+      "author": "DianteClark",
+      "date": "2025-01-04T04:58:34+0900",
+      "body": "First of all, thank you for all the amazing work you've done! I love that you're keeping this alive!\nIs there a way to make it auto battle without needing to hold the button down?"
+    },
+    {
+      "post_id": "js-post-1491800",
+      "author": "xabileug",
+      "date": "2025-01-05T02:16:19+0900",
+      "body": "DianteClark said:\nFirst of all, thank you for all the amazing work you've done! I love that you're keeping this alive!\nIs there a way to make it auto battle without needing to hold the button down?\nClick to expand...\nhello thank you for your interest! i think it has to do with the wait flag of the window card battle message\nCode:\n//-----------------------------------------------------------------------------\n    // Window_CardBattleMessage\n    //\n\n    function Window_CardBattleMessage() {\n        this.initialize.apply(this, arguments);\n    }\n\n    Window_CardBattleMessage.prototype = Object.create(Window_Base.prototype);\n    Window_CardBattleMessage.prototype.constructor = Window_CardBattleMessage;\n\n    Window_CardBattleMessage.prototype.initialize = function(x, y) {\n        var width = this.windowWidth();\n        var height = this.fittingHeight(1);\n        Window_Base.prototype.initialize.call(this, x, y, width, height);\n        this.setBackgroundType(1);\n        this._waitFlag = false;\n    };\n\n    Window_CardBattleMessage.prototype.windowWidth = function() {\n        return Graphics.boxWidth;\n    };\n\n    Window_CardBattleMessage.prototype.refresh = function() {\n        this.contents.clear();\n        this.drawTextEx(this._message, 0, 0, this.contents.width);  // option colored text\n    };\n\n    Window_CardBattleMessage.prototype.update = function() {\n        Window_Base.prototype.update.call(this);\n        if (this._waitFlag) {\n            if (Input.isRepeated('ok') || TouchInput.isRepeated()) {\n                this._waitFlag = false;\n            }\n        } else {\n            this._message = $gameCardBattle.getMessage();\n            if (this._message) {\n                this.refresh();\n                this._waitFlag = true;\n            }\n        }\n    };\nsee the touch input, change that. set the waitflag to false after the message, like if this switch is ON. it will definitely be nonstop"
+    },
+    {
+      "post_id": "js-post-1491804",
+      "author": "DianteClark",
+      "date": "2025-01-05T03:12:04+0900",
+      "body": "xabileug said:\nhello thank you for your interest! i think it has to do with the wait flag of the window card battle message\nCode:\n//-----------------------------------------------------------------------------\n    // Window_CardBattleMessage\n    //\n\n    function Window_CardBattleMessage() {\n        this.initialize.apply(this, arguments);\n    }\n\n    Window_CardBattleMessage.prototype = Object.create(Window_Base.prototype);\n    Window_CardBattleMessage.prototype.constructor = Window_CardBattleMessage;\n\n    Window_CardBattleMessage.prototype.initialize = function(x, y) {\n        var width = this.windowWidth();\n        var height = this.fittingHeight(1);\n        Window_Base.prototype.initialize.call(this, x, y, width, height);\n        this.setBackgroundType(1);\n        this._waitFlag = false;\n    };\n\n    Window_CardBattleMessage.prototype.windowWidth = function() {\n        return Graphics.boxWidth;\n    };\n\n    Window_CardBattleMessage.prototype.refresh = function() {\n        this.contents.clear();\n        this.drawTextEx(this._message, 0, 0, this.contents.width);  // option colored text\n    };\n\n    Window_CardBattleMessage.prototype.update = function() {\n        Window_Base.prototype.update.call(this);\n        if (this._waitFlag) {\n            if (Input.isRepeated('ok') || TouchInput.isRepeated()) {\n                this._waitFlag = false;\n            }\n        } else {\n            this._message = $gameCardBattle.getMessage();\n            if (this._message) {\n                this.refresh();\n                this._waitFlag = true;\n            }\n        }\n    };\nsee the touch input, change that. set the waitflag to false after the message, like if this switch is ON. it will definitely be nonstop\nView attachment 327985\nClick to expand...\nThat works! Thanks so much!!! Currently working on my little booster pack system, but I've been wanting the battles to just be full auto once you start, helps add some much needed speed progression for the game since we can't control them"
+    },
+    {
+      "post_id": "js-post-1491821",
+      "author": "xabileug",
+      "date": "2025-01-05T05:52:52+0900",
+      "body": "yes, i use an evented system for the booster pack and card shop as well and card fusion.\ni have already finished the card album with the dynamic card values.\ni am still busy at the moment so i cannot upload a new bugfree demo project, but feel free to ask here.\nmy suggested plugins are. these are for better movement\nMPP_ScrollBar\nMPP_SimpleTouch\nMPP_WindowInsideClear\nthese are for image effects.\nNGT_Shatter\nPicturecallcommon\nMOG_PictureEffects\nDTextPicture\nYou need TMTextEscape and RS_MessageAlign for better message system\nI also did a shuffle prize reward picking\nhere\n. the plugin version i made still in testing.\nI checked my log, i was developing a plugin for replay system. i already have it evented as practice mode. the flow is just save the enemy cards to a variable and have a scene where the player gets to input them.\nanother inline was the in game stats for making achievements, like max damage, max heal, but this would be a lot so its far from the main.\nsadly, im not successful in adding another image layer for animated holographic effect for cards. it would be nice if legend cards were animated right?\nyou can have different animations for each skill when activating, there is only 1 animation for receiving damage.\nmy deckselect now looks like this too. im going to replace the item name from icon + name to image."
+    },
+    {
+      "post_id": "js-post-1491823",
+      "author": "DianteClark",
+      "date": "2025-01-05T06:09:18+0900",
+      "body": "xabileug said:\nyes, i use an evented system for the booster pack and card shop as well and card fusion.\ni have already finished the card album with the dynamic card values.\ni am still busy at the moment so i cannot upload a new bugfree demo project, but feel free to ask here.\nmy suggested plugins are. these are for better movement\nMPP_ScrollBar\nMPP_SimpleTouch\nMPP_WindowInsideClear\nthese are for image effects.\nNGT_Shatter\nPicturecallcommon\nMOG_PictureEffects\nDTextPicture\nYou need TMTextEscape and RS_MessageAlign for better message system\nI also did a shuffle prize reward picking\nhere\n. the plugin version i made still in testing.\nI checked my log, i was developing a plugin for replay system. i already have it evented as practice mode. the flow is just save the enemy cards to a variable and have a scene where the player gets to input them.\nanother inline was the in game stats for making achievements, like max damage, max heal, but this would be a lot so its far from the main.\nsadly, im not successful in adding another image layer for animated holographic effect for cards. it would be nice if legend cards were animated right?\nyou can have different animations for each skill when activating, there is only 1 animation for receiving damage.\nmy deckselect now looks like this too. im going to replace the item name from icon + name to image.\nView attachment 328004\nClick to expand...\nMy booster pack system is also event based\nI even recently just added to where it shows you the cards you get from the booster pack.\nA card album would be sooo cool! It looks like you've made some amazing progress! As for my game I'm going more of the old school pokemon tcg route.\nAn animated legendary card would be soooo cool! Not sure if you can make the frames loop? rather than just one.\nHere's a little snapshot."
+    },
+    {
+      "post_id": "js-post-1491829",
+      "author": "xabileug",
+      "date": "2025-01-05T06:40:49+0900",
+      "body": "oh, pokemon! that would be nice, so support skills and active skills sounds nice. you can always make your own skills, just create them inside the plugin. lots of item cards to include too!"
+    },
+    {
+      "post_id": "js-post-1491832",
+      "author": "DianteClark",
+      "date": "2025-01-05T06:56:42+0900",
+      "body": "xabileug said:\noh, pokemon! that would be nice, so support skills and active skills sounds nice. you can always make your own skills, just create them inside the plugin. lots of item cards to include too!\nClick to expand...\nWell pokemon style, but it won't include pokemon\nBy that I just mean that it'll be an adventure similar to what pokemon is, lead duelist and masters to face against. Things like that. Also a lot of inspiration from their maps, basically direct rips XD, but the game will be its own thing. But I'll be using all the additions you added to make some very unique cards. Seeing what you've done has given me a lot of inspiration as I've had this thing on the backburner for years XD. But I'll be trying to push through this project this time. I'll be sure to post some updates."
+    },
+    {
+      "post_id": "js-post-1491834",
+      "author": "xabileug",
+      "date": "2025-01-05T07:06:46+0900",
+      "body": "i see. i guess these new tweaks might ne useful for your adventure type -  the dynamic values, where the card stats can grow. enemies having random params too.\ni think the fixCardNum = 0 sameCard = 0  will be useful for your game type. i'll try to release a demo for you."
+    },
+    {
+      "post_id": "js-post-1491836",
+      "author": "DianteClark",
+      "date": "2025-01-05T07:24:10+0900",
+      "body": "xabileug said:\ni see. i guess these new tweaks might ne useful for your adventure type -  the dynamic values, where the card stats can grow. enemies having random params too.\ni think the fixCardNum = 0 sameCard = 0  will be useful for your game type. i'll try to release a demo for you.\nClick to expand...\nI think those are already in place, I got your ver 1.7.e\nMy first battle that takes place, the guy has 3 of the same card"
+    },
+    {
+      "post_id": "js-post-1494932",
+      "author": "Tesla-Ootachi",
+      "date": "2025-01-21T01:23:43+0900",
+      "body": "xabileug said:\nTomoaky TMCard for MV version\n0.1.7.b\nCreator name Tomoaky\n(twitter :\nhttps://twitter.com/tomoaky\n)\nLast Updated :  2019/05/14\nwebsite :\nhttps://hikimoki.sakura.ne.jp/\nCopyright : (c) 2016 tomoaky\nReleased under the MIT license\nThe MIT License\nCopyright <YEAR> <COPYRIGHT HOLDER> Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software…\nopensource.org\nModified and English translation by xabileug\nModification version\n0.1.7e\nRequires RS_MessageAlign : for text align\nIntroduction\nThis is an automatic card battle game, can be used as mini game or main game. Very similar to .hack's Crimson VS.\nHowever, this has 3 cards (by default, can have more) fight each other until wipeout. Skills activate and have some cooldown. Unit Skills are not carried over, while Support Skills are carried over to the next card. Making the Card on the 3rd Slot have 3 skills for activation. Strategy can have depth depending on the creator's design and balance.\nFeatures\nCreate unlimited number of cards, unlimited number of decks\nDeck size 3 up\nCards generated in game by combining card parts in the pictures folder\nWin Condition : Wipe out all enemy cards\nFeatures added from modification\ncustom battle back + BGM control\npatch allowing moghunter particles in battle scene\ndeck renaming\nbattle grade (SS, S, A, B, C, D)\nNew win condition : A card survives for 10 turns\nadded option to set font for card sprite\nplugin command ChangeCard, ClearDeck\nCard Restriction by Switch\nCard Album - with card stats, break, craft, sell\nSpoiler:\nWishlist\nanimation for Card Win, Card Lose, Battle Start, Battle End\nConcealed Card\nSwap Card Position\nAddition Victory Conditions : when card reaches X turn, when card at position X is eliminated, when total X damage is dealt, when total X HP is healed\nTrigger Common events after X Turns\nConditional Card Equip\nCard Almanac/Statistics Scene\nCard Item/Bag/List Scene\nCard Shop Scene\nCard Booster Pack Scene\nCard Upgrade System\nCard Hologram Layer Effect for Legend Cards\nplugin command for showing a card sprite in map\nplugin command to remove cards or force equip cards\nScreenshots\nDeck Edit Scene\n​\nView attachment 200719\nCard Battle Scene\n​\nView attachment 200720\nView attachment 321026\nHow to Use\nCopy all plugins in the js folder or better make the demo as your base project.\nCopy all images required.\nName all variables and switches as in the demo.\nPlease check inside the demo how to call card battle scene.\nPlease check the text file included for adding skill note tags\nDemo includes 4 events (1) Deck Rename (2) Random Shop (3) Gachapon Shop (4) Fusion\nDemo\nDownload\nhere\nFAQ\nQ: The demo won't open, how to open it?\nA: Download Winrar and try again.\nCredit and Thanks\n- xabileug (english translation)\n- moghunter (particles embed in card battle scene)\n- tomoaky (original author)\n- yuyu! (random shop + random names)\n- biud436 (RS_MessageAlign)\nAuthor's Notes\nFeel Free to check existing games\nRagnarok Card Battle\nCard Battle\nParty x Night\nfeel free to further edit the script as long as credit the original author tomoaky, and include in credits where you obtain snippets\nClick to expand...\nI have important questions:\n1) how would i make the enemy deck use one of the players created decks (Deck 2 for example)\n2) i dont see any guide on how to use the card album and was hoping i get help on that\n3) is there any in depth documentation anywhere (i couldn't find any)\nplease help me if you can\nSorry for bad english"
+    },
+    {
+      "post_id": "js-post-1495175",
+      "author": "xabileug",
+      "date": "2025-01-22T13:00:26+0900",
+      "body": "hello\n@Tesla-Ootachi\n1. use plugin command startdeckselect, this is explained in the plugin\n2. the card album posted here is evented, the plugin extension i am developing is not yet posted here (still being tested with the dynamic stats, dynamic stats are where the card stats can be variable based and change value as game progresses)\n3. the in-depth documentation available is the one inside the plugin\nstill busy, unless there is urgent upgrade or update, i can add new demo. feel free to ask more questions"
+    },
+    {
+      "post_id": "js-post-1495267",
+      "author": "Tesla-Ootachi",
+      "date": "2025-01-23T06:44:27+0900",
+      "body": "xabileug said:\nhello\n@Tesla-Ootachi\n1. use plugin command startdeckselect, this is explained in the plugin\n2. the card album posted here is evented, the plugin extension i am developing is not yet posted here (still being tested with the dynamic stats, dynamic stats are where the card stats can be variable based and change value as game progresses)\n3. the in-depth documentation available is the one inside the plugin\nstill busy, unless there is urgent upgrade or update, i can add new demo. feel free to ask more questions\nClick to expand...\n1. no i have mean the enemy use one of the player's equipped decks\n2. If you would be able to show me how you evented that, that would be awesome. (or release a new demo if possible please)\nThanks in advance"
+    },
+    {
+      "post_id": "js-post-1495359",
+      "author": "xabileug",
+      "date": "2025-01-24T00:11:03+0900",
+      "body": "to have a mirror match, each card has item ID, set it with same ID in the plugin command.\nwhen i have time, i can upload a bug free demo. its hard to release a buggy one, cause will get more questions."
+    },
+    {
+      "post_id": "js-post-1495372",
+      "author": "Tesla-Ootachi",
+      "date": "2025-01-24T01:52:01+0900",
+      "body": "xabileug said:\nto have a mirror match, each card has item ID, set it with same ID in the plugin command.\nwhen i have time, i can upload a bug free demo. its hard to release a buggy one, cause will get more questions.\nClick to expand...\noh yeah i'm aware of that, thanks\nmuch like you i have card 1,2,3 of an opponents deck set by variables\nmy question is how would i set a variable to (player deck 0, card 1) for example?\nEDIT: i found out how to achieve what i need to do\nbasically you set each corresponding variable to \"$gameParty.deck(deck id)[card number]\" (with 0 being the first one for each) For items its \"$dataItems[$gameParty._itemCards[deck id]].id\"\nthen you setup your duel to use the corresponding variables (in my case i use 6 cards and an item)"
+    },
+    {
+      "post_id": "js-post-1495677",
+      "author": "xabileug",
+      "date": "2025-01-25T14:53:00+0900",
+      "body": "Yes. That is very same to the change equip plugin command i shared here.\nBut you need to set it to that of the active deck. So that it will be a mirror match.\nThe active deck is the last editted deck by default. Or maybe deck 1 is the default active deck"
+    },
+    {
+      "post_id": "js-post-1497025",
+      "author": "TheLastYuriSamurai",
+      "date": "2025-02-03T12:23:10+0900",
+      "body": "So excited to use this script!! Curious to how everyone's approached making the skill list more understandable for players."
+    },
+    {
+      "post_id": "js-post-1497041",
+      "author": "xabileug",
+      "date": "2025-02-03T16:11:24+0900",
+      "body": "TheLastYuriSamurai said:\nSo excited to use this script!! Curious to how everyone's approached making the skill list more understandable for players.\nClick to expand...\nyou can make your own skill conditions and skill effects inside the plugin.. you need a little bit of knowledge on java.\nfeel free to ask any skill effects you have in mind i will try to help you with it. i think i have added enough skills inside the current version."
+    },
+    {
+      "post_id": "js-post-1497152",
+      "author": "TheLastYuriSamurai",
+      "date": "2025-02-04T12:17:25+0900",
+      "body": "xabileug said:\nyou can make your own skill conditions and skill effects inside the plugin.. you need a little bit of knowledge on java.\nfeel free to ask any skill effects you have in mind i will try to help you with it. i think i have added enough skills inside the current version.\nClick to expand...\nOh it'll actually be a LONG while before I make my own. For me it's more a curiousity on the current skill effects. For example: Skill #5: Magnum Break:\n<VS Cost 1> damage up by enemy cost\nRepeat: 3\nFor me this reads as \"Damage is increased by the enemy's cost. This effect can be used 3 times a battle.\"\n1. Is this accurate?\n2. Has anyone, in playtesting or otherwise, considered rewording things? Curious about it since I definitely felt overwhelmed when doing the playtest battles and reading through card effects.\nRight now thinking of doing a lil type chart to point out the rock/paper/scissors typing and a simple skill effect breakdown"
+    },
+    {
+      "post_id": "js-post-1497169",
+      "author": "xabileug",
+      "date": "2025-02-04T16:49:07+0900",
+      "body": "The skills in the demo are inspired from the MMORPG Ragnarok Online.\nYes it's accurate. It's a damage plus effect. When i tried to write the effects, it was such it fits the original window size with min characters.\nSo when you are up against cost 1 cards, your damage increases by 1. The name of the skill effects are based from dot hack crimson vs\njunction abilities\nwhile this is the new layout for the card album i'm developing"
+    },
+    {
+      "post_id": "js-post-1497241",
+      "author": "TheLastYuriSamurai",
+      "date": "2025-02-05T02:42:38+0900",
+      "body": "xabileug said:\nThe skills in the demo are inspired from the MMORPG Ragnarok Online.\nYes it's accurate. It's a damage plus effect. When i tried to write the effects, it was such it fits the original window size with min characters.\nSo when you are up against cost 1 cards, your damage increases by 1. The name of the skill effects are based from dot hack crimson vs\njunction abilities\nView attachment 330602\nwhile this is the new layout for the card album i'm developing\nView attachment 330603\nClick to expand...\nAmazing!! Thank you so much!! And that's a very cool card album"
+    },
+    {
+      "post_id": "js-post-1497249",
+      "author": "Tesla-Ootachi",
+      "date": "2025-02-05T02:57:36+0900",
+      "body": "random question: but is there a possibility of having flavour text for cards?\nEDIT: I Agree with TheLastYuriSamurai, that is a really awesome looking card album!"
+    },
+    {
+      "post_id": "js-post-1497484",
+      "author": "xabileug",
+      "date": "2025-02-06T12:05:21+0900",
+      "body": "Tesla-Ootachi said:\nrandom question: but is there a possibility of having flavour text for cards?\nEDIT: I Agree with TheLastYuriSamurai, that is a really awesome looking card album!\nClick to expand...\nwhat do you mean flavor text? additional card layers? actually you can add more card layers, but new card layers require some plugin..\nso you can turnoff the AUTOTEXT function, then just create single layer cards with your own layout and flavor text, so you won't have to edit the plugin.\nJavaScript:\nSprite_Card.prototype.loadCardBitmap = function() {\n        if (this._hide || this._card.id() === 0) {\n            this._cardBitmap = ImageManager.loadPicture('card_0');\n        } else {\n            this._cardBitmap    = ImageManager.loadPicture(this._card.fileName());\n            if (TMPlugin.Card.UseAutoText) {\n                if (this._card.type() === 4) {\n                    this._backBitmap    = ImageManager.loadPicture('c_back_i');\n                    this._frameBitmap = ImageManager.loadPicture('c_frame_i');\n                } else {\n                    this._backBitmap    = ImageManager.loadPicture('c_back_' + this._card.type());\n                    this._frameBitmap = ImageManager.loadPicture('c_frame_' + this._card.element());\n                }\n                this._rareBitmap    = ImageManager.loadPicture('c_rare_' + this._card.rare());\n            }\n        }\n        this._bitmapLoading = true;\n    };\n    /* this handles the Auto Text layout\n       adjusted icon spacing, font style instert\n       cards are not reproduced rather stacked back card frame rare\n       additional layer should be hologram*/\n    Sprite_Card.prototype.createCardBitmap = function() {\n        this.bitmap.clear();\n        if (!this._hide && this._card.id() > 0 && TMPlugin.Card.UseAutoText) {\n            this.bitmap.blt(this._backBitmap, 0, 0, 192, 288, 0, 0);\n            this.bitmap.blt(this._cardBitmap, 0, 0, 192, 288, 0, 0);\n            this.bitmap.blt(this._frameBitmap, 0, 0, 192, 288, 0, 0);\n            this.bitmap.blt(this._rareBitmap, 0, 0, 192, 288, 0, 0);\n            this.drawIcon(TMPlugin.Card.TypeIcons[this._card.type()], 6, 4, 32, 32);  // draw icon type default 24 x 24\n            for (var i = 0; i < this._card.cost(); i++) {\n                this.drawIcon(TMPlugin.Card.CostIcon, 158, i * TMPlugin.Card.CostIconSpace + 36, 24, 24); // editted line\n            }\n            this.bitmap.fontSize = 18;\n            this.bitmap.fontFace = TMPlugin.Card.FontCardName; // new line  Font card name\n            this.bitmap.textColor = '#000000';\n            this.bitmap.outlineWidth = 2;\n            this.bitmap.outlineColor = '#ffffff';\n            this.bitmap.drawText(this._card.name(), 40, 10, 152, 24, 'left');\n            var unitSkill = $dataSkills[this._card.unitSkill()];\n            if (unitSkill) {\n                this.drawIcon(unitSkill.iconIndex, 12, 226, 24, 24); // draw icon\n                this.bitmap.drawText(unitSkill.name, 40, 226, 152, 24, 'left'); //editted line\n            }\n            var partySkill = $dataSkills[this._card.partySkill()];\n            if (partySkill) {\n                this.drawIcon(partySkill.iconIndex, 12, 254, 24, 24); // draw icon\n                this.bitmap.drawText(partySkill.name, 40, 254, 152, 24, 'left'); //editted line\n            }\n            this.bitmap.fontSize = 28;\n            this.bitmap.fontFace = TMPlugin.Card.FontCardNumber; // new line font card hp attack\n            this.bitmap.drawText(this._card.hp(), 10, 182, 48, 32, 'center');\n            if (this._card.type() < 4) {\n                this.bitmap.drawText(this._card.atk(), 134, 182, 48, 32, 'center');\n            }\n        } else {\n            this.bitmap.blt(this._cardBitmap, 0, 0, 192, 288, 0, 0);\n        }\n        this._bitmapLoading = false;\n    };"
+    },
+    {
+      "post_id": "js-post-1497687",
+      "author": "Super015",
+      "date": "2025-02-07T21:36:10+0900",
+      "body": "Hi, I would like to know if there is a way to adapt the plugin to my game's resolution (16:9 - 1280x720)."
+    },
+    {
+      "post_id": "js-post-1497823",
+      "author": "xabileug",
+      "date": "2025-02-08T13:19:05+0900",
+      "body": "Super015 said:\nHi, I would like to know if there is a way to adapt the plugin to my game's resolution (16:9 - 1280x720).\nClick to expand...\nopen the package json file\nedit the height and width\nCode:\n{\n    \"name\": \"\",\n    \"main\": \"index.html\",\n    \"js-flags\": \"--expose-gc\",\n    \"window\": {\n        \"title\": \"\",\n        \"toolbar\": false,\n        \"width\": 1280,\n        \"height\": 720,\n        \"icon\": \"icon/icon.png\",\n        \"position\": \"center\"\n    }\n}"
+    },
+    {
+      "post_id": "js-post-1527432",
+      "author": "Diante",
+      "date": "2025-08-23T09:24:56+0900",
+      "body": "Time to get to work on a project with this bad boy!"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/enemy-book-image-size.174347",
+  "title": "MV Enemy Book image size",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T13:20:19.146082+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1491313",
+      "author": "jhnny",
+      "date": "2025-01-02T06:29:07+0900",
+      "body": "Hi, is there a way to make the image of the enemy bigger or adjust the size in the enemy book plugin?"
+    },
+    {
+      "post_id": "js-post-1491426",
+      "author": "rpgLord69",
+      "date": "2025-01-02T23:09:43+0900",
+      "body": "Hmmm, do you mean just the enemy or change the windows too? There's a function there that scales the enemy sprite. You can try adjusting the 'var scale = 1' part."
+    },
+    {
+      "post_id": "js-post-1491920",
+      "author": "jhnny",
+      "date": "2025-01-05T22:33:54+0900",
+      "body": "rpgLord69 said:\nHmmm, do you mean just the enemy or change the windows too? There's a function there that scales the enemy sprite. You can try adjusting the 'var scale = 1' part.\nClick to expand...\nwhere? to the note of the enemy or i have to edit the js?"
+    },
+    {
+      "post_id": "js-post-1491922",
+      "author": "ShadowDragon",
+      "date": "2025-01-05T22:50:17+0900",
+      "body": "if you use the default EnemyBook.js than there is no scale option.\nbut the size used in battle.\nso you need to either modify or make bigger enemies.\nif using sideview battlers for example, a small edit to target the frontview battlers\nfor bigger size to show.\nbut if you use a different enemybook/bestiary, we need to know to guide you."
+    },
+    {
+      "post_id": "js-post-1491925",
+      "author": "jhnny",
+      "date": "2025-01-05T23:07:49+0900",
+      "body": "ShadowDragon said:\nif you use the default EnemyBook.js than there is no scale option.\nbut the size used in battle.\nso you need to either modify or make bigger enemies.\nif using sideview battlers for example, a small edit to target the frontview battlers\nfor bigger size to show.\nbut if you use a different enemybook/bestiary, we need to know to guide you.\nClick to expand...\nim using the default enemy book. so is there a way to change their size in the book while in the battle its not?\nby the way im using yanfly sv animated enemies so i searched up and i found a code that it shows the enemy image in book but it uses the whole image of side view battler frames instead of animated one so i decided to find a way to adjust their size in book so i will manage to make it show the only one frame somehow"
+    },
+    {
+      "post_id": "js-post-1491928",
+      "author": "ShadowDragon",
+      "date": "2025-01-05T23:18:26+0900",
+      "body": "like on line 290 to 294 you read this:\nJavaScript:\nif ($gameSystem.isSideView()) {\n            bitmap = ImageManager.loadSvEnemy(name, hue);\n        } else {\n            bitmap = ImageManager.loadEnemy(name, hue);\n        }\nrule out like:\nJavaScript:\n//if ($gameSystem.isSideView()) {\n        //    bitmap = ImageManager.loadSvEnemy(name, hue);\n        //} else {\n            bitmap = ImageManager.loadEnemy(name, hue);\n        //}\nyou draw the enemy from the FRONTVIEW, so long the enemy match\nthe sideview battle names (or animated) it draw that size, so you can draw\nit bigger there if you like too\nif you want to draw the animated one, you can try STV_EnemyBook\nor one that could match."
+    },
+    {
+      "post_id": "js-post-1491939",
+      "author": "jhnny",
+      "date": "2025-01-06T00:03:36+0900",
+      "body": "ShadowDragon said:\nlike on line 290 to 294 you read this:\nJavaScript:\nif ($gameSystem.isSideView()) {\n            bitmap = ImageManager.loadSvEnemy(name, hue);\n        } else {\n            bitmap = ImageManager.loadEnemy(name, hue);\n        }\nrule out like:\nJavaScript:\n//if ($gameSystem.isSideView()) {\n        //    bitmap = ImageManager.loadSvEnemy(name, hue);\n        //} else {\n            bitmap = ImageManager.loadEnemy(name, hue);\n        //}\nyou draw the enemy from the FRONTVIEW, so long the enemy match\nthe sideview battle names (or animated) it draw that size, so you can draw\nit bigger there if you like too\nif you want to draw the animated one, you can try STV_EnemyBook\nor one that could match.\nClick to expand...\nthankyou very muchhh"
+    },
+    {
+      "post_id": "js-post-1491945",
+      "author": "jhnny",
+      "date": "2025-01-06T00:22:47+0900",
+      "body": "ShadowDragon said:\nlike on line 290 to 294 you read this:\nJavaScript:\nif ($gameSystem.isSideView()) {\n            bitmap = ImageManager.loadSvEnemy(name, hue);\n        } else {\n            bitmap = ImageManager.loadEnemy(name, hue);\n        }\nrule out like:\nJavaScript:\n//if ($gameSystem.isSideView()) {\n        //    bitmap = ImageManager.loadSvEnemy(name, hue);\n        //} else {\n            bitmap = ImageManager.loadEnemy(name, hue);\n        //}\nyou draw the enemy from the FRONTVIEW, so long the enemy match\nthe sideview battle names (or animated) it draw that size, so you can draw\nit bigger there if you like too\nif you want to draw the animated one, you can try STV_EnemyBook\nor one that could match.\nClick to expand...\nhi another question, i tried the stv beaast book but i got error when i open it in the game. can i ask whats causing the error? or maybe the plugin is not compatible in MV?"
+    },
+    {
+      "post_id": "js-post-1491947",
+      "author": "ShadowDragon",
+      "date": "2025-01-06T00:26:30+0900",
+      "body": "jhnny said:\nhi another question, i tried the stv beaast book but i got error when i open it in the game. can i ask whats causing the error?\nClick to expand...\nso far I know, it required 2 or 3 plugins from yanfly in order to make it work.\nbut there was also some small bugs in it, cannot recall which one though.\nmake sure YEP plugins are in the correct order, as I believe STV Beastbook need to be\nbelow animatedSVBattlers or lower than that.\nread the helpfile carefully as it's different than enemybook as well more extended."
+    },
+    {
+      "post_id": "js-post-1491954",
+      "author": "jhnny",
+      "date": "2025-01-06T00:57:44+0900",
+      "body": "ShadowDragon said:\nso far I know, it required 2 or 3 plugins from yanfly in order to make it work.\nbut there was also some small bugs in it, cannot recall which one though.\nmake sure YEP plugins are in the correct order, as I believe STV Beastbook need to be\nbelow animatedSVBattlers or lower than that.\nread the helpfile carefully as it's different than enemybook as well more extended.\nClick to expand...\ni tried everything i can and still got this error\nno matter where i place the plugin below, above or lower than yanfly still nothing changes."
+    },
+    {
+      "post_id": "js-post-1491957",
+      "author": "rpgLord69",
+      "date": "2025-01-06T01:15:11+0900",
+      "body": "jhnny said:\nwhere? to the note of the enemy or i have to edit the js?\nClick to expand...\nYeah, if you edit the js and adjust the scale number (but it scales all enemies, unless you start adding conditionals). But if you're already trying something else, then great!"
+    },
+    {
+      "post_id": "js-post-1491961",
+      "author": "ShadowDragon",
+      "date": "2025-01-06T01:50:03+0900",
+      "body": "you rename the plugin, keep it on STV_BeastBook as original given.\nif renamed, the plugin can throw errors or cannot read the parameters\nthrowing errors."
+    },
+    {
+      "post_id": "js-post-1491971",
+      "author": "jhnny",
+      "date": "2025-01-06T02:09:21+0900",
+      "body": "ShadowDragon said:\nyou rename the plugin, keep it on STV_BeastBook as original given.\nif renamed, the plugin can throw errors or cannot read the parameters\nthrowing errors.\nClick to expand...\ni downloaded again and it still the same. I tried to test it new game, there are no error when i haven't encountered any enemies yet but if i killed one and tried to open the book i got stuck in \"loading\" instead of error"
+    },
+    {
+      "post_id": "js-post-1491974",
+      "author": "ShadowDragon",
+      "date": "2025-01-06T02:15:03+0900",
+      "body": "I don't use the plugin on my own, but if you have the required plugins,\nit should run without problems though as some use it, but more crashes\nwith more than 500 enemies or by duplicates.\nI cannot really help you on this plugin further, so you can check the thread\nif one has similar issue and follow it or someone using this plugin to help you out."
+    }
+  ]
+}
