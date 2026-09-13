@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/pixi-js-doom-style-screen-wipe-is-it-possible-on-screen-or-for-individual-events.173097",
+  "title": "Pixi JS Doom style screen wipe (is it possible?), on screen or for individual events?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T22:26:54.242982+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1480477",
+      "author": "cronenbuilder",
+      "date": "2024-11-09T00:25:50+0900",
+      "body": "Hi all, I'm back with another weird question. I want to ask the community how they would go about leveraging the pixi js graphics system which rpg maker relies on in order to produce a \"DooM Style Melting Screen Wipe\" on individual event/NPC sprites to simulate the character melting to death/crumbling, etc.\nI've been messing around a lot with pixi js lately, mostly just making edits to existing parameters on screen effects but realistically  I have absolutely no idea what I am doing outside of the simplest tinkering.\nCarmack's code for the screen wipe is available on git for what I assume is legitimate viewing for whatever that is worth, though it is obviously in a different programming language."
+    },
+    {
+      "post_id": "js-post-1480492",
+      "author": "caethyril",
+      "date": "2024-11-09T03:16:29+0900",
+      "body": "cronenbuilder said:\nI want to ask the community how they would go about leveraging the pixi js graphics system which rpg maker relies on in order to produce a \"DooM Style Melting Screen Wipe\" on individual event/NPC sprites to simulate the character melting to death/crumbling, etc.\nClick to expand...\nThis wipe effect sounds like a post-process shader, so you could assign a custom\nPIXI Filter\nto sprites whose character has been marked for wipeout. For a time-dependent shader like a wipe effect, you'd basically just need to give your shader a \"time\" uniform, then update the value of that uniform on the filter each frame.\nMZ creates HTML games that use WebGL, a.k.a. OpenGL ES (Embedded Systems), for rendering. So the final vertex and/or fragment shader code for the wipe effect would have to be in that language.\nI don't know if there already exists an MZ plugin for custom time-dependent filters. I suspect the hard part here would be finding/devising suitable shader code.\nIt could be possible to achieve a similar effect on the CPU, using the\nCanvas API\nto perform image data edits on a cloned texture (basically\nblt\nthe bitmap every frame). However, that would be much less resource efficient and you'd still need an appropriate algorithm to inform the edits."
+    },
+    {
+      "post_id": "js-post-1480505",
+      "author": "cronenbuilder",
+      "date": "2024-11-09T05:07:02+0900",
+      "body": "caethyril said:\nThis wipe effect sounds like a post-process shader, so you could assign a custom\nPIXI Filter\nto sprites whose character has been marked for wipeout. For a time-dependent shader like a wipe effect, you'd basically just need to give your shader a \"time\" uniform, then update the value of that uniform on the filter each frame.\nMZ creates HTML games that use WebGL, a.k.a. OpenGL ES (Embedded Systems), for rendering. So the final vertex and/or fragment shader code for the wipe effect would have to be in that language.\nI don't know if there already exists an MZ plugin for custom time-dependent filters. I suspect the hard part here would be finding/devising suitable shader code.\nIt could be possible to achieve a similar effect on the CPU, using the\nCanvas API\nto perform image data edits on a cloned texture (basically\nblt\nthe bitmap every frame). However, that would be much less resource efficient and you'd still need an appropriate algorithm to inform the edits.\nClick to expand...\nThank you very much for the reply. I think you gave me a lot to chew on here. I will R & D this in the direction you've pointed me."
+    },
+    {
+      "post_id": "js-post-1480518",
+      "author": "caethyril",
+      "date": "2024-11-09T07:08:38+0900",
+      "body": "I just realised that for a custom filter a more useful link would probably be the docs for the base class,\nPIXI.Filter\n. A custom filter can be created like this:\nJavaScript:\nconst VERT = \"custom vertex shader code goes here\";    // or null for default\nconst FRAG = \"custom fragment shader code goes here\";  // or null for default\nconst UNIFORMS = { time: 0 };  // any custom uniforms referenced in shader code\nconst f = new PIXI.Filter(VERT, FRAG, UNIFORMS);\nPIXI uses some pre-defined structure, so a generic WebGL shader may need editing if it's not already written for use with PIXI.\nColorFilter\ndefined in rmmz_core.js inherits from\nPIXI.Filter\nand may be helpful as a reference~\nGood luck!"
+    },
+    {
+      "post_id": "js-post-1480519",
+      "author": "gstv87",
+      "date": "2024-11-09T07:39:15+0900",
+      "body": "cronenbuilder said:\nit is obviously in a different programming language.\nClick to expand...\nnot only a different language... a different set of resources altogether.\nyou have 3 middle men in between your code and the screen now, each with their whims and diva complexes."
+    },
+    {
+      "post_id": "js-post-1480786",
+      "author": "cronenbuilder",
+      "date": "2024-11-10T13:43:27+0900",
+      "body": "caethyril said:\nI just realised that for a custom filter a more useful link would probably be the docs for the base class,\nPIXI.Filter\n. A custom filter can be created like this:\nJavaScript:\nconst VERT = \"custom vertex shader code goes here\";    // or null for default\nconst FRAG = \"custom fragment shader code goes here\";  // or null for default\nconst UNIFORMS = { time: 0 };  // any custom uniforms referenced in shader code\nconst f = new PIXI.Filter(VERT, FRAG, UNIFORMS);\nPIXI uses some pre-defined structure, so a generic WebGL shader may need editing if it's not already written for use with PIXI.\nColorFilter\ndefined in rmmz_core.js inherits from\nPIXI.Filter\nand may be helpful as a reference~\nGood luck!\nClick to expand...\nThank you, I will review this snippet and try to apply it!\ngstv87 said:\nnot only a different language... a different set of resources altogether.\nyou have 3 middle men in between your code and the screen now, each with their whims and diva complexes.\nClick to expand...\nTell me about it! haha!!!"
+    },
+    {
+      "post_id": "js-post-1480797",
+      "author": "utunnels",
+      "date": "2024-11-10T16:19:06+0900",
+      "body": "What exactly is a melt screen wipe?\nI recall I saw a plugin with similar effect:\nhttps://chaucer.itch.io/rosedale-transition-effects"
+    },
+    {
+      "post_id": "js-post-1480892",
+      "author": "Norintha",
+      "date": "2024-11-11T05:16:41+0900",
+      "body": "utunnels said:\nWhat exactly is a melt screen wipe?\nI recall I saw a plugin with similar effect:\nhttps://chaucer.itch.io/rosedale-transition-effects\nClick to expand...\nI believe that they mean the specific screen melting effect that happens on the scoring screen on the original Doom."
+    },
+    {
+      "post_id": "js-post-1481007",
+      "author": "TheAM-Dol",
+      "date": "2024-11-11T15:32:12+0900",
+      "body": "cronenbuilder said:\n\"DooM Style Melting Screen Wipe\"\nClick to expand...\nAs always, regardless of how popular something is, we always request you include references to the game in question when you are wanting to emulate something from that game.\nIt helps reduce the amount of guessing we have to do.\nThat said, I was going to drop a gif here, but surprisingly either no one has made a gif of the end level transition effect or my google-fu is off.\nI am on cell data and don't want to use up my limited monthly data allowance on video, but I am certain OP, you can find a video walkthrough of classic Doom and just link/tell us the time stamp where the transition happens. E1M1 is remarkably short, so it's not like it would take you long to find it."
+    },
+    {
+      "post_id": "js-post-1481013",
+      "author": "utunnels",
+      "date": "2024-11-11T17:57:51+0900",
+      "body": "Norintha said:\nI believe that they mean the specific screen melting effect that happens on the scoring screen on the original Doom.\nClick to expand...\nAh, OK I found a video for the original doom. It doesn't look like a filter. It looks like the screen pixels fall down in rows. Very similar to a battle transition effect I made before. Maybe I can modify the plugin for this effect."
+    },
+    {
+      "post_id": "js-post-1481046",
+      "author": "caethyril",
+      "date": "2024-11-11T23:01:03+0900",
+      "body": "@utunnels\n- not sure what you have in mind, but I was thinking that a snapshot (\nSceneManager.snap()\n) of the pre-transition scene could have its texture assigned as a uniform to the fragment shader: the shader would then pull color values from the appropriate texture, based on time (and maybe an initial random seed).\nI haven't tried writing a shader with a custom texture uniform before, but I looked it up and, based on the fragment shader of the built-in\nDisplacementFilter\n, that aspect looks fairly simple:\npixijs/src/filters/defaults/displacement/displacement.frag at dev · pixijs/pixijs\nThe HTML5 Creation Engine: Create beautiful digital content with the fastest, most flexible 2D WebGL renderer. - pixijs/pixijs\ngithub.com\nPerhaps it'd be simpler to just show the snapshot as an overlay sprite with a custom \"melting\" shader."
+    },
+    {
+      "post_id": "js-post-1481067",
+      "author": "utunnels",
+      "date": "2024-11-12T00:42:25+0900",
+      "body": "Actual I'm talking about a canvas solution. Take a snapshot of the previous scene, break it down into an array of vertical rects and make an animation by moving the rects.\nHere's an example of a battle transition."
+    },
+    {
+      "post_id": "js-post-1481725",
+      "author": "cronenbuilder",
+      "date": "2024-11-15T13:59:20+0900",
+      "body": "Wow everyone, this blew up while I was gone! Thank you for posting the link, I should have linked that so everyone would know what I meant, I'll make note of that for any future references I may have. I'm going to experiment with the transition effects plugin and the Melt Battle Transition generously provided by\n@utunnels\n. Thank you everyone I will look over all these posts and very soon will return with more info regarding my games demo!"
+    },
+    {
+      "post_id": "js-post-1482154",
+      "author": "cronenbuilder",
+      "date": "2024-11-18T13:16:54+0900",
+      "body": "utunnels said:\nActual I'm talking about a canvas solution. Take a snapshot of the previous scene, break it down into an array of vertical rects and make an animation by moving the rects.\nHere's an example of a battle transition.\nClick to expand...\nThat plugin you provided is amazing. It is absolutely cool! Here is a brief overview of my experience with it. Upon loading the plugin it works as expected melting the screen into a transition. The screen melts to a black screen, with the enemy visible, any pixi js filters applied are still animating over the enemy which is cool, however the black screen is interesting indicating that the \"Scene\" was wiped as well.\nHowever, upon using the wipe function on some screens the \"Scene\" is retained into the battle screen. IE you can still see the background including any events, which is funny because in this instance the enemy is appearing in the battle screen but also still visible as part of the background. I wonder what could cause this discrepancy in scene visualization.\nI am willing to work around it because the effect is just amazing, but a fix would be worthwhile.\nAdditionally can this transition be used for regular scene moving from one map to another transitions?\nI can not recommend this effect enough!!!"
+    },
+    {
+      "post_id": "js-post-1482167",
+      "author": "utunnels",
+      "date": "2024-11-18T14:08:37+0900",
+      "body": "The trick is you take a screenshot in the previous scene, and use the image to make the effect.\nHowever there's a default fadeout/fadein during map transition. There's also a loading black screen (in MV maybe also MZ?), I haven't checked all scenes but I guess they are a bit different."
+    },
+    {
+      "post_id": "js-post-1482295",
+      "author": "cronenbuilder",
+      "date": "2024-11-19T08:57:19+0900",
+      "body": "utunnels said:\nThe trick is you take a screenshot in the previous scene, and use the image to make the effect.\nHowever there's a default fadeout/fadein during map transition. There's also a loading black screen (in MV maybe also MZ?), I haven't checked all scenes but I guess they are a bit different.\nClick to expand...\nI see, I'll keep all that in mind as I proceed. Thank you."
+    }
+  ]
+}

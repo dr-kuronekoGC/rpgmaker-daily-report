@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-do-i-change-the-location-and-size-of-the-battle-skill-item-help-window.174582",
+  "title": "MZ How do I change the location and size of the battle skill/item help window?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T22:26:46.839169+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1492925",
+      "author": "RPGMakerUser4001",
+      "date": "2025-01-10T22:28:59+0900",
+      "body": "What the title says, I'm a javascript noob, but I've been editing my battle HUD by changing the rmmz_windows.js file, and so far its going well, but I can't figure out how to edit the battle item/skill help window without changing the help window of the entire game (which I don't want). Any help?"
+    },
+    {
+      "post_id": "js-post-1492927",
+      "author": "Robro33",
+      "date": "2025-01-10T22:38:30+0900",
+      "body": "RPGMakerUser4001 said:\nI'm a javascript noob, but I've been editing my battle HUD by changing the rmmz_windows.js\nClick to expand...\nyou shouldnt be editing those files directly. what you want to do is find what you need in the core files and then make your changes as plugins.\nAs MZ still gets updates, if you update your project itll wipe out all the changes youve made.\nif you need to troubleshoot stuff its easier to do so from a plugin as itll contain only the things youve edited.\nMany plugins are made with the core files in their default state as a baseline. changing them can cause plugins added later to break depending on what youve done.\nRPGMakerUser4001 said:\nI can't figure out how to edit the battle item/skill help window without changing the help window of the entire game (which I don't want). Any help?\nClick to expand...\ndepends on your changes. without knowing what they are, best i can suggest is that instead of changing Window_Help directly, create a new window that inherits from it, make your changes to that one, and then use your new window in place of the default help window within those scenes"
+    },
+    {
+      "post_id": "js-post-1492928",
+      "author": "RPGMakerUser4001",
+      "date": "2025-01-10T22:50:45+0900",
+      "body": "Robro33 said:\nyou shouldnt be editing those files directly. what you want to do is find what you need in the core files and then make your changes as plugins.\nAs MZ still gets updates, if you update your project itll wipe out all the changes youve made.\nif you need to troubleshoot stuff its easier to do so from a plugin as itll contain only the things youve edited.\nMany plugins are made with the core files in their default state as a baseline. changing them can cause plugins added later to break depending on what youve done.\ndepends on your changes. without knowing what they are, best i can suggest is that instead of changing Window_Help directly, create a new window that inherits from it, make your changes to that one, and then use your new window in place of the default help window within those scenes\nClick to expand...\nI wasn't aware of MZ wiping my changes with the project update, thanks."
+    },
+    {
+      "post_id": "js-post-1492930",
+      "author": "RPGMakerUser4001",
+      "date": "2025-01-10T22:59:39+0900",
+      "body": "Robro33 said:\nyou shouldnt be editing those files directly. what you want to do is find what you need in the core files and then make your changes as plugins.\nAs MZ still gets updates, if you update your project itll wipe out all the changes youve made.\nif you need to troubleshoot stuff its easier to do so from a plugin as itll contain only the things youve edited.\nMany plugins are made with the core files in their default state as a baseline. changing them can cause plugins added later to break depending on what youve done.\ndepends on your changes. without knowing what they are, best i can suggest is that instead of changing Window_Help directly, create a new window that inherits from it, make your changes to that one, and then use your new window in place of the default help window within those scenes\nClick to expand...\nCould you suggest what I should type assuming that I haven't changed anything?  I'm not sure how to do what you said."
+    },
+    {
+      "post_id": "js-post-1492932",
+      "author": "Robro33",
+      "date": "2025-01-10T23:14:39+0900",
+      "body": "RPGMakerUser4001 said:\nCould you suggest what I should type assuming that I haven't changed anything? I'm not sure how to do what you said.\nClick to expand...\nevery window within the window js file starts off the same way - by inheriting from some other window. So if more examples are needed, theyre all there\nCode:\nfunction Window_CustomHelp() {\n    this.initialize(...arguments);\n}\n\nWindow_CustomHelp.prototype = Object.create(Window_Help.prototype);\nWindow_CustomHelp.prototype.constructor = Window_CustomHelp;\nthat defines a new window thats just a copy of WIndow_Help, but called Window_CustomHelp.\nnow any change you made prior to Window_Help can be moved to this one instead. then from there, youd look in the scenes js file, look at the functions that creates the help windows for skill and item scene, and change them from making a new Window_Help to a new Window_CustomHelp (within the plugin, not the scenes file).\nnow those two scenes use your altered help window and all the others ones like the equip scene are untouched"
+    },
+    {
+      "post_id": "js-post-1492938",
+      "author": "RPGMakerUser4001",
+      "date": "2025-01-10T23:52:58+0900",
+      "body": "Robro33 said:\nevery window within the window js file starts off the same way - by inheriting from some other window. So if more examples are needed, theyre all there\nCode:\nfunction Window_CustomHelp() {\n    this.initialize(...arguments);\n}\n\nWindow_CustomHelp.prototype = Object.create(Window_Help.prototype);\nWindow_CustomHelp.prototype.constructor = Window_CustomHelp;\nthat defines a new window thats just a copy of WIndow_Help, but called Window_CustomHelp.\nnow any change you made prior to Window_Help can be moved to this one instead. then from there, youd look in the scenes js file, look at the functions that creates the help windows for skill and item scene, and change them from making a new Window_Help to a new Window_CustomHelp (within the plugin, not the scenes file).\nnow those two scenes use your altered help window and all the others ones like the equip scene are untouched\nClick to expand...\nI understand, thank you for you help!"
+    },
+    {
+      "post_id": "js-post-1492974",
+      "author": "ZimXero",
+      "date": "2025-01-11T03:14:46+0900",
+      "body": "Save the following within  your custom plugin for the\nsize\naspect.  You can do this by making it a notepad file and changing the extension to .js if you do not have a capable editor.   Modifying it as needed adding or subtracting the value of the lines.  The \"-225\" in the ww line, for example,  tells rpg maker to shorten the right side of the help window by 225 pixels.   If you place \"your\" custom plugin under/lower than a visustella plugin, it will usually override or modify it... which is handy.\n// Override - change height of battle scene's help area.\nScene_Battle.prototype.helpAreaHeight = function() {\nreturn this.calcWindowHeight(2, false);\n};\n// Override - change width of battle scene's help area.\nScene_Battle.prototype.helpWindowRect = function() {\nconst wx = 0;\nconst wy = this.helpAreaTop();\nconst ww = Graphics.boxWidth -225;\nconst wh = this.helpAreaHeight();\nreturn new Rectangle(wx, wy, ww, wh);\n};"
+    },
+    {
+      "post_id": "js-post-1492985",
+      "author": "RPGMakerUser4001",
+      "date": "2025-01-11T03:41:15+0900",
+      "body": "ZimXero said:\nSave the following within  your custom plugin for the\nsize\naspect.  You can do this by making it a notepad file and changing the extension to .js if you do not have a capable editor.   Modifying it as needed adding or subtracting the value of the lines.  The \"-225\" in the ww line, for example,  tells rpg maker to shorten the right side of the help window by 225 pixels.   If you place \"your\" custom plugin under/lower than a visustella plugin, it will usually override or modify it... which is handy.\n// Override - change height of battle scene's help area.\nScene_Battle.prototype.helpAreaHeight = function() {\nreturn this.calcWindowHeight(2, false);\n};\n// Override - change width of battle scene's help area.\nScene_Battle.prototype.helpWindowRect = function() {\nconst wx = 0;\nconst wy = this.helpAreaTop();\nconst ww = Graphics.boxWidth -225;\nconst wh = this.helpAreaHeight();\nreturn new Rectangle(wx, wy, ww, wh);\n};\nClick to expand...\nThis did it nice and easy! Thank you!!"
+    }
+  ]
+}

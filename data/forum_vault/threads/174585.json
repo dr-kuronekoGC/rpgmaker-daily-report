@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/edit-run-away-formula.174585",
+  "title": "Edit run away formula?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T22:26:47.577622+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1492941",
+      "author": "tsurugikage",
+      "date": "2025-01-11T00:09:20+0900",
+      "body": "So I want to try and edit my gave to use my actors/enemies defense stats instead of their agility stats.\nI'm not sure if this is something i can do in rpg maker, or if I need coding experience. Or if there's a plugin for that,  I'm not aware of its existence"
+    },
+    {
+      "post_id": "js-post-1492961",
+      "author": "TobyYasha",
+      "date": "2025-01-11T01:49:29+0900",
+      "body": "Save the following code as a plugin:\nJavaScript:\n// Plugin by Toby Yasha. No credits required, but appreciated.\n\nGame_Unit.prototype.defense = function() {\n    const members = this.members();\n    const sum = members.reduce((r, member) => r + member.def, 0);\n    return Math.max(1, sum / Math.max(1, members.length));\n};\n\nBattleManager.makeEscapeRatio = function() {\n    this._escapeRatio = (0.5 * $gameParty.defense()) / $gameTroop.defense();\n};"
+    },
+    {
+      "post_id": "js-post-1493068",
+      "author": "tsurugikage",
+      "date": "2025-01-11T11:42:01+0900",
+      "body": "I'm not sure if it worked or not. Does it matter if I am using Visustella Plugins like the Battle Core?"
+    },
+    {
+      "post_id": "js-post-1493108",
+      "author": "TobyYasha",
+      "date": "2025-01-11T17:12:05+0900",
+      "body": "Yes it does matter. Now i don't know if their code also affects the escape rate, but if you want to ensure compatibility with their plugins, you should place the plugin i made anywhere below Visustella's battle plugins.\nIf you want to test if the plugin works or not you could set the escape rate to 1 and test it by escaping from 2-3 battles.\nHere's how you would do it:\nJavaScript:\nBattleManager.makeEscapeRatio = function() {\n    this._escapeRatio = 1;\n};\nAfter you are done with the test make sure to revert the formula back to the one i posted before."
+    },
+    {
+      "post_id": "js-post-1493109",
+      "author": "rpgLord69",
+      "date": "2025-01-11T17:22:11+0900",
+      "body": "Yeah they have a spot in the BattleCore mechanics settings where you can adjust the escape ratio with code. So you could also just use that part that calculates the total defences of the troops and then change the 'agility()' in the plugin settings to 'defense()'."
+    },
+    {
+      "post_id": "js-post-1493167",
+      "author": "tsurugikage",
+      "date": "2025-01-12T00:12:47+0900",
+      "body": "So I did try this out. again They actors are always able to run away.\nI even made it so the actors had 1 defense each, while their opponents have 100 defense each\nSo the Total should be\n(0.5*2)/200\nwhich should be 1/200 for the ratio, making it a very slim chance if there are 2 actors and 2 enemy troops.\nYet the actors keep being able to run away."
+    },
+    {
+      "post_id": "js-post-1493170",
+      "author": "rpgLord69",
+      "date": "2025-01-12T00:28:10+0900",
+      "body": "Hmmm, is your VisuStella Core Engine settings set to: Quality of Life Settings - Escape Always true?"
+    },
+    {
+      "post_id": "js-post-1493171",
+      "author": "tsurugikage",
+      "date": "2025-01-12T00:31:40+0900",
+      "body": "rpgLord69 said:\nHmmm, is your VisuStella Core Engine settings set to: Quality of Life Settings - Escape Always true?\nClick to expand...\nI didn't realize that was an option.\nI have turned it off and it works now"
+    },
+    {
+      "post_id": "js-post-1493172",
+      "author": "rpgLord69",
+      "date": "2025-01-12T00:36:32+0900",
+      "body": "Cool.\nVS BattleCore also makes the escape chance rise after failure by default. The code to modify that is under the escape ratio part in the settings."
+    },
+    {
+      "post_id": "js-post-1493176",
+      "author": "tsurugikage",
+      "date": "2025-01-12T00:53:53+0900",
+      "body": "Yeah, but it looks like it raises it based on the number of alive members you have if I  am reading the default code correctly in BattleCore.\nSpoiler:\ncode used in VS BC\nCode:\n// Calculate Escape Ratio\n\nlet value = 0.1;\n\nvalue += $gameParty.aliveMembers().length;\n\n\n\n// Return Value\n\nreturn value;"
+    }
+  ]
+}

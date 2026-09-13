@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/make-game-detect-when-player-closes-it.174397",
+  "title": "Make game detect when player closes it",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T22:26:48.138610+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1491695",
+      "author": "kinglyvibe",
+      "date": "2025-01-04T07:38:48+0900",
+      "body": "Hi! I’m working on a game and I really want a mechanic that allows the game to sense if the player has closed it during a run, so that every time the game opens something is different. Is there any way to do that?"
+    },
+    {
+      "post_id": "js-post-1491699",
+      "author": "AquaEcho",
+      "date": "2025-01-04T08:49:13+0900",
+      "body": "How would this be functionally different from randomizing on the title screen/loading the first map?"
+    },
+    {
+      "post_id": "js-post-1491700",
+      "author": "kinglyvibe",
+      "date": "2025-01-04T08:59:55+0900",
+      "body": "AquaEcho said:\nHow would this be functionally different from randomizing on the title screen/loading the first map?\nClick to expand...\nThe events have to go in a progressive order. For example, the first time you load the game, it will be winter. The second time you load it will be spring, the third time fall, etc. I want to be able to detect the number of times a player has reloaded so I can tell specific events to load in order.\nI’m not sure if that answers this question, and I’m sorry if I’m being confusing! I’m quite new to doing anything complex, haha."
+    },
+    {
+      "post_id": "js-post-1491702",
+      "author": "AquaEcho",
+      "date": "2025-01-04T09:07:29+0900",
+      "body": "kinglyvibe said:\nThe events have to go in a progressive order. For example, the first time you load the game, it will be winter. The second time you load it will be spring, the third time fall, etc. I want to be able to detect the number of times a player has reloaded so I can tell specific events to load in order.\nI’m not sure if that answers this question, and I’m sorry if I’m being confusing! I’m quite new to doing anything complex, haha.\nClick to expand...\nThen why not initialize a variable on initial game start Seasons =0 (spring) and increment it by 1 every time the save file is loaded, then reset it to 0 if it is greater than or equal to 4? You can then change the map based on if that value is 0, 1, 2, or 3"
+    },
+    {
+      "post_id": "js-post-1491703",
+      "author": "Zia_",
+      "date": "2025-01-04T09:09:51+0900",
+      "body": "Should this really be linked to closing the game?\nFor example: If I start the game twice, and quit on the main title screen without playing, will it be winter or summer when I start it again?\nAnd what if I play it, had summer, and start a new game file the next time? Will it be winter again or continue to be autumn?\nExecute this on loading the savegame might be a better way to go."
+    },
+    {
+      "post_id": "js-post-1491707",
+      "author": "kirbwarrior",
+      "date": "2025-01-04T09:47:14+0900",
+      "body": "As the others have pointed out, this would be much easier to implement based on open instead of close with the assumption that the player closes their game when they are done playing. If you try to do it based on close, then it (probably) won't update if it is forcibly killed (such as through task manager or a crash).\nThe main reason I can think of for doing something on close is for any auto-saving. I don't know how RPG Maker would do this (probably requires a plugin) but you'd have it so anything that normally closes the game would be programmed instead to do \"thing\" and then close the game."
+    },
+    {
+      "post_id": "js-post-1492123",
+      "author": "Wisepot",
+      "date": "2025-01-06T15:06:08+0900",
+      "body": "just save this as GameEndCheck.js file fr plugin it will allow you to check before you close then game and do change in variable\n------------------------\n/*:\n* @target MZ\n* @plugindesc Checks if the game is ending and updates a variable before it ends or closes the window.\n*\n@Author\nWisePot\n*\n*\n@param\nGameVariableID\n* @text Variable ID\n* @type variable\n*\n@Default\n1\n*\n@desc\nThe game variable ID to update before the game ends or is closed.\n*\n*\n@Help\n* This plugin detects when the game is ending (via \"End Game\" or closing the window)\n* and updates a specified variable before the game exits.\n*\n* No plugin commands are required.\n*/\n(() => {\nconst parameters = PluginManager.parameters('WisePotGameEndCheck');\nconst variableId = Number(parameters['GameVariableID'] || 1);\nconst originalEndCommand = Scene_GameEnd.prototype.commandToTitle;\nconst originalTerminate = SceneManager.terminate;\nlet isGameEnding = false;\n// Function to set the variable before ending\nconst setGameEndVariable = () => {\nif ($gameVariables) {\n$gameVariables.setValue(variableId, 1); // Set the variable to a value (e.g., 1)\nconsole.log(`Game variable ${variableId} set to 1 before ending.`);\n}\n};\n// Hook into the \"End Game\" command\nScene_GameEnd.prototype.commandToTitle = function () {\nif (!isGameEnding) {\nsetGameEndVariable();\n}\nisGameEnding = true;\noriginalEndCommand.call(this);\n};\n// Hook into SceneManager terminate\nSceneManager.terminate = function () {\nif (!isGameEnding) {\nsetGameEndVariable();\n}\nisGameEnding = true; // Mark as ending\noriginalTerminate.call(this);\n};\n})();"
+    },
+    {
+      "post_id": "js-post-1492125",
+      "author": "Zia_",
+      "date": "2025-01-06T15:17:19+0900",
+      "body": "Just to confirm, this was done by you and not ChatGPT, right?\nAs the syntax seems kinda familiar."
+    }
+  ]
+}

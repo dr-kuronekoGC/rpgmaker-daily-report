@@ -1,0 +1,155 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/questions-about-using-input-keymapper.174276",
+  "title": "Questions about using Input.keyMapper",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T22:26:51.705544+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1490769",
+      "author": "ZombieKidzRule",
+      "date": "2024-12-30T05:06:40+0900",
+      "body": "I was experimenting with using these 2 Parallel Map Event Pages to map the \"i\" key to open the background for an Inventory menu.\nThis works fine. When you press \"i\" the image is either Shown or Erased.\nBut I have a couple of questions.\nIf I map a bunch of keys this way at the beginning of my game, will they persist? Meaning I will always be able to run a parallel event to see if they are being triggered?\nOr is this specific to the map that the Event is on? Or is this only until the game is reloaded like after a save? Or is there some other limitation?\nEssentially I would like to know if manually mapping these keys will remain valid in the game or if they really need to be added by a plugin.\nSecond question. Assuming the above method of mapping keys persists in the game, are there any problems with doing this? Or having a Parallel Event running to constantly check for those keys to be triggered and then do something? Like call Common Events.\nThanks for any clarification that you can provide!"
+    },
+    {
+      "post_id": "js-post-1490772",
+      "author": "ShadowDragon",
+      "date": "2024-12-30T05:13:50+0900",
+      "body": "you can either test it or set it inside a plugin as those are always readed,\nyou can call them anytime.\nso if you Input.keyMapper[73] = \"i\"\nyou can always call it from there or find a keymapper and it should\nwork for all keys that way."
+    },
+    {
+      "post_id": "js-post-1490774",
+      "author": "Artille",
+      "date": "2024-12-30T05:42:04+0900",
+      "body": "I'm pretty sure they are persistent across maps, I used that before and mapped all my keys at once, which worked across all maps. (If I recall correctly\n)\nI don't know if they are persistent through saves, most likely they won't since the game engine would initialise the Input object, erasing your updates.\nOr, you would have to do this through a plugin."
+    },
+    {
+      "post_id": "js-post-1490782",
+      "author": "ZombieKidzRule",
+      "date": "2024-12-30T06:27:12+0900",
+      "body": "Thanks for the responses!\nI just tested it by reloading a save and the \"i\" key no longer functions. So it doesn't persist after loading a save file.\nIt persists if I just exit to the Title screen and then Continue. But if I exit the game and then play test again and continue, it doesn't persist.\nI will have to look for a key mapping plugin."
+    },
+    {
+      "post_id": "js-post-1490793",
+      "author": "caethyril",
+      "date": "2024-12-30T08:02:26+0900",
+      "body": "By default the input maps are initialised on game boot, then remain unchanged. So as you've seen, any changes made will persist for the rest of the play session, i.e. until you close the game.\nLike ShadowDragon said, to make this into a plugin, you can simply put the code you have into its own\n.js\nfile. That way, it'll apply itself when the game boots up. E.g.\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Add custom keyboard controls.\n * @url https://forums.rpgmakerweb.com/threads/174276/\n * @help Free to use and/or modify for any project, no credit required.\n */\nInput.keyMapper[73] = 'i';\nThe header is optional, mostly for display purposes.\n@target MZ\nsuppresses the \"may not be written for MZ\" warning in the Plugin Manager, which can be helpful to avoid hiding legitimate warnings from other plugins."
+    },
+    {
+      "post_id": "js-post-1490795",
+      "author": "bass2yang",
+      "date": "2024-12-30T08:06:39+0900",
+      "body": "ZombieKidzRule said:\nThanks for the responses!\nI just tested it by reloading a save and the \"i\" key no longer functions. So it doesn't persist after loading a save file.\nIt persists if I just exit to the Title screen and then Continue. But if I exit the game and then play test again and continue, it doesn't persist.\nI will have to look for a key mapping plugin.\nClick to expand...\nYou could just write your own plugin using that same line of code and load it by patching it into the Input key Mapper object if you have basic needs for using specific keys. It will load it along with the rest of the keys.\nEdit: probably best to not create a const key outside of scope haha. Removed it from the code.\nJavaScript:\nInput.keyMapper[73] = 'i';\nInput.keyMapper[74] = 'j';\n...\nEdit: ninja'd by caethyril. 9999 damage. Super effective."
+    },
+    {
+      "post_id": "js-post-1490797",
+      "author": "ZombieKidzRule",
+      "date": "2024-12-30T08:25:29+0900",
+      "body": "@caethyril\nand\n@bass2yang\nThanks for that! I was wondering if a plugin for this could be that simple and didn’t require knowing something else to reference.\nI will experiment with this tomorrow to see what happens.\nThanks again!"
+    },
+    {
+      "post_id": "js-post-1490801",
+      "author": "Mac15001900",
+      "date": "2024-12-30T09:15:59+0900",
+      "body": "ZombieKidzRule said:\n@caethyril\nand\n@bass2yang\nThanks for that! I was wondering if a plugin for this could be that simple and didn’t require knowing something else to reference.\nI will experiment with this tomorrow to see what happens.\nThanks again!\nClick to expand...\nTo hopefully help clarify this further: a plugin basically works like a large Script command that gets ran right before the game starts. So if you want to make some sort of a permanent change the engine, and want it to always happen, it's probably best to put that change into a plugin."
+    },
+    {
+      "post_id": "js-post-1490882",
+      "author": "ZombieKidzRule",
+      "date": "2024-12-30T20:05:09+0900",
+      "body": "Thank you so much for this assistance\n@caethyril\n@bass2yang\n@Mac15001900\nA couple more things I am curious about if anyone can answer.\nI have a keyboard plugin by\n@ATT_Turan\nfrom last Advent (I think) that I also use and it works great. I took a look at it because I thought that would need to map all of the keys on the keyboard so you could type. I can see parts of what it is doing, but that plugin doesn't make it so the keyboard keys are accessible outside of something like Name Input Processing. I was just wondering why that might be? Maybe that plugin was made to solely work in specific circumstances and it isn't mapping all those keys in general?\nAlso, is there any issue with mapping a bunch a keys with a new plugin solely for that? Like making this plugin map 30-40 keys? Many games use hotkeys to do things and I am thinking about experimenting with those mechanics.\nOf course, the more keys you have mapped, I guess the larger the Parallel Event would need to be to check all the Conditional Branches to see if any are being triggered. Or maybe you would need to have multiple Parallel Events running to check them all without experiencing any sort of delay or performance impact?\nAnyway, if there isn't any real issue with mapping a bunch of keys this way, I will make the plugin later today and do some testing.\nThanks again!"
+    },
+    {
+      "post_id": "js-post-1490900",
+      "author": "caethyril",
+      "date": "2024-12-30T21:42:54+0900",
+      "body": "ZombieKidzRule said:\nI have a keyboard plugin by @ATT_Turan from last Advent (I think) that I also use and it works great.\n...\nMaybe that plugin was made to solely work in specific circumstances and it isn't mapping all those keys in general?\nClick to expand...\nTUR_KeyboardEntry, from here?\nTuran's Christmas Calendar - Day 7\nMerry Christmas, everyone!  I've been particularly inspired by the multitude of Advent calendars this year, so I decided at the last minute to try to produce some seasonal community contributions of my own.  For those whose Christmas knowledge is primarily secular, a touch of background...\nforums.rpgmakerweb.com\nYes, it looks like it just ignores the keymapper completely in the situations for which is it designed, i.e.\n- Use keyboard for entering names and numbers\nClick to expand...\nZombieKidzRule said:\nAlso, is there any issue with mapping a bunch a keys with a new plugin solely for that? Like making this plugin map 30-40 keys?\nClick to expand...\nI don't imagine there would be any problems based purely on quantity, no. Just be aware which buttons already have an assigned response:\nSpoiler:\ncore keymapper\nJavaScript:\nInput.keyMapper = {\n    9: \"tab\", // tab\n    13: \"ok\", // enter\n    16: \"shift\", // shift\n    17: \"control\", // control\n    18: \"control\", // alt\n    27: \"escape\", // escape\n    32: \"ok\", // space\n    33: \"pageup\", // pageup\n    34: \"pagedown\", // pagedown\n    37: \"left\", // left arrow\n    38: \"up\", // up arrow\n    39: \"right\", // right arrow\n    40: \"down\", // down arrow\n    45: \"escape\", // insert\n    81: \"pageup\", // Q\n    87: \"pagedown\", // W\n    88: \"escape\", // X\n    90: \"ok\", // Z\n    96: \"escape\", // numpad 0\n    98: \"down\", // numpad 2\n    100: \"left\", // numpad 4\n    102: \"right\", // numpad 6\n    104: \"up\", // numpad 8\n    120: \"debug\" // F9\n};\nA button can't have two names assigned to it, e.g.\nInput.keyMapper[90] = \"z\";\nwould prevent the Z key from acting in its usual role as an alternative \"ok\" input.\n(Also, remember that the\nkeyMapper\nis only for keyboard input, not gamepad or touch.)\nZombieKidzRule said:\nOr maybe you would need to have multiple Parallel Events running to check them all without experiencing any sort of delay or performance impact?\nClick to expand...\nNo, use 1 Parallel event for all the checks! RPG Maker processes its events in series: having multiple Parallels for the \"same thing\" like you describe is a waste of memory."
+    },
+    {
+      "post_id": "js-post-1491046",
+      "author": "ZombieKidzRule",
+      "date": "2024-12-31T06:29:58+0900",
+      "body": "@caethyril\nThank you so much for the additional clarification. Here is what the final plugin looks like.\nSpoiler:\nCustom Keys Plugin\n/*:\n* @target MZ\n* @plugindesc Add custom keyboard controls.\n* @url\nhttps://forums.rpgmakerweb.com/threads/174276\n*\n@Help\nFree to use and/or modify for any project, no credit required. Help from caethyril and plugin compiled by ZombieKidzRule.\n*/\nInput.keyMapper[48] = \"0\";\nInput.keyMapper[49] = \"1\";\nInput.keyMapper[50] = \"2\";\nInput.keyMapper[51] = \"3\";\nInput.keyMapper[52] = \"4\";\nInput.keyMapper[53] = \"5\";\nInput.keyMapper[54] = \"6\";\nInput.keyMapper[55] = \"7\";\nInput.keyMapper[56] = \"8\";\nInput.keyMapper[57] = \"9\";\nInput.keyMapper[65] = \"a\";\nInput.keyMapper[66] = \"b\";\nInput.keyMapper[67] = \"c\";\nInput.keyMapper[68] = \"d\";\nInput.keyMapper[69] = \"e\";\nInput.keyMapper[70] = \"f\";\nInput.keyMapper[71] = \"g\";\nInput.keyMapper[72] = \"h\";\nInput.keyMapper[73] = \"i\";\nInput.keyMapper[74] = \"j\";\nInput.keyMapper[75] = \"k\";\nInput.keyMapper[76] = \"l\";\nInput.keyMapper[77] = \"m\";\nInput.keyMapper[78] = \"n\";\nInput.keyMapper[79] = \"o\";\nInput.keyMapper[80] = \"p\";\nInput.keyMapper[82] = \"r\";\nInput.keyMapper[83] = \"s\";\nInput.keyMapper[84] = \"t\";\nInput.keyMapper[85] = \"u\";\nInput.keyMapper[86] = \"v\";\nInput.keyMapper[89] = \"y\";\nI am getting ready to test it now and see if it also recognizes the letter if the CAPS lock is on or if the SHIFT key is also being pressed for a capital letter."
+    },
+    {
+      "post_id": "js-post-1491069",
+      "author": "Norintha",
+      "date": "2024-12-31T10:27:57+0900",
+      "body": "Wait, am I misunderstanding something here? I mapped a key with script Input.KeyMapper and it does persist after closing and reopening and loading from a save, should it not be saving that info?"
+    },
+    {
+      "post_id": "js-post-1491071",
+      "author": "ZombieKidzRule",
+      "date": "2024-12-31T10:42:08+0900",
+      "body": "Are you only mapping it once or do you have an Event that maps it repeatedly?\nWhen I tested it, the mapping persisted until I completely exited the game. Not just exiting to the title screen.\nOnce I closed the game and then restarted and continued from my save, the key was no longer mapped.\nBut I did see a tutorial where the person had a Common Event that was a parallel event that mapped the key and the parallel event just kept running.\nNot sure what else you might be experiencing. You don’t have any plugins that might also map it?"
+    },
+    {
+      "post_id": "js-post-1491072",
+      "author": "Norintha",
+      "date": "2024-12-31T10:45:07+0900",
+      "body": "I map it in the event that initializes a bunch of stuff in a cutscene at the start of my game. Yeah I pressed the X and closed out completely and then launched the distro build again. I also don't have any plugins that mess with key mapping, unless I missed something in DungeonMind Item Categories."
+    },
+    {
+      "post_id": "js-post-1491097",
+      "author": "caethyril",
+      "date": "2024-12-31T19:37:46+0900",
+      "body": "ZombieKidzRule said:\nI am getting ready to test it now and see if it also recognizes the letter if the CAPS lock is on or if the SHIFT key is also being pressed for a capital letter.\nClick to expand...\nNo: shift & capslock are their own keys. E.g. the core mapper assigns the shift key (code\n16\n) to the name\n\"shift\"\n. That's the internal name for the dash button.\nEach key on the keyboard has a unique code. This is the code by which the\nkeyMapper\nis indexed. When a key is pressed (e.g.\nZ\n), the game checks its\nkeyMapper\nfor the code of that key (\n90\n). If present, it then flags the associated \"button name\" (\n\"ok\"\n) as being in a \"pressed\" state.\nThe rest of the engine uses these \"button name states\" to decide how to respond to user input. So if a key is pressed but its code isn't listed in the mapper, the game will effectively ignore it.\nAlso, just a note for the plugin header: you can use\n@author\nto specify who made it, e.g.\nJavaScript:\n/*:\n* @target MZ\n* @plugindesc Add custom keyboard controls.\n* @author ZombieKidzRule (with help from caethyril)\n* @url https://forums.rpgmakerweb.com/threads/174276\n* @Help Free to use and/or modify for any project, no credit required.\n*/\nAgain, it's just display info, you can keep it in the help section if you prefer~\nNorintha said:\nshould it not be saving that info?\nClick to expand...\nWell. The core scripts shouldn't, because they have no code for it. But key-mapping plugins certainly should, otherwise you'd have to reconfigure the controls every time you launch the game!\nNorintha said:\nI also don't have any plugins that mess with key mapping\nClick to expand...\nTo be sure, you could try turning off all plugins, save your project to apply Plugin Manager changes, then test. That should prevent it from happening. You could then turn plugins back on, one by one or in small groups, to try to narrow down the culprit. (Or just ignore it, if it's not causing problems.)"
+    },
+    {
+      "post_id": "js-post-1491101",
+      "author": "r66r",
+      "date": "2024-12-31T19:56:26+0900",
+      "body": "caethyril said:\nNo: shift & capslock are their own keys. E.g. the core mapper assigns the shift key (code\n16\n) to the name\n\"shift\"\n. That's the internal name for the dash button.\nEach key on the keyboard has a unique code. This is the code by which the\nkeyMapper\nis indexed. When a key is pressed (e.g.\nZ\n), the game checks its\nkeyMapper\nfor the code of that key (\n90\n). If present, it then flags the associated \"button name\" (\n\"ok\"\n) as being in a \"pressed\" state.\nThe rest of the engine uses these \"button name states\" to decide how to respond to user input. So if a key is pressed but its code isn't listed in the mapper, the game will effectively ignore it.\nClick to expand...\nBonus question: is the key index also depending of the keyboard layout (qwertz, qwerty, azerty, ...)? => Eg. 'z' is 90 on qwerty keyboards, but something else on qwertz keyboards, right?"
+    },
+    {
+      "post_id": "js-post-1491109",
+      "author": "caethyril",
+      "date": "2024-12-31T21:42:47+0900",
+      "body": "r66r said:\nBonus question: is the key index also depending of the keyboard layout (qwertz, qwerty, azerty, ...)?\nClick to expand...\nI looked into this a bit deeper and it seems MZ, like MV, still uses the old\nkeyCode\nproperty:\nKeyboardEvent: keyCode property - Web APIs | MDN\nThe deprecated KeyboardEvent.keyCode read-only property represents a system and implementation dependent numerical code identifying the unmodified value of the pressed key.\ndeveloper.mozilla.org\nUnfortunately, yes, that is implementation-dependent."
+    },
+    {
+      "post_id": "js-post-1491303",
+      "author": "ZombieKidzRule",
+      "date": "2025-01-02T05:09:13+0900",
+      "body": "So I updated and tested the Custom Key plugin. I added a few more keys and I verified that having the CAPS lock on doesn't change the functionality. So if the CAPS lock is on, it still reads the key as if the CAPS lock was off.\nI tried to map the minus and equals keys, but they didn't work. Perhaps the website that I used for the Key Codes uses a different number for those keys than what MZ recognizes? I used:\nwww.toptal.com/developers/keycode\nI tested every key multiple times, including after a Save, Exit, and Restart and everything worked great.\nHere is the text of the updated plugin if it helps anyone else. I can't believe it was this simple.\nSpoiler:\nCustom Key Plugin Text\n/*:\n* @target MZ\n* @plugindesc Add custom keyboard controls.\n*\n@Author\nZombieKidzRule (with help from caethyril)\n* @url\nhttps://forums.rpgmakerweb.com/threads/174276\n*\n@Help\nFree to use and/or modify for any project, no credit required.\n*/\nInput.keyMapper[48] = \"0\";\nInput.keyMapper[49] = \"1\";\nInput.keyMapper[50] = \"2\";\nInput.keyMapper[51] = \"3\";\nInput.keyMapper[52] = \"4\";\nInput.keyMapper[53] = \"5\";\nInput.keyMapper[54] = \"6\";\nInput.keyMapper[55] = \"7\";\nInput.keyMapper[56] = \"8\";\nInput.keyMapper[57] = \"9\";\nInput.keyMapper[65] = \"a\";\nInput.keyMapper[66] = \"b\";\nInput.keyMapper[67] = \"c\";\nInput.keyMapper[68] = \"d\";\nInput.keyMapper[69] = \"e\";\nInput.keyMapper[70] = \"f\";\nInput.keyMapper[71] = \"g\";\nInput.keyMapper[72] = \"h\";\nInput.keyMapper[73] = \"i\";\nInput.keyMapper[74] = \"j\";\nInput.keyMapper[75] = \"k\";\nInput.keyMapper[76] = \"l\";\nInput.keyMapper[77] = \"m\";\nInput.keyMapper[78] = \"n\";\nInput.keyMapper[79] = \"o\";\nInput.keyMapper[80] = \"p\";\nInput.keyMapper[82] = \"r\";\nInput.keyMapper[83] = \"s\";\nInput.keyMapper[84] = \"t\";\nInput.keyMapper[85] = \"u\";\nInput.keyMapper[86] = \"v\";\nInput.keyMapper[89] = \"y\";\nInput.keyMapper[219] = \"[\";\nInput.keyMapper[221] = \"]\";\nI also tested a Parallel Event that simulates using designated keys to show and erase images but to make it so if an image was already showing, none of the other keys could be activated to show another image.\nThis was just a quick test to simulate using keys to say open and close menus/windows. Like the M key opens the Map, or the I key opens the Inventory, or the C key opens the Character Sheet.\nIf anyone knows an easier, more efficient way to achieve the same results I would be very happy to learn how to do it!\nThe first screenshot is missing the Label: Fighter command line that is at the very beginning of the Event. I just noticed my snippet missed that starting line.\nSpoiler:\nParallel Event Activate Only 1 Key At A Time\nI hope this helps someone who is looking for something similar!\nThanks again to everyone for helping me learn something new!"
+    },
+    {
+      "post_id": "js-post-1491315",
+      "author": "bass2yang",
+      "date": "2025-01-02T06:40:06+0900",
+      "body": "ZombieKidzRule said:\n/*:\n* @target MZ\n* @plugindesc Add custom keyboard controls.\n* @Author ZombieKidzRule (with help from caethyril)\n* @url\nhttps://forums.rpgmakerweb.com/threads/174276\n* @Help Free to use and/or modify for any project, no credit required.\n*/\nClick to expand...\nTry this - for kicks. Lol. (Untested)\nEdit: I'm guessing the equal key code is either 61 or 187. You can put that in separately to test.\nJavaScript:\n(($) => {\n    const str  = (x) => String.fromCharCode(x);\n    for (let i = 48; i < 58; i++) $[i] = str(i);\n    for (let j = 65; j < 90; j++) $[j] = str(j).toLowerCase();\n    for (const k of [219, 221]  ) $[k] = str(k - 128);\n    $[187] = '=';\n    $[189] = '-';\n})(Input.keyMapper);\nEdit: And one more for variation because I like for-of and I just realized you had some keys not included:\nJavaScript:\n(($) => {\n    const key = '0123456789ABCDEFGHIJKLMNOPRSTUVY=-[]';\n    const val = (n) =>\n        ['[',']'].includes(n) ? 128 :\n                     n == '=' ? 126 :\n                     n == '-' ? 144 : 0;\n    for (const x of key) {\n        const y = key.charCodeAt(key.indexOf(x)) + val(x);\n        $[y]    = x.toLowerCase();\n    }\n})(Input.keyMapper);"
+    },
+    {
+      "post_id": "js-post-1491328",
+      "author": "ZombieKidzRule",
+      "date": "2025-01-02T07:24:28+0900",
+      "body": "@bass2yang\nI tried 61 for = and 173 for - based on the website I included above.\nWhat is the code above supposed to be doing? I only recognize a couple of things from it.\nIf it is just to get to use the - and/or = key, those keys really aren't that important to me. I was just sort of curious that they didn't work like the rest of the keys I mapped."
+    },
+    {
+      "post_id": "js-post-1491329",
+      "author": "bass2yang",
+      "date": "2025-01-02T07:29:50+0900",
+      "body": "ZombieKidzRule said:\n@bass2yang\nI tried 61 for = and 173 for - based on the website I included above.\nWhat is the code above supposed to be doing? I only recognize a couple of things from it.\nIf it is just to get to use the - and/or = key, those keys really aren't that important to me. I was just sort of curious that they didn't work like the rest of the keys I mapped.\nClick to expand...\nAh, the equal key is probably different (i found it was either 61 or 187, I believe). It is different with Firefox (61). Just the way the key code is mapped I suppose.\nThe code I gave you just sets all the keys you wrote out. The .fromCharCode() function takes from the ASCII code which is similar but not the same as the JS key codes (65 is 'A' in ASCII but 'a' in JS, etc.).\nThe function I wrote out just puts everything you wrote into a couple of lines, that's all."
+    },
+    {
+      "post_id": "js-post-1491330",
+      "author": "ZombieKidzRule",
+      "date": "2025-01-02T07:39:54+0900",
+      "body": "Ah, so that code could replace all the separate lines. I will give that a try separately and test it.\nThanks!"
+    },
+    {
+      "post_id": "js-post-1491456",
+      "author": "bass2yang",
+      "date": "2025-01-03T01:35:35+0900",
+      "body": "ZombieKidzRule said:\nIf anyone knows an easier, more efficient way to achieve the same results I would be very happy to learn how to do it!\nClick to expand...\nWhenever I am using a parallel event/common event, I try to avoid any other types of loops unless I have to. For the most part, how your event is set up would work great for a single script call.\nIf I am using a bit more lines than usual in a script call, I rewrite it as a function (plugin) and call the function instead to help with performance, troubleshooting, debugging, and reading.\nFeel free to use it and modify as you see fit.\nVideo:\nSpoiler\nCode:\nSpoiler\nJavaScript:\n/* zombiePicture Notes:\n    - Declare variables:\n        str: string of input keys\n        arr: picture X coordinates\n        key: previous button triggered\n        ix1:  index for string/array\n        ix2: index for pictures\n        scr:  reference to $gameScreen\n        pic:  create an array for the first 5 entries\n                of $gameScreen._pictures; filter out\n                any empty (null/undefined) entries\n    - Check if the player's input matches string in str\n    - If picture ix2 (index) is present, delete it\n    - If the length of the array of pictures is less than 1,\n        show the specific picture\n    - This prevents other pictures being shown (only 1 can\n        be shown at a time and must be removed before any\n        other pictures in that range can be shown)\n    - Console log for testing only - please remove when ready\n        to avoid performance hit with console.\n*/\nfunction zombiePicture() {\n    const str = 'fprc',\n          arr = [5, 170, 335, 500],\n          key = Input._latestButton,\n          ix1 = str.indexOf(key),\n          ix2 = ix1 + 1,\n          scr = $gameScreen,\n          pic = scr._pictures.slice(0, 5).filter(x => x);\n    if (Input.isTriggered(str[ix1])) {\n        if (scr.picture(ix2)) {\n            scr.erasePicture(ix2);\n        }\n        if (pic.length < 1) {\n            scr.showPicture(ix2, `D${ix2}`, 0, arr[ix1], 0, 100, 100, 255, 0);\n        }\n        console.log(`Key: ${str[ix1]}, Picture: ${ix2} - ${!!scr.picture(ix2)}`);\n    }\n};\nPhotos:\nSpoiler\nI did not use a wait frame here because the timing is very important since it depends upon user input (a 1 wait frame caused some delay issues that didn't really pick up the key input properly) - if you want to use a higher frame wait, I would recommend changing Input.isTriggered() to Input.isPressed() with a wait frame of at least 6 frames.\nAlso, when key inputs are important on every frame, I usually defer it to an eventlistener instead and go from there. It is a bit more complicated to set up, though. I believe Poryg had a good tutorial on something like it.\nIn your case, you would rename `D${ix2}` to simply `${ix2}` since your pictures are named 1, 2, 3, and 4. Hope this helps!"
+    },
+    {
+      "post_id": "js-post-1491468",
+      "author": "ZombieKidzRule",
+      "date": "2025-01-03T02:38:17+0900",
+      "body": "@bass2yang\nHoly Crap! Thank you so much!\nI don't understand everything in the code of the function, but I do understand some of it and I am going to try searching for some of the parts that I don't completely understand.\nBut I have plenty of time. I was just experimenting with this for my much longer term RPG project. As I figure out certain mechanics that I want to have, I conduct experiments to see different options for implementation.\nIt is so nice of you to take the time to write the function, put in the description, make the demo video, and also show how to call the function in MZ.\nIt will be great to experiment with this and dig into the JS code until I actually understand what each piece is doing.\nThanks again and if I can ever do anything for you, just let me know. Right now about the only skill I have is play testing and giving feedback, but I am always happy to help.\nEDIT: Trying to add the actual plugin file for people to download if that helps and posting a video of the tutorial that I made in the hopes that it helps other people."
+    }
+  ]
+}

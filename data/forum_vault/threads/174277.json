@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/visustella-message-core-using-both-line-break-br-and-wait-for-button-input-during-auto-wrap.174277",
+  "title": "MZ VisuStella Message Core: Using both line break (<br>) and wait for button input (/!) during auto wrap?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T22:26:50.341111+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1490771",
+      "author": "LaCipolla",
+      "date": "2024-12-30T05:12:07+0900",
+      "body": "Hi everybody,\nI'm using the\nauto wrap\nfeature of VisuStella Message Core\nand the\nODW Multi-Language System\n.\nI also make extensive use of\nline breaks\n(<br>) and\nwait for button input\n(/!), sometimes together, to structure and pace dialogues. Usually it works and I like it that way!\nBut sometimes, when these two tags interact with auto wrap, there can be a problem because auto wrap does its automatic line break (at the end of a line) or automatic button input (at the end of a message window), and I end up with a free line, a double button input, an empty space at the beginning of the line or some weirder stuff. Most of that is obvious to me, but in some cases the interactions behave REALLY weirdly.\nEssentially, I have to \"micromanage\" a lot, with A LOT of trial and error. And more often than I would like, these interactions even force me to seriously change the content of the text in favour of a visually alright text window.\nNow, I thought about bringing specific examples ...\nBut honestly, it would be a pain because it's a big collection of very specific situations, and in general, I'm more interested in how other people approach this tension.\nHow do you deal with this? Do you have experiences or tips?\nThanks!"
+    },
+    {
+      "post_id": "js-post-1490802",
+      "author": "utunnels",
+      "date": "2024-12-30T09:49:00+0900",
+      "body": "line breaks\n(/!) and\nwait for button input\n(<br>)\nClick to expand...\nDo you mistake <br> for the wait control code?"
+    },
+    {
+      "post_id": "js-post-1490835",
+      "author": "LaCipolla",
+      "date": "2024-12-30T14:39:04+0900",
+      "body": "Yeah, I just mixed it up in the post, it's of course the other way around. It's edited now, thanks!"
+    },
+    {
+      "post_id": "js-post-1490868",
+      "author": "ATT_Turan",
+      "date": "2024-12-30T18:49:42+0900",
+      "body": "I assume you're also typing the wait for input escape code correctly, not with a forward slash\nHonestly,\nLaCipolla said:\nNow, I thought about bringing specific examples ...\nClick to expand...\nThis seems like it's necessary. While I don't use these specific plugins, I do use Yanfly's Message Core with word wrapping, and I've never encountered the issue.\nThe method that parses escape codes and determines where to break lines should not be registering \\! as characters that take up space on the line. So, if anything, if you can reproduce this issue it seems like it ought to be a bug report to VisuStella."
+    },
+    {
+      "post_id": "js-post-1490886",
+      "author": "r66r",
+      "date": "2024-12-30T20:33:45+0900",
+      "body": "Hi\n@LaCipolla\n.\nAnother suggestion is to test your original text in a message without using the ${} for translating it, to see if it's a bug of the VS plugin only, or a bug when using the combo of the two plugins.\nLaCipolla said:\nBut sometimes, when these two tags interact with auto wrap, there can be a problem because auto wrap does its automatic line break (at the end of a line) or automatic button input (at the end of a message window), and I end up with a free line, a double button input, an empty space at the beginning of the line or some weirder stuff.\nClick to expand...\nOn the other hand, as you describe it, if the autowrap function creates its own line breaks and wait button, and at the same time you force these actions with your manual line breaks <br> and wait button \\!, the behavior you get seems consistent to me. In other words, I'd only use the autowrap function for raw messages, i.e. without manually adding <br> and \\!... just my two cent about this."
+    },
+    {
+      "post_id": "js-post-1491144",
+      "author": "LaCipolla",
+      "date": "2025-01-01T05:38:06+0900",
+      "body": "Thanks for the answers! =)\nLet me use one example ...\nPlease read the whole post, I'm being so long-winded because I'm aware that some of it works as intended!\nNow, in the following two versions of code, this could be understandable because <br> and the auto wrap \"double down\" ...\n(Both lead to the screenshot above.)\nBut, on the other hand, this is what happens without <br>:\nSo my idea is that auto wrap \"counts\" something in the code. And while in this example, it's not even that bad and easily circumventable, there have been other situations in which the effect \"swallowed up\" long words or whole phrases.\nFor troubleshooting I tried typing in the text directly in the RPG maker window (without using the language plugin, and consequently with \\! instead of \\\\!), but it had the same effects."
+    },
+    {
+      "post_id": "js-post-1491156",
+      "author": "r66r",
+      "date": "2025-01-01T06:49:48+0900",
+      "body": "This is just a guess (it's impossible to know how VS designed the autowrap function), but it's based on what I've seen in other plugins with autowrap.\nTo create the line break, the plugin creates the line of text word by word and checks at each iteration whether or not the length in pixels of the line exceeds the width of the window. If it does, the line break is added before the last word added... and so on for each line. That's why, in your example, the line break occurs after the word \"There\" => the width of the line is always less than the width of the window at that point."
+    },
+    {
+      "post_id": "js-post-1491170",
+      "author": "utunnels",
+      "date": "2025-01-01T08:45:08+0900",
+      "body": "I can also reproduce the OP's problem in the sample project.\nsfsfsd sfsdfsd sfs s sfsdffffffffsffff fsfsdfsfds fsfsd sds <br>fdsfdsfs sfsdf sfds\nIt makes little difference if I put a space before or after <br> so\n<br>fdsfdsfs\nis not the culprit.\nThis did not happen in YEP_MessageCore by the way.\nEdit* For some reason, this fixed the problem."
+    },
+    {
+      "post_id": "js-post-1491206",
+      "author": "LaCipolla",
+      "date": "2025-01-01T16:34:47+0900",
+      "body": "WOAH!\nThat does it. o_o Wild!\nThanks a lot!\nI'll reply again if something else comes up ..."
+    }
+  ]
+}

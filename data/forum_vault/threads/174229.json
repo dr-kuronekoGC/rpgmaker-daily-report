@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/smarter-pathfinding-for-chasing-events.174229",
+  "title": "MV Smarter pathfinding for chasing events",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T22:26:49.697636+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1490423",
+      "author": "muffinswords",
+      "date": "2024-12-28T16:30:45+0900",
+      "body": "I feel like this is one that has been done before, but I'm coming up empty on a cursory look through the internet.\nI'm looking for a plugin that will essentially make events chasing or following the player smarter. Right now there's a few issues:\n-getting stuck on events or tiles\n-getting confused and stuck about cliffs, mazes, various walls\n-getting confused or stuck if too far away period\n-trying to reach the player by simply getting closer to the player, for example on a cliff above the player's position (technically next to the player but on a whole different level of the map), as opposed to taking the ACTUAL route they need to reach the player\nI feel like players will complain if my implementation is off so I want it to be as polished as I can. Are there any options available that achieve an intelligent pathfinding?\nI'm already using Yanfly's Move Route Core, and it's very useful, but its pathfinding for chasing events is still \"dumb.\" I've also tried Shaz's Smart Pathfinding with the same results."
+    },
+    {
+      "post_id": "js-post-1491505",
+      "author": "AquaEcho",
+      "date": "2025-01-03T06:24:44+0900",
+      "body": "Pretty much every pathfinding plugin will use A*, and it's also what RPG Maker uses for its findDirectionTo function which is called when you click the screen and the player pathfinds to that tile.\nTo do the fancy stuff you want taking layers, moving events, etc into account, well, that's something you will likely need to write in extra conditional statements yourself.\nIt's going to be more complicated and processor intensive than you think, because if the other events are moving it will have to be constantly calculating a new route to go around them, meaning it has to sample every tile in an x tile radius until it hits its target. The longer it takes to find a clear path, or the more often it needs to recalculate, the more lag you'll get.\nPlay around with this tool and you'll see what's happening when you tell an event to pathfind\nPathFinding.js\nThe event has to sample all those green tiles to find a path, except now you're adding in extra dynamic walls (moving events) whose position change every frame"
+    },
+    {
+      "post_id": "js-post-1491514",
+      "author": "ShadowDragon",
+      "date": "2025-01-03T06:59:43+0900",
+      "body": "There is a good one available but for MZ only, can't remember or find\nthe link to that, but there isn't much perfect path finding like the above\ncould do, as smart pathfinding to keep everything in mind might be\nalso very complex thing to build."
+    },
+    {
+      "post_id": "js-post-1495895",
+      "author": "ShadowDragon",
+      "date": "2025-01-27T00:20:15+0900",
+      "body": "@muffinswords\nI create 2 mini functions for a more cleaner pathfinding.\ndepending how many events are chasing (just tested with 1 events and\nblocked ways, but seems to work nicely (2 scriptcalls, but 1 required).\nSpoiler:\nHow to use\nInside moveroute, use the following Scriptcall:\nthis.chasePlayer()\nor\nthis.chasePlayerVariables(vx, vy)\nThis scriptcall chase the player and wont block in corners, but find it's way clean and better.\nUsing variables require a common event and in parallel that tracks the player X and Y on the map\nand a switch to activate (use 2-5 wait frames) and it finds the player by variables.\nactivate the switch whenever required inside the map of chasing.\nusing the first doesn't require a switch, but if you need variables, it can work out.\nthis works in both MV and MZ as they are equal so far I see it, so it's really easy\nto use plugin, see if it works on your end.\nyou may change the plugin name, as it doesn't impact anything, so I leave it here\nbut I might implement it into my base later on for others to use, so it's a small\nfunction for you"
+    },
+    {
+      "post_id": "js-post-1495905",
+      "author": "utunnels",
+      "date": "2025-01-27T01:09:26+0900",
+      "body": "If I recall correctly touch/mouse control does have a pathing finding logic, at some degree.\nBut the player can be trapped inside a U shape area sometimes.\nI wonder if changing search limit will fix the problem (or maybe cause other problems?).\nEdit* Tried, it doesn't seem to work.\nJavaScript:\nGame_Character.prototype.findDirectionTo = function(goalX, goalY) {\n    var searchLimit = this.searchLimit();\n    var mapWidth = $gameMap.width();\n    var nodeList = [];\n    var openList = [];\n    var closedList = [];\n    var start = {};\n    var best = start;\n\n    if (this.x === goalX && this.y === goalY) {\n        return 0;\n    }\n\n    start.parent = null;\n    start.x = this.x;\n    start.y = this.y;\n    start.g = 0;\n    start.f = $gameMap.distance(start.x, start.y, goalX, goalY);\n    nodeList.push(start);\n    openList.push(start.y * mapWidth + start.x);\n\n    while (nodeList.length > 0) {\n        var bestIndex = 0;\n        for (var i = 0; i < nodeList.length; i++) {\n            if (nodeList[i].f < nodeList[bestIndex].f) {\n                bestIndex = i;\n            }\n        }\n\n        var current = nodeList[bestIndex];\n        var x1 = current.x;\n        var y1 = current.y;\n        var pos1 = y1 * mapWidth + x1;\n        var g1 = current.g;\n\n        nodeList.splice(bestIndex, 1);\n        openList.splice(openList.indexOf(pos1), 1);\n        closedList.push(pos1);\n\n        if (current.x === goalX && current.y === goalY) {\n            best = current;\n            break;\n        }\n\n        if (g1 >= searchLimit) {\n            continue;\n        }\n\n        for (var j = 0; j < 4; j++) {\n            var direction = 2 + j * 2;\n            var x2 = $gameMap.roundXWithDirection(x1, direction);\n            var y2 = $gameMap.roundYWithDirection(y1, direction);\n            var pos2 = y2 * mapWidth + x2;\n\n            if (closedList.contains(pos2)) {\n                continue;\n            }\n            if (!this.canPass(x1, y1, direction)) {\n                continue;\n            }\n\n            var g2 = g1 + 1;\n            var index2 = openList.indexOf(pos2);\n\n            if (index2 < 0 || g2 < nodeList[index2].g) {\n                var neighbor;\n                if (index2 >= 0) {\n                    neighbor = nodeList[index2];\n                } else {\n                    neighbor = {};\n                    nodeList.push(neighbor);\n                    openList.push(pos2);\n                }\n                neighbor.parent = current;\n                neighbor.x = x2;\n                neighbor.y = y2;\n                neighbor.g = g2;\n                neighbor.f = g2 + $gameMap.distance(x2, y2, goalX, goalY);\n                if (!best || neighbor.f - neighbor.g < best.f - best.g) {\n                    best = neighbor;\n                }\n            }\n        }\n    }\n\n    var node = best;\n    while (node.parent && node.parent !== start) {\n        node = node.parent;\n    }\n\n    var deltaX1 = $gameMap.deltaX(node.x, start.x);\n    var deltaY1 = $gameMap.deltaY(node.y, start.y);\n    if (deltaY1 > 0) {\n        return 2;\n    } else if (deltaX1 < 0) {\n        return 4;\n    } else if (deltaX1 > 0) {\n        return 6;\n    } else if (deltaY1 < 0) {\n        return 8;\n    }\n\n    var deltaX2 = this.deltaXFrom(goalX);\n    var deltaY2 = this.deltaYFrom(goalY);\n    if (Math.abs(deltaX2) > Math.abs(deltaY2)) {\n        return deltaX2 > 0 ? 4 : 6;\n    } else if (deltaY2 !== 0) {\n        return deltaY2 > 0 ? 8 : 2;\n    }\n\n    return 0;\n};\n\nGame_Character.prototype.searchLimit = function() {\n    return 12;\n};"
+    },
+    {
+      "post_id": "js-post-1495908",
+      "author": "ZimXero",
+      "date": "2025-01-27T01:35:35+0900",
+      "body": "just a thought to prevent \"trapping\".  Have the program calculate a larger pattern every 5 to 10 cycles, and if detected, calculate a path out of the pocket zone.  This wouldn't prevent it from going back in, but at least it wouldn't get trapped there.  The condition for knowing if it is trapped... (X and Y coordinates over time did not change by more than X.  This would kick it to long range detection.  If the event is actually trapped, it would be no harm, no foul... and use up less resources than a constant check."
+    },
+    {
+      "post_id": "js-post-1496001",
+      "author": "utunnels",
+      "date": "2025-01-27T17:11:02+0900",
+      "body": "ZimXero said:\njust a thought to prevent \"trapping\".  Have the program calculate a larger pattern every 5 to 10 cycles, and if detected, calculate a path out of the pocket zone.  This wouldn't prevent it from going back in, but at least it wouldn't get trapped there.  The condition for knowing if it is trapped... (X and Y coordinates over time did not change by more than X.  This would kick it to long range detection.  If the event is actually trapped, it would be no harm, no foul... and use up less resources than a constant check.\nClick to expand...\nI have thought about that but the solution is no better than using a path finding plugin.\nMaybe for some zombies it looks good, still looks a bit stupid for a human character.\nAn alternative method is setting up some waypoints manually on the map.  All the waypoints connect to each other. Let both the target and the chaser find their nearest way point so they will have a path to each other. Still this is not as easy as just using A*\nMaybe for game that uses pixel movement instead of grid based movement, it has some use."
+    },
+    {
+      "post_id": "js-post-1496008",
+      "author": "ShadowDragon",
+      "date": "2025-01-27T19:23:41+0900",
+      "body": "the way I set it works nice, and is a very short snippet to use both.\nit might not work when the event is outside range, (or map) but\nyou there are plugins that update outside the map, and the range\nhas to be evented to avoid problems.\nso player.x and player.y can be in a conditional branch for a range\nof 5 or 10 or whatever.\nmaybe even coded in.\nit's just a shame that smart path finding doesn't work correctly, but with\nthe 2 simple calls I made does work far better than the smart path finding\nat least event to player that is or event to variable x,y."
+    },
+    {
+      "post_id": "js-post-1496022",
+      "author": "caethyril",
+      "date": "2025-01-27T22:39:03+0900",
+      "body": "When a character is pathfinding (e.g. the player via touch input) the core engine calls\nfindDirectionTo\nevery step, which uses an A* algorithm to (re)find a path, up to the search limit, and returns the direction for the next step along that path. Yanfly's and Shaz's plugins simply use this built-in pathfinding, because why not?\nWell, the default search limit of 12 tiles is tuned to the standard 17x13 tiles per screen, since it's only designed for player touch movement. That does mean it will fail over larger distances for certain configurations of obstacles. As you can see from the link/screenshot AquaEcho shared, the impact of increasing the search limit is very dependent on the map layout: narrow corridors will cause minimal issues, while open-plan maps will be much more CPU-hungry.\nIn terms of failure: A* with no search limit is mathematically guaranteed to find a path if one exists. So if effectively removing the search limit (e.g.\n9999\n, or\nInfinity\n) does not help, it's something else (or there is a 9-year-old flaw in\nfindDirectionTo\n). Ideas:\nIf it locks up completely with a high search limit then try turning off any plugins you're using in the Plugin Manager (right-click -> Turn OFF) to see if that helps. E.g. a plugin that adds mechanical map layers may change the passability of a tile based on the character's current layer:\nfindDirectionTo\ndoesn't account for layers by default, so that plugin (or an extension for it) would have to patch the pathfinder appropriately to avoid related bugs. Bugs like, say, pathing from tile A (lower layer) to tile B (upper layer) when the target XY is only accessible on the lower layer: the path returns to A, but then is back where it started - a loop.\nIf it results in pathing that stops unexpectedly (or never!), and/or does a lot of moving back and forth, that may be due to passability changes during the movement. If, say, a shortcut is periodically opening and closing, the pathfinder might alternate between \"let's take the shortcut\" and \"looks like we have to go the long way around\". A similar thing can happen with a wandering NPC temporarily blocking a hallway.\nAccounting for changes over time means that you basically have to \"path\" in some way for all agents in the area just to move one of them, e.g. LPA* or (more practically) D* Lite."
+    },
+    {
+      "post_id": "js-post-1496058",
+      "author": "AquaEcho",
+      "date": "2025-01-28T03:20:04+0900",
+      "body": "utunnels said:\nAn alternative method is setting up some waypoints manually on the map. All the waypoints connect to each other. Let both the target and the chaser find their nearest way point so they will have a path to each other. Still this is not as easy as just using A*\nClick to expand...\nI wrote a script that makes a character move to the closest tile of region X so I guess you could do it that way.\nSmart Pathfinding\n@Shaz, thanks for the quick reply - it works! Thank you once again.\nforums.rpgmakerweb.com"
+    }
+  ]
+}

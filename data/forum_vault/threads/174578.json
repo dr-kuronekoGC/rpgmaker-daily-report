@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-there-a-way-to-have-extra-lines-for-the-title-on-the-title-screen.174578",
+  "title": "Is there a way to have extra lines for the title on the title screen?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T22:26:47.234458+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1492909",
+      "author": "james5272",
+      "date": "2025-01-10T21:16:14+0900",
+      "body": "I want to have the game title, then have a line break and version number beneath that.  Is there a way to do this?"
+    },
+    {
+      "post_id": "js-post-1492911",
+      "author": "utunnels",
+      "date": "2025-01-10T21:26:26+0900",
+      "body": "Not without a plugin. But isn't it easier to just draw the text on the background pictture?"
+    },
+    {
+      "post_id": "js-post-1492921",
+      "author": "james5272",
+      "date": "2025-01-10T22:08:25+0900",
+      "body": "For me it'd be easier to just edit the project title in the database every time.  Do you know which plugin would give more title screen control?  Google is saying moghunter at least used to have something for more control over the title screen, but I downloaded his plugin pack and didn't see anything for this."
+    },
+    {
+      "post_id": "js-post-1492949",
+      "author": "utunnels",
+      "date": "2025-01-11T01:02:05+0900",
+      "body": "You can easily copy the original drawGameTitle and make a second one.\nSave this as a plugin and edit the values to suite your need.\nJavaScript:\nScene_Title.prototype.createForeground = function() {\n    this._gameTitleSprite = new Sprite(\n        new Bitmap(Graphics.width, Graphics.height)\n    );\n    this.addChild(this._gameTitleSprite);\n    if ($dataSystem.optDrawTitle) {\n        this.drawGameTitle();\n        this.drawGameTitle2();\n    }\n};\nScene_Title.prototype.drawGameTitle = function() {\n    const x = 20;\n    const y = Graphics.height / 4;\n    const maxWidth = Graphics.width - x * 2;\n    const text = $dataSystem.gameTitle;\n    const bitmap = this._gameTitleSprite.bitmap;\n    bitmap.fontFace = $gameSystem.mainFontFace();\n    bitmap.outlineColor = \"black\";\n    bitmap.outlineWidth = 8;\n    bitmap.fontSize = 72;\n    bitmap.drawText(text, x, y, maxWidth, 48, \"center\");\n};\nScene_Title.prototype.drawGameTitle2 = function() {\n    const x = 20;\n    const y = Graphics.height / 4 + 80;\n    const maxWidth = Graphics.width - x * 2;\n    const text = 'v1.1.0';\n    const bitmap = this._gameTitleSprite.bitmap;\n    bitmap.fontFace = $gameSystem.mainFontFace();\n    bitmap.outlineColor = \"black\";\n    bitmap.outlineWidth = 2;\n    bitmap.fontSize = 12;\n    bitmap.drawText(text, x, y, maxWidth, 24, \"center\");\n};"
+    },
+    {
+      "post_id": "js-post-1492952",
+      "author": "james5272",
+      "date": "2025-01-11T01:23:05+0900",
+      "body": "Thanks! I had to edit the font size and outline, but I think it looks fine now (see screenshot).\nIs there any way to get the text of the 2nd line as something I can edit from within the plugin window in RPG Maker?  I am not expecting you to help me for free... if you put this on itch.io I will tip you a couple bucks."
+    },
+    {
+      "post_id": "js-post-1492959",
+      "author": "utunnels",
+      "date": "2025-01-11T01:34:07+0900",
+      "body": "Don't worry about it, it is mostly copy and paste.\nSo you need a plugin parameter? I'll look into it after I get some sleep, if you haven't figured it out."
+    },
+    {
+      "post_id": "js-post-1492972",
+      "author": "james5272",
+      "date": "2025-01-11T02:44:54+0900",
+      "body": "Yes, a plugin parameter to change the text of the 2nd line would be great!  But no rush.  And if you change your mind I am still happy to tip you"
+    },
+    {
+      "post_id": "js-post-1492979",
+      "author": "ShadowDragon",
+      "date": "2025-01-11T03:29:20+0900",
+      "body": "but hiding the game title and just set your title there would be easier\nas it's the background you can pick from title1 folder\nbut I could change it for you to parameters.\nEdit:\nadded parameters for you for fontsize, outline and title.\nboth for draw game title and subtitle that is below it.\nI cannot test it as I don't own MZ, so I hope the parameters works as I parse them\ndifferent for my own, so see if it works"
+    },
+    {
+      "post_id": "js-post-1493020",
+      "author": "james5272",
+      "date": "2025-01-11T07:09:19+0900",
+      "body": "Here are my settings and here is what it looks like.  Let me know if I've done anything wrong:"
+    },
+    {
+      "post_id": "js-post-1493085",
+      "author": "utunnels",
+      "date": "2025-01-11T13:09:26+0900",
+      "body": "1. Don't rename the file.\n2. There seems to be unnecessarys eval in SD's code like this:\neval(utSD.DrawTitleCustom.line_1)\nI removed it and it works now.\n3.  Delete the plugin from the editor and add it again if the parameters are incorrect."
+    },
+    {
+      "post_id": "js-post-1493146",
+      "author": "james5272",
+      "date": "2025-01-11T21:07:47+0900",
+      "body": "Thanks, that's working now.  I did not rename the file this time, sorry about that. I'll add a link to your post with the plugin in my credits."
+    },
+    {
+      "post_id": "js-post-1493147",
+      "author": "ShadowDragon",
+      "date": "2025-01-11T21:22:59+0900",
+      "body": "utunnels said:\n2. There seems to be unnecessarys eval in SD's code like this:\neval(utSD.DrawTitleCustom.line_1)\nClick to expand...\nI used eval and param as string, and I might forgot something else I parse\nand mostly works,  but as I parse it differently, it just autodetect them to\nnumber, string, array, objects, etc, and can eval later and still correct them\nlater that return to a number if the type is a number or string.\njames5272 said:\nThanks, that's working now. I did not rename the file this time, sorry about that. I'll add a link to your post with the plugin in my credits.\nClick to expand...\nI'm glad it works now for you\nbut renaming of plugins is not recommended if\nthere are parameters in play as they respond to it else it throws an error of undefined\na lot or ignore them all the time unless the plugin name match.\nwhile you didn't rename it, it's a param issue and would test it if I had MZ to make sure.\nas I only own MV,  both MV and MZ are mostly equal in parameters, but some parts\nare slightly different\nGood luck with your project."
+    },
+    {
+      "post_id": "js-post-1493150",
+      "author": "Puppet Knight",
+      "date": "2025-01-11T22:01:07+0900",
+      "body": "Just gonna go ahead and:\nEdit i'm gonna clean up the parameters a bit and repost the plugin in a few.\nEdit edit: had to run out. But the updates done. Will post later lol"
+    },
+    {
+      "post_id": "js-post-1493201",
+      "author": "Puppet Knight",
+      "date": "2025-01-12T03:03:12+0900",
+      "body": "Posting separate so folks see the notification\nUpdated the plugin parameters to be a bit more straightforward. No changes to the code were made\nGame Title and Subtitle are sectioned off and parameters renamed to be clearer\nAdded in Larger Default font and outline sizes for each.\nI might do some additional tweaks to allow font and outline color changes. But for now i hope this helps\nThis was fun haha\nUPDATE: Added plugin parameters for Font/Outline Colors that accept Color name or Hexidecimal (#123456)\nThat's all I can think of short of allowing font changes, or changing alignment! Let me know if anyone wants that too\nHappy RPG making all!\nAdditional note, i added in a fix to prevent the first and second lines from overlappingg based on the font sizes of the titles, as well as a Y offset option for both titles to be used as needed."
+    }
+  ]
+}
