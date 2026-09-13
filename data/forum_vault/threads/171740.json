@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/way-to-make-a-picture-not-move-with-screen-shake.171740",
+  "title": "Way to make a picture not move with screen shake?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-13T18:48:58.329307+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1468695",
+      "author": "cozathemaster",
+      "date": "2024-09-08T00:00:22+0900",
+      "body": "Hi! I've searched a long time and can't find a way to make a picture not shake when I use the screen shake option.\nBefore using MZ, I was working with RPG maker 2003, and there it was as simple as clicking the \"affected by shake\" option.\nIs there a way to do this in MZ?  It seems something so simple.. , but I can't do it... =(\nI found a plugin, but it's for MV. I used it with Fossil and it didn't work...\nThanks in advance!‍"
+    },
+    {
+      "post_id": "js-post-1468699",
+      "author": "suwaimu",
+      "date": "2024-09-08T00:40:40+0900",
+      "body": "so.... do you want to make it shake or do you want to make it scroll?\nif you want to make it scroll, you need to use the the map scroll option (or might have another name)"
+    },
+    {
+      "post_id": "js-post-1468701",
+      "author": "cozathemaster",
+      "date": "2024-09-08T00:44:38+0900",
+      "body": "suwaimu said:\nso.... do you want to make it shake or do you want to make it scroll?\nif you want to make it scroll, you need to use the the map scroll option (or might have another name)\nClick to expand...\nI need to be able to display an image using the \"show picture\" command, and when using the \"screen shake\" command, I want certain aspects of the game to not shake. For example, everything on the screen would shake, except for that specific image (think of it like a status image of the protagonist, an element that is \"outside\" of the game, like a HUD).\nDoes that make sense?"
+    },
+    {
+      "post_id": "js-post-1468708",
+      "author": "suwaimu",
+      "date": "2024-09-08T01:16:00+0900",
+      "body": "cozathemaster said:\nI need to be able to display an image using the \"show picture\" command, and when using the \"screen shake\" command, I want certain aspects of the game to not shake. For example, everything on the screen would shake, except for that specific image (think of it like a status image of the protagonist, an element that is \"outside\" of the game, like a HUD).\nDoes that make sense?\nClick to expand...\nahhhhhh it does\nI didnt even actually knew that the shake affected images, in this case Im kinda useless sorry I dont know how\nI do suggest you to play with settings and what not, sometimes I often troubleshoot stuff by messing with settings. or maybe doing your best searching your problem on google\ngood luck! ^^"
+    },
+    {
+      "post_id": "js-post-1468711",
+      "author": "cozathemaster",
+      "date": "2024-09-08T01:23:55+0900",
+      "body": "suwaimu said:\nahhhhhh it does\nI didnt even actually knew that the shake affected images, in this case Im kinda useless sorry I dont know how\nI do suggest you to play with settings and what not, sometimes I often troubleshoot stuff by messing with settings. or maybe doing your best searching your problem on google\ngood luck\nClick to expand...\nDon't worry! Thanks anyway =)\nGoogle didn't help me, so let's hope someone knows a way to do it"
+    },
+    {
+      "post_id": "js-post-1468725",
+      "author": "caethyril",
+      "date": "2024-09-08T02:37:42+0900",
+      "body": "In MV/Z, the picture sprites are ultimately children of the spriteset (which shakes), so I think you'd want something to offset the position of the \"non-shake\" pictures back to where they would be without shake.\nSomething like this might work (untested):\nSpoiler:\nplugin code\nJavaScript:\n/*:\n * @target MZ MV\n * @plugindesc Make certain pictures not shake with the screen.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/171740/\n * @help Free to use and/or modify for any project, no credit required.\n */\n;void (function() {\n'use strict';\n  /**\n   * Used in {@linkcode isNonShakePic}.\n   * Pictures with a matching filename will shake in antiphase.\n   */\n  const NAME_RX = /!$/;  // \"ends with !\"\n\n  /**\n   * @param {Game_Picture} pic reference picture.\n   * @returns {boolean} `true` iff `pic` is a \"non-shake\" picture.\n   */\n  const isNonShakePic = function(pic) {\n    return pic && NAME_RX.test(pic.name());\n  };\n\n  /**\n   * @param {Game_Picture} pic reference picture\n   * @returns {number} additive X-offset for picture position.\n   */\n  const xOffset = function(pic) {\n    return isNonShakePic(pic) ? -Math.round($gameScreen.shake()) : 0;\n  };\n\n  // Patch - cancel out X-offset due to spriteset shake.\n  const alias = Sprite_Picture.prototype.updatePosition;\n  Sprite_Picture.prototype.updatePosition = function() {\n    alias.apply(this, arguments);\n    this.x += xOffset(this.picture());\n  };\n\n})();\nIn theory, this decides which pictures are \"non-shake\" based on the picture's filename, e.g.\nhud!.png\n(ends with\n!\n) will be a \"non-shake\" picture."
+    },
+    {
+      "post_id": "js-post-1468757",
+      "author": "cozathemaster",
+      "date": "2024-09-08T04:45:43+0900",
+      "body": "caethyril said:\nIn MV/Z, the picture sprites are ultimately children of the spriteset (which shakes), so I think you'd want something to offset the position of the \"non-shake\" pictures back to where they would be without shake.\nSomething like this might work (untested):\nSpoiler:\nplugin code\nJavaScript:\n/*:\n * @target MZ MV\n * @plugindesc Make certain pictures not shake with the screen.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/171740/\n * @help Free to use and/or modify for any project, no credit required.\n */\n;void (function() {\n'use strict';\n  /**\n   * Used in {@linkcode isNonShakePic}.\n   * Pictures with a matching filename will shake in antiphase.\n   */\n  const NAME_RX = /!$/;  // \"ends with !\"\n\n  /**\n   * @param {Game_Picture} pic reference picture.\n   * @returns {boolean} `true` iff `pic` is a \"non-shake\" picture.\n   */\n  const isNonShakePic = function(pic) {\n    return pic && NAME_RX.test(pic.name());\n  };\n\n  /**\n   * @param {Game_Picture} pic reference picture\n   * @returns {number} additive X-offset for picture position.\n   */\n  const xOffset = function(pic) {\n    return isNonShakePic(pic) ? -Math.round($gameScreen.shake()) : 0;\n  };\n\n  // Patch - cancel out X-offset due to spriteset shake.\n  const alias = Sprite_Picture.prototype.updatePosition;\n  Sprite_Picture.prototype.updatePosition = function() {\n    alias.apply(this, arguments);\n    this.x += xOffset(this.picture());\n  };\n\n})();\nIn theory, this decides which pictures are \"non-shake\" based on the picture's filename, e.g.\nhud!.png\n(ends with\n!\n) will be a \"non-shake\" picture.\nClick to expand...\nIt works! Thank you =)\nAs an additional note: as\nalmost\nalways, this is not compatible with Visustella_core, since the latter modifies the \"screen shake\" function, leaving it as \"random\" by default. However, in the same plugin, you can select \"original\" (the one from RPG Maker MZ) for the default screen shake, which will allow the plugin's \"no screen shake\" effect to work.\nNow, just out of curiosity, do you think there’s a “simple” way to make it compatible with Visustella_core’s screen shake? I like that it’s random rather than just moving from left to right.\nIf not, I’ll have to decide whether to give up on Visustella's shake effect to get the effect I want, or leave out the plugin you made. Either way, you’ve helped me with what I was looking for, since now I have an option! Thanks a million! =)"
+    },
+    {
+      "post_id": "js-post-1468765",
+      "author": "caethyril",
+      "date": "2024-09-08T05:34:36+0900",
+      "body": "cozathemaster said:\nNow, just out of curiosity, do you think there’s a “simple” way to make it compatible with Visustella_core’s screen shake? I like that it’s random rather than just moving from left to right.\nClick to expand...\nAh. You could try something like this instead, but it's just a blind guess:\nSpoiler:\nplugin code XY\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Make certain pictures not shake with the screen.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/171740/\n * @orderAfter VisuMZ_0_CoreEngine\n * @help Another plugin must add shakeX and shakeY methods to Game_Screen.\n *\n * Free to use and/or modify for any project, no credit required.\n */\n;void (function() {\n'use strict';\n  /**\n   * Used in {@linkcode isNonShakePic}.\n   * Pictures with a matching filename will shake in antiphase.\n   */\n  const NAME_RX = /!$/;  // \"ends with !\"\n\n  /**\n   * @param {Game_Picture} pic reference picture.\n   * @returns {boolean} `true` iff `pic` is a \"non-shake\" picture.\n   */\n  const isNonShakePic = function(pic) {\n    return pic && NAME_RX.test(pic.name());\n  };\n\n  /**\n   * @param {Game_Picture} pic reference picture\n   * @returns {number} additive X-offset for picture position.\n   */\n  const xOffset = function(pic) {\n    return isNonShakePic(pic) ? -Math.round($gameScreen.shakeX()) : 0;\n  };\n\n  /**\n   * @param {Game_Picture} pic reference picture\n   * @returns {boolean} additive Y-offset for picture position.\n   */\n  const yOffset = function(pic) {\n    return isNonShakePic(pic) ? -Math.round($gameScreen.shakeY()) : 0;\n  };\n\n  // Patch - cancel out X-offset due to spriteset shake.\n  const alias = Sprite_Picture.prototype.updatePosition;\n  Sprite_Picture.prototype.updatePosition = function() {\n    alias.apply(this, arguments);\n    this.x += xOffset(this.picture());\n    this.y += yOffset(this.picture());\n  };\n\n})();\n(Random shake would be 2 values, X and Y, but by default there is only 1 shake value. I've guessed that VisuStella might define the X/Y values as\nshakeX\nand\nshakeY\nrespectively, using the same structure as the core scripts.)\nOtherwise, you'd need to know what to write to replace those parts of the\nxOffset\nand\nyOffset\nfunctions.\nOr you could find a different, non-obfuscated plugin that implements \"random\" style screen shake. That should make it easy to write compatible code."
+    },
+    {
+      "post_id": "js-post-1468769",
+      "author": "cozathemaster",
+      "date": "2024-09-08T05:52:57+0900",
+      "body": "Thanks for the answer.\nI tried the updated code, but got this error when trying to show a picture in game:\nTypeError\n$gameScreen.shakeX is not a function\nDon't know if this helps, but Visustella offers 4 ways of screen shaking, all configurable by javascript.\n1) Original Style:\n// Calculation\nthis.x += Math.round($gameScreen.shake());\n-----------\n2) Random Style:\n// Calculation\n// Original Formula by Aries of Sheratan\nconst power = $gameScreen._shakePower * 0.75;\nconst speed = $gameScreen._shakeSpeed * 0.60;\nconst duration = $gameScreen._shakeDuration;\nthis.x += Math.round(Math.randomInt(power) - Math.randomInt(speed)) * (Math.min(duration, 30) * 0.5);\nthis.y += Math.round(Math.randomInt(power) - Math.randomInt(speed)) * (Math.min(duration, 30) * 0.5);\n----------\n3) Horizontal Style\n// Calculation\n// Original Formula by Aries of Sheratan\nconst power = $gameScreen._shakePower * 0.75;\nconst speed = $gameScreen._shakeSpeed * 0.60;\nconst duration = $gameScreen._shakeDuration;\nthis.x += Math.round(Math.randomInt(power) - Math.randomInt(speed)) * (Math.min(duration, 30) * 0.5);\n-----------\n4) Vertical Style\n// Calculation\n// Original Formula by Aries of Sheratan\nconst power = $gameScreen._shakePower * 0.75;\nconst speed = $gameScreen._shakeSpeed * 0.60;\nconst duration = $gameScreen._shakeDuration;\nthis.y += Math.round(Math.randomInt(power) - Math.randomInt(speed)) * (Math.min(duration, 30) * 0.5);\n----------------------\nI'll look for other screen shaking plugins and report. Thanks."
+    },
+    {
+      "post_id": "js-post-1468782",
+      "author": "caethyril",
+      "date": "2024-09-08T07:16:48+0900",
+      "body": "Oh, that does look helpful!\nBased on those snippets, it doesn't look like the shake values get stored anywhere. But if you can edit the code then it should be a simple fix. E.g. for the \"Random\" type:\nJavaScript:\n// Get values for calculation.\nconst power = $gameScreen._shakePower * 0.75;\nconst speed = $gameScreen._shakeSpeed * 0.60;\nconst duration = $gameScreen._shakeDuration;\n\n// Calculate values AND store them for later reference.\n$gameScreen.shakeX = Math.round(Math.randomInt(power) - Math.randomInt(speed))\n                   * (Math.min(duration, 30) * 0.5);\n$gameScreen.shakeY = Math.round(Math.randomInt(power) - Math.randomInt(speed))\n                   * (Math.min(duration, 30) * 0.5);\n\n// Offset spriteset by calculated values.\nthis.x += $gameScreen.shakeX;\nthis.y += $gameScreen.shakeY;\n...then reference those values in my plugin's\nxOffset\nand\nyOffset\nfunctions:\nJavaScript:\nconst xOffset = function(pic) {\n    return isNonShakePic(pic) ? -Math.round($gameScreen.shakeX) : 0;\n  };\n\n  const yOffset = function(pic) {\n    return isNonShakePic(pic) ? -Math.round($gameScreen.shakeY) : 0;\n  };\nHopefully that works!"
+    },
+    {
+      "post_id": "js-post-1468802",
+      "author": "cozathemaster",
+      "date": "2024-09-08T09:27:03+0900",
+      "body": "caethyril said:\nOh, that does look helpful!\nBased on those snippets, it doesn't look like the shake values get stored anywhere. But if you can edit the code then it should be a simple fix. E.g. for the \"Random\" type:\nJavaScript:\n// Get values for calculation.\nconst power = $gameScreen._shakePower * 0.75;\nconst speed = $gameScreen._shakeSpeed * 0.60;\nconst duration = $gameScreen._shakeDuration;\n\n// Calculate values AND store them for later reference.\n$gameScreen.shakeX = Math.round(Math.randomInt(power) - Math.randomInt(speed))\n                   * (Math.min(duration, 30) * 0.5);\n$gameScreen.shakeY = Math.round(Math.randomInt(power) - Math.randomInt(speed))\n                   * (Math.min(duration, 30) * 0.5);\n\n// Offset spriteset by calculated values.\nthis.x += $gameScreen.shakeX;\nthis.y += $gameScreen.shakeY;\n...then reference those values in my plugin's\nxOffset\nand\nyOffset\nfunctions:\nJavaScript:\nconst xOffset = function(pic) {\n    return isNonShakePic(pic) ? -Math.round($gameScreen.shakeX) : 0;\n  };\n\n  const yOffset = function(pic) {\n    return isNonShakePic(pic) ? -Math.round($gameScreen.shakeY) : 0;\n  };\nHopefully that works!\nClick to expand...\nI made the changes both in Visustella and your plugin, but unfortunately everything is still shaking... =("
+    },
+    {
+      "post_id": "js-post-1468869",
+      "author": "caethyril",
+      "date": "2024-09-08T18:28:41+0900",
+      "body": "Drat. OK, I give up."
+    },
+    {
+      "post_id": "js-post-1469131",
+      "author": "cozathemaster",
+      "date": "2024-09-10T07:10:00+0900",
+      "body": "caethyril said:\nDrat. OK, I give up.\nClick to expand...\nHahaha sorry the late response, I was out yesterday.\nDon't worry, I really appreciate your help =)\nI'll try another way"
+    },
+    {
+      "post_id": "js-post-1469150",
+      "author": "utunnels",
+      "date": "2024-09-10T10:07:38+0900",
+      "body": "There's one temporary solution that move the pictures outside of the spriteset.\nFor example:\nSceneManager._scene.addChild(SceneManager._scene._spriteset._pictureContainer);\nOr just the first picture:\nSceneManager._scene.addChild(SceneManager._scene._spriteset._pictureContainer.children[\n0\n]);\nI think I saw some plugin that does similar things for MV, but I don't recall if there's one for MZ.\nThe problem is the effect will be reset if you open a menu. So you need to run it every time you make a quake effect."
+    }
+  ]
+}

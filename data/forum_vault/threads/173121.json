@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/script-on-hide-message-box-rpg-maker-xp-and-vx.173121",
+  "title": "Script on hide message box RPG MAKER XP AND VX",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "RPG Maker XP",
+  "language": "英語",
+  "archived_at": "2026-09-13T18:48:54.446228+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1480765",
+      "author": "outbalancing356",
+      "date": "2024-11-10T10:12:31+0900",
+      "body": "I am a regular player of RPG MAKER XP, VX, VXA, MZ and MV games, if in short I have no idea how to make them and the like, but I don't need to, because I PLAY))) Here's the problem, I REALLY need a script to \"hide text\" for versions XP and VX. That is, the point of the script is that I can see the picture without the text, for example, which key I pressed, and the text disappeared, and on the contrary, I pressed the key, the text on the picture appeared during an event in the game. I have such scripts for all the others, but for VX and XP, no, and I have no idea where to look for them or even more so how to make them myself. I REALLY ask for help, who knows where I can find them or maybe someone has them."
+    },
+    {
+      "post_id": "js-post-1480772",
+      "author": "kyonides",
+      "date": "2024-11-10T10:57:40+0900",
+      "body": "What does disappear after pressing the key? The typical game window? Or a sprite with some text?"
+    },
+    {
+      "post_id": "js-post-1480775",
+      "author": "outbalancing356",
+      "date": "2024-11-10T11:20:00+0900",
+      "body": "kyonides said:\nWhat does disappear after pressing the key? The typical game window? Or a sprite with some text?\nClick to expand...\nI don't speak English, so)))))) I don't quite understand the question, or more precisely the difference))), so I'll write in more detail using an example, for example, a dialogue appears when I start \"talking\" with some NPC, and so that I can completely hide the dialogue window, without a frame, without text, after pressing the key, pressing the same key again, the dialogue window appears again."
+    },
+    {
+      "post_id": "js-post-1480889",
+      "author": "kyonides",
+      "date": "2024-11-11T05:13:30+0900",
+      "body": "Basically, you just want to make the message box invisible. Thst's not hsrd to accomplish, but I'm on my phone now..."
+    },
+    {
+      "post_id": "js-post-1480896",
+      "author": "outbalancing356",
+      "date": "2024-11-11T05:36:22+0900",
+      "body": "kyonides said:\nBasically, you just want to make the message box invisible. Thst's not hsrd to accomplish, but I'm on my phone now...\nClick to expand...\nYes, absolutely right. Needed as written in the title for VX and XP)))"
+    },
+    {
+      "post_id": "js-post-1480961",
+      "author": "kyonides",
+      "date": "2024-11-11T09:12:23+0900",
+      "body": "Here's a working script for RMXP!\nRuby:\n# * Toggle Message Window XP * #\n#   2024-11-10\n\nmodule Input\n  HIDE_MESSAGE_BTN = A\nend\n\nclass Window_Message\n  alias :win_mess_up :update\n  def update\n    win_mess_up\n    if @contents_showing and Input.trigger?(Input::HIDE_MESSAGE_BTN)\n      self.visible = !self.visible\n    end\n  end\nend\nAnd here's its RMVX port!\nRuby:\n# * Toggle Message Window VX * #\n#  2024-11-10\n\nmodule Input\n  HIDE_MESSAGE_BTN = A\nend\n\nclass Window_Message\n  alias :win_mess_up :update\n  def update\n    win_mess_up\n    unless @opening or @closing\n      if Input.trigger?(Input::HIDE_MESSAGE_BTN)\n        self.visible = !self.visible\n      end\n    end\n  end\nend\nYou can replace A with any other of the available buttons.\nFree for use in ANY game.\nDue credit is optional here, but at least mention this forum if you don't mind.\nThat's it!"
+    },
+    {
+      "post_id": "js-post-1481050",
+      "author": "outbalancing356",
+      "date": "2024-11-11T23:20:29+0900",
+      "body": "kyonides said:\nHere's a working script for RMXP!\nRuby:\n# * Toggle Message Window XP * #\n#   2024-11-10\n\nmodule Input\n  HIDE_MESSAGE_BTN = A\nend\n\nclass Window_Message\n  alias :win_mess_up :update\n  def update\n    win_mess_up\n    if @contents_showing and Input.trigger?(Input::HIDE_MESSAGE_BTN)\n      self.visible = !self.visible\n    end\n  end\nend\nAnd here's its RMVX port!\nRuby:\n# * Toggle Message Window VX * #\n#  2024-11-10\n\nmodule Input\n  HIDE_MESSAGE_BTN = A\nend\n\nclass Window_Message\n  alias :win_mess_up :update\n  def update\n    win_mess_up\n    unless @opening or @closing\n      if Input.trigger?(Input::HIDE_MESSAGE_BTN)\n        self.visible = !self.visible\n      end\n    end\n  end\nend\nYou can replace A with any other of the available buttons.\nFree for use in ANY game.\nDue credit is optional here, but at least mention this forum if you don't mind.\nThat's it!\nClick to expand...\nI tried both and they work, although I don't know why, but not the \"A\" key, but on \"Shift\", well, these are trifles)) ahaha. Thank you very much, I've been looking for these things for a very long time, and oh my God, finally they are here. Once again, thank you very much))))\nkyonides said:\nHere's a working script for RMXP!\nRuby:\n# * Toggle Message Window XP * #\n#   2024-11-10\n\nmodule Input\n  HIDE_MESSAGE_BTN = A\nend\n\nclass Window_Message\n  alias :win_mess_up :update\n  def update\n    win_mess_up\n    if @contents_showing and Input.trigger?(Input::HIDE_MESSAGE_BTN)\n      self.visible = !self.visible\n    end\n  end\nend\nAnd here's its RMVX port!\nRuby:\n# * Toggle Message Window VX * #\n#  2024-11-10\n\nmodule Input\n  HIDE_MESSAGE_BTN = A\nend\n\nclass Window_Message\n  alias :win_mess_up :update\n  def update\n    win_mess_up\n    unless @opening or @closing\n      if Input.trigger?(Input::HIDE_MESSAGE_BTN)\n        self.visible = !self.visible\n      end\n    end\n  end\nend\nYou can replace A with any other of the available buttons.\nFree for use in ANY game.\nDue credit is optional here, but at least mention this forum if you don't mind.\nThat's it!\nClick to expand...\nAnother request, if it's not too much trouble, can you write on VXA? I have a couple of them, but another good one wouldn't hurt. Of course, if not, then everything is fine))) I'm already very grateful."
+    },
+    {
+      "post_id": "js-post-1481055",
+      "author": "Roninator2",
+      "date": "2024-11-11T23:45:39+0900",
+      "body": "outbalancing356 said:\nI don't know why, but not the \"A\" key, but on \"Shift\",\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1481118",
+      "author": "outbalancing356",
+      "date": "2024-11-12T04:34:15+0900",
+      "body": "Roninator2 said:\nView attachment 322736\nClick to expand...\nThanks for the table, I'll keep it in mind."
+    }
+  ]
+}
