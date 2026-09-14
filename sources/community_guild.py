@@ -34,8 +34,7 @@ HEADERS = {
 # 1回のActionで取得するページ数
 MAX_PAGES = 3
 
-# トピック詳細を取得するときの待機時間。
-# Guildへの短時間の連続アクセスを避ける。
+# トピック詳細を取得するときの待機時間
 TOPIC_REQUEST_INTERVAL = 0.5
 
 # Guildカテゴリ一覧を取得した後の待機時間
@@ -44,7 +43,7 @@ CATEGORY_REQUEST_INTERVAL = 1.0
 # Guildの対象カテゴリ
 #
 # ここでは「収集候補」を拾うために使用する。
-# 実際の分類はトピック詳細のカテゴリを優先する。
+# 最終的な分類はトピック自身のcategory_idを優先する。
 CATEGORY_URLS = {
     "プラグイン": (
         "https://guild.rpgmakerofficial.com/"
@@ -59,6 +58,190 @@ CATEGORY_URLS = {
         "c/14-category/21-category/21"
     ),
 }
+
+CATEGORIES_JSON_URL = (
+    "https://guild.rpgmakerofficial.com/"
+    "categories.json"
+)
+
+
+# ==========================================
+# HTTP
+# ==========================================
+
+def get_json(session, url):
+    response = session.get(
+        url,
+        timeout=REQUEST_TIMEOUT,
+    )
+    response.raise_for_status()
+    return response.json()
+
+
+def get_html(session, url):
+    response = session.get(
+        url,
+        timeout=REQUEST_TIMEOUT,
+    )
+    response.raise_for_status()
+    return response.text
+
+
+# ==========================================
+# Category Map
+# ==========================================
+
+def extract_categories_from_json(data):
+    """
+    Discourseのcategories.jsonから、
+
+        category_id -> category_name
+
+    の辞書を作る。
+
+    Discourseのレスポンス形式の違いに備えて、
+    category_list.categories を基本としつつ、
+    categories 直下も扱う。
+    """
+
+    categories = []
+
+    if not isinstance(data, dict):
+        return categories
+
+    category_list = data.get("category_list")
+
+    if isinstance(category_list, dict):
+        values = category_list.get("categories")
+
+        if isinstance(values, list):
+            categories.extend(values)
+
+    values = data.get("categories")
+
+    if isinstance(values, list):
+        categories.extend(values)
+
+    return categories
+
+
+def build_category_map(data):
+    """
+    category_id -> category_name
+
+    親カテゴリ・サブカテゴリの両方を扱う。
+    """
+
+    category_map = {}
+
+    categories = extract_categories_from_json(data)
+
+    for category in categories:
+
+        if not isinstance(category, dict):
+            continue
+
+        category_id = category.get("id")
+        name = category.get("name")
+
+        if category_id is not None and name:
+            category_map[int(category_id)] = (
+                str(name).strip()
+            )
+
+        # Discourseのcategory JSONに
+        # subcategory_list等が含まれる場合に備える。
+        children = category.get(
+            "subcategory_list"
+        )
+
+        if isinstance(children, dict):
+            children = children.get(
+                "subcategories",
+                []
+            )
+
+        if not isinstance(children, list):
+            children = []
+
+        for child in children:
+
+            if not isinstance(child, dict):
+                continue
+
+            child_id = child.get("id")
+            child_name = child.get("name")
+
+            if (
+                child_id is not None
+                and child_name
+            ):
+                category_map[int(child_id)] = (
+                    str(child_name).strip()
+                )
+
+    return category_map
+
+
+def get_category_map(session):
+    """
+    Guild全体のカテゴリ一覧を取得し、
+    category_id -> category_name を作る。
+
+    取得できなかった場合は空辞書を返す。
+    この場合、カテゴリを推測して採用しない。
+    """
+
+    try:
+
+        data = get_json(
+            session,
+            CATEGORIES_JSON_URL,
+        )
+
+        category_map = build_category_map(data)
+
+        print(
+            "[Guild] Category map: "
+            f"{len(category_map)} categories"
+        )
+
+        return category_map
+
+    except Exception as e:
+
+        print(
+            "[Guild] Category map error: "
+            f"{e}"
+        )
+
+        return {}
+
+
+# ==========================================
+# Tags
+# ==========================================
+
+def get_tags(topic):
+    """
+    一覧ページから取得できるタグを取得する。
+    """
+
+    tags = []
+
+    for element in topic.select(
+        ".discourse-tag"
+    ):
+
+        text = element.get_text(
+            " ",
+            strip=True,
+        )
+
+        if text:
+            tags.append(text)
+
+    return tags
 
 
 # ==========================================
@@ -103,8 +286,6 @@ def classify_material(title, tags):
     # 英語キーワード
     # ----------------------------------
 
-    # 「se」は単純な部分一致にしない。
-    # sprites / scene などへの誤反応を防ぐ。
     english_sound_patterns = [
         r"\bbgm\b",
         r"\bbgs\b",
@@ -135,17 +316,23 @@ def classify_material(title, tags):
 def classify_material_content(title, tags):
     """
     トピック自身のカテゴリが「素材」であっても、
-    実際の内容が質問・相談などである可能性があるため、
-    二次的に内容を確認する。
+    実際の内容が質問・ゲーム紹介などである可能性が
+    あるため、二次的に内容を確認する。
 
-    明確な質問表現がある場合のみ「質問」とする。
-    判定できない場合はNoneを返し、
+    明確なケースだけを判定する。
+    判断できない場合はNoneを返し、
     通常の素材分類へ進める。
     """
 
     text = " ".join(
         [title] + list(tags)
     ).strip()
+
+    normalized_tags = {
+        str(tag).strip().lower()
+        for tag in tags
+        if str(tag).strip()
+    }
 
     # ----------------------------------
     # タグによる質問判定
@@ -157,12 +344,6 @@ def classify_material_content(title, tags):
         "questions",
         "help",
         "support",
-    }
-
-    normalized_tags = {
-        str(tag).strip().lower()
-        for tag in tags
-        if str(tag).strip()
     }
 
     if normalized_tags & {
@@ -179,7 +360,6 @@ def classify_material_content(title, tags):
         r"[？?]$",
         r"どうすれば",
         r"どうしたら",
-        r"方法",
         r"できますか",
         r"できますでしょうか",
         r"でしょうか",
@@ -190,6 +370,13 @@ def classify_material_content(title, tags):
         r"できない",
         r"うまくいかない",
         r"やり方",
+        r"方法を教えて",
+        r"方法はありますか",
+        r"方法がわから",
+        r"修正方法",
+        r"直す方法",
+        r"解決方法",
+        r"対処方法",
         r"how\s+to\b",
         r"\bhow\s+do\s+i\b",
         r"\bhelp\b",
@@ -204,6 +391,33 @@ def classify_material_content(title, tags):
             flags=re.IGNORECASE,
         ):
             return "質問"
+
+    # ----------------------------------
+    # 明確なゲーム紹介・公開
+    # ----------------------------------
+
+    game_patterns = [
+        r"完成ゲーム",
+        r"制作中ゲーム",
+        r"ゲーム公開",
+        r"ゲーム紹介",
+        r"ゲーム作品",
+        r"ホラーゲーム",
+        r"無料ゲーム",
+        r"\bgame\b",
+        r"\bdlc\b",
+        r"\bsteam\b",
+        r"\bitch\.io\b",
+    ]
+
+    for pattern in game_patterns:
+
+        if re.search(
+            pattern,
+            text,
+            flags=re.IGNORECASE,
+        ):
+            return "ゲーム"
 
     return None
 
@@ -228,18 +442,18 @@ def classify_guild_category(
     2. 質問・ゲーム・プラグインなどは、そのカテゴリを採用
     3. 実カテゴリが「素材」の場合のみ、
        グラフィック／サウンドへ細分類
-    4. 「素材」内でも明確な質問は質問へ回す
+    4. 「素材」内でも明確な質問・ゲーム紹介は
+       二次判定する
     5. 詳細カテゴリを取得できなかった場合は
        誤分類防止のため採用しない
+
+    guild_categoryは一覧ページ上のカテゴリであり、
+    最終分類の根拠にはしない。
     """
 
     category = (
         actual_category or ""
     ).strip()
-
-    # ----------------------------------
-    # 質問系
-    # ----------------------------------
 
     if category in {
         "質問",
@@ -247,19 +461,11 @@ def classify_guild_category(
     }:
         return "質問"
 
-    # ----------------------------------
-    # ゲーム系
-    # ----------------------------------
-
     if category in {
         "完成ゲーム",
         "制作中ゲーム",
     }:
         return "ゲーム"
-
-    # ----------------------------------
-    # プラグイン系
-    # ----------------------------------
 
     if category in {
         "プラグイン",
@@ -268,14 +474,8 @@ def classify_guild_category(
     }:
         return "プラグイン"
 
-    # ----------------------------------
-    # 素材
-    # ----------------------------------
-
     if category == "素材":
 
-        # まず素材カテゴリ内に混在している
-        # 明確な質問・相談を除外する。
         content_category = (
             classify_material_content(
                 title,
@@ -286,69 +486,23 @@ def classify_guild_category(
         if content_category is not None:
             return content_category
 
-        # 質問でなければ、素材の種類を判定する。
         return classify_material(
             title,
             tags,
         )
 
-    # ----------------------------------
-    # 対象外カテゴリ
-    # ----------------------------------
-
-    # 雑談・お知らせなど、今回のDaily Reportの
-    # 対象外カテゴリは採用しない。
-    #
-    # 「お知らせ」を将来対象にしたくなった場合は、
-    # ここに明示的に追加する。
-
+    # 雑談・お知らせなど、現在のDaily Reportで
+    # 採用対象として定義していないカテゴリはNone。
     return None
-
-
-# ==========================================
-# Tag Extraction
-# ==========================================
-
-def get_tags(topic):
-    """
-    Discourseトピック一覧からタグを取得する。
-    """
-
-    tags = []
-
-    for tag in topic.select(
-        ".discourse-tag"
-    ):
-
-        text = tag.get_text(
-            " ",
-            strip=True,
-        )
-
-        if not text:
-            continue
-
-        if text not in tags:
-            tags.append(text)
-
-    return tags
 
 
 # ==========================================
 # Topic Extraction
 # ==========================================
 
-def extract_topics(
-    html,
-    guild_category,
-):
+def extract_topics(html, guild_category):
     """
-    Guildのカテゴリ一覧から
-    トピックを抽出する。
-
-    ここでは分類を確定しない。
-    guild_categoryは「どの一覧から拾ったか」を
-    記録するために使用する。
+    Guildカテゴリ一覧ページからトピックを抽出する。
     """
 
     soup = BeautifulSoup(
@@ -356,35 +510,29 @@ def extract_topics(
         "html.parser",
     )
 
-    items = []
+    topics = []
 
-    topic_rows = soup.select(
+    for topic in soup.select(
         "tr.topic-list-item"
-    )
+    ):
 
-    for topic in topic_rows:
-
-        # ----------------------------------
-        # Title / URL
-        # ----------------------------------
-
-        link = topic.select_one(
+        title_element = topic.select_one(
             "a.title"
         )
 
-        if link is None:
+        if title_element is None:
             continue
 
-        href = link.get(
-            "href"
-        )
-
-        title = link.get_text(
+        title = title_element.get_text(
             " ",
             strip=True,
         )
 
-        if not href or not title:
+        href = title_element.get(
+            "href"
+        )
+
+        if not title or not href:
             continue
 
         url = urljoin(
@@ -392,41 +540,24 @@ def extract_topics(
             href,
         )
 
-        # DiscourseのトピックURLのみ
-        if not re.search(
-            r"/t/[^/]+/\d+",
-            url,
-        ):
-            continue
+        tags = get_tags(topic)
 
-        # ----------------------------------
-        # Tags
-        # ----------------------------------
-
-        tags = get_tags(
-            topic
-        )
-
-        # ----------------------------------
-        # Item
-        # ----------------------------------
-
-        items.append(
+        topics.append(
             {
                 "title": title,
                 "url": url,
-                "category": None,
-                "source": "RPG Maker Guild",
+                "guild_category": (
+                    guild_category
+                ),
                 "tags": tags,
-                "guild_category": guild_category,
             }
         )
 
-    return items
+    return topics
 
 
 # ==========================================
-# Page Fetch
+# Page
 # ==========================================
 
 def get_page(
@@ -435,69 +566,62 @@ def get_page(
     page,
 ):
     """
-    Discourseカテゴリ一覧を取得する。
-
-    page=1はカテゴリURLそのもの。
-    2以降は ?page=N を使用する。
+    Discourseカテゴリ一覧のページを取得する。
     """
 
-    if page == 1:
-
-        page_url = url
-
-    else:
-
-        separator = (
-            "&"
-            if "?" in url
-            else "?"
-        )
-
-        page_url = (
-            f"{url}"
-            f"{separator}"
-            f"page={page}"
-        )
-
-    response = session.get(
-        page_url,
-        headers=HEADERS,
-        timeout=REQUEST_TIMEOUT,
+    separator = (
+        "&"
+        if "?" in url
+        else "?"
     )
 
-    response.raise_for_status()
+    page_url = (
+        f"{url}"
+        f"{separator}"
+        f"page={page}"
+    )
 
-    return response.text
+    return get_html(
+        session,
+        page_url,
+    )
 
 
 # ==========================================
-# Topic Detail Fetch
+# Topic Detail
 # ==========================================
 
 def get_topic_detail(
     session,
     url,
+    category_map,
 ):
     """
-    DiscourseのトピックJSONから、
+    トピック詳細JSONから、
 
-    - トピック自身のカテゴリ
-    - トピック自身のタグ
+        actual_category
+        tags
 
     を取得する。
 
-    詳細取得に失敗した場合は例外をそのまま返し、
-    呼び出し側で「分類不能」として扱う。
+    category_nameが直接入っていればそれを優先し、
+    取得できない場合はcategory_idを
+    categories.jsonのマップから解決する。
+
+    どちらも取得できなければ
+    actual_categoryは空文字列とする。
+
+    重要:
+    カテゴリを推測して補完しない。
     """
 
-    topic_json_url = (
+    json_url = (
         url.rstrip("/")
         + ".json"
     )
 
     response = session.get(
-        topic_json_url,
-        headers=HEADERS,
+        json_url,
         timeout=REQUEST_TIMEOUT,
     )
 
@@ -505,33 +629,71 @@ def get_topic_detail(
 
     data = response.json()
 
-    actual_category = data.get(
-        "category_name",
-        "",
+    if not isinstance(data, dict):
+        return "", []
+
+    # ----------------------------------
+    # Category
+    # ----------------------------------
+
+    actual_category = (
+        data.get("category_name")
+        or ""
+    ).strip()
+
+    category_id = data.get(
+        "category_id"
     )
+
+    if (
+        not actual_category
+        and category_id is not None
+    ):
+        try:
+            category_id = int(
+                category_id
+            )
+        except (
+            TypeError,
+            ValueError,
+        ):
+            category_id = None
+
+    if (
+        not actual_category
+        and category_id is not None
+    ):
+        actual_category = (
+            category_map.get(
+                category_id,
+                "",
+            )
+            or ""
+        ).strip()
+
+    # ----------------------------------
+    # Tags
+    # ----------------------------------
+
+    tags = []
 
     json_tags = data.get(
         "tags",
         [],
     )
 
-    if not isinstance(
+    if isinstance(
         json_tags,
         list,
     ):
-        json_tags = []
-
-    tags = []
-
-    for tag in json_tags:
-
-        text = str(tag).strip()
-
-        if text and text not in tags:
-            tags.append(text)
+        tags = [
+            str(tag).strip()
+            for tag in json_tags
+            if str(tag).strip()
+        ]
 
     return (
-        str(actual_category).strip(),
+        actual_category,
         tags,
     )
 
@@ -541,35 +703,55 @@ def get_topic_detail(
 # ==========================================
 
 def get_items(seen):
+    """
+    Guildから新規トピックを取得する。
 
-    session = requests.Session()
+    カテゴリが確認できないトピックは、
+    誤分類防止のためseenへ追加しない。
+    """
 
     adopted_items = []
 
     new_seen = seen.copy()
 
-    seen_set = set(
-        seen
+    session = requests.Session()
+
+    session.headers.update(
+        HEADERS
     )
 
-    current_urls = set()
+    # ----------------------------------
+    # Category map
+    # ----------------------------------
+
+    category_map = get_category_map(
+        session
+    )
+
+    if not category_map:
+
+        print(
+            "[Guild] WARNING: "
+            "Category map is empty."
+        )
+
+    # ----------------------------------
+    # Same-run duplicate prevention
+    # ----------------------------------
+
+    processed_urls = set()
 
     try:
 
-        # ==================================
-        # 対象カテゴリを順番に取得
-        # ==================================
-
-        for guild_category, category_url in (
-            CATEGORY_URLS.items()
-        ):
+        for (
+            guild_category,
+            category_url,
+        ) in CATEGORY_URLS.items():
 
             print(
-                "[RPG Maker Guild] "
-                f"Category: {guild_category}"
+                "[Guild] Category listing: "
+                f"{guild_category}"
             )
-
-            category_new = 0
 
             for page in range(
                 1,
@@ -584,62 +766,56 @@ def get_items(seen):
                         page,
                     )
 
-                except requests.RequestException as e:
-
-                    print(
-                        "[RPG Maker Guild] "
-                        f"Page error "
-                        f"({guild_category}, "
-                        f"page {page}): {e}"
+                    topics = extract_topics(
+                        html,
+                        guild_category,
                     )
 
-                    # 取得できなかったページは
-                    # そこで終了する。
-                    break
+                except (
+                    requests.RequestException
+                ) as e:
 
-                items = extract_topics(
-                    html,
-                    guild_category,
-                )
+                    print(
+                        "[Guild] Listing error: "
+                        f"{guild_category} "
+                        f"page={page}: {e}"
+                    )
 
-                for item in items:
+                    continue
 
-                    url = item[
+                if not topics:
+                    continue
+
+                for topic in topics:
+
+                    title = topic[
+                        "title"
+                    ]
+
+                    url = topic[
                         "url"
                     ]
 
-                    # ----------------------------------
-                    # 同一Action内の重複防止
-                    # ----------------------------------
-
-                    if url in current_urls:
-                        continue
-
-                    current_urls.add(
-                        url
+                    tags = topic.get(
+                        "tags",
+                        [],
                     )
 
                     # ----------------------------------
-                    # 過去に取得済みならスキップ
+                    # Duplicate protection
                     # ----------------------------------
 
-                    if url in seen_set:
+                    if url in processed_urls:
+                        continue
+
+                    processed_urls.add(url)
+
+                    if url in seen:
                         continue
 
                     # ----------------------------------
-                    # トピック詳細を確認
+                    # Topic detail
                     # ----------------------------------
-                    #
-                    # ここが今回の重要ポイント。
-                    #
-                    # 一覧ページのカテゴリではなく、
-                    # トピック自身のカテゴリを確認する。
-                    #
-                    # 例えば「素材」一覧に
-                    # 「質問」や「完成ゲーム」が
-                    # 混ざっていても、
-                    # トピック自身が「質問」なら
-                    # 「質問」として扱う。
 
                     try:
 
@@ -649,187 +825,106 @@ def get_items(seen):
                         ) = get_topic_detail(
                             session,
                             url,
-                        )
-
-                        print(
-                            "[RPG Maker Guild] "
-                            f"Detail: "
-                            f"{item['title']} "
-                            f"=> "
-                            f"{actual_category or '(unknown)'}"
+                            category_map,
                         )
 
                     except (
-                        requests.RequestException,
-                        ValueError,
-                        TypeError,
+                        requests.RequestException
                     ) as e:
 
                         print(
-                            "[RPG Maker Guild] "
-                            "Detail error: "
-                            f"{item['title']} - {e}"
+                            "[Guild] Detail error: "
+                            f"{title}: {e}"
                         )
 
-                        # ----------------------------------
-                        # 詳細取得失敗時は採用しない
-                        # ----------------------------------
-                        #
-                        # ここで一覧カテゴリを使って
-                        # 「素材」「プラグイン」などと
-                        # 推測すると、今回修正したかった
-                        # 誤分類が再発する。
-                        #
-                        # またseenにも追加しない。
-                        # 次回Actionで再試行する。
-
+                        # 詳細を取得できなかった場合は
+                        # seenへ追加しない。
                         continue
 
-                    # ----------------------------------
-                    # JSON側のタグを優先
-                    # ----------------------------------
-
                     if detail_tags:
-                        item["tags"] = detail_tags
+                        tags = detail_tags
 
-                    # ----------------------------------
-                    # 実カテゴリから分類
-                    # ----------------------------------
-
-                    category = classify_guild_category(
-                        guild_category,
-                        actual_category,
-                        item["title"],
-                        item.get(
-                            "tags",
-                            [],
-                        ),
+                    print(
+                        "[Guild] Detail: "
+                        f"{title} => "
+                        f"{actual_category or '(unknown)'}"
                     )
 
                     # ----------------------------------
-                    # 対象外カテゴリ
+                    # Classification
                     # ----------------------------------
+
+                    category = (
+                        classify_guild_category(
+                            guild_category,
+                            actual_category,
+                            title,
+                            tags,
+                        )
+                    )
 
                     if category is None:
 
                         print(
-                            "[RPG Maker Guild] "
-                            "Skip category: "
-                            f"{item['title']} "
-                            f"({actual_category})"
+                            "[Guild] Skip: "
+                            f"{title} "
+                            "(category not adopted)"
                         )
 
-                        # 対象外カテゴリはseenに追加しない。
-                        #
-                        # 将来的にカテゴリ変更された場合に
-                        # 再取得できるようにする。
+                        # カテゴリが確認できない、
+                        # または対象外カテゴリの場合は
+                        # seenへ追加しない。
                         continue
 
                     # ----------------------------------
-                    # 採用
+                    # Adopt
                     # ----------------------------------
 
-                    item["category"] = category
-
                     adopted_items.append(
-                        item
+                        {
+                            "title": title,
+                            "url": url,
+                            "category": category,
+                            "source": "RPG Maker Guild",
+                        }
                     )
 
-                    new_seen.append(
-                        url
-                    )
-
-                    seen_set.add(
-                        url
-                    )
-
-                    category_new += 1
+                    new_seen.append(url)
 
                     print(
-                        "[RPG Maker Guild] "
-                        f"Adopt: "
-                        f"{item['title']} "
-                        f"=> {category}"
+                        "[Guild] Adopt: "
+                        f"[{category}] "
+                        f"{title}"
                     )
 
-                    # トピック詳細取得の間隔
                     time.sleep(
                         TOPIC_REQUEST_INTERVAL
                     )
 
-                # ----------------------------------
-                # ページ間隔
-                # ----------------------------------
-
-                if page < MAX_PAGES:
-                    time.sleep(
-                        CATEGORY_REQUEST_INTERVAL
-                    )
-
-            print(
-                "[RPG Maker Guild] "
-                f"{guild_category} New: "
-                f"{category_new}"
-            )
-
-            # カテゴリ間隔
-            time.sleep(
-                CATEGORY_REQUEST_INTERVAL
-            )
-
-        # ==================================
-        # Result
-        # ==================================
+                time.sleep(
+                    CATEGORY_REQUEST_INTERVAL
+                )
 
         print(
-            "[RPG Maker Guild] New: "
+            "[Guild] New: "
             f"{len(adopted_items)}"
         )
 
-        category_counts = {}
-
-        for item in adopted_items:
-
-            category = item.get(
-                "category",
-                "unknown",
-            )
-
-            category_counts[
-                category
-            ] = (
-                category_counts.get(
-                    category,
-                    0,
-                )
-                + 1
-            )
-
-        if category_counts:
-
-            print(
-                "[RPG Maker Guild] "
-                "Categories: "
-                f"{category_counts}"
-            )
-
         return (
             adopted_items,
             new_seen,
         )
 
-    except requests.RequestException as e:
+    except Exception as e:
 
         print(
-            "[RPG Maker Guild] "
-            f"Error: {e}"
+            "[Guild] Error: "
+            f"{e}"
         )
 
+        # 途中まで正常取得できたものは
+        # 維持する。
         return (
             adopted_items,
             new_seen,
         )
-
-    finally:
-
-        session.close()
