@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/making-a-menu-like-dragon-quest-earthbound.172885",
+  "title": "MZ Making a Menu like Dragon Quest/Earthbound",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T05:01:22.439808+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1478055",
+      "author": "overlordmikey",
+      "date": "2024-10-29T03:43:00+0900",
+      "body": "First) Hello, long time no see. Yes I am alive.\nSecond or \"getting to the point\") So I'm working on a game and it's meant to be somewhat old school, but I've never been to good with changing what the menu looks like in RPG Maker (let alone MV, which I haven't used much).\nAs much as I would LOVE to put together a menu by carefully learning the coding myself - I also have to make all the resources for this game and I'm fairly new to pixel art.\nI was hoping to make the menu look similar to old school Dragon Quest or Earthbound menu style. It doesn't have to have the exact same options - just style.\nAny idea how I'd go about doing that - if someone has done something similar already and is willing to share that would be even better. I've got a lot on my plate right now and any help would be great.\n(Wasn't sure if this was the right section, um if someone could move it if it's wrong that would be wonderful - thank you.)"
+    },
+    {
+      "post_id": "js-post-1478056",
+      "author": "ATT_Turan",
+      "date": "2024-10-29T03:45:48+0900",
+      "body": "overlordmikey said:\nI was hoping to make the menu look similar to old school Dragon Quest or Earthbound menu style. It doesn't have to have the exact same options - just style.\nClick to expand...\nMany (maybe even most) of us have no idea what you mean by \"Dragon Quest or Earthbound style.\"\nIt would help if you provided screenshots and said specifically what elements you wanted.\noverlordmikey said:\nWasn't sure if this was the right section\nClick to expand...\nYou can't do this from inside MZ, so it should be a plugin request."
+    },
+    {
+      "post_id": "js-post-1478059",
+      "author": "overlordmikey",
+      "date": "2024-10-29T03:52:46+0900",
+      "body": "ATT_Turan said:\nMany (maybe even most) of us have no idea what you mean by \"Dragon Quest or Earthbound style.\"\nIt would help if you provided screenshots and said specifically what elements you wanted.\nClick to expand...\nOh of course, I'll get that and update this as soon as I do.\nATT_Turan said:\nYou can't do this from inside MZ, so it should be a plugin request.\nClick to expand...\nSorry, it's been awhile since I've been on the forums."
+    },
+    {
+      "post_id": "js-post-1478158",
+      "author": "Kenen",
+      "date": "2024-10-29T13:05:03+0900",
+      "body": "If you Google \"rpg maker mz dragon quest menu,\" you'll get at least one GitHub hit for a plugin. At a quick glance, it looks like a fairly limited plugin and has no screenshots, but it might get you started.\nOtherwise, your request has a sliding complexity scale.\nYou can easily get the Dragon Quest \"style\" by changing the menu background to an unfiltered snapshot of the map, which would give you the style of the menu being overlaid directly on the map.\nFrom there, you can get increasingly more complex depending on how much you want to emulate the menu layout and system, as RPG Maker uses discrete scenes and layouts for most of the menu options whereas Dragon Quest uses a more seamless, overlapping menu design.\nBut, as\n@ATT_Turan\nsays, you haven't really specified what you want.\nIf you're looking for minor changes I might be willing to help out, as long as you aren't using VisuStella."
+    },
+    {
+      "post_id": "js-post-1478208",
+      "author": "overlordmikey",
+      "date": "2024-10-29T21:07:45+0900",
+      "body": "Kenen said:\nIf you Google \"rpg maker mz dragon quest menu,\" you'll get at least one GitHub hit for a plugin. At a quick glance, it looks like a fairly limited plugin and has no screenshots, but it might get you started.\nClick to expand...\nI found it (it didn't show up until I added github to the search). It isn't quite what I'm looking for. It's no quite what I'm looking for.\nKenen said:\nOtherwise, your request has a sliding complexity scale.\n...\nFrom there, you can get increasingly more complex depending on how much you want to emulate the menu layout and system, as RPG Maker uses discrete scenes and layouts for most of the menu options whereas Dragon Quest uses a more seamless, overlapping menu design.\n...\nIf you're looking for minor changes I might be willing to help out, as long as you aren't using VisuStella.\nClick to expand...\nNot using VisuStella but...\nI worry my changes might actually be more complex then I thought originally. It's pretty much an overhaul of the menu and I forgot how tough that can be to do. I can't ask someone to do all that work uncompensated, but I'm also broke at the moment.\nIf no one can help does anyone have a good tutorial on how to alter the menu and I can try to figure something out for myself? (Or have a good \"retro looking\" menu that might serve similar function)"
+    },
+    {
+      "post_id": "js-post-1478257",
+      "author": "Kenen",
+      "date": "2024-10-30T02:08:52+0900",
+      "body": "Might be time to rein in your goals?\nLike I said, you can get the \"style\" with minimal changes:\nJavaScript:\n(() => {\n \n   const margin = 36\n \n   // Disable menu bg filters\n   const Scene_MenuBase_createBackground = Scene_MenuBase.prototype.createBackground;\n   Scene_MenuBase.prototype.createBackground = function() {\n       Scene_MenuBase_createBackground.apply(this)\n       this._backgroundSprite.filters = [];\n       this.setBackgroundOpacity(255);\n   }\n \n   // Flip command and status windows\n   Scene_MenuBase.prototype.isRightInputMode = function() {\n       return false;\n   }\n \n   // Cap the status window width\n   const Scene_Menu_createStatusWindow = Scene_Menu.prototype.createStatusWindow;\n   Scene_Menu.prototype.createStatusWindow = function() {\n       Scene_Menu_createStatusWindow.apply(this)\n       const width = this._statusWindow.width;\n       this._statusWindow.width = width - margin;\n       this._statusWindow.x += margin;\n   }\n \n   // Cap the command window height\n   const Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;\n   Scene_Menu.prototype.createCommandWindow = function() {\n       Scene_Menu_createCommandWindow.apply(this)\n       const window = this._commandWindow;\n       const maxHeight = window.height;\n       const minHeight = this.calcWindowHeight(window.maxItems(), true)\n       window.height = Math.min(minHeight, maxHeight)\n   }\n \n   // Disable command and menu item shading\n   Window_MenuStatus.prototype.drawItemBackground = function(index) { };\n   Window_MenuCommand.prototype.drawItemBackground = function(index) { };\n       \n})();\nOverhauling the layout is inherently more time-consuming due to the hardcoded nature of MZ's UI.\nYou're welcome to use the above code and included window skin to get started, no credit required.\nI'm not at my PC as I write this, and I've been writing WoW Classic addons for the past week, so I might've overlooked something with my code as my brain isn't in RPG Maker mode right now. But, I think you get the idea.\nThe font is\nNunito\nwhich is a decent match for the Switch version of Dragon Quest 3 shown in your screenshots.\nGood luck."
+    },
+    {
+      "post_id": "js-post-1478267",
+      "author": "Sword_of_Dusk",
+      "date": "2024-10-30T02:48:36+0900",
+      "body": "I always thought it was a shame that no one recreated or ported the DQ Menu script from VX Ace. It would've been perfect."
+    },
+    {
+      "post_id": "js-post-1478348",
+      "author": "Kenen",
+      "date": "2024-10-30T07:35:31+0900",
+      "body": "It's super-enticing, but no small amount of work considering the number of components involved assuming one wanted to include the menu, shops, battle, and a maybe a few extras. Not to mention inevitable work supporting the plugin(s)."
+    },
+    {
+      "post_id": "js-post-1478351",
+      "author": "Sword_of_Dusk",
+      "date": "2024-10-30T07:47:54+0900",
+      "body": "Kenen said:\nIt's super-enticing, but no small amount of work considering the number of components involved assuming one wanted to include the menu, shops, battle, and a maybe a few extras. Not to mention inevitable work supporting the plugin(s).\nClick to expand...\nI may not be a plugin creator, but I definitely recognize the work and effort it would take.\nI need to get back to learning JS. If I had the requisite knowledge, I'd make this plugin myself just due to being a massive DQ fan. Just gotta hit the digital books."
+    },
+    {
+      "post_id": "js-post-1478484",
+      "author": "overlordmikey",
+      "date": "2024-10-31T00:58:10+0900",
+      "body": "Kenen said:\nMight be time to rein in your goals?\n....\nGood luck.\nClick to expand...\nThank you. I'll give it all a try."
+    }
+  ]
+}
