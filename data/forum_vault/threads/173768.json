@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/trying-to-load-data-from-url.173768",
+  "title": "MZ Trying to load data from URL",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:00.072684+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1486341",
+      "author": "echocondria",
+      "date": "2024-12-09T04:52:49+0900",
+      "body": "Hello I have a plugin (in spoiler) that I'm simply trying to load data from a url in javascript. Not sure if this works at all in RPG maker, but I can load the plugin and get the console log that it's loaded. I can add the plugin command to an event and the rest of the event runs fine till it gets to the plugin then simply nothing, not an error, not a console log or anything.\nSpoiler:\nSpoiler Script\nCode:\n/*:\n * @target MZ\n * @plugindesc Example plugin to send fetch commands in RPG Maker MZ.\n * @help FetchExample.js\n *\n * This plugin demonstrates how to use the fetch API to make HTTP requests.\n *\n * @command fetchData\n * @text Fetch Data\n * @desc Fetch data from a specified URL.\n *\n * @arg url\n * @text URL\n * @desc The URL to fetch data from.\n * @type string\n * @default https://jsonplaceholder.typicode.com/todos/1\n */\n\n(() => {\n    'use strict';\n    const pluginName = 'FetchExample';\n    console.log('FetchExample plugin loaded');\n    PluginManager.registerCommand(pluginName, 'fetchData', args => {\n        const url = args.url;\n       \n        console.log('FetchExample plugin loaded', url);\n        fetch(url)\n            .then(response => response.json())\n            .then(data => {\n                console.log('Fetched data:', data);\n                $gameMessage.add('Data fetched successfully!');\n            })\n            .catch(error => {\n                console.error('Error fetching data:', error);\n                $gameMessage.add('Failed to fetch data.');\n            });\n    });\n})();"
+    },
+    {
+      "post_id": "js-post-1486366",
+      "author": "ShadowDragon",
+      "date": "2024-12-09T05:54:47+0900",
+      "body": "JavaScript:\nlet status;\nfetch(url)\n.then(response =>  response.json().then(data => ({\n    status: response.status,\n    body: data})))\n.then(obj => console.log(obj));\nI'm not sure what it should get or read though, but maybe status must be included?\ndepending what it should show."
+    },
+    {
+      "post_id": "js-post-1486390",
+      "author": "caethyril",
+      "date": "2024-12-09T06:51:48+0900",
+      "body": "I imagine you've tested with an event like this?\n◆Text：None, None, Window, Bottom\n：    ：Hi! I'm about to fetch some data!\n◆Plugin Command：FetchExample, Fetch Data\n：              ：URL = https://jsonplaceholder.typicode.com/todos/1\n◆Text：None, None, Window, Bottom\n：    ：Hey, did it work?\nIn that case, if you've named the plugin file\nFetchExample.js\n(to match the registration in the code) then the command will run as intended.\nHowever, fetch runs asynchronously, and the interpreter moves immediately to the next command (Show Text), so the\n$gameMessage.add\ncall in your plugin will not display like you want it to. If you removed the \"Hey, did it work?\" message (and didn't activate any other event in the meantime) then this example would work as you expect.\nSpoiler:\ntechnical explanation\nThe message window (Show Text) only displays one message at a time. The text to display is determined when the message \"starts\" (see the\nstartMessage\nmethod of\nWindow_Message\nin rmmz_windows.js); any additions during the message will technically be added to\n$gameMessage\n, but that won't affect the message being displayed.\nThe message is cleared when the window ends the current message (see the\nterminateMessage\nmethod, ibid). This means that if your fetch operation completes while another message is showing, your addition is effectively ignored.\nA low-quality, unreliable workaround would be to simply add a command like Wait 30 frames after the command. It's a bad idea because you can't be sure that it will work correctly in edge cases.\nI recommend you use something to let the interpreter know when to proceed. You could add a\nfinally\nclause to your plugin command code for something like that. E.g.\nImplement a new wait mode:\nAdd a patch for the\nupdateWaitMode\nmethod of\nGame_Interpreter\n, for your new wait mode.\nUse\nthis.setWaitMode(\"yourWaitModeName\")\nbefore the\nfetch\nstarts.\nMake whatever change necessary in the\nfinally\nclause to end your new wait mode.\nNote that arrow functions do not have a\nthis\nvalue, so you'll also need to write your plugin command as a full\nfunction(args) { ... }\nfor this approach to work. Plugin commands run in the context of the calling interpreter.\nAlternatively, turn a switch on (or off): you could then use the Loop, Branch, and Break Loop commands immediately after the plugin command to prevent further progress until that switch is toggled. That would be a somewhat clunky solution, but doesn't require any special knowledge to implement or customise."
+    },
+    {
+      "post_id": "js-post-1486437",
+      "author": "echocondria",
+      "date": "2024-12-09T09:03:50+0900",
+      "body": "Thank you for your replies and I'm sure they will help but apparently I'm having an issue with the plugin command even firing at all. I changed it to just log to the console and that doesn't ever show up. I've looked at other plugins that I know work and I don't see what I may have done wrong"
+    },
+    {
+      "post_id": "js-post-1486621",
+      "author": "caethyril",
+      "date": "2024-12-10T04:04:37+0900",
+      "body": "echocondria said:\nI'm having an issue with the plugin command even firing at all. I changed it to just log to the console and that doesn't ever show up.\nClick to expand...\nBefore posting my previous reply, I tested your code, as-is, and it worked as I described. I've attached the file so you can try it for yourself~\nI guess the problem is related to this:\ncaethyril said:\nif you've named the plugin file\nFetchExample.js\n(to match the registration in the code)\nClick to expand...\nI.e. you may have saved the plugin with a different filename. Note that filenames are case-sensitive here, e.g.\nfetchExample.js\nand\nFetchExample.js\nare different files. The command uses the filename: if that doesn't match a registered function then the command will be skipped.\nIn case it helps: you can enter\nPluginManager._commands\ninto the console to see all registered plugin commands."
+    },
+    {
+      "post_id": "js-post-1486655",
+      "author": "echocondria",
+      "date": "2024-12-10T06:38:50+0900",
+      "body": "Omg... I'm a little slow, sorry. I totally had a typo in my filename and didn't see that. Thank you so much for your help."
+    },
+    {
+      "post_id": "js-post-1486805",
+      "author": "caethyril",
+      "date": "2024-12-10T21:38:14+0900",
+      "body": "No worries, we all make mistakes! Good to hear it was something so easy to fix."
+    }
+  ]
+}

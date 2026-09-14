@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/stuck-making-a-skip-file-plugin.172954",
+  "title": "MZ Stuck making a skip file plugin",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:45.999692+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1478847",
+      "author": "QuizicalGin",
+      "date": "2024-11-01T23:46:44+0900",
+      "body": "For anyone familiar with Krosk's find file plugin for VX Ace, that's essentially what I'm trying to recreate here. I have had minor success in my attempts except for a couple of snags.\nI'm only focusing on Se, since it makes it faster to troubleshoot it when focusing on the one audio type.\nSpoiler:\nCode in question\nCode:\n/*:\n(pretend the about section is above this)\n\n@param Missing Error Message\n@type string\n@default \"%s could not be found. Please contact the dev at (your url here).\"\n@desc Error message if a sound file is missing.\n\n@param Show in Console?\n@type boolean\n@default false\n@desc Error message is shown in the console instead\n\n*/\n\nvar ftp = ftp ||{}\n\nvar parameters = PluginManager.parameters(\"FTP_MissingFileSkipper\");\nvar MissingError = parameters[\"Missing Error Message\"];\nvar ConsoleMsg = parameters[\"Show in Console?\"] == \"false\";\n\n    \nftp.MissingFileSkipper = function () {\n    AudioManager._OGPlaySe = AudioManager.playSe;\n\n    AudioManager.playSe = function (se) {\n        if (this._isError = true) {\n            showMissingError(se.name);            \n        } \n        else {\n            this._OGPlaySe(se);\n        }\n    };\n\n    showMissingError = function (filename) {\n        const message = MissingError.replace(\"%s\", filename);\n        if (ConsoleMsg) {\n            console.warn(message);\n        }\n        else {\n            alert(message);\n        }\n    };    \n    \n};\n\nftp.MissingFileSkipper ();\n\n;\nWhen there's an error, aka a missing file, rpg maker tries to default to its error message. I wanted to try and recreate Krosk's Find File so that play testers can catch the more serious bugs, and I don't have to repackage it several times because I deleted an rtp file that I forgot I was still using.\nSo the current issues with it are as follows:\nEven when the se file (i.e. absorb1) is put back in the right place, the plugin still displays the error message.\nWhen at its default false, it sends the error message to console, but when set to true it sends it to the alert msgbox. This is the exact inverse of what I want, but as far as I can tell, it looks like it's set up correctly when compared to another boolean parameter in a different plugin.\nI'm not quite sure what I'm missing here in order to make it work. I was trying to get it to work with try/catch initially, but it kept defaulting to the built-in error handling. Trying to override throwLoadError and checkErrors resulted in a couple of other bugs, so that idea was scrapped. The above code is the closest it's come to actually being functional.\nAm I missing something, or have I gotten something wrong? Or both?\nOnce this is working, I can theoretically just apply it to the other audio types, then try to figure out applying it for images."
+    },
+    {
+      "post_id": "js-post-1478849",
+      "author": "ATT_Turan",
+      "date": "2024-11-01T23:48:43+0900",
+      "body": "You can check this out from\n@Mac15001900\n, looks like it's doing what you want.\nRMMZ - [Request] Replace error messages of Missing files for error log (or ignore completely instead).\nI know that this is some controversial topic for many developers, however in production scenaries, when there's a missing file (for example, a sound, a music, or an image), what only should happen is that the file is not loaded because it was not found, and that's all.  However, when the error...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1478854",
+      "author": "Andar",
+      "date": "2024-11-02T00:03:32+0900",
+      "body": "QuizicalGin said:\nEven when the se file (i.e. absorb1) is put back in the right place, the plugin still displays the error message.\nClick to expand...\nAn error message of \"failed to load\" is not always a missing file. It can have several different causes:\n1) the file is indeed missing\n2) the file has a wrong Capitalization: A.png and a.png are two different files for a browser, only Windows has an override that loads the wrong file if it exists.\n3) the filename contains a symbol that is not allowed under networking rules - only latin letters, arabic numbers and very few special signs are allowed. SPACE on the other hand is forbidden, which is why it is usually replaced by underscore _ on internet files.\n4) the foldername of any folder in the entire filepath contains a forbidden symbol. Example:\nc:\\folder\\test folder\\project\\img\\actor.png\ncan cause a failed to load \"img\\actor.png\"\nThat is the reason why for example space is replaced by %20 in a browser adress line if you open local files - the browser simply can't handle space, not even in internal error messages. And that %20 override doesn't always work.\nSo basically if the cause for the error is something else or if there are two causes for the error, then replacing the file will not stop the error message."
+    },
+    {
+      "post_id": "js-post-1478857",
+      "author": "QuizicalGin",
+      "date": "2024-11-02T00:09:36+0900",
+      "body": "@Andar\nIn this instance for testing purposes, I've just been moving absorb1 in and out of the se file without any change to its name. In theory, if it's just getting the same name file from the same location in the game files, putting the appropriate sound file back in place should make it work again, right?"
+    },
+    {
+      "post_id": "js-post-1478868",
+      "author": "Andar",
+      "date": "2024-11-02T01:31:28+0900",
+      "body": "QuizicalGin said:\nright?\nClick to expand...\nnot if the folderpath itself contains a forbidden letter.\nWindows tries to force the browsers to access files through overrides in such cases, and those overrides do not always work.\nTheoretically it is even possible that the local play can fail - in early versions of MV this was often the case, until the programmers made the playtest automatically use a virtual folder that would be guaranteed not to use the physical folderpath on the HDD.\nOnly after that change the playtest hadn't those failed to load errors for wrong foldernames anymore.\nBut a deployed playtest has to use the physical folderpath and can come against that problem."
+    },
+    {
+      "post_id": "js-post-1478931",
+      "author": "QuizicalGin",
+      "date": "2024-11-02T06:48:52+0900",
+      "body": "@Andar\nIn this particular instance of moving a file around, where there is no special character problem to speak of, it shouldn't be an issue.\nThe other plugin suggested isn't suitable to me, and still want to try to make my own work. From what I can tell it should work, but I'm still inexperienced to not know for sure what's going wrong."
+    },
+    {
+      "post_id": "js-post-1479477",
+      "author": "QuizicalGin",
+      "date": "2024-11-03T14:49:16+0900",
+      "body": "So on further prodding, I have learned that the issue is:\nAudioManager._OGPlaySe = AudioManager.playSe;\nThe reference isn't referencing, and I do not know what. The Boolean is still being weird, seems that even when I put false, it wants to default to behaving as though it were true."
+    },
+    {
+      "post_id": "js-post-1479541",
+      "author": "CasperGaming",
+      "date": "2024-11-03T23:41:17+0900",
+      "body": "I am not entirely sure if this is the problem causing your first issue, but in your posted code you have:\nJavaScript:\nif (this._isError = true)\nThis is most likely not what you meant to do as you are setting this._isError to true rather than comparing this._isError to true. You need to use 2 or 3 equal signs to compare things.\nFor your second issue, it is a simple logic error. Currently, you have:\nJavaScript:\nvar ConsoleMsg = parameters[\"Show in Console?\"] == \"false\";\nLet's consider what would result from this code when the parameter is set to \"false\" or \"true\".\nWhen the parameter is set to \"false\" you have told it to compare that against \"false\", so your variable will be set to true, because \"false\" is equal to \"false\". However, when the parameter is set to \"true\" it will compare that against \"false\" and the result will be false, because \"true\" is not equal to \"false\"."
+    },
+    {
+      "post_id": "js-post-1479710",
+      "author": "QuizicalGin",
+      "date": "2024-11-04T13:55:17+0900",
+      "body": "CasperGaming said:\nI am not entirely sure if this is the problem causing your first issue, but in your posted code you have:\nJavaScript:\nif (this._isError = true)\nThis is most likely not what you meant to do as you are setting this._isError to true rather than comparing this._isError to true. You need to use 2 or 3 equal signs to compare things.\nFor your second issue, it is a simple logic error. Currently, you have:\nJavaScript:\nvar ConsoleMsg = parameters[\"Show in Console?\"] == \"false\";\nLet's consider what would result from this code when the parameter is set to \"false\" or \"true\".\nWhen the parameter is set to \"false\" you have told it to compare that against \"false\", so your variable will be set to true, because \"false\" is equal to \"false\". However, when the parameter is set to \"true\" it will compare that against \"false\" and the result will be false, because \"true\" is not equal to \"false\".\nClick to expand...\nYeah, that was the problem, and I feel silly for not seeing it sooner when it was literally staring me right in the face with a boolean chart on the side trying to figure it out.\nAs for\nAudioManager._OGPlaySe = AudioManager.playSe;\n, I used a\nconsole.log\nto tell me what it is, and it says it's undefined. If it's referencing the original playSe to have it as a copy, shouldn't it still function? Have I written it wrong, and it's looking for something else?"
+    }
+  ]
+}

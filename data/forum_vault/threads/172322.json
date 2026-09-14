@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/looking-for-a-script-to-force-display-battle-animation-for-party-self-buffs.172322",
+  "title": "Looking for a script to force display battle animation for party/self buffs",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:51.722948+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1473366",
+      "author": "MoltresRider",
+      "date": "2024-10-03T06:02:09+0900",
+      "body": "There are a few attacks in my game that party members can use to buff themselves or other party members and RPG Maker VX Ace does not show those animations. Sure the sound effects play, as well as screen flashes, but in some cases, I would like certain animations to display anyway, especially ones that are key to the story. Such as my Ho-Oh full recovery spell.\nCould I please get someone to whip up a script that allows animations to display even if the enemies are not the target?\nIdeally, this would require the animation to be set to \"screen\" in order to work, since otherwise it would need a target, and then in the notebox for the skill, you would have something like\n<Display ANM>\nto display the animation. For those who are unfamiliar with college terms, the script could be setup to require,\n<Display Animation>\ninstead.\nCould I get someone to whip this up real quick? I would appreciate it. Pretty please and thank you."
+    },
+    {
+      "post_id": "js-post-1475666",
+      "author": "kyonides",
+      "date": "2024-10-16T00:54:33+0900",
+      "body": "This might not be exactly what you've asked for but here it is.\nPlease read the embedded comments first.\nSpoiler:\nThe Script\nRuby:\n# * DBS Flashy Damage ACE * #\n#   Scripter : Kyonides Arkanthes\n#   2024-10-15\n\n# This scriptlet shows any animation's flash effect on screen whenever an actor\n# is being hit by an enemy's skill or item.\n\n# * Warning * #\n# 2 Methods have been overwritten:\n# - Sprite_Battler#setup_new_animation\n# - Scene_Battle#use_item\n\nmodule KPartyDmg\n  extend self\n  attr_accessor :item\nend\n\nmodule RPG\n  class Animation\n    def set_screen_pos\n      @position = 3\n      @timings.each {|timing| timing.flash_scope = 2 }\n      self\n    end\n  end\nend\n\nclass Sprite_Battler\n  @@anime = {}\n  def setup_new_animation\n    if @battler.animation_id > 0\n      anime = find_animation\n      mirror = @battler.animation_mirror\n      start_animation(anime, mirror)\n      @battler.animation_id = 0\n    end\n  end\n\n  def setup_anime(anime)\n    @@anime[anime.id] ||= anime.dup.set_screen_pos\n  end\n\n  def find_animation\n    anime_id = @battler.animation_id\n    anime = $data_animations[anime_id]\n    return anime if @battler.enemy?\n    setup_anime(anime)\n  end\nend\n\nclass Scene_Battle\n  def use_item\n    item = @subject.current_action.item\n    KPartyDmg.item = item\n    @log_window.display_use_item(@subject, item)\n    @subject.use_item(item)\n    refresh_status\n    targets = @subject.current_action.make_targets.compact\n    show_animation(targets, item.animation_id)\n    targets.each {|target| item.repeats.times { invoke_item(target, item) } }\n  end\nend"
+    },
+    {
+      "post_id": "js-post-1475731",
+      "author": "MoltresRider",
+      "date": "2024-10-16T05:19:02+0900",
+      "body": "You had a different one earlier according to the email I received. I do not want the animation to display for every attack that hits party members. Just certain ones.\nI tried the one with the skill notetags but I could not get it to work. I might be setting up the notetags wrong or not understanding what it is supposed to do.\nAlso, so that we are clear. I want the graphic to show during certain party hits too, not just the flash.\nCould you look into that? Thanks"
+    },
+    {
+      "post_id": "js-post-1475738",
+      "author": "kyonides",
+      "date": "2024-10-16T05:36:02+0900",
+      "body": "The thing is that there's no actual target that's effectively related to the party. Thus, the DBS ignores that missing portion and only shows the flash on screen. I think I won't update my script. It's a take it or leave it deal."
+    },
+    {
+      "post_id": "js-post-1475742",
+      "author": "MoltresRider",
+      "date": "2024-10-16T05:39:53+0900",
+      "body": "I probably won't use it then, but thanks anyway. Maybe your script will benefit someone else."
+    }
+  ]
+}

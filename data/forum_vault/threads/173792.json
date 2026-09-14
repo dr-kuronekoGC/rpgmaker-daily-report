@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/hide-skip-actor-params-in-rpg-maker-mz-equip-menu.173792",
+  "title": "Hide(Skip) Actor Params in RPG Maker MZ Equip Menu",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:02:59.306609+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1486644",
+      "author": "IndividuallyWrapped",
+      "date": "2024-12-10T05:26:26+0900",
+      "body": "Using ATT_Turan's code and comments in another thread for skipping params in the actor status window as a jumping off point, I want to hide certain actor parameters in the equip menu in rpg maker mz, which by default shows all actor parameters on the left-hand side. I have searched through threads, but there doesn't seem to be one dedicated to this for vanilla MZ.\nThe loop that draws the actor params in the equip menu, *I think* are these three items:\nWindow_EquipStatus.prototype.drawItem = function(x, y, paramId) {\nconst paramX = this.paramX();\nconst paramWidth = this.paramWidth();\nconst rightArrowWidth = this.rightArrowWidth();\nthis.drawParamName(x, y, paramId);\nif (this._actor) {\nthis.drawCurrentParam(paramX, y, paramId);\n}\nthis.drawRightArrow(paramX + paramWidth, y);\nif (this._tempActor) {\nthis.drawNewParam(paramX + paramWidth + rightArrowWidth, y, paramId);\n}\n};\nWindow_EquipStatus.prototype.drawParamName = function(x, y, paramId) {\nconst width = this.paramX() - this.itemPadding() * 2;\nthis.changeTextColor(ColorManager.systemColor());\nthis.drawText(TextManager.param(paramId), x, y, width);\n};\nWindow_EquipStatus.prototype.drawCurrentParam = function(x, y, paramId) {\nconst paramWidth = this.paramWidth();\nthis.resetTextColor();\nthis.drawText(this._actor.param(paramId), x, y, paramWidth, \"right\");\nClick to expand...\nBut I have no idea how to then use the javascript to skip params, like ATT_Turan did for the status window. I tried variations of this:\nWindow_EquipStatus.prototype.drawParamName = function(x, y, paramId) {\nconst width = this.paramX() - this.itemPadding() * 2;\nthis.changeTextColor(ColorManager.systemColor());\nthis.drawText(TextManager.param(paramId), x, y, width);\n// Modify the below number to skip the desired parameter\nif (paramId == 7 || paramId == 3 || paramId ==5 || paramId == 6)\nreturn;\nconst name = TextManager.param(paramId);\nconst value = this._actor.param(paramId);\nthis.changeTextColor(ColorManager.systemColor());\nthis.drawText(name, rect.x, rect.y, 160);\nthis.resetTextColor();\nthis.drawText(value, rect.x + 160, rect.y, 60, \"right\");\n};\nClick to expand...\nThat causes erros rect, undefined etc.\nAny suggestions are appreciated."
+    },
+    {
+      "post_id": "js-post-1486719",
+      "author": "ATT_Turan",
+      "date": "2024-12-10T10:55:49+0900",
+      "body": "You would need to put it here.\nCode:\nWindow_EquipStatus.prototype.drawAllParams = function() {\n    for (let i = 0; i < 6; i++) {\n        const x = this.itemPadding();\n        let line = i;\n        switch (i)\n        {\n        // List parameters to be skipped, subtracting 2 from the ID\n            case 1:\n            case 3:\n            case 4:\n            case 5:\n                continue;\n        // Else account for skipped lines\n            case 2:\n                line--;\n                break;\n        }\n        let y = this.paramY(line);\n        this.drawItem(x, y, 2 + i);\n    }\n};"
+    },
+    {
+      "post_id": "js-post-1486846",
+      "author": "IndividuallyWrapped",
+      "date": "2024-12-11T00:16:15+0900",
+      "body": "ATT_Turan said:\nYou would need to put it here.\nCode:\nWindow_EquipStatus.prototype.drawAllParams = function() {\n    for (let i = 0; i < 6; i++) {\n        const x = this.itemPadding();\n        let line = i;\n        switch (i)\n        {\n        // List parameters to be skipped, subtracting 2 from the ID\n            case 1:\n            case 3:\n            case 4:\n            case 5:\n                continue;\n        // Else account for skipped lines\n            case 2:\n                line--;\n                break;\n        }\n        let y = this.paramY(line);\n        this.drawItem(x, y, 2 + i);\n    }\n};\nClick to expand...\nThanks very much for that. You've eliminated skipped line spaces here. Would this work in the status menu as well?"
+    },
+    {
+      "post_id": "js-post-1486849",
+      "author": "ATT_Turan",
+      "date": "2024-12-11T00:27:53+0900",
+      "body": "You said you were originally working from a post talking about removing parameters from the status screen.\nDoes that code not work for you? Where's a link to the thread?"
+    },
+    {
+      "post_id": "js-post-1486852",
+      "author": "IndividuallyWrapped",
+      "date": "2024-12-11T00:41:16+0900",
+      "body": "ATT_Turan said:\nYou said you were originally working from a post talking about removing parameters from the status screen.\nDoes that code not work for you? Where's a link to the thread?\nClick to expand...\nHide luck stat from the player?\nI already know that if you set all your character and enemies' luck to 0 it won't affect anything, but, since it's a useless stat, how do I hide it from the player?\nforums.rpgmakerweb.com\nYes. The code worked. The phrasing seems to be a bit different for the status screen, but I don't know anything."
+    },
+    {
+      "post_id": "js-post-1486854",
+      "author": "ATT_Turan",
+      "date": "2024-12-11T00:55:24+0900",
+      "body": "Oh, I think I understand, you're asking how to hide the skipped line because you're not ignoring Luck.\nYes, you'd need to add extra code, no, it's not the same code.\nCode:\nWindow_StatusParams.prototype.drawItem = function(index) {\n    const paramId = index + 2;\n\n    if (paramId == 3 || paramId == 5 || paramId == 6 || paramId == 7)\n        return;\n\n    let line = paramId == 2 ? index : 1;\n\n    const rect = this.itemLineRect(line);\n    const name = TextManager.param(paramId);\n    const value = this._actor.param(paramId);\n    this.changeTextColor(ColorManager.systemColor());\n    this.drawText(name, rect.x, rect.y, 160);\n    this.resetTextColor();\n    this.drawText(value, rect.x + 160, rect.y, 60, \"right\");\n};"
+    },
+    {
+      "post_id": "js-post-1486856",
+      "author": "IndividuallyWrapped",
+      "date": "2024-12-11T00:56:49+0900",
+      "body": "ATT_Turan said:\nOh, I think I understand, you're asking how to hide the skipped line because you're not ignoring Luck.\nYes, you'd need to add extra code, no, it's not the same code.\nCode:\nWindow_StatusParams.prototype.drawItem = function(index) {\n    const paramId = index + 2;\n\n    if (paramId == 3 || paramId == 5 || paramId == 6 || 7)\n        return;\n\n    let line = paramId == 2 ? index : 1;\n\n    const rect = this.itemLineRect(line);\n    const name = TextManager.param(paramId);\n    const value = this._actor.param(paramId);\n    this.changeTextColor(ColorManager.systemColor());\n    this.drawText(name, rect.x, rect.y, 160);\n    this.resetTextColor();\n    this.drawText(value, rect.x + 160, rect.y, 60, \"right\");\n};\nClick to expand...\nYes, sorry! I should have specified. I'm not ignoring the stats, just wanted to hide them. Thanks\nATT_Turan said:\nOh, I think I understand, you're asking how to hide the skipped line because you're not ignoring Luck.\nYes, you'd need to add extra code, no, it's not the same code.\nCode:\nWindow_StatusParams.prototype.drawItem = function(index) {\n    const paramId = index + 2;\n\n    if (paramId == 3 || paramId == 5 || paramId == 6 || 7)\n        return;\n\n    let line = paramId == 2 ? index : 1;\n\n    const rect = this.itemLineRect(line);\n    const name = TextManager.param(paramId);\n    const value = this._actor.param(paramId);\n    this.changeTextColor(ColorManager.systemColor());\n    this.drawText(name, rect.x, rect.y, 160);\n    this.resetTextColor();\n    this.drawText(value, rect.x + 160, rect.y, 60, \"right\");\n};\nClick to expand...\nInteresting. I copy-pasted this into a js file and implemented it as plugin, but it hid all attributes in status window."
+    },
+    {
+      "post_id": "js-post-1486911",
+      "author": "ATT_Turan",
+      "date": "2024-12-11T05:07:12+0900",
+      "body": "There's just a typo at the end of the condition, I forgot the last\nparamId =="
+    }
+  ]
+}

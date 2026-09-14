@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/loading-events-before-map-rendering-in-rpg-maker-mz.173688",
+  "title": "Loading Events Before Map Rendering in RPG Maker MZ",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:03.183341+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1485658",
+      "author": "lyssev",
+      "date": "2024-12-06T00:33:31+0900",
+      "body": "Hello everyone,\nI'm facing an issue with RPG Maker MZ where the map appears momentarily before the events are fully loaded. I need to find a way to ensure that events are initialized so that darkness or weather effects don't load with a delay: right now I can see the map for 1 second, and then the effect loads\nI've tried creating plugins to modify the scene loading and event setup, but nothing has worked as expected. Does anyone have a solution or insight on how to force event initialization before the map display?\nAny help would be greatly appreciated!\nThank you in advance!"
+    },
+    {
+      "post_id": "js-post-1485662",
+      "author": "ATT_Turan",
+      "date": "2024-12-06T01:09:29+0900",
+      "body": "The easy way would be when you're transferring into the map, you use the Fade Out event command; then you place an event on the map (the last one, so it has the highest ID) that's Autorun, has Fade In, then Erase Event."
+    },
+    {
+      "post_id": "js-post-1485664",
+      "author": "lyssev",
+      "date": "2024-12-06T01:19:24+0900",
+      "body": "Hello, thanks for your response!The problem is that I am trying to do the introduction, the character walks on a night map etc, so it is the first map of all, I am not transporting from any map yet"
+    },
+    {
+      "post_id": "js-post-1485665",
+      "author": "caethyril",
+      "date": "2024-12-06T01:28:38+0900",
+      "body": "An event with\nTrigger: Parallel\nshould start on frame 1, regardless of how you arrived on the map. Just remember to end it with Erase Event so it only runs once per visit to that map.\nAn Autorun event should also start on frame 1 when starting a new game. However, you can't have 2 non-Parallel events running at the same time, so maybe your weather/darkness event is having to wait for a different event to finish.\nEdit: also, the duration of Set Weather Effect is how long it takes to change to that weather. Set it to 1 for an instant transition. Same idea for Tint Screen, etc."
+    },
+    {
+      "post_id": "js-post-1485667",
+      "author": "lyssev",
+      "date": "2024-12-06T01:37:55+0900",
+      "body": "It worked!! thank you very much to both of you"
+    },
+    {
+      "post_id": "js-post-1485668",
+      "author": "Zia_",
+      "date": "2024-12-06T01:44:33+0900",
+      "body": "lyssev said:\nThe problem is that I am trying to do the introduction, the character walks on a night map etc, so it is the first map of all, I am not transporting from any map yet\nClick to expand...\nIn case this is an issue again:\nUse an empty / black map with an empty party for your starting position. Do all the setup you need (like fade out, add heroes to the party if needed, etc., and teleport to your first map afterwards and use a fade in there). You won't see a difference, but you can set up everything in advance."
+    }
+  ]
+}

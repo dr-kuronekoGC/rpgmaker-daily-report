@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/trouble-with-making-variables-work-for-me.173807",
+  "title": "Trouble With Making Variables Work For Me",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:29.938155+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1486765",
+      "author": "Reverend_Blackstar",
+      "date": "2024-12-10T15:30:52+0900",
+      "body": "I'm currently working through Beginning RPG Maker MV and I'm stuck on a relatively simple exercise. I am attempting to create a treasure chest that appears when I trigger enough trees linked to it.\nCode for the trees is as follows:\nText  :  None,  Window,  Bottom\n:        : This tree looks peculiar\nIf  :  Self Switch A is OFF\nControl Variables  :  #0001  Tree  +=  1\nControl Self Switch  :  A  =  ON\n:  End\nI have the Priority set on \"\nSame as characters\n\", the Trigger set on \"\nAction button\n\" and the Self-Switch A check turned on under Variables.\nAfter that, I did a Quick Event Creation to make the chest and clicked on the Variable condition of \"\n0001  Tree  > 5\n\"\nYet, no matter how much I reenter the programming in the trees or for the chest (including full deletion and retyping of the tree code as well as recreating the chest via Quick Event Creation) it's refusing to appear whenever I've hit enough trees.\nIn short, HELP!"
+    },
+    {
+      "post_id": "js-post-1486766",
+      "author": "TheAM-Dol",
+      "date": "2024-12-10T15:41:21+0900",
+      "body": "Reverend_Blackstar said:\nthe Trigger set on \"\nAction button\n\" and the Self-Switch A check turned on under Variables.\nClick to expand...\nI presume you are talking about the event page conditions, in which case the page conditions are what needs to be met for the event page to become active.\nAccording to the event snippet you posted, you don't need to enable event page conditions at all because the event command:\n\"if self switch A is off\" is handling the \"do this thing once\" part of the event.\nAs you can see, if the self switch is off, then it will do the thing then enable self switch A. From that point forward, self switch A is on, so \"if self switch A is off\" will never be met, and therefore it won't trigger that portion of the event.\nIf this is incorrect, then you will need to post a screenshot of your event so we can better see how you have created the event."
+    },
+    {
+      "post_id": "js-post-1486775",
+      "author": "Artille",
+      "date": "2024-12-10T16:54:06+0900",
+      "body": "Additionnaly to what has been said above, checking if self switch is set to OFF is a bit redundend (in this scenario).\nBy default, it is always OFF, meaning you can just skip that part of the code.\nIt can be usefull in certain conditions, especially when you are going back and forth with the selfswitches, but here it's a matter of \"execute this event once\".\nYou can rewrite it as such :\n◆Text：None, Window, Bottom\n：Text：This tree looks peculiar\n◆Control Variables：#0001 Tree  +=  1\n◆Erase Event\nIf you need that tree to be definitely put off (meaning, during the entire game), you can use the selfswitch with a second event page.\nInstead of\nErase Event\n, you want to set\nselfswitch A\nto\nON\nThen, create a\nnew event page\n, set the\nconditions\nto\nself switch A\n, and leave the page blank.\nTo achieve desired result and using this logic, you will need to duplicate this event 5 times, so that the player cuts down 5 trees, resulting in the variable value being 5.\nWhich should then trigger your chest to appear.\nIf you ever doubt of the actual variable value, you can use a seperate event with a character, use the text command and make him say something like :\nCurrent variable value for Tree is : \\v[1]\nYou will be able to see if it actually progress or not, enabling you to better target where the issue is."
+    },
+    {
+      "post_id": "js-post-1486785",
+      "author": "utunnels",
+      "date": "2024-12-10T18:27:28+0900",
+      "body": "The OP's tree code looks correct. I don't think using erase is a good idea because it will return once you leave the map. Besides, he didn't mention anything about cutting it down.\nBut I can't say for sure unless I see the treasure chest event screenshot.\nThere is  a debug menu in playtest if you press F9 where you can check the variables."
+    },
+    {
+      "post_id": "js-post-1486786",
+      "author": "Artille",
+      "date": "2024-12-10T18:32:42+0900",
+      "body": "utunnels said:\nThe OP's tree code looks correct. I don't think using erase is a good idea because it will return once you leave the map. Besides, he didn't mention anything about cutting it down.\nBut I can't say for sure unless I see the treasure chest event screenshot.\nThere is  a debug menu in playtest if you press F9 where you can check the variables.\nClick to expand...\nI assumed cutting down the tree was the goal, but without screenshot of the event it's hard to tell what he tries to do. ^^\nErase Event would be good if he wants the trees to come back, otherwise the selfswitch to blank page is a classic solution ^^\nDepends on what he tries to accomplish."
+    },
+    {
+      "post_id": "js-post-1486792",
+      "author": "ShadowDragon",
+      "date": "2024-12-10T19:44:22+0900",
+      "body": "if he needs to check, he can also set another if below BEFORE selfswitch A\nis on, so it checks and do whatever it needs to do.\notherwise, a parallel event (wait 10 for checks) and execute it that way.\nI also recommend if you need it often or is scattered by different maps, use a common\nevent and use that inside the events.\nin this case, if you make a mistake, you edit it once, instead of 5+ times by recopy\nand paste those events\nanother way is spawn event to grab all of those which is also an alternative."
+    },
+    {
+      "post_id": "js-post-1486808",
+      "author": "ATT_Turan",
+      "date": "2024-12-10T21:55:15+0900",
+      "body": "Artille said:\nchecking if self switch is set to OFF is a bit redundend (in this scenario).\nBy default, it is always OFF, meaning you can just skip that part of the code.\nClick to expand...\nThat doesn't appear to be correct.\nThe OP always wants to display the inspection text \"This tree looks peculiar,\" but only wants to increase the tree variable the first time you interact with the tree.\nSo the conditional for the self switch is correctly done.\nI agree that actual screenshots of all the involved events needs to be posted."
+    },
+    {
+      "post_id": "js-post-1486900",
+      "author": "Reverend_Blackstar",
+      "date": "2024-12-11T04:26:38+0900",
+      "body": "First of all, sincere thanks to everyone who responded. This is my first time actually asking for help on this program and it's nice to see such support.\nNow, to address all the issues brought up in the replies:\n1) Yes, I misread the Self-Switch A line and got that confused. Rest assured, it has been corrected.\n2) No, I am not trying to cut down trees in this scenario, just touch them to trigger the chest's appearance.\n3) As requested, I'm enclosing screenshots of the Tree code and the Treasure Chest code with this post.\nI would greatly appreciate any further assistance. Thanks again!"
+    },
+    {
+      "post_id": "js-post-1486908",
+      "author": "ATT_Turan",
+      "date": "2024-12-11T04:38:02+0900",
+      "body": "You\nstill\nhave Self Switch A checked as a condition for the event page.\nThat means - unless you're using code someplace else to set that switch - that page will never appear.\nThat's what\n@TheAM-Dol\ntold you in the very first reply."
+    },
+    {
+      "post_id": "js-post-1486951",
+      "author": "Reverend_Blackstar",
+      "date": "2024-12-11T09:03:20+0900",
+      "body": "Yeah, I caught right after. Sadly, even after I've removed it, it's now COMPLETELY non-responsive, doesn't even give me the text. Ideas?"
+    },
+    {
+      "post_id": "js-post-1486953",
+      "author": "Zia_",
+      "date": "2024-12-11T09:12:43+0900",
+      "body": "Is your event in front of the tree, or on the tree? Since you have Priority \"Below characters\", you would have to stand on this event to trigger it."
+    },
+    {
+      "post_id": "js-post-1486959",
+      "author": "Reverend_Blackstar",
+      "date": "2024-12-11T09:51:02+0900",
+      "body": "Zia_ said:\nIs your event in front of the tree, or on the tree? Since you have Priority \"Below characters\", you would have to stand on this event to trigger it.\nClick to expand...\nOn the trees, five in all. I need them to be \"Same As Characters\", right?"
+    },
+    {
+      "post_id": "js-post-1486960",
+      "author": "ATT_Turan",
+      "date": "2024-12-11T09:53:15+0900",
+      "body": "Yes, if you're trying to activate from an adjacent tile, they need to be Same as Characters."
+    },
+    {
+      "post_id": "js-post-1486963",
+      "author": "TheAM-Dol",
+      "date": "2024-12-11T10:27:56+0900",
+      "body": "As Zia mentioned, the event needs to be set to \"same as player\" in it's priority in order to be activated from an adjacent tile.\nWhen the priority is set to below or above player, the player must be in the same grid in order to activate it.\nedit:\nopened this page 30 minutes ago, go distracted, didn't refresh, then replied.\nTuran slow-motioned ninja'd me."
+    },
+    {
+      "post_id": "js-post-1486971",
+      "author": "Reverend_Blackstar",
+      "date": "2024-12-11T11:57:50+0900",
+      "body": "Problem solved, everyone! It's working perfectly now. Thank you again for all your help!"
+    },
+    {
+      "post_id": "js-post-1487072",
+      "author": "Ms Littlefish",
+      "date": "2024-12-11T23:20:18+0900",
+      "body": "This thread is closed due to being indicated as solved. Make sure to report it next time, so we can see! If you need it reopened, you can report to us to let us know. Thank you!"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/different-colors-of-items-in-the-menu.173758",
+  "title": "Different colors of items in the Menu?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:00.498589+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1486276",
+      "author": "Arwo",
+      "date": "2024-12-08T20:49:21+0900",
+      "body": "Hey,\nI'm looking for a simple solution - I will have 5 different types of items in my game:\nCommon,\nUncommon\n,\nRare\n,\nEpic\n,\nLegendary\n.\nAs shown above, I want such items to have a different color of the text when you look at it at the Equip menu etc.\nWhat is the easiest way to do it? I am using\nRPG Maker MZ.\nThanks!"
+    },
+    {
+      "post_id": "js-post-1486287",
+      "author": "Aerosys",
+      "date": "2024-12-08T21:55:24+0900",
+      "body": "Haven't tried it yet, but this should work:\nUse this plugin\nhttps://forums.rpgmakerweb.com/inde...t-use-escape-characters-in-any-window.128906/\nand then use Color Codes in every Item, e.g.\n\\C[3]Health Potion"
+    },
+    {
+      "post_id": "js-post-1486292",
+      "author": "Ahuramazda",
+      "date": "2024-12-08T22:25:11+0900",
+      "body": "Make a plugin using this bit of code:\nCode:\nWindow_Base.prototype.drawItemName = function(item, x, y, width) {\n    if (item) {\n        const iconY = y + (this.lineHeight() - ImageManager.iconHeight) / 2\n        const textMargin = ImageManager.iconWidth + 4\n        const itemWidth = Math.max(0, width - textMargin)\n        this.drawIcon(item.iconIndex, x, iconY)\n        this.changeTextColor(ColorManager.textColor(item.meta.itemColor || 0))\n        this.drawText(item.name, x + textMargin, y, itemWidth)\n        this.resetTextColor()\n    }\n}\nand then in an item, weapon, armor, skill notebox use:\nCode:\n<itemColor: id>\nShould do exactly what you're wanting... works in menu, shops, battle menus and drops"
+    },
+    {
+      "post_id": "js-post-1486581",
+      "author": "Arwo",
+      "date": "2024-12-10T00:57:13+0900",
+      "body": "Ahuramazda said:\nMake a plugin using this bit of code:\nCode:\nWindow_Base.prototype.drawItemName = function(item, x, y, width) {\n    if (item) {\n        const iconY = y + (this.lineHeight() - ImageManager.iconHeight) / 2\n        const textMargin = ImageManager.iconWidth + 4\n        const itemWidth = Math.max(0, width - textMargin)\n        this.drawIcon(item.iconIndex, x, iconY)\n        this.changeTextColor(ColorManager.textColor(item.meta.itemColor || 0))\n        this.drawText(item.name, x + textMargin, y, itemWidth)\n        this.resetTextColor()\n    }\n}\nand then in an item, weapon, armor, skill notebox use:\nCode:\n<itemColor: id>\nShould do exactly what you're wanting... works in menu, shops, battle menus and drops\nClick to expand...\nThank you very much for this!"
+    }
+  ]
+}

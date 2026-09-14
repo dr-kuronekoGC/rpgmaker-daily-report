@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/event-not-running-on-final-hit-in-combat.173654",
+  "title": "Event not running on final hit in combat",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:10.698515+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1485282",
+      "author": "KeionRedgrave",
+      "date": "2024-12-04T05:07:57+0900",
+      "body": "I currently have a setup I'm working on where stats are increased by actions instead up level ups. I got it working so far that the attack increases each time the actor attacks, but the issue I'm having is that the event doesn't run when the final hit of the battle takes place and I'm not sure why. Any help is appreciated.\nI'm new to RPG Maker MZ and not wanting to dive right into scripting myself so I was glad I could make it work as far as I did without adding scripts, just trying to understand why it doesn't run at the end of combat."
+    },
+    {
+      "post_id": "js-post-1485314",
+      "author": "caethyril",
+      "date": "2024-12-04T07:11:35+0900",
+      "body": "It's because the battle end phase takes priority over events.\nIt is possible to work around that using an \"Immortal\" state (with a \"State Resist: State 1\" trait). In your case, though, to affect every battle, I'd suggest seeking out an appropriate plugin instead.\nI haven't tested, but looking at its code, I think this plug-and-play MV plugin should work in MZ:\nEnd Phase Triggers\nHave you ever had a situation where your troop events didn't seem to run in battle? For example, when the last enemy has been defeated and you want more enemies to appear, you found that instead of the enemies appearing, you simply won the battle?  By default, when the last actor or enemy has...\nforums.rpgmakerweb.com\nOtherwise maybe someone else knows of something written specifically for MZ~"
+    },
+    {
+      "post_id": "js-post-1485321",
+      "author": "Andar",
+      "date": "2024-12-04T07:23:46+0900",
+      "body": "the solutions above are all for troop events, but the OP is using a common event attached to a skill.\nthat will not work because by default the common events are processed last, and the immortal trick would still end the battle before that.\nthe end phase triggers might work, but would require an additional troop event to do something after the regular turn end, and that is also tricky.\nso the best solution would be to adapt action sequences and have the common event moved into the action sequence of the attack skill.\nThat will need a plugin for action sequences, but solve all other problems directly."
+    },
+    {
+      "post_id": "js-post-1485341",
+      "author": "caethyril",
+      "date": "2024-12-04T08:46:14+0900",
+      "body": "I just tested in MZ the plugin I linked, and it correctly addresses the issue, plug-and-play. The event type does not matter, because they're all processed by the same method. Reserved events like you're using (from an effect on a skill/item) will, as usual, get priority over troop events.\nLike Andar says, \"action sequences\" (e.g. from\nVisuStella Battle Core\n,\nAkea Animated Battle System\n, or similar) could also work."
+    },
+    {
+      "post_id": "js-post-1485370",
+      "author": "ATT_Turan",
+      "date": "2024-12-04T12:23:18+0900",
+      "body": "Andar said:\nby default the common events are processed last, and the immortal trick would still end the battle before that.\nClick to expand...\nThat's not correct. The attacking skill will finish its resolution, including its common event, before a troop event is triggered by the enemy being at <= 0% HP."
+    },
+    {
+      "post_id": "js-post-1485959",
+      "author": "KeionRedgrave",
+      "date": "2024-12-07T06:58:04+0900",
+      "body": "caethyril said:\nI just tested in MZ the plugin I linked, and it correctly addresses the issue, plug-and-play. The event type does not matter, because they're all processed by the same method. Reserved events like you're using (from an effect on a skill/item) will, as usual, get priority over troop events.\nLike Andar says, \"action sequences\" (e.g. from\nVisuStella Battle Core\n,\nAkea Animated Battle System\n, or similar) could also work.\nClick to expand...\nThat worked beautifully thanks a ton. I was worried I would have to just leave it as a minor inconvenience bug or something."
+    }
+  ]
+}

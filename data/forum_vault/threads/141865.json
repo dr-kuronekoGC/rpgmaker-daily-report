@@ -1,0 +1,653 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/turans-terrific-tweaks.141865",
+  "title": "Turan's Terrific Tweaks",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:41.943909+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1226562",
+      "author": "ATT_Turan",
+      "date": "2021-11-05T14:24:25+0900",
+      "body": "With the closure of the forums imminent, I've created a repository of all my plugins. It includes a document with all the tweaks below:\nDownload link\nThis thread is a compilation of tweaks and snippets I've written as I work through my game or respond to requests on\nthese forums.\nA couple of small things are by me to fulfill requests, but most of this is for the Yanfly Engine Plugins, both fixes and modifications.\nDue to Yanfly's terms of use, I can't post the full fixes in plugin format, so they will require some user installation. You'll want a text editor, such as Notepad++, that will show you line numbers (the common shortcut to go to a specific line is Ctrl+G).\nI use three common instructions here:\nSave a plugin\nindicates the following code can be copied into an empty text file, saved as a .js file in your plugins folder, and then added in your plugin manager.\nAdd a line\nmeans you go to the specified line number, place your cursor at the\nend\nof that line, then press Enter and paste the code as a new line.\nChange a line to read\nmeans you go to the specified line number, highlight it, and\nreplace\nthe entirety of that line with the code I provided.\nPlease let me know if you find any bugs while using these snippets, and if you have any reproducible bugs you'd like addressed, or ideas for features to add.\nSpoiler:\nMV Change Class Skill Learning\nThere's an oversight in the default Change Class event command which prevents an actor from learning the skills of the new class unless Save Level is checked and the classes have different experience curves. The plugin is attached at the bottom of the post - have it above any other class-related plugins.\nSpoiler:\nPassable Events\nThis small plugin was written by request - it will allow two events to move through each other if they both have the <passable> notetag. They will still interact normally with players, impassable tiles and other events, unless you turn Through ON as normal. Save a plugin with the following code:\nCode:\n// Allow two events to move through each other if they both have the <passable> notetag\nGame_Event.prototype.isCollidedWithEvents = function(x, y) {\n    var events = $gameMap.eventsXyNt(x, y);\n    return $dataMap.events[this._eventId].meta[\"passable\"] && events.length>0 ?  !events.some(event => $dataMap.events[event._eventId].meta[\"passable\"]) : events.length>0;\n};\nSpoiler:\nPhantasy Star Wall Slide\nThis is legitimately a little plugin I wrote, attached at the bottom of this post. This will emulate the Phantasy Star movement system - if you press against a wall, and there's a valid space \"stepping\" around it, you'll automatically move that way.\nIt's compatible with both MV and MZ.\nSpoiler:\nDreamX_ShowParam with Quasi Param Plus\nThis plugin has an error with displaying custom parameters defined in Quasi's Param Plus. Delete lines 631-636 and replace them with:\nCode:\nfor (qParamIndex = 0; qParamIndex < QuasiParams._custom.length; qParamIndex++)\n            {\n                if (QuasiParams._custom[qParamIndex].abr == param)\n                    break;\n            }\n            if (qParamIndex < QuasiParams._custom.length)\n                paramValue = parseInt(QuasiParams.equipParamsPlus(item)[qParamIndex + 17]);\nSpoiler:\nFrogboy Magic\nThe way this plugin handles the various forms of payment for skills is what I consider a bug: it ignores dual MP/TP costs, it subtracts costs (e.g. spell slots) once for every target hit by a skill, and it appears to double-charge MP on top of that per-target payment.\nThis modification corrects all of those behaviors to pay the cost once when the skill is performed and to treat TP costs as expected.\nGo to line 1980. Select from 1980 through 1988 and delete it.\nThen go up to line 1883. Replace that whole function from 1883 through 1891 with:\nCode:\nGame_Actor.prototype.paySkillCost = function(skill) {\n    var classMagic = FROG.Magic.getClassMagic(this, skill.stypeId);\n    if (classMagic)\n    {\n        switch (classMagic.resource) {\n            case \"Spell Slots\":\n                FROG.Magic.gainSlotUsed(this, skill, 1);\n\n                // Only remove the spell for Prepared casters, not Hybrid ones\n                if (classMagic.casterType == \"Prepared\") {\n                    FROG.Magic.gainSpellPrepared(this, skill, -1);\n                }\n                break;\n\n            case \"Magic Points\":\n                this._mp -= this.skillMpCost(skill);\n                break;\n\n            case \"Powers\":\n                FROG.Magic.gainPowerUsed(this, skill, 1);\n                break;\n        }\n\n        FROG.Magic.useSpellComponents(this, skill);\n        FROG.Magic.gainSpellXp(this, skill);\n    }\n    this._tp -= this.skillTpCost(skill);\n}\nSpoiler:\nSRD Picture Choices\nThere's what I consider an oversight in this plugin - if the user has set their Window Color to be anything other than the default transparent, that color will bleed over the entire screen when using a picture choice. To correct, save a plugin with the following code:\nCode:\nWindow_PictureChoiceList.prototype.updateTone = function()\n{\n    this.setTone(0, 0, 0);\n};\nSpoiler:\nVictor Engine Action Dodge\nThis plugin appears to be broken out of the box. To make it work correctly, change line 439 to read:\nCode:\nvar elmtnValue = item.damage.elementId<0 ? subject.attackElements() : [item.damage.elementId];\n        elmtnValue = elmtnValue.reduce(function(r, elementId) {\nSpoiler:\nVictor Engine Battle Status Window\nThis plugin has a game-breaking bug out of the box. It will cause the game to crash whenever a skill is selected that does not require target selection. To correct it, swap lines 1376 and 1377. They should read:\nCode:\nthis.setActionIcon();\n        VictorEngine.BattleStatusWindow.onSelectAction.call(this);\nSpoiler:\nVictor Engine Action Resistance, Strengthen\nThese plugins (and possibly others) appear to be broken out of the box. To make it work correctly, save the following as a plugin beneath the Basic Module.\nCode:\nVictorEngine.getAllElements = function(subject, action)\n{\n    let item = (action instanceof Game_Action) ? action.item() : action;\n    if (item.damage.elementId < 0)\n        return subject.attackElements();\n     else\n        return [item.damage.elementId];\n};\nSpoiler:\nVictor Engine Event Conditions\nThis plugin appears to be broken out of the box. To make it work correctly, save the following as a plugin beneath the Event Conditions in your plugin manager.\nCode:\nGame_Event.prototype.meetsConditions = function(page) {\n    var c = page.conditions;\n    if (c.switch1Valid) {\n        if (!$gameSwitches.value(c.switch1Id)) {\n            return false;\n        }\n    }\n    if (c.switch2Valid) {\n        if (!$gameSwitches.value(c.switch2Id)) {\n            return false;\n        }\n    }\n    if (c.variableValid) {\n        if ($gameVariables.value(c.variableId) < c.variableValue) {\n            return false;\n        }\n    }\n    if (c.selfSwitchValid) {\n        var key = [this._mapId, this._eventId, c.selfSwitchCh];\n        if ($gameSelfSwitches.value(key) !== true) {\n            return false;\n        }\n    }\n    if (c.itemValid) {\n        var item = $dataItems[c.itemId];\n        if (!$gameParty.hasItem(item)) {\n            return false;\n        }\n    }\n    if (c.actorValid) {\n        var actor = $gameActors.actor(c.actorId);\n        if (!$gameParty.members().contains(actor)) {\n            return false;\n        }\n    }\n    var condition = VictorEngine.EventConditions.getCustomCondition(page);\n    if (condition)\n        return eval(condition[1]);\n\n    return true;\n};\nSpoiler:\nYanfly Absorption Barrier\nThe default behavior of the barrier is to only absorb damage inflicted by a skill. This plugin will make it absorb all damage, such as negative regeneration (poison) effects.\nCode:\n// Make Yanfly barrier block indirect damage\nGame_Battler.prototype.gainHp = function(value) {\n    var blocked=false;\n    if (value<0 && !BattleManager._subject && this.barrierPoints()>0)\n    {\n        var damage=-value;\n        damage = this.loseBarrier(damage, 1, 0);\n        if (!damage)\n            blocked=true;\n        else\n            value=-damage;\n    }\n    if (!blocked)\n    {\n        this._result.hpDamage = -value;\n        this._result.hpAffected = true;\n        this.setHp(this.hp + value);\n    }\n};\nSpoiler:\nYanfly Action Sequence Pack 3\nAction Sequence Pack 3 adds commands for camera control, but has a bug that causes screen shake commands to not work. To fix this, go to line 830 and add the line:\nCode:\nthis.x += Math.round($gameScreen.shake());\nSpoiler:\nYanfly Animated Sideview Enemies - Death Glow\nThere's a fairly niche bug in the Animated Sideview Enemies plugin. If you have an enemy with the Sideview Collapse notetag who dies and later gets revived, they retain the glow effect from the collapse animation.\nTo fix this, save a plugin with the following code beneath the Sideview Enemies:\nCode:\nSprite_Enemy.prototype.revertToNormal = function() {\n    this._shake = 0;\n    this.blendMode = 0;\n    this.opacity = 255;\n    this.setBlendColor([0, 0, 0, 0]);\n    if (this._svBattlerEnabled)\n    {\n        this._mainSprite.setBlendColor([0, 0, 0, 0]);\n        this._mainSprite.blendMode=0;\n    }\n};\nSpoiler:\nYanfly Animated Sideview Enemies - Facing\nWhen this plugin is enabled, static enemy sprites do not correctly work with facing commands from Action Sequences.\nSave a plugin with the following code and place beneath Animated Enemies in your plugin manager:\nCode:\nSprite_Enemy.prototype.updateScale = function()\n{\n    if (!this._svBattlerEnabled)\n    {\n        var mirror = this.scale.x > 0 ? 1 : -1;\n        this.scale.x = this._enemy.spriteScaleX();\n        this.scale.x = Math.abs(this.scale.x) * mirror;\n    }\n    else\n        this.scale.x = this._enemy.spriteScaleX();\n\n    this.scale.y = this._enemy.spriteScaleY();\n    if (this._stateIconSprite)\n    {\n        var safe = 1 / 100000;\n        var sprite = this._stateIconSprite;\n        sprite.scale.x = 1 / Math.max(safe, Math.abs(this.scale.x));\n        sprite.scale.y = 1 / Math.max(safe, Math.abs(this.scale.y));\n    }\n};\nSpoiler:\nYanfly Auto Passive States - Apply and Remove\nSomething that comes up pretty frequently is the interaction between some of the commands in Yanfly's Buffs & States and Auto Passive States - specifically, that (as unintuitive as it seems) passive states do not execute Custom Apply or Custom Remove Effects. Adding this functionality requires a few steps. First, save the following as a plugin:\nCode:\nGame_BattlerBase.prototype.setCopy = function(value) {\n    this.isCopy=value;\n};\n\nWindow_EquipItem.prototype.updateHelp = function() {\n    Window_ItemList.prototype.updateHelp.call(this);\n    if (this._actor && this._statusWindow) {\n        var actor = JsonEx.makeDeepCopy(this._actor);\n        actor.setCopy(true);\n        actor.forceChangeEquip(this._slotId, this.item());\n        this._statusWindow.setTempActor(actor);\n    }\n};\nThen, in the Yanfly plugin, go to line 419 and add the line:\nCode:\nthis._oldPassives=this._passiveStatesRaw;\nGo to line 444 and add the lines:\nCode:\nif (!this.isCopy && this._oldPassives && !this._oldPassives.contains(raw[i]))\n          this.addStateEffects(raw[i]);\nGo to line 449 and add the lines:\nCode:\nif (!this.isCopy && this._oldPassives)\n    {\n        for (i=0; i<this._oldPassives.length; i++)\n        {\n            if (!raw.contains(this._oldPassives[i]) && !this._checkPassiveStateCondition.contains(this._oldPassives[i]))\n                this.removeStateEffects(this._oldPassives[i]);\n        }\n    }\n    this._oldPassives=undefined;\nGo to line 605 and add the line:\nCode:\nthis._oldPassives=this._passiveStatesRaw;\nFinally, go to line 611 and add the line:\nCode:\nthis._oldPassives=this._passiveStatesRaw;\nSpoiler:\nYanfly Auto Passive States - Switch Fix\nIn the latest version of Auto Passive States, the included switch conditions (and any custom conditions that reference switches) do not function correctly. To fix this, add this plugin:\nCode:\n// Fix for switch conditions\nGame_Map.prototype.refresh = function() {\n    this.events().forEach(function(event) {\n        event.refresh();\n    });\n    this._commonEvents.forEach(function(event) {\n        event.refresh();\n    });\n    this.refreshTileEvents();\n    $gamePlayer.refresh();\n    this._needsRefresh = false;\n};\nSpoiler:\nYanfly Battle AI Core - Eval Conditions\nOddly, even though other default conditions can check attributes of the target, the eval condition does not provide a\ntarget\nvariable. To add this functionality, select lines 1347 - 1353 and delete them. Replace them with:\nCode:\nvar group = this.getActionGroup();\n    if (condition.includes(\"target\"))\n    {\n        let target;\n        for (let i = 0; i < group.length; i++)\n        {\n            if (!group[i])\n                continue;\n \n            target = group[i];\n            try\n            {\n                if (!eval(condition))\n                {\n                    group.splice(i, 1);\n                    i--;\n                }\n            }\n            catch (e)\n            {\n                Yanfly.Util.displayError(e, condition, 'A.I. EVAL ERROR');\n                return false;\n            }\n        }\n        if (group.length > 1)\n        {\n            this.setProperTarget(group);\n            return true;\n        }\n        else\n            return false;\n    }\n    try\n    {\n        if (!eval(condition))\n            return false;\n    }\n    catch (e)\n    {\n        Yanfly.Util.displayError(e, condition, 'A.I. EVAL ERROR');\n        return false;\n    }\nSpoiler:\nYanfly Battle Engine Core Duplicate Damage\nWhen the Show HP Text plugin parameter is on, attacks will cause a duplicate hit reaction to be displayed. Save a plugin with the following code, placed above the Battle Engine Core.\nCode:\nWindow_BattleLog.prototype.displayHpDamage = function(target) {\n    if (target.result().hpAffected) {\n        this.push('addText', this.makeHpDamageText(target));\n    }\n};\nSpoiler:\nYanfly Buffs and States Core Death Remove Effects\nBy default, Custom Remove Effects do not trigger when the states are removed by death. If you would like them to, save a plugin with the following code and put it above all Yanfly plugins in your plugin manager.\nCode:\nGame_BattlerBase.prototype.clearStates = function()\n{\n  if (this._states)\n  {\n    for (let i=0; i<this._states.length; i++)\n    {\n        if (Imported.YEP_X_StateCategories && this.isCustomClearStates() && (($gameTemp._deathStateClear && $dataStates[this._states[i]].category.contains('BYPASS DEATH REMOVAL')) || ($gameTemp._recoverAllClear && $dataStates[this._states[i]].category.contains('BYPASS RECOVER ALL REMOVAL'))))\n            continue;\n \n        this.removeStateEffects(this._states[i]);\n    }\n  }\n    this._states = [];\n    this._stateTurns = {};\n};\nSpoiler:\nYanfly Class Change Core Level Calculation\nThere's a bug in the Class Change Core wherein your level in any class is calculated according to the exp chart of your\ncurrent\nclass. Save a plugin with the following code and place it immediately above the Class Change Core.\nCode:\nGame_Actor.prototype.expForLevel = function(level, classId) {\n    var c = classId ? $dataClasses[classId] : this.currentClass();\n    var basis = c.expParams[0];\n    var extra = c.expParams[1];\n    var acc_a = c.expParams[2];\n    var acc_b = c.expParams[3];\n    return Math.round(basis*(Math.pow(level-1, 0.9+acc_a/250))*level*\n            (level+1)/(6+Math.pow(level,2)/50/acc_b)+(level-1)*extra);\n};\nThen, in Class Change Core, go to line 676 and change it to read:\nCode:\nif (this.expForLevel(level + 1, classId) > this._exp[classId]) break;\nSpoiler:\nYanfly Counter Control Attacker and Defender Conditions\nThere's a bug in Yanfly's Counter Control that causes Attacker and Defender conditions to not be evaluated. To fix this, replace the following lines.\nLine 1227:\n} else if (line.match(/ATTACKER[ ]([^\\s]*)[ ](.*)/i)) {\nLine 1229\nvar value2 = String(RegExp.$2);\nLine 1232\n} else if (line.match(/DEFENDER[ ]([^\\s]*)[ ](.*)/i)) {\nLine 1234\nvar value2 = String(RegExp.$2);\nThanks to\n@caethyril\nfor this fix.\nSpoiler:\nYanfly Counter Control Custom Conditions\nThere's a bug in Yanfly's Counter Control that causes Custom Counter Condition tags to not be evaluated. There are several edits necessary to fix this: go to line 1105 and change it to read:\nCode:\nif (!this.meetCounterConditionsEval(skill, subject, target)) return false;\nThen go to line 1112 and change it to read:\nCode:\nif (skill.counterConditionEval=='') return true;\nLastly, go to line 1122 and change it to read:\nCode:\nvar code = skill.counterConditionEval;\nSpoiler:\nYanfly Counter Control and Element Core\nThe Counter Control as written does not support multi-element attacks created by the Element Core. Making this change will cause the Element: x counter condition to trigger if that element is included in a multiple element hit. Change line 1286 to read:\nCode:\nreturn this._subject.attackElements().contains(elementId) || this._action.getItemElements().contains(elementId);\nSpoiler:\nYanfly Element Core Multi-Element Multiplication\nThe multiplication multi-element rule does not work correctly if the target has a rate of 0% for one of the elements. Add a line after 740:\nCode:\nelements.sort(function(a, b) {return target.elementRate(b)-target.elementRate(a)});\nSpoiler:\nYanfly Enhanced TP Modes - Fix Learn Unlock\nThere's a bug in Enhanced TP Modes that prevents the Learn Unlock notetag from working. Change line 3723 to read:\nCode:\nvar tpMode = skill.learnUnlockedTpModes[i];\nSpoiler:\nYanfly Gab Window - Fix Anti-Repeat\nThere's a bug in Gab Window that makes all gab windows work as if the anti-repeat plugin parameter were on. Credit to\n@Robro33\nfor finding the issue: change line 226 to read:\nCode:\nYanfly.Param.GabAntiRepeat = Yanfly.Parameters['Anti-Repeat'] == \"true\";\nSpoiler:\nYanfly Hide/Show Shop Items - Fix Showing Items\nThere's a bug in Hide/Show Shop Items that causes items to be hidden by default, not evaluated by the plugin parameter. Change line 130 to read:\nCode:\n//  if (!item.note) return false;\nSpoiler:\nYanfly Instant Cast - Fix Battle Start Freeze\nThere's a weirdly blatant bug in Instant Cast wherein winning a battle using an instant cast skill results in the next battle starting with no party/actor command window to continue playing with. Save a plugin with the following code:\nCode:\nvar TUR_endBattle = BattleManager.endBattle;\nBattleManager.endBattle = function(result)\n{\n    this._instantCasting=false;\n    TUR_endBattle.call(this, result);\n};\nSpoiler:\nYanfly Item Requirements - Eval Requirement\nThere's a bug in this plugin which causes the Eval: requirement to always fail. To correct, go to line 528 and change it to read:\nCode:\nvalue = eval(code);\nSpoiler:\nYanfly Life Steal - Overheal\nThere's a pair of typos in this plugin that cause the HP and MP overheal parameters to function backwards (i.e. you can overheal when the settings are false). To correct, go to lines 477 and 493 and put an exclamation mark - ! - before the word Yanfly.\nSpoiler:\nYanfly Message Backlog - Selecting No Item\nAn edge scenario in this plugin causes a crash if the player is given a Select Item screen and has no items to choose. Save the following plugin from\n@caethyril\n:\nCode:\n/*:\n * @target MV\n * @plugindesc Patches YEP Message Backlog - prevent error on selecting null item.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/159752/\n * @help Load this plugin after YEP_X_MessageBacklog.\n *\n * Free to use and/or modify for any project, no credit required.\n */\n;void (function(alias) {\nWindow_EventItem.prototype.backlogAddSelectedChoice = function() {\nif (this.item())  // only if item is truthy\nalias.apply(this, arguments);\n};\n})(Window_EventItem.prototype.backlogAddSelectedChoice);\nSpoiler:\nYanfly Passive Auras\nThe Alive Aura notetags aren't actually included in the plugin. To make this type of aura function, change line 377 to read\nCode:\ncase 'ALIVE': return 'aliveAll';\nSpoiler:\nYanfly Quest Journal - Fix Show Types\nThere's a bug in Yanfly's Quest Journal wherein you select the Quest List Window setting \"Show Types\" to be false, and no quests are listed. This will cause all quests to list correctly under that setting. Change line 2910 to read:\nCode:\nif (type=='' || questData.type === type) result.push(questId);\nSpoiler:\nYanfly Selection Control - Fix Param Conditions\nThere's a bug in Yanfly's Selection Control that makes Param Conditions not function. To fix this, go to line 1464. Add a line that says:\nCode:\nvar evalResult;\nThen, go to the new line 1467 and change it to read:\nCode:\nevalResult = eval(code);\nThen go to line 1471 and add the line\nCode:\nreturn evalResult;\nSpoiler:\nYanfly Selection Control - Fix Row Conditions\nFor some reason, Yanfly's Selection Control intentionally ignores row-based selection restrictions on skills with a scope of allies. To make these function correctly, delete (in order) lines 1406, 1411 and 1416 (before deleting anything, that's lines 1406, 1412 and 1418).\nSpoiler:\nYanfly Selection Control - Fix Custom User References\nYanfly's Selection Control has a bug where references to\nuser\nin a Custom Select Condition always refer to the first actor to choose their action that turn. To make these notetags function correctly, save a plugin with the following code:\nCode:\nvar origSetActionState = Game_Battler.prototype.setActionState;\nGame_Battler.prototype.setActionState = function(actionState) {\n   origSetActionState.call(this, actionState);\n    if (actionState == \"inputting\")\n        $gameTemp.clearSelectionControlCache();\n};\nSpoiler:\nYanfly Selection Control - Fix Actor Order\nThis plugin modifies the order that battlers are cycled through to be by screen position - so no matter what order you added the enemies to the troop, left/right will move left and right across the screen. That works perfectly for enemies, but can be screwy with actors depending on your formation of them and whether that order changes when an actor steps forward to take their turn.\nIt will be more intuitive to make sure the actors are always scrolled through in party order (and this works particularly well with \"Use Up/Down,\" below).\nPlace your cursor at the beginning of line 1555 and type /* to begin a comment. Place your cursor at the\nend\nof line 1560 and type */ to end the comment. This makes the code non-functional without deleting it.\nThen add a new line and paste in:\nCode:\nthis._enemies.sort(function(a, b) {\n      if (a.isActor() && b.isActor())\n          return a.index() - b.index();\n      else if (a.isActor() != b.isActor())\n          return a.isActor() ? 1 : -1;\n      else if (a.spritePosX() === b.spritePosX()) {\n        return a.spritePosY() - b.spritePosY();\n      }\n      else\n        return a.spritePosX() - b.spritePosX();\n    });\nSpoiler:\nYanfly Selection Control - Fix Item and Skill Separation\nCourtesy of\n@Robro33\n- there's a bug in the plugin where any skills and items that have the same ID will use the selection control notetags from the item.\nChange lines 766, 777, and 787 to read:\nCode:\nif (DataManager.isItem(item)) {\nSpoiler:\nYanfly Selection Control - Use Up/Down\nIn the default battle engine, when you're using an effect that targets party members, you use up/down to select the target. This makes sense both because your party members are arranged vertically, and because you can see their names listed vertically on the bottom.\nHowever, when using a skill that has been modified with selection control (you can only target party members afflicted with blind for your cure-blind spell), up and down no longer work, and you're forced to use left and right. The below plugin will restore the ability to use up and down again.\nCode:\n// Make up and down work with Yanfly Selection Control\nWindow_Selectable.prototype.processCursorMove = function() {\n    if (this.isCursorMovable()) {\n        var lastIndex = this.index();\n        if (Input.isRepeated('down')) {\n            if (SceneManager._scene._enemyWindow && SceneManager._scene._enemyWindow.active)\n                this.cursorRight(Input.isTriggered('right'));\n            else\n                this.cursorDown(Input.isTriggered('down'));\n        }\n        if (Input.isRepeated('up')) {\n            if (SceneManager._scene._enemyWindow && SceneManager._scene._enemyWindow.active)\n                this.cursorLeft(Input.isTriggered('left'));\n            else\n                this.cursorUp(Input.isTriggered('up'));\n        }\n        if (Input.isRepeated('right')) {\n            this.cursorRight(Input.isTriggered('right'));\n        }\n        if (Input.isRepeated('left')) {\n            this.cursorLeft(Input.isTriggered('left'));\n        }\n        if (!this.isHandled('pagedown') && Input.isTriggered('pagedown')) {\n            this.cursorPagedown();\n        }\n        if (!this.isHandled('pageup') && Input.isTriggered('pageup')) {\n            this.cursorPageup();\n        }\n        if (this.index() !== lastIndex) {\n            SoundManager.playCursor();\n        }\n    }\n};\nSpoiler:\nYanfly Skill Core - Fix Custom Show Eval\nThere's a bug in Yanfly's Skill Core that makes Custom Show conditions not function. To fix this, go to line 765 and change it to read:\nCode:\nvisible=eval(code);\nSpoiler:\nYanfly Skill Learn System - Fix Actor Change\nThere's a very niche bug when using the Skill Learn System with the Class Change System. If you're looking at the available skills for an actor to learn and you use page up/down to change to an actor who doesn't know as many classes, the game will crash.\nTo fix this, go to line 1703, add a line, and paste in:\nCode:\nif (Imported.YEP_ClassChangeCore)\n        this._commandWindow._index=0;\nSpoiler:\nYanfly Skill Learn System - Fix Learn Show Eval\nThere's a bug in Yanfly's Skill Learn System where using a Learn Show Eval to show a skill in an actor's list of learnable skills also makes it automatically learnable (thus defeating the purpose of requirements and the Learn Require Eval). To fix this, select lines 933 and 934 and\ncut\nthem. Go to line 927, add a line, and paste those two lines in.\nNow, using a Learn Show Eval will make a skill show up in the actor's list, but it will be greyed out and disabled until they actually meet the requirements.\nSpoiler:\nYanfly Stat Allocation - Fix Gain Bonus AP\nBy default, there is a bug in the gainBonusAp() method where it sets the actor's AP to the passed value, rather than adds to it. To correct, change line 1160 to read\nCode:\nvalue += ap;\nSpoiler:\nYanfly STB - Fix Cannot Move\nBy default, the STB does not check for an actor to have the Cannot Move restriction from a state before starting their turn. This causes the battle log to not display the state persists message, as well as other small glitches. To correct, change line 322 to read:\nCode:\nif (this.isSTB() && subject.isActor() && subject.canInput()) {\nSpoiler:\nYanfly Target Core - Fix Target: Everybody\nUsing the <Target: Everybody> notetag causes the effect to only target one party member when used from the menu. The below plugin will make it correctly target all party members.\nCode:\nGame_Action.prototype.isForAll = function() {\n    return this.checkItemScope([2, 8, 10, \"EVERYBODY\"]);\n};\nSpoiler:\nYanfly Utility Common Events\nThere is a bug in this plugin that prevents the Escape event from ever being called. On line 36 of the plugin, change the words \"Escape Battle Event\" to read \"Battle Escape Event\"\nSpoiler:\nYanfly Weapon Animation\nThere are bugs in this plugin that don't correctly read the Weapon Animation notetag and incorrectly displays it as a dual wielding attack when using only one weapon.\nOn lines 421, 426, and 430, change it to read:\nreturn this._cacheWeaponAni;\nThen, on line 446, change it to read\nCode:\nif (this.weapons().length>1 && this.getUniqueWeaponAni()) return this.getUniqueWeaponAni();\nStandalone plugins:\nCustom Hit Formula for MZ\nChanting Animations for MZ/MV\nActivate Equipment\nRelease Enemies\nAction Sequence Rotation Extension\nAction Sequence Targets Extension\nSubclass Mods Extension\nParty Approval\nProfanity Filter for MZ/MV\nEval Tags MZ\nChristmas Calendar Plugins\nDynamic Battlebacks for MV/MZ\nAttack Sounds for MV/MZ\nLoading Map for MV/MZ\nEquipment Levels\nEncounter Control for MV/MZ\nStep Variance for MV/MZ\nBattle Macros for MV/MZ\nCombo Actions for MV/MZ\nLevel Cap for MV/MZ\nPress Turn Battle\nRotate Move (MV/MZ)\nItem Suite MZ"
+    },
+    {
+      "post_id": "js-post-1230469",
+      "author": "ATT_Turan",
+      "date": "2021-11-21T01:47:17+0900",
+      "body": "Added a fix for Custom Show Eval in Yanfly Skill Core."
+    },
+    {
+      "post_id": "js-post-1230480",
+      "author": "TobyYasha",
+      "date": "2021-11-21T02:43:08+0900",
+      "body": "Thanks for the fixes, i'm already using the yanfly selection up/down fix.\nI do remember having some problems with the yanfly's counter conditions and the skill show eval so when i might need them i'll surely get them from here."
+    },
+    {
+      "post_id": "js-post-1230491",
+      "author": "lianderson",
+      "date": "2021-11-21T03:42:19+0900",
+      "body": "Oooooooooooo, these are fancy. Good job human!"
+    },
+    {
+      "post_id": "js-post-1237121",
+      "author": "ATT_Turan",
+      "date": "2021-12-18T14:47:28+0900",
+      "body": "Added a fix for row-based selection restrictions in Selection Control."
+    },
+    {
+      "post_id": "js-post-1239462",
+      "author": "Blackfield",
+      "date": "2021-12-28T21:57:47+0900",
+      "body": "Amazing thanks! Please add terms of use if you like. For now I presume it is free for commercial and non commercial use? Credits?"
+    },
+    {
+      "post_id": "js-post-1239617",
+      "author": "ATT_Turan",
+      "date": "2021-12-29T09:23:44+0900",
+      "body": "Most of this isn't my whole work, I'm just fixing/augmenting existing plugins, so you'd adhere to the terms of those plugins. For the few little snippets that are mine, they're free to use in any project without credit."
+    },
+    {
+      "post_id": "js-post-1239690",
+      "author": "JPlaysan",
+      "date": "2021-12-29T17:07:56+0900",
+      "body": "@ATT_Turan\nCould you have a look at yanfly's equip skill slots plugin if you have it when you can? There seems to be a bug (I think) with skills appearing since one would have to leave the skill menu then return to it for the skill(s) in question to appear for it to be equipped in a skill slot. I'll have to revisit this issue I find to be having to possibly screenshot or take a short video of it."
+    },
+    {
+      "post_id": "js-post-1239860",
+      "author": "ATT_Turan",
+      "date": "2021-12-30T08:16:00+0900",
+      "body": "@JPlaysan\nI'm happy to take a look, but that description is pretty confusing. Please take some screenshots and make a list of instructions in complete sentences of what you're doing and what you think is wrong.\nThen I'll see if I can reproduce it as a bug."
+    },
+    {
+      "post_id": "js-post-1250621",
+      "author": "ATT_Turan",
+      "date": "2022-02-09T02:32:40+0900",
+      "body": "Added a plugin for the Phantasy Star-style wall slide."
+    },
+    {
+      "post_id": "js-post-1250802",
+      "author": "Blackfield",
+      "date": "2022-02-09T21:32:46+0900",
+      "body": "Is there any chance you can have a look at a problem I am experiencing with the YEP Dragonbones integration?\nMV - KelYep DragonBones doesn't show flashes\nHi! I am using the animations in the database to make characters flash, following the instructions from here: https://forums.rpgmakerweb.com/index.php?threads/flashing-color-on-character-events.89557/  However it didn't work anymore at some point. Now I started looking for the error and found...\nforums.rpgmakerweb.com\nFor some reason characters don't flash anymore using the flash-animation from the database... I don't know enough about the Engine but from my perspective that could be an easy fix?"
+    },
+    {
+      "post_id": "js-post-1250816",
+      "author": "ATT_Turan",
+      "date": "2022-02-09T22:40:55+0900",
+      "body": "@Blackfield\nI'll take a look at your thread later, but I don't promise much - I don't have any experience with Dragonbones."
+    },
+    {
+      "post_id": "js-post-1253003",
+      "author": "ATT_Turan",
+      "date": "2022-02-18T12:36:10+0900",
+      "body": "Updated with a fix for Target: Everybody in Yanfly's Target Core."
+    },
+    {
+      "post_id": "js-post-1266031",
+      "author": "ATT_Turan",
+      "date": "2022-04-07T01:54:10+0900",
+      "body": "Updated to make Counter Control compatible with Element Core."
+    },
+    {
+      "post_id": "js-post-1286494",
+      "author": "ATT_Turan",
+      "date": "2022-07-08T10:25:30+0900",
+      "body": "Added a fix for Yanfly's Skill Learn System's Learn Show Eval."
+    },
+    {
+      "post_id": "js-post-1289974",
+      "author": "ATT_Turan",
+      "date": "2022-07-25T11:53:17+0900",
+      "body": "Added a fix for Yanfly's Utility Common Events."
+    },
+    {
+      "post_id": "js-post-1295432",
+      "author": "ATT_Turan",
+      "date": "2022-08-18T22:49:03+0900",
+      "body": "Added a fix for Yanfly's Quest Journal."
+    },
+    {
+      "post_id": "js-post-1295447",
+      "author": "Roninator2",
+      "date": "2022-08-18T23:29:37+0900",
+      "body": "ATT_Turan said:\nAdded a fix for Yanfly's Quest Journal.\nClick to expand...\nATT_Turan said:\nChange line 2914 to read:\nClick to expand...\nDid you mean a different line?\nIn the plugin I see 2914 as blank, just after the close bracket for Game_System.prototype.getTypeQuests = function(category, type)\nThat's from v1.02\nv1.01 has line 2914 the close bracket for Game_System.prototype.getQuestDescriptionIndex = function(questId)"
+    },
+    {
+      "post_id": "js-post-1295452",
+      "author": "ATT_Turan",
+      "date": "2022-08-18T23:38:42+0900",
+      "body": "Roninator2 said:\nDid you mean a different line?\nIn the plugin I see 2914 as blank, just after the close bracket for Game_System.prototype.getTypeQuests = function(category, type)\nClick to expand...\nHuh! That's weird. For some reason, the copy of the file in my game project has more lines someplace than the copy from the complete library zip file, but they're both version 1.02.\nI'll correct it - that should be line 2910."
+    },
+    {
+      "post_id": "js-post-1303413",
+      "author": "ATT_Turan",
+      "date": "2022-10-01T02:26:52+0900",
+      "body": "Added a fix for Frogboy's Magic system."
+    },
+    {
+      "post_id": "js-post-1305569",
+      "author": "ATT_Turan",
+      "date": "2022-10-13T05:54:07+0900",
+      "body": "Added a new fix to make Yanfly Selection Control scroll through actors in party order."
+    },
+    {
+      "post_id": "js-post-1318281",
+      "author": "ATT_Turan",
+      "date": "2022-12-29T02:04:14+0900",
+      "body": "Updated with the fix by\n@caethyril\nfor Yanfly's Counter Control Attacker and Defender conditions."
+    },
+    {
+      "post_id": "js-post-1320595",
+      "author": "ATT_Turan",
+      "date": "2023-01-10T04:07:40+0900",
+      "body": "Updated the Wall Slide so you won't slide around events (NPCs and chests you want to walk up to)."
+    },
+    {
+      "post_id": "js-post-1328168",
+      "author": "zelanius",
+      "date": "2023-02-13T18:30:52+0900",
+      "body": "Hi\n@ATT_Turan\n, Yanfly updated his Utility Common Event over the weekend to fix the bug that you mentioned, and it seems to be working correct now when I tried it out. Just FYI."
+    },
+    {
+      "post_id": "js-post-1328212",
+      "author": "ATT_Turan",
+      "date": "2023-02-14T03:00:45+0900",
+      "body": "Thanks,\n@zelanius\n! I saw the e-mail from itch about the bundle being updated, but I didn't click into it to see which specific file or fix."
+    },
+    {
+      "post_id": "js-post-1342538",
+      "author": "ATT_Turan",
+      "date": "2023-04-18T22:33:07+0900",
+      "body": "Updated with a fix for Yanfly Weapon Animation."
+    },
+    {
+      "post_id": "js-post-1348010",
+      "author": "ATT_Turan",
+      "date": "2023-05-10T11:52:03+0900",
+      "body": "Updated with a fix for Victor Engine Event Conditions."
+    },
+    {
+      "post_id": "js-post-1351247",
+      "author": "ATT_Turan",
+      "date": "2023-05-24T03:34:47+0900",
+      "body": "Updated with\ntwo\nnew fixes for Yanfly's Animated Sideview Enemies and Skill Learn System."
+    },
+    {
+      "post_id": "js-post-1355913",
+      "author": "ATT_Turan",
+      "date": "2023-06-12T21:01:38+0900",
+      "body": "Updated with a fix for Yanfly's Enhanced TP Modes."
+    },
+    {
+      "post_id": "js-post-1358982",
+      "author": "ATT_Turan",
+      "date": "2023-06-24T23:11:01+0900",
+      "body": "Added an edit for the Buffs and States Core for\n@coucassi\n."
+    },
+    {
+      "post_id": "js-post-1365630",
+      "author": "ATT_Turan",
+      "date": "2023-07-19T01:00:37+0900",
+      "body": "Updated with a fix for Yanfly's Hide/Show Shop Items."
+    },
+    {
+      "post_id": "js-post-1365635",
+      "author": "Sword_of_Dusk",
+      "date": "2023-07-19T01:04:48+0900",
+      "body": "Was waiting for this when I saw your post in the topic about this plugin. I swear, starting to think Yanfly ought to pay you a few bucks for all these fixes."
+    },
+    {
+      "post_id": "js-post-1368198",
+      "author": "ATT_Turan",
+      "date": "2023-07-27T23:17:15+0900",
+      "body": "Updated with a fix from\n@caethyril\nfor Yanfly's Message Backlog."
+    },
+    {
+      "post_id": "js-post-1370305",
+      "author": "ATT_Turan",
+      "date": "2023-08-03T01:18:14+0900",
+      "body": "Added a fix for Yanfly Instant Cast making the next battle unplayable if you win the previous one with an instant skill."
+    },
+    {
+      "post_id": "js-post-1371891",
+      "author": "AquaEcho",
+      "date": "2023-08-09T00:36:07+0900",
+      "body": "ATT_Turan said:\n// Allow two events to move through each other if they both have the <passable> notetag Game_Event.prototype.isCollidedWithEvents = function(x, y) { var events = $gameMap.eventsXyNt(x, y); return $dataMap.events[this._eventId].meta[\"passable\"] && events.length>0 ? !events.some(event => $dataMap.events[event._eventId].meta[\"passable\"]) : events.length>0; };\nClick to expand...\nAny way to edit this so the player can pass through an event with a notetag? I was working on a\nhorseback riding mechanism\nwhich mostly works but there's some wonkiness dismounting the horse where sometimes the player gets stuck on the horse event."
+    },
+    {
+      "post_id": "js-post-1371894",
+      "author": "ATT_Turan",
+      "date": "2023-08-09T00:45:57+0900",
+      "body": "AquaEcho said:\nAny way to edit this so the player can pass through an event with a notetag?\nClick to expand...\nCan you not set the horse event Through on? If there's a reason that can't work, send me some more details (maybe a demo project?) and I'd be happy to help."
+    },
+    {
+      "post_id": "js-post-1371895",
+      "author": "AquaEcho",
+      "date": "2023-08-09T00:53:08+0900",
+      "body": "ATT_Turan said:\nCan you not set the horse event Through on? If there's a reason that can't work, send me some more details (maybe a demo project?) and I'd be happy to help.\nClick to expand...\nI did the opposite: set the player to through while dismounting. 90 percent of the time it works, but occasionally it doesn't and you're stuck bound to the horse until you leave the map. Seems like the issue is the plugin unbinding script doesn't fire off sometimes."
+    },
+    {
+      "post_id": "js-post-1371896",
+      "author": "ATT_Turan",
+      "date": "2023-08-09T00:55:15+0900",
+      "body": "AquaEcho said:\nSeems like the issue is the plugin unbinding script doesn't fire off sometimes.\nClick to expand...\nThat's with the ct_bolt plugin? It might make more sense to try to fix that rather than work around it more. Let me know if you have a little test project you want a second pair of eyes on."
+    },
+    {
+      "post_id": "js-post-1371899",
+      "author": "AquaEcho",
+      "date": "2023-08-09T01:14:31+0900",
+      "body": "I'll work on it some more to see if I can isolate the issue and let you know if I need more help.\nEdit: I put in a couple wait 3 frames after unbinding and setting player to through and that seems to have solved the issue. Crisis averted."
+    },
+    {
+      "post_id": "js-post-1376982",
+      "author": "ATT_Turan",
+      "date": "2023-08-29T04:20:05+0900",
+      "body": "Updated with a fix for Victor Engine Action Dodge."
+    },
+    {
+      "post_id": "js-post-1378770",
+      "author": "Robro33",
+      "date": "2023-09-05T22:03:20+0900",
+      "body": "ATT_Turan said:\nBy default, Custom Remove Effects do not trigger when the states are removed by death. If you would like them to, save a plugin with the following code and put it above all Yanfly plugins in your plugin manager.\nCode:\nGame_BattlerBase.prototype.clearStates = function() {\nfor (let i=0; i<this._states.length; i++)\n{\nif (Imported.YEP_X_StateCategories && this.isCustomClearStates() && (($gameTemp._deathStateClear && $dataStates[this._states[i]].category.contains('BYPASS DEATH REMOVAL')) || ($gameTemp._recoverAllClear && $dataStates[this._states[i]].category.contains('BYPASS RECOVER ALL REMOVAL'))))\ncontinue;\n\nthis.removeState(this._states[i]);\n}\nthis._states = [];\nthis._stateTurns = {};\n};\nClick to expand...\nHaving a little trouble with this one. I made a fresh project to make sure it wasnt my plugins and checked all the versions to make sure i dont have some old copies somehow but it still doesnt work. Console says that this._states.length on line 2 is undefined even though its correct and works without the plugin? This happens at the start of any play test"
+    },
+    {
+      "post_id": "js-post-1378779",
+      "author": "ATT_Turan",
+      "date": "2023-09-05T22:32:15+0900",
+      "body": "@Robro33\nStick it inside a conditional to make sure the property has been initialized.\nCode:\nGame_BattlerBase.prototype.clearStates = function() \n{\n  if (this._states)\n  {\n    for (let i=0; i<this._states.length; i++)\n    {\n        if (Imported.YEP_X_StateCategories && this.isCustomClearStates() && (($gameTemp._deathStateClear && $dataStates[this._states[i]].category.contains('BYPASS DEATH REMOVAL')) || ($gameTemp._recoverAllClear && $dataStates[this._states[i]].category.contains('BYPASS RECOVER ALL REMOVAL'))))\n            continue;\n \n        this.removeState(this._states[i]);\n    }\n  }\n    this._states = [];\n    this._stateTurns = {};\n};"
+    },
+    {
+      "post_id": "js-post-1378780",
+      "author": "ShadowDragon",
+      "date": "2023-09-05T22:34:28+0900",
+      "body": "@Robro33\n, also make sure that TUR__YEPDeathRemoval is below YEP_BuffsStateCore and not above\nto read the values corerctly from YEP plugin."
+    },
+    {
+      "post_id": "js-post-1378789",
+      "author": "Robro33",
+      "date": "2023-09-05T23:35:16+0900",
+      "body": "ATT_Turan said:\n@Robro33 Stick it inside a conditional to make sure the property has been initialized.\nClick to expand...\nAh, thanks. it works like a charm!\nShadowDragon said:\n@Robro33 , also make sure that TUR__YEPDeathRemoval is below YEP_BuffsStateCore and not above\nto read the values corerctly from YEP plugin.\nClick to expand...\nwas just following the instructions, but when I had the error the first time, shifting around the plugin's placement was one of the first things i did. no position prevented the crash"
+    },
+    {
+      "post_id": "js-post-1380189",
+      "author": "ATT_Turan",
+      "date": "2023-09-12T00:27:37+0900",
+      "body": "Updated with a fix for Victor Engine Battle Status Window."
+    },
+    {
+      "post_id": "js-post-1381459",
+      "author": "ATT_Turan",
+      "date": "2023-09-17T07:58:24+0900",
+      "body": "Added a fix for incorrect level calculations in Yanfly's Class Change Core."
+    },
+    {
+      "post_id": "js-post-1386076",
+      "author": "Shamil0",
+      "date": "2023-10-04T00:52:42+0900",
+      "body": "I don't get what i'm doing wrong, i've added the DeathRemoval thing for the yanfly buffstatescore plugin, however even when dying it doesn't work, am i doing something wrong?\n<Custom Apply Effect>\nuser._holyguidance = user.def - user.mdf;\nuser.addMdf(user._holyguidance);\n</Custom Apply Effect>\n\n<Custom Remove Effect>\nuser.minusMdf(user._holyguidance);\nuser._holyguidance = undefined;\n</Custom Remove Effect>"
+    },
+    {
+      "post_id": "js-post-1386084",
+      "author": "ATT_Turan",
+      "date": "2023-10-04T01:13:22+0900",
+      "body": "@Shamil0\nI don't know. I used a basic setup and it works for me.\nI put the notetag:\nCode:\n<Custom Remove Effect>\nconsole.log(\"Executed!\");\n</Custom Remove Effect>\nand it produced the expected result when the actor died in battle:\nTry pressing F8, go to the Console tab, see if there are any errors in there indicating the plugin code isn't loading or your code isn't running.\nYou're using script calls from Yanfly's Base Parameter Control, which I don't see in your plugin manager above.\nAdditionally, if it is there but off the screen, that's in the wrong place. It should be immediately beneath the Core Engine.\nDouble check the order of plugins on the Yanfly Engine Web page, make sure yours are exactly in that order. Not following it can cause random bugs."
+    },
+    {
+      "post_id": "js-post-1386092",
+      "author": "Shamil0",
+      "date": "2023-10-04T01:34:10+0900",
+      "body": "ATT_Turan said:\nTry pressing F8, go to the Console tab, see if there are any errors in there indicating the plugin code isn't loading or your code isn't running.\nClick to expand...\nThis is what im getting, idk what it means im honestly not the smartest person ever lol.\nAlso i just changed the plugins in the correct order, still have to fix the rest in order but ye"
+    },
+    {
+      "post_id": "js-post-1386095",
+      "author": "ATT_Turan",
+      "date": "2023-10-04T01:50:07+0900",
+      "body": "@Shamil0\nAre you using an outdated version of MV? That syntax is in ES6 which MV supports as of...I think, like, version 1.4.\nIf you open your rpg_core.js file, what does it say at the top?"
+    },
+    {
+      "post_id": "js-post-1386098",
+      "author": "Shamil0",
+      "date": "2023-10-04T02:44:55+0900",
+      "body": "Its 1.6.2, but also weirdly I reinstalled the rpgmaker and its working now... no clue how but yeah"
+    },
+    {
+      "post_id": "js-post-1386099",
+      "author": "ATT_Turan",
+      "date": "2023-10-04T02:48:00+0900",
+      "body": "@Shamil0\nAlright, good luck with your project!"
+    },
+    {
+      "post_id": "js-post-1394424",
+      "author": "ATT_Turan",
+      "date": "2023-11-05T13:24:38+0900",
+      "body": "Updated with a fix for SRD's Picture Choices."
+    },
+    {
+      "post_id": "js-post-1398314",
+      "author": "ATT_Turan",
+      "date": "2023-11-21T02:07:04+0900",
+      "body": "Added fixes for Yanfly's Element Core's Multiplication Multi-Element Rule and Yanfly's Battle Engine Core."
+    },
+    {
+      "post_id": "js-post-1410128",
+      "author": "Robro33",
+      "date": "2023-12-29T22:42:03+0900",
+      "body": "Found a thing\nThe Buffs and States fix to allow death to trigger remove effects seems to also remove states with <Category: Bypass Death Removal> when a battler also has a state without that tag on them. it seems to be tied to the battler refreshing. i had noticed that at some point, clearStates() was being ran twice on death with the second being while $gameTemp._deathStateClear was false in some cases, resulting in states with the bypass death tag to be cleared anyways. Changing the removeState within the plugin for eraseState and not triggering the refresh seems to fix it\n-blank project-\nplugins\ntest state\nmethod of killing\nturn 1 - Apply test states to actors 1 and 3\nturn 2 - actor 1 guards, actor 2 uses an item to kill actor 1, actor 3 uses item on self"
+    },
+    {
+      "post_id": "js-post-1410130",
+      "author": "ATT_Turan",
+      "date": "2023-12-29T22:49:20+0900",
+      "body": "@Robro33\nThe problem is that eraseStates() doesn't call the remove eval notetags, so that fix defies the point of the snippet in the first place.\nDo you have a test project you set this up with I can mess with?"
+    },
+    {
+      "post_id": "js-post-1410133",
+      "author": "Robro33",
+      "date": "2023-12-29T22:55:06+0900",
+      "body": "yeah, ill zip it and send it when it uploads to drive\nATT_Turan said:\nThe problem is that eraseStates() doesn't call the remove eval notetags, so that fix defies the point of the snippet in the first place.\nClick to expand...\ni wouldnt have even noticed that until way down the line"
+    },
+    {
+      "post_id": "js-post-1413822",
+      "author": "ATT_Turan",
+      "date": "2024-01-12T02:59:41+0900",
+      "body": "Updated with a correction on the Yanfly Buffs & States Death Removal Effects."
+    },
+    {
+      "post_id": "js-post-1416229",
+      "author": "ATT_Turan",
+      "date": "2024-01-21T10:38:53+0900",
+      "body": "Added a fix for Yanfly's STB's interaction with states that have the Cannot Move restriction."
+    },
+    {
+      "post_id": "js-post-1419376",
+      "author": "ATT_Turan",
+      "date": "2024-02-02T03:28:07+0900",
+      "body": "Updated with another fix for Yanfly's Selection Core."
+    },
+    {
+      "post_id": "js-post-1427418",
+      "author": "ATT_Turan",
+      "date": "2024-03-04T13:51:49+0900",
+      "body": "Added a fix for DreamX's Show Params plugin when used with custom parameters from Quasi's Param Plus."
+    },
+    {
+      "post_id": "js-post-1432318",
+      "author": "ATT_Turan",
+      "date": "2024-03-24T11:31:45+0900",
+      "body": "Updated with a fix for Victor Engine's Action Strengthen, Resistance, possibly other plugins."
+    },
+    {
+      "post_id": "js-post-1432322",
+      "author": "Sword_of_Dusk",
+      "date": "2024-03-24T11:55:55+0900",
+      "body": "You have been awarded the title of\nPlugin Repair Man\n!"
+    },
+    {
+      "post_id": "js-post-1432613",
+      "author": "slickdeath97",
+      "date": "2024-03-25T17:36:55+0900",
+      "body": "Out of curiosity, is there a reason why after putting in the learn skill fixes, when I go to my skills or class for an actor, the learn skills option is no longer available on my screen?\nDoesn't show up on my skills or class page."
+    },
+    {
+      "post_id": "js-post-1432642",
+      "author": "ATT_Turan",
+      "date": "2024-03-25T21:42:12+0900",
+      "body": "@slickdeath97\nErm...the screenshot for your plugin parameters says both Show and Enable Command are false."
+    },
+    {
+      "post_id": "js-post-1432742",
+      "author": "slickdeath97",
+      "date": "2024-03-26T03:28:50+0900",
+      "body": "ATT_Turan said:\n@slickdeath97\nErm...the screenshot for your plugin parameters says both Show and Enable Command are false.\nClick to expand...\nEven when they are both set to true, it still won't show in either screen:"
+    },
+    {
+      "post_id": "js-post-1432743",
+      "author": "BK-tdm",
+      "date": "2024-03-26T03:34:01+0900",
+      "body": "i will play around witht the wall slide one, is there a simple-ish way to \"change\" player sprite while the sliding happens? because im getting a nice idea for this."
+    },
+    {
+      "post_id": "js-post-1432744",
+      "author": "Roninator2",
+      "date": "2024-03-26T03:34:04+0900",
+      "body": "slickdeath97 said:\nEven when they are both set to true, it still won't show in either screen:\nClick to expand...\nMaybe change the plugin order?"
+    },
+    {
+      "post_id": "js-post-1432745",
+      "author": "slickdeath97",
+      "date": "2024-03-26T03:36:35+0900",
+      "body": "Roninator2 said:\nMaybe change the plugin order?\nClick to expand...\nCan't because YEP plugins have to be in the order as they are on yanfly's site."
+    },
+    {
+      "post_id": "js-post-1432747",
+      "author": "ATT_Turan",
+      "date": "2024-03-26T03:45:54+0900",
+      "body": "@slickdeath97\nI'm not sure what to tell you. These are both fixes that I've implemented in my current project, so I can verify they work just fine.\nI can only presume you might have implemented them correctly, so I would suggest copying a vanilla version of the plugin back into your folder and doing the changes again. If that still doesn't work, you can post screenshots of the pertinent lines.\n@BK-tdm\nNot\nreally\n- it just calls the default method for moving, same as if you had pressed the key for the other direction.\nI don't know what your degree of JS proficiency is, you could try copying that function with a different name, adding code that turns on/off a switch or something, then calling that renamed version in my code."
+    },
+    {
+      "post_id": "js-post-1432749",
+      "author": "slickdeath97",
+      "date": "2024-03-26T03:55:55+0900",
+      "body": "ATT_Turan said:\nTo fix this, select lines 935 and 936 and\ncut\nthem. Go to line 927, add a line, and paste those two lines in.\nClick to expand...\nATT_Turan said:\nTo fix this, go to line 1703, add a line, and paste in:\nCode:\nif (Imported.YEP_ClassChangeCore)\nthis._commandWindow._index=0;\nClick to expand...\nDid exactly what you said and they still disappear from both skills and class menu."
+    },
+    {
+      "post_id": "js-post-1432751",
+      "author": "ATT_Turan",
+      "date": "2024-03-26T04:12:05+0900",
+      "body": "@slickdeath97\nYou're looking at the wrong plugin. To be fair, I labeled it incorrectly in the spoiler button (and I'll fix that), but the beginning of my instructions say:\nThat fix is for Skill Core, not Skill Learn."
+    },
+    {
+      "post_id": "js-post-1432754",
+      "author": "ShadowDragon",
+      "date": "2024-03-26T04:22:16+0900",
+      "body": "BK-tdm said:\ni will play around witht the wall slide one, is there a simple-ish way to \"change\" player sprite while the sliding happens? because im getting a nice idea for this.\nClick to expand...\nthere is, you can use a \"isTriggered\" longpress and change sprite.\nthe easiest way is to set a region where you can slide, than if its on it and you\nlongpress the button, the sprite is changed, else turn it back.\nthis works for me though."
+    },
+    {
+      "post_id": "js-post-1432755",
+      "author": "slickdeath97",
+      "date": "2024-03-26T04:24:09+0900",
+      "body": "ATT_Turan said:\n@slickdeath97\nYou're looking at the wrong plugin. To be fair, I labeled it incorrectly in the spoiler button (and I'll fix that), but the beginning of my instructions say:\nView attachment 299652\nThat fix is for Skill Core, not Skill Learn.\nClick to expand...\nNoted. Got it fixed right. Thanks. How would I get it to show skills to learn for only the classes that are equipped onto the characters instead of showing all the classes?"
+    },
+    {
+      "post_id": "js-post-1432757",
+      "author": "ATT_Turan",
+      "date": "2024-03-26T04:37:53+0900",
+      "body": "slickdeath97 said:\nNoted. Got it fixed right. Thanks. How would I get it to show skills to learn for only the classes that are equipped onto the characters instead of showing all the classes?\nClick to expand...\nAre you asking to skip the window where you choose which class you're learning skills for?\nI'd suggest you check the plugin parameters for both Skill Learn and Class Change to see if that's already an option; if not, it would be the subject of a separate plugin support thread."
+    },
+    {
+      "post_id": "js-post-1448541",
+      "author": "IndividuallyWrapped",
+      "date": "2024-06-04T01:07:37+0900",
+      "body": "@ATT_Turan\nYou mentioned a battle buttons plugin in another thread a while back. Do you have an MZ plugin that allows to create buttons tied to skills?"
+    },
+    {
+      "post_id": "js-post-1448544",
+      "author": "ATT_Turan",
+      "date": "2024-06-04T01:28:59+0900",
+      "body": "@IndividuallyWrapped\nYes, it's in the Christmas Calendar thread:\nTuran's Christmas Calendar - Day 7\nMerry Christmas, everyone!  I've been particularly inspired by the multitude of Advent calendars this year, so I decided at the last minute to try to produce some seasonal community contributions of my own.  For those whose Christmas knowledge is primarily secular, a touch of background...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1449801",
+      "author": "ATT_Turan",
+      "date": "2024-06-10T10:59:51+0900",
+      "body": "Corrected a typo in the fix for Yanfly's Selection Param conditions."
+    },
+    {
+      "post_id": "js-post-1452594",
+      "author": "ATT_Turan",
+      "date": "2024-06-23T09:53:38+0900",
+      "body": "Updated with a correction for Yanfly's Life Steal."
+    },
+    {
+      "post_id": "js-post-1452840",
+      "author": "ATT_Turan",
+      "date": "2024-06-24T12:41:34+0900",
+      "body": "Updated with a fix for MV's core Change Class event command."
+    },
+    {
+      "post_id": "js-post-1463074",
+      "author": "ATT_Turan",
+      "date": "2024-08-12T14:56:44+0900",
+      "body": "Updated with a fix for Yanfly's Item Requirements."
+    },
+    {
+      "post_id": "js-post-1463723",
+      "author": "ATT_Turan",
+      "date": "2024-08-15T22:24:39+0900",
+      "body": "Added support to reference the target in Yanfly's Battle AI Core eval conditions."
+    },
+    {
+      "post_id": "js-post-1463869",
+      "author": "KermexRPG",
+      "date": "2024-08-16T11:41:39+0900",
+      "body": "Hey Turan, that edit to reference targets that you made for the Battle AI Core, its the same thing that this extension?\nhttps://raw.githubusercontent.com/DreamXRMMV/Rpg-Maker-MV/master/DreamX_Ext_BattleAICore.js"
+    },
+    {
+      "post_id": "js-post-1463870",
+      "author": "ATT_Turan",
+      "date": "2024-08-16T11:50:32+0900",
+      "body": "@KermexRPG\nI hadn't seen that plugin before.\nMy edit achieves the same goal - being able to reference the target in an eval condition - but does it in a much more streamlined way. There's no need to call special AIManager functions or use escape characters.\nYou just use\ntarget\nexactly the same way you use\nuser\nand the same way you'd use\ntarget\nin other Yanfly plugins."
+    },
+    {
+      "post_id": "js-post-1476838",
+      "author": "ATT_Turan",
+      "date": "2024-10-22T05:07:19+0900",
+      "body": "Updated with another bug fix for Yanfly's Selection Core, found by\n@Robro33\n."
+    },
+    {
+      "post_id": "js-post-1477821",
+      "author": "zerobeat032",
+      "date": "2024-10-28T03:08:39+0900",
+      "body": "So when I use anything where I can change parameters with stack counters, like this\nhttps://forums.rpgmakerweb.com/index.php?threads/quasi-params-plus.48777/\nand I use the Custom Remove Effects (on death) snippet you made... this happens whenever a battler dies in battle with that state on.\nIt doesn't have to be Quasi's stuff either. user.addParam(3, user.def * 0.10);... something like that per stack seemed to do it too. I wonder if the stacks get blitzed or something because I looked at an actor's def after they KO'd and it was up to 999.\nwhen I don't have the snippet on, none of this happens upon a battler's death."
+    },
+    {
+      "post_id": "js-post-1477846",
+      "author": "ATT_Turan",
+      "date": "2024-10-28T04:37:00+0900",
+      "body": "@zerobeat032\nThat error is saying something is causing an infinite loop, a function calling the same function.\nWhat is the actual, full notetag in that state? I have some immediate concern because you're increasing defense by defense, which is what can lead to an infinite loop like the error is reporting.\nThe death removal code shouldn't be causing anything different to happen than when the state is normally removed."
+    },
+    {
+      "post_id": "js-post-1477871",
+      "author": "zerobeat032",
+      "date": "2024-10-28T05:44:34+0900",
+      "body": "here's the notetag for the state... what I was using with Quasi's plugin was something I found on a thread on here so I'm not sure how correct it is outside of working on a general level\nJavaScript:\n<Custom Apply Effect>\n// Default the break stacks to 0.\nuser._break = user._break || 0;\n\n// Increase the break stack by 1\nuser._break += 1;\n// Cap the break stack at 3\nuser._break = Math.min(user._break, 3);\n\n// Update the state counter for the break stack\nuser.setStateCounter(stateId, user._break);\n\n</Custom Apply Effect>\n\n<Custom Remove Effect>\n// Set the user's break stack to 0\nuser._break = 0;\n// Update the state counter for the break stack\nuser.setStateCounter(stateId, user._break);\n</Custom Remove Effect>\n\n<params>\nDEF: ((current * -0.10) * a.getStateCounter(75))\n</params>\nI wouldn't shocked if I did something off here though somehow. but in this case, I just wanted 3 stacks and the defense subtracted 10 percent with each stack."
+    },
+    {
+      "post_id": "js-post-1477873",
+      "author": "ShadowDragon",
+      "date": "2024-10-28T05:49:48+0900",
+      "body": "zerobeat032 said:\n<params> DEF: ((current * -0.10) * a.getStateCounter(75)) </params>\nClick to expand...\nmaybe remove the outside of parenthesis?\n(current *- 10) * a.getStateCounter(75)\nand not sure why you put that in parenthesis too"
+    },
+    {
+      "post_id": "js-post-1477874",
+      "author": "zerobeat032",
+      "date": "2024-10-28T05:52:14+0900",
+      "body": "ShadowDragon said:\nand not sure why you put that in parenthesis too\nClick to expand...\nit's basically written the same way I saw it in the thread... I figured since it worked, I shouldn't change it."
+    },
+    {
+      "post_id": "js-post-1477881",
+      "author": "ATT_Turan",
+      "date": "2024-10-28T06:03:22+0900",
+      "body": "zerobeat032 said:\nhere's the notetag for the state...\nClick to expand...\nI suggest you get rid of the setStateCounter line in the Remove Effect.\nIt's unnecessary, as state counters are automatically deleted when the state is removed, and it's a possible cause of the problem since removing the state deletes the counter then trying to set it will reinitialize it.\nIf that doesn't help, then try my suggestion above to see if it's a plugin conflict.\nShadowDragon said:\nmaybe remove the outside of parenthesis?\nClick to expand...\nIt's true that they don't need to be there, but they also can't possibly hurt anything."
+    },
+    {
+      "post_id": "js-post-1477884",
+      "author": "zerobeat032",
+      "date": "2024-10-28T06:12:18+0900",
+      "body": "ATT_Turan said:\nI suggest you get rid of the setStateCounter line in the Remove Effect.\nClick to expand...\nwelp that seems to have fixed it lol... tho that does make me wonder why Yanfly had that in the Stockpile tips and tricks if you don't need it. regardless tho, thanks as that did fix the error from happening."
+    },
+    {
+      "post_id": "js-post-1477888",
+      "author": "Robro33",
+      "date": "2024-10-28T06:54:14+0900",
+      "body": "zerobeat032 said:\nthat does make me wonder why Yanfly had that in the Stockpile tips and tricks if you don't need it\nClick to expand...\nthey do a few things that arent really needed and sometimes under-explain things that are in their guides, but its usually harmless to just follow along unless plugin changes are made. It helps knowing that each line does so that you know what can be adjusted. one of the most common is anytime they show how to set a value based on a boolean condition, they use something like\nCode:\nif (target.name() === 'Harold') {\n     condition = true;\n   } else {\n     condition = false;\n   }\nwhen\nCode:\ncondition = target.name() === 'Harold'\ndoes the same thing, but wont take up half of the visible notebox doing so"
+    },
+    {
+      "post_id": "js-post-1477894",
+      "author": "zerobeat032",
+      "date": "2024-10-28T07:16:02+0900",
+      "body": "Robro33 said:\nCode:\ncondition = target.name() === 'Harold'\nClick to expand...\nlol I'm glad I've seen this cause yeah, I was doing the same stuff. I know SOME stuff after how long I've been working on my game, but clearly I need to learn more and try to understand more of the code I'm using."
+    },
+    {
+      "post_id": "js-post-1477909",
+      "author": "ATT_Turan",
+      "date": "2024-10-28T09:11:45+0900",
+      "body": "zerobeat032 said:\nwelp that seems to have fixed it lol... tho that does make me wonder why Yanfly had that in the Stockpile tips and tricks if you don't need it.\nClick to expand...\nThere are some good things in the Tips & Tricks, but there are also some unnecessary fluff. There's the repeated bit of code that\n@Robro33\npointed out (as well as the unnecessary braces in that code).\nThere's also the atrocity that is the Actor Transformation tip, which has whole swaths of extra variables that have absolutely nothing to do with the tip and aren't used in it at all"
+    },
+    {
+      "post_id": "js-post-1477911",
+      "author": "zerobeat032",
+      "date": "2024-10-28T09:19:52+0900",
+      "body": "ATT_Turan said:\nThere's also the atrocity that is the Actor Transformation tip, which has whole swaths of extra variables that have absolutely nothing to do with the tip and aren't used in it at all\nClick to expand...\nlol I'm learning things today it seems... as usual tho, the forums have saved the day, and alerted me to code sometimes not being necessary in what it's being used for."
+    },
+    {
+      "post_id": "js-post-1477912",
+      "author": "Sword_of_Dusk",
+      "date": "2024-10-28T09:23:26+0900",
+      "body": "zerobeat032 said:\nlol I'm learning things today it seems... as usual tho, the forums have saved the day, and alerted me to code sometimes not being necessary in what it's being used for.\nClick to expand...\nI mean, the very existence of this thread should tell you that Yanfly made a lot of mistakes."
+    },
+    {
+      "post_id": "js-post-1484448",
+      "author": "ATT_Turan",
+      "date": "2024-12-01T02:52:00+0900",
+      "body": "Updated with a fix for Yanfly's Passive Auras - thanks to\n@Robro33\nfor mentioning the problem!"
+    },
+    {
+      "post_id": "js-post-1485457",
+      "author": "Neutrality",
+      "date": "2024-12-05T01:07:58+0900",
+      "body": "Hello, having a problem with\nYEP's Instant Cast\nand\nMOG's Consecutive Battle\n(unofficial link) Plugins.\nThe fix\n@ATT_Turan\nprovided for YEP's Instant Cast when it comes to the next battle freezing works normally, however I noticed using it in combination with consecutive battles utilizing MOG's plugin causes the issue to persist after it transfers to the next troop in succession. Would a workaround regarding this be possible?\nI'm aware it's a specific type of error and MOG's plugins aren't usually compatible with YEP's, though I would imagine it would've worked normally if not for the error in the Instant cast plugin."
+    },
+    {
+      "post_id": "js-post-1485459",
+      "author": "ATT_Turan",
+      "date": "2024-12-05T01:17:00+0900",
+      "body": "@Neutrality\nAre you using that edited version you linked to, or the actual MV plugin?"
+    },
+    {
+      "post_id": "js-post-1485460",
+      "author": "Neutrality",
+      "date": "2024-12-05T01:18:23+0900",
+      "body": "ATT_Turan said:\n@Neutrality\nAre you using that edited version you linked to, or the actual MV plugin?\nClick to expand...\nThe original MV plugin from MOG's showcase project."
+    },
+    {
+      "post_id": "js-post-1485463",
+      "author": "ATT_Turan",
+      "date": "2024-12-05T01:22:19+0900",
+      "body": "Neutrality said:\nThe original MV plugin from MOG's showcase project.\nClick to expand...\nOkay. For future thought, it's probably more useful to link to\nthat\nI'll take a poke, but do you have a demo project with a battle set up that demonstrates the issue?"
+    },
+    {
+      "post_id": "js-post-1485481",
+      "author": "Neutrality",
+      "date": "2024-12-05T03:04:35+0900",
+      "body": "ATT_Turan said:\nOkay. For future thought, it's probably more useful to link to\nthat\nClick to expand...\nThat's true. I wanted to get a link directly to that specific plugin instead of the whole package to save time originally, but obviously doesn't make sense to work with a modified version.\nRegarding the Demo Project, went ahead and tried to set up quickly to send, but now I ran into another problem? The Instant Cast actually worked with the consecutive battle, and not only that but it didn't freeze after winning a battle as if the bug didn't exist. (This is without including your fix yet.)\nI presumed this was because the bug occurred due to certain plugins causing it to not work correctly, so I tried porting over certain plugins from my original project to the demo and turning off plugins from the original, then testing out each to try to get an environment where I could easily replicate the issue-- but I'm not having much luck so far.\nOnce I figure this out I'll send it over.\nFound the troublemaker, I think. It turns out that it was another unrelated plugin used in my project that was causing the mishap with Instant Cast, called\nLB_SummonActor\n.\nWhen LB_SummonActor is disabled, Instant Cast works as normal. When it's enabled, it appears to be what's causing Instant Cast to not show the battle window afterward. Everything else is the same as my first request, the patch for Instant Cast works for normal battles but then no longer functions with the consecutive battles.\nHere is the link to the\ndemo\n."
+    },
+    {
+      "post_id": "js-post-1485546",
+      "author": "ATT_Turan",
+      "date": "2024-12-05T08:05:17+0900",
+      "body": "@Neutrality\nFor future reference (no worries, I didn't think to mention this beforehand) you don't want to include plugins that are paid or have terms to not redistribute in test projects. Just set them up in the plugin manager and let the other people drop in their copies of the files.\nOpen the Mog plugin, go to line 445, and add after it\nCode:\nthis._instantCasting = false;"
+    },
+    {
+      "post_id": "js-post-1485565",
+      "author": "Neutrality",
+      "date": "2024-12-05T09:20:30+0900",
+      "body": "ATT_Turan said:\nyou don't want to include plugins that are paid or have terms to not redistribute in test projects. Just set them up in the plugin manager and let the other people drop in their copies of the files.\nClick to expand...\nAhh... Didn't think of that, I went ahead and disabled downloads of the project.\nATT_Turan said:\nOpen the Mog plugin, go to line 445, and add after it\nCode:\nthis._instantCasting = false;\nClick to expand...\nThat fixed it, thank you!"
+    },
+    {
+      "post_id": "js-post-1559098",
+      "author": "ATT_Turan",
+      "date": "2026-06-11T13:07:50+0900",
+      "body": "With the announced forum closure, I've moved all my plugins (including the tweaks in this thread) into a Google Drive folder so anyone who cares can conveniently grab them all in one place.\nThe link may be shared, but please do not redistribute the plugins separately.\nDownload here"
+    },
+    {
+      "post_id": "js-post-1559948",
+      "author": "Gunmetal_Dreams",
+      "date": "2026-06-15T02:45:25+0900",
+      "body": "Thanks Turan, I'm going through the plugin section trying to preserve what I can. So this will come in handy"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/show-and-move-picture-issue.173662",
+  "title": "Show and Move Picture Issue",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:42.397707+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1485381",
+      "author": "ANT0NS3DG3",
+      "date": "2024-12-04T13:27:15+0900",
+      "body": "I'm making this '?' Block that dispenses a coin when jumped on, it should appear above it but it keeps appearing to the top left.\nThe one I marked is the location where I wanted the coin to appear (13, 6)\nSecond Picture the event I used so the coin came out after the block was hit and where I intended it to appear.\nThe video above is what the event currently runs like.\nHow does the Show and Move Picture '\nDirect Designation\n' Option work?"
+    },
+    {
+      "post_id": "js-post-1485382",
+      "author": "ATT_Turan",
+      "date": "2024-12-04T13:39:49+0900",
+      "body": "The picture coordinates are pixels, not tiles."
+    },
+    {
+      "post_id": "js-post-1485384",
+      "author": "ANT0NS3DG3",
+      "date": "2024-12-04T13:44:38+0900",
+      "body": "ATT_Turan said:\nThe picture coordinates are pixels, not tiles.\nClick to expand...\nThen what exact numbers do I input in\nDirect Designation?\nBetter question, how do I find the numbers to set the pictures where I want it to be?"
+    },
+    {
+      "post_id": "js-post-1485386",
+      "author": "AquaEcho",
+      "date": "2024-12-04T13:54:02+0900",
+      "body": "ANT0NS3DG3 said:\nBetter question, how do I find the numbers to set the pictures where I want it to be?\nClick to expand...\nThere's a Triacontane plugin that'll do it. I don't think it's something built into the editor."
+    },
+    {
+      "post_id": "js-post-1485387",
+      "author": "ATT_Turan",
+      "date": "2024-12-04T13:58:42+0900",
+      "body": "ANT0NS3DG3 said:\nThen what exact numbers do I input in\nDirect Designation?\nClick to expand...\nThe exact window coordinates you want the picture to appear at.\nANT0NS3DG3 said:\nBetter question, how do I find the numbers to set the pictures where I want it to be?\nClick to expand...\nTiles in RPG Maker MV are 48x48 pixels. So if you want the picture to appear on tile 13, 6 you simply multiply each of those numbers by 48 pixels.\nAquaEcho said:\nThere's a Triacontane plugin that'll do it. I don't think it's something built into the editor.\nClick to expand...\nHuh?"
+    },
+    {
+      "post_id": "js-post-1485392",
+      "author": "AquaEcho",
+      "date": "2024-12-04T14:12:44+0900",
+      "body": "ATT_Turan said:\nHuh?\nClick to expand...\nI was thinking of this\nãã¯ãã£ã®ã°ã©ãã£ã«ã«ãªä½ç½®èª¿æ´ãã©ã°ã¤ã³\nã©ã¤ãããã«,éæ¥,ææ,RPGãã¯ã¼ã«,RPGãã¯ã¼ã«MV,ãã¯ã¼ã«MVãã©ã°ã¤ã³\ntriacontane.blogspot.com"
+    },
+    {
+      "post_id": "js-post-1485405",
+      "author": "ANT0NS3DG3",
+      "date": "2024-12-04T16:08:57+0900",
+      "body": "AquaEcho said:\nI was thinking of this\nãã¯ãã£ã®ã°ã©ãã£ã«ã«ãªä½ç½®èª¿æ´ãã©ã°ã¤ã³\nã©ã¤ãããã«,éæ¥,ææ,RPGãã¯ã¼ã«,RPGãã¯ã¼ã«MV,ãã¯ã¼ã«MVãã©ã°ã¤ã³\ntriacontane.blogspot.com\nClick to expand...\nOkay after countless testing I was able to adjust it using this plugin.\nThank you to\n@AquaEcho\n&\n@ATT_Turan\nfor helping with the issue"
+    },
+    {
+      "post_id": "js-post-1485455",
+      "author": "caethyril",
+      "date": "2024-12-05T00:37:50+0900",
+      "body": "Just to mention it: the event option you'd have wanted to use here is \"\nDesignation with variables\n\", not \"Direct designation\". Simply multiplying the tile coordinates by the tile size would only be correct if the top-left tile of the map were on-screen.\nYou can get the screen coordinates of a character using the\nControl Variables\ncommand. E.g. with only a couple of reusable variables:\nControl Variables: Target X -> Set ->\nGame Data\n->\nCharacter\n-> This Event ->\nScreen X\n.\nControl Variables: Target Y -> ...etc... ->\nScreen Y\n.\nShow Picture: 2 ->\nDesignation with variables\n-> { Target X, Target Y }.\nControl Variables: Target Y -> Sub -> 96. (I.e. move up 96 px.)\nMove Picture: 2 ->\nDesignation with variables\n-> { Target X, Target Y }.\n[Edit: corrected \"Map X|Y\" to \"Screen X|Y\".\n]"
+    },
+    {
+      "post_id": "js-post-1485456",
+      "author": "ATT_Turan",
+      "date": "2024-12-05T00:40:40+0900",
+      "body": "caethyril said:\nSimply multiplying the tile coordinates by the tile size would only be correct if the top-left tile of the map were on-screen.\nClick to expand...\nGood point\ncaethyril said:\nControl Variables: Target X -> Set ->\nGame Data\n->\nCharacter\n-> This Event ->\nMap X\n.\nControl Variables: Target Y -> ...etc... ->\nMap Y\nClick to expand...\nShouldn't that be\nScreen\nX and Y? Wouldn't Map X/Y produce tile coordinates still, which Show Picture would interpret as pixel coordinates on the screen?"
+    },
+    {
+      "post_id": "js-post-1485465",
+      "author": "caethyril",
+      "date": "2024-12-05T01:28:41+0900",
+      "body": "ATT_Turan said:\nShouldn't that be\nScreen\nX and Y?\nClick to expand...\nOops. Yep, I'll edit that in."
+    }
+  ]
+}

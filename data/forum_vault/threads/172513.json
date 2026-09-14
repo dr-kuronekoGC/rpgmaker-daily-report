@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/i-need-help-with-this-mechanic.172513",
+  "title": "I need help with this mechanic",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:50.446009+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1474913",
+      "author": "PixelDarkKnight0193",
+      "date": "2024-10-11T04:07:45+0900",
+      "body": "I have made a chase mechanic in RPG Maker VX Ace, it detects the player when they are 5 cubes away from the enemy, and then starts following them. When he touches it a battle begins. I have done this with the RM variables, no script.\nI would like to know how to make that if after, for example, 8 seconds of chasing, it has not reached the player, it stops, if possible. Also, if the player escapes from combat, the monster should give me a few seconds to run, and if I'm still there he will chase me again. And finally, if there is any way that after winning the fight, the enemy disappears fluidly, it is that when the fight ends, the enemy is no longer there. If I chose delete event, the combat ends and the screen becomes clear, but the monster is still there and suddenly POPs and disappears, I want this to feel more fluid, i mean, it is no longer there when the combat is won.\nCan someone help me? Thank you"
+    },
+    {
+      "post_id": "js-post-1474917",
+      "author": "Andar",
+      "date": "2024-10-11T04:40:08+0900",
+      "body": "Basically you'll need a script for event timers, then you can key the event behaviour to those timers.\nforget about doing it with pure eventing - it would get much too complex to simuate the different timers with waits, and there is only one official game timer that is not enough.\nfor your specific sequences we'll have to see screenshots of how they are done in your event before we can correct any sudden changes."
+    },
+    {
+      "post_id": "js-post-1474920",
+      "author": "PixelDarkKnight0193",
+      "date": "2024-10-11T04:55:37+0900",
+      "body": "Andar said:\nBasically you'll need a script for event timers, then you can key the event behaviour to those timers.\nforget about doing it with pure eventing - it would get much too complex to simuate the different timers with waits, and there is only one official game timer that is not enough.\nfor your specific sequences we'll have to see screenshots of how they are done in your event before we can correct any sudden changes.\nClick to expand...\nOoh, I understand, well I expected it, but I don't know how to handle scripts and with my low level on programming I wouldn't know how to do this. Well, I can try to learn a little about it, and see if I can do something. Thanks for your quick help! Very grateful."
+    },
+    {
+      "post_id": "js-post-1474930",
+      "author": "Andar",
+      "date": "2024-10-11T05:41:41+0900",
+      "body": "you don't need programming knowledge to use scripts.\nyou copy them into the script editor and then call them from events.\na minimal knowledge of ruby syntax might help for the more complex scripts, but most scripts have large help sections that tell you how to use them.\nyou can also read the tutorial \"how to use a script\" in my signature - a forum update several years back had messed up the formatting, but it should still be mostly readable."
+    },
+    {
+      "post_id": "js-post-1474933",
+      "author": "PixelDarkKnight0193",
+      "date": "2024-10-11T06:15:01+0900",
+      "body": "Andar said:\nyou don't need programming knowledge to use scripts.\nyou copy them into the script editor and then call them from events.\na minimal knowledge of ruby syntax might help for the more complex scripts, but most scripts have large help sections that tell you how to use them.\nyou can also read the tutorial \"how to use a script\" in my signature - a forum update several years back had messed up the formatting, but it should still be mostly readable.\nClick to expand...\nYes, I just finished reading it, that was a lot of useful information. So I just have to find a ready-made script, and install it. I think Yanfly had a chase mechanics script for RMVX Ace, so I'll try that, I wonder if it has a Pixel movement script, I had installed Victor's Engine for it, but I don't want them to collapse from being together so I'll have to delete one and put the one from Yanfly's.\nThanks for your great help!! You seem to know a lot about the subject! it's good to have people like you to help those who are starting out in this.\nI'll have you informated if something else. It's a pleasure"
+    },
+    {
+      "post_id": "js-post-1475029",
+      "author": "Zahawk",
+      "date": "2024-10-11T20:01:36+0900",
+      "body": "I have a similar chase system for the enemies in my game, the IMGs below have a slime that detects the player if they walk within 3 tiles, looses track of the player if player is over 6 tiles away, and initiates battle if within 1 tile. If win the slime disappears (no 'Pop'), and if escape the Slime becomes transparant for ~3 seconds before checking if the player is within 3 tiles to chase again.\nThe enemies in my game only spawn in when the player sleeps to the next day, the script call I use to turn on the Self Switch A of the Slime is;\nCode:\n$game_self_switches[[@map_id, @event_id, 'A']] = true\n\n#Eg. Slime Event is ID 30 on Map 1\n$game_self_switches[[1, 30, 'A']] = true\nNote that this isn't a script(in the script editor), but a default VXAce script call(Event Command Script)\nI also used a script by Vlue(V.M of D.T) called\nProximity Events\n, which is what those conditional branches are refering to.\nCode:\nProxy.inprox?(@event_id, value)\nHopefully this can be used as reference for your escape commands or that pop issue."
+    },
+    {
+      "post_id": "js-post-1475064",
+      "author": "PixelDarkKnight0193",
+      "date": "2024-10-11T23:41:05+0900",
+      "body": "Zahawk said:\nI have a similar chase system for the enemies in my game, the IMGs below have a slime that detects the player if they walk within 3 tiles, looses track of the player if player is over 6 tiles away, and initiates battle if within 1 tile. If win the slime disappears (no 'Pop'), and if escape the Slime becomes transparant for ~3 seconds before checking if the player is within 3 tiles to chase again.\nThe enemies in my game only spawn in when the player sleeps to the next day, the script call I use to turn on the Self Switch A of the Slime is;\nCode:\n$game_self_switches[[@map_id, @event_id, 'A']] = true\n\n#Eg. Slime Event is ID 30 on Map 1\n$game_self_switches[[1, 30, 'A']] = true\nNote that this isn't a script(in the script editor), but a default VXAce script call(Event Command Script)\nI also used a script by Vlue(V.M of D.T) called\nProximity Events\n, which is what those conditional branches are refering to.\nCode:\nProxy.inprox?(@event_id, value)\nHopefully this can be used as reference for your escape commands or that pop issue.\nClick to expand...\nWoooo thank you very much, It comes with a tutorial and all!! I Will make It work, i will notice you if i actually use it properly.\nThank you for your support!\nSalutations from Spain"
+    },
+    {
+      "post_id": "js-post-1475468",
+      "author": "PixelDarkKnight0193",
+      "date": "2024-10-15T00:19:10+0900",
+      "body": "Zahawk said:\nI have a similar chase system for the enemies in my game, the IMGs below have a slime that detects the player if they walk within 3 tiles, looses track of the player if player is over 6 tiles away, and initiates battle if within 1 tile. If win the slime disappears (no 'Pop'), and if escape the Slime becomes transparant for ~3 seconds before checking if the player is within 3 tiles to chase again.\nThe enemies in my game only spawn in when the player sleeps to the next day, the script call I use to turn on the Self Switch A of the Slime is;\nCode:\n$game_self_switches[[@map_id, @event_id, 'A']] = true\n\n#Eg. Slime Event is ID 30 on Map 1\n$game_self_switches[[1, 30, 'A']] = true\nNote that this isn't a script(in the script editor), but a default VXAce script call(Event Command Script)\nI also used a script by Vlue(V.M of D.T) called\nProximity Events\n, which is what those conditional branches are refering to.\nCode:\nProxy.inprox?(@event_id, value)\nHopefully this can be used as reference for your escape commands or that pop issue.\nClick to expand...\nI have used the Proximity Event script from Vlue that you posted there, this is how i use it. Srry if you dont understand Spanish."
+    },
+    {
+      "post_id": "js-post-1475550",
+      "author": "Zahawk",
+      "date": "2024-10-15T07:50:19+0900",
+      "body": "Its a little hard to understand spanish but RM's colour coding makes it possible.\nLooks like it should be working to me, although there are a few points I'm not sure about.\nPg2.   Esperar: 10 frame(s),   Separacion Condicional\nClick to expand...\nNot sure why you've got a wait command and a duplicate conditional branch. I never looked at Vlue's Demo so I'm assuming you've taken this from there? Also if this does what I think it does then you've taught me something as well. Thanks!\nNice! I just checked out the demo, this fixes a prefire of the battle processing before the event reaches 1 tile of the player.\nPg2.   Si Gana,   Ruta de Movimiento: Este evento (Esperar)\nClick to expand...\nIs this opacity fade ment for battle win? I thought you wanted the sprite to be already gone after battle win?\nPg4.   Controlar Interruptor: A =Encendido\nClick to expand...\nThe SwitchA=On isn't needed here."
+    },
+    {
+      "post_id": "js-post-1475614",
+      "author": "PixelDarkKnight0193",
+      "date": "2024-10-15T20:52:40+0900",
+      "body": "Zahawk said:\nIts a little hard to understand spanish but RM's colour coding makes it possible.\nLooks like it should be working to me, although there are a few points I'm not sure about.\nNot sure why you've got a wait command and a duplicate conditional branch. I never looked at Vlue's Demo so I'm assuming you've taken this from there? Also if this does what I think it does then you've taught me something as well. Thanks!\nNice! I just checked out the demo, this fixes a prefire of the battle processing before the event reaches 1 tile of the player.\nIs this opacity fade ment for battle win? I thought you wanted the sprite to be already gone after battle win?\nThe SwitchA=On isn't needed here.\nClick to expand...\nI based this in the demo, yes, and the opacity fade is made to give you a fading effect before disappearing completely, i think it looks better than just disappearing, maybe i could give it a corpse sprite after battle win. But for nowT that will be okay. About the switch A, i thought i would be necessary to return to the pg2 state, so if the player has already left from the detect zone, then he will stop, i will check right now and see. I'll tell you now. And one question, where do you put this:\nCode:\n$game_self_switches[[@map_id, @event_id, 'A']] = true\n\n#Eg. Slime Event is ID 30 on Map 1\n$game_self_switches[[1, 30, 'A']] = true\nat the start i wanted to recreate what you showed me but i realized that i didnt know where to put that code and then i played the demo of the Proximity Event.\nZahawk said:\nIts a little hard to understand spanish but RM's colour coding makes it possible.\nLooks like it should be working to me, although there are a few points I'm not sure about.\nNot sure why you've got a wait command and a duplicate conditional branch. I never looked at Vlue's Demo so I'm assuming you've taken this from there? Also if this does what I think it does then you've taught me something as well. Thanks!\nNice! I just checked out the demo, this fixes a prefire of the battle processing before the event reaches 1 tile of the player.\nIs this opacity fade ment for battle win? I thought you wanted the sprite to be already gone after battle win?\nThe SwitchA=On isn't needed here.\nClick to expand...\nI replaced the SwitchA=On for a SwitchA=Off, i just saw that of course, since switch A was activated, when escaping from the range after the time had passed, he made the feint of trying to chase me, taking a step forward, and then releasing the \"?\" icon. If I removed the switch it did the same thing, so I put it but in Off, and now it returns to its original detection state. Thanks, I didn't realize the mistake!"
+    },
+    {
+      "post_id": "js-post-1475623",
+      "author": "Zahawk",
+      "date": "2024-10-15T21:37:47+0900",
+      "body": "PixelDarkKnight0193 said:\nwhere do you put this:\nCode:\n$game_self_switches[[@map_id, @event_id, 'A']] = true\nClick to expand...\nThat code will allow you to turn on or off a self switch from another event. In my game monsters are inactive by default, only when their SelfSwitchA=On do they show up ingame. Each day the player sleeps a randomiser picks a few monsters to activate. (so I put that code on my bed's event)\nYour events are setup slightly different, so you'd use this to respawn one of your monsters\n$game_self_switches[[@map_id, @event_id, 'B']] = false\n$game_self_switches[[@map_id, @event_id, 'A']] = false\nClick to expand...\nJust remember to switch out @event_id for the monster's event id that you're trying to respawn, and @map_id for the map its on"
+    },
+    {
+      "post_id": "js-post-1475669",
+      "author": "PixelDarkKnight0193",
+      "date": "2024-10-16T01:11:55+0900",
+      "body": "Zahawk said:\nThat code will allow you to turn on or off a self switch from another event. In my game monsters are inactive by default, only when their SelfSwitchA=On do they show up ingame. Each day the player sleeps a randomiser picks a few monsters to activate. (so I put that code on my bed's event)\nYour events are setup slightly different, so you'd use this to respawn one of your monsters\nJust remember to switch out @event_id for the monster's event id that you're trying to respawn, and @map_id for the map its on\nClick to expand...\nI don't have much knowledge about scripts yet, I still have to read the help manual, but now I'll try what you told me. So your monsters spawn randomly? That is, in the same area, some monsters appear, but when you go to sleep, it is possible that others appear, is that right?\nWhat an interesting idea! It gives variety to the encounters, some players will appreciate it. I don't know how you do it, well, I'm not even familiar with some aspects of the program.\nI would like to try your game once it is playable!!\nAnd another question, the unique way of making monsters respawn is with this code?"
+    },
+    {
+      "post_id": "js-post-1475806",
+      "author": "Zahawk",
+      "date": "2024-10-16T17:39:27+0900",
+      "body": "PixelDarkKnight0193 said:\nI don't have much knowledge about scripts yet, I still have to read the help manual\nClick to expand...\nI define RM code in three different categories.\n- Own Custom scripts (something I can't do)\n- Other's Custom scripts (simple to use)\n- Script Calls (also simple to use)\nThe Script Editor(F11) requires RGSS knowledge to create your own scripts, but you don't really need to know how to write RGSS if you're just using someone else's scripts.\nScript Calls(EventCommand>Script) are exactly that, a call from a custom or default script in the script editor. I found that SelfSwitch Script Call in Archeia's\nScript Call Collection for VXAce\n.\nPixelDarkKnight0193 said:\nSo your monsters spawn randomly? That is, in the same area, some monsters appear, but when you go to sleep, it is possible that others appear, is that right?\nClick to expand...\nYes, a single monster has a group of three spawn locations, at random one is chosen and the monster is spawned. When the player next sleeps, the randomiser chooses again if it's the same spawn location and the player hasn't killed the monster then nothing happens, but if it rolls a location with no monster then that monster also spawns. So the population of monsters is always equal to the amount of monster groups I have, plus additional monsters if you don't cull them to keep the population in check. Also I've planned set it so that if you neglect culling monsters entirely, and all the monster groups fill up then emergency quests are issued or events are triggered, etc. The medicinal herbs and ore deposits in my game also refresh with this same mechanic.\nPixelDarkKnight0193 said:\nAnd another question, the unique way of making monsters respawn is with this code?\nClick to expand...\nWell this is how I do it, selfswitches. I know some games have a Wait Event Command so if you wait long enough on the same map then the monster respawns, another way is the EraseEvent Event Command so that a monster respawns every time you leave and re-enter a map."
+    }
+  ]
+}

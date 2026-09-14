@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/taking-picture-mechanic-in-rpg-maker-mz.173636",
+  "title": "Taking Picture Mechanic in RPG Maker MZ",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:11.898166+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1485128",
+      "author": "Zhyren",
+      "date": "2024-12-03T13:15:51+0900",
+      "body": "I don't know if this is even possible but I want to create a game mechanic in which you can take a picture of the screen and then save it to a photo album. Throughout the game the pictures taken would pop up throughout a \"dream sequence\". I think I already know how I'll establish putting images into a photo album by assigning individual variables to the photos, but what I'm having trouble with is whether or not my idea is even plausible.\nThe main question here is if I can take in game screenshots or other forms of screen capture and have them be saved and assigned a variable, making them individual to every playthrough in a way.\nIf this isn't possible, I'd love to hear some alternative ideas for how I should go about this! I'm new to RPGMaker and don't know much of its limitations but I've been learning a lot! Thank you for reading."
+    },
+    {
+      "post_id": "js-post-1485171",
+      "author": "Deleted member 222036",
+      "date": "2024-12-03T19:25:03+0900",
+      "body": "theres a\nmap-shot plugin\nthat saves a picture of the whole map but i think it only works in. the editor. I don't know if this will help, but maybe it will"
+    },
+    {
+      "post_id": "js-post-1485216",
+      "author": "ATT_Turan",
+      "date": "2024-12-04T00:16:04+0900",
+      "body": "dollycheesecakes said:\ntheres a\nmap-shot plugin\nthat saves a picture of the whole map but i think it only works in. the editor.\nClick to expand...\nPlugins by definition only work during the game. It's impossible to modify the editor."
+    },
+    {
+      "post_id": "js-post-1485223",
+      "author": "caethyril",
+      "date": "2024-12-04T00:42:46+0900",
+      "body": "Zhyren said:\nThe main question here is if I can take in game screenshots or other forms of screen capture and have them be saved and assigned a variable, making them individual to every playthrough in a way.\nClick to expand...\nThis gets a data URL (i.e. file-independent string representation) of a snapshot texture:\nJavaScript:\nSceneManager.snap()._canvas.toDataURL()\nSince it's a string, there are no problems including it in save data. Note that it will generally be quite a\nlong\nstring, so be aware of possible save bloat issues.\nYou'll need an actual display object instance, like a\nSprite\n, to show it in-game. E.g.\nJavaScript:\nsprite.bitmap = Bitmap.load(dataURL);\n(I've used a similar approach in feature Q36 of my plugin\nCae_Tweaks\n- \"Show Picture snapshots\".)"
+    },
+    {
+      "post_id": "js-post-1485230",
+      "author": "Deleted member 222036",
+      "date": "2024-12-04T01:17:44+0900",
+      "body": "ATT_Turan said:\nPlugins by definition only work during the game. It's impossible to modify the editor.\nClick to expand...\nyea i didnt mean editor i meant playtest sorry"
+    },
+    {
+      "post_id": "js-post-1485237",
+      "author": "ATT_Turan",
+      "date": "2024-12-04T01:46:05+0900",
+      "body": "dollycheesecakes said:\nyea i didnt mean editor i meant playtest sorry\nClick to expand...\nAh, gotcha. I don't see anything in the plugin description to indicate that. It should work in a game - however, it does export the entire map as far as I can see.\nI believe the code above from caethyril, grabbing the canvas, is only the currently visible area."
+    }
+  ]
+}

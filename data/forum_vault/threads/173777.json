@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-yanfly-passives-and-buffs-states-core.173777",
+  "title": "MV Help With Yanfly Passives and Buffs/States Core",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:32.454206+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1486455",
+      "author": "PiquePurpleWolf",
+      "date": "2024-12-09T11:28:55+0900",
+      "body": "For my project, I want to have passive skills that will increase the duration of stat buffs and status conditions. Fore Example: When a character with a Passive Skill to extend Poison by 3 turns uses a skill that Poisons the foe, the Poison State would last 7-8 Turns instead of normally 3-4 Turns.\nUsing Yanfly's\nAuto Passive States\nand\nBuffs & States Core\nsounds like the best way to do this but I'm pretty sure it requires the use of \"Lunatic Mode\" and I don't have the JavaScript experience to make it happen.\nI would appreciate assistance in accomplishing this idea, that is if it's possible to begin with with these plugins.\nThanks in advance."
+    },
+    {
+      "post_id": "js-post-1486463",
+      "author": "ATT_Turan",
+      "date": "2024-12-09T12:25:40+0900",
+      "body": "You should be able to do this by putting a notetag like this in the poison state:\nCode:\n<Custom Apply Effect>\nif (origin.isStateAffected(42))\n    target._stateTurns[stateId] += 3;\n</Custom Apply Effect>\nwhere 42 is the ID of the passive state, and the 3 is how many extra turns to add.\nBuffs are a bit trickier; you'd need a custom plugin to affect those (or put Skill Core notetags on every individual skill that can apply them)."
+    },
+    {
+      "post_id": "js-post-1486568",
+      "author": "PiquePurpleWolf",
+      "date": "2024-12-09T23:53:32+0900",
+      "body": "ATT_Turan said:\nYou should be able to do this by putting a notetag like this in the poison state:\nCode:\n<Custom Apply Effect>\nif (origin.isStateAffected(42))\n    target._stateTurns[stateId] += 3;\n</Custom Apply Effect>\nwhere 42 is the ID of the passive state, and the 3 is how many extra turns to add.\nBuffs are a bit trickier; you'd need a custom plugin to affect those (or put Skill Core notetags on every individual skill that can apply them).\nClick to expand...\nIt works!\nThanks a ton!"
+    }
+  ]
+}

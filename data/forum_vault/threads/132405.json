@@ -1,0 +1,311 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/setting-up-steam-integration-in-rpg-maker-mv-using-updated-nw-js-super-high-performance.132405",
+  "title": "Setting up STEAM Integration in RPG Maker MV (using updated NW.js, super high performance)!",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-14T15:03:32.088519+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1156327",
+      "author": "KillerGin",
+      "date": "2021-01-20T02:01:27+0900",
+      "body": "Hello everyone!\nIt's not easy to set up STEAM integration into RPG Maker MV. Who doesn't want to setup STEAM achievements, call players by their STEAM name, OR check to see if they have DLC installed (these are the things I set up in my game, I'm sure there is more you can do)\nHowever, the original guide seems a bit complicated and... only updating to NW.js 33.3 is a bit low, let's update that bad boy to NW.js 49.2 so we can experience a massive performance upgrade to the game while STILL integrating STEAM functionality (We will support PC, Mac and Linux!)!\nThe trick with this is that the..... NW.js, Greenworks.js, Greenwork Nodes, and your STEAM SDK must be all paired correctly.\nSo this guide is created to work with\n1) NW.js 49.2\n2) Steam sdk 1.5\n3) OrangeGreenworks.js (Plugin for MV)\n4) Greenworks Nodes (For NW.js 49.2)\n5) Greenworks.js\n////////////////////////////////////////////////////\nBEFORE YOU START BACK UP EVERYTHING! (BACK UP A COPY OF YOUR GAME BEFORE YOU START)\n** You do NOT have to update the NW.js if you don't want to, though the exact versions of the files you grab have to be different. (Greenwork nodes and possibly STEAM SDK). I highly recommend updating NW.js due to the massive performance gain.\n1) Update your NW.js here (Get version 49.2, follow the guide):\nLink:\nhttps://forums.rpgmakerweb.com/inde...e-game-performance.131620/page-4#post-1156268\n2) Download STEAM SDK here (get version 1.50):\nLink:\nhttps://partner.steamgames.com/downloads/list\n3) Get OrangeGreenworks Plugin here:\nLink:\nhttps://forums.rpgmakerweb.com/inde...gration-with-achievements-and-time-log.59469/\n(If the link is gone for the MV plugin, you can look through the Comments, starting from the latest back to find a pasted copy, or bug the creator for a fixed link lol)\n4) Get the proper Greenworks Nodes here (Put Cursor above Version and make sure its version 0.49.2)!\nLink:\nhttps://greenworks-prebuilds.armaldio.xyz/\nYou may have to play around with the \"Search\" properties on the left to find the proper versions. Get the following\na) greenworks-linux32.node\nb) greenworks-linux64.node\nc) greenworks-osx64.node\nd) greenworks-win32.node\ne) greenworks-win64.node\n5) Get the proper Greenworks.js file here. (You can download one of these, why not the latest 33.3 and just take out the \"greenworks.js\" that comes with it. I believe they are all the same. \"\ngreenworks-v0.14.0-nw-v0.33.3-win-x64.zip\n\", the rest, discard)\nLink:\nhttps://github.com/greenheartgames/greenworks/releases\n////////////////////////////////////////////////////\nSo now that you updated your NW.js to 49.2 (49.2 is the latest version that supports all 3 platforms PC, Mac, and Linux)\nand downloaded all the necessary files, all you need to do is place the files in the proper locations.\n1) Enable the OrangeGreenworks plugin in your RPG Maker MV game via the plugin manager (place in your js folder, etc).\n2) Drop the greenworks.js file in the top most folder of RPG Maker MV. (yes a weird place, the top most folder where your Game.rpgproject file is located.)\n3) In the same location of the greenworks.js create a brand new \"lib\" folder\n4) In the newly created lib folder, place the 5 downloaded greenworks nodes.\n5) Now you need to put the STEAM SDK files into the lib folder..... These are where you need to grab the files:\na) Open the STEAM SDK:\nPublic -> STEAM -> Lib\nYou will see all the platform folders, take everything out these folders, and put the files into your new \"lib\" folder. (Not the folders, open folders and just drop files into \"lib\" folder, your lib folder will not have any folders inside it, just files.)\n(WARNING! For Linux 64 bit, you have to manually add \"64\" to the end of the file name or it will overwrite the 32 bit version)\nb) Open the STEAM SDK:\nOpen redistributable_bin folder\nGrab both steam_api files (2 files hanging around), and again, dump the contents of all folders, the platform folders, into your new \"lib\" folder (Not the folders, open folders and just drop files into \"lib\" folder, your lib folder will not have any folders inside it, just files.)\n(WARNING! For Linux 64 bit, you have to manually add \"64\" to the end of the file name or it will overwrite the 32 bit version)\n////////////////////////////////////////////////////\nThats it! You are done! YAY!\nWhen you check the console f8 (when you launch the game in the editor) you should see that the plugin will show your STEAM Name in the console which means everything is working (it will do this automatically)! Now for STEAM achievements you have to set the achievements up through STEAM Works, give them a name, and just call them by name.\nSo the following STEAM calls are possible (and more!):\nSTEAM Achievement example: \"OrangeGreenworks.activateAchievement('Name of achievement');\"\nSTEAM Screen Name example (save to variable): \"$gameVariables.setValue(209, OrangeGreenworks.getScreenName());\"\nSTEAM DLC check (save to switch): \"$gameSwitches.setValue(257, OrangeGreenworks.isDLCInstalled(APPIDNUM));\"\nEtc!\n////////////////////////////////////////////////////\nTo get the most out of your game, be sure to check out my second guide, the GPU optimization guide:\nlink:\nhttps://forums.rpgmakerweb.com/inde...d-mz-second-big-discovery-gpu-related.131957/"
+    },
+    {
+      "post_id": "js-post-1156409",
+      "author": "rue669",
+      "date": "2021-01-20T07:43:12+0900",
+      "body": "Thanks, Freddie. I appreciate this. Wouldn’t mind a video tut as I’m one of those who learn better that way.\nQuick question: do I NEED to update nw.js? I tried it but didn’t notice a difference for me and ultimately changed it back to default."
+    },
+    {
+      "post_id": "js-post-1156471",
+      "author": "KillerGin",
+      "date": "2021-01-20T12:10:04+0900",
+      "body": "You dont have to update the NW.js....\nBUT the files, the versions of them, have to match.\nThe NW.js has to match the greenwork nodes and.... I believe they have to match with the version of STEAM used.\nSo if you dont update and use the default NW.js version 29.4, you have to use the correct versions of NW.js, Nodes, STEAM SDK, etc."
+    },
+    {
+      "post_id": "js-post-1156477",
+      "author": "rue669",
+      "date": "2021-01-20T12:43:24+0900",
+      "body": "Thanks Freddie. Much appreciated. Take care; stay safe."
+    },
+    {
+      "post_id": "js-post-1211606",
+      "author": "chiithecat",
+      "date": "2021-08-31T03:28:42+0900",
+      "body": "This is just what I was looking for. I was struggling to make Steam Achievements work. Thanks a lot!!!\nBut while I was trying to make the plugin work after all the steps, I got an error message.\nI updated NW.js to 49.2 by following almost all the steps in this link:\nhttps://forums.rpgmakerweb.com/inde...e-game-performance.131620/page-4#post-1156268\n(except the osx-test part because as you mentioned in the reply I couldn't find that folder)\nNow my game folder looks like this:\nSpoiler:\nGame folder\nAnd my lib folder:\nSpoiler:\nlib folder\nAnd I activated the plugin(I put it on the top in case):\nSpoiler:\nActivate plugin\nThen I tested the project by trying a name input like this:\nSpoiler:\nEvent\nThe first line is a script call to return the Player’s Steam Screen Name,\nthe second 5 frames wait,\nthe third another script call to store name in variable #110,\nthen another wait,\nand a script call to set the name of actor #1 as the variable #110,\nand then the name input.\nAnd this error shows up:\nSpoiler:\nError\nSince I was playtesting, I expected to get \"Play Test\" as the default name of actor #1 when inputting the name but it didn't work.\nWhat did I do wrong? Do you know what caused the matter?\nEdit) I tried to return the name of actor #1 instead of Input name event by putting \\n[1] in text and got '0', which means the script call isn't working.\nI'm so confused...\nEdit2) OMG It works!!!!!!!!!!!!!!!!!!!!!!!!!! I got the wrong OrangeGreenworks.js before and now I think I've got the right file!!! You're my savior!! Thanks!!!"
+    },
+    {
+      "post_id": "js-post-1213453",
+      "author": "KillerGin",
+      "date": "2021-09-08T08:46:25+0900",
+      "body": "Hey everyone!\nGlad to hear its working great for you!"
+    },
+    {
+      "post_id": "js-post-1213591",
+      "author": "chiithecat",
+      "date": "2021-09-09T00:53:32+0900",
+      "body": "Hey Freddie! I'm preparing to release the Early Access version of my game on Steam.\nThanks to you, I'm working on implementing Steam achievements for the full version.\nHowever, I find it difficult to open the project after upgrading the nw.js.\nIt's slower and causing more errors. (only when starting not while playing)\nDo you happen to know why?"
+    },
+    {
+      "post_id": "js-post-1213725",
+      "author": "KillerGin",
+      "date": "2021-09-09T13:37:16+0900",
+      "body": "chiithecat said:\nHey Freddie! I'm preparing to release the Early Access version of my game on Steam.\nThanks to you, I'm working on implementing Steam achievements for the full version.\nHowever, I find it difficult to open the project after upgrading the nw.js.\nIt's slower and causing more errors. (only when starting not while playing)\nDo you happen to know why?\nClick to expand...\nReally? That is super rare, the point is updating NWJs to dramatically increase performance. It depends, if you read previous posts you can find lots of stories of people figuring it out. Using the correct files, etc are all part of the process.\nLike just above someone wrote this:\n\"Edit2) OMG It works!!!!!!!!!!!!!!!!!!!!!!!!!! I got the wrong OrangeGreenworks.js before and now I think I've got the right file!!! You're my savior!! Thanks!!!\""
+    },
+    {
+      "post_id": "js-post-1213958",
+      "author": "chiithecat",
+      "date": "2021-09-10T19:55:03+0900",
+      "body": "KillerGin said:\nReally? That is super rare, the point is updating NWJs to dramatically increase performance. It depends, if you read previous posts you can find lots of stories of people figuring it out. Using the correct files, etc are all part of the process.\nLike just above someone wrote this:\n\"Edit2) OMG It works!!!!!!!!!!!!!!!!!!!!!!!!!! I got the wrong OrangeGreenworks.js before and now I think I've got the right file!!! You're my savior!! Thanks!!!\"\nClick to expand...\nHaha yeah that was me all excited. English is not my first language and I can't tell you're being funny or offended.\nThe Steam achievements were killing me and I really appreciated your step-by-step explanation. It helped me a lot.\nWith the new version of nw.js, the project does start but takes more time to load when starting and sometimes does not start and shows only a white screen. The problem actually appeared from the moment I got it to work - even when I was writing that note you mentioned.\nI was just wondering if you know anything about this matter, or if you have seen anyone experiencing a similar matter so that I could figure something out. I've followed all the steps again and I read the previous posts here but couldn't find a solution.\nNo offense to you! Just to report possible errors."
+    },
+    {
+      "post_id": "js-post-1214482",
+      "author": "ThisParticularIndividual",
+      "date": "2021-09-13T05:33:46+0900",
+      "body": "I'm testing out a game I'm working on releasing and can get the Steam integration working correctly on Windows, with the Steam Overlay, but I can't seem to get the Steam Overlay to work on the Linux version. The plugins are set up correctly (they can grab info from Steam like the Screen Name and install directory). I sthere something I'm missing or does the Steam Overlay not work in nw.js on Linux? I've used a few different versions of nw.js (and the proper version of the other files). As far as I understand though, I shouldn't need any of these for the Steam Overlay itself to work (I simply added the --in-process-gpu launch option). Any thoughts?"
+    },
+    {
+      "post_id": "js-post-1216244",
+      "author": "chiithecat",
+      "date": "2021-09-20T17:22:36+0900",
+      "body": "I'm here again... just to let people know about my issue.\nI've released a game following all the steps mentioned here, and players have been reporting the same issue -\nthe game not starting, the saves getting corrupted, and not being able to load any of them.\nI'm using Hime's Sync Save Data (\nhttps://himeworks.com/2015/12/sync-save-data/\n) and I think something crashes when the game starts and causes it to change all the variables and switches related to the plug-in.\nI'm having a really hard time fixing this problem, almost in the middle of giving up Steam achievements.\nIt's better to be stable than to have more features I guess."
+    },
+    {
+      "post_id": "js-post-1224045",
+      "author": "IndoorMinotaur",
+      "date": "2021-10-26T12:04:04+0900",
+      "body": "Hi everyone, I don't know if this thread is monitored at all, but I'm having trouble getting this set up correctly.\nWhen I open the console, I get \"Uncaught SyntaxError: Unexpected token '<' in reference to the OrangeGreenworks plugin. There's no indication that it's connected through steam in any capacity. I've also tried adding a steam_appid text file in the root of my game folder to no avail. There's a shot of my lib folder below in case you can spy something I've missed there.\nI upgraded to NW.js 49.2. My SDK is 1.5. The greenworks javascript file is in the game's root (along with the lib folder), the OrangeGreenworks file is in the plugins folder and enabled, although I don't know if load order matters.\nLastly, since updating to NW.js 49.2, I get the following warning, though I don't know if it's related to this problem in any capacity:\nDevTools failed to load SourceMap: Could not load content for chrome-extension://odlameecjipmbmbejkplpemijjgpljce/js/libs/pixi.js.map: System error: net::ERR_FILE_NOT_FOUND\nEDIT: I opened up the plugin and the whole thing looks like a weird html doc. I would be grateful if anyone happened to have the plugin on their end and could share it so I could see the difference.\nEDIT 2: Ok, so the download link to the OrangeGreenworks plugin in this thread redirects to some kind of html code instead of the plugin. I should have probably checked that first instead of just plugging it in and assuming everything was fine. I was able to find the correct plugin on the author's GitHub."
+    },
+    {
+      "post_id": "js-post-1275216",
+      "author": "Oatilis",
+      "date": "2022-05-20T16:23:14+0900",
+      "body": "If you're looking for Hudell's OrangeGreenworks.js, it's here:\nmv-plugins/OrangeGreenworks.js at master · Hudell/mv-plugins\nJavascript plugins for RPG Maker MV. Contribute to Hudell/mv-plugins development by creating an account on GitHub.\ngithub.com"
+    },
+    {
+      "post_id": "js-post-1289983",
+      "author": "gloibjlkh",
+      "date": "2022-07-25T12:48:03+0900",
+      "body": "."
+    },
+    {
+      "post_id": "js-post-1289984",
+      "author": "ATT_Turan",
+      "date": "2022-07-25T12:56:27+0900",
+      "body": "magicbatteryacid said:\nOr am I supposed to put it in RPG Maker's main folder's \"upmost folder\"?\nHow does that even work exactly? Because not all PCs will organize the files the same, there's sort by file type, alphabetical, etc. It's a personal preference setting in windows...\nClick to expand...\nKillerGin said:\nthe top most folder of RPG Maker MV. (...where your Game.rpgproject file is located.)\nClick to expand...\nThe base directory of your project."
+    },
+    {
+      "post_id": "js-post-1289987",
+      "author": "gloibjlkh",
+      "date": "2022-07-25T13:04:35+0900",
+      "body": "."
+    },
+    {
+      "post_id": "js-post-1289990",
+      "author": "ATT_Turan",
+      "date": "2022-07-25T13:16:28+0900",
+      "body": "I don't know why you read \"the directory where your Game.rpgproject file is located\" or \"the base directory of your project\"...and then click into a sub-folder called audio.\n(You also keep saying \"upmost\" when that is not the word that was used...but that's really not the issue)\nThe instructions say to put the greenworks.js file into the base directory of your project, the directory you just posted a screenshot of that has Game.rpgproject, index.html, package.json and supertoolsengine.html\nDon't click into any other folder."
+    },
+    {
+      "post_id": "js-post-1289994",
+      "author": "gloibjlkh",
+      "date": "2022-07-25T13:26:41+0900",
+      "body": "."
+    },
+    {
+      "post_id": "js-post-1289997",
+      "author": "ATT_Turan",
+      "date": "2022-07-25T13:43:10+0900",
+      "body": "magicbatteryacid said:\nYeah I mis-qouted that, but what exactly does top most folder mean in general? I assumed it was the top folder within the project.\nClick to expand...\nWhat Does Top Level Folder/Directory Mean?\nThe top-level folder or top-level directory (same thing) is a reference to the root level of a project. So if you have a project structure…\ntechstacker.com\nmagicbatteryacid said:\nFirst it says top most folder of RPG Maker MV. That which would imply its the folder of the engine\nClick to expand...\nCorrect, that wording is confusing.\nmagicbatteryacid said:\nbut then it continues saying it's the one where the \"Game.rpgproject\" is located, which as far as I know, are only in game project folders\nClick to expand...\nAlso correct, which is the part that I found to be quite clear. That's why I was confused that you kept going into\nother\nfolders, as they were neither the top-level folder of MV nor of your project.\nAlso, just the fact of what you're doing should be a clue that it can't have anything to do with the installation directory of MV, as that has nothing to do with the files contained in your exported project. Those are all (encrypted and) copied from your project folder."
+    },
+    {
+      "post_id": "js-post-1289999",
+      "author": "gloibjlkh",
+      "date": "2022-07-25T13:59:48+0900",
+      "body": "."
+    },
+    {
+      "post_id": "js-post-1290000",
+      "author": "Raizen",
+      "date": "2022-07-25T14:17:38+0900",
+      "body": "Technically you get access to the steam sdk when setting up the partnership... BUT, you can probably download it externally or someone passing it to you. You won't be able to test achievements, because you won't be able to create any achievements for your game, since you need to create it on the steam dev side, but you can still test the sdk integration and other stuff. If the integration works well, I don't see why achievements wouldn't, so yeah, you can work some stuff in advance regarding the steam integration."
+    },
+    {
+      "post_id": "js-post-1290001",
+      "author": "gloibjlkh",
+      "date": "2022-07-25T14:23:40+0900",
+      "body": "Raizen said:\nTechnically you get access to the steam sdk when setting up the partnership... BUT, you can probably download it externally or someone passing it to you. You won't be able to test achievements, because you won't be able to create any achievements for your game, since you need to create it on the steam dev side, but you can still test the sdk integration and other stuff. If the integration works well, I don't see why achievements wouldn't, so yeah, you can work some stuff in advance regarding the steam integration.\nClick to expand...\nThe SDK is always available for download officially, that's what I had to download for this all to work in the first place, right? Or are you referring to something else."
+    },
+    {
+      "post_id": "js-post-1290031",
+      "author": "Raizen",
+      "date": "2022-07-25T21:46:27+0900",
+      "body": "ah, no, just that. It's just that some things like achievements and your appId you only get after paying, but the rest it is all there."
+    },
+    {
+      "post_id": "js-post-1290128",
+      "author": "gloibjlkh",
+      "date": "2022-07-26T07:49:18+0900",
+      "body": "Raizen said:\nah, no, just that. It's just that some things like achievements and your appId you only get after paying, but the rest it is all there.\nClick to expand...\nOh I see, thank you!\nI was thinking, with this tutorial there's a some outside tools. I think it would be cool if there was a list of names to credit as well as all terms of use."
+    },
+    {
+      "post_id": "js-post-1291953",
+      "author": "GrimAngel666",
+      "date": "2022-08-03T07:32:41+0900",
+      "body": "Hello! Thank you for this guide, it was really helpful\nMay I ask a further clarification?\nDid follow every step, and everything seems to run smoothly! Right now my project runs with the following:\n- RPG Maker MV v1.6.2\n- NW.js 49.2\n- SDK 1.50\n- Latest version of Greenworks and OrangeGreenworks\nNow my DevTools is showing my Steam's ID, like this:\nRight now I'm trying to understand how to implement OrangeGreenworks' codes in the right way. Have created a couple Achievements for my project, like this one:\nand tried to insert the following script  call, as suggested, into a specific event:\nWhile playtesting this error pops out, and Achievement doesn't show up even if I upload build on Steam and test it there:\nWhich is the right name or command to use? Did I miss some steps?\nI thought it may also be influenced by the fact that the app is not being released yet.\nThanks in advance!"
+    },
+    {
+      "post_id": "js-post-1297512",
+      "author": "gowane",
+      "date": "2022-08-29T06:06:26+0900",
+      "body": "Hey, have you found the help that you were looking for?"
+    },
+    {
+      "post_id": "js-post-1304057",
+      "author": "Squareware",
+      "date": "2022-10-05T05:12:11+0900",
+      "body": "The thing is I need to make the right combo using:\nGreenworks, steam sdk, the nw.js and for the plugin: orange or archadia (it doesn't matter much."
+    },
+    {
+      "post_id": "js-post-1309485",
+      "author": "mauigamestudio",
+      "date": "2022-11-05T15:02:37+0900",
+      "body": "I got everything working for achievement. I wonder if anyone can create leaderboards on steam with this plugin."
+    },
+    {
+      "post_id": "js-post-1310340",
+      "author": "masterlobo",
+      "date": "2022-11-10T10:49:06+0900",
+      "body": "Am I going crazy or can the right greenwork nodes no longer be found for 0.49.2?\nhttps://greenworks-prebuilds.armaldio.xyz/\nEdit: I was able to get the right greenwork nodes from the releases page instead of the UI linked. Basically, I got them from here:\nhttps://github.com/ElectronForConstruct/greenworks-prebuilds/releases"
+    },
+    {
+      "post_id": "js-post-1310630",
+      "author": "stprod",
+      "date": "2022-11-12T08:04:43+0900",
+      "body": "Help me, please.\nWhen I press F8, I get this issue. what will i be doing wrong?\nI don't understand why I get a message saying that I'm missing sdk files, I have all of them, look at my lib folder:\nI already used your script call and I can't get any achievement, no message appears on steam, how strange.\nmy script call is:\nOrangeGreenworks.activateAchievement('ACHIEVEMENT_1');\nAny solution?"
+    },
+    {
+      "post_id": "js-post-1315872",
+      "author": "Vati",
+      "date": "2022-12-14T06:54:02+0900",
+      "body": "Thought it better to ask this in javascript/plugin support forum instead of necroing, and thought I could delete this, but seems not... but I posted it here:\nMZ - Script call \"Bad Arguments\" when using Cyclone Steam [Solved]\nI realised it would probably be better to ask my question here, instead of posting in a very old thread, so....  I have been trying integrating Steam achievements in a MZ game with Cyclone Engine, and it seemingly works - I'm not getting any big error messages, and steam shows me as playing the...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1322353",
+      "author": "ZestyTS",
+      "date": "2023-01-17T16:03:49+0900",
+      "body": "remainderstudios said:\nHelp me, please.\nWhen I press F8, I get this issue. what will i be doing wrong?\nView attachment 244982\nI don't understand why I get a message saying that I'm missing sdk files, I have all of them, look at my lib folder:\nView attachment 244983\nI already used your script call and I can't get any achievement, no message appears on steam, how strange.\nmy script call is:\nOrangeGreenworks.activateAchievement('ACHIEVEMENT_1');\nAny solution?\nClick to expand...\nYou have the wrong version of the node files downloaded, took me a while to figure it out myself. When you go to the website:\nhttps://greenworks-prebuilds.armaldio.xyz/\nyou want to search for the version of nw.js that you have. Using 0.49.2 as an example, you would want to search the page for that number to find it."
+    },
+    {
+      "post_id": "js-post-1361380",
+      "author": "GusDiTanno",
+      "date": "2023-07-04T06:11:36+0900",
+      "body": "Does anyone know how fix this problem?"
+    },
+    {
+      "post_id": "js-post-1404569",
+      "author": "Ecko",
+      "date": "2023-12-10T06:32:55+0900",
+      "body": "Hello!\nI don't know if anyone is still responding here but I have a problem. Everything seems to work, although when I launch my game I get the error \"Greenworks failed to initialize.\" (afterwards it still shows me my peuso) When I play from the editor and I call the script to activate an achievement it gives me the message that it is doing it. Only when I export my game to Steam and play it from Steam, my achievement does not activate. And yet everything seems to be working normally, so I don't understand.\nThanks"
+    },
+    {
+      "post_id": "js-post-1413196",
+      "author": "TESTOSTERONE",
+      "date": "2024-01-09T14:22:45+0900",
+      "body": "Thank you so much for this guide. I am adding a couple of clarifications here as I went through this.\nI kept getting the error about OrangeWorks not being able to find\ngreenworks-win32\neven though it existed in the proper path.\nYou do have to\nplay with the filters\n, especially the Versions drop down. You may want to unselect all the checked versions and scroll through the pages yourself until you find the correct one.\nOnce you download the .node files, they will have a long weird name (see at the bottom left of the screenshot). I renamed the two .node files I downloaded (for 32 bit and 64 bit windows) to be:\ngreenworks-win32\ngreenworks-win64\nAfter that, once I deployed the game and updated the root directory to use NW.js 0.49, I finally was able to see my steam name when play testing via F12."
+    },
+    {
+      "post_id": "js-post-1461001",
+      "author": "awakecore",
+      "date": "2024-08-02T09:09:30+0900",
+      "body": "Is anyone having issues finding the Greenworks Nodes? Specifically for NW.js 49.2? When I click on the link, the filters only go down to version 108, not 49.2. I also looked through the \"version range\" on each page and couldn't find one close to 49.2. Perhaps I'm looking in the wrong place? Any help would be appreciated.\n- UPDATE -\nokay, you really do just have to mess with the filters on the left a lot. those with this issue should try changing the release tag to \"V0.6.0\""
+    },
+    {
+      "post_id": "js-post-1466086",
+      "author": "WinterDepression",
+      "date": "2024-08-25T06:40:08+0900",
+      "body": "Is 49.2 the highest you can go if you want to use greenworks?"
+    },
+    {
+      "post_id": "js-post-1478220",
+      "author": "PlayGG_Doctor",
+      "date": "2024-10-29T23:18:16+0900",
+      "body": "For any fellow RMMV Devs LOSING THEIR ABSOLUTE MINDS not being able to find the ver 49.2 nodes, you have to CLEAR ALL VERSIONS. Having them all selected, you would think, intuitively, would show all available. But no. There appear to be dozens of options that are simply not an option to search for and by having ANY selected, you hide them all. Only by deselecting ALL versions can you actually see all available ones."
+    },
+    {
+      "post_id": "js-post-1481935",
+      "author": "SifDoge",
+      "date": "2024-11-17T03:02:52+0900",
+      "body": "Thanks for the tutorial\nit works perfectly! (Tested on 49.2 version)"
+    },
+    {
+      "post_id": "js-post-1484282",
+      "author": "LandsharkRAWR",
+      "date": "2024-11-30T04:46:01+0900",
+      "body": "I'm very sure i followed every step correctly and am using NWjs 49.2, steam SDK 1.50, greenworks v88 and am on rpg maker MV 1.6.3. im no longer getting the error about the node not being found thankfully but i find myself having a new issue that i haven't seen anyone else have: \"Error: A dynamic link library (DLL) initialization routine failed\" upon starting the game\nI haven't been able to find anyone else having this issue and tried redoing the steps again only to get back to this point."
+    },
+    {
+      "post_id": "js-post-1484411",
+      "author": "tsurugikage",
+      "date": "2024-11-30T23:47:30+0900",
+      "body": "Does this work for RPG Maker MZ?"
+    },
+    {
+      "post_id": "js-post-1485356",
+      "author": "CleanWater",
+      "date": "2024-12-04T10:15:33+0900",
+      "body": "I'll follow this guide and see if it still works with the latest SDK. Thanks for posting."
+    },
+    {
+      "post_id": "js-post-1486501",
+      "author": "LandsharkRAWR",
+      "date": "2024-12-09T17:05:43+0900",
+      "body": "LandsharkRAWR said:\nI'm very sure i followed every step correctly and am using NWjs 49.2, steam SDK 1.50, greenworks v88 and am on rpg maker MV 1.6.3. im no longer getting the error about the node not being found thankfully but i find myself having a new issue that i haven't seen anyone else have: \"Error: A dynamic link library (DLL) initialization routine failed\" upon starting the game\nView attachment 324133\nI haven't been able to find anyone else having this issue and tried redoing the steps again only to get back to this point.\nClick to expand...\nI have managed to fix this by downgrading to NWjs 49.1, steam SDK 1.43 and greenworks v83 and it works fine now!"
+    },
+    {
+      "post_id": "js-post-1494601",
+      "author": "emma_watson",
+      "date": "2025-01-19T04:21:33+0900",
+      "body": "Hi, for some reason the steam_api64.dll and steam_api64.lib are causing me to not be able to test my game. Once I remove those I'm totally fine, but why is it these 2 specific files that make me not able to test and open? (The game will open and then immediately close)"
+    },
+    {
+      "post_id": "js-post-1494602",
+      "author": "emma_watson",
+      "date": "2025-01-19T04:37:41+0900",
+      "body": "CleanWater said:\nI'll follow this guide and see if it still works with the latest SDK. Thanks for posting.\nClick to expand...\nDid it work? And if so, what files did you use?"
+    },
+    {
+      "post_id": "js-post-1527314",
+      "author": "Arcaines",
+      "date": "2025-08-22T07:16:08+0900",
+      "body": "Hey, so I followed this guide and I keep getting this error. (I've tired 2 guides so far and it's the same error as always)\nThe file itself is there in the lib folder but it's just not recconising it.\nI'm at my wits ends with this..."
+    },
+    {
+      "post_id": "js-post-1529803",
+      "author": "doller554",
+      "date": "2025-09-13T03:12:56+0900",
+      "body": "Seriously if anyone can help me. My game fully releases in 6 days and I have spent the last three days non stop trying to figure out why I did every thing everyone is saying and still getting this error message. I am using the 49.2nw, the 1.50 SDK, and the right nodes as well. What am I missing here? Every time I test it it says it's all missing.\nMartin_Arcainess said:\nHey, so I followed this guide and I keep getting this error. (I've tired 2 guides so far and it's the same error as always)\nView attachment 347936\nThe file itself is there in the lib folder but it's just not recconising it.\nI'm at my wits ends with this...\nClick to expand...\nDid you ever find an answer to this. I am going through the same exact thing and my game drops in 6 days. I did everything everyone said to do step by step and still get this as well.\nLandsharkRAWR said:\nI have managed to fix this by downgrading to NWjs 49.1, steam SDK 1.43 and greenworks v83 and it works fine now!\nClick to expand...\nHow did you get the node to work? I did everything everyone is saying to do, but it still keeps not finding it."
+    },
+    {
+      "post_id": "js-post-1529807",
+      "author": "doller554",
+      "date": "2025-09-13T03:30:13+0900",
+      "body": "Martin_Arcainess said:\nHey, so I followed this guide and I keep getting this error. (I've tired 2 guides so far and it's the same error as always)\nView attachment 347936\nThe file itself is there in the lib folder but it's just not recconising it.\nI'm at my wits ends with this...\nClick to expand...\nOMG I think I figured out why it's doing this. The file greenworks - Win32 is named wrong in the downloads. You have to rename greenworks-nw.js-v88-win32-ia into just greenworks-win 32"
+    },
+    {
+      "post_id": "js-post-1529894",
+      "author": "Arcaines",
+      "date": "2025-09-13T21:34:03+0900",
+      "body": "doller554 said:\nOMG I think I figured out why it's doing this. The file greenworks - Win32 is named wrong in the downloads. You have to rename greenworks-nw.js-v88-win32-ia into just greenworks-win 32\nClick to expand...\nHave you got your game achievement's to work?\nI've manage to get mine to work in the end."
+    },
+    {
+      "post_id": "js-post-1529979",
+      "author": "doller554",
+      "date": "2025-09-14T14:17:39+0900",
+      "body": "Martin_Arcainess said:\nHave you got your game achievement's to work?\nI've manage to get mine to work in the end.\nClick to expand...\nYes, but I had to change things around. I had to use PlayGG_Doctor's files and it works perfectly now:\nSteam Integration and Achievements Tutorial (Tested on MV)\nSetting up Steam Integration and Achievements   Intro  So... you’re planning on releasing your RPG Maker MV game on STEAM in this, the year of our lord 2025. Steam integration is turning out to be trickier than you expected, but you can’t say “no” to those sweet, sweet features. Being able to...\nforums.rpgmakerweb.com"
+    }
+  ]
+}
