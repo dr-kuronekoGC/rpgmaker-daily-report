@@ -1,0 +1,113 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/arrays-or-similar-in-rmmz.171789",
+  "title": "Arrays or similar in RMMZ??",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-14T23:12:53.009989+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1469019",
+      "author": "Fufi_Saintz",
+      "date": "2024-09-09T17:59:53+0900",
+      "body": "Hi everyone.\nIs it possible to deal with arrays or similar in RPG Maker MZ?\nI am especially referring to adding a value to a text array stored as variable.\nI used to store text value in a variable using the script field and putting the value under quotes; but what if i want to add a new letter to this value?\nI need this because I want to implement in my project a room where there are tiles on the floor with the letters of the alphabet: player has to \"write\" words by passing over the correct tiles, and this would be very easy to do if every new letter could be easily added to the others. I know this could be done in other ways, too, but with a lot of work and using of variables and/or swithces, especially if I wanto to make this thing a repeatable event (with, say, a dozen different words).\nAny help?"
+    },
+    {
+      "post_id": "js-post-1469022",
+      "author": "Robro33",
+      "date": "2024-09-09T18:31:19+0900",
+      "body": "Fufi_Saintz said:\nI am especially referring to adding a value to a text array stored as variable.\nClick to expand...\nyou can still use array methods on a game variable array. so if you need add a value to one, you can still use .push() to do so\nFufi_Saintz said:\nI need this because I want to implement in my project a room where there are tiles on the floor with the letters of the alphabet: player has to \"write\" words by passing over the correct tiles, and this would be very easy to do if every new letter could be easily added to the others\nClick to expand...\nthat would be easier with a string imo. youd start with an empty string and then concatenate the new letters on to the variable as the player steps on tiles. just a\nCode:\n$gameVariables.value(1) + \"a\"\ninside the script box for control variables would do"
+    },
+    {
+      "post_id": "js-post-1469023",
+      "author": "Aerosys",
+      "date": "2024-09-09T18:34:12+0900",
+      "body": "You can put arrays into Game Variables. The game will not crash, but you should pay some attention.\nI recommend using arrays only to those with some knowledge of JavaScript, but when you have, here you go!\nTo initialize an array, do Variable OP, select \"Script\", and input\n[ ]\nTo add an element, you should use \"Script\" instead of \"Variable OP\", and type this:\nCode:\n$gameVariables.value(1).push(2)\nTo query for some element, you can always type\nCode:\n$gameVariables.value(1)[2]\nTo get element 2 of the array of Game Variable 1"
+    },
+    {
+      "post_id": "js-post-1469033",
+      "author": "ISC",
+      "date": "2024-09-09T19:52:45+0900",
+      "body": "Are you sure you need an array for what you're trying to do? You might possibly achieve the same result using string methods. However, it greatly depends on your knowledge of JavaScript and how you intend to use it."
+    },
+    {
+      "post_id": "js-post-1469042",
+      "author": "Fufi_Saintz",
+      "date": "2024-09-09T20:23:18+0900",
+      "body": "I have very little knowledge in JavaScript, I am mor into Python, bot if it's easy to do and you can give me some hint I'll really appreciate it\nISC said:\nAre you sure you need an array for what you're trying to do? You might possibly achieve the same result using string methods. However, it greatly depends on your knowledge of JavaScript and how you intend to use it.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1469046",
+      "author": "ISC",
+      "date": "2024-09-09T21:05:06+0900",
+      "body": "You could use the concatenation operator.\nLet me give you an example. Let's say I have the word \"car,\" and the player steps on the letter \"s,\" creating the word \"cars.\"\nTo do this, I'll show you an example in JavaScript:\n```\nlet example = \"car\";\nexample += \"s\";\nconsole.log(example); // output: cars\n```\nHow do we translate this to RPG Maker?\nLet’s say your variable 1 is equal to \"car.\"\nThe player steps on the letter \"S.\"\nVariable 1 + (script) \"s\"\nNow your variable will be equal to \"cars.\"\nHowever, I want to warn you about something important. The Visustella multi-language plugin doesn’t work with words defined in this way. So, if you want to make a multilingual game using the Visustella plugin, you won’t be able to, as it doesn’t work with variables containing strings (or at least I haven’t been able to make it work)."
+    },
+    {
+      "post_id": "js-post-1469048",
+      "author": "ATT_Turan",
+      "date": "2024-09-09T21:19:57+0900",
+      "body": "Fufi_Saintz said:\nI have very little knowledge in JavaScript, I am mor into Python, bot if it's easy to do and you can give me some hint I'll really appreciate it\nClick to expand...\n...did you read the very first reply to your thread? From\n@Robro33\n, an hour and twenty minutes earlier? Where he literally gave you the exact syntax to use?"
+    },
+    {
+      "post_id": "js-post-1469085",
+      "author": "Fufi_Saintz",
+      "date": "2024-09-10T01:29:08+0900",
+      "body": "Many many thanks to\n@Robro33\nand\n@Aerosys\n, you saved my life!\nReally appreciated also\n@ISC\nstep-by-step explication.\nThis community is wonderful"
+    },
+    {
+      "post_id": "js-post-1470302",
+      "author": "Fufi_Saintz",
+      "date": "2024-09-16T16:38:55+0900",
+      "body": "Hey everyone,\nnow I am dealing with how to remove the last element of my array/string.\nI have declared a variable as a string with var1 = [ ]\nThen I am adding element with $gameVariables.value(1) + \"a\"\nAfter putting some characters in it, how can I remove the last one?\nI've been trying JavaScript commands like pop, lenght or slice, bot I only got some weird results. Probably I am also messing up things with JS's syntax...\nAny help?\nThanks in advice!"
+    },
+    {
+      "post_id": "js-post-1470304",
+      "author": "Aerosys",
+      "date": "2024-09-16T16:48:06+0900",
+      "body": "At this point, it is probably the most efficient to google \"javascript how to remove last element of an array/last character of a string\". You will find many pages that describe all possible operations on arrays and strings.\nTo remove last element of an array:\nCode:\n$gameVariables.value(1).pop()\nReplace 1 with your Variable ID\nTo remove last character of a string:\nCode:\nconst string = $gameVariables.value(1)\n$gameVariables.setValue(1, string.substring(0, string.length - 1))\nAgain, replace the two 1s that you see in the $gameVariables function,\nbut keep the last 1 next to string.length as it is\n."
+    },
+    {
+      "post_id": "js-post-1470308",
+      "author": "caethyril",
+      "date": "2024-09-16T17:01:40+0900",
+      "body": "To add - you're starting with an empty array\n[]\n, but that gets converted to a blank string when you try to add a string to it:\n[] + \"a\"\n->\n\"\" + \"a\"\n->\n\"a\"\n.\nSo you would use\n@Aerosys\n's string example, or change your approach to use an array."
+    },
+    {
+      "post_id": "js-post-1470310",
+      "author": "Fufi_Saintz",
+      "date": "2024-09-16T17:25:47+0900",
+      "body": "Thanks!!\nAerosys said:\nAt this point, it is probably the most efficient to google \"javascript how to remove last element of an array/last character of a string\". You will find many pages that describe all possible operations on arrays and strings.\nClick to expand...\nThat's exactly what I did for the two hours before writing my post!\nI like trying to learn things by myself before asking for help, but as I wrote I only got wrong or weird results, so I came here and asked :-D\nThanks to your help now I got what I wanted, still I got a question: with your code, when removing the last element the remaining value of the variable is 0, but I'd like it to be empty. I already easily fixed this with a conditional, but as I wrote I like to learn things, so: is there a way to do this only by changing your code?\nMany thanks!!"
+    },
+    {
+      "post_id": "js-post-1470311",
+      "author": "Robro33",
+      "date": "2024-09-16T17:36:50+0900",
+      "body": "Fufi_Saintz said:\nwhen removing the last element the remaining value of the variable is 0, but I'd like it to be empty\nClick to expand...\nthe value of the variable is probably \"\", but the value() function was written to return 0 in a few specific cases. its likely that it outputs 0 instead of empty strings too. you can try using $gameVariables._data[1] instead and see what you get, but make sure you set its value at some point first before accessing it"
+    },
+    {
+      "post_id": "js-post-1470312",
+      "author": "utunnels",
+      "date": "2024-09-16T17:46:32+0900",
+      "body": "Or you can forget $gameVariables and use something like $gameSystem.variables to make your own variable list.\nFor example, you initialize it in the first map of the game.\n$gameSystem.variables = {};\nThen you can just use something like $gameSystem.variables.stringA = \"this is a string value\""
+    },
+    {
+      "post_id": "js-post-1470330",
+      "author": "ZombieKidzRule",
+      "date": "2024-09-16T19:29:36+0900",
+      "body": "Learning how to use Arrays has opened up a whole world of possibilities for me. I highly recommend searching for some RPG Maker tutorials that give examples of using Arrays and you can check out a free online course like W3Schools for JavaScript and you will find lots of useful information. I also just search for specific JavaScript questions and can usually find what I need.\nI have some tutorials that highlight different uses of Arrays. My tutorials progressed as I learned more about how to use Arrays and some of those tutorials specifically mention Arrays in the tutorial title or description.\nMy current Sudoku project uses a LOT of Arrays. For instance, right now, I am using an Array of stored data that I can pull out and use in a Variable to identify other specific Arrays and I use other Variables to identify the position location of the value I want in the appropriate Array. So my script is using Variables to identify both the Array I need to pull data from and the position of that data in the Array.\nAnd 3 years ago, I had zero experience with RPG Maker, programming, and JavaScript.\nMy best advise is to take a step back, watch a bunch of tutorials and recreate the Array portions yourself in a test project. Read about Arrays and how they are used in a free JavaScript resource and recreate those functions in your test project. Then use your test project to experiment with what specifically you want to do at this time.\nBecause learning as much as you can about Arrays now, how they work in MZ, all the things you can do with them, will probably greatly expand your options going forward.\nAnd this forum is great for specific questions.\nGood luck and embrace the power of the Array!"
+    },
+    {
+      "post_id": "js-post-1470519",
+      "author": "caethyril",
+      "date": "2024-09-17T17:56:03+0900",
+      "body": "Like Robro says, the core\n$gameVariables.value\nmethod returns 0 for\nfalsy\nvalues, e.g. a blank string.\nAn empty array is still truthy, so that would be a valid workaround. If you want to display the contents of an array as a string, you can still do so using\nArray#join\n:\nJavaScript:\n$gameVariables.value(1).join(\"\");\nE.g. if variable 1 had the value\n[\"a\", \"b\", \"c\"]\n, the above code would return\n\"abc\"\n.\nHowever, I think I'd just use a branch for \"is variable = 0\", like you've already done."
+    },
+    {
+      "post_id": "js-post-1472708",
+      "author": "TinoXelav",
+      "date": "2024-09-29T16:19:19+0900",
+      "body": "W3Schools.com\nW3Schools offers free online tutorials, references and exercises in all the major languages of the web. Covering popular subjects like HTML, CSS, JavaScript, Python, SQL, Java, and many, many more.\nwww.w3schools.com\nW3Schools.com\nW3Schools offers free online tutorials, references and exercises in all the major languages of the web. Covering popular subjects like HTML, CSS, JavaScript, Python, SQL, Java, and many, many more.\nwww.w3schools.com\nW3Schools.com\nW3Schools offers free online tutorials, references and exercises in all the major languages of the web. Covering popular subjects like HTML, CSS, JavaScript, Python, SQL, Java, and many, many more.\nwww.w3schools.com\nW3Schools.com\nW3Schools offers free online tutorials, references and exercises in all the major languages of the web. Covering popular subjects like HTML, CSS, JavaScript, Python, SQL, Java, and many, many more.\nwww.w3schools.com\nyou can use this website to practice coding your arrays"
+    }
+  ]
+}
