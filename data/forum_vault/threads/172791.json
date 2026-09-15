@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/way-to-layer-enemies-in-battle-without-adjusting-enemy-image-height.172791",
+  "title": "Way to layer enemies in battle without adjusting enemy image height?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T22:54:52.772915+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1477186",
+      "author": "SepiaOulomenohn",
+      "date": "2024-10-24T08:45:47+0900",
+      "body": "G'morning, all y'all,\nI've been working on some fairly complex enemy designs, and since I plan for combat to be more puzzle-like and contained to specific events, every troop will be unique, and involve multiple layers as targetable (and hide()/appear()-ing) parts of the larger enemy.\nWhat I'm looking for is to be able to layer the enemies through some script call, or even a plugin. I already do have a workaround: I can manually adjust the x and y of every enemy in my troops.js file (which I plan on doing anyway if I don't use LadyBaskerville's Shift Enemies plugin) and make sure that each image is at an appropriate height so they layer on top of each other how I want.\nHowever, this second part is inconvenient because I would have to either intentionally misalign all the layers of my art after drawing them, or change the canvas size before saving every sub-image.\nIs there a way to do this without the art asset hassle?\nThanks, y'all"
+    },
+    {
+      "post_id": "js-post-1477204",
+      "author": "ATT_Turan",
+      "date": "2024-10-24T11:18:55+0900",
+      "body": "I really don't understand what you're describing.\nCan you show some samples of the images and/or screenshots of what you want to end up with?\nYou acknowledge this:\nSepiaOulomenohn said:\nLadyBaskerville's Shift Enemies plugin\nClick to expand...\nIsn't this exactly what you're asking for? Why wouldn't you use it? Why would you manually edit files?\nWhat\nelse\nare you asking?\nI just don't get what you're getting at with the misaligning layers (PNG doesn't support layers) or changing canvas size."
+    },
+    {
+      "post_id": "js-post-1477223",
+      "author": "SepiaOulomenohn",
+      "date": "2024-10-24T14:09:23+0900",
+      "body": "Alright, so, for my first intended 'combat', I have a closed closet. Once an ability is used on the closet, it opens, revealing a jacket hanging on a hanger. Each of these things are the three different entities that make up the troop. The jacket is a separate target from the open-closet entity, which is separate from the closed-closet entity (which is hidden when ability'd so the open closet can appear).\nI have been having trouble aligning the entities using the annoyingly small screen in the troop part of the database, and so I'm going to either use the Shift Enemies plugin or manually assign the x and y values so that everything lines up as I've intended.\nHere comes the issue though.\nPlease excuse the crappy placeholder images:\nThis above is what I intend the second stage of the encounter to look like. However, what happens instead is the open closet appears above the jacket:\nAfter investigating the issue on the forums, I learned that no changing of the enemy or troop order will solve this issue. The only thing that changes the layering of enemies is how far\nup or down\nthey are on the troop alignment screen.\nWhat this means is, if I want to make the layers work as intended, I need to either misalign my layers in my art program so that when I align the three enemies using x and y position in RPG maker they'll be in the correct position\nand\nabove/below the correct enemies, or change the y-length of the pixels (the canvas size of my image), so that when they're placed on top of each other RPG maker treats the intended layers as more forward.\nSo with all of that, what I'm asking for is if there's a way to forcibly set which enemies are on top of each other, either through script or plugin, so that I don't have to misalign my art or save my images in different sizes with respect to each other. I already have the above workaround, but I'm hoping for something that's less of a hassle."
+    },
+    {
+      "post_id": "js-post-1477224",
+      "author": "ATT_Turan",
+      "date": "2024-10-24T14:28:20+0900",
+      "body": "Instead of going through all this visual manipulation and worrying about changing dimensions or placements by one pixel, why don't you simply transform the enemy instead?\nYou have one enemy in the troop. You make a troop event with the condition of that enemy being at <= 0 HP which transforms it into the next enemy. Use HimeWorks' End Phase Triggers so the troop event goes off instead of the battle ending.\nZero funky image management or pixel-perfect enemy placement."
+    },
+    {
+      "post_id": "js-post-1477231",
+      "author": "SepiaOulomenohn",
+      "date": "2024-10-24T14:49:15+0900",
+      "body": "Although the issue is the visual manipulation, what I have in mind for the battles themselves require that there be multiple overlapping entities (enemies), which may or may not be able to be targeted. The Jacket and the Open Closet in this example are distinct parts which cause different effects based on player action (as in, which entity appears and how it acts changes with respect to invisible states that the player's combat abilities put on those parts). I\ncould\nhave the jacket floating beside the closet and it would work without all this, but stylistically I want them to appear as I've shown.\nAll of it works except for the layering issue. (And another small but workaround-able issue I'll post about after this one.)\nAnd like I said, I have a way to do it that I've already described, but I'm hoping that there's an easier or more intuitive way to do it, which is why I'm asking."
+    },
+    {
+      "post_id": "js-post-1477235",
+      "author": "Canned_Dinosaur",
+      "date": "2024-10-24T15:20:05+0900",
+      "body": "You could also open up troops.json and (carefully!) adjust the enemy coordinates there?\nEDIT: sorry you already did mention this... reading comprehension fail. But in any case, if it needs to be pixel perfect, I would just do that."
+    },
+    {
+      "post_id": "js-post-1477241",
+      "author": "ATT_Turan",
+      "date": "2024-10-24T16:01:08+0900",
+      "body": "You could not use images for the enemies and display the stuff via Show Picture, instead - that allows you to determine the layer priority via the ID you assign the picture.\nActually manipulating the Z-index of drawn items is notoriously complicated, so I think doing something that or just using the plugin is probably easier. I have a hard time imagining anyone will notice a one-pixel difference (or, as you've acknowledged, you can trim the one pixel off the bottom of the image).\nI dunno, maybe someone else knows of an easy way to do this that I'm not thinking of."
+    },
+    {
+      "post_id": "js-post-1478422",
+      "author": "SepiaOulomenohn",
+      "date": "2024-10-30T19:31:30+0900",
+      "body": "So, update on this! With the help of a friend I've figured out exactly how the enemy layering is handled in battle (even if I don't know how it's handled in the rpg maker viewer)\npixi.js, I think? Its battler layering relies on the\ncreateEnemies\nfunction found in\nrpg_sprites.js.\nAnd in\ncreateEnemies\n, it sorts the sprites using\ncompareEnemySprite\n, which is the function just beneath it, which is as follows:\nCode:\nSpriteset_Battle.prototype.compareEnemySprite = function(a, b) {\n    if (a.y !== b.y) {\n        return a.y - b.y;\n    } else {\n        return b.spriteId - a.spriteId;\n    }\n};\nThis is why it appears that they'd be sorted by Id, when in reality they're sorted by y value, and then Id when the y values are the same.\nSo to change the ordering, I need to hijack that function in a plugin and stuff it full of my own code, wherein I can force it to compare notetags. I just finished a really ugly looking plugin myself that works as intended, and might post something when it looks better."
+    },
+    {
+      "post_id": "js-post-1478455",
+      "author": "ATT_Turan",
+      "date": "2024-10-30T21:49:37+0900",
+      "body": "SepiaOulomenohn said:\nThis is why it appears that they'd be sorted by Id, when in reality they're sorted by y value, and then Id when the y values are the same.\nClick to expand...\nExcept this code shows your entire previous statement/assumption to be in error:\nSepiaOulomenohn said:\nI learned that no changing of the enemy or troop order will solve this issue. The only thing that changes the layering of enemies is how far\nup or down\nthey are on the troop alignment screen.\nClick to expand...\nThat is clearly not the case, because you just posted the code that changes their layering based on sprite ID when the y coordinates are exactly the same.\nSo I don't see why there's any reason for custom code at all - just figure out how the sprite IDs are assigned and manipulate that. I would assume it's based on the order the enemies were placed into the troop, so you'd just need to add them in the correct order.\n(and then, of course, use the plugin mentioned previously to make sure the y coordinates are, in fact, the same)"
+    },
+    {
+      "post_id": "js-post-1478478",
+      "author": "SepiaOulomenohn",
+      "date": "2024-10-31T00:30:26+0900",
+      "body": "Maybe I've misspoken, then, because this whole time I was trying to make it so I didn't have to deal with the y values at all. I'd like to be able to layer enemies freely, because then I can have different enemy canvas sizes at any size I want. I can also have art be at the same size and not have to worry about what order I put the troops in.\nBy creating a small plugin, there's just a lot less hassle because I can assign the layers of everything with notetags and not worry about the rest. It's just way more intuitive."
+    },
+    {
+      "post_id": "js-post-1478480",
+      "author": "ATT_Turan",
+      "date": "2024-10-31T00:36:06+0900",
+      "body": "I don't see the difference between \"worrying\" about what order you put the troops in and going through the effort of writing a plugin that will take...a notetag from the enemy? Which you'll then have to go through and add to each affected enemy?\nIt just seems like all that is more effort than simply adding the enemies into the troops in the order you want them to be layered.\nBut if it works for your game, then I'm glad you found a solution!"
+    }
+  ]
+}

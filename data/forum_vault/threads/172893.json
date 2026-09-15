@@ -1,0 +1,227 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/state-formula.172893",
+  "title": "State Formula",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T22:54:50.061273+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1478179",
+      "author": "mike_312",
+      "date": "2024-10-29T15:52:35+0900",
+      "body": "Hi everyone, I would like to know if I can do the following: I would like to set a status like \"Poison\" that takes away life from the target each turn, but the damage instead of being a percentage is based on the attack of the character who cast the status or based on the attack of a specific character even if he does not cast the status. Would that be possible? I use rpg maker mz"
+    },
+    {
+      "post_id": "js-post-1478181",
+      "author": "Dark_Ansem",
+      "date": "2024-10-29T16:52:22+0900",
+      "body": "It is, easiest I can think of is with the free Core Visustella Plugins\nJavaScript:\n<JS HP Slip Damage>\n  // damage based on the attack of the character who cast the status\n  let damage = user.atk * 0.5;\n</JS HP Slip Damage>\nJavaScript:\n<JS HP Slip Damage>\n  // Damage based on the attack of another character\n  let specificActor = $gameActors.actor(1);\n  let damage = specificActor.atk * 0.5;\n</JS HP Slip Damage>"
+    },
+    {
+      "post_id": "js-post-1478186",
+      "author": "mike_312",
+      "date": "2024-10-29T17:49:16+0900",
+      "body": "It's great! Thank you very much, I was told it wasn't possible. I really appreciate it"
+    },
+    {
+      "post_id": "js-post-1478187",
+      "author": "Dark_Ansem",
+      "date": "2024-10-29T17:50:54+0900",
+      "body": "oh whoops I realised you did NOT want a percentage, well, just change that to whatever you want.\nout of curiosity, what is the context of the state?"
+    },
+    {
+      "post_id": "js-post-1478190",
+      "author": "Robro33",
+      "date": "2024-10-29T18:16:02+0900",
+      "body": "Dark_Ansem said:\noh whoops I realised you did NOT want a percentage\nClick to expand...\nwhen they said that, i assume they meant\nmike_312 said:\n..but the damage instead of being a percentage\nof the target's max hp\nis based on the attack..\nClick to expand...\nsince the base engine's hp regen only uses the target's max hp. What you gave them was what they said they wanted, and they said it works for them\nmike_312 said:\nbased on the attack of the character who...\nClick to expand...\nmike_312 said:\nIt's great!\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1478191",
+      "author": "Dark_Ansem",
+      "date": "2024-10-29T18:26:29+0900",
+      "body": "ah cool, sorry, I just put a close (temporarily) on a massive chapter of my life today, so my head is a bit all over the place"
+    },
+    {
+      "post_id": "js-post-1478205",
+      "author": "ATT_Turan",
+      "date": "2024-10-29T20:59:01+0900",
+      "body": "mike_312 said:\nIt's great! Thank you very much, I was told it wasn't possible. I really appreciate it\nClick to expand...\nI don't know who told you that or where.\nBut the thing to remember in RPG Maker is that the code for the game is sitting right there in the js folder of your project - literally\nanything\nis possible. So I tell people there's no point in asking that question and anyone who answers \"No\" is certainly mistaken.\nThe question is always whether there's already a plugin to do what you want, and how much time and effort it would take to implement."
+    },
+    {
+      "post_id": "js-post-1478206",
+      "author": "Dark_Ansem",
+      "date": "2024-10-29T21:02:17+0900",
+      "body": "*except some very specific things such as addying varied sound effects to animations - at least in vanilla animation setup, action sequences would certainly allow that but maybe you're like me, a tad economical, maybe unreasonably so, with common events LOL"
+    },
+    {
+      "post_id": "js-post-1478389",
+      "author": "ATT_Turan",
+      "date": "2024-10-30T12:04:22+0900",
+      "body": "Dark_Ansem said:\n*except some very specific things such as addying varied sound effects to animations\nClick to expand...\nI'm a little unclear as to what this post means. Are you implying that this can't be done with a plugin? Because it absolutely can."
+    },
+    {
+      "post_id": "js-post-1478403",
+      "author": "Dark_Ansem",
+      "date": "2024-10-30T15:15:07+0900",
+      "body": "ATT_Turan said:\nI'm a little unclear as to what this post means. Are you implying that this can't be done with a plugin? Because it absolutely can.\nClick to expand...\nIt can? Without action sequences? How?"
+    },
+    {
+      "post_id": "js-post-1478416",
+      "author": "Robro33",
+      "date": "2024-10-30T18:11:46+0900",
+      "body": "Dark_Ansem said:\nIt can? Without action sequences? How?\nClick to expand...\nthe code the game uses to function is in the js folder. Anyone who can read and understand what the code does (or upends the process and does it their own way for that matter) can come up with some method to do it.\nOffhand, i wouldnt imagine itd be hard to make an alternate version of AudioManager.playSE() that ignores the last character in a file name and then searches for and picks a random file that matches with the rest of the name for use in animations while interfacing with them the same way. Even if you meant to just do something like randomize the pitch so that its not the same every time, thats a one line edit in and of itself.\nDark_Ansem said:\naction sequences would certainly allow that but maybe you're like me, a tad economical, maybe unreasonably so, with common events LOL\nClick to expand...\nI know the way VS's Action sequences are used is different than Yanfly's, but im certain that instead of attaching the sound to the animation, you can just use a bit of js to choose from a pool of sound effect names for each sequence and then play it with a semi randomized volume and pitch.\nRegardless, thats not what the thread is about. if you want to discuss it openly, id suggest making your own thread about it"
+    },
+    {
+      "post_id": "js-post-1478431",
+      "author": "Dark_Ansem",
+      "date": "2024-10-30T20:38:57+0900",
+      "body": "Robro33 said:\nthe code the game uses to function is in the js folder. Anyone who can read and understand what the code does (or upends the process and does it their own way for that matter) can come up with some method to do it.\nOffhand, i wouldnt imagine itd be hard to make an alternate version of AudioManager.playSE() that ignores the last character in a file name and then searches for and picks a random file that matches with the rest of the name for use in animations while interfacing with them the same way. Even if you meant to just do something like randomize the pitch so that its not the same every time, thats a one line edit in and of itself.\nI know the way VS's Action sequences are used is different than Yanfly's, but im certain that instead of attaching the sound to the animation, you can just use a bit of js to choose from a pool of sound effect names for each sequence and then play it with a semi randomized volume and pitch.\nRegardless, thats not what the thread is about. if you want to discuss it openly, id suggest making your own thread about it\nClick to expand...\nYour subtitle certainly checks out."
+    },
+    {
+      "post_id": "js-post-1478438",
+      "author": "ATT_Turan",
+      "date": "2024-10-30T21:15:13+0900",
+      "body": "Dark_Ansem said:\nIt can? Without action sequences? How?\nClick to expand...\n...by\nwriting a plugin\n. The thing I said in the first place in post #7 and again in #9\nI don't understand the confusion in this conversation."
+    },
+    {
+      "post_id": "js-post-1478439",
+      "author": "Dark_Ansem",
+      "date": "2024-10-30T21:16:21+0900",
+      "body": "ATT_Turan said:\n...by\nwriting a plugin\n. The thing I said in the first place in post #7\nI don't understand the confusion in this conversation.\nClick to expand...\nThere is no confusion\n, I'm plainly admitting I have absolutely no clue and I did try in the past!"
+    },
+    {
+      "post_id": "js-post-1480674",
+      "author": "mike_312",
+      "date": "2024-11-09T19:17:25+0900",
+      "body": "Hi, I just tried the formula you gave me and it doesn't work.\n<JS HP Slip Damage>\n// damage based on the attack of the character who cast the status\nlet damage = user.atk * 0.5;\n</JS HP Slip Damage>\nI just want a status that does damage for 3 turns, but the damage it does is based on the strength (for example) of the character who casts the status. I just want this because I find it boring that all the statuses that remove damage do so by removing a fixed percentage from the enemy (putting the status at -2% health regeneration for example)"
+    },
+    {
+      "post_id": "js-post-1480675",
+      "author": "caethyril",
+      "date": "2024-11-09T19:35:46+0900",
+      "body": "damage\nhas already been declared, so remove the\nlet\nkeyword:\n<JS HP Slip Damage>\ndamage = user.atk * 0.5;\n</JS HP Slip Damage>"
+    },
+    {
+      "post_id": "js-post-1481120",
+      "author": "mike_312",
+      "date": "2024-11-12T05:09:44+0900",
+      "body": "Since you've told me that everything can be done, I'm going to ask you another question about something that I was told a while ago that couldn't be done. And that is to increase one stat based on another. For example, my character has 100 attack, and I want to give him a passive/state that increases his defense based on 50% of his attack, meaning that his defense increases by 50 points in this case. Is that possible?"
+    },
+    {
+      "post_id": "js-post-1481122",
+      "author": "ATT_Turan",
+      "date": "2024-11-12T05:31:37+0900",
+      "body": "mike_312 said:\nI'm going to ask you another question about something that I was told a while ago that couldn't be done. And that is to increase one stat based on another.\nClick to expand...\nI don't know why someone would tell you that can't be done.\nThe VisuStella Core Engine has a whole section of parameter notetags that can be placed on a state."
+    },
+    {
+      "post_id": "js-post-1481129",
+      "author": "mike_312",
+      "date": "2024-11-12T06:15:16+0900",
+      "body": "And could you tell me how it would be? English is not my native language, sometimes I have a hard time understanding how it would be done."
+    },
+    {
+      "post_id": "js-post-1481131",
+      "author": "ATT_Turan",
+      "date": "2024-11-12T06:24:27+0900",
+      "body": "It should be\n<JS DEF Plus: Math.round(this.atk * .5)>"
+    },
+    {
+      "post_id": "js-post-1481216",
+      "author": "caethyril",
+      "date": "2024-11-12T23:03:18+0900",
+      "body": "Just be careful not to set up a loop, e.g. if DEF depends on ATK, but ATK depends on DEF."
+    },
+    {
+      "post_id": "js-post-1481217",
+      "author": "ATT_Turan",
+      "date": "2024-11-12T23:05:19+0900",
+      "body": "caethyril said:\nJust be careful not to set up a loop\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1481243",
+      "author": "mike_312",
+      "date": "2024-11-13T01:32:47+0900",
+      "body": "It works!! thank you!"
+    },
+    {
+      "post_id": "js-post-1481244",
+      "author": "mike_312",
+      "date": "2024-11-13T01:47:35+0900",
+      "body": "I'm trying <JS CRI Plus: Math.round(this.atk * 0.5)> to set 50% of your attack to add to your critical %, but I get some crazy values."
+    },
+    {
+      "post_id": "js-post-1481246",
+      "author": "Dark_Ansem",
+      "date": "2024-11-13T01:49:58+0900",
+      "body": "mike_312 said:\nI'm trying <JS CRI Plus: Math.round(this.atk * 0.5)> to set 50% of your attack to add to your critical %, but I get some crazy values.\nClick to expand...\nhow crazy? do you have a console log?"
+    },
+    {
+      "post_id": "js-post-1481247",
+      "author": "mike_312",
+      "date": "2024-11-13T01:53:59+0900",
+      "body": "No, how do I do it? I show you images of the formula and what I get in play when I put it in. (By default the character has 4% critical chance)"
+    },
+    {
+      "post_id": "js-post-1481249",
+      "author": "Dark_Ansem",
+      "date": "2024-11-13T02:01:04+0900",
+      "body": "ok so this is the Xparam formula for reference\n<JS xparam Rate: code>\n- Used for: Actor, Class, Weapon, Armor, Enemy, State Notetags\n- Runs 'code' to change the 'xparam' rate value.\n- Replace 'xparam' with 'HIT', 'EVA', 'CRI', 'CEV', 'MEV', 'MRF', 'CNT',\n'HRG', 'MRG', 'TRG' to determine which X parameter to modify.\n- Replace 'code' with JavaScript code to determine how much to change the\nparam rate amount for the X parameter's total calculation.\n- This is used to calculate the 'paramRate' portion in Parameter Settings =>\nX Parameter => Formula.\nwhere did you put the formula and why did you use \"this\""
+    },
+    {
+      "post_id": "js-post-1481251",
+      "author": "Robro33",
+      "date": "2024-11-13T02:02:11+0900",
+      "body": "the crit parameter is a percentage. regular ones are integers. 1 = 100%\nyou need to divide by 100 because every 1 point of atk will become +50% crit"
+    },
+    {
+      "post_id": "js-post-1481256",
+      "author": "mike_312",
+      "date": "2024-11-13T02:26:56+0900",
+      "body": "Dark_Ansem said:\nok so this is the Xparam formula for reference\n<JS xparam Rate: code>\n- Used for: Actor, Class, Weapon, Armor, Enemy, State Notetags\n- Runs 'code' to change the 'xparam' rate value.\n- Replace 'xparam' with 'HIT', 'EVA', 'CRI', 'CEV', 'MEV', 'MRF', 'CNT',\n'HRG', 'MRG', 'TRG' to determine which X parameter to modify.\n- Replace 'code' with JavaScript code to determine how much to change the\nparam rate amount for the X parameter's total calculation.\n- This is used to calculate the 'paramRate' portion in Parameter Settings =>\nX Parameter => Formula.\nwhere did you put the formula and why did you use \"this\"\nClick to expand...\nI used it in a state with a visustella plugin, it is a passive ability."
+    },
+    {
+      "post_id": "js-post-1481260",
+      "author": "Dark_Ansem",
+      "date": "2024-11-13T02:37:12+0900",
+      "body": "mike_312 said:\nI used it in a state with a visustella plugin, it is a passive ability.\nClick to expand...\nOk so taking into what account\n@Robro33\nsaid re percentages, whose stats do you want to use for that?"
+    },
+    {
+      "post_id": "js-post-1481263",
+      "author": "mike_312",
+      "date": "2024-11-13T02:44:25+0900",
+      "body": "The stats of the character who learns the passive skill. Right now I'm putting <JS CRI Rate: Math.round(this.atk * 0.15)>. The character has 30 attack, but the formula increases my critical chance by 16%. I'm doing something wrong."
+    },
+    {
+      "post_id": "js-post-1481265",
+      "author": "ATT_Turan",
+      "date": "2024-11-13T02:48:21+0900",
+      "body": "Dark_Ansem said:\nwhose stats do you want to use for that?\nClick to expand...\nmike_312 said:\nI'm trying...to set 50% of\nyour\nattack to add to\nyour\ncritical %\nClick to expand...\nDark_Ansem said:\nwhy did you use \"this\"\nClick to expand...\nBecause that's the reference to the actor, according to the VisuStella Core Engine plugin parameters. (and because I told him to in post #20\n)\nRobro33 said:\nyou need to divide by 100\nClick to expand...\nCode:\n<JS CRI Plus: this.atk * .005>\nmike_312 said:\nRight now I'm putting <JS CRI Rate: Math.round(this.atk * 0.15)>. The character has 30 attack\nClick to expand...\nYou were already told that critical is a decimal rate. If you're changing a rate by a rate, 30 * .15 = multiplying your existing cri by 5 (since you're rounding it)."
+    },
+    {
+      "post_id": "js-post-1481270",
+      "author": "mike_312",
+      "date": "2024-11-13T03:01:09+0900",
+      "body": "Ok, I wasn't understanding it, sorry I'm an idiot. Thank you very much for your patience, you've been very nice to me."
+    },
+    {
+      "post_id": "js-post-1481271",
+      "author": "ATT_Turan",
+      "date": "2024-11-13T03:02:44+0900",
+      "body": "No one's asking you to call yourself an idiot, but you want to make sure you take the time to read the explanations and understand/translate the words as necessary (such as understanding what a rate is)."
+    },
+    {
+      "post_id": "js-post-1481274",
+      "author": "Dark_Ansem",
+      "date": "2024-11-13T03:17:24+0900",
+      "body": "ATT_Turan said:\nBecause that's the reference to the actor, according to the VisuStella Core Engine plugin parameters. (and because I told him to in post #20\n)\nClick to expand...\nI forgot that \"this\" is in fact RPG maker default syntax and not a VS exclusive, my bad, got confused by not seeing it in the Js instructions!"
+    },
+    {
+      "post_id": "js-post-1481276",
+      "author": "ATT_Turan",
+      "date": "2024-11-13T03:31:47+0900",
+      "body": "@Dark_Ansem\nYup - it doesn't even have anything to do with RPG Maker, it's standard JavaScript syntax."
+    }
+  ]
+}

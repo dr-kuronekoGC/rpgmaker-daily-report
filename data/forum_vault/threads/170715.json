@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/parsing-efkefc-files-extracting-accompanying-texture-and-model-resources.170715",
+  "title": "MZ Parsing *.efkefc Files (extracting accompanying Texture and Model Resource s)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T22:54:58.604304+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1460356",
+      "author": "code0x",
+      "date": "2024-07-29T20:42:21+0900",
+      "body": "I was wondering if anybody has tackled parsing\n*.efkefc\nfiles?\nIn particular, and as the title of the post says, I am attempting to extract whichever Texture and Model resource files that the particular\n*.efkefc\nfile might be dependent upon.\nInspection of a few of the\n*.efkefc\nfiles included with a standard new RMMZ project in a text editor, shows that they are encoded or in a binary format(?) and although I originally thought I might be able to use `\nÜ♠♠□\n` and `\nEDIT\n` as locators that contained the resource files in question between them... it turns out there are some\n*.efkefc\nfiles (`Death`, `Absorb`) that also have another list in the middle of them that aren't between repeating markers (that can be used to automate their parsing with the methods I'm attempting).\nBefore I delve deeper, I thought I might reach out and see if there was a wiser individual who might have dealt with this on a previous occasion and might be able to give me insight on a better approach to extracting these resource files?\nThank you in advance!!"
+    },
+    {
+      "post_id": "js-post-1460359",
+      "author": "Andar",
+      "date": "2024-07-29T21:04:49+0900",
+      "body": "load them with the program that created them?\nI admit I haven't worked with Effekseer myself but that would be the first step after reading about animations in the help file\n​"
+    },
+    {
+      "post_id": "js-post-1460449",
+      "author": "code0x",
+      "date": "2024-07-30T09:17:57+0900",
+      "body": "Andar said:\nload them with the program that created them?\nI admit I haven't worked with Effekseer myself but that would be the first step after reading about animations in the help file\n​\nClick to expand...\nNot very helpful or insightful- but I appreciate your enthusiasm and engagement.\nPerhaps you need (among other things) more context...\nI am writing a utility that will import maps from one RMMZ project to another.\nPart of this process is identifying any accompanying resource files.\nI'm sure I don't need to tell you- Maps contain events.\nIn the JSON data of a standard RMMZ map, you will observe that these events have (1) their pages with command lists, and (2) their move routes which also have their own command lists.\nAdditionally common events can be called from either of these command lists, and each common event (upon examination of  is its own commands list.\nOne of the commands that can be summoned by a map event and/or common event is `Show Animation`.\nIn RMMZ, `Show Animation` has a parameter that corresponds to an *.efkefc file.\nBeyond just the resource files in the standard RMMZ data JSONs, there happen to be resource files (*.pngs and *.efkmodel) used by *.efkefc files as well (located in the `effects/textures/` and `effects/models/` folders).\nSo, in order to fully import a map from one RMMZ project to another, these files need to be taken into consideration.\nUnfortunately, `animations in the help file` doesn't cover any of this.\nHence, I am asking here (in the JavaScript section of a forum that purports to offer support for RPG Maker MZ) if anybody (not including\n@Andar\n, who has admitted that he hasn`t worked with Effekseer himself and wanted me and everybody reading this thread to know that, despite trying to answer my query) has any experience with parsing *.efkefc files (using actual JavaScript and not `[loading] them with the program that created them) and might be able to help?\nHave a great day and thanks in advance!"
+    },
+    {
+      "post_id": "js-post-1460480",
+      "author": "Andar",
+      "date": "2024-07-30T18:24:16+0900",
+      "body": "while that gives more context, it doesn't change the fact that effekseer and the effekseer community are still your best place to start - users there will probably have more knowledge on how those files work than users of MZ.\nBecause analysing binary files for data is almost impossible without having at least some basic concepts of how the binary file is constructed."
+    },
+    {
+      "post_id": "js-post-1460553",
+      "author": "Zeriab",
+      "date": "2024-07-31T00:33:04+0900",
+      "body": "Trying to figure out how the package structurally works can be a fun puzzle. That said, I suggest following the code for a more efficient way for figuring out the structure of the files.\nA quick look in the MZ js files shows the following call being used to load effekseer animations:\nGraphics.effekseer.loadEffect(url, 1, onLoad, onError);\nEffekseer is open source and available. This looks like a promizing method to read:\nhttps://github.com/effekseer/EffekseerForWebGL/blob/master/src/js/effekseer.src.js#L213\nP.s: Multiple MZ CoreScript versions exists. I suggest looking up which Effekseer versions are used, and then checking the code for those versions to see what sort of difference there can be between them."
+    },
+    {
+      "post_id": "js-post-1460803",
+      "author": "code0x",
+      "date": "2024-08-01T10:20:45+0900",
+      "body": "Zeriab said:\nTrying to figure out how the package structurally works can be a fun puzzle. That said, I suggest following the code for a more efficient way for figuring out the structure of the files.\nA quick look in the MZ js files shows the following call being used to load effekseer animations:\nGraphics.effekseer.loadEffect(url, 1, onLoad, onError);\nEffekseer is open source and available. This looks like a promizing method to read:\nhttps://github.com/effekseer/EffekseerForWebGL/blob/master/src/js/effekseer.src.js#L213\nP.s: Multiple MZ CoreScript versions exists. I suggest looking up which Effekseer versions are used, and then checking the code for those versions to see what sort of difference there can be between them.\nClick to expand...\nThank you @Zeirab- the link to GitHub code that you provided provides a great example for the processing of an\n*.efkefc\nfile.  You have taken the time to point me in the right direction and I really appreciate it\nNow, this is an example of a pertinent and useful reply (rather than a response posted just so that the OP can ogle at their own reply on-screen, no matter how useless the message, at the detriment of everybody else's bytes)!!"
+    }
+  ]
+}

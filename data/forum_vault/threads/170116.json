@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/importing-tilesets-as-event-images-encountering-alignment-bug.170116",
+  "title": "Importing Tileset s as Event images, encountering alignment bug",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T22:55:05.307445+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1455818",
+      "author": "Prost",
+      "date": "2024-07-08T05:11:37+0900",
+      "body": "Hey y'all! I'll explain my intent first, execution second, and then explain the issue I am encountering.\nWhat I want:\nI want to use walls as \"Above Player\" objects, to represent doorways or arches above the player. Because empty events can be above the player, I have been using events to this end.\nExecution:\nBy default, the Tileset A is not present in the images you can select for an event (Tileset_B and _C are). I'm not sure why it isn't. To solve this, and use walls as \"doorframes,\" I exported Tileset_A's artwork (The default asset SF_Inside), imported a version cropped to match character dimensions as a \"character\" (where other event art like Doors appears to live).\nIssue:\nThis functions fine, except the art when used on events appears to have a vertical offset of 1-2 pixels. Doors, on the other hand, do not suffer this issue, despite being events. See image; the \"archway\" crossing the hall to the left of the image is made of events using wall artwork as their image.\nHow do I solve this/what causes this? Is there a better strategy to get \"doorframe\" style tiles into a scene?\nThanks a bunch for reading. Love you all."
+    },
+    {
+      "post_id": "js-post-1455820",
+      "author": "Andar",
+      "date": "2024-07-08T05:26:01+0900",
+      "body": "You should learn to use the correct RM-terminology, because no one here has ever heard of \"entities\".\nBest guess from context is that you're talking about events and sprites.\nIn that case (as you could read in the help file) you're talking about people sprites and object sprites.\nPeople sprites are automatically displaced up by 8 pixel or so to appear walking inside the grid instead of on its borders.\nObject sprites (door, crystals, statues and so on)  disable that displacement by having a ! at the beginning of their filenames.\nEDIT: and if your displacement is really only 2 pixel instead of 8 with sprites, then you messed up the sprite cell format as well and might have to correct that in addition to the !"
+    },
+    {
+      "post_id": "js-post-1455821",
+      "author": "ATT_Turan",
+      "date": "2024-07-08T05:27:35+0900",
+      "body": "Why do you keep saying Entity when the word in RPG Maker is Event?\nProst said:\nBy default, the Tileset A is not present in the images you can select for an\nentity\n(Tileset_B and _C are). I'm not sure why it isn't.\nClick to expand...\nBecause the whole point of autotiles is that they are\nautomatically\nconstructed during play. There's no A ceiling tile where you can just take the tile from the sheet and plop it on the map. The tile in the game is constructed on the fly from segments of the 2x3 section on the sheet, depending on what's around it.\nProst said:\nThis functions fine, except the art when used on\nentites\nappears to have a vertical offset of 1-2 pixels.\nClick to expand...\n6, actually. If you read the instructions for character spritesheets (Help -> Contents -> Documentation -> Asset Standards) you'll see that you get rid of that by placing a ! at the beginning of the file name, just like all of your doors have."
+    },
+    {
+      "post_id": "js-post-1455822",
+      "author": "Prost",
+      "date": "2024-07-08T05:37:06+0900",
+      "body": "ATT_Turan said:\nWhy do you keep saying Entity when the word in RPG Maker is Event?\nClick to expand...\nHaha, god, it's because I've got Unity parlance burned into my brain. Thanks for the callout, I will update the OP."
+    },
+    {
+      "post_id": "js-post-1455824",
+      "author": "Prost",
+      "date": "2024-07-08T05:42:52+0900",
+      "body": "That solve my issues! Thanks so much to both of you."
+    },
+    {
+      "post_id": "js-post-1455859",
+      "author": "utunnels",
+      "date": "2024-07-08T09:30:53+0900",
+      "body": "Haha, I was wondering the same thing when I began to use RM for the first time (I foget which one).\nIt would be nice if they add a center property in the editor. Anyway, there are already plugins for that."
+    }
+  ]
+}
