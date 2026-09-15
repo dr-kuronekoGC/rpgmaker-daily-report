@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-need-help-with-an-adjustment-to-a-jump-skill.172103",
+  "title": "MV [SOLVED] Need help with an adjustment to a Jump skill",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T04:58:51.575892+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1471575",
+      "author": "Ian_39",
+      "date": "2024-09-24T02:10:39+0900",
+      "body": "Hello, all! I’m having a bit of trouble with a custom passive state I’ve made using Yanfly’s Buffs and States Core, and was hoping someone might be able to give me some insight.\nThe idea is that the character has a passive state called Cowardice, and it adds 1 stack at the start of their turn up to a max of 10. It debuffs their DEF, EVA, and HIT a certain percentage per stack. The character can use the Jump skill, and the number of turns they stay in the air is equal to their total Cowardice stacks +1 (min 2 turns, max 11 turns). The Cowardice stack also multiplies the damage they deal to the target (DMG Multiplier = 0.5 + (Cowardice Stacks / 3)).\nSo far, the debuffs and damage multiplier work exactly how I want. The issue I’m having is in tying the number of turns the Jump state lasts to the total number of Cowardice stacks. I assume that the problem is coming from how the Jump state is being applied, since it is applied via the Action Sequence rather than RPG Maker MV’s default method.\nI figure the best work around would be to create another state called “Apply Jump” that simply forces the user to use a nameless skill that applies Jump to the user and then removes the “Apply Jump” state (similar to how the Jump state forces the user to use the Dive skill to attack). My concern is that I’m not certain how that will affect the target for the Dive skill, because Jump forces the user to use Dive against their last target.\nIf I use this method, would the last target be the user? Or would it still be the enemy selected when they used the Jump skill?\nFor reference, I’m building this off of Yanfly’s tutorial for the Jump skill, linked below:\nhttp://www.yanfly.moe/wiki/Jump_(MV_Plugin_Tips_%26_Tricks)\nSKILL IDs:\n05 Jump\n06 Dive\nSTATE IDs:\n11 Jump\n12 Cowardice\n13 Bravado (pauses Cowardice stack growth for short time)\nPlugin List:\nSpoiler:\nPlugin Screenshot\nActor's Notetags:\nSpoiler:\nActor Notetags\nCode:\n<Passive State: 12>\n\n<ratesFormula>\nhit: -(0.01 * a.getStateCounter(12))\neva: -((a.getStateCounter(12) / 3) / 100)\n</ratesFormula>\nJump Skill Notetags:\nSpoiler:\nJump Skill Notetags\nCode:\n<Custom State 11 Turn>\nturn = 1;\nturn += user.getStateCounter(12);\n</Custom State 11 Turn>\n\n// Action Sequences\n// Setup: Jump animation.\n<Setup Action>\ndisplay action\ncamera focus: user\nzoom: 150%\nperform start\nwait: 60\nse: Wind1, 80, 150\nfloat user: 495%, 20\nopacity user: 0%, 20\nwait for float\n</Setup Action>\n\n// Whole: Ensure nothing happens.\n<Whole Action>\n</Whole Action>\n\n// Target: Flag the target.\n<Target Action>\naction effect\n</Target Action>\n\n// Follow: Apply Jump state to user.\n<Follow Action>\nadd state 11: user\n</Follow Action>\n\n// Finish: Without landing.\n<Finish Action>\nclear battle log\nreset camera\nreset zoom\nwait for camera\nwait for zoom\n</Finish Action>\nDive Skill Notetags:\nSpoiler:\nDive Skill Notetags\nCode:\n// Action Sequence\n// Setup: Setup landing spot.\n<Setup Action>\nclear battle log\ndisplay action\nimmortal: targets, true\nmove user: target, base, 1\n</Setup Action>\n\n// Whole: Land and deal damage to all targets.\n<Whole Action>\ncamera focus: target\nzoom: 150%\nwait: 60\nmotion attack: user\nopacity user: 100%, 1\nfloat user: 0, 20\nwait: 10\nanimation 2: targets\naction effect\nshake screen: 5, 5, 5\nwait for animation\n</Whole Action>\n\n// Target: Ensure nothing happens.\n<Target Action>\n</Target Action>\n\n// Follow: Reset everything.\n<Follow Action>\nreset camera\nreset zoom\njump user: 200%, 30\nmove user: return, 30\nwait for movement\neval: user.setStateCounter(12, 0);\n</Follow Action>\n\n<damage formula>\ncowardice = 0.5 + (user.getStateCounter(12) / 3);\nmultiplier = cowardice;\nvalue = ((a.atk * 8) - (b.def * 2)) * multiplier;\n</damage formula>\nJump State Notetags:\nSpoiler:\nJump State Notetags\nCode:\n// Selection Control\n<Cannot Select: All>\n\n// Buffs & States Core\n<Custom Leave Effect>\n// Get the landing skill.\nvar skill = 6;\n// Get the last targeted index.\nvar target = -2;\n// Queue the forced action.\nBattleManager.queueForceAction(user, skill, target);\n</Custom Leave Effect>\nCowardice State Notetags:\nSpoiler:\nCowardice State Notetags\nCode:\n<Custom Battle Effect>\ntarget.setStateCounter(12, 0);\n</Custom Battle Effect>\n\n<Custom Turn Start Effect>\nconst checkStates = [11, 13];\nvar pauseGrowth = false;\nfor (let i = 0; ((i < checkStates.length) && (pauseGrowth != true)); i++) {\n   pauseGrowth = target.isStateAffected(checkStates[i]);\n}\nif (pauseGrowth == false) {\n   if (target.getStateCounter(12) < 10) { target.addStateCounter(12, 1); }\n}\n</Custom Turn Start Effect>\n\n<params>\nDEF: -(Math.round((current * (0.03 * a.getStateCounter(12)))))\n</params>\n\n<Custom Victory Effect>\ntarget.removeStateCounter(12);\n</Custom Victory Effect>\n\n<Custom Escape Effect>\ntarget.removeStateCounter(12);\n</Custom Escape Effect>\n\n<Custom Defeat Effect>\ntarget.removeStateCounter(12);\n</Custom Defeat Effect>\n\n<Help Description>\n: Increases over time, debuffing DEF, EVA, and HIT.\nIncreases Jump's power and clears stacks after Jumping.\n</Help Description>"
+    },
+    {
+      "post_id": "js-post-1471580",
+      "author": "ATT_Turan",
+      "date": "2024-09-24T02:18:18+0900",
+      "body": "All you should need to do is give your Jump state a Custom Apply Effect that does\nCode:\nuser._stateTurns[stateId] = user.getStateCounter(12);"
+    },
+    {
+      "post_id": "js-post-1471581",
+      "author": "Ian_39",
+      "date": "2024-09-24T02:24:35+0900",
+      "body": "ATT_Turan said:\nAll you should need to do is give your Jump state a Custom Apply Effect that does\nCode:\nuser._stateTurns[stateId] = user.getStateCounter(12);\nClick to expand...\nIt works perfectly! Thank you!"
+    },
+    {
+      "post_id": "js-post-1471589",
+      "author": "Ms Littlefish",
+      "date": "2024-09-24T02:48:04+0900",
+      "body": "This thread is closed due to being marked as solved. If you need it reopened, report it to us know. Thank you!"
+    }
+  ]
+}

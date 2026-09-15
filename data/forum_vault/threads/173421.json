@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/galvs-characterframes-framerate-calculation.173421",
+  "title": "MV Galv's CharacterFrames: framerate calculation?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T04:58:40.073791+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1483119",
+      "author": "unikadas",
+      "date": "2024-11-24T06:21:19+0900",
+      "body": "I've been trying to understand this formula going on and I could use some help so that I can design my character sheets right.\nIf the default given is (9-this.moveRealSpeed())*3, how is the 1-6 speed (e.g.; x8 slower) calculated there?\nWould that make the default frame wait time 30 frames for speed 3, 60 frames for speed 2, etc.?\nAnd if I have a calculation in Galv's CharacterFrames which is supposed to be subtracted from the wait time like f*0.5+3.25 so that a 16-frame animation would come to (at normal speed) 15 (from the default) minus the formula result 11.25 = 3.75 wait time.\nThis is essentially creating a 60fps/3.75 = 16 fps for the character ?\nWould the speed of the event containing the animation multiply the result?\nI'm seeing something \"go weird\" (or maybe it's not weird, that's why I want to understand how it's calculated) like setting the wait time to 30 frames (for the 16 frame animation playing at 2X speed to complete) and the animation plays\ntwice\ninstead despite correct convention (e.g.; example%(16).png) does this mean I am dropping frames or have a weird framerate? Is 60fps what MV is\nattempting\n? If I set the wait time to 15 frames (which would be 4 times faster, not twice as fast) it plays once correctly.\nSo it seems like 2X speed is actually 4X speed?\nPlease help me wrap my poor brain around this!"
+    },
+    {
+      "post_id": "js-post-1483133",
+      "author": "caethyril",
+      "date": "2024-11-24T07:24:04+0900",
+      "body": "I'm not familiar with Galv's plugin, but:\nrealMoveSpeed\nusually increases by +1 when a character is dashing. E.g. normal player walk speed is 4, dash speed is 5. Check the Always Dash setting on the in-game options menu. Touch movement automatically dashes, regardless.\nYou can press F2 in-game to show the framerate widget for an idea of the current framerate.\nIf you're using a monitor with refresh rate over 60 Hz, this might be relevant:\nMAC_High_Hz_Fixes - Fixes for various problems with >60Hz monitors\nSynopsis This is a plugin that, unless you've done something similar yourself, you'd almost certainly benefit from adding to your game, no matter what kind of game it is. Let me explain why.  MV games have the tendency to break in various ways when they're played on a monitor with a refresh rate...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1483136",
+      "author": "unikadas",
+      "date": "2024-11-24T08:18:26+0900",
+      "body": "Oh, that's helpful, thanks! I can now see that I am basically running 51-60fps and it should probably not be dropping frames then?\nAnd thank you very much for providing insight about realMoveSpeed. It's super weird to think that the formula 9-realMoveSpeed (cited by Galv) is the full thing. Because let's say we have a basic 4-frame character (cycling between left, middle, and right, and middle again walk cycle frames). Then it wouldn't explain double speed. That would just calculate to (9-\n5\n= 4)*3 = 12 gameframe wait. The wait should really end up being half of 15frames somehow if we're getting 8fps instead of 4fps with the increase of speed from\n4\nto\n5\n.\nIf double speed made realMoveSpeed into 6.5, that would work out: (9-6.5=2.5)*3 = 7.5 gameframe wait (60/7.5 = 8fps)\nSo yeah, the Galv given formula is not the whole story, somehow. I hope someone will explain more about how it works. Thank you again for the clues!!"
+    },
+    {
+      "post_id": "js-post-1483161",
+      "author": "ATT_Turan",
+      "date": "2024-11-24T13:55:51+0900",
+      "body": "unikadas said:\nIt's super weird to think that the formula 9-realMoveSpeed (cited by Galv) is the full thing.\nClick to expand...\nWell, it's pretty simple to verify - you just search your js folder for \"realmovespeed\" and it should come right up:\nunikadas said:\nBecause let's say we have a basic 4-frame character (cycling between left, middle, and right, and middle again walk cycle frames). Then it wouldn't explain double speed. That would just calculate to (9-\n5\n= 4)*3 = 12 gameframe wait. The wait should really end up being half of 15frames somehow if we're getting 8fps instead of 4fps with the increase of speed from\n4\nto\n5\n.\nClick to expand...\nI feel like you're connecting two things that are not connected: the distance a character moves per frame is not a direct corollary to how quickly their sprite animates.\nThey are both calculated off of the realMoveSpeed(), but they use completely different calculations. When a character moves twice as far in pixels, they are not animating twice as quickly.\nThe engine isn't designed to try to make the movement of the sprite's feet exactly match their movement across the ground."
+    },
+    {
+      "post_id": "js-post-1483209",
+      "author": "unikadas",
+      "date": "2024-11-25T02:01:00+0900",
+      "body": "ATT_Turan said:\nThey are both calculated off of the realMoveSpeed(), but they use completely different calculations.\nClick to expand...\nOh thank you! Great that you're always lending your knowledge and experience!\nAre you willing to provide a clue into what that completely different calculation may be?\n(Sorry if you feel the clue is already obvious! I'm not quite getting there.)"
+    },
+    {
+      "post_id": "js-post-1483211",
+      "author": "ATT_Turan",
+      "date": "2024-11-25T02:14:44+0900",
+      "body": "unikadas said:\nAre you willing to provide a clue into what that completely different calculation may be?\n(Sorry if you feel the clue is already obvious! I'm not quite getting there.)\nClick to expand...\nIt kind of is?\nSince you already have the name of the function, all you have to do is\nwhat I said in my last post\nand search the js folder for realmovespeed. There are a very small number of hits...just look at them until you see the right one\n(in fact, you'd see the function for moving the sprite before you saw the animation frames you've been talking about)"
+    },
+    {
+      "post_id": "js-post-1483214",
+      "author": "unikadas",
+      "date": "2024-11-25T02:34:52+0900",
+      "body": "ATT_Turan said:\nIt kind of is?\nSince you already have the name of the function, all you have to do is\nwhat I said in my last post\nand search the js folder for realmovespeed. There are a very small number of hits...just look at them until you see the right one\n(in fact, you'd see the function for moving the sprite before you saw the animation frames you've been talking about)\nView attachment 323763\nClick to expand...\nOkay, interesting. I see. So when Galv wrote in the plugin:\n* Frame Speed Modifier\n* ----------------------------------------------------------------------------\n* This is an equation for you to use to change the speed that the frames play\n* at when you are not using the normal amount of frames (3).\n*\n* The normal equation in RPG Maker default code is:\n* (9 - this.realMoveSpeed()) * 3;\n*\n* The equation in the settings of this plugin allow you to create another\n* equation that is SUBRACTED from the above result. In this equation you can\n* use the variable 'f' for amount of frames the charactersheet uses.\n*\n* Example:\n* f * 0.8        number of frames multipled by 0.5\n* f / 2          number of frames divided by 2\n* f * 0.5 - 1    number of frames multipled by 0.5, minus 1\n*\n*/\nClick to expand...\nYou're suggesting maybe that he is confusing two completely different calculations?\nEven if that's so, I would prefer to use the plugin as designed, hence the reason for my OP.\nI didn't mean wait time to cross a tile, I mean the wait time before updating character frame (i.e.; on a single spritesheet).\nMaybe you're kind of saying that I should just ignore the speed multipliers like 1 (8x slower) through 6 (4x faster) but it definitely impacts the animation speed and I'm just trying to figure out how. Since that part isn't explained in the plugin and it's not totally clear from experimentation with it for many days.\nPS: Sorry for any miscommunication! I'm still learning all the lingo."
+    },
+    {
+      "post_id": "js-post-1483215",
+      "author": "ATT_Turan",
+      "date": "2024-11-25T03:16:34+0900",
+      "body": "unikadas said:\nYou're suggesting maybe that he is confusing two completely different calculations?\nClick to expand...\n...no, I'm not? I don't know where you got that from.\nYou said:\nunikadas said:\nBecause let's say we have a basic 4-frame character...Then it wouldn't explain double speed. That would just calculate to (9-\n5\n= 4)*3 = 12 gameframe wait. The wait should really end up being half of 15frames somehow if we're getting 8fps instead of 4fps with the increase of speed from\n4\nto\n5\n.\nClick to expand...\nI have no idea where you're getting the conclusion that anything is double speed unless\nyou're\ntalking about the speed multipliers that are shown in the MZ editor, which are referring to the\nmovement speed\n.\nThus, my explaining in the first place that the speed at which the sprite moves is not proportional to how quickly the sprite frames animate. Then\nyou\nasked me for the formula that dictates how the sprite moves.\nunikadas said:\nMaybe you're kind of saying that I should just ignore the speed multipliers like 1 (8x slower) through 6 (4x faster) but it definitely impacts the animation speed and I'm just trying to figure out how.\nClick to expand...\nYou were already told how. You posted it in your first post. And the plugin gives you a plugin parameter to modify it.\nI'm kind of confused as to what the question still is"
+    },
+    {
+      "post_id": "js-post-1483218",
+      "author": "caethyril",
+      "date": "2024-11-25T03:31:37+0900",
+      "body": "OK, I just downloaded Galv's Character Frames (\nlink to thread\n) and checked its code. As expected of Galv, it is programmed exactly as documented: the custom formula is evaluated for spritesheets with a non-standard pattern count, and gets subtracted from the original\nanimationWait\nvalue.\nMore ideas:\nHolding the action button while a non-Parallel event is running causes the map to update twice per frame. Could that be the issue?\nGalv has a demo for this plugin. Do you see the problem in that project as well?\nYou could try turning off all other plugins (Ctrl+A -> Turn OFF, then right-click GALV_CharacterFrames and turn it back on), save your project to apply Plugin Manager changes, then test, selecting New Game from the title screen."
+    },
+    {
+      "post_id": "js-post-1483220",
+      "author": "unikadas",
+      "date": "2024-11-25T03:43:28+0900",
+      "body": "Sorry, but in response to\nATT_Turan\nlet me say: I have so many questions whose answers still elude me! Defeating my own ignorance is a constant effort.\nThis is the question that I was trying to ask again, and my first question in the post:\nIf the default given is (9-this.moveRealSpeed())*3, how is the 1-6 speed (e.g.; x8 slower) calculated there?\nClick to expand...\nI need to unpack why I consider it unanswered and some would consider it answered already.\nThe closest answer I received so far is from Post #2:\nhttps://forums.rpgmakerweb.com/inde...mes-framerate-calculation.173421/post-1483133\nI think it might be because I thought I was asking a more general question that would lead to a lot of detailed answers. Let me try again with a more precise question, which requires a full scenario:\nIn the command editor of an event, you can assign a\npicture\n, which is the spritesheet. Next to that is a drop down menu that allows one to select a\nSpeed\n(and by that a\nFrequency\n, which I am concerned is also involved in a core calculation so let's just assume we are leaving that at normal for now, to make this question as precise as possible).\nWhen we select Speed 4 Galv's animation modifier works as expected. They are not completely different calculations but rather extremely related calculations as expounded in Galv's help file. But when selecting Speed 3 or Speed 5 (to be perfectly clear, any other speed besides 4)\nsomething happens\nto the calculation and I wasn't sure what. The question is: what?\nHowever post #9 has helpfully dug in:\nhttps://forums.rpgmakerweb.com/inde...mes-framerate-calculation.173421/post-1483218\ncaethyril said:\nOK, I just downloaded Galv's Character Frames (\nlink to thread\n) and checked its code. As expected of Galv, it is programmed exactly as documented: the custom formula is evaluated for spritesheets with a non-standard pattern count, and gets subtracted from the original\nanimationWait\nvalue.\nMore ideas:\nHolding the action button while a non-Parallel event is running causes the map to update twice per frame. Could that be the issue?\nGalv has a demo for this plugin. Do you see the problem in that project as well?\nYou could try turning off all other plugins (Ctrl+A -> Turn OFF, then right-click GALV_CharacterFrames and turn it back on), save your project to apply Plugin Manager changes, then test, selecting New Game from the title screen.\nClick to expand...\nIt is plausible that \"OK\"/action button \"pressed down\" is exactly what's doubling that.\nBy the way, I am also delighted to learn from both of you responding that the wait time between frames is called \"animationWait\"! I am thinking of making a spreadsheet for myself that explains all the most useful variables and functions to play with but I am still not quite sure if I need that or just need more time playing with and exploring the code.\nI will check on these questions and get back to this thread! I appreciate the help on the investigation."
+    },
+    {
+      "post_id": "js-post-1483247",
+      "author": "ATT_Turan",
+      "date": "2024-11-25T07:44:45+0900",
+      "body": "unikadas said:\nThis is the question that I was trying to ask again, and my first question in the post:\nClick to expand...\nunikadas said:\nIf the default given is (9-this.moveRealSpeed())*3, how is the 1-6 speed (e.g.; x8 slower) calculated there?\nClick to expand...\nI thought it was answered by caethyril's first reply, as you gave an example using it correctly.\nThe\nthis.moveRealSpeed()\nportion\nis\nthe 1-6 speed, +1 if you're currently dashing.\nunikadas said:\nWhen we select Speed 4 Galv's animation modifier works as expected. They are not completely different calculations but rather extremely related calculations\nClick to expand...\nAgain, I never said Galv's plugin parameter was completely different from anything.\nBut the way you were repeatedly going back to the core engine's method and questioning it made me think you had a problem, misunderstanding, or incorrect assumption regarding\nthat\n.\nunikadas said:\nIt is plausible that \"OK\"/action button \"pressed down\" is exactly what's doubling that.\nClick to expand...\nDo you have the problem when you're just walking/running around, or only when trying to fast-forward an event?\nThere's a little code snippet floating around dozens of threads to disable the latter if you end up needing to."
+    },
+    {
+      "post_id": "js-post-1483252",
+      "author": "unikadas",
+      "date": "2024-11-25T08:00:23+0900",
+      "body": "Oh, right on!\nATT_Turan said:\nI thought it was answered by caethyril's first reply, as you gave an example using it correctly.\nThe\nthis.moveRealSpeed()\nportion\nis\nthe 1-6 speed, +1 if you're currently dashing.\nClick to expand...\nThat is how\nsome\nvariable is fed into the formula, but since the result doesn't calculate to observed animation speed it doesn't seem like I should assume the value of whatever is passed to that is actually the numerical name of the speed turned into a number.\nIf I just try dashing around in a default game with no plugins, this is the thing: for example Speed\n5\nis apparently 2X faster but (9 -\n5\n) * 3 results in a frame wait time of 12, not half of 15 (7.5).\nIn order for it to be 7.5 the value passed to that formula ought to be 6.5 so that it goes (9 - 6.5) * 3 = 7.5.\nSo there's something I'm missing or mistaken already. Like does holding dash\nalso\nupdate the character framerate faster, not just the OK button?\nI am testing now so I will reply soonish!"
+    },
+    {
+      "post_id": "js-post-1483253",
+      "author": "ATT_Turan",
+      "date": "2024-11-25T08:08:00+0900",
+      "body": "unikadas said:\nSo there's something I'm missing or mistaken already. Like does holding dash\nalso\nupdate the character framerate faster, not just the OK button?\nClick to expand...\nOnly in accordance to the above formula. And, again, holding OK doesn't do anything unless you're in an event."
+    },
+    {
+      "post_id": "js-post-1483345",
+      "author": "caethyril",
+      "date": "2024-11-26T01:46:18+0900",
+      "body": "Oh! I've just recalled that the animation count advances by an extra 0.5 per frame when moving:\nJavaScript:\nGame_CharacterBase.prototype.updateAnimationCount = function() {\n    if (this.isMoving() && this.hasWalkAnime()) {\n        this._animationCount += 1.5;\n    } else if (this.hasStepAnime() || !this.isOriginalPattern()) {\n        this._animationCount++;\n    }\n};\nI feel like this is probably the discrepancy you're seeing.\nNote that if the character does\nnot\nhave \"Stepping\" animation enabled, then when they stop moving their pattern will reset instead (cf\nupdatePattern\n).\nAs-is, Galv's plugin does not change this: moving still updates 50% faster. The value is evaluated when the character is assigned, so it can't vary as the character walks/dashes. Here's some untested plugin code in case you want to try to unify the cases:\nSpoiler:\nplugin code\nJavaScript:\n/*:\n * @target MV MZ\n * @plugindesc Character pattern no longer updates faster when moving.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/173421/\n * @help Free to use and/or modify for any project, no credit required.\n */\n// Override - make move animation increment count by same amount as step.\nGame_CharacterBase.prototype.updateAnimationCount = function() {\n  if (\n    (this.isMoving() && this.hasWalkAnime()) ||\n    this.hasStepAnime() ||\n    !this.isOriginalPattern()\n  ) {\n    ++this._animationCount;\n  }\n};\n(Paste into a text editor, then Save As -> File Type: All Files, Filename: whatever\n.js\n. Then stick that in your project's\njs/plugins\nfolder and import as usual.)\nunikadas said:\nfor example Speed\n5\nis apparently 2X faster but (9 -\n5\n) * 3 results in a frame wait time of 12, not half of 15 (7.5)\nClick to expand...\nLet's say character A moves at speed 4, and character B at speed 5. Without plugins:\nFrames necessary to travel 1 map tile (\n2 ** (8 - speed)\n, cf\ndistancePerFrame\n):\nA: 16 frames;\nB: 8 frames.\nThis is why speed 5 is named \"2x faster\" in the editor.\nFrames between pattern updates (\n3 * (9 - speed)\n, cf\nanimationWait\n):\nA: 15 frames;\nB: 12 frames.\nI.e. 3 frames faster, not \"2x faster\".\nThe Frequency field, seen on map events, determines wait time between autonomous moves (cf\ncheckStop\n/\nstopCountThreshold\n). Like \"frames to travel 1 tile\", it is completely untouched by Galv's plugin.\nThe custom formula in Galv's plugin affects the pattern update rate. In your case:\nunikadas said:\nI have a calculation in Galv's CharacterFrames which is supposed to be subtracted from the wait time like f*0.5+3.25\nClick to expand...\nSo your pattern update rate reduction for a 16-pattern spritesheet is, as you deduced:\n16 * 0.5 + 3.25 = 8 + 3.25 = 11.25 frames.\nTherefore, continuing the example, the pattern update rates would be:\nA: 15 - 11.25 = 3.75 (stationary), or 3.75 / 1.5 = 2.5 (moving);\nB: 12 - 11.25 = 0.75 (stationary), or 0.75 / 1.5 = 0.5 (moving).\nHowever, the animation count has to exceed\nanimationWait\nto cause a change in pattern, and the count is reset to zero when that happens (cf\nupdateAnimation\n). So, in practice, a fractional result \"rounds up\" to the next integer:\nA: 4 frames (stationary) or 3 frames (moving);\nB: 1 frame (stationary or moving).\nSo a full 16-frame sequence would be expected to take:\nA: 48~64 frames (moving/not);\nB: 16 frames.\nHopefully I haven't missed anything in all that."
+    },
+    {
+      "post_id": "js-post-1483358",
+      "author": "unikadas",
+      "date": "2024-11-26T04:12:54+0900",
+      "body": "Wow! I found that 1.5 area last night when I searched \"animation\" in the objects javascript, and I was like, \"How the heck can I trace this and decipher what's going on?\"\nThank you for doing it! Thank you so much! It's such a\nrelief\nto see the actual math. That's exactly what I was asking for. I could cry, thank you. Having a recipe feels so much less like being on an amateur baking show. Now it makes sense!!"
+    },
+    {
+      "post_id": "js-post-1483476",
+      "author": "caethyril",
+      "date": "2024-11-26T21:27:33+0900",
+      "body": "You're welcome! Hopefully the numbers match the readings now~"
+    }
+  ]
+}
