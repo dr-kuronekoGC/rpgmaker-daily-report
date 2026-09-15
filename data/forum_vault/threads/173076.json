@@ -1,0 +1,143 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-show-current-state-icon.173076",
+  "title": "MV (SOLVED) Show current state icon?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:37:13.240525+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1480323",
+      "author": "SolisValoris",
+      "date": "2024-11-08T01:18:09+0900",
+      "body": "I'm using SRD's HUD Maker. I would like to know the value to get an actor's (gameParty.members()) state ICON, the one they're currently affected with.\nI've researched everywhere and the conclusion in most posts I either don't understand, doesn't work or apparently you have to make one for each state, but I have a lot of states, and they will definitely overlap if they get two different ones. I know there's a simple solution for this, but i cant figure it out.\nAdditionally, I'd like this to show on the enemy as well, but only when it's being targeted.\nThank you so much."
+    },
+    {
+      "post_id": "js-post-1480327",
+      "author": "ATT_Turan",
+      "date": "2024-11-08T01:36:37+0900",
+      "body": "I don't think there should be a need to make a HUD element for every state, but your problem is this:\nSolisValoris said:\nan actor's state ICON, the one they're currently affected with.\n...\nI have a lot of states, and they will definitely overlap if they get two different ones.\nClick to expand...\nThese things directly contradict each other.\nThere's no such thing as \"the one state an actor is currently affected by\" if you have a lot of states and the actor can potentially get two different ones.\nPerhaps you can clarify exactly what you're trying to do."
+    },
+    {
+      "post_id": "js-post-1480328",
+      "author": "SGHarlekin",
+      "date": "2024-11-08T01:37:02+0900",
+      "body": "SRD HUDmaker doesn't have any functionality to cycle through icons, so yes, you'd have to make an element for each and every state, and put them like... Next to eachother or something."
+    },
+    {
+      "post_id": "js-post-1480329",
+      "author": "SolisValoris",
+      "date": "2024-11-08T01:45:43+0900",
+      "body": "ATT_Turan said:\nI don't think there should be a need to make a HUD element for every state, but your problem is this:\nThese things directly contradict each other.\nThere's no such thing as \"the one state an actor is currently affected by\" if you have a lot of states and the actor can potentially get two different ones.\nPerhaps you can clarify exactly what you're trying to do.\nClick to expand...\nApologies for the oversight. I mean to display the first state they're affected by."
+    },
+    {
+      "post_id": "js-post-1480332",
+      "author": "ATT_Turan",
+      "date": "2024-11-08T01:48:01+0900",
+      "body": "SGHarlekin said:\nSRD HUDmaker doesn't have any functionality to cycle through icons, so yes, you'd have to make an element for each and every state, and put them like... Next to eachother or something.\nClick to expand...\nI haven't used HUDMaker, but I should think it would be possible to display the icon using JavaScript, no? Do you have to manually specify the image?\nstateIcons()[0]\nwould be the icon ID of the first state on the battler."
+    },
+    {
+      "post_id": "js-post-1480334",
+      "author": "SolisValoris",
+      "date": "2024-11-08T01:52:40+0900",
+      "body": "ATT_Turan said:\nit would be possible to display the icon using JavaScript, no? Do you have to manually specify the image?\nClick to expand...\nYes, it is. It's pretty much the same only difference is one has to add \"${...}\" to the line\nATT_Turan said:\nstateIcons()[0]\nwould be the icon ID of the first state on the battler.\nClick to expand...\nThank you! I'd need to specify, I think, that I want to retrieve an icon (like with .name, etc) How can I do that?"
+    },
+    {
+      "post_id": "js-post-1480335",
+      "author": "ATT_Turan",
+      "date": "2024-11-08T02:03:29+0900",
+      "body": "There's no such thing as just \"retrieving an icon\" - you have the icon ID and you use that in a draw function which parses the correct area out of your iconsheet file.\nSolisValoris said:\nYes, it is. It's pretty much the same only difference is one has to add \"${...}\" to the line\nClick to expand...\nWhich line? Can you show what you're talking about in HUDMaker?\nMy understanding from looking at it since the last post is you can't do this. You have to have any image you want to use saved in its own file."
+    },
+    {
+      "post_id": "js-post-1480337",
+      "author": "SGHarlekin",
+      "date": "2024-11-08T02:07:57+0900",
+      "body": "Well, HUDmaker can't do what you want. I'm confused as to what exactly it is you're trying to do. Can your battlers only be affected by one state at a time? I don't see why else you'd want to *not* show the player all the states that are currently active.\nAnd if that's the case, yanfly already does show states on battlers, why not just use notetags, that remove all other states?"
+    },
+    {
+      "post_id": "js-post-1480346",
+      "author": "ShadowDragon",
+      "date": "2024-11-08T02:38:24+0900",
+      "body": "problem is, you can show icon of the states, but to do that, as  condition\nand show picture, you need this icon of the state (every single one that\nyou want to save).\nthan in its condition \"$gameParty.members[0].isStateAffected(x)\"\nbut if you want to loop through them, you need a small playing to call that function\nas a condition.\ndirect call for icons isn't possible."
+    },
+    {
+      "post_id": "js-post-1480386",
+      "author": "SolisValoris",
+      "date": "2024-11-08T06:20:17+0900",
+      "body": "ShadowDragon said:\nproblem is, you can show icon of the states, but to do that, as  condition\nand show picture, you need this icon of the state (every single one that\nyou want to save).\nthan in its condition \"$gameParty.members[0].isStateAffected(x)\"\nbut if you want to loop through them, you need a small playing to call that function\nas a condition.\ndirect call for icons isn't possible.\nClick to expand...\nNo need for looping through, I know there's a \"placement\" on the states, it'd suffice if I could just show the icon of the first state the character is affected by.\nSGHarlekin said:\nWell, HUDmaker can't do what you want. I'm confused as to what exactly it is you're trying to do. Can your battlers only be affected by one state at a time? I don't see why else you'd want to *not* show the player all the states that are currently active.\nAnd if that's the case, yanfly already does show states on battlers, why not just use notetags, that remove all other states?\nClick to expand...\nOh I wouldn't mind really, I just thought it wasn't possible. I just want to show the icon of the state I'm actually so frustrated because nothing I try is working\nShadowDragon said:\nproblem is, you can show icon of the states, but to do that, as  condition\nand show picture, you need this icon of the state (every single one that\nyou want to save).\nthan in its condition \"$gameParty.members[0].isStateAffected(x)\"\nbut if you want to loop through them, you need a small playing to call that function\nas a condition.\ndirect call for icons isn't possible.\nClick to expand...\nI figured out the condition, my problem is the value.\nAlso I can't use \"show picture\", I'm not using the event editor I'm using SRD's Hudmaker.\nPs sorry if the image isn't clear enough lmk if I should send a better one\nATT_Turan said:\nThere's no such thing as just \"retrieving an icon\" - you have the icon ID and you use that in a draw function which parses the correct area out of your iconsheet file.\nWhich line? Can you show what you're talking about in HUDMaker?\nMy understanding from looking at it since the last post is you can't do this. You have to have any image you want to use saved in its own file.\nClick to expand...\nI meant the \"value\" when I said line.\nAlso what do you mean by your last paragraph? I'm confused\nEdit: I got it to say [object object] that's a step I think."
+    },
+    {
+      "post_id": "js-post-1480390",
+      "author": "caethyril",
+      "date": "2024-11-08T06:47:44+0900",
+      "body": "Maybe\n\\I[${$gameParty.members()[0].allIcons()[0]}]\n, i.e. \"the \\I[x] text code, where x is the index of the party leader's first state/buff icon\"."
+    },
+    {
+      "post_id": "js-post-1480392",
+      "author": "SolisValoris",
+      "date": "2024-11-08T06:56:58+0900",
+      "body": "caethyril said:\nMaybe\n\\I[${$gameParty.members()[0].allIcons()[0]}]\n, i.e. \"the \\I[x] text code, where x is the index of the party leader's first state/buff icon\".\nClick to expand...\nJust tried... It just remains as text, \"i[38]\"."
+    },
+    {
+      "post_id": "js-post-1480397",
+      "author": "caethyril",
+      "date": "2024-11-08T07:40:46+0900",
+      "body": "Oh. I assume that's the right icon index, though?\nYou could try putting another\n\\\nat the front:\n\\\\I[${$gameParty.members()[0].allIcons()[0]}]"
+    },
+    {
+      "post_id": "js-post-1480406",
+      "author": "SolisValoris",
+      "date": "2024-11-08T08:51:42+0900",
+      "body": "caethyril said:\nOh. I assume that's the right icon index, though?\nClick to expand...\nIt is!\ncaethyril said:\nYou could try putting another\n\\\nat the front:\n\\\\I[${$gameParty.members()[0].allIcons()[0]}]\nClick to expand...\nYes! This worked, I know it did because it went blank.\nSo that's the new occurring issue... I use 64x64 icons, I'm assuming it's that.\nHere you can see it's transparent. I used a normal text with the same value to check for the icon index, as you can see it says \"I[19]\".\nHere, I just called for the 19th icon, and NOW I am getting the icon I want to show, but for some reason, it's not showing on the code, even though it is giving me back the icon index 19. I feel maybe it's the 64x64 icons? I tried setting, in the state, in the database, the icon 38 (double that), and all four grids conforming it, but I still get an empty icon (as shown in the first picture).\nSee, here 19 gives an empty icon, but when I use i[19] it gives me the icon I want.\nHere you can see how my sheet looks. If it helps, to use 64x64 icons I followed the instructions here:\nhttps://forums.rpgmakerweb.com/index.php?threads/64x64-icon-size-in-rpg-maker-mv-resolved.122189/\nAND I also set, in Yanfly's ItemCore and CoreEngine, icon sizes to 64x64 (they wouldn't work if I just did either or)\nThank you so much for taking the time to help, lmk if I'm missing anything."
+    },
+    {
+      "post_id": "js-post-1480407",
+      "author": "Robro33",
+      "date": "2024-11-08T09:00:21+0900",
+      "body": "it might not be evaluating the code. if you put something like \\\\i[${10+9}], does icon 19 still show up?"
+    },
+    {
+      "post_id": "js-post-1480409",
+      "author": "SolisValoris",
+      "date": "2024-11-08T09:14:08+0900",
+      "body": "Update: Also tried doubling the iconset sheet, just to check (I know I shouldn't but I'm desperate atp). Same results so I assumed it wasn't that and put it back to normal\nRobro33 said:\nif you put something like \\\\i[${10+9}], does icon 19 still show up?\nClick to expand...\nJust tried, no, it shows blank, so you're probably right. Is there a way to solve this?"
+    },
+    {
+      "post_id": "js-post-1480416",
+      "author": "Robro33",
+      "date": "2024-11-08T10:03:58+0900",
+      "body": "SolisValoris said:\nIs there a way to solve this?\nClick to expand...\nso, i downloaded the plugin and gave it a couple tries. you can use\nWayne's Eval Text plugin\nto be able to evaluate the code in the lines.\nEDIT: if you try it, the WAY core and eval text plugins need to be loaded after the SRD ones. when you have it, try this: \\\\I[${$gameParty.members()[0].allIcons()[0] || 0}]"
+    },
+    {
+      "post_id": "js-post-1480418",
+      "author": "ATT_Turan",
+      "date": "2024-11-08T10:31:46+0900",
+      "body": "Okay...I had no idea when you were talking about showing icons that you wanted to do it through the escape code in a text window.\nAs a side note, it will be much clearer in your future threads if you post actual screenshots instead of taking pictures of your monitor:\n7 Easy Methods for Taking Screenshots in Windows 11 - CNET\nWhen you need to take a screenshot in Windows 11, you've got options.\nwww.cnet.com\nGood luck with your project."
+    },
+    {
+      "post_id": "js-post-1480433",
+      "author": "SolisValoris",
+      "date": "2024-11-08T12:45:38+0900",
+      "body": "Robro33 said:\nso, i downloaded the plugin and gave it a couple tries. you can use\nWayne's Eval Text plugin\nto be able to evaluate the code in the lines.\nClick to expand...\nRobro33 said:\nEDIT: if you try it, the WAY core and eval text plugins need to be loaded after the SRD ones. when you have it,\nClick to expand...\nHere's how my plugins look like. I assumed by loading WAY after SRD you mean placing it below SRD? Or is it something else?\nRobro33 said:\ntry this: \\\\I[${$gameParty.members()[0].allIcons()[0] || 0}]\nClick to expand...\nI tried this, and it's still showing blank, still not evaluating. Could this be because it is technically not a textbox as it is like...an external window or something? I thought maybe I could try to reference another element of the HUD, so getting the icon index, then doing \\i[*element ID] but that also didn't work.\nAs a side note I'm using HUDMaker because I'm still a bit green at JS and it's been the easier way, but if I can achieve the same result via other methods I'd be glad to know\nIf ultimately this isn't possible, I would settle just getting the state name the actor is affected by but Id rather exhaust all options.\nThank you so much for the help so far by the way\nEDIT: I managed to make it work with the help of a friend! I had to force the TextEx within HUDMaker to evaluate by adding this to the .js itself:\nSprite_HUDTextEx.prototype.convertEscapeCharacters = function(text) {\ntext = text.replace(/\\${(.*?)}/g, (match, p1) => {\ntry {\nreturn eval(p1); // Evaluate JavaScript within ${...}\n} catch (e) {\nconsole.error(\"Error evaluating expression:\", e);\nreturn \"\";\n}\n});\nreturn Window_Base.prototype.convertEscapeCharacters.call(this, text);\n};\nIt's been a real nightmare to crack this one but it finally works! Ty everyone for the help too"
+    },
+    {
+      "post_id": "js-post-1480448",
+      "author": "Robro33",
+      "date": "2024-11-08T15:09:13+0900",
+      "body": "SolisValoris said:\nI tried this, and it's still showing blank, still not evaluating. Could this be because it is technically not a textbox as it is like...an external window or something?\nClick to expand...\nI was in a rush when i said the WAY plugins should be loaded before the SRD ones. I said the opposite of what i meant\nTry an order like this and if you dont have any other plugins that mess with how TextEx is handled, it should be fine"
+    },
+    {
+      "post_id": "js-post-1480453",
+      "author": "ShadowDragon",
+      "date": "2024-11-08T18:20:23+0900",
+      "body": "just you know, YEP_CoreEngine should be on top, as it also allow bigger icons.\nTSR_TextColorAddon (custom spriteSheet) allow you to use 64x64 as well.\nthe default engine if you change the iconSheet 64x64 (16 per row),\nuse the normal iconsheet (32x32) and replace after with the 64x64 to show\nthe bigger icons.\nas I use 80x80 on my end, so the index are slightly different as I have it 8 per row."
+    },
+    {
+      "post_id": "js-post-1480458",
+      "author": "slimmmeiske2",
+      "date": "2024-11-08T19:24:01+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

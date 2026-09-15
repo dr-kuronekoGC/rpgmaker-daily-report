@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/changing-menu-background-on-different-situations.173047",
+  "title": "MV Changing Menu Background on different situations",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:37:14.293360+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1479984",
+      "author": "sparta212",
+      "date": "2024-11-05T19:50:20+0900",
+      "body": "Hello everyone, I hope you're doing great!\nI'm using this plugin:\nMenu Backgrounds\nfor my game, and I was wondering if there is a way to change the background images depending on different situations like the images change from one location to another.\nThanks in advance !"
+    },
+    {
+      "post_id": "js-post-1480002",
+      "author": "ATT_Turan",
+      "date": "2024-11-05T23:10:49+0900",
+      "body": "You can use the script call\nCode:\n_.backgrounds[scene name] = filename\ni.e.\n_.backgrounds[\"Scene_Menu\"] = \"lotsOfClouds\";[/code]\n\nNote that this change will not save when you quit and resume a game. You may also see glitches with loading times the first time you open that window."
+    },
+    {
+      "post_id": "js-post-1480003",
+      "author": "sparta212",
+      "date": "2024-11-05T23:19:53+0900",
+      "body": "ATT_Turan said:\nYou can use the script call\nCode:\n_.backgrounds[scene name] = filename\ni.e.\n_.backgrounds[\"Scene_Menu\"] = \"lotsOfClouds\";[/code]\nNote that this change will not save when you quit and resume a game. You may also see glitches with loading times the first time you open that window.\nClick to expand...\nThanks a lot for the reply, is there anyway to keep the changes saved? Perhaps another plugin?"
+    },
+    {
+      "post_id": "js-post-1480014",
+      "author": "TobyYasha",
+      "date": "2024-11-06T00:25:19+0900",
+      "body": "you could try storing the value in a variable.\nand to set the value back when loading a game you could:\n- have an autorun event that does it on every map\n- use a plugin that runs a common event when loading a save file.\nAnd here's how you can set the value if using a variable:\nCode:\nSRD.MenuBackgrounds.backgrounds[\"Scene_Menu\"] = $gameVariables.value(1);\nVery important, if you use this code make sure you check that your variable value isn't 0 otherwise you could get a crash.\nAnd if you want to store a string in a variable make sure you write the string in the \"script\" field of that variable.\ni noticed ATT_Turan uses a \"_\" instead of \"SRD.MenuBackgrounds\" which wouldn't work because that's incorrect, so i corrected his example for you.\nCode:\nSRD.MenuBackgrounds.backgrounds[\"Scene_Menu\"] = \"lotsOfClouds\";"
+    },
+    {
+      "post_id": "js-post-1480021",
+      "author": "ATT_Turan",
+      "date": "2024-11-06T00:52:01+0900",
+      "body": "TobyYasha said:\ni noticed ATT_Turan uses a \"_\" instead of \"SRD.MenuBackgrounds\" which wouldn't work\nClick to expand...\nYou're right - I was going off the syntax in the functions, and I didn't realize it was inside an IIFE because of the improperly-indented code."
+    },
+    {
+      "post_id": "js-post-1480057",
+      "author": "sparta212",
+      "date": "2024-11-06T03:23:36+0900",
+      "body": "TobyYasha said:\nuse a plugin that runs a common event when loading a save file.\nClick to expand...\nThanks a lot for the reply, you thought me a few new things I didn't know.\nDo you know any good plugin for that?"
+    },
+    {
+      "post_id": "js-post-1480061",
+      "author": "TobyYasha",
+      "date": "2024-11-06T03:32:23+0900",
+      "body": "I found this plugin by galv while googling, you could give it a try:\nMV Load Common Event\nFEATURES Just a simple plugin that runs a common event every time the player loads their save file. An example of use might be to display a message based on variable to remind the player of their c…\ngalvs-scripts.com"
+    },
+    {
+      "post_id": "js-post-1480071",
+      "author": "sparta212",
+      "date": "2024-11-06T04:52:15+0900",
+      "body": "TobyYasha said:\nI found this plugin by galv while googling, you could give it a try:\nMV Load Common Event\nFEATURES Just a simple plugin that runs a common event every time the player loads their save file. An example of use might be to display a message based on variable to remind the player of their c…\ngalvs-scripts.com\nClick to expand...\nThanks a lot.\nI noticed that this plugin allows you to select only one common event to run, can this be changed?"
+    },
+    {
+      "post_id": "js-post-1480073",
+      "author": "ATT_Turan",
+      "date": "2024-11-06T05:13:52+0900",
+      "body": "sparta212 said:\ncan this be changed?\nClick to expand...\nThe answer to \"can this be done\" in code is always yes. But then you're right back where you are right now, posting a thread to ask people to modify someone else's plugin.\nI can't think of a necessary reason you couldn't do whatever you need to do for this in one event."
+    },
+    {
+      "post_id": "js-post-1480078",
+      "author": "sparta212",
+      "date": "2024-11-06T05:34:22+0900",
+      "body": "ATT_Turan said:\nThe answer to \"can this be done\" in code is always yes. But then you're right back where you are right now, posting a thread to ask people to modify someone else's plugin.\nI can't think of a necessary reason you couldn't do whatever you need to do for this in one event.\nClick to expand...\nIt was a general question not for that one specific event. I didn't ask to modify Galv's code, but was asking if there was a way to add more common events IDs on plugin parameters that I am not seeing.\nAnyways, all thanks to TobyYasha, I got what I needed, this thread can be closed."
+    }
+  ]
+}

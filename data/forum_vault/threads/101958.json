@@ -1,0 +1,359 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/call-menu-during-messages.101958",
+  "title": "Call menu during messages",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:36:50.158046+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-913924",
+      "author": "Krimer",
+      "date": "2018-11-10T04:24:14+0900",
+      "body": "CallMenu.js\nver. 1.5\nby Krimer\nIntroduction\nCall menu during messages\\choices on map by pressing one of the standard menu keys ESC, X, Insert, NUM 0.\nScript\nMV version -\npastebin\nSpoiler:\nMZ version\nJavaScript:\n/*=============================================================================\n *  CallMenuMZ.js\n *=============================================================================*/\n \nvar Imported = Imported || {};\nImported.CallMenuMZ = true;\n \n/*:=============================================================================\n* @plugindesc v1.0 Call menu during messages\\choices on map by pressing one of the standard menu keys ESC, X, Insert, NUM 0. For MZ\n* @author Krimer\n* @help\n* If you want call menu during choices just disallow cancel in choice command.\n* Place this plugin below non-standard message systems or choice windows in\n* plugin manager for better compatibility.\n \n* =============================================================================*/\n \n/*=============================================================================*/\n/* Alias */\nvar _Game_Temp_initialize_Alias = Game_Temp.prototype.initialize;\nGame_Temp.prototype.initialize = function() {\n    _Game_Temp_initialize_Alias.call(this)\n    this._lastSelectedChoice = null;\n};\n\n/* NEW */\nGame_Temp.prototype.setLastSelectedChoice = function(f) {\n    this._lastSelectedChoice = f\n};\n/* NEW */\nGame_Temp.prototype.getLastSelectedChoice = function() {\n    return this._lastSelectedChoice\n};\n/* Alias*/\nvar _Window_ChoiceList_callOkHandler = Window_ChoiceList.prototype.callOkHandler\nWindow_ChoiceList.prototype.callOkHandler = function() {\n    $gameTemp.setLastSelectedChoice(null)\n    _Window_ChoiceList_callOkHandler.call(this);\n};\n/* Alias */\nvar _Window_ChoiceList_callCancelHandler = Window_ChoiceList.prototype.callCancelHandler\nWindow_ChoiceList.prototype.callCancelHandler = function() {\n    $gameTemp.setLastSelectedChoice(null)\n    _Window_ChoiceList_callCancelHandler.call(this);\n};\n/* Alias */\nvar _Window_ChoiceList_selectDefault = Window_ChoiceList.prototype.selectDefault\nWindow_ChoiceList.prototype.selectDefault = function() {\n    if ($gameTemp.getLastSelectedChoice() !== null){\n        this.select($gameTemp.getLastSelectedChoice());\n    } else {\n        _Window_ChoiceList_selectDefault.call(this);\n    }\n};\n/* Alias*/\nvar _Window_ChoiceList_update = Window_ChoiceList.prototype.update\nWindow_ChoiceList.prototype.update = function() {\n    _Window_ChoiceList_update.call(this);\n     if ((Input.isTriggered('escape') || Input.isTriggered('menu') || TouchInput.isCancelled()) && $gameMessage.isBusy() && $gameSystem.isMenuEnabled()) {\n        $gameTemp.setLastSelectedChoice(this._index)\n    }\n \n};\n \n/* Alias */\nvar _DataManager_makeSaveContents_Alias = DataManager.makeSaveContents;\nDataManager.makeSaveContents = function () {\n    var contents = _DataManager_makeSaveContents_Alias.call(this);\n    contents.message = $gameMessage;\n\n    return contents;\n};\n\n/* Alias */\nvar _DataManager_extractSaveContents_Alias = DataManager.extractSaveContents;\nDataManager.extractSaveContents = function (contents) {\n    _DataManager_extractSaveContents_Alias.call(this, contents);\n    $gameMessage = contents.message;\n    if ($gameMessage._choices.length !== 0) {\n     \n        $gameMessage.setChoiceCallback(n => {\n            $gameMap._interpreter._branch[$gameMap._interpreter._indent] = n;\n        });\n    }\n\n};\n/* Alias */\nvar _Scene_Map_update_Alias = Scene_Map.prototype.update;\nScene_Map.prototype.update = function () {\n    _Scene_Map_update_Alias.call(this);\n    if ((Input.isTriggered('escape') || Input.isTriggered('menu') || TouchInput.isCancelled()) && $gameMessage.isBusy() && $gameSystem.isMenuEnabled()) {\n        this.callMenu();\n    }\n};\n/* OVERWRITE */\nWindow_Message.prototype.isTriggered = function () {\n    return (Input.isRepeated('ok') || TouchInput.isRepeated());\n};\n \n/* End of File */\n/*=============================================================================*/\n[/SPOILER]\nAuthor's Notes\nI created this plugin some time ago, but it did not have own topic, so i decided to create one\nI tried to fix most compatibility problems. But tell me if you find something.\nFeel free to use it as you wish"
+    },
+    {
+      "post_id": "js-post-914716",
+      "author": "Krimer",
+      "date": "2018-11-12T18:15:14+0900",
+      "body": "Update to version 1.4.3\n- Some minor bug and compatibility fixes"
+    },
+    {
+      "post_id": "js-post-915623",
+      "author": "Yitzi Litt",
+      "date": "2018-11-15T10:14:53+0900",
+      "body": "could you give a use-case example?"
+    },
+    {
+      "post_id": "js-post-915720",
+      "author": "Krimer",
+      "date": "2018-11-15T18:43:00+0900",
+      "body": "Yitzi Litt said:\ncould you give a use-case example?\nClick to expand...\nAny game without direct control on the player. Like VNs or some mini-games when game playing yourself most of the time.\nSomething like this -\nlink\nOr just for player sake, when your game has ton of texts, and to give them save-load any time. Or if you have something important to check in menu like status or reputation, etc. But most of the time its for save-load purpose.\nAnd yea, for using this you need to build your project with a thought - \"Player can open menu any time\", and block menu sometimes or build events specifically if needed.\nSorry my English not that good so i'm bad on explaining"
+    },
+    {
+      "post_id": "js-post-933211",
+      "author": "C.W. Plainview",
+      "date": "2019-01-14T09:10:35+0900",
+      "body": "Hey Krimer. I've been using this plugin for a text adventure game I am building, and it's been great. However, I'm having a small issue with items and spells that have message common events tied to them. Say I have a potion that heals HP. I call the menu during a message to access inventory and use the potion. The potion will heal HP and then the game goes back to the original message I called the menu on, but if I also have a message event tied with the potion (example: \"You have drank the potion and restored some health\"), then there is a delay in that message appearing. You know how when you call the menu during a message, then exit the menu, the message redisplays? Well, in this case, the potion message won't display until AFTER the old message redisplays after exiting the menu. And if I have Show Choices, then the message won't display until after I select a choice.\nI think part of the problem is that my original message event is a parallel event. I have most of my events as parallel events because, being a text adventure game with no player movement on a map, I don't know of any other way to trigger these events. It should be noted that the potion message works fine in common events with NO parallel trigger. But I don't want to build my entire game with just common events. The only conceit I can think of is to have Show Choices for item and spell access alongside the other choices the player has when navigating the game, but I would like to avoid this also.\nThanks and have a great day."
+    },
+    {
+      "post_id": "js-post-933331",
+      "author": "Krimer",
+      "date": "2019-01-14T14:58:46+0900",
+      "body": "@C.W. Plainview\nHi, it's happening because you showing that item message with a common event. It's added to queue and waiting until it's can be executed. So most of the time it's after all your current commands in event. This is how a common event works.\nSo to fix it you need a different plugin(s). Something like a Yanfly Gab Window(separate message window) but with function to call it directly from an item, not from a common event. I will not provide this feature in this plugin, sorry. Because i don't want to mess with standart executing order for that, it will have influence to other people who don't need this feature and other possible problems.\nI can try to create some addons, but I can't promising it. So best choice will be to start searching solution by yourself."
+    },
+    {
+      "post_id": "js-post-933590",
+      "author": "C.W. Plainview",
+      "date": "2019-01-15T09:40:16+0900",
+      "body": "I understand. Thanks for your insight. I did find an alternative, though it means having to abandon this plugin: simply present an \"open menu\" choice that runs an event that opens the menu. Item messages and saving and everything works great this way."
+    },
+    {
+      "post_id": "js-post-942355",
+      "author": "Parallax Panda",
+      "date": "2019-02-13T00:31:44+0900",
+      "body": "Hey\n@Krimer\n, I just wanted to tell you that I think this is a fantastic and almost essential plugin for making a decent visual novel in MV. Thank you very much for making, updating and sharing it (for free to boot!)\nI hope to use this in a commercial game and I wanted to ask you if you have any preferences on how you'd like to be credited? If at all?"
+    },
+    {
+      "post_id": "js-post-942370",
+      "author": "Krimer",
+      "date": "2019-02-13T01:57:43+0900",
+      "body": "@Parallax Panda\nNo problem\nI'm glad it's usefull for you. As for the credits it's not necessary, so do as you wish"
+    },
+    {
+      "post_id": "js-post-949361",
+      "author": "Parallax Panda",
+      "date": "2019-03-05T12:43:29+0900",
+      "body": "@Krimer\nI'd credit you as \"Krimer\" then (since that's the only name I know you by).\nAlso, I've noticed that whenever you access the menu while you're displaying a 「Show Choices menu」, upon exiting back from the main menu the cursor will always\nreset\nto the\ndefault choice\n. This can feel a little wonky if you've moved it. It's not game breaking or anything, but it's surely something that the player would notice in a choice heavy game. Is it possible to make this more seamless? Like, make the game remember what choice you're currently pointing at before opening the menu so nothing will have changed when you return?"
+    },
+    {
+      "post_id": "js-post-950339",
+      "author": "Krimer",
+      "date": "2019-03-08T07:48:32+0900",
+      "body": "@Parallax Panda\nIt's because how scene change in RPG maker works. It destroys old windows and creates new one when scene change is happpens. But ok, i can do it\nCheck new version.\nPlugin updated to new version 1.4.5\n- added last selected choice function.\nNow player last selected choice will be restored after closing game menu. But it will not restore after player load the game."
+    },
+    {
+      "post_id": "js-post-950454",
+      "author": "Parallax Panda",
+      "date": "2019-03-08T13:56:31+0900",
+      "body": "@Krimer\nThanks! That's a small but great improvement!"
+    },
+    {
+      "post_id": "js-post-961952",
+      "author": "---ytruuytr",
+      "date": "2019-04-17T06:37:42+0900",
+      "body": "Really a great plugin, but is it possible to not remove pictures upon entering the menu? It's awkward when character busts disappears. Or at least delete pic when save menu is called? Otherwise, an awesome plugin for the non-standard rpgm game."
+    },
+    {
+      "post_id": "js-post-961982",
+      "author": "Krimer",
+      "date": "2019-04-17T08:25:16+0900",
+      "body": "@kako05\nStandard pictures stay as is when you call menu. Unless you are using other plugins to show some pictures with their own functions then its their problem and can be solved only there."
+    },
+    {
+      "post_id": "js-post-961985",
+      "author": "---ytruuytr",
+      "date": "2019-04-17T09:00:52+0900",
+      "body": "Oh, you're right. Sorry. It's a misunderstanding."
+    },
+    {
+      "post_id": "js-post-963312",
+      "author": "---ytruuytr",
+      "date": "2019-04-23T01:18:39+0900",
+      "body": "Previous versions worked fine (the ones in old thread), but this one crashes the game when trying to access the menu during choice dialog. The culprit is\nhttp://daimonioustails.weebly.com/game-time-mv.html\nCould you take a look if it's possible to fix easy? Maybe I could get a link to 1.4.3 to test that version?"
+    },
+    {
+      "post_id": "js-post-963329",
+      "author": "Krimer",
+      "date": "2019-04-23T02:29:52+0900",
+      "body": "@kako05\nsite is unavailable in my country, but i managed to get the plugin with vpn\nFixed the problem in new version, try it"
+    },
+    {
+      "post_id": "js-post-963331",
+      "author": "---ytruuytr",
+      "date": "2019-04-23T02:32:52+0900",
+      "body": "Thanks! Works great"
+    },
+    {
+      "post_id": "js-post-980457",
+      "author": "RyanBram",
+      "date": "2019-06-26T10:13:40+0900",
+      "body": "Hi,\n@Krimer\n. Thank you very much for sharing this plugin to us.\nDo you mind to add feature (plugin command, script call, or switch) to enable/disable menu access during message?\nE.g: In normal scene, opening menu during message is not allowed, but in cutscene/conversation scene, opening menu during message is allowed.\nI prefer to use switch, because I can easily make common event for VN game by activating every switch automatically"
+    },
+    {
+      "post_id": "js-post-980569",
+      "author": "Krimer",
+      "date": "2019-06-26T18:43:12+0900",
+      "body": "RyanBram said:\nHi,\n@Krimer\n. Thank you very much for sharing this plugin to us.\nDo you mind to add feature (plugin command, script call, or switch) to enable/disable menu access during message?\nE.g: In normal scene, opening menu during message is not allowed, but in cutscene/conversation scene, opening menu during message is allowed.\nI prefer to use switch, because I can easily make common event for VN game by activating every switch automatically\nClick to expand...\nSure, will do when i have time"
+    },
+    {
+      "post_id": "js-post-984256",
+      "author": "KeitaNeko",
+      "date": "2019-07-11T02:14:14+0900",
+      "body": "My VN uses a custom menu that runs off of a common event, so..\nHow would I use this plugin to instead of calling the menu, call a common event?"
+    },
+    {
+      "post_id": "js-post-984547",
+      "author": "Krimer",
+      "date": "2019-07-12T02:23:48+0900",
+      "body": "@KeitaNeko\nWhy do you need this plugin if you using custom menu? Unless you are using some standard scenes too, like save-load scene, then you can use it to fix some bugs(for than you need only to install the plugin). In other cases there is no point and you can call your menu by common event without this plugin."
+    },
+    {
+      "post_id": "js-post-1204865",
+      "author": "Yilou",
+      "date": "2021-07-29T11:39:51+0900",
+      "body": "Vital plugin for those who make the game in the style of visual novel.\nMany thanks to the author!"
+    },
+    {
+      "post_id": "js-post-1204999",
+      "author": "joket",
+      "date": "2021-07-30T00:18:53+0900",
+      "body": "Useful, thank you"
+    },
+    {
+      "post_id": "js-post-1211085",
+      "author": "EthanFox",
+      "date": "2021-08-28T05:41:07+0900",
+      "body": "Hey, quick question - has anyone tested saving/loading a lot with this? Like when the game loads, will you still be at the point where you saved?\nSo if the user saves midway through a cutscene, will they still be in the same place?"
+    },
+    {
+      "post_id": "js-post-1211137",
+      "author": "---ytruuytr",
+      "date": "2021-08-28T11:04:35+0900",
+      "body": "EthanFox said:\nHey, quick question - has anyone tested saving/loading a lot with this? Like when the game loads, will you still be at the point where you saved?\nSo if the user saves midway through a cutscene, will they still be in the same place?\nClick to expand...\nOnly if game files weren't changed I think. Will load fine, unless a player updates the game or dev makes changes during the play test. The event awkwardly resets itself upon loading."
+    },
+    {
+      "post_id": "js-post-1211185",
+      "author": "Krimer",
+      "date": "2021-08-28T17:41:31+0900",
+      "body": "EthanFox said:\nHey, quick question - has anyone tested saving/loading a lot with this? Like when the game loads, will you still be at the point where you saved?\nSo if the user saves midway through a cutscene, will they still be in the same place?\nClick to expand...\nYes it will be same place. This plugin was in use in one game of my friend for a few years and i have done many fixes to save\\load according to feedback i get from dev of that game. So in last version of plugin all should be good in most standard cases."
+    },
+    {
+      "post_id": "js-post-1211614",
+      "author": "---ytruuytr",
+      "date": "2021-08-31T03:53:08+0900",
+      "body": "Krimer said:\nYes it will be same place. This plugin was in use in one game of my friend for a few years and i have done many fixes to save\\load according to feedback i get from dev of that game. So in last version of plugin all should be good in most standard cases.\nClick to expand...\nEven when changing the code, events etc? Because if I load a savegame, it'll restart the event. Works fine for exported game with no exits to the code. Maybe I have older version?"
+    },
+    {
+      "post_id": "js-post-1211617",
+      "author": "Krimer",
+      "date": "2021-08-31T04:01:07+0900",
+      "body": "kako05 said:\nEven when changing the code, events etc? Because if I load a savegame, it'll restart the event. Works fine for exported game with no exits to the code. Maybe I have older version?\nClick to expand...\nDon't see how is it even a problem. If someone messed up exported game - it's their problem how game behave after, not your as dev."
+    },
+    {
+      "post_id": "js-post-1211639",
+      "author": "---ytruuytr",
+      "date": "2021-08-31T05:51:51+0900",
+      "body": "Krimer said:\nDon't see how is it even a problem. If someone messed up exported game - it's their problem how game behave after, not your as dev.\nClick to expand...\nThe only issue is when players update the game and load during the event. Some of us releases updates every month, so people are sending bug reports because they fail to read a disclaimer how to safely update. Just checking if it's normal behavior and if I should try fixing it. Is there a reason why it behaves like this? RPGM limitation?"
+    },
+    {
+      "post_id": "js-post-1211652",
+      "author": "Krimer",
+      "date": "2021-08-31T06:40:03+0900",
+      "body": "kako05 said:\nThe only issue is when players update the game and load during the event. Some of us releases updates every month, so people are sending bug reports because they fail to read a disclaimer how to safely update. Just checking if it's normal behavior and if I should try fixing it. Is there a reason why it behaves like this? RPGM limitation?\nClick to expand...\nIt can be a problem only if you constantly change old events, but if you only add new content all will be ok. Save store old data then loads it. If you change game data in spot where save was then there will be a conflict, between saved data and new in game data, because you load old over new. It has nothing to do with this plugin, this is just how save-load working."
+    },
+    {
+      "post_id": "js-post-1412154",
+      "author": "cherrycthulhu",
+      "date": "2024-01-06T02:22:29+0900",
+      "body": "Thank you so much for making this!\nIs there any chance of an MZ-compatible version? It works just fine during messages, but I'm getting a TypeError \"Cannot read property 'call' of undefined\" screen any time a choice window is loaded."
+    },
+    {
+      "post_id": "js-post-1412160",
+      "author": "Krimer",
+      "date": "2024-01-06T02:38:15+0900",
+      "body": "cherrycthulhu said:\nThank you so much for making this!\nIs there any chance of an MZ-compatible version? It works just fine during messages, but I'm getting a TypeError \"Cannot read property 'call' of undefined\" screen any time a choice window is loaded.\nClick to expand...\nFor me it's working no problem in MZ. Do the screenshot of console during that error."
+    },
+    {
+      "post_id": "js-post-1412191",
+      "author": "cherrycthulhu",
+      "date": "2024-01-06T05:01:18+0900",
+      "body": "Krimer said:\nFor me it's working no problem in MZ. Do the screenshot of console during that error.\nClick to expand...\nOh I see, I'm guessing it's having a compatibility issue with one of the choice plugin-ins I'm using.\nMPP_ChoiceEX.js\nand\nMPP_ChoiceAlign.js\n, I also tried changing the plugin load order but had no luck."
+    },
+    {
+      "post_id": "js-post-1412201",
+      "author": "Krimer",
+      "date": "2024-01-06T05:34:56+0900",
+      "body": "cherrycthulhu said:\nOh I see, I'm guessing it's having a compatibility issue with one of the choice plugin-ins I'm using.\nView attachment 290792\nMPP_ChoiceEX.js\nand\nMPP_ChoiceAlign.js\n, I also tried changing the plugin load order but had no luck.\nClick to expand...\nIn my plugin delete lines from 114 to 119. This function was needed for MV but not need for MZ. Should work after that."
+    },
+    {
+      "post_id": "js-post-1412206",
+      "author": "cherrycthulhu",
+      "date": "2024-01-06T05:46:09+0900",
+      "body": "Krimer said:\nIn my plugin delete lines from 114 to 119. This function was needed for MV but not need for MZ. Should work after that.\nClick to expand...\nIt works perfect!! Thank you so much!!"
+    },
+    {
+      "post_id": "js-post-1480312",
+      "author": "MS_MANGO",
+      "date": "2024-11-07T22:56:35+0900",
+      "body": "@Krimer\nGood day! This is an absolute gem of a plugin for those who want a visual novel-style game. I was wondering if it would be possible to make it compatible with YEP ButtonCommonEvent?\nI'm using this plugin to provide access for players to different menus separately + it's easy to control that access because I can just flip a switch, and the player no longer has access to, say, inventory and other menus, but still can access the options menu.\nТакож сподіваюся у вас все добре."
+    },
+    {
+      "post_id": "js-post-1480316",
+      "author": "Krimer",
+      "date": "2024-11-08T00:21:47+0900",
+      "body": "@MS_MANGO\nHello, I'm was not working with maker for years. So realistically i will not be doing any compatibility any time soon because then I need to learn maker from scratch again. And that plugin is using common events which I unlikely will touch.\nI would recommend to find another plugin for that which will map different keys directly and not via common events. Most likely it will work from the start or at least have higher chances that I will be able to help."
+    },
+    {
+      "post_id": "js-post-1480331",
+      "author": "MS_MANGO",
+      "date": "2024-11-08T01:47:57+0900",
+      "body": "Krimer said:\n@MS_MANGO\nHello, I'm was not working with maker for years. So realistically i will not be doing any compatibility any time soon because then I need to learn maker from scratch again. And that plugin is using common events which I unlikely will touch.\nI would recommend to find another plugin for that which will map different keys directly and not via common events. Most likely it will work from the start or at least have higher chances that I will be able to help.\nClick to expand...\nI see. Thank you for replying!"
+    },
+    {
+      "post_id": "js-post-1480361",
+      "author": "MS_MANGO",
+      "date": "2024-11-08T03:39:44+0900",
+      "body": "Krimer said:\n@MS_MANGO\nHello, I'm was not working with maker for years. So realistically i will not be doing any compatibility any time soon because then I need to learn maker from scratch again. And that plugin is using common events which I unlikely will touch.\nI would recommend to find another plugin for that which will map different keys directly and not via common events. Most likely it will work from the start or at least have higher chances that I will be able to help.\nClick to expand...\nHello again. Thanks to a tutorial I managed to add the key bind inside rpg_core and rpg_scenes, and it's working. I was wondering if now it is possible to make a CallMenu plugin react to it as well? I'm sorry for bothering you again so soon."
+    },
+    {
+      "post_id": "js-post-1480364",
+      "author": "ShadowDragon",
+      "date": "2024-11-08T03:45:13+0900",
+      "body": "MS_MANGO said:\nThanks to a tutorial I managed to add the key bind inside rpg_core and rpg_scenes, and it's working.\nClick to expand...\ndoing this inside the core file is a bad idea if you don't know what you do.\nalways make a new plugin or alter a plugin that is able to do what you want.\nif you want the plugin to call the menu, do that inside the callMenu plugin instead\nor ask in the support to make this edit for you or how to add it."
+    },
+    {
+      "post_id": "js-post-1480365",
+      "author": "MS_MANGO",
+      "date": "2024-11-08T03:53:10+0900",
+      "body": "ShadowDragon said:\ndoing this inside the core file is a bad idea if you don't know what you do.\nalways make a new plugin or alter a plugin that is able to do what you want.\nif you want the plugin to call the menu, do that inside the callMenu plugin instead\nor ask in the support to make this edit for you or how to add it.\nClick to expand...\nI backed up the game before doing that. After adding it, I don't think I noticed any issues."
+    },
+    {
+      "post_id": "js-post-1480368",
+      "author": "ShadowDragon",
+      "date": "2024-11-08T04:15:17+0900",
+      "body": "not yet, but altering from the core or add function is ALWAYS a new plugin.\nas 1 its far safer and 2, it wont be removed if you update the engine."
+    },
+    {
+      "post_id": "js-post-1480369",
+      "author": "Krimer",
+      "date": "2024-11-08T04:16:30+0900",
+      "body": "MS_MANGO said:\nHello again. Thanks to a tutorial I managed to add the key bind inside rpg_core and rpg_scenes, and it's working. I was wondering if now it is possible to make a CallMenu plugin react to it as well? I'm sorry for bothering you again so soon.\nClick to expand...\nWell it should work just like that. But maybe depends where you put that part\nJavaScript:\nif (!SceneManager.isSceneChanging()) {\n        this.updateCallItemMenu();\n    }\nBecause screenshot is cutting part of it I can't tell. You can put that part in Scene_Map.prototype.update in my plugin between lines 108 and 109.\nMy plugin don't do much with keys. It's focusing more in save during messages, some fixes and compatibility with few others plugins, because maker had problems with that during that time. So any key mapper plugin should work."
+    },
+    {
+      "post_id": "js-post-1480370",
+      "author": "MS_MANGO",
+      "date": "2024-11-08T04:26:13+0900",
+      "body": "Krimer said:\nWell it should work just like that. But maybe depends where you put that part\nJavaScript:\nif (!SceneManager.isSceneChanging()) {\n        this.updateCallItemMenu();\n    }\nBecause screenshot is cutting part of it I can't tell. You can put that part in Scene_Map.prototype.update in my plugin between lines 108 and 109.\nMy plugin don't do much with keys. It's focusing more in save during messages, some fixes and compatibility with few others plugins, because maker had problems with that during that time. So any key mapper plugin should work.\nClick to expand...\nIt works. I also was able to assign a switch to it. Thank you for finding time to help me!\nShadowDragon said:\nnot yet, but altering from the core or add function is ALWAYS a new plugin.\nas 1 its far safer and 2, it wont be removed if you update the engine.\nClick to expand...\nI see your point. I will try to get the changes into a plugin."
+    },
+    {
+      "post_id": "js-post-1480509",
+      "author": "Nicikeller",
+      "date": "2024-11-09T05:29:21+0900",
+      "body": "Krimer said:\nIn my plugin delete lines from 114 to 119. This function was needed for MV but not need for MZ. Should work after that.\nClick to expand...\nHi, first, thank you so much for the CallMenu Plugin, it worked perfectly for me under RPG Maker MV. Now, I just migrated my game from MV to MZ, and so I deleted lines 114 to 119 of the plugin as you advised. The plugin then works in general, but there is one situation, where it does not work anymore (MZ):\n--> When there is a \"decision\", and I open the menu and save, it makes the save game. When I load the game, I start again at the decision point - so far, so good. BUT: independent of the decision I chose now, it will always take the decision that was marked when I had saved the game. Example: if my cursor was on decision 1, I save, I load, select 2, Then I will still have the outcome of decision one.\nWould you have any clue why this happens and how to fix?\n(Alternatively, I will have, as a workaround, to block the menu access during decisions, which is not very nice for the player)"
+    },
+    {
+      "post_id": "js-post-1480705",
+      "author": "Krimer",
+      "date": "2024-11-10T01:25:37+0900",
+      "body": "Nicikeller said:\nHi, first, thank you so much for the CallMenu Plugin, it worked perfectly for me under RPG Maker MV. Now, I just migrated my game from MV to MZ, and so I deleted lines 114 to 119 of the plugin as you advised. The plugin then works in general, but there is one situation, where it does not work anymore (MZ):\n--> When there is a \"decision\", and I open the menu and save, it makes the save game. When I load the game, I start again at the decision point - so far, so good. BUT: independent of the decision I chose now, it will always take the decision that was marked when I had saved the game. Example: if my cursor was on decision 1, I save, I load, select 2, Then I will still have the outcome of decision one.\nWould you have any clue why this happens and how to fix?\n(Alternatively, I will have, as a workaround, to block the menu access during decisions, which is not very nice for the player)\nClick to expand...\nWell that problem was one of main problems which this plugin was made for. Due to differences between makers looks like the problem has returned.\nHere is MZ version of plugin, tell me if that works\nSpoiler:\nplugin\nCode:\n/*=============================================================================\n *  CallMenuMZ.js\n *=============================================================================*/\n \nvar Imported = Imported || {};\nImported.CallMenuMZ = true;\n \n/*:=============================================================================\n* @plugindesc v1.0 Call menu during messages\\choices on map by pressing one of the standard menu keys ESC, X, Insert, NUM 0. For MZ\n* @author Krimer\n* @help\n* If you want call menu during choices just disallow cancel in choice command.\n* Place this plugin below non-standard message systems or choice windows in\n* plugin manager for better compatibility.\n \n* =============================================================================*/\n \n/*=============================================================================*/\n/* Alias */\nvar _Game_Temp_initialize_Alias = Game_Temp.prototype.initialize;\nGame_Temp.prototype.initialize = function() {\n    _Game_Temp_initialize_Alias.call(this)\n    this._lastSelectedChoice = null;\n};\n\n/* NEW */\nGame_Temp.prototype.setLastSelectedChoice = function(f) {\n    this._lastSelectedChoice = f\n};\n/* NEW */\nGame_Temp.prototype.getLastSelectedChoice = function() {\n    return this._lastSelectedChoice\n};\n/* Alias*/\nvar _Window_ChoiceList_callOkHandler = Window_ChoiceList.prototype.callOkHandler\nWindow_ChoiceList.prototype.callOkHandler = function() {\n    $gameTemp.setLastSelectedChoice(null)\n    _Window_ChoiceList_callOkHandler.call(this);\n};\n/* Alias */\nvar _Window_ChoiceList_callCancelHandler = Window_ChoiceList.prototype.callCancelHandler\nWindow_ChoiceList.prototype.callCancelHandler = function() {\n    $gameTemp.setLastSelectedChoice(null)\n    _Window_ChoiceList_callCancelHandler.call(this);\n};\n/* Alias */\nvar _Window_ChoiceList_selectDefault = Window_ChoiceList.prototype.selectDefault\nWindow_ChoiceList.prototype.selectDefault = function() {\n    if ($gameTemp.getLastSelectedChoice() !== null){\n        this.select($gameTemp.getLastSelectedChoice());\n    } else {\n        _Window_ChoiceList_selectDefault.call(this);\n    } \n};\n/* Alias*/\nvar _Window_ChoiceList_update = Window_ChoiceList.prototype.update\nWindow_ChoiceList.prototype.update = function() {\n    _Window_ChoiceList_update.call(this);\n     if ((Input.isTriggered('escape') || Input.isTriggered('menu') || TouchInput.isCancelled()) && $gameMessage.isBusy() && $gameSystem.isMenuEnabled()) {\n        $gameTemp.setLastSelectedChoice(this._index)\n    }\n \n};\n \n/* Alias */\nvar _DataManager_makeSaveContents_Alias = DataManager.makeSaveContents;\nDataManager.makeSaveContents = function () {\n    var contents = _DataManager_makeSaveContents_Alias.call(this);\n    contents.message = $gameMessage;\n\n    return contents;\n};\n\n/* Alias */\nvar _DataManager_extractSaveContents_Alias = DataManager.extractSaveContents;\nDataManager.extractSaveContents = function (contents) {\n    _DataManager_extractSaveContents_Alias.call(this, contents);\n    $gameMessage = contents.message;\n    if ($gameMessage._choices.length !== 0) {\n       \n        $gameMessage.setChoiceCallback(n => {\n            $gameMap._interpreter._branch[$gameMap._interpreter._indent] = n;\n        });\n    }\n\n};\n/* Alias */\nvar _Scene_Map_update_Alias = Scene_Map.prototype.update;\nScene_Map.prototype.update = function () {\n    _Scene_Map_update_Alias.call(this);\n    if ((Input.isTriggered('escape') || Input.isTriggered('menu') || TouchInput.isCancelled()) && $gameMessage.isBusy() && $gameSystem.isMenuEnabled()) {\n        this.callMenu();\n    }\n};\n/* OVERWRITE */\nWindow_Message.prototype.isTriggered = function () {\n    return (Input.isRepeated('ok') || TouchInput.isRepeated());\n};\n \n/* End of File */\n/*=============================================================================*/\n[/SPOILER]"
+    },
+    {
+      "post_id": "js-post-1480734",
+      "author": "Nicikeller",
+      "date": "2024-11-10T05:23:12+0900",
+      "body": "You fixed it, the code above works perfectly for MZ, also during choices - Many thanks again!"
+    },
+    {
+      "post_id": "js-post-1503253",
+      "author": "AcehilmFred",
+      "date": "2025-03-08T13:35:40+0900",
+      "body": "Krimer said:\nWell that problem was one of main problems which this plugin was made for. Due to differences between makers looks like the problem has returned.\nHere is MZ version of plugin, tell me if that works\nSpoiler:\nplugin\nCode:\n/*=============================================================================\n *  CallMenuMZ.js\n *=============================================================================*/\n \nvar Imported = Imported || {};\nImported.CallMenuMZ = true;\n \n/*:=============================================================================\n* @plugindesc v1.0 Call menu during messages\\choices on map by pressing one of the standard menu keys ESC, X, Insert, NUM 0. For MZ\n* @author Krimer\n* @help\n* If you want call menu during choices just disallow cancel in choice command.\n* Place this plugin below non-standard message systems or choice windows in\n* plugin manager for better compatibility.\n \n* =============================================================================*/\n \n/*=============================================================================*/\n/* Alias */\nvar _Game_Temp_initialize_Alias = Game_Temp.prototype.initialize;\nGame_Temp.prototype.initialize = function() {\n    _Game_Temp_initialize_Alias.call(this)\n    this._lastSelectedChoice = null;\n};\n\n/* NEW */\nGame_Temp.prototype.setLastSelectedChoice = function(f) {\n    this._lastSelectedChoice = f\n};\n/* NEW */\nGame_Temp.prototype.getLastSelectedChoice = function() {\n    return this._lastSelectedChoice\n};\n/* Alias*/\nvar _Window_ChoiceList_callOkHandler = Window_ChoiceList.prototype.callOkHandler\nWindow_ChoiceList.prototype.callOkHandler = function() {\n    $gameTemp.setLastSelectedChoice(null)\n    _Window_ChoiceList_callOkHandler.call(this);\n};\n/* Alias */\nvar _Window_ChoiceList_callCancelHandler = Window_ChoiceList.prototype.callCancelHandler\nWindow_ChoiceList.prototype.callCancelHandler = function() {\n    $gameTemp.setLastSelectedChoice(null)\n    _Window_ChoiceList_callCancelHandler.call(this);\n};\n/* Alias */\nvar _Window_ChoiceList_selectDefault = Window_ChoiceList.prototype.selectDefault\nWindow_ChoiceList.prototype.selectDefault = function() {\n    if ($gameTemp.getLastSelectedChoice() !== null){\n        this.select($gameTemp.getLastSelectedChoice());\n    } else {\n        _Window_ChoiceList_selectDefault.call(this);\n    }\n};\n/* Alias*/\nvar _Window_ChoiceList_update = Window_ChoiceList.prototype.update\nWindow_ChoiceList.prototype.update = function() {\n    _Window_ChoiceList_update.call(this);\n     if ((Input.isTriggered('escape') || Input.isTriggered('menu') || TouchInput.isCancelled()) && $gameMessage.isBusy() && $gameSystem.isMenuEnabled()) {\n        $gameTemp.setLastSelectedChoice(this._index)\n    }\n \n};\n \n/* Alias */\nvar _DataManager_makeSaveContents_Alias = DataManager.makeSaveContents;\nDataManager.makeSaveContents = function () {\n    var contents = _DataManager_makeSaveContents_Alias.call(this);\n    contents.message = $gameMessage;\n\n    return contents;\n};\n\n/* Alias */\nvar _DataManager_extractSaveContents_Alias = DataManager.extractSaveContents;\nDataManager.extractSaveContents = function (contents) {\n    _DataManager_extractSaveContents_Alias.call(this, contents);\n    $gameMessage = contents.message;\n    if ($gameMessage._choices.length !== 0) {\n      \n        $gameMessage.setChoiceCallback(n => {\n            $gameMap._interpreter._branch[$gameMap._interpreter._indent] = n;\n        });\n    }\n\n};\n/* Alias */\nvar _Scene_Map_update_Alias = Scene_Map.prototype.update;\nScene_Map.prototype.update = function () {\n    _Scene_Map_update_Alias.call(this);\n    if ((Input.isTriggered('escape') || Input.isTriggered('menu') || TouchInput.isCancelled()) && $gameMessage.isBusy() && $gameSystem.isMenuEnabled()) {\n        this.callMenu();\n    }\n};\n/* OVERWRITE */\nWindow_Message.prototype.isTriggered = function () {\n    return (Input.isRepeated('ok') || TouchInput.isRepeated());\n};\n \n/* End of File */\n/*=============================================================================*/\n[/SPOILER]\nClick to expand...\nWhen I was using it, it always gave an error saying \"Argument must be a Rectangle\""
+    },
+    {
+      "post_id": "js-post-1504202",
+      "author": "Carlonix",
+      "date": "2025-03-14T11:19:02+0900",
+      "body": "Listen, I was trying to make a VN Template Tutorial for people and this Plugin is about to save my life, THANK YOU VERY MUCH!!!"
+    },
+    {
+      "post_id": "js-post-1504504",
+      "author": "Carlonix",
+      "date": "2025-03-15T21:23:23+0900",
+      "body": "Ok, I tested it, I was lookig to a way to open the save menu and it opens the Main Menu and not the Save menu, I was looking at a way to only open that, haha but hey!\nIt works!\nIf you use the Non-Combat menu or add and remove comands during a dungeon exploration and leave, you can use it!\nIts good enough"
+    },
+    {
+      "post_id": "js-post-1519312",
+      "author": "Etrikia",
+      "date": "2025-06-21T13:25:17+0900",
+      "body": "This saved my game, thank you so much."
+    },
+    {
+      "post_id": "js-post-1542213",
+      "author": "Carlonix",
+      "date": "2025-12-29T00:36:29+0900",
+      "body": "Hey man, sorry if Im an annoyance, but I found a glitch!\nIf you open the menu while having dialogue and picture on screen, for some reason, the picture dissapears, it does not come back after that\nIt could be problematic if someone wants to make a Visual novel with this plugin sadly\nEDIT: A wait no, its a plugin incompatibility, I'll check it out\nEDIT2: I found it! It seems if you get \"Galv's Choice Picture\" Plugin, then the images break with this plugin, so got it! that was the problem"
+    },
+    {
+      "post_id": "js-post-1542215",
+      "author": "Krimer",
+      "date": "2025-12-29T00:52:51+0900",
+      "body": "Carlonix said:\nHey man, sorry if Im an annoyance, but I found a glitch!\nIf you open the menu while having dialogue and picture on screen, for some reason, the picture dissapears, it does not come back after that\nIt could be problematic if someone wants to make a Visual novel with this plugin sadly\nClick to expand...\nThat's pretty much impossible in the scenario you've described.\nEither you're doing something else on top of that, or you're using something that's causing the issue.\nSpoiler:\ngif"
+    },
+    {
+      "post_id": "js-post-1542216",
+      "author": "Carlonix",
+      "date": "2025-12-29T00:59:23+0900",
+      "body": "Ah wait, I eddited my message, I solved it, Im just making this message just in case so you see it, I put all the info about the problem in my previous message, it was an error with a plugin\nKrimer said:\nThat's pretty much impossible in the scenario you've described.\nEither you're doing something else on top of that, or you're using something that's causing the issue.\nSpoiler:\ngif\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1542217",
+      "author": "Krimer",
+      "date": "2025-12-29T01:04:04+0900",
+      "body": "Carlonix said:\nAh wait, I eddited my message, I solved it, Im just making this message just in case so you see it, I put all the info about the problem in my previous message, it was an error with a plugin\nClick to expand...\nWell, in this case, the issue isn't with this plugin, but with Galv's Choice Picture plugin. It doesn't handle the menu being opened during dialogue."
+    },
+    {
+      "post_id": "js-post-1542221",
+      "author": "Krimer",
+      "date": "2025-12-29T01:37:04+0900",
+      "body": "@Carlonix\nBut hey, I looked at Galv's Choice Picture plugin, I assume it's for MV. I couldn't find an MZ version. The solution is quite simple, here's a patch. Just add it at the end of Galv's Choice Picture plugin file.\nSpoiler:\ncode\nJavaScript:\nGalv.CPICS.getPics = function() {\n\n    if ($gameMessage._galvPicList) {\n        Galv.CPICS.picList = $gameMessage._galvPicList;\n        return;\n    }\n \n    Galv.CPICS.picList = [];\n    if (!$gameMessage._choices) return;\n    for (var i = 0; i < $gameMessage._choices.length; i++) {\n        var txt = $gameMessage._choices[i].match(/<p:(.*)>/i);\n        if (txt) Galv.CPICS.setPic(i,txt);\n    }\n\n    $gameMessage._galvPicList = Galv.CPICS.picList;\n};\n\n\nGalv.CPICS.Game_Message_clear = Game_Message.prototype.clear;\nGame_Message.prototype.clear = function() {\n    Galv.CPICS.Game_Message_clear.call(this);\n    this._galvPicList = null;\n};\n​"
+    },
+    {
+      "post_id": "js-post-1542285",
+      "author": "Carlonix",
+      "date": "2025-12-29T18:04:46+0900",
+      "body": "Krimer said:\n@Carlonix\nBut hey, I looked at Galv's Choice Picture plugin, I assume it's for MV. I couldn't find an MZ version. The solution is quite simple, here's a patch. Just add it at the end of Galv's Choice Picture plugin file.\nSpoiler:\ncode\nJavaScript:\nGalv.CPICS.getPics = function() {\n\n    if ($gameMessage._galvPicList) {\n        Galv.CPICS.picList = $gameMessage._galvPicList;\n        return;\n    }\n \n    Galv.CPICS.picList = [];\n    if (!$gameMessage._choices) return;\n    for (var i = 0; i < $gameMessage._choices.length; i++) {\n        var txt = $gameMessage._choices[i].match(/<p:(.*)>/i);\n        if (txt) Galv.CPICS.setPic(i,txt);\n    }\n\n    $gameMessage._galvPicList = Galv.CPICS.picList;\n};\n\n\nGalv.CPICS.Game_Message_clear = Game_Message.prototype.clear;\nGame_Message.prototype.clear = function() {\n    Galv.CPICS.Game_Message_clear.call(this);\n    this._galvPicList = null;\n};\n​\nClick to expand...\nAh, Thanks!"
+    }
+  ]
+}

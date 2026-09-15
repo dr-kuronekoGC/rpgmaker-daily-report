@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/modified-vehicle-plugin-request.172998",
+  "title": "MZ Modified Vehicle plugin request.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:36:56.082718+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1479467",
+      "author": "Skurge",
+      "date": "2024-11-03T13:07:25+0900",
+      "body": "Hi everyone, I've been making slow progress on my project and now it comes a time I need to have vehicles revisited since my RPG Maker MV project was ported to MZ.\nBy default -there are 3 vehicles and unfortunately all 3 are completely useless in my project's setting, understandably\nthere are some plugins out there that allow some alterations to vehicles but they are minimalist at best and really vehicles are intended for over world/map sections of a game's world.\nMy project has no such thing- Vehicles in Archtross are intended to be a massive game mechanic, allowing for the player to travel from A-B through the bustling city, vehicles are also planned to perform street racing and interesting combat scenarios.\nWhat I'm requiring is a plugin that allows large changes in the Vehicle behaviors in how they move, how they are interacted with and how they become more fun to use in the sense of story progression- game mechanics and even music and sound!\nHere is a design concept I have worked on- hopefully this makes sense, and you too find this a fun plugin to make and see in an RPG maker game!\nCONCEPT\nThe idea is to modify how vehicles operate for the player in many unique ways, in short-it's to emulate how a car would drive as best as possible in confines of RPG Maker MZ and it's grid movement.\nI think this is possible in several driving modes: Acceleration, Deceleration, neutral, and reverse. These could be possible with simply using the movement keys -each mode depending on the vehicles current speed and direction.\nAdditionally an allocated button press for radio station cycling\nOther behaviors such as entry/exit would be essential- such as sound effects and maintaining direction and altering dependencies of entry like direction. Other fun things like radio to remove the static boring single tracks.\nEach of these parameters is up for discussion as I imagine my concept may not translate entirely to someone else.\nVEHICLE PLUGIN PARAMETERS\nEach Vehicle has it's own drop down plugin parameter window that could allow a selection of different parameters for each vehicle- an example could be that the Car moves relatively fast and occupies a grid space from it's front and back- while a bike is the fastest- has no additional grid space, the Truck being the slowest etc.\nDefault     /        Replacement\nBoat\n:         =\nCar\nShip\n:         =\nBike\nAirship\n:      =\nTruck\nOther\n=\nSpeed boat\n? (\nhow to implement 4th custom vehicle is up for discussion- very likely to be a rare quest specific instance\n)\nTerrain Access\n:        Can the vehicle move on ground? Water? No terrain? (Air)\nRegion block:           Assign regions in which the vehicle cannot move onto/through.\nAcceleration:           Vehicle behavior when accelerating- pressing forward begins movement in that direction.\nCould stack to                                    a maximum number of movement commands until no longer pressed?\nDeceleration:           Vehicle behavior when decelerating- When the forward key is released- movement progressively stops.\nReverse:                  When forward button is suddenly changed into the opposite direction- vehicle is maintaining it's current                                      facing direction, momentum reverses and then accelerates to a maximum speed that is less than                                                  accelerating?\nNeutral:                   The vehicle is not moving- but because it is stationary it CAN turn on the spot albeit slowly.\nTurning:                   Changing direction forces the event to make a diagonal move in order to change direction when in                                                acceleration mode.\nDiagonal:                 Vehicle can move in diagonal- applicable in reverse mode.\nSpeed MAX:            Each vehicle has it's set maximum speed. Vehicles cannot go any faster than the assigned speed.\nSpeed MIN:             Each vehicle has it's set minimum speed. Vehicles cannot go any slower than the assigned speed.\n*NOTE*\nSpeed may be relevant to how RPG Maker's speed movement settings are to that of by a decimal?\nDiagonal Speed:     Vehicle drops speed temporarily by a flat percentage from the current speed when moving diagonally-                                        this does not stack should the player choose to continue moving diagonally.\nDue to diagonal movements being faster than horizontal and vertical movements- it's recommended                                            speed drops to a flat percentage while in diagonal mode?\nDirection lock:        The vehicle changes direction when interacted with for entry/exit? ON/OFF.\nFloat?:                      Does the vehicle lift into the air like the default Airship? If so (how high?) ON/OFF\nEntry directions:      Entry is accessible by which direction of the vehicle? UP/DOWN/LEFT/RIGHT -OR- FRONT/SIDES/BACK\nDriver Sides:           Typically the entry/exit point from the assigned direction given. I.E driver side is on the left of the vehicle-                                    player will exit on the left side, party member #2 from right front passenger, 3# left passenger side                                              and #4 right passenger side.\nDoors:                      Each door means the sequence in which party members (index?) try to access from- 1st member always                                    gets to go in any direction dependent on the above parameter- Party members will try to enter from any                                      side like a 4 seater car. Other cases like bikes may not need a door requirement? (This may need further                                    discussion)\nExit directions:        Party members will attempt to exit the vehicle in the same manner they entered it- IF an area is blocked i.e                                  wall is on the left adjacent side- members attempt alternative sides.\nSound EFX Entry:     Plays SE file when vehicle is entered by each party member.\nSound EFX Exit:        Plays SE file when vehicle is exited by each party member.\nHorn SFX:                 Pressing 'H' could play a sound effect- no real purpose (\nCould interact with certain events?\n)\nGrid Occupation:     This parameter is for how many spaces are occupied from the origin point of the vehicle's event. i.e if the                                   vehicle is visibly occupying 3 spaces when facing up/down/left/right, no other event can enter that                                             space. This is so that vehicles that are visibly bigger than 48x48 pixels can actually be a physical object.\nParty visibility:         This parameter is to dictate if the party members merge into the vehicle and become hidden-OR to                                               change graphics, I.E Party leader rides a bike- other members acquire there own bikes and follow.\nRADIO PLUGIN PARAMETERS\nOverwrite BGM:       This parameter is for overwriting the RPG Maker's vehicle BGM- removes the function in which entering                                     the vehicle stops the maps' BGM in favor of a preassigned sound track.\nCar radio stations:   This parameter is for setting a number of radio station IDs, each with a different radio station name-                                             optionally an Icon or picture.\nCar radio button:      Pressing an assigned button forces the vehicle BGM to switch over to the next radio station in the list.\nRadio button SE:       Plays a sound effect when button is pressed. I.E Beeping.\nRadio effect SE:        Plays a sound effect when radio station is changed. I.E Static noises.\nSound track:             Assigns music tracks to the radio station ID, plays in sequence in which the developer has listed.\nStation display:        Presents the name of the station ID at a designated area on the screen (probably same location as Map                                       name display command)\nPicture:                     Presents a picture at a designated spot.\nIcon:                          Presents an Icon graphic next to station display.\nFade wait:                 If station is left idle for a few seconds (no changes from player input) station display/icon/pictures fade                                       after set frames.\nRecord current:        If the player enters/exits the vehicle- the radio station ID and it's currently played sound track is                                                   preserved for next entry.\nPLUGIN COMMANDS\nVehicle ID Lock:                 ON/OFF this is so that the player can or cannot enter or exit an assigned vehicle when commanded.\nForce radio ID/track:          The instance a player is inside a vehicle- forces the radio station to change and it's sound track.\nForce enter/exit vehicle:    Forces the player/party to enter a vehicle (Up for discussion on how to achieve this)\nForce vehicle direction:     Forces a specified vehicle to face a specific direction..\nMove vehicle:                     Forces the vehicle to move location regardless if driven or not- locks out player input and moves it                                               based on command.\nVehicle Master switch:      Switches the custom vehicle behaviors to be ON/OFF.\nI realize this is an ambitious request- but to me it truly would add a great mechanic to my project.\nPlease share your thoughts -if you wish to help me and create this plugin I would be extremely happy!\nOf course if you prefer discussing this a bit more frequently you are more than welcome to pm me and request discord contacts?"
+    },
+    {
+      "post_id": "js-post-1479473",
+      "author": "SGHarlekin",
+      "date": "2024-11-03T13:47:03+0900",
+      "body": "Good luck getting a big plugin like that for free."
+    },
+    {
+      "post_id": "js-post-1479478",
+      "author": "Skurge",
+      "date": "2024-11-03T15:05:51+0900",
+      "body": "Request/Commissions are up for discussion."
+    },
+    {
+      "post_id": "js-post-1479479",
+      "author": "Canned_Dinosaur",
+      "date": "2024-11-03T15:07:05+0900",
+      "body": "In that case it should go to commissions thread I think...?\nhttps://forums.rpgmakerweb.com/index.php?forums/classifieds-requests.79/"
+    },
+    {
+      "post_id": "js-post-1479516",
+      "author": "ShadowDragon",
+      "date": "2024-11-03T21:20:14+0900",
+      "body": "isn't\nDK Vehicles\nan option as it can set loads of customisation (by car, bike speeds)?"
+    },
+    {
+      "post_id": "js-post-1479523",
+      "author": "Skurge",
+      "date": "2024-11-03T22:20:41+0900",
+      "body": "ShadowDragon said:\nisn't\nDK Vehicles\nan option as it can set loads of customisation (by car, bike speeds)?\nClick to expand...\nIt is, In fact I am using it- however there seems to be no option for the player vehicles and I've event contacted DK regarding it but nothing has been done since to my knowledge.\nEDIT* Sorry for some reason I thought you were talking about DK's big events which is what I added in my concept as Grid Occupation.\nBut getting on the subject about DK's land vehicles, I wasn't sure if having several plugins would be wise that involve changing up the player vehicle in the sense of plugin conflicts, also to keep things more centralized into the one plugin."
+    },
+    {
+      "post_id": "js-post-1479532",
+      "author": "ShadowDragon",
+      "date": "2024-11-03T22:58:22+0900",
+      "body": "if it need grid based and pixel based, than its a different story, but land vehicles\nshould work and contact him on the thread should get you an reply.\nso not sure what you exactly seek from vehicles.\nas it can change bgm by plugin command, grid based is not in there as it takes\nthings from default (48x48)"
+    },
+    {
+      "post_id": "js-post-1479548",
+      "author": "Skurge",
+      "date": "2024-11-04T00:03:19+0900",
+      "body": "ShadowDragon said:\nif it need grid based and pixel based, than its a different story, but land vehicles\nshould work and contact him on the thread should get you an reply.\nso not sure what you exactly seek from vehicles.\nas it can change bgm by plugin command, grid based is not in there as it takes\nthings from default (48x48)\nClick to expand...\nYeah was looking at that plugin a while ago, but I wasn't sure if I should rush out and get it yet but if it allows me to make vehicles work on land then that's a start.\nHowever regarding vehicle BGM's i'm still interested in obtaining a car radio stations as per my concept."
+    },
+    {
+      "post_id": "js-post-1479553",
+      "author": "ShadowDragon",
+      "date": "2024-11-04T00:11:02+0900",
+      "body": "common event? and change a variable to set your sounds as radio?\nvar x = 1\nradio 1\nvar x = 2\nradio 2\netc?\nnot sure if that can work out for you, but into a plugin and button press should\nbe easy to make I think, depends if its bgm or another file.\nplugin commands can change bgm, so you can use it per variable ID index."
+    },
+    {
+      "post_id": "js-post-1480193",
+      "author": "Skurge",
+      "date": "2024-11-07T02:20:17+0900",
+      "body": "Strange, I thought I replied with a good counter argument why a plugin was more viable to handle background music operations but somehow my post got voided.\nAnywho- I felt a plugin would be less messy and less risky of oversight of error, like exiting rooms, entering combat- saves etc. I really did have something written down better but I've forgotten :/"
+    }
+  ]
+}

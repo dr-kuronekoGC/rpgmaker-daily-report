@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/jah-status-menu-core-portrait-bug.172902",
+  "title": "MV JAH status Menu Core portrait bug",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:37:20.397037+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1478281",
+      "author": "jhnny",
+      "date": "2024-10-30T04:16:58+0900",
+      "body": "I'm using JAH status menu core v.1.1.1 and using Rpg maker MV 1.6.1\nMy issue is when im selecting the status on my party, the portrait image is always not showing and looked like this, but if my select it again on the same party member, the picture will appear but when i move to another map and go to the status screen it keep going back into this.\nAnybody know how to fix this??? would really appreciate if you do so"
+    },
+    {
+      "post_id": "js-post-1478282",
+      "author": "Kenen",
+      "date": "2024-10-30T04:29:47+0900",
+      "body": "That'll happen if the window attempts to draw the portrait image before it's been loaded.\nIf the image is being drawn directly onto the window, a load listener needs to be attached to the bitmap to trigger a refresh of the window once the bitmap has loaded.\nIf the image is being managed as a sprite, it should work itself out, so I'm guessing it's the above."
+    },
+    {
+      "post_id": "js-post-1478286",
+      "author": "jhnny",
+      "date": "2024-10-30T04:35:07+0900",
+      "body": "Kenen said:\nThat'll happen if the window attempts to draw the portrait image before it's been loaded.\nIf the image is being drawn directly onto the window, a load listener needs to be attached to the bitmap to trigger a refresh of the window once the bitmap has loaded.\nIf the image is being managed as a sprite, it should work itself out, so I'm guessing it's the above.\nClick to expand...\nwhat is load listener and how I will attach it to bitmap?\nsorry I dont have much knowledge of how these plugins work"
+    },
+    {
+      "post_id": "js-post-1478298",
+      "author": "Kenen",
+      "date": "2024-10-30T05:06:46+0900",
+      "body": "Ok, a few things:\n1. You should get the plugin name right and link to the plugin in your OP. It's\nTheStatusMenuCore\nby JahwsUF:\nhttps://forums.rpgmakerweb.com/index.php?threads/the-statusmenucore-v-1-1-1.48635/\n2. I found the plugin and could not get it to run without errors in a fresh project using MV 1.6.3. I'm not interested in trying to get it to work because it's approaching 10 years old.\n3. If I were to try to solve the issue, I'd hook or override the author's\nSetActor()\nmethod to ensure the portrait bitmap has been loaded before calling the\nrefresh()\nmethod.\nI won't repost the code because it's not mine to post, but that's the first thing I'd look at.\nGood luck with your project."
+    },
+    {
+      "post_id": "js-post-1478312",
+      "author": "jhnny",
+      "date": "2024-10-30T05:35:52+0900",
+      "body": "Kenen said:\nOk, a few things:\n1. You should get the plugin name right and link to the plugin in your OP. It's\nTheStatusMenuCore\nby JahwsUF:\nhttps://forums.rpgmakerweb.com/index.php?threads/the-statusmenucore-v-1-1-1.48635/\n2. I found the plugin and could not get it to run without errors in a fresh project using MV 1.6.3. I'm not interested in trying to get it to work because it's approaching 10 years old.\n3. If I were to try to solve the issue, I'd hook or override the author's\nSetActor()\nmethod to ensure the portrait bitmap has been loaded before calling the\nrefresh()\nmethod.\nI won't repost the code because it's not mine to post, but that's the first thing I'd look at.\nGood luck with your project.\nKenen said:\nOk, a few things:\n1. You should get the plugin name right and link to the plugin in your OP. It's\nTheStatusMenuCore\nby JahwsUF:\nhttps://forums.rpgmakerweb.com/index.php?threads/the-statusmenucore-v-1-1-1.48635/\n2. I found the plugin and could not get it to run without errors in a fresh project using MV 1.6.3. I'm not interested in trying to get it to work because it's approaching 10 years old.\n3. If I were to try to solve the issue, I'd hook or override the author's\nSetActor()\nmethod to ensure the portrait bitmap has been loaded before calling the\nrefresh()\nmethod.\nI won't repost the code because it's not mine to post, but that's the first thing I'd look at.\nGood luck with your project.\nClick to expand...\nClick to expand...\nthanks for reply but another question,\nwhere should I override the author SetActor() method?\nDo I need to edit it in the notepad of the js?"
+    }
+  ]
+}

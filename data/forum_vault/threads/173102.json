@@ -1,0 +1,185 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/very-strange-issue-with-variables-began-out-of-nowhere.173102",
+  "title": "Very strange issue with variables, began out of nowhere",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:36:48.049985+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1480513",
+      "author": "FolkiFolki",
+      "date": "2024-11-09T05:54:44+0900",
+      "body": "It's been a while since my last thread, given that barely any issues had gotten in my way. I regret to inform you this time something did happen.\nIn my game, i have come up with the idea of multiple possible cutscenes depending on the player's choices. It had been working pretty well until now. I have one variable that changes between each specific cutscene. This is the one causing me trouble:\n\"Jess alts\".\nAs you can see, once the cutscene is over, the variable changes to six. Now, because the variable is six, the new dialogue with the variable conditions to this specific variable set to six should play. I'm talking about this one:\nBut not only does this NOT show up once interacting with the npc, it plays out this one random dialogue that should only appear once the same variable is set to 2:\nOnce advancing through the story, THEN the intended dialogue with the variable 6, that is not supposed to show up anymore, decided to do so only then.\nWhat in the tarnation? What?\nI'm so utterly confused. I tried looking up what could possibly be messing up with the variables, inspecting the events carefully, but the earliest cutscene setting the variable to six should be working, but it simply doesn't.\nEvent though, some days ago, it was working perfectly fine, and i confidently remember not messing with any of the events. The time i didn't spend making the new cutscenes were spent making new maps, and it just doesn't make sense to me why this is happening.\nI'm really hoping this is just a dumb little mistake i made. Any help would be immensely appreciated."
+    },
+    {
+      "post_id": "js-post-1480514",
+      "author": "bgillisp",
+      "date": "2024-11-09T06:01:33+0900",
+      "body": "What are the pages after page 4? It runs the highest valid page, so you may have duplicated page 2 later on with another condition.\nAlso its possible you got something else adjusting that variable in say a parallel process that is running after the cutscene, which would reset it back to something else. May need to use the search function in the engine to find uses of that variable to check."
+    },
+    {
+      "post_id": "js-post-1480515",
+      "author": "JohnDoeGames",
+      "date": "2024-11-09T06:16:19+0900",
+      "body": "To add to that: The engine always reads only the page with the highest ID, that has their conditions met. So if there is a page with a higher ID than 4, with a condition that is  met before that if page 4 is met (like a lower value of the same variable), then page 4 will never run.\nWhen you think something is wrong with your variables and you get an unexpected result, you can simple add a text message, saying \"\\v[2]\" to show the value of this variable. This will help a lot in finding where the mistake lies. Just don't forget to delete that message after.\nWhen on the map, you can also press F9 to open a menu that shows all values of variables and switches in your game. (At least, in MV it is F9, I assume it is the same key in MZ.)"
+    },
+    {
+      "post_id": "js-post-1480525",
+      "author": "woootbm",
+      "date": "2024-11-09T08:29:35+0900",
+      "body": "Something you might want to check is your plugins. Some plugins will use the game's variable database in their code. For example, you could have a lighting plugin that's reserved the same variable and is making changes to the lighting by increasing and decreasing that variable every X ticks."
+    },
+    {
+      "post_id": "js-post-1480526",
+      "author": "Andar",
+      "date": "2024-11-09T08:45:03+0900",
+      "body": "It can't be the page priority, because page 2 and page 4 have similar conditions and page 4 has higher priority. So the only way for page 2 to be active is if the value of the variable is lower than 6 but higher ot equal than 2.\nso basically you need to find out what changed the variables value.\nUse the editor search function for all uses of that variable - if it is used somewhere else in an event that is a parallel process, then this can happen.\nif that search does not find additional events using the variable, then the variable was changed by script commands, either in the event command \"script\" or in a plugin.\nThe plugin option is more likely as there are a lot of plugins that use variables to exchange data and commands with the engine.\nAnd that is why you always have to configure all plugins completely on adding them:\nif a plugin uses such a procedure, it has a property line for the ID of a variable (or more than one) assigned to a plugin function.\nOn adding such a plugin you need to point that toward an unused variable and then name that variable as a sign that it is in use and where/for what."
+    },
+    {
+      "post_id": "js-post-1480528",
+      "author": "bgillisp",
+      "date": "2024-11-09T08:47:11+0900",
+      "body": "Actually Andar it can...if page 2 is duplicated on say page 5. That's why we suggested it. And why we want to see the pages after page 4."
+    },
+    {
+      "post_id": "js-post-1480545",
+      "author": "Andar",
+      "date": "2024-11-09T10:18:18+0900",
+      "body": "OK, I assumed that each page is unique and that the OP identified the correct page that is active."
+    },
+    {
+      "post_id": "js-post-1480673",
+      "author": "FolkiFolki",
+      "date": "2024-11-09T19:00:17+0900",
+      "body": "bgillisp said:\nActually Andar it can...if page 2 is duplicated on say page 5. That's why we suggested it. And why we want to see the pages after page 4.\nClick to expand...\nIf you want to see some of them, here you go:\nI'm only not showing all of them because the following ones are only interacting with different variables or switches.\nI spent now two hours testing around with the same variable, deleting some, changing others, experimenting. Some of the expected events are showing as planned, which is good, but there is something still changing the variable back to two and one. I have no idea what it is, i used the search tool as suggested, and it has been incredibly helpful, as much as it didn't really show me whatever is changing the variable back to those specific numbers.\nAlso, i do not use any parallel process. Just to make it clear.\nI'm thinking of creating a new variable that does the exact same thing as the previous, seemingly defectible one, this time with the help of the search tool to replace everything. Maybe it won't solve the problem, but once i get home from work, i'll see this thread again in case someone responds. Thank you all for the help!"
+    },
+    {
+      "post_id": "js-post-1480676",
+      "author": "JohnDoeGames",
+      "date": "2024-11-09T19:58:58+0900",
+      "body": "Just deleting and remaking the event/variable might solve the issue for now... But it doesn't undo the mistake made. You actually should know why it showed the wrong page, and how that happened. If you don't find this out now, you might walk into larger problems later.\nThis could simply be a typo somewhere, in which case remaking it would solve everything, but if there is something working in the background, this problem isn't actually solved, but just out of sight. When the problem returns further down the development process, you might find out you have to redo pretty much everything.\nDid you try pressing F9 to see what value was actually stored in the variable? This is really the first step to finding the problem.\nRemember that debugging is never fun and can sometimes be very frustrating. But it is part of the job and can't be skipped or ignored, or you will end up with a buggy game."
+    },
+    {
+      "post_id": "js-post-1480685",
+      "author": "Andar",
+      "date": "2024-11-09T22:10:51+0900",
+      "body": "FolkiFolki said:\nas much as it didn't really show me whatever is changing the variable back to those specific numbers.\nClick to expand...\nand I told you when I described the search tool above that if that doesn't find anything, the next likely cause are plugins withz a wrong configuration.\nSo what plugins have you installed? Please show screenshots of your plugin manager so that we can see not only their names but also their order."
+    },
+    {
+      "post_id": "js-post-1480736",
+      "author": "FolkiFolki",
+      "date": "2024-11-10T05:28:16+0900",
+      "body": "Andar said:\nand I told you when I described the search tool above that if that doesn't find anything, the next likely cause are plugins withz a wrong configuration.\nSo what plugins have you installed? Please show screenshots of your plugin manager so that we can see not only their names but also their order.\nClick to expand...\nOh, i'm sorry i didn't tell you earlier, i'm not using any plugins either! Apologies.\nJohnDoeNews said:\nJust deleting and remaking the event/variable might solve the issue for now... But it doesn't undo the mistake made. You actually should know why it showed the wrong page, and how that happened. If you don't find this out now, you might walk into larger problems later.\nThis could simply be a typo somewhere, in which case remaking it would solve everything, but if there is something working in the background, this problem isn't actually solved, but just out of sight. When the problem returns further down the development process, you might find out you have to redo pretty much everything.\nDid you try pressing F9 to see what value was actually stored in the variable? This is really the first step to finding the problem.\nRemember that debugging is never fun and can sometimes be very frustrating. But it is part of the job and can't be skipped or ignored, or you will end up with a buggy game.\nClick to expand...\nAnd andresing what JohnDoe said, pressing F9 opens the database. I am unable to find the variables section, and looking up the information unluckily results in nothing. If the method of accessing the debug is different than of what i tried, could you elaborate further?\nEdit: Forgot to include, but used the search tool again. The variable in question was not used many times, so it wasn't too hard to find each and every alteration it suffered. There wasn't anything changing the value back to two, so that still remains a mystery for now.\nEdit 2: Turan just told me how to access the debug console. I'm working on it now to see when exactly does the variable changes back to two."
+    },
+    {
+      "post_id": "js-post-1480737",
+      "author": "ATT_Turan",
+      "date": "2024-11-10T05:30:05+0900",
+      "body": "FolkiFolki said:\nAnd andresing what JohnDoe said, pressing F9 opens the database.\nClick to expand...\nYou press it\nduring a play test\nto access the debug console. There's no such thing as variables having a value while you're in the editor."
+    },
+    {
+      "post_id": "js-post-1480738",
+      "author": "FolkiFolki",
+      "date": "2024-11-10T05:34:09+0900",
+      "body": "ATT_Turan said:\nYou press it\nduring a play test\nto access the debug console. There's no such thing as variables having a value while you're in the editor.\nClick to expand...\nOh.\nI didn't know. I apologize.\nThanks! I'll work into that right away."
+    },
+    {
+      "post_id": "js-post-1480740",
+      "author": "JohnDoeGames",
+      "date": "2024-11-10T05:52:15+0900",
+      "body": "FolkiFolki said:\nOh.\nI didn't know. I apologize.\nThanks! I'll work into that right away.\nClick to expand...\nHaha, yeah I meant during test play, while on the map"
+    },
+    {
+      "post_id": "js-post-1480743",
+      "author": "FolkiFolki",
+      "date": "2024-11-10T06:26:24+0900",
+      "body": "JohnDoeNews said:\nHaha, yeah I meant during test play, while on the map\nClick to expand...\nOkay, i did a lot of testing now, and the solution of one problem led to another.\nI found out that, what was messing with my variables was one single conditional branch (if a certain party member was in the party). Erased it, copied the possibilites to other pages with new variable values, tested. Everything was fine until another wall hit my face.\nNow it's refusing to play a certain cutscene even if the intended variable value is set and the conditions are specifically met (i checked the debug menu, there was no mistaking it).\nHere are the pages:\nThe only reason why i'm relying in conditional branches for the cutscenes to work again is because the conditions tab was just not working. The branches didn't work either, and now i'm stuck again. Perhaps later i'll try setting the variables from scratch and try to trust the conditions tab again. Or, remaking the events."
+    },
+    {
+      "post_id": "js-post-1480745",
+      "author": "Robro33",
+      "date": "2024-11-10T06:40:23+0900",
+      "body": "FolkiFolki said:\nthe conditions tab was just not working\nClick to expand...\nhow so? you used page conditions in your 13 page event. why wouldnt it work on the others?\nof the ones you just shared, page one of the first event will never play. its conditions are identical to page 2 and has a lower priority"
+    },
+    {
+      "post_id": "js-post-1480754",
+      "author": "gstv87",
+      "date": "2024-11-10T07:08:27+0900",
+      "body": "instead of showing the code, can you write the whole thing as a block chart?\ndispose of the dialogue and focus on the flow itself... you *know* the dialogue only goes one way, so take it out.\nthat will help you see the whole thing from a vantage point (which is how you should do it from the beginning: write it first, then code it)"
+    },
+    {
+      "post_id": "js-post-1480759",
+      "author": "ATT_Turan",
+      "date": "2024-11-10T08:33:31+0900",
+      "body": "FolkiFolki said:\nThe only reason why i'm relying in conditional branches for the cutscenes to work again is because the conditions tab was just not working.\nClick to expand...\nExcept that simply doesn't work that way. If you have multiple event pages with no conditions, it doesn't matter whether the contents will ever be executed or not based on a Conditional Branch - the earlier pages will\nnever\nhappen. The engine only looks at the highest-numbered page that meets its conditions.\nEvents don't just refuse to play, something is wrong in your project. Either it's the wrong event type, a variable isn't set up how you think it is, a condition is wrong, something."
+    },
+    {
+      "post_id": "js-post-1480762",
+      "author": "utunnels",
+      "date": "2024-11-10T09:22:36+0900",
+      "body": "Wait a minute, if all the pages' triggers are identical, which don't you just use conditional branch and jump? It makes life easier."
+    },
+    {
+      "post_id": "js-post-1480763",
+      "author": "ATT_Turan",
+      "date": "2024-11-10T09:38:27+0900",
+      "body": "utunnels said:\nWait a minute, if all the pages' triggers are identical, which don't you just use conditional branch and jump? It makes life easier.\nClick to expand...\nThey're only identical now because the OP thought they could test that way.\nThe thread was originally written because they're setting a variable in one place and getting a different event page showing up - the first post has a series of pages with a variable's value as the condition.\nThe variable must be getting handled someplace else.\nThat will make the event malfunction regardless of whether you're using event pages or conditional branches."
+    },
+    {
+      "post_id": "js-post-1480886",
+      "author": "FolkiFolki",
+      "date": "2024-11-11T05:04:11+0900",
+      "body": "Robro33 said:\nhow so? you used page conditions in your 13 page event. why wouldnt it work on the others?\nof the ones you just shared, page one of the first event will never play. its conditions are identical to page 2 and has a lower priority\nClick to expand...\nI was asking myself the same thing. Thought i solved the problem by removing a conditional branch that i thought was triggering through a met condition, but also didn't work. I'm learning about priorities only today, surprisingly.\ngstv87 said:\ninstead of showing the code, can you write the whole thing as a block chart?\ndispose of the dialogue and focus on the flow itself... you *know* the dialogue only goes one way, so take it out.\nthat will help you see the whole thing from a vantage point (which is how you should do it from the beginning: write it first, then code it)\nClick to expand...\nI don't know how to write block charts, tried to look it up and to no avail. But i'll take your advice, yes, thank you!\nATT_Turan said:\nExcept that simply doesn't work that way. If you have multiple event pages with no conditions, it doesn't matter whether the contents will ever be executed or not based on a Conditional Branch - the earlier pages will\nnever\nhappen. The engine only looks at the highest-numbered page that meets its conditions.\nEvents don't just refuse to play, something is wrong in your project. Either it's the wrong event type, a variable isn't set up how you think it is, a condition is wrong, something.\nClick to expand...\nRegarding this information i should have access to before, i have some news. I tried reorganizing the event pages on the event that was playing on it's own, even though the conditions specifically were not met, it kept playing. It's true that the earlier pages never happen, it's just now the later ones that happen, even if they are unwanted and were not supposed to play.\nMy best bet it's because it was on autorun, just like all my cutscenes.\nI have one very complex event with multiple pages, the page priority is not an issue, and it works exactly as i planned it out to be. I'm mentioning this because it kind of confuses me why the unwanted cutscene keeps playing while all the other normal ones do when they're supposed to, normally.\nLuckily the cutscene was pretty plain so i just copied the event contents and put it all inside the npc the characters talk to, adjusted the new pages, set the trigger to action button and just like that it works perfectly. It's less immersive and a bit boring, but it'll have to do for now, better than a buggy event ruining the experience.\nI've learned a lot since you all came to help me, and i'm always grateful for that! Thank you, everyone!"
+    },
+    {
+      "post_id": "js-post-1480887",
+      "author": "Sword_of_Dusk",
+      "date": "2024-11-11T05:09:22+0900",
+      "body": "FolkiFolki said:\nMy best bet it's because it was on autorun, just like all my cutscenes.\nClick to expand...\nAn event being on autorun will not supersede event priority, just so you know. Something else was absolutely going wrong, but at least you sorted things out."
+    },
+    {
+      "post_id": "js-post-1480888",
+      "author": "ATT_Turan",
+      "date": "2024-11-11T05:11:30+0900",
+      "body": "FolkiFolki said:\nI tried reorganizing the event pages on the event that was playing on it's own, even though the conditions specifically were not met, it kept playing. It's true that the earlier pages never happen, it's just now the later ones that happen, even if they are unwanted and were not supposed to play.\nMy best bet it's because it was on autorun, just like all my cutscenes.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1481123",
+      "author": "FolkiFolki",
+      "date": "2024-11-12T05:39:05+0900",
+      "body": "ATT_Turan said:\nView attachment 322640\nView attachment 322641\nView attachment 322642\nClick to expand...\nI know you mentioned sometime back that rpg maker mv and mz barely have differences and should work the same. I say this because i have one event set on autorun that only happens once the condition is met, and i'm using mz, you've shown me this example using mv.\nThat being said, no, in my game there aren't really any cases of autorun events happening without meeting conditions aside from the specific one. But i still appreciate you showing me in detail your case, it's very helpful in the end!"
+    },
+    {
+      "post_id": "js-post-1481125",
+      "author": "ATT_Turan",
+      "date": "2024-11-12T05:46:45+0900",
+      "body": "FolkiFolki said:\nI say this because i have one event set on autorun that only happens once the condition is met, and i'm using mz, you've shown me this example using mv.\nClick to expand...\nDude, really? You've spent two pages of thread arguing with people who are experienced with RPG Maker, telling you how it works, and you keep essentially telling them \"no, my game is doing this, you're wrong.\"\nHere's the same freaking example in MZ - it did not change the basic way events work.\nGood luck with your project."
+    },
+    {
+      "post_id": "js-post-1481161",
+      "author": "JohnDoeGames",
+      "date": "2024-11-12T09:04:51+0900",
+      "body": "Okay, I am thinking outside the box here... is it possible le you made a back-up copy of your map?\nIs it maybe possible your character is on the backup map, while you work on the main map, or the other way around? That would explain everything.\nOr... If you load a saved game, some plugins might show the old version of the events when loading the game. To fix this, simply leave the map, and return. Or turn of that plugin.\nthen there is another possibility... some plugins change so much to the game, that saved test runs are no longer working at all. Or show unexpected results. If this error started after installing a plugin, the first thing you should try is delete /saves/ from your project folder. Then start a fresh new test run."
+    },
+    {
+      "post_id": "js-post-1481171",
+      "author": "FolkiFolki",
+      "date": "2024-11-12T10:46:14+0900",
+      "body": "ATT_Turan said:\nDude, really? You've spent two pages of thread arguing with people who are experienced with RPG Maker, telling you how it works, and you keep essentially telling them \"no, my game is doing this, you're wrong.\"\nClick to expand...\nI apologize if i sounded in any way harsh to anyone in this thread. I do not want to look like i'm 'arguing' with them, but simply talking to them. I do not believe anyone was necessarily wrong, it just so happened that the problem persisted despite their efforts, but that's okay. I'm sorry for upsetting you.\nJohnDoeNews said:\nOkay, I am thinking outside the box here... is it possible le you made a back-up copy of your map?\nIs it maybe possible your character is on the backup map, while you work on the main map, or the other way around? That would explain everything.\nOr... If you load a saved game, some plugins might show the old version of the events when loading the game. To fix this, simply leave the map, and return. Or turn of that plugin.\nthen there is another possibility... some plugins change so much to the game, that saved test runs are no longer working at all. Or show unexpected results. If this error started after installing a plugin, the first thing you should try is delete /saves/ from your project folder. Then start a fresh new test run.\nClick to expand...\nI did not make any backups, nor do i have plugins installed. I've got to say, every time i see someone bringing up problems with rpg maker, myself included, one of the first solutions suggested is to disable plugins. Are they that troublesome? But i do find your theory to be really good, i kind of wish it was that to begin with, would be a satisfying conclusion. Still, thank you for replying."
+    },
+    {
+      "post_id": "js-post-1481219",
+      "author": "JohnDoeGames",
+      "date": "2024-11-12T23:17:08+0900",
+      "body": "You don't make back ups? Well, that is not the question here, but I still advice you to do this as often as you can.\nPlugins are not troublesome, if written correctly. However, plugins change how the engine works. So to achieve one goal, plugins might have to alter something else.\nPlugins are also not written to work with each other available plugin.\nIn 99.9% of all cases, plugins are the solution, but sometimes they are the problem. That is very possible"
+    },
+    {
+      "post_id": "js-post-1481221",
+      "author": "Robro33",
+      "date": "2024-11-12T23:35:31+0900",
+      "body": "FolkiFolki said:\none of the first solutions suggested is to disable plugins. Are they that troublesome?\nClick to expand...\non top of what JohnDoe said, it should be one of the first parts of troubleshooting a possible issue.\nThe engine functions a certain way that we all have access to and can observe if we own the engine. Plugins are made with the intention of modifying how the engine functions in order to do something specific.\nif something that works in a fresh project doesnt in your main one and disabling your plugins fixes it, then the easiest conclusion to draw is you have a plugin changing how that thing works beyond what youve expected. From there you can take steps to isolate the plugin in question and choose what to do from there."
+    }
+  ]
+}

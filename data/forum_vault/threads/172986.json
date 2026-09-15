@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/counter-attack-when-attacked-with-elemental-skills.172986",
+  "title": "MZ Counter-attack when attacked with elemental skills",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:36:55.712442+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1479275",
+      "author": "sushibyte",
+      "date": "2024-11-03T04:17:17+0900",
+      "body": "Looking for wizards!\nI want certain potions to  absorb and heal from elemental attacks. So you use the potion, it heals you, and then if you are ever attacked by fire for example, you heal a certain amount.\nI want other potions to trigger a physical counter-attack when attacked with a specific element. So the potion heals you, and if you get attacked by fire, you counter attack.\nI know that Counter attacks are triggered by physical attacks only? I have visustellah's plugin but can we create  States that can apply both my ideas?"
+    },
+    {
+      "post_id": "js-post-1479344",
+      "author": "JohnDoeGames",
+      "date": "2024-11-03T10:35:57+0900",
+      "body": "Well, the potion would activate a state. I guess you figured that much out, right? And make that state 0% vulnerable for fire.\nNow we need to make characters inflicted by that state heal when attacked with fire... The only know how is to use javascript in the battle damage formule of the fire attacks. Use an if statement to see if the target has that state, if so, add HP to the target. Then do\n;\nand then the damage formula.\nI mean, this is not actually the engine reacting to the state, but you programming that healing into all skills that trigger it. The effect is the exact same for the player though. Fake it till you make it.\nHow to counter an element, I don't know."
+    },
+    {
+      "post_id": "js-post-1479351",
+      "author": "Robro33",
+      "date": "2024-11-03T11:12:22+0900",
+      "body": "JohnDoeNews said:\nAnd make that state 0% vulnerable for fire.\nClick to expand...\nan easier method involves not doing that. with turans eval tags or visustella's battle core, you could give the state a tag to invert the fire damage taken into healing or replace the damage with a static healing amount. Whatever OP needs. the latter isnt affected by an element rate, but the former would require the state to not modify it unless its meant to also reduce the damage healed.\nIm not familiar enough with MZ to be able to give a solution for the counter portion though. i dont think yanfly's counter control got ported in any way to MZ and a quick search doesnt bring up anything usable. maybe FOSSIL could work with it, and if it does you could give each state a counter based on their element, but otherwise i have nothing.\nEDIT: If you just wanted to deal damage back at the attacker and not necessarily counter attack, the first 2 plugins could also let you do that."
+    },
+    {
+      "post_id": "js-post-1479510",
+      "author": "caethyril",
+      "date": "2024-11-03T19:26:08+0900",
+      "body": "I don't know about VisuStella, but I think triacontane's CounterExtend could do this:\nRPGMakerMV/CounterExtend.js at mz_master · triacontane/RPGMakerMV\nRPGツクールMV、MZで動作するプラグインです。. Contribute to triacontane/RPGMakerMV development by creating an account on GitHub.\ngithub.com\nA counter rule can be applied to a state etc with a notetag. These rules are defined in the plugin's parameters and include a list of counter skills, each with their own conditions (e.g. element ID).\nI doubt it's compatible with VisuStella, and the help/params are all in Japanese, but it may be worth a try if no-one has a better suggestion~"
+    },
+    {
+      "post_id": "js-post-1479534",
+      "author": "sushibyte",
+      "date": "2024-11-03T23:09:53+0900",
+      "body": "caethyril said:\nI don't know about VisuStella, but I think triacontane's CounterExtend could do this:\nRPGMakerMV/CounterExtend.js at mz_master · triacontane/RPGMakerMV\nRPGツクールMV、MZで動作するプラグインです。. Contribute to triacontane/RPGMakerMV development by creating an account on GitHub.\ngithub.com\nA counter rule can be applied to a state etc with a notetag. These rules are defined in the plugin's parameters and include a list of counter skills, each with their own conditions (e.g. element ID).\nI doubt it's compatible with VisuStella, and the help/params are all in Japanese, but it may be worth a try if no-one has a better suggestion~\nClick to expand...\neven if this is an MV plugin ?"
+    },
+    {
+      "post_id": "js-post-1479562",
+      "author": "caethyril",
+      "date": "2024-11-04T00:34:13+0900",
+      "body": "sushibyte said:\neven if this is an MV plugin ?\nClick to expand...\nThe one I linked is an MZ plugin: it is in the\nmz_master\nbranch, and has\n@target MZ\nin the header. It might also work in MV, I haven't tried. The older/MV version is here:\nlink\n.\nPlease don't start duplicate threads. Moderators can move threads around; in future you can click the Report button on your post if you think your thread should be moved.\nI've moved this thread to JS Plugin Requests (from MZ Support). Thank you."
+    },
+    {
+      "post_id": "js-post-1479572",
+      "author": "sushibyte",
+      "date": "2024-11-04T01:18:55+0900",
+      "body": "The plugin you suggested might be of great help but it's very hard to translate because it uses english and japanese, so I cannot just translate all of it in english only, the plugin dosen't work then"
+    },
+    {
+      "post_id": "js-post-1479578",
+      "author": "caethyril",
+      "date": "2024-11-04T01:39:34+0900",
+      "body": "So only translate the header section?\nGoogle Translate\ngives me:\nSpoiler:\nmachine translation\nJavaScript:\n/*:\n* @plugindesc Counterattack Extension Plugin\n* @target MZ\n* @url https://github.com/triacontane/RPGMakerMV/tree/mz_master/CounterExtend.js\n* @base PluginCommonBase\n* @author Triacontane\n*\n* @param CounterList\n* @text Counterattack settings list\n* @desc List of counterattack settings. Specify the identifier specified here from each memo field.\n* @default []\n* @type struct<COUNTER>[]\n*\n* @param ConsiderateRepeat\n* @text Consider consecutive attacks\n* @desc If enabled, you will only counterattack once for consecutive attacks or multiple actions by the opponent.\n* @default false\n* @type boolean\n*\n* @help CounterExtend.js\n*\n* Skills and items can be activated as a reaction (counterattack) to the opponent's actions.\n* Counterattack settings can be set under a variety of conditions and settings.\n* It works regardless of the \"counterattack rate\" feature that can be set by default.\n*\n* Please specify as follows in the memo field that has the feature (actor, job, weapon, armor, state, enemy character). If the battler has that feature, it will counterattack.\n* For example, if you set it in the memo field of a state, the battler will counterattack when it is attacked by that state.\n*\n* <CounterExtend:aaa> # Counterattack with the counterattack setting that matches the identifier [aaa].\n* <CounterExtend:aaa> # Same as above\n* <CounterExtend:1> # Counterattack with the [1]th counterattack setting in the counterattack list.\n* <CounterExtend:1> # Same as above\n*\n* Detailed counterattack settings can be entered from the plugin parameters.\n* Unlike normal counterattacks, they are activated after the opponent's action is finished.\n*\n* When multiple counterattack tags are met at the same time, they are activated in the following order.\n* State (in order of priority) > Actor, enemy character > Occupation > Equipment\n*\n* Skills and items entered in the memo field as follows can reduce the frequency of opponent counterattacks by the specified value.\n* <CounterEvasion:100>\n* <Counterattack avoidance:100>\n*\n* 〇Local variables that can be used in scripts\n* subject -> Battler who counterattacks\n* target -> Opponent battler\n* triggerAction -> Action used by opponent battler\n*\n* 〇Variables that can be used in the calculation formula for counterattack skills\n* a.lastHpDamage -> HP damage last taken by the counterattacker\n*\n* The base plugin \"PluginCommonBase.js\" is required to use this plugin.\n* \"PluginCommonBase.js\" is stored in the following folder under the RPG Maker MZ installation folder.\n* * dlc/BasicResources/plugins/official\n*\n*/\n\n/*~struct~COUNTER:\n*\n* @param Id\n* @text Identifier\n* @desc An identifier that uniquely identifies the counter setting. Please specify the identifier specified here in each memo field.\n* @default id\n*\n* @param SkillList\n* @text Skill list\n* @desc A list of skills and conditions that will be activated when counterattacking. If multiple conditions are met, the one at the top of the list will be executed.\n* @default []\n* @type struct<SKILL>[]\n*\n* @param Animation\n* @text Animation\n* @desc You can display an animation after executing a counterattack.\n* @default 0\n* @type animation\n*\n* @param Message\n* @text Message\n* @desc You can display a message after executing a counterattack.\n* @default\n*\n* @param DefaultMessage\n* @text Default message\n* @desc If enabled, the default counterattack message will be displayed.\n* @default false\n* @type boolean\n*\n* @param CrossCounter\n* @text Cross Counter\n* @desc If enabled, counterattacks after receiving an attack.\n* @default false\n* @type boolean\n*\n* @param Interceptor\n* @text Interceptor\n* @desc If enabled, counterattacks before receiving an attack.\n* @default false\n* @type boolean\n*\n* @param CrossCounterCondition\n* @parent CrossCounter\n* @text Cross Counter Condition\n* @desc Additional activation conditions specified when Cross Counter is enabled.\n* @default 0\n* @type select\n* @option Always\n* @value 0\n* @option Only if the opponent's action hits\n* @value 1\n* @option Only if the opponent's action misses\n* @value 2\n*\n* @param PayCounterCost\n* @text Cost of counterattack\n* @desc Sets whether counterattack consumes cost. If enabled, counterattack will not occur if the cost is insufficient.\n* @default false\n* @type boolean\n*\n* @param EraseState\n* @text Cancel state\n* @desc Automatically cancels the specified state after counterattack.\n* @default 0\n* @type state\n*\n* @param EraseStateCondition\n* @parent EraseState\n* @text Cancel state condition\n* @desc Condition for canceling the state specified in Cancel state.\n* @default 0\n* @type select\n* @option Always\n* @value 0\n* @option If failed\n* @value 1\n* @option If successful\n* @value 2\n*\n*/\n\n/*~struct~SKILL:\n*\n* @param Id\n* @text Identifier\n* @desc An identifier to make it easier to identify parameters when viewed in a list. Not referenced by the plugin.\n* @default\n*\n* @param SkillId\n* @text Counterattack skill\n* @desc The skill that is activated when counterattacking. If 0 is specified, counterattacks with a normal attack.\n* @type skill\n* @default 0\n*\n* @param ItemId\n* @text Counterattack item\n* @desc The item to be used when counterattacking. You can specify either the skill or this. If both are specified, the item takes priority.\n* @type item\n* @default 0\n*\n* @param Reflection\n* @text Skill reflection\n* @desc If enabled, counterattacks using the skill used by the opponent.\n* @type boolean\n* @default false\n*\n* @param IdCondition\n* @text Counterattack condition (skill ID)\n* @desc If specified, counterattacks only against skills of a specific hit type.\n* @type skill\n* @default 0\n*\n* @param HitTypeCondition\n* @text Counterattack condition (hit type)\n* @desc If specified, counterattacks only against skills of a specific hit type.\n* @type select\n* @default 0\n* @option Not specified\n* @value 0\n* @option Physical attack\n* @value 1\n* @option Magic attack\n* @value 2\n*\n* @param SkillTypeCondition\n* @text Counterattack condition (skill type)\n* @desc If specified, counterattack will only occur against skills of a specific skill type.\n* @type number\n*\n* @param ElementCondition\n* @text Counterattack condition (attribute)\n* @desc If specified, counterattack will only occur against skills of a specific attribute (the value of \"Type\" -> \"Attribute\" in the database).\n* @type number\n* @default 0\n*\n* @param WeakCondition\n* @text Counterattack condition (weakness)\n* @desc If specified, counterattack will only occur if the skill received is a weakness or resistance.\n* @type select\n* @default 0\n* @option None\n* @value 0\n* @option Weakness\n* @value 1\n* @option Resistance\n* @value 2\n*\n* @param SwitchCondition\n* @text Counterattack condition (switch)\n* @desc If specified, counterattack will only occur if the switch is ON.\n* @type switch\n* @default 0\n*\n* @param Subject\n* @text Counterattack condition (user)\n* @desc If specified, counterattack will only occur if the user is a specific battler.\n* @type select\n* @default opponentsUnit\n* @option Opponent unit\n* @value opponentsUnit\n* @option Allied unit (including self)\n* @value friendsUnit\n* @option Allied unit (excluding self)\n* @value friendsUnitWithoutUser\n* @option Self\n* @value user\n* @option Everyone\n* @value all\n*\n* @param MemoTagCondition\n* @text Counterattack condition (memo tag)\n* @desc If specified, counterattack will only occur against skills and battlers (including weapons and armor) with the specified tag written in the memo field.\n* @default\n*\n* @param ScriptCondition\n* @text Counterattack condition (script)\n* @desc If specified, counterattack will only occur if the script evaluation result is valid.\n* @type combo\n* @default\n* @option subject.mpRate() <= 0.5; // If your MP is below 50%\n* @option triggerAction.calcElementRate(subject) > 1.0; // If it is a weak attribute\n*\n* @param Frequency\n* @text Counterattack frequency\n* @desc The frequency (probability) of a counterattack. Specifying 100 will ensure a counterattack.\n* @type number\n* @default 100\n* @min 0\n* @max 100\n*\n* @param FrequencyTag\n* @text Counterattack frequency tag\n* @desc All values obtained from the specified tag (e.g. <CounterFrequency:100>) are added to the \"counterattack frequency\" to determine the counterattack frequency.\n* @default CounterFrequency\n*\n* @param ConditionReverse\n* @text Reverse counterattack condition\n* @desc When enabled, a counterattack will occur if the counterattack condition is not met.\n* @type boolean\n* @default false\n*\n*/\nI haven't proof-read that, but you can try just replacing the JP plugin header with the translated one."
+    },
+    {
+      "post_id": "js-post-1479581",
+      "author": "sushibyte",
+      "date": "2024-11-04T02:32:23+0900",
+      "body": "thanks, I'll give it a try, if you ever come across an idea to have potions heal you when you get attacked by a specific element, please let me know, I've tried with states and common events and none work and I have no idea why.\nthe counter attack works, one problem solved, I just might be able to activate a self heal when attacked by a specific element, working on it\nedit : Ok , I was able to complete what I set out to do with this plugin, you saved my life. thank you Caethyril"
+    },
+    {
+      "post_id": "js-post-1479664",
+      "author": "caethyril",
+      "date": "2024-11-04T09:13:59+0900",
+      "body": "Nice!\nJust to add to the other suggestions: I noticed VisuStella's Elements & Status Menu Core has an\n<Element Absorb: X>\nnotetag that can be used on states. That might be a neater solution than a \"counter-heal\"? It's a common idea so there are probably other plugins that can do something similar, e.g. \"absorb element\" or \"invert damage\"."
+    },
+    {
+      "post_id": "js-post-1479668",
+      "author": "sushibyte",
+      "date": "2024-11-04T09:53:56+0900",
+      "body": "It's certainly an idea I used in MV with Yanfly's plugin. My game centers around crafting, so I want to make elemental armors absorb a part of the damage. I figure enemies are more interesting if they absorb your attacks than if you do theirs but that's just my opinion"
+    },
+    {
+      "post_id": "js-post-1479672",
+      "author": "Sword_of_Dusk",
+      "date": "2024-11-04T10:37:04+0900",
+      "body": "sushibyte said:\nI figure enemies are more interesting if they absorb your attacks than if you do theirs but that's just my opinion\nClick to expand...\nI generally feel like that type of thing should be available to both the player and enemies. If they can absorb elements and you can't, I'm calling bull."
+    },
+    {
+      "post_id": "js-post-1479742",
+      "author": "slimmmeiske2",
+      "date": "2024-11-04T20:10:27+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/black-gradient-windowskin-for-title-command-menu.172219",
+  "title": "Black Gradient Windowskin for Title Command Menu",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:37:22.491976+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1472561",
+      "author": "Tw0Face",
+      "date": "2024-09-28T19:45:34+0900",
+      "body": "Hi guys, is it possible to have the Windowskin of only the Title Command Menu appear in borderless semi-transparent black (or dark grey) with a well defined gradient (black-to-fully-transparent) at the bottom and top just like seen in the Spoiler tag below? I want to be able to do this to my VX ACE games. It's purely cosmetic, but I'm looking for a style like that as it can highly improve RPG Maker Titlescreens and make it look more modern and up-to-date instead of using the default RM box graphic.\nSpoiler:\nExample\nThe Game here is\nLate Hero and The Barrier of Light\nby\nReim Harbert\nLate Hero and The Barrier of Light by Reim Harbert\nDemons are attacking the island where important ceremony is being held. Submission for Harold Jam 2024.\ncrazybabi.itch.io\nAnyone wants to help me out here?\nThanks in advance."
+    },
+    {
+      "post_id": "js-post-1472565",
+      "author": "Andar",
+      "date": "2024-09-28T20:28:03+0900",
+      "body": "yes, this is possible.\nthe best way is probably a dedicated script for this, and there I can't help.\nhowever if you can't get such a script then a secondary option is to work with a windowskin changer.\nyou would have to use a fake border for the gradient effect, and then change the windowskin to the regular one as soon as you leave the title screen.\nWindowskin Changer\nBy default, RPG Maker uses the file called \"Window\" stored in the Graphics/System folder, and only supports one windowskin throughout the game.This script allows you to change window skins dyn\nhimeworks.com"
+    },
+    {
+      "post_id": "js-post-1472712",
+      "author": "Tw0Face",
+      "date": "2024-09-29T17:17:38+0900",
+      "body": "@Andar\nYes, but the windowskin should only apply to the title menu itself. It should not affect the save or loading menu, the options menu, or any other menu script that might be accessed from the title menu. So I think I need a script for it."
+    },
+    {
+      "post_id": "js-post-1473267",
+      "author": "kyonides",
+      "date": "2024-10-02T16:10:09+0900",
+      "body": "Version 2:\nRuby:\n# * Window_Title's Gradient Backdrop ACE * #\n#   Scripter : Kyonides Arkanthes\n#   2024-10-02\n\nclass Scene_Title\n  alias :kyon_title_grad_scn_ttl_crt_cmd_win :create_command_window\n  def create_command_window\n    kyon_title_grad_scn_ttl_crt_cmd_win\n    command_window_gradient_effect\n  end\n\n  def command_window_gradient_effect\n    @command_window.opacity = 0\n    cww = @command_window.width\n    cwh = @command_window.height\n    lines = @command_window.item_max * 24\n    @command_sprite = Sprite.new\n    @command_sprite.x = @command_window.x\n    @command_sprite.y = @command_window.y\n    @command_sprite.bitmap = bit = Bitmap.new(cww, cwh)\n    rect = Rect.new(0, 12, bit.width, lines)\n    border = Rect.new(0, 0, bit.width, 12)\n    color1 = Color.new(0, 0, 0, 24)\n    color2 = Color.new(0, 0, 0, 192)\n    bit.gradient_fill_rect(border, color1, color2, true)\n    bit.fill_rect(rect, color2)\n    border.y += lines + 12\n    bit.gradient_fill_rect(border, color2, color1, true)\n  end\n\n  def close_command_window\n    @command_window.cursor_rect.empty\n    rect = @command_sprite.src_rect\n    hmax = rect.height / 2\n    until rect.y == hmax\n      rect.y += 4\n      rect.height -= 8\n      @command_sprite.y += 4\n      @command_window.contents_opacity -= 26\n      update\n    end\n    @command_sprite.bitmap.dispose\n    @command_sprite.dispose\n  end\nend"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/creating-custom-lights-with-khas-advanced-lighting-plugin.173051",
+  "title": "MV Creating custom lights with Khas Advanced Lighting plugin?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:37:12.211743+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1480045",
+      "author": "Geeguz",
+      "date": "2024-11-06T02:22:27+0900",
+      "body": "So I should probably start by saying I have a very limited understanding of JavaScript. I'm currently using this plugin\nhttps://arcthunder.blogspot.com/p/tutorial-advanced-lighting.html\nto achieve a flashlight in the dark effect and so far it works great but I would like to insert my own image for a light.\nI first inserted my image in the appropriate folder and tried to call it with the plugin command only to run into the error shown below. Upon investigating further I found I had to actually edit the plugin and so I attempted to do this, it seemed self-explanatory enough.\nSo after doing this (code shown below) I found I no longer ran into that error upon boot up but the image simply would not display on the screen at all. I initially did not adjust any of the positioning and I realize because of this it may have been a bit funky but considering my image size is 144 x 144 and the default image size is 120 x 191 I can't imagine it would be THAT far off.\nI'd just like to know if anyone can point out what I'm doing wrong here... thanks in advance!"
+    },
+    {
+      "post_id": "js-post-1480048",
+      "author": "ATT_Turan",
+      "date": "2024-11-06T02:34:49+0900",
+      "body": "Any time you're experiencing a problem with a plugin not working, press F8 during the game and go to the Console tab - see if there are any errors.\nAside from that, it would help if you posted the image you're trying to use."
+    },
+    {
+      "post_id": "js-post-1480050",
+      "author": "Geeguz",
+      "date": "2024-11-06T02:43:32+0900",
+      "body": "ATT_Turan said:\nAny time you're experiencing a problem with a plugin not working, press F8 during the game and go to the Console tab - see if there are any errors.\nAside from that, it would help if you posted the image you're trying to use.\nClick to expand...\nI was not aware of that, I'll give that a try. This is the image I'm trying to use though, just a pixelated\nflashlight sort of shape."
+    },
+    {
+      "post_id": "js-post-1480055",
+      "author": "I_LIKE_BREAD7",
+      "date": "2024-11-06T03:16:14+0900",
+      "body": "There is no comma after intensity in the flashlight and bitlight JSON objects.\nThis seems to be a problem with the templates provided in the original plugin (they didn't need to work as they were provided in comments, so they probably weren't tested).\nFor a JSON object to be correct every property needs to be separated with a comma, event if they're on separate lines.\nJust add the comma in your bitlight object and see if it helps.\nflashlight: {\nfileName: \"flashlight\",\nintensity: 100 <-- missing comma here\nvariation: 0,\noffset_x: {2: -12, 4: -72, 6: 72, 8: 16 }, // A Javascript object containing the x offset for each direction.\noffset_y: {2: 72, 4: 0, 6: 16, 8: -72 },   // A Javascript object containing the y offset for each direction.\nsyncWithDirection: true                    // If you want the light's rotation to sync with the character's, use this as true.\n},\nWhen weird errors like that happen it's always a good idea to double check for typos and such, they can really mess things up and they often cause cryptic error messages"
+    },
+    {
+      "post_id": "js-post-1480068",
+      "author": "ATT_Turan",
+      "date": "2024-11-06T04:18:08+0900",
+      "body": "That's a good catch,\n@I_LIKE_BREAD7\n. The weird thing is the OP said the flashlight worked."
+    },
+    {
+      "post_id": "js-post-1480117",
+      "author": "I_LIKE_BREAD7",
+      "date": "2024-11-06T09:36:37+0900",
+      "body": "ATT_Turan said:\nThat's a good catch,\n@I_LIKE_BREAD7\n. The weird thing is the OP said the flashlight worked.\nClick to expand...\nIt probably worked because they used a light built into the plugin, not a custom defined one from a faulty template."
+    },
+    {
+      "post_id": "js-post-1480140",
+      "author": "Geeguz",
+      "date": "2024-11-06T14:26:06+0900",
+      "body": "I_LIKE_BREAD7 said:\nThere is no comma after intensity in the flashlight and bitlight JSON objects.\nThis seems to be a problem with the templates provided in the original plugin (they didn't need to work as they were provided in comments, so they probably weren't tested).\nFor a JSON object to be correct every property needs to be separated with a comma, event if they're on separate lines.\nJust add the comma in your bitlight object and see if it helps.\nflashlight: {\nfileName: \"flashlight\",\nintensity: 100 <-- missing comma here\nvariation: 0,\noffset_x: {2: -12, 4: -72, 6: 72, 8: 16 }, // A Javascript object containing the x offset for each direction.\noffset_y: {2: 72, 4: 0, 6: 16, 8: -72 },   // A Javascript object containing the y offset for each direction.\nsyncWithDirection: true                    // If you want the light's rotation to sync with the character's, use this as true.\n},\nWhen weird errors like that happen it's always a good idea to double check for typos and such, they can really mess things up and they often cause cryptic error messages\nClick to expand...\nIt was a good catch! Unfortunately it doesn't seem to have changed anything... the error still doesn't pop up but I still can't see any sign of the light graphic either"
+    },
+    {
+      "post_id": "js-post-1480237",
+      "author": "I_LIKE_BREAD7",
+      "date": "2024-11-07T09:38:52+0900",
+      "body": "Maybe you could try replacing the filename in the flashlight object to BitLight and see if it works that way?\nThis at least would tell you if the problem is in the custom definition of the light in code or in the image file itself. Given that the flashlight works, its definition must be working too.\nJavaScript:\nflashlight: {\n        fileName: \"BitLight\",\n        intensity: 100, variation: 0,\n        offset_x: {2: -12, 4: -72, 6: 72, 8: 16 }, offset_y: {2: 72, 4: 0, 6: 16, 8: -72 },\n        syncWithDirection: true\n    },\nAlso are you sure there are no errors in the console? (F8 -> Console tab as ATT_Turan said)\nErrors in the console don't necessarily show up on the game's screen, so there might still be some even if the game starts up without going into an error screen."
+    },
+    {
+      "post_id": "js-post-1480277",
+      "author": "Geeguz",
+      "date": "2024-11-07T16:37:03+0900",
+      "body": "I_LIKE_BREAD7 said:\nMaybe you could try replacing the filename in the flashlight object to BitLight and see if it works that way?\nThis at least would tell you if the problem is in the custom definition of the light in code or in the image file itself. Given that the flashlight works, its definition must be working too.\nJavaScript:\nflashlight: {\n        fileName: \"BitLight\",\n        intensity: 100, variation: 0,\n        offset_x: {2: -12, 4: -72, 6: 72, 8: 16 }, offset_y: {2: 72, 4: 0, 6: 16, 8: -72 },\n        syncWithDirection: true\n    },\nAlso are you sure there are no errors in the console? (F8 -> Console tab as ATT_Turan said)\nErrors in the console don't necessarily show up on the game's screen, so there might still be some even if the game starts up without going into an error screen.\nClick to expand...\nRight, my mistake. I can't believe I never knew about checking that but I just did and actually did find something that looks relevant though I'm not exactly sure what it means.\nThere seems to be some sort of issue with reading the line shown below?\nEdit: I also changed the original flashlight to the \"BitLight\" image and again nothing appeared when I called the flashlight. Then upon editing it back the exact way it was the original flashlight image wouldn't appear either"
+    },
+    {
+      "post_id": "js-post-1480348",
+      "author": "I_LIKE_BREAD7",
+      "date": "2024-11-08T02:42:27+0900",
+      "body": "Ok, now it makes sense\nAs I can see you edited the name of the plugin file to KhasAdvancedLightingEdit.js and that is what's causing the issue.\nRPG Maker assigns parameters to plugins based on their filename, so when the plugin tries to read its parameters in the line above (359) it gets an empty object because the name doesn't match (it tries to read for KhasAdvanvedLighting instead of KhasAdvancedLightingEdit) and then tries to call a function on a non-existing object a line later which crashes it.\nThe fix would be to either revert the filename back to KhasAdvancedLighting.js or update the line 359 to\nJavaScript:\nKhas.Lighting.PARAMETERS = PluginManager.parameters(\"KhasAdvancedLightingEdit\");"
+    },
+    {
+      "post_id": "js-post-1480451",
+      "author": "Geeguz",
+      "date": "2024-11-08T17:38:28+0900",
+      "body": "I_LIKE_BREAD7 said:\nOk, now it makes sense\nAs I can see you edited the name of the plugin file to KhasAdvancedLightingEdit.js and that is what's causing the issue.\nRPG Maker assigns parameters to plugins based on their filename, so when the plugin tries to read its parameters in the line above (359) it gets an empty object because the name doesn't match (it tries to read for KhasAdvanvedLighting instead of KhasAdvancedLightingEdit) and then tries to call a function on a non-existing object a line later which crashes it.\nThe fix would be to either revert the filename back to KhasAdvancedLighting.js or update the line 359 to\nJavaScript:\nKhas.Lighting.PARAMETERS = PluginManager.parameters(\"KhasAdvancedLightingEdit\");\nClick to expand...\nWow... that was it, works perfectly now! Thank you kind sir! This is why I don't do a lot of working with scripts lol it's sooo sensitive."
+    },
+    {
+      "post_id": "js-post-1480484",
+      "author": "ATT_Turan",
+      "date": "2024-11-09T01:22:16+0900",
+      "body": "Geeguz said:\nThis is why I don't do a lot of working with scripts lol it's sooo sensitive.\nClick to expand...\nIt's not specific to plugins (MV doesn't use scripts).\nAll files you use in RPG Maker are name-sensitive. You need to make all references to file names have the correct spelling and capitalization; you need to know how the prefixes for character sheets work if you add any of those; you need to make sure you don't use URL-incompatible characters in any of your file names.\nAnd yes, you should never rename plugins from the file name their author specified."
+    }
+  ]
+}

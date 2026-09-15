@@ -1,0 +1,401 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/opentype-pixel-font-renderer-mv-mz.171027",
+  "title": "MZ OpenType Pixel Font Renderer (MV & MZ )",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:36:59.936594+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1463090",
+      "author": "utunnels",
+      "date": "2024-08-12T18:06:20+0900",
+      "body": "Spoiler:\nScreenshots\nDownload link:\nhttps://utstudio.itch.io/otpfmvz\nIntroduction​\nThis plugin uses\nopentype.js\n- an OpenType/TTF font parser - to achieve precise text rendering in both browser and Node.js environments. The plugin is designed specifically for pixel-perfect font display, it modifies the core CanvasRenderingContext2D methods (fillText, measureText, and strokeText) while maintaining engine compatibility.\nFeatures​\nAutomatic pixel grid alignment for crisp text rendering\nCustomizable font configurations through parameters\nSize configurations for various display resolutions\nUnicode character range specification\nUsage​\ntl;dr\nThere's a passive mode version called UT_OpenTypePixelFont.js, which doesn't require any parameter to work. But if you need to fine-tune the settings, you can read the following section about parameters.\nPlugin Parameters​\nConfigure your fonts through an array of structured objects with these properties:\nFont File\n(String) Path to your font file (e.g., pixeloperator.ttf)\nFont Family Name\n(String) Target font family to replace:\nMV: Typically GameFont\nMZ: Defaults are rmmz-mainfont (primary) & rmmz-numberfont (gauges)Note: Actual font replacement must be handled through RPG Maker's native systems\nSnap to Pixel\n(Boolean) Enable pixel grid alignment (crucial for pixel font rendering)\nDefault: ON(true)\nBase Size\n(Number|Object) Optimal font size configuration:\nSingle value: e.g., 16 for PixelOperator\nSize map: Custom scaling rules (e.g., {28:24, 72:80} scales 28→24, 72→80)Automatically calculates nearest whole-number scaling while preserving game variables\nUnicode Range\n(String) Character subset coverage using CSS unicode-range syntax\nDefault: U+0-10FFFF (all characters) Use when employing multiple font files for a single family\nTerms of Use​\nFree Usage\n: Compatible with commercial/non-commercial projects\nAttribution\n: Optional (not required)\nModifications\n: Permitted for personal use\nRedistribution\n: Prohibited without explicit authorization\nDisclaimer:​\nThe demonstration\nfont files\nincluded in this download are provided solely for testing purposes and are NOT part of the plugin. If you wish to use these fonts in actual projects, you MUST consult their respective license terms. Links to the fonts:\nhttps://www.dafont.com/5x5-pixel.font\nhttps://notabug.org/HarvettFox96/ttf-pixeloperator\nhttps://files.ax86.net/terminus-ttf/\n(Some glyphs are used by arrows32.ttf in the demo)"
+    },
+    {
+      "post_id": "js-post-1471467",
+      "author": "RedJelly",
+      "date": "2024-09-23T07:06:01+0900",
+      "body": "Incredible, I've been trying to tinker with workarounds using what PixiJS offers to no avail, and this one works so nicely! I genuinely tried searching for solutions for oh so many hours and it was in this thread this whole time.\nHowever, I can only get it to work for message windows, whereas I want it working for menus, battle UI, etc. Is there something I'm missing?"
+    },
+    {
+      "post_id": "js-post-1471468",
+      "author": "utunnels",
+      "date": "2024-09-23T07:14:15+0900",
+      "body": "RedJelly said:\nIncredible, I've been trying to tinker with workarounds using what PixiJS offers to no avail, and this one works so nicely! I genuinely tried searching for solutions for oh so many hours and it was in this thread this whole time.\nHowever, I can only get it to work for message windows, whereas I want it working for menus, battle UI, etc. Is there something I'm missing?\nClick to expand...\nAre you use plugins that changes fonts of the other UI?"
+    },
+    {
+      "post_id": "js-post-1471473",
+      "author": "RedJelly",
+      "date": "2024-09-23T07:44:07+0900",
+      "body": "utunnels said:\nAre you use plugins that changes fonts of the other UI?\nClick to expand...\nWell, looks like setting the default font list in Yanfly's Core Engine to just GameFont fixes it. Funny how it works out that way."
+    },
+    {
+      "post_id": "js-post-1475872",
+      "author": "lsjadsl",
+      "date": "2024-10-17T01:00:54+0900",
+      "body": "This plugin works like magic!\nYou are my lifesaver. Thank you very much."
+    },
+    {
+      "post_id": "js-post-1476910",
+      "author": "fizzly",
+      "date": "2024-10-22T18:11:31+0900",
+      "body": "Finally, pixel perfect fonts! Thank you."
+    },
+    {
+      "post_id": "js-post-1478521",
+      "author": "Ancient_Eagle",
+      "date": "2024-10-31T05:31:49+0900",
+      "body": "I tried, and didn't do pixel, and I am using MZ"
+    },
+    {
+      "post_id": "js-post-1478548",
+      "author": "utunnels",
+      "date": "2024-10-31T08:48:48+0900",
+      "body": "Ancient_Eagle said:\nI tried, and didn't do pixel, and I am using MZ\nClick to expand...\nMZ uses different font names instead of GameFont in MV.\nYou need to change the plugin parameters as well as font settings in the database."
+    },
+    {
+      "post_id": "js-post-1478581",
+      "author": "Ancient_Eagle",
+      "date": "2024-10-31T13:55:37+0900",
+      "body": "Then MZ’s font family name what should I name it? For example let’s say I used “Raster.ttf” font name, font family what should I name it?\nEdit: I found a solution for those who use MZ\n1) Open \"rmmz_core.js\"\n2) in line 1203 you will find this.fontFace\n3) Open plugin manager, and then font family name should \"sans-serif\"\nAnd that's it it will work a perfect pixel font\nSince I found solution that MV is working on gamefonts, and MZ is working on rmmz_core.js but MZ does it have gamefont, so I asked chatgpt, and here's the answer:\n\"In RPG Maker MZ, the engine no longer uses the GameFont file that was present in RPG Maker MV. Instead, MZ manages fonts directly through JavaScript in its core file, rmmz_core.js, which includes a property called fontFace. This change serves multiple purposes and reflects a shift in how MZ handles fonts for efficiency, flexibility, and better performance.\""
+    },
+    {
+      "post_id": "js-post-1478586",
+      "author": "utunnels",
+      "date": "2024-10-31T14:30:00+0900",
+      "body": "I think it is called rmmz-mainfont, you can change gamefont to rmmz-mainfont to see if it works.\nI don't have MZ right now to test, I'll check it when I have my own pc to see if I can make a small demo for MZ."
+    },
+    {
+      "post_id": "js-post-1478587",
+      "author": "Ancient_Eagle",
+      "date": "2024-10-31T14:33:37+0900",
+      "body": "Ancient_Eagle said:\nThen MZ’s font family name what should I name it? For example let’s say I used “Raster.ttf” font name, font family what should I name it?\nEdit: I found a solution for those who use MZ\n1) Open \"rmmz_core.js\"\n2) in line 1203 you will find this.fontFace\nView attachment 321720\n3) Open plugin manager, and then font family name should \"sans-serif\"\nAnd that's it it will work a perfect pixel font\nSince I found solution that MV is working on gamefonts, and MZ is working on rmmz_core.js but MZ does it have gamefont, so I asked chatgpt, and here's the answer:\n\"In RPG Maker MZ, the engine no longer uses the GameFont file that was present in RPG Maker MV. Instead, MZ manages fonts directly through JavaScript in its core file, rmmz_core.js, which includes a property called fontFace. This change serves multiple purposes and reflects a shift in how MZ handles fonts for efficiency, flexibility, and better performance.\"\nClick to expand...\nThat's the answer, I found it"
+    },
+    {
+      "post_id": "js-post-1478616",
+      "author": "utunnels",
+      "date": "2024-10-31T23:25:22+0900",
+      "body": "Here's an example for mz.\nSince mz uses a different font for gauge numbers (hp and mp values), you can choose a smaller font if you like."
+    },
+    {
+      "post_id": "js-post-1478658",
+      "author": "Ancient_Eagle",
+      "date": "2024-11-01T04:15:40+0900",
+      "body": "Ancient_Eagle said:\nThen MZ’s font family name what should I name it? For example let’s say I used “Raster.ttf” font name, font family what should I name it?\nEdit: I found a solution for those who use MZ\n1) Open \"rmmz_core.js\"\n2) in line 1203 you will find this.fontFace\nView attachment 321720\n3) Open plugin manager, and then font family name should \"sans-serif\"\nAnd that's it it will work a perfect pixel font\nSince I found solution that MV is working on gamefonts, and MZ is working on rmmz_core.js but MZ does it have gamefont, so I asked chatgpt, and here's the answer:\n\"In RPG Maker MZ, the engine no longer uses the GameFont file that was present in RPG Maker MV. Instead, MZ manages fonts directly through JavaScript in its core file, rmmz_core.js, which includes a property called fontFace. This change serves multiple purposes and reflects a shift in how MZ handles fonts for efficiency, flexibility, and better performance.\"\nClick to expand...\nThis can be work\nutunnels said:\nView attachment 321748\nView attachment 321747\nHere's an example for mz.\nSince mz uses a different font for gauge numbers (hp and mp values), you can choose a smaller font if you like.\nClick to expand...\nAnd this one.\nI just found another solution which there like english + latin alphabet\nYou could use this unicode range: U+0000-024F\nI will try to find like Japanese and Korean"
+    },
+    {
+      "post_id": "js-post-1478721",
+      "author": "utunnels",
+      "date": "2024-11-01T12:29:06+0900",
+      "body": "Unless you have a working Japanese pixel font, I don't have one to test.\nEdit*\nFor example,\nthis one\n, but it is not free for commercial use:"
+    },
+    {
+      "post_id": "js-post-1478730",
+      "author": "Ancient_Eagle",
+      "date": "2024-11-01T14:30:22+0900",
+      "body": "I already have one and it's Japanese font, the problem is Japanese unicode range are more than I expected; because they have like 5 things that I searched google:\n- Hiragana\n- Katakana\n- CJK unifed ideographs\n- Japanese-style punctuation\nThis is how did I work in Japanese unicode range:\nEdit: I forgot for Katakana and Punctuation (Half Width)"
+    },
+    {
+      "post_id": "js-post-1478759",
+      "author": "utunnels",
+      "date": "2024-11-01T21:11:43+0900",
+      "body": "Actually, you can use comma.\nU+100-200, U+500-600\nAnd you don't have to be so accurate. U+100-10FFFF should cover all of them."
+    },
+    {
+      "post_id": "js-post-1478865",
+      "author": "Ancient_Eagle",
+      "date": "2024-11-02T01:24:15+0900",
+      "body": "Wow! It works! I can finally use pixel fonts for whatever I need, also good news is I can use dk translation to translate the game and use your plugin. It's working 100% pixel font for real.\nSee the video!"
+    },
+    {
+      "post_id": "js-post-1479214",
+      "author": "utunnels",
+      "date": "2024-11-02T21:27:31+0900",
+      "body": "I updated the first post.\n1. Renamed plugin so it makes more sense.\n2. Fixed a bug: when loading a big ttf file, the title screen appears before the font is fully loaded.\n3. Fixed vertical position when the actual font size is different. For example, if the actual size is 24 and font size is set to 28, move the base line 2 pixels upward. Let me know if you have different thought about this fix or experiencing bugs.\n4. Merge the lib file and the plugin file, so you don't need to put opentype.js in js/libs folder."
+    },
+    {
+      "post_id": "js-post-1494570",
+      "author": "utunnels",
+      "date": "2025-01-18T23:43:25+0900",
+      "body": "I updated the first post, removed the outdated attachment.\nFixed some bugs and added a demo on itch.io\n1. The fonts are loaded in correct order now.\n2. Unicode range works correctly now, if it didn't before.\nTODO: make a demo for MZ"
+    },
+    {
+      "post_id": "js-post-1496236",
+      "author": "Anatis",
+      "date": "2025-01-29T09:00:18+0900",
+      "body": "Hello! I first just want to say how grateful for and hopeful because of this plugin I am, but I have a question regarding on how exactly to discern what values to input...\nSee I am using a font called AbaddonLight which is a free downloadable one off itch.io, and using the default \"16\" setting on \"30\" called by the game through Yanfly's Core Engine plugin it looks almost exactly as it should, except when you look closely at the \"default\" sized words you can see inconsistencies as with the little circles on the percentage marks here:\nand also, much more sadly, in my game I decided to make the HP/MP/TP name text tiny using the \\} code to create more space in order for my Battle UI to be as compact as possible... and... it suffers severely i'm afraid :\nThe \"LiFE\" looks absolutely perfect, but as you can see the letter S gets all but obliterated here.\nAny slight adjustments I'm testing out to the ratio yields wildly unexpected results none of which too good...\nDo you think it would be possible to display the font at the size I was using before:\n(this is at Font Size 27, where the words fit neatly into the menu without the plugin turned on, as you can see from the monstrous blurriness <'; )\nI am very willing to try and work around any limitations as much as required, but I'm hoping I can possibly minimize any compromise if I understand the rules a bit better... It's the #font base size I am very stumped about I cannot understand how to relate these numbers or how to gauge what number would be appropriate.."
+    },
+    {
+      "post_id": "js-post-1496249",
+      "author": "utunnels",
+      "date": "2025-01-29T10:55:33+0900",
+      "body": "Hello\n@Anatis\n, it seems you are sacaling the screen?\nIf you want to keep the pixels from deform, you need to only scale the screen 2x, 3x, etc, or never if your game's original size is not small enough to do a 2x scale.\nIt has nothing to do with the font you are using."
+    },
+    {
+      "post_id": "js-post-1496252",
+      "author": "Anatis",
+      "date": "2025-01-29T11:22:34+0900",
+      "body": "Ah well yes my game is on 1104x624 screen size, is that what you mean?\nWorking around that would surely be difficult...\n(Edit: changing back and forth between 816 and 1104 actually changes nothing at all when it comes to the font)"
+    },
+    {
+      "post_id": "js-post-1496255",
+      "author": "utunnels",
+      "date": "2025-01-29T11:44:43+0900",
+      "body": "No I mean do you play the game fullscreen, or change the size of the window?\nIt doesn't looks like your screenshots are from a 1104x624 window."
+    },
+    {
+      "post_id": "js-post-1496256",
+      "author": "Anatis",
+      "date": "2025-01-29T11:56:25+0900",
+      "body": "Well yeah I do have it full screen with blur removal etc.. Definitely intend (or hope) for my game to be playable in full screen.\nYes indeed I see that without full screen the proportions seem to remain solid...\nBut regardless the smaller printed characters behave the same even without full screen\nPerhaps I'm just being too ambitious for a RM dev lol just need to find a way to compromise"
+    },
+    {
+      "post_id": "js-post-1496257",
+      "author": "utunnels",
+      "date": "2025-01-29T12:03:39+0900",
+      "body": "What battle UI are you using? Shifting the PSY text up or down by half a pixel should fix the problem.\nAs for the fullscreen question, it is impossible in theory. How do you manage, for example, 2.5 pixel? It can only be 3 or 2 if you want it to display clearly. Also changing the screen size is out of the control of the plugin, it is done after the text is displayed."
+    },
+    {
+      "post_id": "js-post-1496259",
+      "author": "Anatis",
+      "date": "2025-01-29T12:17:30+0900",
+      "body": "Well I've used SRD SuperTools to rearrange the battle scene myself, trying to make it as compact as possible. Sadly I realized incredibly late that it wasn't just my monitor making Full Sceen blurry, and so I've spent all day applying plugins to fix it and eventually got stuck on the font...\nI can understand the limitation there, I guess the only way to go forward is to try and make it look somewhat good accepting that it can't be perfect. Currently I switched from AbaddonLight to AbaddonBold which seems to yield slightly better results, and sadly resorted to change the PSY/RAGE text from those bars to PP/RP abbreviations which are more manageable, something I'd went through quite some lengths not to have to do before... It is what it is I suppose."
+    },
+    {
+      "post_id": "js-post-1496261",
+      "author": "utunnels",
+      "date": "2025-01-29T12:38:38+0900",
+      "body": "For text position, it can be rounded using a small plugin, for example:\nBitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {\n// Note: Firefox has a bug with textBaseline: Bug 737852\n//       So we use 'alphabetic' here.\nif (text !== undefined) {\nvar tx = x;\nvar ty = y + lineHeight - (lineHeight - this.fontSize * 0.7) / 2;\nvar context = this._context;\nvar alpha = context.globalAlpha;\nmaxWidth = maxWidth || 0xffffffff;\nif (align === 'center') {\ntx += maxWidth / 2;\n}\nif (align === 'right') {\ntx += maxWidth;\n}\ntx = Math.round(tx);\nty = Math.round(ty);\ncontext.save();\ncontext.font = this._makeFontNameText();\ncontext.textAlign = align;\ncontext.textBaseline = 'alphabetic';\ncontext.globalAlpha = 1;\nthis._drawTextOutline(text, tx, ty, maxWidth);\ncontext.globalAlpha = alpha;\nthis._drawTextBody(text, tx, ty, maxWidth);\ncontext.restore();\nthis._setDirty();\n}\n};\nI don't know if it can fix your previous PSY text problem.\nAnyway, UI adjust is very hard to do, you need to tinker things pixel by pixel.\nAnd there're the original \\{ and \\} control, it increase or decrease font size by 12, so maybe you'll also need to change that to have best result.\nWindow_Base.prototype.makeFontBigger = function() {\nif (this.contents.fontSize <= 96) {\nthis.contents.fontSize += 12;\n}\n};\nWindow_Base.prototype.makeFontSmaller = function() {\nif (this.contents.fontSize >= 24) {\nthis.contents.fontSize -= 12;\n}\n};"
+    },
+    {
+      "post_id": "js-post-1496331",
+      "author": "Anatis",
+      "date": "2025-01-30T02:12:01+0900",
+      "body": "Yes I had already tampered some with the \\{ \\} influence through Yanfly's Message Core plugin which simply edits that function at the core level, sadly it turns everything into rocket science and there really isn't anything to conclude other than from (mass) trial and error which gets very tedious very quickly. Also every single dialogue in my game starts with \\{ so that would be quite the bother as well and would have needed to be counterbalanced...\nIn the end I decided to make edits at the Font level, resizing and then transplanting the numbers I liked from PixelOperator8 on to my original used font, and I am fairly satisfied with the result and by now think I have actually improved my initial \"build\" since adding in your awesome plugin!\nThe (unscaled) result:\nCurrently the only \"problem\" that remains in Full Screen is that the second actor in the party has their font slightly squished... as you can see here noticeably by the F, E and PP they are missing rows of pixels causing them to appear very thin compared to the rest, which honestly is only a minor issue at this point.\nThank you again so much for sharing this awesome plugin!\nIt wasn't easy to find but it completely revolutionized what I was doing!"
+    },
+    {
+      "post_id": "js-post-1496387",
+      "author": "utunnels",
+      "date": "2025-01-30T12:47:59+0900",
+      "body": "utunnels said:\nJavaScript:\nBitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {\n    // Note: Firefox has a bug with textBaseline: Bug 737852\n    //       So we use 'alphabetic' here.\n    if (text !== undefined) {\n        var tx = x;\n        var ty = y + lineHeight - (lineHeight - this.fontSize * 0.7) / 2;\n        var context = this._context;\n        var alpha = context.globalAlpha;\n        maxWidth = maxWidth || 0xffffffff;\n        if (align === 'center') {\n            tx += maxWidth / 2;\n        }\n        if (align === 'right') {\n            tx += maxWidth;\n        }\n        tx = Math.round(tx);\n        ty = Math.round(ty);\n        context.save();\n        context.font = this._makeFontNameText();\n        context.textAlign = align;\n        context.textBaseline = 'alphabetic';\n        context.globalAlpha = 1;\n        this._drawTextOutline(text, tx, ty, maxWidth);\n        context.globalAlpha = alpha;\n        this._drawTextBody(text, tx, ty, maxWidth);\n        context.restore();\n        this._setDirty();\n    }\n};\nClick to expand...\nHave you tried this?\nI don't know about the bar/gauge plugins you are using but maybe the text positin is not integer/whole number."
+    },
+    {
+      "post_id": "js-post-1496585",
+      "author": "Anatis",
+      "date": "2025-01-31T15:49:32+0900",
+      "body": "utunnels said:\nHave you tried this?\nI don't know about the bar/gauge plugins you are using but maybe the text positin is not integer/whole number.\nClick to expand...\nI have it in my plugin list but turning it off/on doesn't seem to change much as far as I can tell..\nIt's only a minor imperfection compared to the massive improvement overall so I'm still incredibly happy ;D"
+    },
+    {
+      "post_id": "js-post-1496592",
+      "author": "utunnels",
+      "date": "2025-01-31T16:08:06+0900",
+      "body": "I see. Besides that, it is best to have your actual font size multiplies of 16.\nBecause the renderer will try to center the text according to line height, for example, if the size is 19, it will be shift upward 1.5 pixels.\nWhen the plugin tries to snap to a pixel, it is possible two values are 10.49999 and 9.500001, both values will be rounded to 10. I haven't tried to improve that yet, so you'll need to make sure the position and size of the text is accurate."
+    },
+    {
+      "post_id": "js-post-1505087",
+      "author": "utunnels",
+      "date": "2025-03-19T00:25:29+0900",
+      "body": "I add a passive mode plugin. You can download\nUT_OpenTypePixelFont.js\nfrom the itch page.\nPassive mode means you don't need to setup parameters for the plugin, instead, the plugin will read the font files your game has already loaded using css or database settings.\nThe only thing you need to do is to make sure the font file is good. The plugin will try to detect if it is a pixel font by sampling alpha-beta glyphs (A-Z and a-z). Basically it checks minimal distance between points and calcualte the base size of the font. If the size falls between 5 and 32, it is a valid pixel font.\nIf it is a not a pixel font, it can still render it but will not snap the points to pixel grids.\nI don't know if there are actually pixel fonts that are bigger than 32, that is bigger than Terminus ttf:\nTerminus TTF: An updated TrueType version of Terminus Font\nTerminus TTF is a TrueType version of Terminus Font, a fixed-width bitmap font optimized for long work with computers.\nfiles.ax86.net\nEffect of terminus ttf using this plugin:\nSpoiler"
+    },
+    {
+      "post_id": "js-post-1505271",
+      "author": "ShadowDragon",
+      "date": "2025-03-19T22:09:44+0900",
+      "body": "looks really good. keep it up."
+    },
+    {
+      "post_id": "js-post-1505348",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-20T04:32:19+0900",
+      "body": "I love it, but does it support for 640x320?\nEdit: it works perfect fine, but when I am using Yep CoreEngine, the fonts decrease the size, it's not good, and I want to use it for real. Is there way to fix it?"
+    },
+    {
+      "post_id": "js-post-1505371",
+      "author": "ShadowDragon",
+      "date": "2025-03-20T06:20:49+0900",
+      "body": "Ancient_Eagle said:\nEdit: it works perfect fine, but when I am using Yep CoreEngine, the fonts decrease the size, it's not good, and I want to use it for real. Is there way to fix it?\nClick to expand...\nopen YEP_CoreEngine and rule out the fontsize section\nI ruled out a lot as error wont pop up so I ruled the entire thing out\namong a lot of other things messing around"
+    },
+    {
+      "post_id": "js-post-1505384",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-20T07:39:28+0900",
+      "body": "The problem is when I use YEP CoreEngine, the font size I used is 16, and this is how it shows me\nWithout YEP, it shows a perfect pixel art"
+    },
+    {
+      "post_id": "js-post-1505388",
+      "author": "utunnels",
+      "date": "2025-03-20T08:19:21+0900",
+      "body": "Maybe it is because the font? For example 22 will be rounded down to 16 but 24 will be 32.\nPlease post a screen shot of the plugin parameters and the front you are using."
+    },
+    {
+      "post_id": "js-post-1505470",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-20T14:47:50+0900",
+      "body": "This is how I used\nhttps://www.pentacom.jp/pentacom/bitfontmaker2/gallery/?id=102\nWithout YEP, it works perfectly pixel art, but with YEP, it shows pixel but not perfect\nAnd my size screen is 640x320"
+    },
+    {
+      "post_id": "js-post-1505472",
+      "author": "utunnels",
+      "date": "2025-03-20T15:06:59+0900",
+      "body": "Seems fine on my end.\nHave you tried updating the plugin? I have made some adjustments. It looks like your screenshots have some glitches."
+    },
+    {
+      "post_id": "js-post-1505473",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-20T15:08:24+0900",
+      "body": "utunnels said:\nSeems fine on my end.\nView attachment 335061\nHave you tried updating the plugin? I have made some adjustments. It looks like your screenshots have some glitches.\nView attachment 335060\nClick to expand...\nNo, I didn't update it"
+    },
+    {
+      "post_id": "js-post-1505474",
+      "author": "utunnels",
+      "date": "2025-03-20T15:12:23+0900",
+      "body": "I suggest you try downloading\nOpenTypePixelFontNew.zip\nagain.\nIt fixed missing strokes when the text's position is not whole number."
+    },
+    {
+      "post_id": "js-post-1505477",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-20T15:21:00+0900",
+      "body": "Same issue, with YEP_CoreEngine it shows glitch \"ON\" and \"OFF\", without YEP it will show a perfect pixel font and no glitch\nThere's something issue of YEP_CoreEngine\n[Mod edit - attachment (YEP_CoreEngine.js) removed in line with\nYanfly's terms of use\n:\nRedistribution of the plugins and its code, outside the scope of game projects, is strictly forbidden outside of the host website, Yanfly.moe, and by the following sites/members: itch.io.\nClick to expand...\n]"
+    },
+    {
+      "post_id": "js-post-1505479",
+      "author": "utunnels",
+      "date": "2025-03-20T15:43:13+0900",
+      "body": "640x300, font size = 16\nLooks normal here."
+    },
+    {
+      "post_id": "js-post-1505542",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-20T22:06:58+0900",
+      "body": "Did you use YEP? if yes, how?"
+    },
+    {
+      "post_id": "js-post-1505548",
+      "author": "utunnels",
+      "date": "2025-03-20T22:59:38+0900",
+      "body": "Yes, just the core engien and nothing else. Also change font size to 16. Also the font you linked.\nSo I think there might be other reasons."
+    },
+    {
+      "post_id": "js-post-1505780",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-22T03:43:01+0900",
+      "body": "It seems I fixed the issue, which is nwjs I upgrade from 29 to 49 (RPG Maker MV), which cause the font was not perfectly pixel font, so I downgrade to default 29 and it works perfectly fine."
+    },
+    {
+      "post_id": "js-post-1505814",
+      "author": "utunnels",
+      "date": "2025-03-22T07:34:44+0900",
+      "body": "Good to know. I think I need to check it out.\nEdit*\nOK it seems the problem is the infamous mssing-part-of-text glitch of nw.js.\nThere's a fix on the Japanese site:\nhere\n.\nI tried it and it fixed the problem on 0.49.2, but not sure if will cause any performance drop. You can try it if you still need nw v0.49.2.\nThis is copied from fspace's FONT_RENDERING_WORKAROUND_TEST.js in that topic.\nJavaScript:\nconst markContext = (() => {\n        const marked = new WeakSet();\n        return context => {\n            if (!marked.has(context)) {\n                context.getImageData(0, 0, 1, 1);\n                marked.add(context);\n            }\n        };\n    })();\n\n\n    const Bitmap_drawText = Bitmap.prototype.drawText;\n    Bitmap.prototype.drawText = function () {\n        Bitmap_drawText.apply(this, arguments);\n\n\n        markContext(this.context);\n    };"
+    },
+    {
+      "post_id": "js-post-1505893",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-22T18:23:25+0900",
+      "body": "YES!!! YES!!!!! IT WORKS NOW!!!\nI am so glad I upgrade to 53.1 and it's working 100% pixel font\nThank you!! Finally it solved the problem RPG Maker MV and MZ font issue"
+    },
+    {
+      "post_id": "js-post-1506216",
+      "author": "utunnels",
+      "date": "2025-03-24T22:08:45+0900",
+      "body": "This is a bit experimental. About the width compression when the text is longer than the button.\nObviously if the font is too small it can't shrink any further.\nSo if the text is 2x its base size, it can shrink to 1/2 of its width; if the text is 3x its base size, it can shrink to 1/3 and 2/3 of its width, and so on."
+    },
+    {
+      "post_id": "js-post-1506234",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-25T02:29:52+0900",
+      "body": "Did you update it?"
+    },
+    {
+      "post_id": "js-post-1506368",
+      "author": "utunnels",
+      "date": "2025-03-26T00:42:57+0900",
+      "body": "Yes, hope it doesn't affect existing project. If so maybe I should make it not default."
+    },
+    {
+      "post_id": "js-post-1506409",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-26T05:19:09+0900",
+      "body": "I checked yours on itch.io, I don't see you updated, it shows 7 days ago that you fixed bug."
+    },
+    {
+      "post_id": "js-post-1506864",
+      "author": "utunnels",
+      "date": "2025-03-29T23:49:28+0900",
+      "body": "Ancient_Eagle said:\nI checked yours on itch.io, I don't see you updated, it shows 7 days ago that you fixed bug.\nClick to expand...\nAh, OK I think it is still experimental so I'll skip the log for now.\nI also made it a hidden feature, so it won't affect existing project.\nYou can add a #squish to the url if you download the newest version to enable the squish feature.\nFor example, PixelOperator.ttf#squish\nI'm a bit unsure if it is really needed, because I have yet to see any game using pixel font have squished text."
+    },
+    {
+      "post_id": "js-post-1506873",
+      "author": "Ancient_Eagle",
+      "date": "2025-03-30T00:35:43+0900",
+      "body": "like this?"
+    },
+    {
+      "post_id": "js-post-1506874",
+      "author": "utunnels",
+      "date": "2025-03-30T00:49:51+0900",
+      "body": "Yes, but you need to download the newest file.\nBut I see you use 16 for your font size, so it may not work for your game because the font is already the smallest."
+    },
+    {
+      "post_id": "js-post-1507378",
+      "author": "utunnels",
+      "date": "2025-04-02T09:13:12+0900",
+      "body": "Just want to let you know I integrate a fix for the missing parts bug:\nI also tested it has been fixed since Chromium 97(nw v0.60). So maye I should add a check for browser versions later."
+    },
+    {
+      "post_id": "js-post-1519174",
+      "author": "BeKindReWind",
+      "date": "2025-06-20T08:57:46+0900",
+      "body": "Is it possible to toggle the rendering of text from the default to this plugin's method while the game is deployed and running? I'd like to add this as an option in the options menu of my game."
+    },
+    {
+      "post_id": "js-post-1519187",
+      "author": "utunnels",
+      "date": "2025-06-20T12:19:42+0900",
+      "body": "There's no such option yet.\nBut you can use a work around, create two fonts with the same ttf file, one use snap to grid option, the other one doesn't. Then use a font change plugin like this:\nFont Option – MV Plugin – RPG Maker MZ Plugins\nsumrndm.site"
+    },
+    {
+      "post_id": "js-post-1519194",
+      "author": "BeKindReWind",
+      "date": "2025-06-20T15:22:21+0900",
+      "body": "utunnels said:\nThere's no such option yet.\nBut you can use a work around, create two fonts with the same ttf file, one use snap to grid option, the other one doesn't. Then use a font change plugin like this:\nFont Option – MV Plugin – RPG Maker MZ Plugins\nsumrndm.site\nClick to expand...\nThank you!"
+    },
+    {
+      "post_id": "js-post-1519349",
+      "author": "Ravenhood12",
+      "date": "2025-06-22T00:52:28+0900",
+      "body": "Amazing plugin-in, it's allowed me to consider moving away from SFonts!\nSeveral of my testers have reported blocky/poorly scaled text that happens often that I and other users can't recreate.\nExample- in the picture, the 'd' on the last line. (font = Yesterday)\nIt seems users that have reported the issue might all have >60 hz refresh rate, and their window.devicePixelRatio is either 1.25 or 2.5 (when I switch mine though I can't recreate the issue). These\nmight\nbe involved but I'm unsure."
+    },
+    {
+      "post_id": "js-post-1519409",
+      "author": "utunnels",
+      "date": "2025-06-22T13:46:47+0900",
+      "body": "I replied our post on itch.\nCan you post a link to the font? I can't find one with the name which looks like your screenshot."
+    },
+    {
+      "post_id": "js-post-1536848",
+      "author": "Ancient_Eagle",
+      "date": "2025-11-14T00:43:12+0900",
+      "body": "Hello, it's been while, since I am still working on my project, there's a problem of arabic font, when I am using YEP_CoreEngine, it shows lots of dots\nUnicode range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+0870-089F, U+FB50-FDFF, U+FE70-FEFF, U+1EE00-1EEFF, U+0621-063A, U+0641-064A, U+0660-0669, U+0670, U+06D4, U+06F0-06F9, U+200C-200F, U+202A-202E, U+2066-2069, U+10E60-10E7F, U+1EC70-1ECBF, U+1ED00-1ED4F, U+1EE00-1EEFF, U+E000-F8FF\nSo I don't know what's the issue, maybe the plugin\nEdit: On second thought, I used another font and solved the problem, so ignore the message"
+    },
+    {
+      "post_id": "js-post-1544276",
+      "author": "masterlobo",
+      "date": "2026-01-14T03:42:40+0900",
+      "body": "Hmm, I am getting this error on the console before the game even boots.\nCode:\nUncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')\n    at Scene_Boot.isReady (OpenTypePixelFont.js:312:33)\nAny help/guidance troubleshooting this issue would be greatly appreciated."
+    },
+    {
+      "post_id": "js-post-1544284",
+      "author": "masterlobo",
+      "date": "2026-01-14T05:12:06+0900",
+      "body": "Fixed by changing line 312 from...\nCode:\n} else if (g.points.length > 2) {\nto...\nCode:\n} else if (g.points && g.points.length > 2) {"
+    },
+    {
+      "post_id": "js-post-1554427",
+      "author": "Dark_Ansem",
+      "date": "2026-04-24T17:47:47+0900",
+      "body": "You never know what you need until it's in front of your eyes."
+    }
+  ]
+}

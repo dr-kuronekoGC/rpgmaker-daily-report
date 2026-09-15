@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/pixel-fonts-are-blurred-in-centered-text-in-menus-can-i-fix-this.172982",
+  "title": "MZ Pixel Fonts Are Blurred in Centered Text in Menus, Can I Fix This?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:36:57.776145+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1479247",
+      "author": "JimFrom2003",
+      "date": "2024-11-03T00:18:34+0900",
+      "body": "I found a pixelated font for my low-resolution game, but the problem is, on certain menus (title screen, options, etc.) the text is blurred on certain lines. I think it's because they way RMMZ centers text causes it to land on half-pixels. I've tried getting the pixels to align properly by writing a plugin and using math.Round(), but nothing seems to work. Does anyone have any idea which variables I should try tweaking or if there's a different method I should try, or is it just another hard-coded \"quirk\" of RPG Maker that I'm just going to have to work around?\nHere's an image of what's going on in case visual aid is necessary. Note how \"New Game\" and \"Continue\" are nice and crisp while \"Options\" is blurred a little."
+    },
+    {
+      "post_id": "js-post-1479279",
+      "author": "caethyril",
+      "date": "2024-11-03T04:31:25+0900",
+      "body": "Judging by my notes, I've used this to fix a similar problem in my project:\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Render at integer coordinates.\n * @url https://forums.rpgmakerweb.com/threads/172982/\n */\nPIXI.settings.ROUND_PIXELS = true;"
+    },
+    {
+      "post_id": "js-post-1479286",
+      "author": "JimFrom2003",
+      "date": "2024-11-03T05:15:19+0900",
+      "body": "caethyril said:\nJudging by my notes, I've used this to fix a similar problem in my project:\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Render at integer coordinates.\n * @url https://forums.rpgmakerweb.com/threads/172982/\n */\nPIXI.settings.ROUND_PIXELS = true;\nClick to expand...\nThis doesn't seem to work for me.\nClosest I've gotten to a solution is nudging the x-coordinate for where the text renders half a pixel to the side. This unblurs the previously affected text, but the rest of the text is blurred.\nI also forgot to mention that since I'm making a low-resolution game, I scaled down the text boxes by about half to fit. Do you think that affected it in any way? I might have, as RPG Maker, quite ironically, is weirdly hostile to low-res games."
+    },
+    {
+      "post_id": "js-post-1479294",
+      "author": "chaucer",
+      "date": "2024-11-03T07:15:51+0900",
+      "body": "The above should work, but this was a small oversight i the rpg_core.js/rmmz_core.js, and can easily be fixed with the below code as a plugin ^^\nBoth solutions are valid,\n@caethyril\n's solution is ESPECIALLY good to use if you intend to keep all your games assets from blurring( i.e. characters, windows, pictures, if for some reason they use a float value.., etc ).\nJavaScript:\nBitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {\n    // [Note] Different browser makes different rendering with\n    //   textBaseline == 'top'. So we use 'alphabetic' here.\n    const context = this.context;\n    const alpha = context.globalAlpha;\n    maxWidth = maxWidth || 0xffffffff;\n    let tx = x;\n    let ty = Math.round(y + lineHeight / 2 + this.fontSize * 0.35);\n    if (align === \"center\") {\n//===================================================================//\n// The line below is how it CURRENTLY is done...\n//===================================================================//\n        // tx += maxWidth / 2;\n//===================================================================//\n// THIS is what it should be to prevent blurring in certain circumstances.\n//===================================================================//\n        tx += Math.round( maxWidth / 2 );\n    }\n    if (align === \"right\") {\n        tx += maxWidth;\n    }\n    context.save();\n    context.font = this._makeFontNameText();\n    context.textAlign = align;\n    context.textBaseline = \"alphabetic\";\n    context.globalAlpha = 1;\n    this._drawTextOutline(text, tx, ty, maxWidth);\n    context.globalAlpha = alpha;\n    this._drawTextBody(text, tx, ty, maxWidth);\n    context.restore();\n    this._baseTexture.update();\n};"
+    },
+    {
+      "post_id": "js-post-1479301",
+      "author": "JimFrom2003",
+      "date": "2024-11-03T07:45:50+0900",
+      "body": "Still doesn't work. \"Options\" is still blurry.\nLike, I've said, Math.round() doesn't seem to be working for getting the text aligned for some reason. I don't know what to do."
+    },
+    {
+      "post_id": "js-post-1479302",
+      "author": "caethyril",
+      "date": "2024-11-03T07:48:03+0900",
+      "body": "Drat. From what I've gathered, font rendering seems to be a fairly intractable source of anti-aliasing, at least in web development. There are workarounds, though!\nScaling down the text's texture may well cause blurriness; by default a window's contents is set to linear scaling (\"smooth\") rather than nearest-neighbour. If you want to remove all graphical anti-aliasing, you could try a plugin like this:\nPixel Perfect for RPG Maker MV/MZ by Galenmereth\nA free pay-if-you-want plugin for RPG Maker MV and MZ that enables pixel-perfect scaling mode\ngalenmereth.itch.io\nFor the font stuff specifically, maybe check out one of these:\nEli Bitmap Font - bitmap fonts are probably best if you want total graphical fidelity.\nEli Bitmap Font - Use bitmap fonts into your game!\nAuthor: Hakuen Studio  Introduction  Those who want to use pixel fonts, or even more detailed fonts can get into a lot of trouble when aiming for the perfection of the font visuals. Rpg Maker can blur and add an outline to your fonts. This plugin solves this problem, letting you use a bitmap...\nforums.rpgmakerweb.com\nOpenType Pixel Font Renderer by utunnels - custom TrueType parser, see this post for MZ:\nMZ - OpenType Pixel Font Renderer (MV & MZ)\nDownload link: https://utstudio.itch.io/otpfmvz  Introduction This plugin uses opentype.js - an OpenType/TTF font parser - to achieve precise text rendering in both browser and Node.js environments. The plugin is designed specifically for pixel-perfect font display, it modifies the core...\nforums.rpgmakerweb.com\nSharp Text by MechPen - this one seems to manually \"fix\" font edges on a per-pixel basis?\nSharp Text [MZ + MV]\nutunnels was able to solve this with a plugin utilizing opentype.js Go and use that one. The Sharp Text plugin will still be maintained for people who are using it but I highly recommend OpenType Pixel Font Renderer instead.  Sharp Text v0.94 beta MechPen  Introduction I'm working on a...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1479311",
+      "author": "JimFrom2003",
+      "date": "2024-11-03T08:03:55+0900",
+      "body": "caethyril said:\nDrat. From what I've gathered, font rendering seems to be a fairly intractable source of anti-aliasing, at least in web development. There are workarounds, though!\nScaling down the text's texture may well cause blurriness; by default a window's contents is set to linear scaling (\"smooth\") rather than nearest-neighbour. If you want to remove all graphical anti-aliasing, you could try a plugin like this:\nPixel Perfect for RPG Maker MV/MZ by Galenmereth\nA free pay-if-you-want plugin for RPG Maker MV and MZ that enables pixel-perfect scaling mode\ngalenmereth.itch.io\nFor the font stuff specifically, maybe check out one of these:\nEli Bitmap Font - bitmap fonts are probably best if you want total graphical fidelity.\nEli Bitmap Font - Use bitmap fonts into your game!\nAuthor: Hakuen Studio  Introduction  Those who want to use pixel fonts, or even more detailed fonts can get into a lot of trouble when aiming for the perfection of the font visuals. Rpg Maker can blur and add an outline to your fonts. This plugin solves this problem, letting you use a bitmap...\nforums.rpgmakerweb.com\nOpenType Pixel Font Renderer by utunnels - custom TrueType parser, see this post for MZ:\nMZ - OpenType Pixel Font Renderer (MV & MZ)\nDownload link: https://utstudio.itch.io/otpfmvz  Introduction This plugin uses opentype.js - an OpenType/TTF font parser - to achieve precise text rendering in both browser and Node.js environments. The plugin is designed specifically for pixel-perfect font display, it modifies the core...\nforums.rpgmakerweb.com\nSharp Text by MechPen - this one seems to manually \"fix\" font edges on a per-pixel basis?\nSharp Text [MZ + MV]\nutunnels was able to solve this with a plugin utilizing opentype.js Go and use that one. The Sharp Text plugin will still be maintained for people who are using it but I highly recommend OpenType Pixel Font Renderer instead.  Sharp Text v0.94 beta MechPen  Introduction I'm working on a...\nforums.rpgmakerweb.com\nClick to expand...\nCaethryl, OpenType Pixel Font Renderer is the exact plugin I have been looking for and you have saved my life by showing it to me. This is a MILLION times better than trying to get the pixels to align manually!\n​"
+    },
+    {
+      "post_id": "js-post-1479318",
+      "author": "utunnels",
+      "date": "2024-11-03T08:28:40+0900",
+      "body": "I'm glad that you find it useful.\nTo be fair, every method requires the font itself to be accurate. My plugin also do Math.round but on every corner of the glyphs. I also found certain characters became deformed while other characters from the same font looked OK.\nIf that happens, you'll need to find a good font or use fontforge to fix those characters."
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/8-directions-sprint-on-a-single-char-sheet.173039",
+  "title": "MV 8 directions + sprint on a single char sheet",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:36:54.136003+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1479849",
+      "author": "alasth",
+      "date": "2024-11-05T08:12:38+0900",
+      "body": "Hello everyone!\nI have a question: is there a plugin for MV that allows both running sprites and character diagonal sprites on the same sheet?\nI've found a lot of plugins that do either 8 directions or sprint/dash movement, but not both in the same plugin.\nThe only plugin that handles\nboth at the same time is TAA_CharacterPoses\nbut the problem is that it's very difficult to configure and works on different sheets (you need a separate sheet for the dash, one for the poses, etc.).\nI use\nLow's 8-direction char\nand the sprint and 8 directions are on the same sheet.\nI literally use hundreds of these sheets and I can't see myself cutting them out one by one to integrate them completely into TAA_CharacterPoses, which proposes to do this actor by actor... and event by event!\n(On MZ, there's\nVisuStella's Events_and_Movement_Core\n, for example, which works really well.\nIs there an equivalent on MV?\nthe principle would be to have a plugin that manages the 8 directions and automatically changes the char sheet index:\n- when actor walks in a straight line => index = 0\n- when actor walks diagonally => index = 1\n- when actor sprint in a straight line => index = 2\n- when actor sprint diagonally => index = 3\nthanks a lot"
+    },
+    {
+      "post_id": "js-post-1479866",
+      "author": "Canned_Dinosaur",
+      "date": "2024-11-05T10:11:24+0900",
+      "body": "Don't use MV but from the description\nthis\nseems to do what you need? Although the indices are:\n- when actor walks in a straight line => index = 0\n- when actor walks diagonally => index = 4\n- when actor sprint in a straight line => index = 1\n- when actor sprint diagonally => index = 5\nYour sheet should be named as \"sheetname_\nQD\n.png\"\nDownload at:\nグラフィック変更斜め移動+グラフィック変更ダッシュ - #ツクプラ\n斜め向きグラフィックを表示しながら斜め移動が可能\nplugin.fungamemake.com"
+    },
+    {
+      "post_id": "js-post-1479873",
+      "author": "Archeia",
+      "date": "2024-11-05T12:28:56+0900",
+      "body": "There's also this one:\nMV Character Frames + CF Step SE\nFEATURES Enables charactersets to use more than the standard 3 frames by adding text to the filenames. These frames will show in 1-2-3-4-5-6-1-2-3-4-5-6 order, instead of the standard 1-2-3-2-1 ord…\ngalvs-scripts.com"
+    },
+    {
+      "post_id": "js-post-1479989",
+      "author": "alasth",
+      "date": "2024-11-05T21:32:19+0900",
+      "body": "thank you for your answers !\nI'm going to try\nPD_8DirDash.js by Shio_inu\n,  the plugin that\n@werzaque\nrecommended as it integrates dash and diagonal in a single plugin.\nIf I can't modify it, I'll try to modify the\nGalv plugin\nthat\n@Archeia\nrecommended.\nit looks more complicated because it's separated on two different plugins.\nIn fact, on the\nPD_8DirDash.js\n, the char sheet looks like this:\n(red = run, green = diagonal)\nmy charsets look like this :\nAnd I've got hundreds of them, so modifying them manually, one by one, would be hell, I think it would be easier to modify the addon directly for display goods index, but I'm not sure I could do it alone.\nI'm still working on it, but tonight I'll try to modify it and I'll call the community for help if I can't manage it on my own\nif anyone knows how to do it or has already had to do it, i'd love some help\nthx !\nNB : the sprites I've given as examples are free sprites, I don't divulge sprites from paid packs. The 2nd is\nLow's work"
+    },
+    {
+      "post_id": "js-post-1480008",
+      "author": "ATT_Turan",
+      "date": "2024-11-05T23:33:06+0900",
+      "body": "Remember you can configure the output of the 8D Character Creator, so just change the sheets to match what the plugin expects.\nI'm not sure why you would've exported hundreds when you didn't have a plugin that worked with them yet, but it's certainly easier for you to edit that than to try to edit the plugin.\nIt's also possible to program GIMP with macros, so you can perform batch operations to a list of files in a folder."
+    },
+    {
+      "post_id": "js-post-1480012",
+      "author": "Canned_Dinosaur",
+      "date": "2024-11-05T23:54:25+0900",
+      "body": "alasth said:\nI think it would be easier to modify the addon directly for display goods index, but I'm not sure I could do it alone.\nClick to expand...\nI skimmed through the code, the way it picks the indices and then the directions from the character sheet is rather mathy (is that a word?), so to me it seemed easier (safer?) to make it from scratch rather than try to twist the plugin to your needs.\nSo... as\n@ATT_Turan\nsuggests, I would just macro in GIMP or script in Aseprite?"
+    },
+    {
+      "post_id": "js-post-1480041",
+      "author": "alasth",
+      "date": "2024-11-06T01:46:45+0900",
+      "body": "ATT_Turan said:\nRemember you can configure the output of the 8D Character Creator, so just change the sheets to match what the plugin expects.\nI'm not sure why you would've exported hundreds when you didn't have a plugin that worked with them yet, but it's certainly easier for you to edit that than to try to edit the plugin.\nIt's also possible to program GIMP with macros, so you can perform batch operations to a list of files in a folder.\nClick to expand...\nHi\n@ATT_Turan\n, no, I don't use the 8D char creator, these are all the chars supplied with the battlers sold by Low (\nthis for example\n), so the pages are already created, it's not me who generated them. (otherwise I would have changed the sprites directly).\n@werzaque\n, I'd still take a look at the plugin, as maths doesn't usually scare me, but if I see I'm wasting my time, I'd rather go through sprite editing...\nConcerning\nGimp\n, I'll try to see what macros I can do, I've hardly ever used Gimp (I started with \"photofiltre\" so long ago I got used to it even though it's less powerful than Gimp)\nI think I'll have to start using it if you think it's easier that way...\nThanks for your answers... you're always a great help !\nAnd if I drown on Gimp, I know where to call for help"
+    },
+    {
+      "post_id": "js-post-1480404",
+      "author": "alasth",
+      "date": "2024-11-08T08:36:57+0900",
+      "body": "Hi, everyone,\nI managed to modify my sprite sheet, here is the result\nwith the script I use :\nPD_8DirDash.js by Shio_inu\nit manages both running and diagonals\nYou can see on the video that the 1st actor has his dash animation, but not the others.\n(The video is a test on a new project, no interaction with anything else)\nYou know a lot more about javascript than I do:\nDo you think it's easier to look for yet another plugin, or do you have an idea of how to make the 4 actors run by modifying this one a bit?"
+    },
+    {
+      "post_id": "js-post-1480411",
+      "author": "xabileug",
+      "date": "2024-11-08T09:19:11+0900",
+      "body": "so awesome"
+    },
+    {
+      "post_id": "js-post-1480414",
+      "author": "Canned_Dinosaur",
+      "date": "2024-11-08T09:45:42+0900",
+      "body": "alasth said:\nYou can see on the video that the 1st actor has his dash animation, but not the others.\n(The video is a test on a new project, no interaction with anything else)\nClick to expand...\nFrom just skimming the code with my layman eye, I'm a little puzzled it does that as it seems to tweak characterbase and that should cause the followers to behave just the same. Does this happen with just this single plugin enabled?"
+    },
+    {
+      "post_id": "js-post-1480485",
+      "author": "alasth",
+      "date": "2024-11-09T01:32:20+0900",
+      "body": "werzaque said:\nFrom just skimming the code with my layman eye, I'm a little puzzled it does that as it seems to tweak characterbase and that should cause the followers to behave just the same. Does this happen with just this single plugin enabled?\nClick to expand...\nhi\n@werzaque\nYes, in my video, it's a new project with only this plugin.\nI think my eye is even more profane than yours\nI looked in the code of different plugins and I notice that in :\nTAA_CharacterPoses - v1.3.5\nand\nPD_8DirDash.js by Shio_inu\nthe actors who follow the hero don't dash it either...\non\nGALV Character Animations - Version 1.7\n, the actors behind the hero das\nD_8DirDash.js by Shio_inu\nh.\n(but only 4 directions, i can' use this...)\nin the pluginde galv there's contain :\n//-----------------------------------------------------------------------------\n// Game Follower\n//-----------------------------------------------------------------------------\nGame_Follower.prototype.charAnimMove = function() {\nif ($gamePlayer.isDashing()) {\nthis.setAnimIndex(2);\n} else {\nthis.setAnimIndex(1);\n};\nthis.idleTime = 0;\n};\nClick to expand...\nI don't know what it's worth..."
+    }
+  ]
+}

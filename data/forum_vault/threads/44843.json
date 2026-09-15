@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/tutorial-himes-choice-options.44843",
+  "title": "[Tutorial] 姫Hime’s Choice Options",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:37:27.337853+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-445087",
+      "author": "Sinweaver",
+      "date": "2015-09-18T12:05:19+0900",
+      "body": "Tired of creating what seems like a never-ending list of conditional branches whenever you want to hide an option that you do not want an NPC to show? Not only that things can get complicated quickly, you are increasing the risk of making mistakes that you may or may not realize. Well, now you can forget all that by using this script.\nTable of Contents\n- What is Hime's Large Options script? -​\n​\n- How to install Hime's Large Options script? -​\n​\n- How to use Hime's Choice Options script in your own game? -​\n​\n- Sample Code -​\nWhat is Hime's Choice Options script?\nThis section is purely for introduction to the script, I will go through each methods in greater detail in the other section.\nIt is a script that gives you control over the choices in the \"Show Choice\" command. The script allows you to color your choices, hide them or disable them; something that is impossible under normal circumstances. Lastly, we can also choose to display custom text. such as \"???\", for the option if the condition is not fulfilled.\nFor coloring, you can select the option to be colored, and the color that you want from the color index.\nFor hiding/disabling options, you can select the option to hide/disable, and then the condition in which you want the option to be disabled. The method for hiding/disabling option is the same, except that we use hide_choice(...) instead of disable_choice(...).\nFor custom text, you can select the option to mask over, the custom text to display, followed by the condition to unlock the option name. There are 2 things to keep in mind when using text_choice(...) method:\nYou can choose to permanently display the option as something like \"????\", of course you can do this without the script.\nYou can choose to display the option as something like \"????\" when certain condition has been met.\nHow to install Hime's Choice Options script?\nGet the script from Hime's\nwebsite\n, open the script editor (F11) and insert it under the “▼ Materials section” and above the “▼ Main Process section”. It is the same as any other script. However if you are planning to use Hime's Choice Options script together with\nHime's Large Choices script\n,\nmake sure you put the Choice Option script below the Large Choices script.\nIf you are confused about the ordering, please refer to the picture below\nHow to use Hime's Choice Options script in your own game?\nThis section is going to be pretty massive, so please bear with me. I will try to cover as much usage of this script as possible.\nRegardless of which one of the four methods you want to use (color, disable, hide, text choice), the format is about the same.\nmethod_name(\nchoice_number\n,\narguments\n)\nis generally the format to use. Replace\nmethod_name\nwith\ncolor_choice\n,\ndisable_choice\n, or\nhide_choice\ndepending on whether you want to\ncolor the option\n,\ndisable the option\n, or\nhide the option\n.\tReplace\nchoice_number\nwith the number that represents the position of the option when show option command is called. Use 1 for option 1, use 2 for option 2, and so on.\nIf you want to use a different color for a specific option\n, replace\narguments\nwith either a value that represents the color you want to use based on your RPGmaker color index. The following is the default color index. So if you want to use the number 1 blue for option 5, you will need to enter the following script in your event page:\ncolor_choice(5, 1)\nIf you want to hide or disable an option\n, replace\narguments\nwith an condition for when to disable/hide. We will get into more details on this shortly.\n[*]Conditions must be specified using the script command in the event page before you use the \"Show Choices\" command. Be very\ncareful with your spelling\n, or you might run into errors when talking to the NPC\n[*]When paired with\nHime's Large Choices script\n, remember that every consecutive Show Choices command are grouped together, so the option goes from 1, 2, 3, 4, 5, 6, 7, 8, 9 .... all the way till the end of the list. Which is why you see option 5 and 6 in the following screenshot, Without Hime's Large Choices script, the option will only go from option 1 to option 4.\nThe condition that goes into the argument section are basically conditional statements such as\n\"if the player has x amount of gold\"\n, or\n\"if player's party size\"\n, or\n\"if a switch is on/off\"\n, and so on. Here is how you refer to objects (player/switches/variables/etc) in the conditional statements:\nAny conditions related to the player's party uses\n$game_party\n, such as\n$game_party.member.size\nto check for the player's party size.\n$game_party.gold\nto check for the amount of gold the party has.\nTo check on specific actor, use\n$game_actors[x].level\n, replace x with the actor's ID number.\nTo check certain condition about the enemy troop, use\n$game_troop\n. This is mainly used in battle event where you want to display a list of option during the battle.\nTo check on certain switches, use\n$game_switches[x]\n, replace x with the switch's ID number.\nTo check on certain variables, use\n$game_variables[x]\n, replace x with the variable ID number.\nIf you are confused about what is an enemy's, or switches, or variables, or actor's ID number, please click\nhere\n. Instead of typing\n$game_party\n, or\n$game_switches\n, or\n$game_variables\n, or\n$game_troop\n, there is a simpler way to refer to them:\n$game_party\ncan be replaced with\np\n$game_troop\ncan be replaced with\nt\n$game_switches\ncan be replaced with\ns\n$game_variables\ncan be replaced with\nv\nThe only exception is\n$game_actors\n. Even though you can refer to actors with Show Text command using\n\\N[x]\n, where x is the actor's ID number, the script does not support such call. You will run into an error during execution.\nFinally, please follow the links below to read up on specific methods.\n$game_party supported conditional statements\n$game_switches and $game_variables supported conditional statements\n$game_troop supported conditional statements\n$game_actor supported conditional statements\nSample Code\nThis is a sample taken from my game where I have included faction and reputation system. The players will not be able to access the special shop unless they have earned certain amount of reputation points. The reputation points can be earned from running errands for NPC from that faction and the points will be stored in a variable.\nFor this example, the following conditions are true:\nThe reputation points will be stored in variable number 11.\nThe shop access will be disabled to players with less than 5,000 reputation points with the faction, the Sentinels.\nThe shop will be labeled as \"????\" to players with less than 5,000 reputation points with the faction, the Sentinels.\nHere's what the NPC event page looks like:\nThis is what it looks like in-game:"
+    },
+    {
+      "post_id": "js-post-445108",
+      "author": "Dymdez",
+      "date": "2015-09-18T14:32:50+0900",
+      "body": "Very nice and useful and indeed a way to simply improve any game. Cheers!"
+    },
+    {
+      "post_id": "js-post-445377",
+      "author": "Tsukihime",
+      "date": "2015-09-19T06:59:12+0900",
+      "body": "I like how the tutorial is presented. I may adopt some of the things like the use of lots and lots of pictures."
+    },
+    {
+      "post_id": "js-post-445496",
+      "author": "Sinweaver",
+      "date": "2015-09-19T13:37:08+0900",
+      "body": "That's the point of tutorials, isn't it? To try simplify things as much as possible, and one way to do it is to include pictures and working samples   BD\nGreat work on the script. It made my life simpler when I try to include secret stuff in my game lol"
+    },
+    {
+      "post_id": "js-post-944727",
+      "author": "Meo_sand",
+      "date": "2019-02-20T07:54:20+0900",
+      "body": "Hi!! I am using this to trying to disable a choice based on the map the player is on\ni am using it to make teleporting system through the common events. Is this possible?"
+    },
+    {
+      "post_id": "js-post-1009065",
+      "author": "RoooodWorks",
+      "date": "2019-10-15T22:18:05+0900",
+      "body": "I really want to follow this guide as it would help with my game BUT the images are blurred and has the photobucket watermark so i can't see what is going on..."
+    },
+    {
+      "post_id": "js-post-1463522",
+      "author": "Lupo92",
+      "date": "2024-08-14T20:18:16+0900",
+      "body": "Sorry but, in RPG Maker MV there isn't a script editor with F11. Other solutions? Thank u"
+    },
+    {
+      "post_id": "js-post-1467686",
+      "author": "Roninator2",
+      "date": "2024-09-02T02:21:43+0900",
+      "body": "Lupo92 said:\nSorry but, in RPG Maker MV there isn't a script editor with F11. Other solutions? Thank u\nClick to expand...\nThis is a guide for the VX Ace script"
+    }
+  ]
+}

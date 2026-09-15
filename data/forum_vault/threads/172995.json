@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/new-with-plugin-configs-need-help-with-row-formation-configs.172995",
+  "title": "MV New with plugin configs; need help with Row Formation configs",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:37:15.236454+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1479339",
+      "author": "Ulrich_Lestrat",
+      "date": "2024-11-03T09:49:40+0900",
+      "body": "Hello, everyone. It's my first time working with this plugin (or any, for that matter), so I wanted to know if any of you could give me a hand to configure my rows properly.\nMaths and I are not friends whatsoever, so all the calculations confound me.\nMy actors (attachments below) on Row 1 stand far too close to the front, diagonally, and far above the commands HUD for my taste, leaving such an ample blank space below.\nSo far, I've tried to configure them myself (moving numbers here and there, trying to find a solution), but it doesn't seem to work. It's my first time working on RPG Maker MV (or any game-developing system), so any support is appreciated."
+    },
+    {
+      "post_id": "js-post-1479349",
+      "author": "ATT_Turan",
+      "date": "2024-11-03T11:01:51+0900",
+      "body": "That looks odd, because the default settings should have them much lower than that.\nBut regardless, each row has a plugin parameter for Home X and Home Y. They're even fairly straightforward, so looking at the default for Row 1 Home X:\nCode:\nmaxRowX - (maxRows - rowId) * 112 + rowIndex * 32\nmaxRowX you defined above, the Maximum Row X plugin parameter\nmaxRows, again, defined above the Maximum Rows\nrowId, simply, is which row you're looking at\nrowIndex is which member in the row this actor is, starting with 0.\nSo in your first screenshot above, the actor with the glasses is in rowId 2 and rowIndex 0.\nThus, we can see that the first chunk of the formula is determining where the actor rows start and the space between them, and you would change that by changing the 112 (and/or maxRowX). Then the second half is controlling the diagonal slant as you add actors to the row, and you would change that by changing the 32.\nThe Home Y formula works exactly the same way."
+    },
+    {
+      "post_id": "js-post-1479602",
+      "author": "Ulrich_Lestrat",
+      "date": "2024-11-04T04:13:24+0900",
+      "body": "Hi! Thanks for the prompt reply and explanation! Highly appreciated.\nIt's been a rough couple of days trying to solve that.\nIn which case, according to what you have mentioned, would you mind lending a hand to this poor unfortunate soul to fix that?\nI just need a couple of things:\n1.- Make the entire group not stand sky-high lol\n2.- Force the rows to be even (same columns instead of diagonally from each other)\n3.- Compress the rows so the 1st isn't that far forward and the 3rd not that far back (or just slightly more  forward)"
+    },
+    {
+      "post_id": "js-post-1479700",
+      "author": "ATT_Turan",
+      "date": "2024-11-04T12:57:01+0900",
+      "body": "Take a look at the explanation I already gave you, show us the formulae you're trying based on that explanation, and we can tell you what's wrong."
+    },
+    {
+      "post_id": "js-post-1479868",
+      "author": "Ulrich_Lestrat",
+      "date": "2024-11-05T11:15:37+0900",
+      "body": "I'm using the RowFormation plugin from Yanfly, as well as their Battle Core engine.\nEverything seems to work just fine except when I try to modify the distance between rows and how far the first row is.\nIn this case, I modified the first row's X formula and also adjusted the Y values so it's not that high up.\nA friend told me that maybe it's because the rows are not actually vertical but rather diagonal so we are actually just modifying where the \"diagonal\" 1 starts and that's why the entire row jumps down when modiying the amount of characters in them.\nIdk if that helps or if more intel is required.\nSorry, I'm just very, very naïve on all this Jazz."
+    },
+    {
+      "post_id": "js-post-1479874",
+      "author": "ATT_Turan",
+      "date": "2024-11-05T12:29:14+0900",
+      "body": "It's a little confusing because you seem to have done some work between this post and your last one, so I don't know which of your 3 questions from post #3 you still need help with.\nUlrich_Lestrat said:\nEverything seems to work just fine except when I try to modify the distance between rows and how far the first row is.\nClick to expand...\nI did explain before how the two parts of the formula affected both of those things. If you want to change how far apart the rows are, you would change the number 50. If you don't want the actors to go diagonally in each row, you would delete everything after the number 50.\nUlrich_Lestrat said:\nA friend told me that maybe it's because the rows are not actually vertical but rather diagonal so we are actually just modifying where the \"diagonal\" 1 starts and that's why the entire row jumps down when modiying the amount of characters in them.\nClick to expand...\nI don't really understand that, and I don't get what you mean by \"the entire row jumps down\". New screenshots would help.\nUlrich_Lestrat said:\nView attachment 322203\nClick to expand...\nThis looks weird. Why do you have decimal values in there? You can't place any of your actors on a decimal portion of a pixel.\nWhat are you trying to achieve in this parameter?"
+    }
+  ]
+}

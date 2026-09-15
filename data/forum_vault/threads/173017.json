@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/i-made-a-day-event-when-active-breaks-other-events-and-i-dont-understand-why.173017",
+  "title": "I made a day event when active breaks other events and I don't understand why?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-15T13:36:52.755929+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1479656",
+      "author": "HeroSin",
+      "date": "2024-11-04T08:37:53+0900",
+      "body": "To make a long story short, I'm making a game and I made a time of day event. I made event's in game based on the time of day, and it worked great. now I wanted to implement a days of the weekent event, since the time of day event worked properly, I thought copy and pasting it would work but it doesn't. I'll reply to myself down below to show what I mean.\nany help is greatly appreciated.\nthank you.\nHeroSin said:\nTo make a long story short, I'm making a game and I made a time of day event. I made event's in game based on the time of day, and it worked great. now I wanted to implement a days of the weekent event, since the time of day event worked properly, I thought copy and pasting it would work but it doesn't. I'll reply to myself down below to show what I mean.\nany help is greatly appreciated.\nthank you.\nClick to expand...\nhere is the gardening event and the switch for it\nHeroSin said:\nTo make a long story short, I'm making a game and I made a time of day event. I made event's in game based on the time of day, and it worked great. now I wanted to implement a days of the weekent event, since the time of day event worked properly, I thought copy and pasting it would work but it doesn't. I'll reply to myself down below to show what I mean.\nany help is greatly appreciated.\nthank you.\nClick to expand...\nhere is the time of day event.\nHeroSin said:\nTo make a long story short, I'm making a game and I made a time of day event. I made event's in game based on the time of day, and it worked great. now I wanted to implement a days of the weekent event, since the time of day event worked properly, I thought copy and pasting it would work but it doesn't. I'll reply to myself down below to show what I mean.\nany help is greatly appreciated.\nthank you.\nClick to expand...\nhere's what I did for the days of the week\nHeroSin said:\nTo make a long story short, I'm making a game and I made a time of day event. I made event's in game based on the time of day, and it worked great. now I wanted to implement a days of the weekent event, since the time of day event worked properly, I thought copy and pasting it would work but it doesn't. I'll reply to myself down below to show what I mean.\nany help is greatly appreciated.\nthank you.\nhere is the gardening event and the switch for it\nhere is the time of day event.\nhere's what I did for the days of the week\nClick to expand...\nand here is one of the many triggers to switch from times of day"
+    },
+    {
+      "post_id": "js-post-1479993",
+      "author": "fizzly",
+      "date": "2024-11-05T22:28:17+0900",
+      "body": "Hello.\nAnd what/which part does not work...?"
+    },
+    {
+      "post_id": "js-post-1479997",
+      "author": "ATT_Turan",
+      "date": "2024-11-05T22:49:52+0900",
+      "body": "Welcome.\nAs it says in\nthe section rules,\nYou've cropped a lot of information off of the event page screenshots that could explain what's going wrong in your game.\nAlso, you need to tell us exactly what the problem is. What should be happening? What is happening instead?"
+    },
+    {
+      "post_id": "js-post-1480025",
+      "author": "HeroSin",
+      "date": "2024-11-06T00:57:56+0900",
+      "body": "ATT_Turan said:\nWelcome.\nAs it says in\nthe section rules,\nView attachment 322223\nYou've cropped a lot of information off of the event page screenshots that could explain what's going wrong in your game.\nAlso, you need to tell us exactly what the problem is. What should be happening? What is happening instead?\nClick to expand...\nI'm sorry about that. I'll make sure to re read the section rules again.\nso the cropped off images just had dialogue text. nothing I think would cause the event to not work. So when I have the time of day event running, the gardening event works, but when I have the days of the week event running at the same time, the gardening event doesn't work (i.e the character doesn't show up and I cannot interact with them)."
+    },
+    {
+      "post_id": "js-post-1480026",
+      "author": "ATT_Turan",
+      "date": "2024-11-06T01:00:59+0900",
+      "body": "The point is all of the actual event settings matter. Seeing the trigger type, potentially the priority, the event name, all of those can play a role in whether an event works correctly or not."
+    },
+    {
+      "post_id": "js-post-1480031",
+      "author": "HeroSin",
+      "date": "2024-11-06T01:10:56+0900",
+      "body": "Ah thats why you meant, here I went and checked. both the time of the day and the days of the week are parallel. the two images of the days of the week wasn't large enough for one screen shot."
+    },
+    {
+      "post_id": "js-post-1480049",
+      "author": "ATT_Turan",
+      "date": "2024-11-06T02:43:27+0900",
+      "body": "Well, a few things that stick out to me.\n1 - it's odd that these are all map events. Maybe that's just for your testing, but one would assume the time system applies to your entire game, not just one map, so they should be common events.\n2 - it's also odd that you have things split into two separate events instead of combined into one. As a general rule, you don't want to have more parallel processes running than you need.\nSpeaking of:\n3 - you should almost never have a parallel event running without a Wait command at the top or bottom. By default, parallel and autorun events run every frame, 60 times a second. That could well be the cause of your issue: the event is checking the time every frame and restarting the tint, so you never actually see it happen.\nYou can see better examples of how to set up time systems in many existing threads, such as this (this would all go in one parallel common event):"
+    },
+    {
+      "post_id": "js-post-1480051",
+      "author": "HeroSin",
+      "date": "2024-11-06T02:56:17+0900",
+      "body": "ATT_Turan said:\nWell, a few things that stick out to me.\n1 - it's odd that these are all map events. Maybe that's just for your testing, but one would assume the time system applies to your entire game, not just one map, so they should be common events.\n2 - it's also odd that you have things split into two separate events instead of combined into one. As a general rule, you don't want to have more parallel processes running than you need.\nSpeaking of:\n3 - you should almost never have a parallel event running without a Wait command at the top or bottom. By default, parallel and autorun events run every frame, 60 times a second. That could well be the cause of your issue: the event is checking the time every frame and restarting the tint, so you never actually see it happen.\nYou can see better examples of how to set up time systems in many existing threads, such as this (this would all go in one parallel common event):\nView attachment 322247\nClick to expand...\nI honestly didn't know about having the wait command, when using autorun or parrallel, maybe that's why it wasn't working. I'll definitly try fixing this when I have the chance. This is also help with decluttering.\nThank you, you've been very helpful."
+    },
+    {
+      "post_id": "js-post-1480063",
+      "author": "Andar",
+      "date": "2024-11-06T03:52:31+0900",
+      "body": "one additional comment:\nthe transfer command should be the last command of any event, unless the transfer stays within the same map - and even then it would be better.\nall map events get deleted the second you leave the current map. and that includes the map event with the transfer.\nmost of the time the event processing sequence will continue the active event even on a map transfer, but only if everything runs in the same frame as the transfer command.\nIf there is any command that needs more time than that frame, then everything after it will never be processed, because in the next frame the event doesn't exist anymore.\nso unless you know exactly what you're doing, you cannot guarantee that the commands after a transfer will be executed unless they are placed on the next map."
+    },
+    {
+      "post_id": "js-post-1480074",
+      "author": "caethyril",
+      "date": "2024-11-06T05:16:03+0900",
+      "body": "@Andar\n- to clarify, on transfer to a different map:\nA Parallel event will halt immediately, but\nA non-Parallel event will run to completion.\nTransfer Player uses a wait mode to prevent the interpreter from processing any more commands until the transfer is complete, including any transfer fade-in. (If the transfer is performed via script call, it's possible to omit setting the wait mode, which could cause odd behaviour like you describe.)\nSpoiler:\ntechnical explanation\nWhen an event starts,\nits commands are placed into the applicable event interpreter\n; only the state of that interpreter determines when the event stops. A Parallel event's interpreter is a property of that Parallel event, and like you say, all events (including common events) are cleared on map transfer. By contrast, non-Parallel events run in the main interpreter, which remains intact on map transfer.\nA simple test event:\n◆Text：None, None, Window, Bottom\n：    ：Transferring...\n◆Transfer Player：Another Map (5,6)\n◆Text：None, None, Window, Bottom\n：    ：Transferred!\nThe \"Transferred!\" message shows only when the trigger is\nnot\nset to Parallel.\n(As always, plugins can change any aspect of the engine.)\nAlso, some commands (Erase Event and character-target commands) may behave unexpectedly if they originated from an event on a different map."
+    },
+    {
+      "post_id": "js-post-1480075",
+      "author": "ATT_Turan",
+      "date": "2024-11-06T05:20:08+0900",
+      "body": "@Andar\nNo offense, I know you're holding information about half a dozen different versions of RPG Maker in your head.\nBut I think you've been told about ten times that's not the case in MV and MZ"
+    }
+  ]
+}
