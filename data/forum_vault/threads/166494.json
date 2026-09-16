@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-do-i-change-the-player-speed-after-enough-walking.166494",
+  "title": "How do I change the player speed after enough walking?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T19:35:10.522791+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1427699",
+      "author": "suros",
+      "date": "2024-03-06T01:11:46+0900",
+      "body": "Hello, I would like to know how to change the player's speed after like 3 seconds of walking, and then resetting the speed of the player when they stop walking."
+    },
+    {
+      "post_id": "js-post-1428090",
+      "author": "TheAM-Dol",
+      "date": "2024-03-07T11:15:53+0900",
+      "body": "I'm not very familiar with 2k and 2k3, so I am not sure if this is possible.\nYou'd create a parallel common event. You can call it \"playerDash\" or something relevant like that.\nLabel: walk loop\n(we'll come back to this)\nSet the player speed here.\nCreate a loop\nWe will craft the \"standing around\" conditions (player is not moving)\nFirst, let's put a wait frame at the top.\nWait: 6 - 12 frames (You can decide what feels best - 12 is more efficient but may cause a delay in the timing of the event. 6 is still more than enough wait time)\nThere are (at least in more modern versions of RM) conditional checks for direction keys being pressed.\nSo set a conditional for each key:\n\"if up is pressed down:\"\n\"if right is pressed down:\"\n[...]\nRepeat for all 4 directions.\nRather than repeating the same functions for each direction, we can just use a jump command to jump to a section in the common event that we dedicate to executing this logic:\nSo your conditional for each direction will look like:\n\"if up is pressed down:\nJump to label: dashloop\"\nend loop\nAll of the above should be contained in the first loop.\nOutside of the first loop, we'll create the next part of the logic by assigning where that jump to label command will go:\nlabel: dashloop\nwait 180 frames (180 frames = 3 seconds)\nLoop\nCreate your 4 directional conditionals again, this time with an else branch.\n\"if up is pressed down:\n(we are going to do nothing here)\nelse:\njump to label: walkloop\"\n[...]\nchange player speed\n(dash speed)\nwait: 6 - 12 frames\n(same as above, pick a value that feels best)\nend loop\nThere are some things that should be adjusted with this. Like it might not be ideal to make the event stop and wait a full 180 frames before continuing processing. You might want to make it so that 180 can be interrupted. But I have no idea if this can even work in the old makers, so rather than improve the logic here, let's start with that."
+    },
+    {
+      "post_id": "js-post-1428139",
+      "author": "suros",
+      "date": "2024-03-07T22:45:36+0900",
+      "body": "TheAM-Dol said:\nI'm not very familiar with 2k and 2k3, so I am not sure if this is possible.\nYou'd create a parallel common event. You can call it \"playerDash\" or something relevant like that.\nLabel: walk loop\n(we'll come back to this)\nSet the player speed here.\nCreate a loop\nWe will craft the \"standing around\" conditions (player is not moving)\nFirst, let's put a wait frame at the top.\nWait: 6 - 12 frames (You can decide what feels best - 12 is more efficient but may cause a delay in the timing of the event. 6 is still more than enough wait time)\nThere are (at least in more modern versions of RM) conditional checks for direction keys being pressed.\nSo set a conditional for each key:\n\"if up is pressed down:\"\n\"if right is pressed down:\"\n[...]\nRepeat for all 4 directions.\nRather than repeating the same functions for each direction, we can just use a jump command to jump to a section in the common event that we dedicate to executing this logic:\nSo your conditional for each direction will look like:\n\"if up is pressed down:\nJump to label: dashloop\"\nend loop\nAll of the above should be contained in the first loop.\nOutside of the first loop, we'll create the next part of the logic by assigning where that jump to label command will go:\nlabel: dashloop\nwait 180 frames (180 frames = 3 seconds)\nLoop\nCreate your 4 directional conditionals again, this time with an else branch.\n\"if up is pressed down:\n(we are going to do nothing here)\nelse:\njump to label: walkloop\"\n[...]\nchange player speed\n(dash speed)\nwait: 6 - 12 frames\n(same as above, pick a value that feels best)\nend loop\nThere are some things that should be adjusted with this. Like it might not be ideal to make the event stop and wait a full 180 frames before continuing processing. You might want to make it so that 180 can be interrupted. But I have no idea if this can even work in the old makers, so rather than improve the logic here, let's start with that.\nClick to expand...\nThat doesn't work for 2K"
+    },
+    {
+      "post_id": "js-post-1428177",
+      "author": "caethyril",
+      "date": "2024-03-08T01:35:25+0900",
+      "body": "Not sure about 2k, but 2k3 has a\nKey Input Processing\ncommand (page 3) that can be used to check for various inputs, including move directions."
+    },
+    {
+      "post_id": "js-post-1428358",
+      "author": "suros",
+      "date": "2024-03-08T19:41:34+0900",
+      "body": "caethyril said:\nNot sure about 2k, but 2k3 has a\nKey Input Processing\ncommand (page 3) that can be used to check for various inputs, including move directions.\nClick to expand...\nYeah, but it is a bit  differenent. (Took this image randomly from google by the way)"
+    },
+    {
+      "post_id": "js-post-1428391",
+      "author": "TheAM-Dol",
+      "date": "2024-03-09T00:03:44+0900",
+      "body": "suros said:\nThat doesn't work for 2K\nClick to expand...\nk, that doesn't help.\nYou can provide more information such as \"Thanks for taking the time for your suggestion, but it seems 2k doesn't have the conditional for button input. Is there a way to make this work?\"\nAnyways, good luck. I hope someone can help you."
+    },
+    {
+      "post_id": "js-post-1428433",
+      "author": "suros",
+      "date": "2024-03-09T03:52:55+0900",
+      "body": "TheAM-Dol said:\nk, that doesn't help.\nYou can provide more information such as \"Thanks for taking the time for your suggestion, but it seems 2k doesn't have the conditional for button input. Is there a way to make this work?\"\nAnyways, good luck. I hope someone can help you.\nClick to expand...\nAlright thanks anyway"
+    },
+    {
+      "post_id": "js-post-1428444",
+      "author": "ramza",
+      "date": "2024-03-09T04:42:19+0900",
+      "body": "caethyril said:\nNot sure about 2k, but 2k3 has a\nKey Input Processing\ncommand (page 3) that can be used to check for various inputs, including move directions.\nClick to expand...\nIt does. RM2K3 also added the ability to check for shift, which rm2k didn't have too.\nThe issue here is that it only detects when the key is first pressed, so it being on a continual loop wouldn't pick up if someone was holding a directional key down.\nWhat you'd need to do is check the players x/y co-ordinates on a loop in a parallel process event, determine if they've changed within a certain number of checks, and then increase his movement speed if they have. You also can't set movement rate to a set value easily, so you also need a switch to tell the common event what their move speed should be (ie walking/running) and then don't turn up or down their speed if the switch for their current movement mode is on, that way they don't start rocketing across the map after running for a few tiles, or slow down to a snails pace when standing still for multiple seconds.\nYou'd also want some sort of a wait command in the loop, because without one it'd be checking multiple times per second, and the co-ordinates wouldn't be able to change that fast, so running would never happen. It'd take some guesswork to get the correct value."
+    }
+  ]
+}

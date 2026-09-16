@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/unique-windowskin-for-loading-savefiles-scene_load.171599",
+  "title": "Unique Windowskin for Loading Savefiles (Scene_Load)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T19:34:58.860466+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1467721",
+      "author": "Aprimachi",
+      "date": "2024-09-02T07:38:51+0900",
+      "body": "Hello dear all,\nI tend to ramble, so here is my greeting / preamble under the cut ...\nSpoiler:\n1st post intro babbling\nFirst off, apologies if this was posted into the wrong sub forum - I supposed this was the best place to  post as this doesn't concern a custom script but rather me wanting to adjust one of the standard existing ones from RPG Maker XP, namely\nScene_Load\n(which I believe would be the best solution for what I want, at least)\nI began dabbling into RPG Maker XP just yesterday and am currently starting off with a simple project\nI have no(t a lot of) experience with programming or scripting, especially not with Ruby, so I want to do nothing overly fancy until I get the hang of it a bit more. Even ideas I thought to be on the simpler side proved to be quite tricky, after all.\nThese forums already helped me out A LOT to find solutions and make my small game project look and flow better, so thank you dear all who take their time to contribute their ideas, QOL improvement scripts and support here.\nSo, I managed to implement a properly working Load Option into my game menu - so players can now access both the Save and Load features from here:\nHowever, it always bothered me when the Save and Load Screens basically looked identical. To reduce the risk of the player mistaking one of the screens for the other - as it constantly happens to yours truly - I wanted to give the Load screen its own Windowskin, instead of the standard one being used throughout the game.\nTo visualize what I mean, here's my idea (sorry for the garish colour on the Load screen side, this is just for making clear what I'm trying to attempt):\nI'm embarassed to admit that I am stumped on how I can set this unique Windowskin for the Load Screen only. Here is what I have / know:\n- I created a separate Windowskin image and uploaded into RPG Maker XP (file name \"LoadWindowskin.png\")\n- I now need to add a line relating to this unique Windowskin under script\nScene_Load\nwith specifying it only to be used on that specific screen only\nIt seems like a simple idea but unfortunately I couldn't find anything related, even after researching for roughly 2 hours now. I also tried looking into other scripts I have implemented to look for pointers, but with my limited Ruby experience I haven't gotten far unfortunately and only found ideas that changed the Windowskin for well, the whole game instead of only one specific screen.\nThank you kindly in advance for any ideas."
+    },
+    {
+      "post_id": "js-post-1467877",
+      "author": "KK20",
+      "date": "2024-09-03T05:42:32+0900",
+      "body": "In Scene_File, you can add these lines in\nRuby:\ndef main\n    $game_system.windowskin_name = 'LoadWindowskin' if is_a?(Scene_Load) #<====\nRuby:\n# Prepare for transition\n    Graphics.freeze\n    $game_system.windowskin_name = nil #<====\n    # Dispose of windows\n    @help_window.dispose\n    for i in @savefile_windows\n      i.dispose\n    end"
+    },
+    {
+      "post_id": "js-post-1467881",
+      "author": "Aprimachi",
+      "date": "2024-09-03T05:52:32+0900",
+      "body": "KK20 said:\nIn Scene_File, you can add these lines in\nRuby:\ndef main\n    $game_system.windowskin_name = 'LoadWindowskin' if is_a?(Scene_Load) #<====\nRuby:\n# Prepare for transition\n    Graphics.freeze\n    $game_system.windowskin_name = nil #<====\n    # Dispose of windows\n    @help_window.dispose\n    for i in @savefile_windows\n      i.dispose\n    end\nClick to expand...\nThis just did the trick, exactly what I wanted!\nThank you so much KK20 !"
+    }
+  ]
+}
