@@ -31,19 +31,12 @@ HEADERS = {
 # Settings
 # ==========================================
 
-# 1回のActionで取得するページ数
 MAX_PAGES = 3
 
-# トピック詳細を取得するときの待機時間
 TOPIC_REQUEST_INTERVAL = 0.5
 
-# Guildカテゴリ一覧を取得した後の待機時間
 CATEGORY_REQUEST_INTERVAL = 1.0
 
-# Guildの対象カテゴリ
-#
-# ここでは「収集候補」を拾うために使用する。
-# 最終的な分類はトピック自身のcategory_idを優先する。
 CATEGORY_URLS = {
     "プラグイン": (
         "https://guild.rpgmakerofficial.com/"
@@ -94,33 +87,77 @@ def get_html(session, url):
 def extract_categories_from_json(data):
     """
     Discourseのcategories.jsonから、
+    カテゴリ候補を抽出する。
 
-        category_id -> category_name
-
-    の辞書を作る。
-
-    Discourseのレスポンス形式の違いに備えて、
-    category_list.categories を基本としつつ、
-    categories 直下も扱う。
+    診断のため、実際のJSON構造もログに出す。
     """
 
     categories = []
 
     if not isinstance(data, dict):
+        print(
+            "[Guild DEBUG] categories.json "
+            "top-level is not dict: "
+            f"{type(data).__name__}"
+        )
         return categories
 
-    category_list = data.get("category_list")
+    print(
+        "[Guild DEBUG] categories.json "
+        f"top-level keys: {list(data.keys())}"
+    )
+
+    category_list = data.get(
+        "category_list"
+    )
 
     if isinstance(category_list, dict):
-        values = category_list.get("categories")
+
+        print(
+            "[Guild DEBUG] category_list keys: "
+            f"{list(category_list.keys())}"
+        )
+
+        values = category_list.get(
+            "categories"
+        )
 
         if isinstance(values, list):
+
+            print(
+                "[Guild DEBUG] "
+                "category_list.categories: "
+                f"{len(values)} entries"
+            )
+
             categories.extend(values)
 
-    values = data.get("categories")
+            if values:
+                print(
+                    "[Guild DEBUG] "
+                    "first category sample: "
+                    f"{values[0]}"
+                )
+
+    values = data.get(
+        "categories"
+    )
 
     if isinstance(values, list):
+
+        print(
+            "[Guild DEBUG] top-level "
+            f"categories: {len(values)} entries"
+        )
+
         categories.extend(values)
+
+        if values:
+            print(
+                "[Guild DEBUG] "
+                "first top-level category sample: "
+                f"{values[0]}"
+            )
 
     return categories
 
@@ -134,7 +171,14 @@ def build_category_map(data):
 
     category_map = {}
 
-    categories = extract_categories_from_json(data)
+    categories = extract_categories_from_json(
+        data
+    )
+
+    print(
+        "[Guild DEBUG] "
+        f"raw category entries: {len(categories)}"
+    )
 
     for category in categories:
 
@@ -144,29 +188,58 @@ def build_category_map(data):
         category_id = category.get("id")
         name = category.get("name")
 
-        if category_id is not None and name:
-            category_map[int(category_id)] = (
-                str(name).strip()
-            )
+        if (
+            category_id is not None
+            and name
+        ):
+            try:
+                normalized_id = int(
+                    category_id
+                )
 
-        # Discourseのcategory JSONに
-        # subcategory_list等が含まれる場合に備える。
+                category_map[
+                    normalized_id
+                ] = str(name).strip()
+
+            except (
+                TypeError,
+                ValueError,
+            ):
+                print(
+                    "[Guild DEBUG] Invalid "
+                    f"category id: {category_id!r}"
+                )
+
         children = category.get(
             "subcategory_list"
         )
 
         if isinstance(children, dict):
+
+            print(
+                "[Guild DEBUG] "
+                f"subcategory_list for "
+                f"{name!r}: "
+                f"keys={list(children.keys())}"
+            )
+
             children = children.get(
                 "subcategories",
                 []
             )
 
-        if not isinstance(children, list):
+        if not isinstance(
+            children,
+            list,
+        ):
             children = []
 
         for child in children:
 
-            if not isinstance(child, dict):
+            if not isinstance(
+                child,
+                dict,
+            ):
                 continue
 
             child_id = child.get("id")
@@ -176,9 +249,26 @@ def build_category_map(data):
                 child_id is not None
                 and child_name
             ):
-                category_map[int(child_id)] = (
-                    str(child_name).strip()
-                )
+                try:
+                    normalized_child_id = int(
+                        child_id
+                    )
+
+                    category_map[
+                        normalized_child_id
+                    ] = str(
+                        child_name
+                    ).strip()
+
+                except (
+                    TypeError,
+                    ValueError,
+                ):
+                    print(
+                        "[Guild DEBUG] Invalid "
+                        f"subcategory id: "
+                        f"{child_id!r}"
+                    )
 
     return category_map
 
@@ -189,7 +279,6 @@ def get_category_map(session):
     category_id -> category_name を作る。
 
     取得できなかった場合は空辞書を返す。
-    この場合、カテゴリを推測して採用しない。
     """
 
     try:
@@ -199,12 +288,36 @@ def get_category_map(session):
             CATEGORIES_JSON_URL,
         )
 
-        category_map = build_category_map(data)
+        category_map = build_category_map(
+            data
+        )
 
         print(
             "[Guild] Category map: "
             f"{len(category_map)} categories"
         )
+
+        # 診断用。
+        # 本番動作には影響しない。
+        if category_map:
+
+            print(
+                "[Guild DEBUG] "
+                "category_map contents:"
+            )
+
+            for (
+                category_id,
+                category_name,
+            ) in sorted(
+                category_map.items()
+            ):
+
+                print(
+                    "  "
+                    f"{category_id}: "
+                    f"{category_name}"
+                )
 
         return category_map
 
@@ -223,9 +336,6 @@ def get_category_map(session):
 # ==========================================
 
 def get_tags(topic):
-    """
-    一覧ページから取得できるタグを取得する。
-    """
 
     tags = []
 
@@ -249,21 +359,10 @@ def get_tags(topic):
 # ==========================================
 
 def classify_material(title, tags):
-    """
-    トピック自身のカテゴリが「素材」の場合に、
-    グラフィック素材とサウンド素材へ分類する。
-
-    サウンドと明確に判断できない場合は
-    グラフィック素材とする。
-    """
 
     text = " ".join(
         [title] + list(tags)
     ).lower()
-
-    # ----------------------------------
-    # 日本語キーワード
-    # ----------------------------------
 
     japanese_sound_keywords = [
         "bgm",
@@ -281,10 +380,6 @@ def classify_material(title, tags):
 
         if keyword in text:
             return "サウンド素材"
-
-    # ----------------------------------
-    # 英語キーワード
-    # ----------------------------------
 
     english_sound_patterns = [
         r"\bbgm\b",
@@ -314,15 +409,6 @@ def classify_material(title, tags):
 # ==========================================
 
 def classify_material_content(title, tags):
-    """
-    トピック自身のカテゴリが「素材」であっても、
-    実際の内容が質問・ゲーム紹介などである可能性が
-    あるため、二次的に内容を確認する。
-
-    明確なケースだけを判定する。
-    判断できない場合はNoneを返し、
-    通常の素材分類へ進める。
-    """
 
     text = " ".join(
         [title] + list(tags)
@@ -333,10 +419,6 @@ def classify_material_content(title, tags):
         for tag in tags
         if str(tag).strip()
     }
-
-    # ----------------------------------
-    # タグによる質問判定
-    # ----------------------------------
 
     question_tags = {
         "質問",
@@ -351,10 +433,6 @@ def classify_material_content(title, tags):
         for tag in question_tags
     }:
         return "質問"
-
-    # ----------------------------------
-    # タイトルによる明確な質問判定
-    # ----------------------------------
 
     question_patterns = [
         r"[？?]$",
@@ -392,10 +470,6 @@ def classify_material_content(title, tags):
         ):
             return "質問"
 
-    # ----------------------------------
-    # 明確なゲーム紹介・公開
-    # ----------------------------------
-
     game_patterns = [
         r"完成ゲーム",
         r"制作中ゲーム",
@@ -432,24 +506,6 @@ def classify_guild_category(
     title,
     tags,
 ):
-    """
-    トピック自身に設定されている実際のGuildカテゴリを
-    Daily Reportのカテゴリへ変換する。
-
-    基本方針:
-
-    1. トピック詳細の実カテゴリを最優先する
-    2. 質問・ゲーム・プラグインなどは、そのカテゴリを採用
-    3. 実カテゴリが「素材」の場合のみ、
-       グラフィック／サウンドへ細分類
-    4. 「素材」内でも明確な質問・ゲーム紹介は
-       二次判定する
-    5. 詳細カテゴリを取得できなかった場合は
-       誤分類防止のため採用しない
-
-    guild_categoryは一覧ページ上のカテゴリであり、
-    最終分類の根拠にはしない。
-    """
 
     category = (
         actual_category or ""
@@ -491,8 +547,6 @@ def classify_guild_category(
             tags,
         )
 
-    # 雑談・お知らせなど、現在のDaily Reportで
-    # 採用対象として定義していないカテゴリはNone。
     return None
 
 
@@ -500,10 +554,10 @@ def classify_guild_category(
 # Topic Extraction
 # ==========================================
 
-def extract_topics(html, guild_category):
-    """
-    Guildカテゴリ一覧ページからトピックを抽出する。
-    """
+def extract_topics(
+    html,
+    guild_category,
+):
 
     soup = BeautifulSoup(
         html,
@@ -565,9 +619,6 @@ def get_page(
     url,
     page,
 ):
-    """
-    Discourseカテゴリ一覧のページを取得する。
-    """
 
     separator = (
         "&"
@@ -595,6 +646,7 @@ def get_topic_detail(
     session,
     url,
     category_map,
+    debug=False,
 ):
     """
     トピック詳細JSONから、
@@ -604,15 +656,8 @@ def get_topic_detail(
 
     を取得する。
 
-    category_nameが直接入っていればそれを優先し、
-    取得できない場合はcategory_idを
-    categories.jsonのマップから解決する。
-
-    どちらも取得できなければ
-    actual_categoryは空文字列とする。
-
-    重要:
-    カテゴリを推測して補完しない。
+    今回は診断のため、
+    topic JSONのカテゴリ関連情報を出力する。
     """
 
     json_url = (
@@ -630,11 +675,67 @@ def get_topic_detail(
     data = response.json()
 
     if not isinstance(data, dict):
+
+        print(
+            "[Guild DEBUG] Topic JSON "
+            "is not dict: "
+            f"{type(data).__name__}"
+        )
+
         return "", []
 
-    # ----------------------------------
+    # ==================================
+    # Diagnostic
+    # ==================================
+
+    if debug:
+
+        print(
+            "[Guild DEBUG] Topic JSON keys:"
+        )
+
+        print(
+            list(data.keys())
+        )
+
+        print(
+            "[Guild DEBUG] "
+            f"category_id = "
+            f"{data.get('category_id')!r}"
+        )
+
+        print(
+            "[Guild DEBUG] "
+            f"category_name = "
+            f"{data.get('category_name')!r}"
+        )
+
+        print(
+            "[Guild DEBUG] "
+            f"category = "
+            f"{data.get('category')!r}"
+        )
+
+        print(
+            "[Guild DEBUG] "
+            f"tags = "
+            f"{data.get('tags')!r}"
+        )
+
+        if isinstance(
+            data.get("category"),
+            dict,
+        ):
+
+            print(
+                "[Guild DEBUG] "
+                "category object keys: "
+                f"{list(data['category'].keys())}"
+            )
+
+    # ==================================
     # Category
-    # ----------------------------------
+    # ==================================
 
     actual_category = (
         data.get("category_name")
@@ -649,20 +750,24 @@ def get_topic_detail(
         not actual_category
         and category_id is not None
     ):
+
         try:
             category_id = int(
                 category_id
             )
+
         except (
             TypeError,
             ValueError,
         ):
+
             category_id = None
 
     if (
         not actual_category
         and category_id is not None
     ):
+
         actual_category = (
             category_map.get(
                 category_id,
@@ -671,9 +776,9 @@ def get_topic_detail(
             or ""
         ).strip()
 
-    # ----------------------------------
+    # ==================================
     # Tags
-    # ----------------------------------
+    # ==================================
 
     tags = []
 
@@ -686,6 +791,7 @@ def get_topic_detail(
         json_tags,
         list,
     ):
+
         tags = [
             str(tag).strip()
             for tag in json_tags
@@ -703,12 +809,6 @@ def get_topic_detail(
 # ==========================================
 
 def get_items(seen):
-    """
-    Guildから新規トピックを取得する。
-
-    カテゴリが確認できないトピックは、
-    誤分類防止のためseenへ追加しない。
-    """
 
     adopted_items = []
 
@@ -740,6 +840,11 @@ def get_items(seen):
     # ----------------------------------
 
     processed_urls = set()
+
+    # 診断対象。
+    # 最初の3件だけtopic JSONの構造を出す。
+    debug_topic_count = 0
+    DEBUG_TOPIC_LIMIT = 3
 
     try:
 
@@ -819,6 +924,11 @@ def get_items(seen):
 
                     try:
 
+                        debug = (
+                            debug_topic_count
+                            < DEBUG_TOPIC_LIMIT
+                        )
+
                         (
                             actual_category,
                             detail_tags,
@@ -826,7 +936,11 @@ def get_items(seen):
                             session,
                             url,
                             category_map,
+                            debug=debug,
                         )
+
+                        if debug:
+                            debug_topic_count += 1
 
                     except (
                         requests.RequestException
@@ -837,8 +951,6 @@ def get_items(seen):
                             f"{title}: {e}"
                         )
 
-                        # 詳細を取得できなかった場合は
-                        # seenへ追加しない。
                         continue
 
                     if detail_tags:
@@ -871,9 +983,6 @@ def get_items(seen):
                             "(category not adopted)"
                         )
 
-                        # カテゴリが確認できない、
-                        # または対象外カテゴリの場合は
-                        # seenへ追加しない。
                         continue
 
                     # ----------------------------------
@@ -885,7 +994,9 @@ def get_items(seen):
                             "title": title,
                             "url": url,
                             "category": category,
-                            "source": "RPG Maker Guild",
+                            "source": (
+                                "RPG Maker Guild"
+                            ),
                         }
                     )
 
@@ -922,8 +1033,6 @@ def get_items(seen):
             f"{e}"
         )
 
-        # 途中まで正常取得できたものは
-        # 維持する。
         return (
             adopted_items,
             new_seen,
