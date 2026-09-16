@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/enemies-chase-and-after-dead-not-to-go-game-over-screen-at-once.172590",
+  "title": "Enemies chase and after dead not to go Game Over screen at once",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T04:53:31.528137+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1475511",
+      "author": "Sourgrapes",
+      "date": "2024-10-15T04:01:06+0900",
+      "body": "Greetings, hope everybody is fine. I need help I have not been able to find out on the web or in YouTube tutorials with solution to the implementation of a mechanic for my RPG Maker MZ project.\nI am with a main character and I have created sprites of enemies that are active on the map chasing my character, when they touch him (event touch) they take away some life for each touch with the variable of decreasing life by X value until death is allowed.\nI have done the mechanics well to the point that when the character dies, it goes Game Over. What I want and cannot do is as follows:\nFirst: When enemies touch the character and take away life, I need a message appears that indicates, for example, “you have been bitten,” then for each damage other message, “you have been held by your arms and you begin to receive bites all over your body,” then “You feel that everything is going dark and life goes away…”, and so on.\nSecod: When my character’s life reaches zero, I donnot want immediately go to the Game Over screen, but first shows the sprite of my character's corpse, then shows a window with some text that states, “You died for xxxx reason” for instance, then a fade out screen and finally go to the “Game Over” screen.\nAll this not in Battle Process, but in real time, I am fighting enemies in the map, with events.\nI don't know if I explain myself well. I need that mechanic without plugins, I just want to achieve it with the base tools of RPG Maker MZ. I know there must be a way with switches or Conditional Branch or something, but I can't come up with the solution. Many thanks in advance."
+    },
+    {
+      "post_id": "js-post-1475593",
+      "author": "ATT_Turan",
+      "date": "2024-10-15T12:51:25+0900",
+      "body": "Welcome!\nSourgrapes said:\nFirst: When enemies touch the character and take away life, I need a message appears\nClick to expand...\nSo put it there. After the Change HP command, put a Show Text.\nSourgrapes said:\nthen for each damage other message, “you have been held by your arms and you begin to receive bites all over your body,” then “You feel that everything is going dark and life goes away…”, and so on.\nClick to expand...\nUse Conditional Branch to see how many HP the character has and show the appropriate message.\nSourgrapes said:\nSecod: When my character’s life reaches zero, I donnot want immediately go to the Game Over screen, but first shows the sprite of my character's corpse, then shows a window with some text that states, “You died for xxxx reason” for instance, then a fade out screen and finally go to the “Game Over” screen.\nClick to expand...\nThen you can't let them go to 0. You'd have to do math and conditional branches to see if the damage\nwould\ngo to 0, but make it stop at 1, show the messages, then take the last HP.\nSourgrapes said:\nI need that mechanic without plugins, I just want to achieve it with the base tools of RPG Maker MZ.\nClick to expand...\nWhy?\nSourgrapes said:\nI know there must be a way with switches or Conditional Branch or something\nClick to expand...\nHow do you know that? Game Over at 0 HP is a part of the engine's code. If the workaround I suggest above doesn't work, then you have to use a plugin to change that code.\nOr, of course, you don't actually use HP at all, and you use a variable to track the character's health."
+    },
+    {
+      "post_id": "js-post-1475648",
+      "author": "Sourgrapes",
+      "date": "2024-10-15T23:27:16+0900",
+      "body": "ATT_Turan said:\nWelcome!\nSo put it there. After the Change HP command, put a Show Text.\nUse Conditional Branch to see how many HP the character has and show the appropriate message.\nThen you can't let them go to 0. You'd have to do math and conditional branches to see if the damage\nwould\ngo to 0, but make it stop at 1, show the messages, then take the last HP.\nWhy?\nHow do you know that? Game Over at 0 HP is a part of the engine's code. If the workaround I suggest above doesn't work, then you have to use a plugin to change that code.\nOr, of course, you don't actually use HP at all, and you use a variable to track the character's health.\nClick to expand...\nHello, thank you for your welcome, and many thanks for your help.\nI will do as you say, and test all the solutions you mention.\nWhy do I not want to use plugins?\nFirst: because I just want to use the base engine tools. Long time ago, I saw a youtuber showing a maniac chase mechanic with character dead, he did everything I need to do in my project, but cannot find the vid again, and that's why I know it can be done with no plugins at all.\nAnd second, the plugins I have tried, wont work fine. They always give me crashes, so I try not to use them. Perhaps I have not used them right.\nWell, I will do as you say. Many, many thanks.\nHave a nice day"
+    },
+    {
+      "post_id": "js-post-1476027",
+      "author": "Wisepot",
+      "date": "2024-10-17T19:22:31+0900",
+      "body": "how about making common event parallel running keep in check if player hp == 0\nif it is then show animation or image what ever you want on player also can be used the movement route and change actor image then use it to show dead player once this done go to game over?\nelse\ndo nothing"
+    },
+    {
+      "post_id": "js-post-1476975",
+      "author": "Sourgrapes",
+      "date": "2024-10-23T05:27:27+0900",
+      "body": "Wisepot said:\nhow about making common event parallel running keep in check if player hp == 0\nif it is then show animation or image what ever you want on player also can be used the movement route and change actor image then use it to show dead player once this done go to game over?\nelse\ndo nothing\nClick to expand...\nHello, Wisepot. I have solved it. I found a tutorial in youtube with some of the guidelines I needed. The rest was up to me. And now I have got an engine, which also can be applied in many ways. Found how to put hearts to show your life and the hearts dessapier one by one according to damage, but I change the process and got a red light when you are 50% of life left and then going darker and darker light and a heart beat which speeds up and rises sound while getting closer to death, and of course dead allow to go into Game Over screen. This can also be used to tint screen black little by little for a flash light if you are going out of battery, I haven't tried the flashlight yet. For now I just needed the death warning and perhaps some maps getting dark step by step for some reason regarding storyline.\nI used a Common Event in Data base but with no activation but a call inside the map where I needed it, some times by a Common \"local\" Event or some quick event or a Character event (the enemies are event \"animated sprites\" on the map. I do not need the dead image, I put one in a text after dead and just before going Game Over.\nThanks for your help."
+    },
+    {
+      "post_id": "js-post-1477014",
+      "author": "Wisepot",
+      "date": "2024-10-23T11:14:17+0900",
+      "body": "Sourgrapes said:\nHello, Wisepot. I have solved it. I found a tutorial in youtube with some of the guidelines I needed. The rest was up to me. And now I have got an engine, which also can be applied in many ways. Found how to put hearts to show your life and the hearts dessapier one by one according to damage, but I change the process and got a red light when you are 50% of life left and then going darker and darker light and a heart beat which speeds up and rises sound while getting closer to death, and of course dead allow to go into Game Over screen. This can also be used to tint screen black little by little for a flash light if you are going out of battery, I haven't tried the flashlight yet. For now I just needed the death warning and perhaps some maps getting dark step by step for some reason regarding storyline.\nI used a Common Event in Data base but with no activation but a call inside the map where I needed it, some times by a Common \"local\" Event or some quick event or a Character event (the enemies are event \"animated sprites\" on the map. I do not need the dead image, I put one in a text after dead and just before going Game Over.\nThanks for your help.\nClick to expand...\nthat's gre8, you found solution what you were looking for."
+    }
+  ]
+}

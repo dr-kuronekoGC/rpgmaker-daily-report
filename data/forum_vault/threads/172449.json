@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/my-game-wont-save-please-help.172449",
+  "title": "My game won't save! Please help:(",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T04:53:32.581383+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1474305",
+      "author": "jbgs",
+      "date": "2024-10-08T00:46:51+0900",
+      "body": "So in this particular map, when I try to save my game it gives me this error:\nHere's the console log:\nI really don't know what might be causing that, and I desperately need help."
+    },
+    {
+      "post_id": "js-post-1474310",
+      "author": "Andar",
+      "date": "2024-10-08T01:01:48+0900",
+      "body": "does this happen when you start a new game and try to save or when you load an existing save and save it again, or in both cases?\nAlso please state what your editor version and what your project version is\n(go to your project folder, the js folder, open rpg_core.js with a text editor and check the title line for the version number.This might be older than your editor version)"
+    },
+    {
+      "post_id": "js-post-1474312",
+      "author": "jbgs",
+      "date": "2024-10-08T01:08:45+0900",
+      "body": "Andar said:\ndoes this happen when you start a new game and try to save or when you load an existing save and save it again, or in both cases?\nAlso please state what your editor version and what your project version is\n(go to your project folder, the js folder, open rpg_core.js with a text editor and check the title line for the version number.This might be older than your editor version)\nClick to expand...\nboth cases unfortunately\nI'm using RPG Maker MV version 1.6.3 and my rpg_core is 1.6.2 (I don't know why, because I just updated it from a new project)"
+    },
+    {
+      "post_id": "js-post-1474314",
+      "author": "utunnels",
+      "date": "2024-10-08T01:11:08+0900",
+      "body": "Are you using some plugin that add sprite to events or the player? From the error message it looks like that. Because a sprite or picture can't be saved correctly."
+    },
+    {
+      "post_id": "js-post-1474316",
+      "author": "jbgs",
+      "date": "2024-10-08T01:17:04+0900",
+      "body": "utunnels said:\nAre you using some plugin that add sprite to events or the player? From the error message it looks like that. Because a sprite or picture can't be saved correctly.\nClick to expand...\nNo, I don't think I do, but I just noticed something. It says that property \"clamp\" is undefined, and the only plugin I see this word in is SRD_GameCore. So maybe if I change the \"Wrap Mode\" it'll fix the issue? I'll try that and let you know\njbgs said:\nNo, I don't think I do, but I just noticed something. It says that property \"clamp\" is undefined, and the only plugin I see this word in is SRD_GameCore. So maybe if I change the \"Wrap Mode\" it'll fix the issue? I'll try that and let you know\nClick to expand...\nNope... Didn't fix anything. In fact now it's happening even when I don't save the game"
+    },
+    {
+      "post_id": "js-post-1474320",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T01:24:17+0900",
+      "body": "jbgs said:\nboth cases unfortunately\nI'm using RPG Maker MV version 1.6.3 and my rpg_core is 1.6.2 (I don't know why, because I just updated it from a new project)\nClick to expand...\n1.6.3 didn't change the code.\njbgs said:\nIt says that property \"clamp\" is undefined, and the only plugin I see this word in is SRD_GameCore. So maybe if I change the \"Wrap Mode\" it'll fix the issue?\nClick to expand...\nThat would have nothing to do with it - as you were already told, the error has to do with sprites, not anything with trying to wrap words in a message box. Your scene is updating and trying to update a sprite that was added to its children but doesn't actually exist.\nAlso, the first line of the error tells you exactly where \"clamp\" is found - line 6170 of rpg_core.\nThe VPlayer plugin is both in the list and has to do with creating images (that's the thing that lets you add GIFs, right?). Does the game work if you turn that plugin off, save your project, and start a new game?"
+    },
+    {
+      "post_id": "js-post-1474322",
+      "author": "jbgs",
+      "date": "2024-10-08T01:30:23+0900",
+      "body": "ATT_Turan said:\n1.6.3 didn't change the code.\nThat would have nothing to do with it - as you were already told, the error has to do with sprites, not anything with trying to wrap words in a message box. Your scene is updating and trying to update a sprite that was added to its children but doesn't actually exist.\nAlso, the first line of the error tells you exactly where \"clamp\" is found - line 6170 of rpg_core.\nThe VPlayer plugin is both in the list and has to do with creating images (that's the thing that lets you add GIFs, right?). Does the game work if you turn that plugin off, save your project, and start a new game?\nClick to expand...\nStill doesn't work for some reason. I turned off the VPlayer, saved, started a new game and still got the same error..."
+    },
+    {
+      "post_id": "js-post-1474323",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T01:31:38+0900",
+      "body": "Then you need to do some basic troubleshooting with your project.\nTurn off\nall\nplugins, verify that works. If it doesn't, then you've broken something either by putting in some script calls, or you have an event command or something that's referencing a picture and you changed the filename or deleted that picture.\nIf it does work with no plugins active, turn them back on until you find which one is causing the problem."
+    },
+    {
+      "post_id": "js-post-1474324",
+      "author": "jbgs",
+      "date": "2024-10-08T01:34:46+0900",
+      "body": "ATT_Turan said:\nThen you need to do some basic troubleshooting with your project.\nTurn off\nall\nplugins, verify that works. If it doesn't, then you've broken something either by putting in some script calls, or you have an event command or something that's referencing a picture and you changed the filename or deleted that picture.\nIf it does work with no plugins active, turn them back on until you find which one is causing the problem.\nClick to expand...\nYeah... I'll give you an update when I'm done. Thanks!"
+    },
+    {
+      "post_id": "js-post-1474331",
+      "author": "jbgs",
+      "date": "2024-10-08T01:58:25+0900",
+      "body": "ATT_Turan said:\nThen you need to do some basic troubleshooting with your project.\nTurn off\nall\nplugins, verify that works. If it doesn't, then you've broken something either by putting in some script calls, or you have an event command or something that's referencing a picture and you changed the filename or deleted that picture.\nIf it does work with no plugins active, turn them back on until you find which one is causing the problem.\nClick to expand...\nSo... Update: I found the impostor and I believe it was SRCrazy_TimedBarDisplay. I used it to show a timer bar for my timed choices. I guess I need to let it go. Thanks for all the help guys!"
+    },
+    {
+      "post_id": "js-post-1474333",
+      "author": "Andar",
+      "date": "2024-10-08T02:18:35+0900",
+      "body": "jbgs said:\nIt says that property \"clamp\" is undefined,\nClick to expand...\nno, it does not.\nwith error messages it is extremely important what they truly say and not just read the wrong words.\nit says \"cannot read property clamp of undefined.\"\nThat means it is missing the \"parent\" of clamp, not that clamp itself is undefined.\nso you would have to look for the thing that clamp is supposed to be a part of, because that is what is undefined. And that is also why your search for clamp went wrong...\nPerhaps you can understand it better with a more practical example:\nlet's say for displaying something you need to know the width of a picture. that would usually be picture.width\nand if you have no picture and try to find its width, the computer would answer \"cannot read property width of undefined\", meaning that the picture itself is undefined or missing"
+    },
+    {
+      "post_id": "js-post-1474335",
+      "author": "jbgs",
+      "date": "2024-10-08T02:38:16+0900",
+      "body": "Andar said:\nno, it does not.\nwith error messages it is extremely important what they truly say and not just read the wrong words.\nit says \"cannot read property clamp of undefined.\"\nThat means it is missing the \"parent\" of clamp, not that clamp itself is undefined.\nso you would have to look for the thing that clamp is supposed to be a part of, because that is what is undefined. And that is also why your search for clamp went wrong...\nPerhaps you can understand it better with a more practical example:\nlet's say for displaying something you need to know the width of a picture. that would usually be picture.width\nand if you have no picture and try to find its width, the computer would answer \"cannot read property width of undefined\", meaning that the picture itself is undefined or missing\nClick to expand...\nThanks, I understand it now. I don't really know much about javascript and code. Anyways I found the plugin that was causing the issue, so case closed I guess..."
+    },
+    {
+      "post_id": "js-post-1474337",
+      "author": "ShadowDragon",
+      "date": "2024-10-08T02:49:00+0900",
+      "body": "just so you know, if you didn't look through the post:\nSRCrazy_TimedBarDisplay has a bug in it and a fix is further on the thread.\nif you use that, place it higher or lower in the list of your plugin database.\naside from that, make sure the plugins are in the correct order."
+    },
+    {
+      "post_id": "js-post-1474360",
+      "author": "jbgs",
+      "date": "2024-10-08T04:51:55+0900",
+      "body": "ShadowDragon said:\njust so you know, if you didn't look through the post:\nSRCrazy_TimedBarDisplay has a bug in it and a fix is further on the thread.\nif you use that, place it higher or lower in the list of your plugin database.\naside from that, make sure the plugins are in the correct order.\nClick to expand...\nI did not know that. Thank you!"
+    }
+  ]
+}

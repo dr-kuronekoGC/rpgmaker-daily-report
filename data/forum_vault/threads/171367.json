@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-needed-changing-image-opacity-on-hover-in-mv.171367",
+  "title": "MV Help Needed: Changing Image Opacity on Hover in MV",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T04:53:41.391786+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1465949",
+      "author": "Lobster_Lord",
+      "date": "2024-08-24T11:03:45+0900",
+      "body": "Hello folks, first-time poster here. I know nothing about Java Script, so I thought I could ask for help here. I am currently making a game in MV where, for one particular minigame, I need the player to be able to hover over an image, and when they do, it should set the opacity from 0% to 100%. Is there any way to do that with scripts or plugins? I have messed around with some AI-generated stuff (it's stupid, I know, but I can't code), but that has not worked at all, and I am getting a lot of errors that break the game. Any advice or help would be very much appreciated!"
+    },
+    {
+      "post_id": "js-post-1466012",
+      "author": "ShadowDragon",
+      "date": "2024-08-24T18:50:30+0900",
+      "body": "keep in mind that 0% is not visible, and 100% fully visible as opacity is set\nas 0 to 255.\nchaucer mimosa\nplugin I cannot tell if the free version can do it.\nanother once that might work is\nTDDP Mouse System Ex\nbut this require\nit to setup like chaucer's, but more in mouse X > 200, mouseX , 300 so the\npicture position on screen is important.\nand the same thing might be applied to chaucer, but it has a picture recognition\ninside of it when you hover over it, as it doesn't have the opacity, it might be\nable to set it or add it inside the plugin.\ntry to play around with either one"
+    },
+    {
+      "post_id": "js-post-1466034",
+      "author": "Lobster_Lord",
+      "date": "2024-08-24T23:11:54+0900",
+      "body": "I had a look at both of those you suggested, and from what I can see, it doesn’t seem like I can use/edit them to interact with the pictures in the way I was hoping for. The Chaucer one can only change the cursor from what I have seen"
+    },
+    {
+      "post_id": "js-post-1466041",
+      "author": "ATT_Turan",
+      "date": "2024-08-25T01:20:16+0900",
+      "body": "Lobster_Lord said:\nI have messed around with some AI-generated stuff\nClick to expand...\nBut have you simply Googled it?\nI typed in \"rpg maker mv picture hover\" and got about half a dozen threads from here and Reddit pertinent to the question, plus a YouTube video tutorial.\nSome of them are only for events, and some are for MZ, but - for example, there was an event script posted by\n@caethyril\nthat did exactly what you were asking for MZ, so you could easily have asked her if it needed adaptation to work in MZ, and how.\nIt just seems like spending time getting information from people who actually know things would be a better first choice than breaking your game with computers making up code.\nIn any case, paste the below into a text editor, save as a *.js file, and include as a plugin\nCode:\nTouchInput._onMouseMove = function(event) \n{\n    if (this._mousePressed) {\n        var x = Graphics.pageToCanvasX(event.pageX);\n        var y = Graphics.pageToCanvasY(event.pageY);\n        this._onMove(x, y);\n    }\n    this.hoverX = Graphics.pageToCanvasX(event.pageX);\n    this.hoverY = Graphics.pageToCanvasY(event.pageY);\n};\nThen you can check at any time the variables\nTouchInput.hoverX\nand\nTouchInput.hoverY\nto get the current coordinates of the cursor.\nSo you could do a parallel event on your map looking like this:\nYou use conditional branches to see if the cursor is within the area of the picture; if yes, and it hasn't already been made opaque, do so.\nIf it is outside of the picture's area, and it hasn't been made transparent again, do so.\nYou can can probably put a few frames of Wait at the bottom just so it isn't running every single frame without it looking delayed."
+    },
+    {
+      "post_id": "js-post-1466054",
+      "author": "Lobster_Lord",
+      "date": "2024-08-25T02:58:53+0900",
+      "body": "ATT_Turan said:\nBut have you simply Googled it?\nI typed in \"rpg maker mv picture hover\" and got about half a dozen threads from here and Reddit pertinent to the question, plus a YouTube video tutorial.\nClick to expand...\nThat was the first thing I did but from what ive seen its only for MZ not MV.\nAs for the event/Plugin you sent I keep getting this error code when I playtest it.\nCode:\nYEP_CommonEventMenu.js:1292 ReferenceError: ToutchInput is not defined\n    at eval (eval at Game_Interpreter.command122 (YEP_CoreEngine.js:1836), <anonymous>:1:1)\n    at Game_Interpreter.command122 (YEP_CoreEngine.js:1836)\n    at Game_Interpreter.command122 (YEP_SelfSwVar.js:406)\n    at Game_Interpreter.executeCommand (rpg_objects.js:8930)\n    at Game_Interpreter.update (rpg_objects.js:8838)\n    at Game_Event.updateParallel (rpg_objects.js:8748)\n    at Game_Event.update (rpg_objects.js:8740)\n    at Game_Map.updateEvents (YEP_CoreEngine.js:1667)\n    at Game_Map.update (rpg_objects.js:6025)\n    at Scene_Map.updateMain (rpg_scenes.js:608)\nNever mind I apparently can't spell. Now I don't get the error message but from my testing nothing appears to be happening at all."
+    },
+    {
+      "post_id": "js-post-1466084",
+      "author": "ShadowDragon",
+      "date": "2024-08-25T06:31:29+0900",
+      "body": "there is more info on\nthis thread\nthat has an extension plugin of yanfly\nif you have it, so you can combine the 2."
+    },
+    {
+      "post_id": "js-post-1466089",
+      "author": "utunnels",
+      "date": "2024-08-25T07:17:05+0900",
+      "body": "I'm a bit confused,  the player character or the mouse cursor, which one hover over the picture?"
+    },
+    {
+      "post_id": "js-post-1466111",
+      "author": "Lobster_Lord",
+      "date": "2024-08-25T08:39:31+0900",
+      "body": "I managed to get it working. It turns out that I was just being a dingus and not using my brain. Who would have thought that actually following the instructions people give you is helpful? Thanks to everyone who helped!"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/different-equipment-with-their-own-sprites-with-mog-chrono-engine-abs.172749",
+  "title": "MV Different equipment with their own sprite s with MOG Chrono Engine ABS?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T04:53:29.741160+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1476905",
+      "author": "vampy_graveyard",
+      "date": "2024-10-22T15:36:55+0900",
+      "body": "I am still learning about this system, so sorry if this is dumb or has a easy solution. So, for my specific project I'm using an action battle system (specifically the MOGHunter Chrono Engine one) but at the same time I want to change the sprites depending on the armor/equpment of character. But i'm struggling with that. Could it be that it isn't available on this system?\nHere are some examples of what I want to do with this system so my problem can be understood better:\n-character can wear a helmet/armor and sprites automatically get changed, same thing for any kind of armor.\n-character can have a different combination of elements (weapons and armors) and each combination of an armor and weapon has a different sprite\n-depending on armor and weapons, the sprite can have different animations (idle, dash, attack, etc)\nI'd be honest, I tried to fix this many times but I had no success, and the most similar ''success'' to that was to get chopped animations of my character (it looks like it's shaking and not attacking in a combat). I'd be waiting for your help. Thanks for reading."
+    },
+    {
+      "post_id": "js-post-1481808",
+      "author": "AquaEcho",
+      "date": "2024-11-16T03:46:55+0900",
+      "body": "There is a built in system in Chrono Engine to change the character sprites when using a tool, the problem is it has to be an existing file in the game project. I'm looking into paper doll equipment layer/character customization plugins and I don't see any that saves the results to a png file so Chrono Engine can then call that file when the player or another event does an action.\nIf you're fine with just a customized four-directional walking sprite that doesn't change poses when it does an action that's doable. Use\nSRD Character Creator Ex\nor\nMPP CharacterMake\nEdit: Looking at SRD Character Creator Ex/MPP CharacterMake, you could theoretically modify it to add a build a new bitmap for each action and not use Chrono Engine's file call for that action. That would require programming knowledge though because both plugins only have built-in functions for walking, dead, and sideview battler sprites."
+    },
+    {
+      "post_id": "js-post-1482462",
+      "author": "AquaEcho",
+      "date": "2024-11-20T05:50:28+0900",
+      "body": "So I was messing around with this idea and I don't see any way to implement it without significant amount of rewriting parts of the plugins (read: coding knowledge), unless you're ok with no change to the poses (attacking, jumping, shielding, etc) and having the walking sprite just stand there while the sword slash image or whatever spawns in front of the player when using the tool.\nYou need either SRD Character Creator or MPP CharacterMake to create the custom character.\nFrom there, to create custom poses you have to:\n1. Edit the code in the character creator plugin to create a new body category with the new poses, and a new folder for all their associated clothing parts to overlap on top of them.\n2. Either write a new function to save the compiled bitmap as a new png file, or overwrite an existing file OR overwrite functions of MOG_CharacterPoses to instead call the function from the character creator plugin to generate the bitmap for that pose whenever you attack, shield, jump, etc instead of looking for a file name."
+    },
+    {
+      "post_id": "js-post-1488136",
+      "author": "AquaEcho",
+      "date": "2024-12-17T03:03:57+0900",
+      "body": "So I was able to implement this with SRD Character Creator after a lot of work.\nChanges I had to make to SRD Character Creator:\n1. Add a new section in the code for every pose (\ndetails here\n)\n2. Add a section in the code and tweak a few lines to export the compiled bitmap to a png using node.js\nYou could do this with MPP CharacterMake too but I went with SRD because it allowed for different character sprite sizes, otherwise I would have to code that too.\nThen I had to stop the browser cache from loading the character image files, and clear the engine's ImageManager cache of the old character images after every change so that the changes would reflect in game. (\ndetails here\n)\nAlternatively, you could overwrite sections of MOG CharPoses to make it call the modified character bitmaps in memory instead of from a file.\nTL;DR: It's doable but you have to get your hands dirty with editing plugin code."
+    },
+    {
+      "post_id": "js-post-1489087",
+      "author": "gniiial",
+      "date": "2024-12-21T21:19:19+0900",
+      "body": "Hey guys,\nI have kind of an idea that has something to do with this kind of approach. Equipment could be just an overlay of things, like it is in an editor. We should not need the whole picture like for example for a Bow, a sword or even breast plates and so on. We just need the position. So if there would be a plugin available to setup the character \"overlay\", we would not need to change the main picture of the character sheet, but would only need the overlay of the different state (frontview, backview, sideview...). It would also make the images we need by far smaller than using a whole new spritesheet of the same thing only with these features included.\nIs there something out there, that could do that and would work with the ABS Chrono engine? I mean even the engine would be not relevant, if the user understands how it works. It should be some kind of standalone version, since it would only overlay something above the system that is already used. At least I'd try it that way.\nLet me know if you know something.\nMy first idea would be to clone some sort of plugin like\nMV Character Frames\nbut not use it to replace, than to overlay whatever we have as a character setup."
+    },
+    {
+      "post_id": "js-post-1489107",
+      "author": "AquaEcho",
+      "date": "2024-12-21T23:44:58+0900",
+      "body": "gniiial said:\nSo if there would be a plugin available to setup the character \"overlay\",\nClick to expand...\nThat is what all the Character Creator plugins are. You supply folders full of image files for the pieces then the plugin compiles them all in a layer order you define in the plugin parameters and outputs a character bitmap stored in game memory.\nWhenever you change pose (jumping, climbing, dead, attacking, etc) you still have to change the image which is what complicates things tenfold. If you don't mind the customized character only having a walking sprite it's pretty straightforward.\nTo change the pose you need all the clothing/weapon image files to go with that pose. Then either:\n1. Edit the code of the character creator plugin to output the generated bitmap for every pose as a png file with the filenames MOG_CharPoses is looking for\nOr\n2. Edit MOG_CharPoses (or another pose plugin) to call the generated bitmaps from the game memory and play them in sequence.\nBoth options require significant edits to plugin code. You're just choosing which plugin."
+    }
+  ]
+}

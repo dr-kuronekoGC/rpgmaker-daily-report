@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/trouble-with-eventing-the-whack-a-mole-game-from-tutorial-blog.171976",
+  "title": "Trouble With Eventing the Whack-a-Mole Game from Tutorial Blog",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T04:53:39.718967+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1470631",
+      "author": "stormofsunbeams",
+      "date": "2024-09-18T08:54:02+0900",
+      "body": "So I'm trying to implement minigames into my game, and long story short, I'm trying to follow\nThis Tutorial\nfrom the RPG Maker Blog, and I can't quite get it to work. I've searched for any answers to my particular issue and have not found any. I think my code looks almost identical, and I kind of just need another set of eyes on it to see what I'm overlooking. I use the text picture plugin and 'show picture' followed by a blank text box because I have custom placement of text boxes.\nThe minigame functions perfectly until the end, at which point instead of transferring the player, it pops up with this error:\nI am using several plugins, mainly VisuStellaMZ plugins. Here's the list:"
+    },
+    {
+      "post_id": "js-post-1470652",
+      "author": "ATT_Turan",
+      "date": "2024-09-18T12:29:12+0900",
+      "body": "1 - When you get an error, press F8, go to the Console tab, and provide a screenshot of the full error trace.\n2 - Did you perform the basic troubleshooting measure of testing it with all of those plugins turned off?"
+    },
+    {
+      "post_id": "js-post-1470654",
+      "author": "stormofsunbeams",
+      "date": "2024-09-18T12:37:24+0900",
+      "body": "Thank you for your reply, and I honestly had not thought to try turning the plugins off. The minigame does function without them: I'm guessing this means that the code and plugins are somehow interacting incorrectly, is that correct (sorry if that sounds really simplistic, I'm just making sure that I'm following the train of thought).\n(Edited for sentence structure)\nIs this the screenshot?\nSpoiler:\nLarger screenshot\nEdit: Added better screenshot"
+    },
+    {
+      "post_id": "js-post-1470657",
+      "author": "ATT_Turan",
+      "date": "2024-09-18T13:08:11+0900",
+      "body": "No, that is not the Console tab.\nAs a tip, I'd suggest you not crop your screenshots as you have been. It's possible for problems to exist in the event settings that you cut off in your original post, and I have no idea what window you're posting a screenshot of there because you cropped all the sides."
+    },
+    {
+      "post_id": "js-post-1470659",
+      "author": "stormofsunbeams",
+      "date": "2024-09-18T13:24:20+0900",
+      "body": "ATT_Turan said:\nNo, that is not the Console tab.\nAs a tip, I'd suggest you not crop your screenshots as you have been. It's possible for problems to exist in the event settings that you cut off in your original post, and I have no idea what window you're posting a screenshot of there because you cropped all the sides.\nClick to expand...\nThank you again, I appreciate your patience with me. I overlooked the phrase 'console tab' in your original reply.\nI think i see now that it is an issue with the plugins, and that's an entirely different beast, I know. Thankfully, I'm just trying to learn how to make minigames in general, so if I can't figure out this one, it's not the end of the world, even just knowing what the problem is is helpful."
+    },
+    {
+      "post_id": "js-post-1470661",
+      "author": "ATT_Turan",
+      "date": "2024-09-18T13:57:21+0900",
+      "body": "Yeah...it's definitely going through the VisuStella plugins, and I have absolutely no idea why it's calling stuff for the BattleManager when you're not in battle.\nI guess you could look in the plugin parameters for the Events & Movement to see if there's something making the timer abort a battle or something weird...but I really have no clue.\nAnd, unfortunately, VisuStella's plugins are obfuscated so we can't just look at the code and see what's being done that shouldn't be."
+    },
+    {
+      "post_id": "js-post-1470665",
+      "author": "ISC",
+      "date": "2024-09-18T14:59:41+0900",
+      "body": "I see that the timer is contributing to the problem. At the moment, I don't have a way to test the code, so I can only make an educated guess. You could try stopping the timer before the transfer; this way, we can ensure the timer operation has ceased.\nSo, insert a:\n- Timer stop\n- wait 1 frame\nbefore the transfer."
+    },
+    {
+      "post_id": "js-post-1470799",
+      "author": "stormofsunbeams",
+      "date": "2024-09-19T11:48:16+0900",
+      "body": "ISC said:\nI see that the timer is contributing to the problem. At the moment, I don't have a way to test the code, so I can only make an educated guess. You could try stopping the timer before the transfer; this way, we can ensure the timer operation has ceased.\nSo, insert a:\n- Timer stop\n- wait 1 frame\nbefore the transfer.\nClick to expand...\nOkay, so after another hour or so of fiddling on stream, I figured out a solution. I figured if the system thought I was trying to abort a battle that I wasn’t in, I’d just make it so that it didn’t ‘abort’ that battle. So I built on what ISC said and changed it to look like the below:\nBy not having the timer end until after the conditional branch, for some reason, it doesn’t glitch out. But I had to set it to 1 second left, wait a frame, then stop the timer. I don’t know why it thought I was trying to abort a battle I was not in, or why it was opening the battle manager at all. But I did find a workaround. It might cause more issues later on, but at least I know how to work around them."
+    }
+  ]
+}

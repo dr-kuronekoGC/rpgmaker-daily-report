@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-i-need-a-method-to-show-the-player-the-game-controls-before-they-begin-a-new-game.171680",
+  "title": "[SOLVED] I Need A Method To Show The Player The Game Controls Before They Begin A New Game",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T04:53:36.394162+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1468243",
+      "author": "BrysonUltra",
+      "date": "2024-09-05T06:08:24+0900",
+      "body": "I am looking for the easiest method to allow the player to see the game controls before they begin a new game.\nThis can be by showing a picture or by showing some text on the screen\nI was able to add a\nSettings\ncommand to the title screen that connects to\nYanfly system options\nthanks to the help of an experienced developer on Discord.\nExample in image below\nI'm open to suggestions.\nI was currently hoping I could add a\nControls\ncommand that displays an image showing default game controls.\nIt should provide the option for the player to return to the title screen.\nUpdate: The problem has been solved, a dev from the discord was able to help solve the problem. Thank you to the people who replied here, you also offered good options.\nSpoiler:\nTitle Screen"
+    },
+    {
+      "post_id": "js-post-1468504",
+      "author": "Zahawk",
+      "date": "2024-09-06T15:57:25+0900",
+      "body": "There are scripts that show pictures before the title screen, and there're probably scripts that add a controls button to the title screen and menu. Depends which one you'd prefer.\nBut I find it easier to just ask/show the player the controls after pressing new game but before ask/showing the tutorial/intro. Also adding a key item to the player's inventory for if they want to view the controls again later.\nEdit: Looked through\nAce Master Script List\nand found these relevant scripts.\nPre-Title Script By Nicke\n,\nWayback Script Link\n(Add pictures before titlescreen)\nSimple Title By Nicke\n(Edit titlescreen plus other extras)\nTitle Screen Aqua By Zerbu\n(Alternate, edit titlescreen plus other extras)"
+    },
+    {
+      "post_id": "js-post-1468576",
+      "author": "Zeriab",
+      "date": "2024-09-07T03:11:21+0900",
+      "body": "Consider showing a picture once the player takes control after the initial cutscene. (Can be done in addition to what you want)\nFinding Paradise for example shows a little picture to the lower-right.\nI find it easier to remember the controls if they are shown when needed.\nLooking at this I would probably also have added a new picture once the player moved which shows you how to pickup the machine in the car (interact button)\n*hugs*\n- Zeriab"
+    },
+    {
+      "post_id": "js-post-1468585",
+      "author": "Roninator2",
+      "date": "2024-09-07T04:16:29+0900",
+      "body": "TheOFCMedia said:\nI was currently hoping I could add a\nControls\ncommand that displays an image showing default game controls.\nClick to expand...\nSpoiler:\nTitle Controls\nRuby:\n# ╔═══════════════════════════════════════════════╦════════════════════╗\n# ║ Title: Title Controls                         ║  Version: 1.00     ║\n# ║ Author: Roninator2                            ║                    ║\n# ╠═══════════════════════════════════════════════╬════════════════════╣\n# ║ Function:                                     ║   Date Created     ║\n# ║    Show Options Command                       ╠════════════════════╣\n# ║    on title screen                            ║    06 Sep 2024     ║\n# ╚═══════════════════════════════════════════════╩════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Requires: nil                                                      ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Brief Description:                                                 ║\n# ║   Script allows showing an image to display player controls        ║\n# ║                                                                    ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Instructions:                                                      ║\n# ║   Configure settings below                                         ║\n# ║   Put image in Pictures folder                                     ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Updates:                                                           ║\n# ║ 1.00 - 06 Sep 2024 - Script finished                               ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Credits and Thanks:                                                ║\n# ║   Roninator2                                                       ║\n# ║                                                                    ║\n# ╚════════════════════════════════════════════════════════════════════╝\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║ Terms of use:                                                      ║\n# ║  Follow the original Authors terms of use where applicable         ║\n# ║    - When not made by me (Roninator2)                              ║\n# ║  Free for all uses in RPG Maker except nudity                      ║\n# ║  Anyone using this script in their project before these terms      ║\n# ║  were changed are allowed to use this script even if it conflicts  ║\n# ║  with these new terms. New terms effective 03 Apr 2024             ║\n# ║  No part of this code can be used with AI programs or tools        ║\n# ║  Credit must be given                                              ║\n# ╚════════════════════════════════════════════════════════════════════╝\n\nmodule R2_Title_Controls\n  Image = \"keyboard\"\n  Position = 3 # before shutdown with system options\n  Control_Text = \"Controls\"\nend\n\n# ╔════════════════════════════════════════════════════════════════════╗\n# ║                      End of editable region                        ║\n# ╚════════════════════════════════════════════════════════════════════╝\n\nclass Scene_Title < Scene_Base\n  alias :r2_create_control_image :create_command_window\n  def create_command_window\n    r2_create_control_image\n    @command_window.set_handler(:controls, method(:command_controls))\n  end\n  def command_controls\n    @control_sprite = Sprite.new\n    @control_sprite.bitmap = Cache.picture(R2_Title_Controls::Image)\n    @control_sprite.z = 200\n  end\n  def clear_pictures\n    @control_sprite.bitmap.dispose\n    @control_sprite.dispose\n    @control_sprite = nil\n    @command_window.activate\n  end\n  alias :r2_update_picture  :update\n  def update\n    if @control_sprite\n      Graphics.update\n      Input.update\n      clear_pictures if Input.trigger?(:B)\n      return\n    end\n    r2_update_picture\n  end\nend\n\nclass Window_TitleCommand < Window_Command\n  alias :r2_command_controls_list  :make_command_list\n  def make_command_list\n    r2_command_controls_list\n    add_command(R2_Title_Controls::Control_Text, :controls)\n    added = @list.pop\n    @list.insert([R2_Title_Controls::Position, @list.size].min, added)\n  end\nend"
+    },
+    {
+      "post_id": "js-post-1468672",
+      "author": "Ms Littlefish",
+      "date": "2024-09-07T19:57:07+0900",
+      "body": "This thread is closed due to being marked as solved. If you need it reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

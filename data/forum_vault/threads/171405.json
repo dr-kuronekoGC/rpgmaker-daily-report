@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/i-am-having-trouble-getting-the-dialogue-to-work-am-i-doing-something-wrong.171405",
+  "title": "I am having trouble getting the dialogue to work; am I doing something wrong?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T04:53:41.041819+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1466286",
+      "author": "thegayjewishguy2023",
+      "date": "2024-08-26T07:51:32+0900",
+      "body": "So I am trying to do a short little scene where the party learns about Yahrzeit candles and the fire works perfectly. But the dialogue doesn't show up. Am I doing something wrong?"
+    },
+    {
+      "post_id": "js-post-1466287",
+      "author": "Robro33",
+      "date": "2024-08-26T07:54:34+0900",
+      "body": "Page 2 has no condition and is the last page. no other page can be shown with it there."
+    },
+    {
+      "post_id": "js-post-1466288",
+      "author": "thegayjewishguy2023",
+      "date": "2024-08-26T07:56:13+0900",
+      "body": "Robro33 said:\nPage 2 has no condition and is the last page. no other page can be shown with it there.\nClick to expand...\nSo does that second page need to be deleted?"
+    },
+    {
+      "post_id": "js-post-1466290",
+      "author": "Robro33",
+      "date": "2024-08-26T08:00:36+0900",
+      "body": "for what purpose is it there?\nif you have no reason to have it, then you can delete it. But if you were using it to do something like make the event only interactable once, you could use the switch you flipped in page 1 as its condition"
+    },
+    {
+      "post_id": "js-post-1466292",
+      "author": "DevRPG2k",
+      "date": "2024-08-26T08:05:07+0900",
+      "body": "You really don't seem to have understood the most basic logic for using Switches.\nUsually for chests, levers, locked doors that can be opened after facing a boss, etc.\nA basic button:"
+    },
+    {
+      "post_id": "js-post-1466306",
+      "author": "ATT_Turan",
+      "date": "2024-08-26T09:35:02+0900",
+      "body": "I don't intend to be mean, but this is at least the fifth thread you'd written with\nthe exact same issue\n- you have a page on your event that's blank or has the wrong condition. (and one of those threads had two events with the issue)\nWhat part of this system doesn't make sense to you? How can we help explain it?\nAfter all these times it's been pointed out to you, wouldn't it at least be something you check before posting another thread?"
+    },
+    {
+      "post_id": "js-post-1466336",
+      "author": "thegayjewishguy2023",
+      "date": "2024-08-26T13:14:13+0900",
+      "body": "ATT_Turan said:\nI don't intend to be mean, but this is at least the fifth thread you'd written with\nthe exact same issue\n- you have a page on your event that's blank or has the wrong condition. (and one of those threads had two events with the issue)\nWhat part of this system doesn't make sense to you? How can we help explain it?\nAfter all these times it's been pointed out to you, wouldn't it at least be something you check before posting another thread?\nClick to expand...\nI guess the part that confuses me the most is the difference between control switches and self-switches as well as variables. I know I need to learn them; I'm just not getting it to be truthfully honest."
+    },
+    {
+      "post_id": "js-post-1466337",
+      "author": "TheAM-Dol",
+      "date": "2024-08-26T13:32:46+0900",
+      "body": "thegayjewishguy2023 said:\nI guess the part that confuses me the most is the difference between control switches and self-switches as well as variables.\nClick to expand...\nSelf-switches only affect the current event.\nSwitches can be accessed anywhere in the game.\nBoth of these are boolean operators meaning they can only exist as a yes or no (true or false/ 1 or 0)\nVariables can also be accessed by any event anywhere. Think of these as number containers or information containers.\nThe current problem Turan seems to be referencing is that, according to him (I haven't kept up with the post history), you keep making the same mistake which is having a blank event page.\nThe game references event pages right to left.\nSo the right most event page has the highest priority.\nHowever on the left side of the event window you have various conditions you can enable. When those conditions are met, that event page will activate.\nHowever page priority still takes precedent. Only 1 event page can be active at a time. So the current active page will be:\nThe right most page that has the most conditions being met.\nWhat this means is that if you have 2 event pages with the exact same conditions \"If switch 1 is on\" then the right most page will take priority.\nIn your case, the problem you faced in this post was that neither event page had any conditions. So, the event will run:\nThe right most event page with 0 conditions.\nYour right most page (page 2) had nothing on it. Therefore when you ran the event, nothing happened.\nUsing self-switches prevents you from having to create a specific event switch for every single event. Instead, if you want an event to only happen once, you can just use that event's set of self switches.\nThe \"event start\" (such as you dialogue) is 0 self switches (all self-switches are set to off - their default state).\nWhen the event is over, you turn on self switch A.\nCreate a new event page.\nNow here's the part I think you messed up on.\nOn the left panel of the event page, make sure to check the \"self switch\" box to tell the event \"When THIS self switch is ON, use THIS event page\"\nGood luck with you game, I hope that broke down the problem for you!"
+    },
+    {
+      "post_id": "js-post-1466339",
+      "author": "ATT_Turan",
+      "date": "2024-08-26T13:44:36+0900",
+      "body": "thegayjewishguy2023 said:\nI guess the part that confuses me the most is the difference between control switches and self-switches as well as variables. I know I need to learn them; I'm just not getting it to be truthfully honest.\nClick to expand...\nOkay...but this thread and\nthis thread\n- your most recent ones - have nothing to do with that. They're both caused by your event having a higher-number page that's completely blank. There's no getting confused between switches and variables, there just aren't any conditions at all.\nAside from there being no reason to make those pages in the first place...once you've been given an answer to a problem, if you're having another problem later, wouldn't you check the answer you'd been given previously before just asking people again?\nI won't get into trying to explain the rest of it, because\n@TheAM-Dol\nleft a pretty thorough explanation and you've gotten several others in your existing threads. Not to mention the plethora of tutorials you can find by Googling it."
+    },
+    {
+      "post_id": "js-post-1466343",
+      "author": "Andar",
+      "date": "2024-08-26T14:08:44+0900",
+      "body": "thegayjewishguy2023 said:\nI guess the part that confuses me the most is the difference between control switches and self-switches as well as variables. I know I need to learn them; I'm just not getting it to be truthfully honest.\nClick to expand...\nPlease follow the link to the starting point tutorial in my signature and work through it.\nIt contains links to other tutorials, especially to tutorials that are in the form of games themselves.\nespecially the variables guide game and one of the eventing tutorials games might help you.\nIt is extremely difficult to learn the maker on your own, you need a tutorial to follow through to learn at least the basics - and that usually takes most people a month or so with a scrap project.\nAnd watching a video tutorial is usually wasted time (imho) because video tutorials don't give you the time to experiment on your own and are usually too short to contain everything you need to know."
+    },
+    {
+      "post_id": "js-post-1466347",
+      "author": "Sword_of_Dusk",
+      "date": "2024-08-26T14:15:34+0900",
+      "body": "Andar said:\nIt is extremely difficult to learn the maker on your own\nClick to expand...\nThis depends entirely on the person learning. Some people are capable of learning without a tutorial, while others need one."
+    },
+    {
+      "post_id": "js-post-1466368",
+      "author": "Zahawk",
+      "date": "2024-08-26T20:30:09+0900",
+      "body": "Sword_of_Dusk said:\nThis depends entirely on the person learning. Some people are capable of learning without a tutorial, while others need one.\nClick to expand...\nExactly, when I first started using RPG Maker, I easily made a complete dragonquest inspired rpg game during highschool without any online help, tutorials or game references, just self taught via trial and error and those hover tips (didn't even realise the RM engine had a built in help documentation). Wasn't until years later that I downloaded some demo games and found complex yet extremely helpful methods in them that I never would've been able to come up with myself. It was at that point that I realised I'd been trying to reinvent the wheel and subsequently learnt how others use the engine."
+    },
+    {
+      "post_id": "js-post-1466390",
+      "author": "thegayjewishguy2023",
+      "date": "2024-08-26T22:46:40+0900",
+      "body": "TheAM-Dol said:\nSelf-switches only affect the current event.\nSwitches can be accessed anywhere in the game.\nBoth of these are boolean operators meaning they can only exist as a yes or no (true or false/ 1 or 0)\nVariables can also be accessed by any event anywhere. Think of these as number containers or information containers.\nThe current problem Turan seems to be referencing is that, according to him (I haven't kept up with the post history), you keep making the same mistake which is having a blank event page.\nThe game references event pages right to left.\nSo the right most event page has the highest priority.\nHowever on the left side of the event window you have various conditions you can enable. When those conditions are met, that event page will activate.\nHowever page priority still takes precedent. Only 1 event page can be active at a time. So the current active page will be:\nThe right most page that has the most conditions being met.\nWhat this means is that if you have 2 event pages with the exact same conditions \"If switch 1 is on\" then the right most page will take priority.\nIn your case, the problem you faced in this post was that neither event page had any conditions. So, the event will run:\nThe right most event page with 0 conditions.\nYour right most page (page 2) had nothing on it. Therefore when you ran the event, nothing happened.\nUsing self-switches prevents you from having to create a specific event switch for every single event. Instead, if you want an event to only happen once, you can just use that event's set of self switches.\nThe \"event start\" (such as you dialogue) is 0 self switches (all self-switches are set to off - their default state).\nWhen the event is over, you turn on self switch A.\nCreate a new event page.\nNow here's the part I think you messed up on.\nOn the left panel of the event page, make sure to check the \"self switch\" box to tell the event \"When THIS self switch is ON, use THIS event page\"\nGood luck with you game, I hope that broke down the problem for you!\nClick to expand...\nThank you for your assistance TheAM-Dol, ATT_Turan, Andar, Sword_of_Dusk, and Zahawk."
+    }
+  ]
+}
