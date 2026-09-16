@@ -55,6 +55,7 @@ CATEGORY_URLS = {
 CATEGORIES_JSON_URL = (
     "https://guild.rpgmakerofficial.com/"
     "categories.json"
+    "?include_subcategories=true"
 )
 
 
