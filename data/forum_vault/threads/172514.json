@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/need-help-adding-a-decorative-border-to-the-entire-game-when-in-fullscreen.172514",
+  "title": "Need help adding a decorative border to the entire game when in fullscreen",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T22:58:44.098994+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1474935",
+      "author": "KitCat1221",
+      "date": "2024-10-11T06:46:01+0900",
+      "body": "Hi, this is my first real post asking for advice so hopefully I put this in the right spot!\nI am trying to make a gameboy style game, and I want the game to have a super gameboy-style border when you fullscreen. Preferably, when the game is in it's default windowed-mode size it would not have the border, it would only appear when in full screen, but I am also okay with it appearing all the time.\nThings I have tried so far:\nAdding a permanent overlay with a plugin.\nThis almost works (although it will always appear, even in windowed mode), but I can't figure out how to prevent the player from walking underneath the border and out of the camera's view. This method would maybe work if I could figure out how to prevent this, although I have a feeling that other issues will arise later if I do it like this anyways.\nAdding an image to the black borders in full screen.\nThis would actually be perfect if it weren't for the fact that it is a completely different size than a traditional super gameboy background. The screen size of the gameboy is 160 x 144 pixels, and including a super gameboy border it is 256 x 224, and I've been upping the scale by factors of 3. When in full screen, the game resizes to match the height of the screen, leaving two black bars on the side. This isn't the right shape for what I'm looking for. And to clarify, I do not care that there will still be some black bars on the sides if I do this successfully. I understand that the negative space is an inherent part of RPG Maker's aspect ratio, I'm just trying to figure out how/if it can be manipulated to achieve the effect I want.\nI think method two would work best if I could adjust the size and position of the game itself to leave more space on the top and bottom. To get a better idea of what I'm trying to do, here's what it currently looks like compared to a mockup of what I would like it to look like.\nCurrent windowed default\n(showing my desktop feels like I'm bearing my soul for the world to see, lol)\n:\nCurrent fullscreen default\nDesired fullscreen\n(the astro boy border is a placeholder to test, not the final border obvs.)\n:\nThank you to anyone who can help, and if I put this in the wrong board then please let me know where it should go! :]"
+    },
+    {
+      "post_id": "js-post-1476024",
+      "author": "fizzly",
+      "date": "2024-10-17T18:55:32+0900",
+      "body": "I'm 99% sure that the \"black border\" is filled with background if you set parallel picture for the map, so try to put the border there and set it for every map"
+    },
+    {
+      "post_id": "js-post-1476029",
+      "author": "Zia_",
+      "date": "2024-10-17T19:37:01+0900",
+      "body": "I tested it, since I'm looking for this kind of frame too.\nIt works, if your map is smaller than the screen width/height set for the project. The parallax background will be cropped outside of these boundaries. If you have a bigger map with scrolling, you won't see any of the background.\nMaybe it'll work for the OP, but for my case, it won't, since I have maps in various sizes.\n@ OP:\nYou can configure the black background in the index.html of your project.\nPer default it's like this, and you can change the color.\nHTML:\n<body style=\"background-color: black\">\n        <script type=\"text/javascript\" src=\"js/main.js\"></script>\n    </body>\nBut you can also swap to a background image. Like this.\nHTML:\n<body style=\"background-image: url('./img/system/FullscreenBackground.png')\">\n        <script type=\"text/javascript\" src=\"js/main.js\"></script>\n    </body>\nBut unfortunately it won't work as intended, since it scales with your game resolution. So, it won't fit into a frame like your example. But you can have a look and see if it'll work for you. I gave up eventually."
+    },
+    {
+      "post_id": "js-post-1476039",
+      "author": "Andar",
+      "date": "2024-10-17T20:40:11+0900",
+      "body": "Unfortunately\n@fizzly\nis wrong.\n@KitCat1221\nYour original \"black borders\" happen when the game's screen size has either the wrong aspect ratio to your monitor or if your screen size does not fill up a regular windows screen size.\nIn both cases the black frame is created by the display card/chip and NOT Windows itself.\nSome display cards have functions to fill that with something else, but those options are different for most display cards. Which means it is beyond your capacity to change that for every computer as you would have to find the correct code for everyone's display card - and that ignores the fact that a lot of display cards (especially the cheaper ones) do not have those functions.\nWhat is possible is to create a frame inside the game's screen size as that is the area you can control.\nbut even that is anything but easy, because you would first have to disable the default fullscreen, then add a menu where the player can choose different screen sizes. And then you would have to usedifferent frame pictures with different movement limits to limit the player to the central area of the changed screen."
+    },
+    {
+      "post_id": "js-post-1476050",
+      "author": "fizzly",
+      "date": "2024-10-17T21:43:32+0900",
+      "body": "Yeah,\n@Andar\n, you're right. Sorry for misleading. Just checked that to make sure."
+    }
+  ]
+}

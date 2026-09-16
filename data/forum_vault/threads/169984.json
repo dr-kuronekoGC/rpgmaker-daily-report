@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/bloom-help.169984",
+  "title": "Bloom Help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T22:58:55.884203+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1454728",
+      "author": "GenericFantasyDev",
+      "date": "2024-07-03T09:42:41+0900",
+      "body": "Hello, I'm back from working hard at my game for about a year now, and while i was glazing over some of the maps, i realised that some of the maps would look good if there was a blur where the player wasn't near, similar to the effect from octopath traveller.\nI was wondering if there is a means to replicate this map blur effect in Rpg Maker MV?\nThis is the effect I'm trying to achieve, not the lighting but the blur on the left hand side.\nThanks :>"
+    },
+    {
+      "post_id": "js-post-1454729",
+      "author": "TheAM-Dol",
+      "date": "2024-07-03T09:59:52+0900",
+      "body": "For the record, that is not bloom, that is a tilt shift depth-of-field effect.\nBloom is when light seems so bright it \"bleeds\" out from whatever it hits.\nYou can sort of fake this effect with some pixi filters, though I am not sure any specific plugin exists off the top of my head.\nThe problem is that we are working in a 2D space and not a 3D space.\nDepth of field is based on focal length of the camera.\nBut because things never *technically* get further or closer to the camera in a top-down 2D rpg maker game, the focal length is going to be fixed at all times.\nAnd since it's 2D there is no depth between near objects and far objects - really only the illusion of it\n(technically speaking it's an illusion in 3D games too, but let's not be pedantic about it)\nYou could apply a blur at the top of the camera and bottom of the camera to create a faux tilt-shift effect, the problem is that\n~\neverything~\nwill be blurred, so it really won't create a sense of depth, but more likely will just create a sort of \"dream-like\" feeling to the scene.\nThat being said, I am not familiar with any plugins that allow you to apply the affect to only certain parts of the camera view port; most plugins only allow you to target specific items on the z axis.\nOh! And before posting, I do believe the tilt-shift effect in Octopath is a camera aperature simulation, which applies bokeh with hexagonal aperature and simulated blade curvature. This effect, I am like 90% sure is not available for RM and is often pretty resource intensive.\nThe blur I am talking about is just a simple gaussian blur which is accomplished by simply making the pixels blury. It's hardly anything like a proper depth-of-field effect."
+    },
+    {
+      "post_id": "js-post-1454730",
+      "author": "Slaughty",
+      "date": "2024-07-03T10:00:24+0900",
+      "body": "You can try\nThis\n. Its a pixi filter plugin. It's\nnot exactly what you are after but pretty close."
+    },
+    {
+      "post_id": "js-post-1454732",
+      "author": "TheAM-Dol",
+      "date": "2024-07-03T10:05:47+0900",
+      "body": "Slaughty said:\nYou can try\nThis\n. Its a pixi filter plugin. It's\nnot exactly what you are after but pretty close.\nClick to expand...\nSpecifically that was the plugin I had in mind when writing that post, the problem is that the blur targets the whole object.\nSo if you set the target to be the camera view port, then the whole screen would be blurred.\nThe documentation on the plugin sucks, so maybe it's possible to mask part of the effect in like...the middle of the camera, but as far as I know, that's not possible.\nAs a bonus, however, bloom is one of the effects, and it doesn't seem like Octopath is doing anything particularly unique with bloom, so you could at least get the blown-out lighting effect."
+    },
+    {
+      "post_id": "js-post-1454736",
+      "author": "utunnels",
+      "date": "2024-07-03T10:17:40+0900",
+      "body": "Unless you have away to tell the game which part is \"far\" and which part is \"near\" I guess."
+    },
+    {
+      "post_id": "js-post-1454738",
+      "author": "ATT_Turan",
+      "date": "2024-07-03T10:35:32+0900",
+      "body": "You could try messing with a pixi filter like\n@TheAM-Dol\ndescribes.\nThe other thing you could try is creating an overlay image, transparent in the middle and with slightly opaque swirls around the edges, like people do for cave lights or god rays.\nAs others have said, there's no real way to do this authentically in a 2D space, but that's another way to emulate the effect if you want to try. And it would be less resource intensive than pixi effects."
+    },
+    {
+      "post_id": "js-post-1454740",
+      "author": "GenericFantasyDev",
+      "date": "2024-07-03T10:48:36+0900",
+      "body": "Thanks everyone for the help, i will try both and see which looks the closest to what im going for, as yk what they say, something is better than nothing xD."
+    },
+    {
+      "post_id": "js-post-1454749",
+      "author": "ManaBrent",
+      "date": "2024-07-03T11:50:52+0900",
+      "body": "I use the Pixi Filter Controller plugin linked above to achieve a similar effect.\nThe Zoom Blur effect is the important one for what you wanna do. It creates an area around the target (or screen) that gets progressively blurrier away from the center, and you can set a zone in the middle that will have no blur. (I also add a Bulge Pinch effect so that the outside area shifts slightly as you move through it, but that is a stylistic choice you may or may not want.)\nThe settings here bring the blur quite far towards the center so I also use a picture layer to darken the surroundings. In my case I'm trying to make an oppressive look, but if you're going for a cute tilt shift look you could set a much larger exclusion zone in the middle and only have the edges blur.\n(without the vignette overlay so you can see the blur effect more clearly)\nNow this isn't a perfect tilt shift emulation, it's not going to care about height or distance, and it's locked to a circular range. It's worth noting that I also use a Mode 7 plugin in this area that literally tilts the map and also adds depth fog, adding to the effect considerably."
+    },
+    {
+      "post_id": "js-post-1454756",
+      "author": "GenericFantasyDev",
+      "date": "2024-07-03T13:33:13+0900",
+      "body": "ManaBrent said:\nI use the Pixi Filter Controller plugin linked above to achieve a similar effect.\nThe Zoom Blur effect is the important one for what you wanna do. It creates an area around the target (or screen) that gets progressively blurrier away from the center, and you can set a zone in the middle that will have no blur. (I also add a Bulge Pinch effect so that the outside area shifts slightly as you move through it, but that is a stylistic choice you may or may not want.)\nView attachment 310248\nThe settings here bring the blur quite far towards the center so I also use a picture layer to darken the surroundings. In my case I'm trying to make an oppressive look, but if you're going for a cute tilt shift look you could set a much larger exclusion zone in the middle and only have the edges blur.\nView attachment 310246\n(without the vignette overlay so you can see the blur effect more clearly)\nView attachment 310247\nNow this isn't a perfect tilt shift emulation, it's not going to care about height or distance, and it's locked to a circular range. It's worth noting that I also use a Mode 7 plugin in this area that literally tilts the map and also adds depth fog, adding to the effect considerably.\nClick to expand...\nooooh im definitley going to try this, thank u sooo much, ill get back to u too see how it goes"
+    },
+    {
+      "post_id": "js-post-1454760",
+      "author": "ShadowDragon",
+      "date": "2024-07-03T15:45:09+0900",
+      "body": "pixi-filter and blur effect can be in any side or corners when done right.\nbut it can be difficult and probably require some regions if you want to blur\nthe other side of the player if they are near the top.\naround the player ManaBrent mentioned is probably the best way, but\nyou might play with the numbers as well for the most desire effect.\nanother way is to use a picture overlay, but it require also some timing."
+    }
+  ]
+}
