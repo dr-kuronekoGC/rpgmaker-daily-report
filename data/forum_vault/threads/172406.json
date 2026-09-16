@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/switching-parties-and-not-sharing-items-gold-weapons-etc.172406",
+  "title": "Switching parties and not sharing items, gold, weapons, etc",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:26.046839+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1474099",
+      "author": "sushibyte",
+      "date": "2024-10-06T23:11:51+0900",
+      "body": "I have 20 characters in my game, making up 5 different parties. When you switch worlds, you switch parties and I don't want to share gold, weapons, etc. Would I need a plugin to achieve this or is there another way?"
+    },
+    {
+      "post_id": "js-post-1474100",
+      "author": "Aerosys",
+      "date": "2024-10-06T23:17:18+0900",
+      "body": "Theoretically, one can achieve that using only pure eventing, but realistically, you should use a plugin. I think there are already a handful out there because this question is frequently asked."
+    },
+    {
+      "post_id": "js-post-1474102",
+      "author": "sushibyte",
+      "date": "2024-10-06T23:31:05+0900",
+      "body": "there are certainly party switching plugins but I haven't found any that ables each party to have their own inventories"
+    },
+    {
+      "post_id": "js-post-1474104",
+      "author": "caethyril",
+      "date": "2024-10-06T23:39:39+0900",
+      "body": "I dug up an old post of mine:\ncaethyril said:\nI don't know if this'll play nice with the plugins you're using, but you could try these script calls:\nMemorise/store inventory:\n// Store the party inventory data in variable ID 1\n$gameVariables.setValue(1, {\n  Armors: Object.assign({}, $gameParty._armors),\n  Items: Object.assign({}, $gameParty._items),\n  Weapons: Object.assign({}, $gameParty._weapons)\n});\nClear inventory:\n$gameParty.initAllItems();\nRestore inventory:\n// Restore party inventory from variable ID 1\nconst data = $gameVariables.value(1);\nfor (const k in data) {\n  const items = window['$data' + k];\n  for (const n in data[k]) {\n    $gameParty.gainItem(items[n], data[k][n]);\n  }\n};\nIf you're using anything for instanced (a.k.a. \"independent\") items then you may need something different. For future reference, these examples are from the\nMV / MZ Script Call List\n.\nNote that (re)storing gold doesn't need scripting:\nStore: Control Variables -> Game Data -> Other -> Gold;\nRestore: Change Gold -> Variable.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1474106",
+      "author": "sushibyte",
+      "date": "2024-10-06T23:55:58+0900",
+      "body": "Chat gpt wrote me this plugin for inventory management. It works, I just have to Add and Remove characters manually which is not bad, just a bit more work\n/*:\n* @target MZ\n* @plugindesc Separate inventories for different parties in RPG Maker MZ.\n*\n@Help\nThis plugin allows each party to have its own separate inventory,\n* including gold, items, weapons, and armors.\n*\n* Plugin Commands:\n* - SetPartyInventory partyId\n*   Switches to the inventory for the specified party ID.\n*\n* @command SetPartyInventory\n* @text Set Party Inventory\n*\n@desc\nSwitches to the inventory for the specified party ID.\n*\n* @arg partyId\n* @type number\n*\n@min\n1\n*\n@desc\nThe ID of the party you want to switch to.\n*/\n(() => {\nconst partyInventories = {};\nconst saveCurrentPartyInventory = (partyId) => {\npartyInventories[partyId] = {\ngold: $gameParty.gold(),\nitems: JSON.parse(JSON.stringify($gameParty._items)),\nweapons: JSON.parse(JSON.stringify($gameParty._weapons)),\narmors: JSON.parse(JSON.stringify($gameParty._armors))\n};\n};\nconst loadPartyInventory = (partyId) => {\nconst inventory = partyInventories[partyId];\nif (inventory) {\n$gameParty.gainGold(inventory.gold - $gameParty.gold());\n$gameParty._items = JSON.parse(JSON.stringify(inventory.items));\n$gameParty._weapons = JSON.parse(JSON.stringify(inventory.weapons));\n$gameParty._armors = JSON.parse(JSON.stringify(inventory.armors));\n} else {\n// Initialize a new inventory if none exists for the party\npartyInventories[partyId] = {\ngold: 0,\nitems: {},\nweapons: {},\narmors: {}\n};\nloadPartyInventory(partyId);\n}\n};\nPluginManager.registerCommand('SeparatePartyInventories', 'SetPartyInventory', args => {\nconst partyId = Number(args.partyId);\nsaveCurrentPartyInventory($gameParty._partyId);\nloadPartyInventory(partyId);\n$gameParty._partyId = partyId;\n});\n// Register the command in the plugin manager\nPluginManager.registerCommand('SeparatePartyInventories', 'SetPartyInventory', args => {\nconst partyId = Number(args.partyId);\nsaveCurrentPartyInventory($gameParty._partyId);\nloadPartyInventory(partyId);\n$gameParty._partyId = partyId;\n});\nconst _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;\nGame_Interpreter.prototype.pluginCommand = function(command, args) {\n_Game_Interpreter_pluginCommand.apply(this, arguments);\nif (command === 'SetPartyInventory') {\nconst partyId = Number(args[0]);\nsaveCurrentPartyInventory($gameParty._partyId);\nloadPartyInventory(partyId);\n$gameParty._partyId = partyId;\n}\n};\n})();"
+    },
+    {
+      "post_id": "js-post-1474112",
+      "author": "caethyril",
+      "date": "2024-10-07T00:45:56+0900",
+      "body": "Unless I've missed something, that code stores the data per-session, rather than per-playthrough: it is only initialised on boot, not on new game, and is not stored in save files. This means:\nRecalling an inventory saved during the current session for a different playthrough is possible.\nAttempting to load any inventory saved in a different session will fail."
+    },
+    {
+      "post_id": "js-post-1474116",
+      "author": "sushibyte",
+      "date": "2024-10-07T01:09:00+0900",
+      "body": "caethyril said:\nUnless I've missed something, that code stores the data per-session, rather than per-playthrough: it is only initialised on boot, not on new game, and is not stored in save files. This means:\nRecalling an inventory saved during the current session for a different playthrough is possible.\nAttempting to load any inventory saved in a different session will fail.\nClick to expand...\nThanks a bunch for pointing this out! Chat GPT revised the code to avoid that.\n/*:\n* @target MZ\n* @plugindesc Separate inventories for each party with persistent storage.\n*\n@Author\nYourName\n*\n*\n@param\nInventoryData\n* @text Initial Inventory Data\n* @type struct<Inventory>[]\n*\n@Default\n[]\n*\n* @command SetPartyInventory\n* @text Set Party Inventory\n*\n@desc\nSet the inventory for a specific party ID.\n*\n* @arg partyId\n* @text Party ID\n* @type number\n*\n@Default\n1\n*\n* @arg items\n* @text Items\n* @type string\n*\n@Default\n\"\"\n*\n* @command GetPartyInventory\n* @text Get Party Inventory\n*\n@desc\nRetrieve the inventory for a specific party ID.\n*\n* @arg partyId\n* @text Party ID\n* @type number\n*\n@Default\n1\n*\n*\n@Help\n* This plugin allows you to manage separate inventories for different parties.\n*\n* Each party can have its own inventory, which is saved across playthroughs.\n*/\n(() => {\nconst parameters = PluginManager.parameters('SeparatePartyInventory');\nconst inventoryData = JSON.parse(parameters['InventoryData'] || \"[]\");\n// Store inventories in a global variable\nconst inventories = {};\n// Load inventories from saved data\nconst loadInventories = () => {\nconst savedData = StorageManager.loadObject('PartyInventories');\nreturn savedData || {};\n};\n// Save inventories to local storage\nconst saveInventories = () => {\nStorageManager.saveObject('PartyInventories', inventories);\n};\n// Initialize inventories\nconst initInventories = () => {\nfor (let i = 1; i <= 20; i++) { // Assuming a max of 20 parties\nif (!inventories\n) {\ninventories\n= {\nitems: {},\nweapons: {},\narmors: {}\n};\n}\n}\n};\n// Command to set party inventory\nPluginManager.registerCommand('SeparatePartyInventory', 'SetPartyInventory', args => {\nconst partyId = Number(args.partyId);\nconst items = JSON.parse(args.items);\ninventories[partyId].items = items; // Save the items for the party\nsaveInventories(); // Save to local storage\n});\n// Command to get party inventory\nPluginManager.registerCommand('SeparatePartyInventory', 'GetPartyInventory', args => {\nconst partyId = Number(args.partyId);\nconst inventory = inventories[partyId];\n// Do something with the retrieved inventory, like displaying it\nconsole.log(`Inventory for Party ${partyId}:`, inventory);\n});\n// Initialize on game start\nconst startGame = () => {\ninventories = loadInventories(); // Load inventories when the game starts\ninitInventories(); // Initialize inventories if not set\n};\n// Call startGame function when the game starts\nconst _Scene_Boot_start = Scene_Boot.prototype.start;\nScene_Boot.prototype.start = function() {\n_Scene_Boot_start.call(this);\nstartGame();\n};\n// Add an alias for saving the game\nconst _DataManager_makeSaveContents = DataManager.makeSaveContents;\nDataManager.makeSaveContents = function() {\nconst contents = _DataManager_makeSaveContents.call(this);\ncontents.partyInventories = inventories; // Save inventories to game data\nreturn contents;\n};\n// Add an alias for loading the game\nconst _DataManager_extractSaveContents = DataManager.extractSaveContents;\nDataManager.extractSaveContents = function(contents) {\n_DataManager_extractSaveContents.call(this, contents);\ninventories = contents.partyInventories || {}; // Load inventories from game data\n};\n})();"
+    },
+    {
+      "post_id": "js-post-1474125",
+      "author": "Mythik",
+      "date": "2024-10-07T02:13:28+0900",
+      "body": "Hi. This plugin does exactly what you ask for, just in case.\nInventorySwitch an RPG Maker MV & MZ Plugin\nYou ever wanted to have individual character inventories or you wanted to have a flashback scene and you didn't want your player able to access their original inventory? Well, I have the solution to the problem you have never had!  These plugins are free for use in anything. I would like credits...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1474130",
+      "author": "sushibyte",
+      "date": "2024-10-07T03:11:29+0900",
+      "body": "Mythik said:\nHi. This plugin does exactly what you ask for, just in case.\nInventorySwitch an RPG Maker MV & MZ Plugin\nYou ever wanted to have individual character inventories or you wanted to have a flashback scene and you didn't want your player able to access their original inventory? Well, I have the solution to the problem you have never had!  These plugins are free for use in anything. I would like credits...\nforums.rpgmakerweb.com\nClick to expand...\nIt does! I just wished a general plugin would exist to have Party iDs, so that you don't have to Add and Remove every character needed when you switch parties."
+    },
+    {
+      "post_id": "js-post-1474137",
+      "author": "caethyril",
+      "date": "2024-10-07T03:42:07+0900",
+      "body": "@sushibyte\n- I found this plugin with a quick search:\nMultiple Parties\nDescription: Very small plugin that allows creating multiple parties in your game and switching between them using plugin commands. Further parties, including their starting items and gold can be setup in the plugin parameters, so they are known right from the start of your game and you can...\nforums.rpgmakerweb.com\nI skimmed its code: looks good but I haven't tested it.\nSpoiler:\nif that fails...\nYou might want to test that revised Chat GPT code in the \"new game\" situation I described before. I would also suggest putting \"Chat GPT\" in the\n@author\nfield of the plugin's header section.\nBased on a quick look at its code, the MZ plugin\n@Mythik\nsuggested looks like it would have a similar problem, storing data per-session rather than per-playthrough. I haven't tested it, though.\nScript calls (\neval\n) like I originally suggested may be sub-optimal, but I think the main goal should be to get things working with tried-and-tested solutions, rather than attempting to shave off a few milliseconds from a process that isn't happening frequently (e.g. every frame).\nPS: in future, consider using the\n</>\nbutton (\"Code\") to format any code that you post here~"
+    },
+    {
+      "post_id": "js-post-1474159",
+      "author": "sushibyte",
+      "date": "2024-10-07T09:49:55+0900",
+      "body": "caethyril said:\nlet me try\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1474228",
+      "author": "Andar",
+      "date": "2024-10-07T17:20:23+0900",
+      "body": "sushibyte said:\nIt does! I just wished a general plugin would exist to have Party iDs, so that you don't have to Add and Remove every character needed when you switch parties.\nClick to expand...\nyour problem is that different programmers use the term \"Party Manager\" differently, making it almost impossible to search for a specific variant.\nMost party manager plugins are for managing the actors inside a single party (like yanfly's).\nWhat you want is a party manager in Tsukihime's style for managing multiple parties (including different members and different inventories).\nOfficially Tsukihime's Party Manager on himeworks.com is only for MV, but I recently heard that it also works in MZ (might or might not need FOSSIL)"
+    },
+    {
+      "post_id": "js-post-1474240",
+      "author": "caethyril",
+      "date": "2024-10-07T19:02:50+0900",
+      "body": "Also, I've been reminded (oops) that\nGeneral Rule 4.4\nprohibits posting of AI-generated responses without personal input or insight:\n4.4\nDo\nNOT\npost ChatGPT or other AI generated responses\nwithout\nincluding your own opinions, experiences, and input. Additionally,\nsources\nif AI is used to state something as factual. Posting a generated response that could be obtained by anyone using these tools is low quality and will be considered spam. This may warrant your post being removed or other actions on a case-by-case basis.\nClick to expand...\nYou're not in trouble this time, no worries.\nPlease try to follow the rules in future, though.\nHopefully that Multiple Parties plugin I linked works out for you!"
+    },
+    {
+      "post_id": "js-post-1474288",
+      "author": "sushibyte",
+      "date": "2024-10-07T23:26:59+0900",
+      "body": "caethyril said:\nAlso, I've been reminded (oops) that\nGeneral Rule 4.4\nprohibits posting of AI-generated responses without personal input or insight:\nYou're not in trouble this time, no worries.\n[mod]Please try to follow the rules in future, though.[/mod] Hopefully that Multiple Parties plugin I linked works out for you!\nClick to expand...\nThank you. I had no idea. I will refrain from posting chat gpt replies. Also, yes, your Multiple parties plugin works like intended. Thank you. Sorry for everything, post can be closed."
+    },
+    {
+      "post_id": "js-post-1474449",
+      "author": "Ms Littlefish",
+      "date": "2024-10-08T21:15:53+0900",
+      "body": "This thread is closed at OP’s request."
+    }
+  ]
+}

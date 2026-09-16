@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/recreating-a-pokemon-ability-into-a-passive-state.172323",
+  "title": "Recreating a Pokemon ability into a passive state",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:29.956798+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1473382",
+      "author": "CSpringer205",
+      "date": "2024-10-03T08:09:39+0900",
+      "body": "I've been doing some research on Lucario's abilities, and I'm interested in incorporating them into passive states for a game. One of his abilities, Inner Focus, prevents him from being flinched. To reflect this, I plan to reduce the chance of him being stunned to 50%. However, I'm unsure how to implement the other ability, Steadfast, which increases his speed each time he gets flinched. I would really appreciate any assistance with this. Thank you."
+    },
+    {
+      "post_id": "js-post-1473383",
+      "author": "Robro33",
+      "date": "2024-10-03T08:13:37+0900",
+      "body": "with yanfly's buffs and states plugin, give your flinch state the following notetag\nCode:\n<custom apply effect>\nif (user.isStateAffected(x))\n  user.addBuff(6, 5);\n</custom apply effect>\nand replace the x with the id for the steadfast state.\nthen any time the stunned state is applied to a battler with the passive, they gain a speed buff for 5 turns\nEDIT: i saw the Primarily used engine was MV, but just incase. is this for MV or MZ?"
+    },
+    {
+      "post_id": "js-post-1473389",
+      "author": "CSpringer205",
+      "date": "2024-10-03T08:34:14+0900",
+      "body": "Robro33 said:\nwith yanfly's buffs and states plugin, give your flinch state the following notetag\nCode:\n<custom apply effect>\nif (user.isStateAffected(x))\n  user.addBuff(6, 5);\n</custom apply effect>\nand replace the x with the id for the steadfast state.\nthen any time the stunned state is applied to a battler with the passive, they gain a speed buff for 5 turns\nEDIT: i saw the Primarily used engine was MV, but just incase. is this for MV or MZ?\nClick to expand...\nThis is for RPG Maker MZ."
+    },
+    {
+      "post_id": "js-post-1473395",
+      "author": "Robro33",
+      "date": "2024-10-03T08:45:39+0900",
+      "body": "ok, just making sure. i remember you had threads in the past about mv projects and using yanfly plugins\nyou'd need to use something like either\nTuran's eval tags\n, or the\nVisustella buffs and skills\nplugin. from there change \"custom apply effect\" to \"State Apply Eval\" or \"JS On Add State\" depending on which one. the contents of the notetag remains the same"
+    },
+    {
+      "post_id": "js-post-1473396",
+      "author": "CSpringer205",
+      "date": "2024-10-03T08:48:59+0900",
+      "body": "I do have the VisuStella Skills and States Core on MZ.\nI might've ran into a problem when I used this code for the JS Passive Condition.\n<JS Passive Condition>\nif (user.isStateAffected(13))\nuser.addBuff(6, 5);\n</JS Passive Condition>\nClick to expand...\nI have received a TypeError: Cannot read property 'speed' of undefined"
+    },
+    {
+      "post_id": "js-post-1473403",
+      "author": "Robro33",
+      "date": "2024-10-03T09:05:50+0900",
+      "body": "CSpringer205 said:\nI used this code for the JS Passive Condition\nClick to expand...\ni didnt say to make it the passive's condition.\ni said:\nRobro33 said:\ngive your flinch state the following notetag\nClick to expand...\nRobro33 said:\nCode:\n<custom apply effect>\nif (user.isStateAffected(x))\n  user.addBuff(6, 5);\n</custom apply effect>\nClick to expand...\nRobro33 said:\nfrom there change \"\ncustom apply effect\n\" to... \"\nJS On Add State\n\"...\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1473412",
+      "author": "CSpringer205",
+      "date": "2024-10-03T10:48:58+0900",
+      "body": "Oh, okay then."
+    },
+    {
+      "post_id": "js-post-1473413",
+      "author": "Robro33",
+      "date": "2024-10-03T10:53:13+0900",
+      "body": "there is one change to make now that its crossed my mind. change the \"user\"s to \"target\"s. it didnt matter in the Yanfly plugin, but theyre different in the VS one"
+    },
+    {
+      "post_id": "js-post-1473418",
+      "author": "CSpringer205",
+      "date": "2024-10-03T12:05:40+0900",
+      "body": "Nothing happened...? I put the code in the stun state's notetag, but Lucario didn't get a speed stat when he was stunned. What am I doing wrong?"
+    },
+    {
+      "post_id": "js-post-1473426",
+      "author": "Robro33",
+      "date": "2024-10-03T12:41:35+0900",
+      "body": "found it. visustella passives arent detected by isStateAffected() like yanfly ones are. try to replace\nCode:\nif (target.isStateAffected(13))\nwith\nCode:\nif (target.states().includes($dataStates[13]))"
+    },
+    {
+      "post_id": "js-post-1473436",
+      "author": "CSpringer205",
+      "date": "2024-10-03T13:22:32+0900",
+      "body": "Sadly, it still didn't work. The speed buff still did not kick in after Lucario got stunned. Thanks for trying, though."
+    },
+    {
+      "post_id": "js-post-1473438",
+      "author": "Robro33",
+      "date": "2024-10-03T13:30:04+0900",
+      "body": "so lets make sure here then. your notebox for the flinch state looks like this now:\nCode:\n<JS On Add State>\nif (target.states().includes($dataStates[13]))\n  target.addBuff(6, 5);\n</JS On Add State>\nyour steadfast passive is state #13, and the actor has the passive active, right?"
+    },
+    {
+      "post_id": "js-post-1473512",
+      "author": "CSpringer205",
+      "date": "2024-10-03T22:41:48+0900",
+      "body": "No, that's stun. My steadfast passive is state #68. And yes, he has the passive state under his class notetag."
+    },
+    {
+      "post_id": "js-post-1473514",
+      "author": "Robro33",
+      "date": "2024-10-03T22:49:07+0900",
+      "body": "CSpringer205 said:\nNo, that's stun. My steadfast passive is state #68\nClick to expand...\nimmediately after i gave you the notetag in the first reply, i said:\nRobro33 said:\nreplace the x with the id for the steadfast state.\nClick to expand...\nthe first bit of code you gave back to me used 13"
+    },
+    {
+      "post_id": "js-post-1473520",
+      "author": "CSpringer205",
+      "date": "2024-10-03T23:12:53+0900",
+      "body": "It worked! I changed the 13 into 68, put the code back into the stun notetag, and Lucario got a speed buff after getting stunned! Thank you very much!"
+    }
+  ]
+}

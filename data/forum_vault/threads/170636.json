@@ -1,0 +1,149 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/need-help-on-a-bunch-of-complicated-skills-cant-figure-out-how-to-put-them-in.170636",
+  "title": "Need help on a bunch of complicated skills, can't figure out how to put them in.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:33:01.653259+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1459769",
+      "author": "The_Green",
+      "date": "2024-07-27T00:26:07+0900",
+      "body": "So I have a bunch of skills I wanna add into my game, but these few genuinely have me stumped on how to add them in.\nPlease help me it's been two days and I can't find an answer even using google.\nSkill 1\nBasically it's a multiple repeat attack skill, but each time you hit someone, the chance of critting is higher\nE.G : skill is named double attack, the second attack has a higher chance of crit, triple, yeah\nSkill 2\nSame as skill 1, but you get 25% of your MP back if you kill an enemy wit hit\nSkill 3\nA skill that charges for one turn, and then automatically uses the next turn to attack, then it lowers their maximum HP for the fight only\nSkill 4\nAn attack that does more damage if the user has any debuffs.\nSkill 5\nA skill that lowers maximum MP by 20% to boost another ally's chance of critting by 45% for the rest of the battle.\nDear god please help I've literally ripped out a few hairs because of this"
+    },
+    {
+      "post_id": "js-post-1459782",
+      "author": "Xaniro",
+      "date": "2024-07-27T01:16:46+0900",
+      "body": "I thought it was for rpg maker mv haha. I couldn't help you because I don't use vxace."
+    },
+    {
+      "post_id": "js-post-1459787",
+      "author": "ATT_Turan",
+      "date": "2024-07-27T01:24:39+0900",
+      "body": "@Xaniro\nYanfly's Tips & Tricks are for RPG Maker MV with the plugins he wrote for that engine.\nThis question is for RPG Maker VX Ace."
+    },
+    {
+      "post_id": "js-post-1459818",
+      "author": "EntangledPear",
+      "date": "2024-07-27T04:12:26+0900",
+      "body": "For skill 1, is it multiple attacks in one turn, or it's attack in one turn, then attack in the next, with higher chance of crit? From what you wrote I think it's the first one, but I'm not completely sure.\nSkill 2 - not sure how to find out the hit killed the enemy, maybe someone else knows.\nSkill 3 - there's a script for charging that I use, Casting time by Hime. If you want to use that and don't want to search, I can give a link. To lower maxHP, I'd add a state that goes away after the battle is over.\nSkill 4 - if the debuffs are in the form of states, you could check if the user has the state and modify the damage formula, but you'd probably need a script for longer formulas. Or you could use a common event. I'd hazard to say that there's a script that would do this.\nSkill 5 - I think this one could be doable in damage formula, if I understand it correctly. The skill will target an ally, whose crit chance will increase? Or the ally should be random?\nPlease give as much detail as possible so we can work with you"
+    },
+    {
+      "post_id": "js-post-1459902",
+      "author": "The_Green",
+      "date": "2024-07-27T13:02:00+0900",
+      "body": "EntangledPear said:\nFor skill 1, is it multiple attacks in one turn, or it's attack in one turn, then attack in the next, with higher chance of crit? From what you wrote I think it's the first one, but I'm not completely sure.\nSkill 2 - not sure how to find out the hit killed the enemy, maybe someone else knows.\nSkill 3 - there's a script for charging that I use, Casting time by Hime. If you want to use that and don't want to search, I can give a link. To lower maxHP, I'd add a state that goes away after the battle is over.\nSkill 4 - if the debuffs are in the form of states, you could check if the user has the state and modify the damage formula, but you'd probably need a script for longer formulas. Or you could use a common event. I'd hazard to say that there's a script that would do this.\nSkill 5 - I think this one could be doable in damage formula, if I understand it correctly. The skill will target an ally, whose crit chance will increase? Or the ally should be random?\nPlease give as much detail as possible so we can work with you\nClick to expand...\nHey, the first skill in more detail is like : the first attack has no increased chance of critting but the more repeats it has there's a higher chance of it critting.\nCould you send me that script for charging? I went into the states tab and still can't understand how to do it.\nThe person who's crit chance will increase is the ally that it was used on.\nIn the meanwhile i'm gonna try doing what you said and see if I can figure out how to do it, thank you!"
+    },
+    {
+      "post_id": "js-post-1459926",
+      "author": "Kes",
+      "date": "2024-07-27T17:47:08+0900",
+      "body": "Skill 5 - is that lower max HP for the rest of the battle as well?"
+    },
+    {
+      "post_id": "js-post-1459940",
+      "author": "The_Green",
+      "date": "2024-07-27T20:09:25+0900",
+      "body": "Kes said:\nSkill 5 - is that lower max HP for the rest of the battle as well?\nClick to expand...\nYes"
+    },
+    {
+      "post_id": "js-post-1459941",
+      "author": "EntangledPear",
+      "date": "2024-07-27T20:15:34+0900",
+      "body": "The link for Hime's script doesn't work for me right now, I'll send the script to you. Visit\nHime's site\nfor terms and conditions.\nSo let's try skill 1. I'm still not sure if it's one attack repeating more times in one turn, or one attack that can be used again in the following turn, but maybe it doesn't really matter.\nYou'll need a state which will increase the crit chance. Now, I'm not yet sure about how states work in Ace (will have to check it for my game, too), whether when you have a state that increases crit by 10% and you get that state again if it's now 20%, or it just gets replaced and it's still 10%. If someone can enlighten us here, I'd be grateful. Anyway, there are scripts that allow better state control, so you could look into it.\nIf the crit chance increase stacks, you'll need only one state, something like this:\nThen the skill can be set up like this:\nThe a.add_state(N) in the damage formula adds state N(=the ID of your crit increase state) to the user of the skill. The formula after the ; then gives damage that will be done to the target.\nIt should also work if you set the scope to multiple enemies, since the formula should get evaluated for each.\nI'm not sure how to check it does increase the chance, maybe you can make the state give 100% and see if the next attack is really critical.\nLet me know if it seems like what you want and if you try it if it works. I have to go now, but will be back for the rest of the skills, unless someone else beats me to it."
+    },
+    {
+      "post_id": "js-post-1459946",
+      "author": "The_Green",
+      "date": "2024-07-27T20:31:07+0900",
+      "body": "EntangledPear said:\nThe link for Hime's script doesn't work for me right now, I'll send the script to you. Visit\nHime's site\nfor terms and conditions.\nSo let's try skill 1. I'm still not sure if it's one attack repeating more times in one turn, or one attack that can be used again in the following turn, but maybe it doesn't really matter.\nYou'll need a state which will increase the crit chance. Now, I'm not yet sure about how states work in Ace (will have to check it for my game, too), whether when you have a state that increases crit by 10% and you get that state again if it's now 20%, or it just gets replaced and it's still 10%. If someone can enlighten us here, I'd be grateful. Anyway, there are scripts that allow better state control, so you could look into it.\nIf the crit chance increase stacks, you'll need only one state, something like this:\nView attachment 312803\nThen the skill can be set up like this:\nView attachment 312804\nThe a.add_state(N) in the damage formula adds state N(=the ID of your crit increase state) to the user of the skill. The formula after the ; then gives damage that will be done to the target.\nIt should also work if you set the scope to multiple enemies, since the formula should get evaluated for each.\nI'm not sure how to check it does increase the chance, maybe you can make the state give 100% and see if the next attack is really critical.\nLet me know if it seems like what you want and if you try it if it works. I have to go now, but will be back for the rest of the skills, unless someone else beats me to it.\nClick to expand...\nThanks for the reply, going to do this immediately.\nThe_Green said:\nThanks for the reply, going to do this immediately.\nClick to expand...\nDid some testing on it, for some reason it does no damage?\nI tried switching the order of them around, like a.atk * 4 first and then a.addstat, I didn't forget the ; of course. Then I tried to remove the b.def * 2, and still does no damage. Is there a reason for this or is it just cause I'm doing something wrong?"
+    },
+    {
+      "post_id": "js-post-1459956",
+      "author": "Kes",
+      "date": "2024-07-27T21:18:07+0900",
+      "body": "Skill 5\nCreate a state for the increase in CRI\nCreate a second state which reduces MHP to 80%\nNote: both states have the 'Remove at battle end' box checked.\nFor the sake of the example we will say that MHP Forfeit is state #126 and CRI boost is state #127\nCreate a skill with the damage formula as shown, inflicting the CRI boost as shown.  You will need, obviously, to add in all the other elements i.e. skill cost, skill type, hit type etc. As there is no second element in the damage formula I don't think it needs a semi-colon, but it's been so long since I used VXAce that I could be wrong.  You will have to test that yourself."
+    },
+    {
+      "post_id": "js-post-1459968",
+      "author": "EntangledPear",
+      "date": "2024-07-27T23:05:38+0900",
+      "body": "Hm, it gives the damage for me. Can you take a screenshot of the skill and post it here?"
+    },
+    {
+      "post_id": "js-post-1460096",
+      "author": "The_Green",
+      "date": "2024-07-28T12:05:46+0900",
+      "body": "EntangledPear said:\nHm, it gives the damage for me. Can you take a screenshot of the skill and post it here?\nClick to expand...\nI just woke up and when I tried to get a picture that it didn't work for me.... It just suddenly worked??\nKes said:\nSkill 5\nCreate a state for the increase in CRI\nView attachment 312811\nCreate a second state which reduces MHP to 80%\nView attachment 312812\nNote: both states have the 'Remove at battle end' box checked.\nFor the sake of the example we will say that MHP Forfeit is state #126 and CRI boost is state #127\nCreate a skill with the damage formula as shown, inflicting the CRI boost as shown.  You will need, obviously, to add in all the other elements i.e. skill cost, skill type, hit type etc. As there is no second element in the damage formula I don't think it needs a semi-colon, but it's been so long since I used VXAce that I could be wrong.  You will have to test that yourself.\nView attachment 312813\nClick to expand...\nThank you for the help with this one, will be trying out soon!"
+    },
+    {
+      "post_id": "js-post-1460143",
+      "author": "EntangledPear",
+      "date": "2024-07-28T20:11:30+0900",
+      "body": "Skill 3 should be doable like skill 1, with the state added through the damage formula (and with the script).\nI'm not sure about the debuffs and the hit killing the enemy (skills 2 and 4)"
+    },
+    {
+      "post_id": "js-post-1460268",
+      "author": "The_Green",
+      "date": "2024-07-29T08:04:53+0900",
+      "body": "EntangledPear said:\nThe link for Hime's script doesn't work for me right now, I'll send the script to you. Visit\nHime's site\nfor terms and conditions.\nSo let's try skill 1. I'm still not sure if it's one attack repeating more times in one turn, or one attack that can be used again in the following turn, but maybe it doesn't really matter.\nYou'll need a state which will increase the crit chance. Now, I'm not yet sure about how states work in Ace (will have to check it for my game, too), whether when you have a state that increases crit by 10% and you get that state again if it's now 20%, or it just gets replaced and it's still 10%. If someone can enlighten us here, I'd be grateful. Anyway, there are scripts that allow better state control, so you could look into it.\nIf the crit chance increase stacks, you'll need only one state, something like this:\nView attachment 312803\nThen the skill can be set up like this:\nView attachment 312804\nThe a.add_state(N) in the damage formula adds state N(=the ID of your crit increase state) to the user of the skill. The formula after the ; then gives damage that will be done to the target.\nIt should also work if you set the scope to multiple enemies, since the formula should get evaluated for each.\nI'm not sure how to check it does increase the chance, maybe you can make the state give 100% and see if the next attack is really critical.\nLet me know if it seems like what you want and if you try it if it works. I have to go now, but will be back for the rest of the skills, unless someone else beats me to it.\nClick to expand...\nHey! Just tried this out, exactly how I envisioned it worked. Thanks for the help with this one.\nEntangledPear said:\nSkill 3 should be doable like skill 1, with the state added through the damage formula (and with the script).\nI'm not sure about the debuffs and the hit killing the enemy (skills 2 and 4)\nClick to expand...\nFor skill 2, I just decided to make it so that it regens 7 MP per hit instead of the 25% on enemy death. Still not sure on what to do on skill 4."
+    },
+    {
+      "post_id": "js-post-1460277",
+      "author": "Howard_Bentley",
+      "date": "2024-07-29T09:02:59+0900",
+      "body": "For skill 2, I think you should be able to do something like this:\nCode:\nc = FORMULA ; c >= b.hp ? a.mp += a.mmp / 4 : c\nJust replace \"FORMULA\" with your actual formula.\nThe only thing about this is that is doesn't account for crits, so if the enemy has 100 HP, and the skill would normally do 70, you won't get the MP if it KO's the enemy with a crit. Same thing applies with variance.\nAs for skill 4, you can use this:\nCode:\na.buffs[param_id] <0 ? better_formula : weak_formula\nbut that's only checking for one debuff, unfortunately. I have no idea if you'd be able to check all debuffs at once.\nEdit: I got skill 4 working! Here's the formula:\nCode:\nc = 1;a.buffs.each { |x| x<0 ? c = 2 : 0};c * (FORMULA)\nJust add in your formula and change the \"c = 2\" if you want. You could even change the \"c = 2\" to c += 1 if you wanted the skill to deal increasing damage the more debuffs the user has.\nEdit 2: skill 4 requires this scriptlet to work:\nCode:\nclass Game_BattlerBase\n  #--------------------------------------------------------------------------\n  # * Public Instance Variables\n  #--------------------------------------------------------------------------\n  attr_reader   :buffs\nend\nJust add the code into an empty slot below materials and above main."
+    },
+    {
+      "post_id": "js-post-1460334",
+      "author": "The_Green",
+      "date": "2024-07-29T16:39:06+0900",
+      "body": "Howard_Bentley said:\nFor skill 2, I think you should be able to do something like this:\nCode:\nc = FORMULA ; c >= b.hp ? a.mp += a.mmp / 4 : c\nJust replace \"FORMULA\" with your actual formula.\nThe only thing about this is that is doesn't account for crits, so if the enemy has 100 HP, and the skill would normally do 70, you won't get the MP if it KO's the enemy with a crit. Same thing applies with variance.\nAs for skill 4, you can use this:\nCode:\na.buffs[param_id] <0 ? better_formula : weak_formula\nbut that's only checking for one debuff, unfortunately. I have no idea if you'd be able to check all debuffs at once.\nEdit: I got skill 4 working! Here's the formula:\nCode:\nc = 1;a.buffs.each { |x| x<0 ? c = 2 : 0};c * (FORMULA)\nJust add in your formula and change the \"c = 2\" if you want. You could even change the \"c = 2\" to c += 1 if you wanted the skill to deal increasing damage the more debuffs the user has.\nClick to expand...\nYo! Thanks for the solutions to 2 and 4, absolutely wouldn't have ever figured this out by myself.\nHow did you add the formula to skill 4 without crashing the game? I pasted the exact thing, but with c+= 1 on it, then put a.atk * 5 on it like this."
+    },
+    {
+      "post_id": "js-post-1460403",
+      "author": "Howard_Bentley",
+      "date": "2024-07-30T03:17:25+0900",
+      "body": "@The_Green\nYou added an extra semicolon in the damage formula:\nJust remove that and you should be good to go."
+    },
+    {
+      "post_id": "js-post-1460476",
+      "author": "The_Green",
+      "date": "2024-07-30T17:08:52+0900",
+      "body": "Howard_Bentley said:\n@The_Green\nYou added an extra semicolon in the damage formula:\nView attachment 313053\nJust remove that and you should be good to go.\nClick to expand...\nRemoved it, now it doesn't do any damage and says \"NULL\""
+    },
+    {
+      "post_id": "js-post-1460629",
+      "author": "Howard_Bentley",
+      "date": "2024-07-31T08:37:15+0900",
+      "body": "@The_Green\nJust add this as a new script below Materials and above Main:\nCode:\nclass Game_BattlerBase\n  #--------------------------------------------------------------------------\n  # * Public Instance Variables\n  #--------------------------------------------------------------------------\n  attr_reader   :buffs\nend\nIt only worked for me because one of the scripts I had installed happened to have this."
+    },
+    {
+      "post_id": "js-post-1460654",
+      "author": "The_Green",
+      "date": "2024-07-31T14:04:28+0900",
+      "body": "Howard_Bentley said:\n@The_Green\nJust add this as a new script below Materials and above Main:\nCode:\nclass Game_BattlerBase\n  #--------------------------------------------------------------------------\n  # * Public Instance Variables\n  #--------------------------------------------------------------------------\n  attr_reader   :buffs\nend\nIt only worked for me because one of the scripts I had installed happened to have this.\nClick to expand...\nJust worked, thanks for the help!"
+    },
+    {
+      "post_id": "js-post-1460691",
+      "author": "The_Green",
+      "date": "2024-07-31T20:16:48+0900",
+      "body": "I think all the skills I've listed are all done, thanks to everyone for the help with this, hopefully I won't have to come back and ask for help once more in the future."
+    },
+    {
+      "post_id": "js-post-1460713",
+      "author": "EntangledPear",
+      "date": "2024-07-31T22:35:15+0900",
+      "body": "Don't worry about it, we like to help. At least I personally learn from tryng to help others, too. So ask away when you need it!"
+    },
+    {
+      "post_id": "js-post-1460903",
+      "author": "hiddenone",
+      "date": "2024-08-02T01:37:51+0900",
+      "body": "This thread is being closed, due to being solved. If for some reason you would like this thread re-opened, please report this post and leave a message why. Thank you."
+    }
+  ]
+}

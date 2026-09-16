@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/conversion-mosaic-effect-transfer-pixelated-transition.172510",
+  "title": "MZ [CONVERSION] Mosaic Effect Transfer (Pixelated Transition)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:21.859499+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1474899",
+      "author": "maxdevige",
+      "date": "2024-10-11T02:31:50+0900",
+      "body": "Hello everyone,\nI fell in love with the map transition by Mikagami Atelier presented in\nthis thread\n, which reminds me of FF6 and which I would absolutely like to implement in my game.\nIt's a \"mosaic\" transition, where the pixels on the screen slowly grow larger before shrinking to reveal the new screen.\nI've seen that Hakuen Studio offers a version of a similar effect, but this one is rougher, faster and cuts to black at the end. In short, it hurts the eyes a little more. I'd really like to recapture the smoothness of Mikagami Atelier's version.\nThat's why I'm looking for someone willing to try and adapt\nthis script\ninto a working plugin for RPG Maker MZ.\nUnfortunately, as my javascript skills are nil, I can't take on this project myself...\nThanks in advance for any help you can give me."
+    },
+    {
+      "post_id": "js-post-1474908",
+      "author": "LeashaX",
+      "date": "2024-10-11T03:48:23+0900",
+      "body": "Try this (Untested):\nJavaScript:\n//==============================================================================\n/**\n * Mosaic Effect Transfer\n * Ver 0.01 2022/04/22\n * http://fweb.midi.co.jp/~mikagami/atelier/\n */\n//==============================================================================\n\nclass Game_Temp {\n    constructor() {\n        this.clear();\n    }\n\n    clear() {\n        this.fadeType2 = 0;  // Clear\n    }\n\n    mosaic() {\n        this.fadeType2 = 1;  // Mosaic effect\n    }\n\n    isMosaic() {\n        return this.fadeType2 === 1;  // Is Mosaic?\n    }\n\n    isActive() {\n        this.fadeType2 = this.fadeType2 || 0;\n        return this.fadeType2 >= 1;  // Is active?\n    }\n}\n\nclass Scene_Map extends Scene_Base {\n    preTransfer() {\n        this._mapNameWindow.close();\n        if ($gameTemp.isActive()) {\n            this.mosaicOut();\n        } else {\n            switch ($gameTemp.fadeType) {\n                case 0:\n                    this.fadeOut(this.fadeOutSpeed());\n                    break;\n                case 1:\n                    this.whiteFadeOut(this.fadeOutSpeed());\n                    break;\n            }\n        }\n    }\n\n    postTransfer() {\n        if ($gameTemp.isActive()) {\n            this.updateForFade();\n            this.mosaicIn();\n            $gameTemp.clear();\n        } else {\n            switch ($gameTemp.fadeType) {\n                case 0:\n                    this.wait(this.fadeInSpeed() / 2);\n                    this.fadeIn(this.fadeInSpeed());\n                    break;\n                case 1:\n                    this.wait(this.fadeInSpeed() / 2);\n                    this.whiteFadeIn(this.fadeInSpeed());\n                    break;\n            }\n        }\n        this._mapNameWindow.open();\n    }\n\n    // Mosaic screen in\n    mosaicIn(duration = 2) {\n        Graphics.brightness = 255;\n        const bmps = this.createMosaicBitmapArray();\n        const sprite = new Sprite();\n        sprite.z = 255;\n        sprite.bitmap = new Bitmap(Graphics.width, Graphics.height);\n        for (let i = 0; i < 16; i++) {\n            sprite.bitmap.stretchBlt(sprite.bitmap.rect, bmps[15 - i], bmps[15 - i].rect);\n            sprite.setColor(0, 0, 0, (16 - i) ** 2);\n            for (let j = 0; j < duration; j++) {\n                this.updateBasic();\n            }\n        }\n        bmps.forEach(bmp => bmp.dispose());\n        sprite.dispose();\n    }\n\n    // Mosaic screen out\n    mosaicOut(duration = 2) {\n        const bmps = this.createMosaicBitmapArray();\n        const sprite = new Sprite();\n        sprite.z = 255;\n        sprite.bitmap = new Bitmap(Graphics.width, Graphics.height);\n        for (let i = 0; i < 16; i++) {\n            sprite.bitmap.stretchBlt(sprite.bitmap.rect, bmps[i], bmps[i].rect);\n            sprite.setColor(0, 0, 0, i ** 2);\n            for (let j = 0; j < duration; j++) {\n                this.updateBasic();\n            }\n        }\n        Graphics.brightness = 0;\n        bmps.forEach(bmp => bmp.dispose());\n        sprite.dispose();\n    }\n\n    // Create mosaic pattern\n    createMosaicBitmapArray() {\n        const bmp = Graphics.snapToBitmap();\n        const bmps = [];\n        for (let i = 0; i < 16; i++) {\n            bmps[i] = new Bitmap(Graphics.width / (i * 2 + 2), Graphics.height / (i * 2 + 2));\n            bmps[i].stretchBlt(bmps[i].rect, bmp, bmp.rect);\n        }\n        bmp.dispose();\n        return bmps;\n    }\n}"
+    },
+    {
+      "post_id": "js-post-1474922",
+      "author": "maxdevige",
+      "date": "2024-10-11T05:12:55+0900",
+      "body": "Hello\nand thanks for your quick reply!\nI tried to add the code you suggest as a plugin in my project.\nUnfortunately, I get the following error message when I run the game:\nSyntaxError\nIdentifier 'Game_Temp' has already been declared"
+    },
+    {
+      "post_id": "js-post-1474923",
+      "author": "Mac15001900",
+      "date": "2024-10-11T05:13:47+0900",
+      "body": "LeashaX said:\nTry this (Untested):\nClick to expand...\nFrom a quick glance, I can spare OP the testing - this won't work.\nHow exactly did you get this plugin? Because it sure looks a lot like the result of asking an AI to port the original script."
+    },
+    {
+      "post_id": "js-post-1475127",
+      "author": "LeashaX",
+      "date": "2024-10-12T06:54:42+0900",
+      "body": "maxdevige said:\nHello\nand thanks for your quick reply!\nI tried to add the code you suggest as a plugin in my project.\nUnfortunately, I get the following error message when I run the game:\nSyntaxError\nIdentifier 'Game_Temp' has already been declare\nClick to expand...\nWhen i come from work i test AND i check it maybe i can make this plugin work."
+    },
+    {
+      "post_id": "js-post-1475143",
+      "author": "ATT_Turan",
+      "date": "2024-10-12T11:41:29+0900",
+      "body": "Just a reminder - aside from risking the scorn of\n@Mac15001900\n, it is against the forum rules to distribute AI-generated assets, including plugins. Whether they work or not."
+    },
+    {
+      "post_id": "js-post-1475206",
+      "author": "maxdevige",
+      "date": "2024-10-12T22:50:21+0900",
+      "body": "LeashaX said:\nWhen i come from work i test AND i check it maybe i can make this plugin work.\nClick to expand...\nThank you so much !\nDid you have time to check it ?"
+    },
+    {
+      "post_id": "js-post-1496050",
+      "author": "maxdevige",
+      "date": "2025-01-28T02:24:33+0900",
+      "body": "Hi !\nI just tried this plugin :\nhttps://hakuenstudio.itch.io/hakuen-studio-map-transitions-for-rpg-maker-mz\nbut it just doesn't work...\nWould anyone be able to convert the Mikagami Atelier version to MZ?\nThanks to all"
+    }
+  ]
+}

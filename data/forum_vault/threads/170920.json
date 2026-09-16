@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/change-game-sizescreen-but-keep-640x480-stretched.170920",
+  "title": "Change game sizescreen but keep 640x480 (stretched)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:48.322714+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1462134",
+      "author": "thalesgal",
+      "date": "2024-08-07T22:09:37+0900",
+      "body": "Hello guys!\nSo I made my game entirelly 640x480. But I would like to give more options to the player because 640x480 nowadays could be very small on bigger screens. And some players dont want to play fullscreen (alt + enter).\nSo I would like to ask for a script to add an option to the player to choose the screen size of the game.\nI would like a new button option to be added on the MENU and the title screen called \"Screen Size\"\nThis button could have like 4 options.\nDefault (640x480)\n1280 x 960\n1400 x 1050\nFullscreen (Alt + enter)\n*Please note that the game, pictures, and sprites will remain at the default size. It should just stretch just like alt + enter does.\n*I have look some scripts through the internet but I just found scripts to resize the entire game. I just want to stretch the screen.\nPlease let me know if its something possible to do!\nLooking forward to some information about that.\nCheers!"
+    },
+    {
+      "post_id": "js-post-1462177",
+      "author": "Artille",
+      "date": "2024-08-08T02:10:18+0900",
+      "body": "This has been quite the journey...\nI didn't manage to solve a small bug, which is a black border showing up on title screen, but this is only happening on the title screen\n, ingame has no black borders.\nI added other resolutions, but you can easily adjust the resolutions you want in the SIZES list\nSpoiler:\nScreen Resizing Material\nRuby:\n# Screen Size Options Script\n# Add this script below Materials and above Main\n\nmodule Screen_Size\n  BASE_WIDTH = 544\n  BASE_HEIGHT = 416\n  COMMAND_NAME = \"Screen size\"\n\n  SIZES = [\n    [\"Default\", BASE_WIDTH, BASE_HEIGHT],\n    [\"640x480\", 640, 480],\n    [\"900x600\", 900, 600],\n    [\"1280x960\", 1280, 960],\n    [\"1400x1050\", 1400, 1050],\n    [\"Fullscreen\", -1, -1]\n  ]\n\n  def self.change_size(index)\n    width, height = SIZES[index][1], SIZES[index][2]\n    if width == -1 && height == -1\n      toggle_fullscreen\n    else\n      Graphics.resize_screen(width, height)\n      resize_window(width, height)\n    end\n  end\n\n  def self.toggle_fullscreen\n    if defined?(Win32API)\n      user32 = Win32API.new('user32', 'GetSystemMetrics', 'I', 'I')\n      sm_cxscreen = user32.call(0)\n      sm_cyscreen = user32.call(1)\n      resize_window(sm_cxscreen, sm_cyscreen)\n    end\n  end\n\n  def self.resize_window(width, height)\n    hwnd = Win32API.new('user32', 'GetForegroundWindow', '', 'L').call\n    set_window_pos = Win32API.new('user32', 'SetWindowPos', 'LLIIIII', 'I')\n    # Get the screen size to center the window\n    user32 = Win32API.new('user32', 'GetSystemMetrics', 'I', 'I')\n    screen_width = user32.call(0)\n    screen_height = user32.call(1)\n    x = (screen_width - width) / 2\n    y = (screen_height - height) / 2\n    set_window_pos.call(hwnd, 0, x, y, width, height, 0x0040)\n  end\nend\n\nclass Window_ScreenSize < Window_Command\n  def initialize\n    super(0, 0)\n    center_window\n    select(0)\n  end\n\n  def window_width\n    return 200\n  end\n\n  def make_command_list\n    Screen_Size::SIZES.each do |size|\n      add_command(size[0], :screen_size)\n    end\n  end\n\n  def center_window\n    self.x = (Graphics.width - window_width) / 2\n    self.y = (Graphics.height - window_height) / 2\n  end\nend\n\nclass Scene_ScreenSize < Scene_MenuBase\n  def start\n    super\n    create_command_window\n  end\n\n  def create_command_window\n    @command_window = Window_ScreenSize.new\n    @command_window.set_handler(:screen_size, method(:command_size))\n    @command_window.set_handler(:cancel, method(:return_scene))\n    @command_window.set_handler(:ok, method(:command_size))\n    @command_window.open\n  end\n\n  def command_size\n    Screen_Size.change_size(@command_window.index)\n    return_scene\n  end\nend\n\nclass Scene_Title < Scene_Base\n  alias original_create_command_window create_command_window\n\n  def create_command_window\n    original_create_command_window\n    @command_window.set_handler(:screen_size, method(:command_screen_size))\n  end\n\n  def command_screen_size\n    SceneManager.call(Scene_ScreenSize)\n  end\nend\n\nclass Window_TitleCommand < Window_Command\n  def make_command_list\n    add_command(Vocab::new_game, :new_game)\n    add_command(Vocab::continue, :continue, continue_enabled)\n    add_command(Screen_Size::COMMAND_NAME, :screen_size)\n    add_command(Vocab::shutdown, :shutdown)\n  end\nend\n\nclass Window_MenuCommand < Window_Command\n  def make_command_list\n    add_main_commands\n    add_formation_command\n    add_save_command\n    add_screenSize_command\n    add_game_end_command\n  end\n\n  def add_screenSize_command\n    add_command(Screen_Size::COMMAND_NAME, :screen_size)\n  end\n\n  def main_commands_enabled\n    $game_system.save_disabled ? false : true\n  end\nend\n\nclass Scene_Menu < Scene_MenuBase\n  alias original_create_command_window create_command_window\n\n  def create_command_window\n    original_create_command_window\n    @command_window.set_handler(:screen_size, method(:command_screen_size))\n  end\n\n  def command_screen_size\n    SceneManager.call(Scene_ScreenSize)\n  end\nend\nYou can rename the option in the Screen_Size module if you want, and you can add, remove or change resolutions to your needs.\nI found that some resolutions have some artefacts while others don't, so you probably want to adjust some of them.\nI also found that working with multiples of 32 seem to have the best output. But it will work with any resolution nontheless.\nEDIT :\nTo fix the title screen bug, you have to resize your images to 640x480 instead of 544x416, and there will be no more black borders."
+    },
+    {
+      "post_id": "js-post-1462221",
+      "author": "thalesgal",
+      "date": "2024-08-08T04:12:29+0900",
+      "body": "Hello!! Thank you sooo much for answering!! I was very pessimistic about that!\nSo I paste this script on my project and this error shows up:\nThis is my RPG MAKER XP verison:\n* I have tested it on a new project as well and the same error shows up.\nIm sorry Im very layman on codes so I cant help much XD\nThank you so much for helping me!"
+    },
+    {
+      "post_id": "js-post-1462222",
+      "author": "kyonides",
+      "date": "2024-08-08T04:15:06+0900",
+      "body": "The problem is that the script was crafted as if it would be used in a RMVX ACE game. Thus it will fail over and over again."
+    },
+    {
+      "post_id": "js-post-1462227",
+      "author": "thalesgal",
+      "date": "2024-08-08T04:24:44+0900",
+      "body": "Hello\n@kyonides\n! Thank you for answering!\nIs there any way to make an adaptation for RPG Maker XP? The game dont even start in a blank project.\nSo it's not like it's something situational. Maybe it's a code error or it really needs some changes to work in RPG MAKER XP.\nOr\nyou already tried something similar and found out it's impossible? Due RMXP limitations? xD\nWhats your thoughts on this?"
+    },
+    {
+      "post_id": "js-post-1462229",
+      "author": "Artille",
+      "date": "2024-08-08T04:26:40+0900",
+      "body": "Oh my...\nI actually thought it was for VX Ace xD\nWell, I'll port it to Rpg maker XP tomorrow.\nSorry for the embarassing mistake...\nthalesgal said:\nHello\n@kyonides\n! Thank you for answering!\nIs there any way to make an adaptation for RPG Maker XP? The game dont even start in a blank project.\nSo it's not like it's something situational. Maybe it's a code error or it really needs some changes to work in RPG MAKER XP.\nOr\nyou already tried something similar and found out it's impossible? Due RMXP limitations? xD\nWhats your thoughts on this?\nClick to expand...\nIt's possible, there isn't much that isn't possible.\nI'll look into it for tomorrow. (Also, plz confirm you want it for RPG Maker XP )\nVXAce uses ruby language\nMV/MZ uses javascript\nXP uses ruby language aswell, but has a different structure, hence the errors talking about undefined superclass Scene_MenuBase, as in XP they use Scene_Menu\nDepending on what software you use I need to apply some changes."
+    },
+    {
+      "post_id": "js-post-1462234",
+      "author": "thalesgal",
+      "date": "2024-08-08T04:34:44+0900",
+      "body": "Hello\n@Artille\nthank you sooo much!!! I am deeply grateful! This will help me soo much!"
+    },
+    {
+      "post_id": "js-post-1462332",
+      "author": "Zeriab",
+      "date": "2024-08-08T14:30:41+0900",
+      "body": "I suggest you try and see how things go if you use Alt+Enter to toggle between fullscreen and windowed mode. Just to check if that plays nice with window alteration via SetWindowPos calls.\nAn alternative approach is to look into MKXP. I really like the integer scaling Ancurio has implemented. You can read more about it here:\nhttps://wiki.mapleshrine.eu/books/configuration/page/integer-scaling\nMKXP:\nhttps://github.com/mkxp-z/mkxp-z"
+    },
+    {
+      "post_id": "js-post-1462360",
+      "author": "Artille",
+      "date": "2024-08-08T19:14:47+0900",
+      "body": "I admit defeat and suggest you look for something more complete.\nThe best I can do is add black pixels in the new resolution.\nI either run against RPG Maker XP limitations when it comes to pixel stretching\nOr, if I try to leverage Win32 I get errors all around because current ruby version can't handle it.\nThis may be a key to solving this issue :\n[XP] Custom Resolution\n[XP] Custom Resolution\nforum.chaos-project.com\nBut honestly this is beyond my skills.\nRpgmaker XP just is too old and does not support pixel stretching, meaning we have to add dll files and deep scripting logic."
+    },
+    {
+      "post_id": "js-post-1462411",
+      "author": "thalesgal",
+      "date": "2024-08-09T04:00:48+0900",
+      "body": "Hello\n@Zeriab\nthank you so much for answer! About the ALT+ENTER this is what another person told me \"Fullscreen stretches because it's effectively changing your monitor's resolution to 640x480.\"\nAbout the Ancurio's integer scaling I took a look but this does what others script does. They resize the screen indeed but they enlarge the screen but in view scale. Showing more of the map. None of them can stretch the screen while maintaining the aspect ratio. From what I read its sadly a RPG MAKER XP limitation.\n@Artille\nthank you soo much for trying! I really apreciate it!!\nI saw that thread and I asked help there as well xD\nShe told me this:\n\"From what I remember, XP's game window doesn't actually stretch when you increase its width or height, unlike VXA. It instead just displays a black void beyond the 640x480 default. Fullscreen stretches because it's effectively changing your monitor's resolution to 640x480. So you're not really going to achieve what you want with the default engine.\nYou'll need to either use VXA's game executable (points at XPAce in signature) or use something like MKXP(-z)\"\nI will ask help there for this \"VXA's game executable\", It seems like something that can be done.\nI took a look at the other option MKXP(-z) but I didnt undestand too much to be honest. But it seems like there is anything about screensizes there. Maybe its something that can be done but only from scratch...\nDo you know something about that \"VXA's game executable\"? Please let me know. Thank you so much for helping and answering!\nCheers!"
+    },
+    {
+      "post_id": "js-post-1462483",
+      "author": "Zeriab",
+      "date": "2024-08-09T16:30:17+0900",
+      "body": "That's not quite correct. The specific behavior of how the 640x480 in fullmode behaves depends on your drivers and display settings.\nI have an Nvidia graphics card. It has the following scaling modes used to determine how lower resolutions are scaled to fit the actual display resolution:\nAspect ratio\nFull-screen\nNo scaling\nInteger scaling*\nRef:\nhttps://www.nvidia.com/content/Cont...s/mergedProjects/nvdsp/CS_Display_Scaling.htm\nI have added a * to the Integer scaling option because in my experience you cannot rely on it being available. I have had the option being available before, and it works great. But look, I have a GeForce RTX 3080 card yet the option is currently not available for me:\nYou cannot be sure how the fullscreen mode behaves because it depends on the system settings.\nHaving the engine do the scaling is a more reliable way if you want to control how the scaling works.\nTo better explain how integer scaling works in MKXP here are two screenshots I took. (Note: You can freely resize the window in windowed mode)\nWindowed mode: (2x)\nFullscreen: (3x)\nNote that the linked pictures are what's rendered. These are not 640x480.\nMKXP has other scaling options. Here's the default look:\nSmoothed and stretched:\nPersonally I prefer retaining aspect ratio because the alternative looks like this:\nFor VX Ace there is an additional option:\nhttps://forums.rpgmakerweb.com/index.php?threads/rgd-directx-implementation-of-rgss3.95228/\nI wonder if XPAce allows you to use that for an XP game.\nGood luck with whichever path you choose ^^"
+    },
+    {
+      "post_id": "js-post-1462651",
+      "author": "thalesgal",
+      "date": "2024-08-10T13:53:10+0900",
+      "body": "Hello!! Thank you so much for the explanations! Im very busy these days. I will take a deep look into that next week! Looks very promising!\nWish you the best!"
+    }
+  ]
+}

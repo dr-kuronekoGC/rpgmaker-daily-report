@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-change-battle-window-location.170427",
+  "title": "How change battle window location?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:33:02.801510+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1458296",
+      "author": "LucTR0LL",
+      "date": "2024-07-19T08:14:42+0900",
+      "body": "Hello, is there any way to make the RPG Maker VX Ace battle window at the top of the screen instead of at the bottom? I wanted to know exactly which script I would have to touch to change this in the script editor"
+    },
+    {
+      "post_id": "js-post-1458318",
+      "author": "Howard_Bentley",
+      "date": "2024-07-19T10:44:30+0900",
+      "body": "Spoiler\nCode:\nclass Scene_Battle < Scene_Base\n\n  def create_info_viewport\n    @info_viewport = Viewport.new\n    @info_viewport.rect.y = 0 # this is the only line I changed\n    @info_viewport.rect.height = @status_window.height\n    @info_viewport.z = 100\n    @info_viewport.ox = 64\n    @status_window.viewport = @info_viewport\n  end\n \nend\nHere you go. Just paste this into a new slot below materials, and above main.\nI wouldn't recommend going to the core scripts and changing them directly(for compatibility with other scripts, and its a bit more annoying if you decide to change it back later.)"
+    }
+  ]
+}

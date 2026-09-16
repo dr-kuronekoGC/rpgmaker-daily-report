@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-mz-stop-animations.172519",
+  "title": "[ Rpg maker Mz ] Stop animations",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:20.569221+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1474977",
+      "author": "sensen",
+      "date": "2024-10-11T09:12:25+0900",
+      "body": "I don't know if anyone knows a way to stop an animation... there are animations that can last more than a second, isn't there one that commands a script or plugin to stop an animation...\n(I'm creating an ARPG, I have an attack that chases nearby enemies, the problem is that if they are close the hit hits but the animation keeps playing, and the idea is that when the hit hits the animation ends or when the attack doesn't detect any enemy)."
+    },
+    {
+      "post_id": "js-post-1475017",
+      "author": "fizzly",
+      "date": "2024-10-11T15:23:48+0900",
+      "body": "Maybe\nthis\nwill help?"
+    },
+    {
+      "post_id": "js-post-1475055",
+      "author": "ATT_Turan",
+      "date": "2024-10-11T23:06:18+0900",
+      "body": "fizzly said:\nMaybe\nthis\nwill help?\nClick to expand...\nDepends -\n@sensen\nare you using Effekseer or MV animations? A lot of the function calls are different between the two kinds.\nI haven't checked the code in that thread to see whether it's compatible with MZ either way."
+    },
+    {
+      "post_id": "js-post-1475068",
+      "author": "caethyril",
+      "date": "2024-10-12T00:07:45+0900",
+      "body": "MV and MZ organise animation data and sprites differently.\nThis ought to work in MZ regardless of animation \"type\" (Effekseer/MV-style):\ncaethyril said:\nYou could try one of these in a Script command:\nClear All Animations:\nJavaScript:\nSceneManager._scene._spriteset?.removeAllAnimations();\nClear Character Animation:\nJavaScript:\n// MZ, stop all ongoing animations on the player\nconst spriteset = SceneManager._scene._spriteset;\nif (spriteset) {\n  spriteset._animationSprites.filter(\n    s => s.targetObjects.includes($gamePlayer)\n  ).forEach(\n    s => spriteset.removeAnimation(s)\n  );\n}\nThis is for the player. You can replace\n$gamePlayer\nwith\n$gameMap.event(123)\nto target map event 123 instead.\n(These MZ examples are from the \"Character Effects\" section of the\nMV / MZ Script Call List\n.)\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1475099",
+      "author": "sensen",
+      "date": "2024-10-12T03:08:28+0900",
+      "body": "I create this code, this stops the animations immediately using a SCRIPT,\nStopAnimationById(id);\nIn id you put the id of the animation you want to stop. I leave it here in case anyone is interested."
+    },
+    {
+      "post_id": "js-post-1475191",
+      "author": "caethyril",
+      "date": "2024-10-12T21:06:47+0900",
+      "body": "@sensen\n- simply destroying the sprite does not remove the actual animation sprite instance from MZ's data structures, nor does it inform the animation parent(s) that the animation has ended.\nI would recommend something like this instead (untested):\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Defines function: StopAnimationById(id)\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/172519/\n * @help Free to use and/or modify for any project, no credit required.\n */\nglobalThis.StopAnimationById = function(id) {\n  const spriteset = SceneManager._scene._spriteset;\n  if (spriteset)\n    for (const sprite of spriteset._animationSprites)\n      if (sprite._animation.id === id)\n        spriteset.removeAnimation(sprite);\n};\nSee\nSpriteset_Base#removeAnimation\nin rmmz_sprites.js for details."
+    },
+    {
+      "post_id": "js-post-1475229",
+      "author": "sensen",
+      "date": "2024-10-13T05:55:29+0900",
+      "body": "caethyril said:\n@sensen\n- simply destroying the sprite does not remove the actual animation sprite instance from MZ's data structures, nor does it inform the animation parent(s) that the animation has ended.\nI would recommend something like this instead (untested):\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc Defines function: StopAnimationById(id)\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/172519/\n * @help Free to use and/or modify for any project, no credit required.\n */\nglobalThis.StopAnimationById = function(id) {\n  const spriteset = SceneManager._scene._spriteset;\n  if (spriteset)\n    for (const sprite of spriteset._animationSprites)\n      if (sprite._animation.id === id)\n        spriteset.removeAnimation(sprite);\n};\nSee\nSpriteset_Base#removeAnimation\nin rmmz_sprites.js for details.\nClick to expand...\nIt works too! <3 thanks!"
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-tips-tricks-toxic-pokemon-rpg-maker-mv-enemy-is-not-dissapearing.172451",
+  "title": "Yanfly Tips & Tricks - Toxic (Pokémon) - RPG Maker MV - Enemy is not dissapearing",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MV",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:38.875040+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1474339",
+      "author": "Sussuri",
+      "date": "2024-10-08T02:57:03+0900",
+      "body": "Hello there,\nI recreated the \"Toxic\" effect created by Yanfly. The status and spell are working well, but I have problem with \"ghosts\". Enemy is not dissapearing after last tick (killing blow) of the toxic status. Instead of that some of them (not all, last one dissapeared without problem) will return as \"ghosts\" (see screen).\nThere is no problem (or at least I did not find any) when I switch collapse effect to none, but I would like to keep \"normal\" collapse effect.\nAny idea how to solve this?\nThanks.\nS."
+    },
+    {
+      "post_id": "js-post-1474340",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T03:02:41+0900",
+      "body": "Add this at the bottom of the Regenerate notetag:\nCode:\nif (target.hp <= 0)\n    target.performCollapse();"
+    },
+    {
+      "post_id": "js-post-1474341",
+      "author": "Robro33",
+      "date": "2024-10-08T03:03:08+0900",
+      "body": "Did you change anything about the state notetag? If you did, we need a screenshot of it. You might need to use user.performCollapse() if the poison killed them, but iirc custom regenerate effects handle that"
+    },
+    {
+      "post_id": "js-post-1474342",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T03:17:09+0900",
+      "body": "Robro33 said:\nYou might need to use user.performCollapse() if the poison killed them, but iirc custom regenerate effects handle that\nClick to expand...\nIt's there, but I'm not sure it works correctly. It uses isDead() for the check, which is not immediately true - the death state doesn't get applied until the battler's hp is 0 and it gets refreshed.\nThat's why in the middle of notetags checking the hp directly is more reliable.\nWe'll see if the suggestion above fixes it."
+    },
+    {
+      "post_id": "js-post-1474343",
+      "author": "Sussuri",
+      "date": "2024-10-08T03:19:31+0900",
+      "body": "I tried to add the code, but still I'm seeing even more ghosts. Am I doing something wrong?\nSpoiler:\nState code\nJavaScript:\n<Custom Apply Effect>\nthis._toxicCounter = 1;\n</Custom Apply Effect>\n\n<Custom Regenerate Effect>\nvar n = this._toxicCounter / 3;\nvar value = Math.floor(n * user.mhp * -1);\nuser.gainHp(value);\nthis._toxicCounter += 1;\nif (target.hp <= 0)\n    target.performCollapse();\n</Custom Regenerate Effect>"
+    },
+    {
+      "post_id": "js-post-1474345",
+      "author": "ShadowDragon",
+      "date": "2024-10-08T03:30:57+0900",
+      "body": "maybe turn the way around?\nCode:\n<Custom Regenerate Effect>\nif (target.hp > 0)\n   var n = this._toxicCounter / 3;\n   var value = Math.floor(n * user.mhp * -1);\n   user.gainHp(value);\n   this._toxicCounter += 1;\nelse\n    target.performCollapse();\n</Custom Regenerate Effect>\nnot sure if brackets are required, but it's slightly different"
+    },
+    {
+      "post_id": "js-post-1474346",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T03:37:19+0900",
+      "body": "ShadowDragon said:\nmaybe turn the way around?\nClick to expand...\nYes, brackets were be required, and no that wouldn't work. That would kill the enemy even if they didn't take damage.\n@Sussuri\nI'm not sure what's causing that graphical glitch. Have you tried some basic troubleshooting, like turning off all the other plugins, saving your project, and starting a new play test?\nAre you doing this in a battle test or in a play test game?"
+    },
+    {
+      "post_id": "js-post-1474347",
+      "author": "Sussuri",
+      "date": "2024-10-08T03:38:56+0900",
+      "body": "Good idea, but unfortunately it's still the same :/\nP.S.: I tried it and you need to use {} else the code won't work\n@ATT_Turan\nI tried it in battle test and in game, but it's the same. Some of the characters are glitching. They are going to fade away, but then the opacity will rise again so they re-appear.\nI did test it in new game and it was the same, although it was not affecting same characters. (for example bandit C instead of A or\n. Maybe I am missing something simple... I will try some more testing tomorrow since it's pretty late for me.\nThank you for the help anyway. Have a good day, all of you.\nEDIT: I'm adding screenshots of State and Skill, maybe there is something wrong. (I tried to change \"damage\" to HP damage but nothing changed)"
+    },
+    {
+      "post_id": "js-post-1474351",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T04:01:12+0900",
+      "body": "And to confirm, you're doing this after turning off all plugins aside from Buffs & States, saving your project, and starting a new game?"
+    },
+    {
+      "post_id": "js-post-1474434",
+      "author": "Sussuri",
+      "date": "2024-10-08T17:51:07+0900",
+      "body": "@ATT_Turan\nYes. And I did my homework again today since I have more time to do so and it's not late night for me\n. I found out, that plugin in conflict is most likely\nAction Sequence Pack 2 (YEP)\n. I was turning on plugin after plugin and the problem was visible after turning on this one.\nI don't want this plugin to be turned off, since the battle is more boring without it. Do you have any idea how to fix this?"
+    },
+    {
+      "post_id": "js-post-1474436",
+      "author": "Robro33",
+      "date": "2024-10-08T18:17:21+0900",
+      "body": "Sussuri said:\nI found out, that plugin in conflict is most likely\nAction Sequence Pack 2 (YEP)\n. I was turning on plugin after plugin and the problem was visible after turning on this one.\nClick to expand...\nNice, but theres more than just one side to this plugin conflict. If Action sequences 2 contributes to it, theres other parts. Its a very commonly used plugin, and youre presenting an unusual problem with it. Action sequences 2 and buffs & states together alone in a new project doesnt cause it on my end, nor do they in my main one with all kinds of other plugins.\njust 2 points that might be relevant. you havent shown your plugin list to confirm either:\n- are your yanfly plugins in the correct order? if theyre not in the order as theyre\nshown here\n, all kinds of bugs can happen.\n- are your plugins up to date? it wouldnt be the first time someones shown up with outdated versions of plugins that carried bugs that were already fixed. buffs & states and action sequences should be 1.16 and 1.13 respectively"
+    },
+    {
+      "post_id": "js-post-1474440",
+      "author": "Sussuri",
+      "date": "2024-10-08T19:38:20+0900",
+      "body": "Hi\n@Robro33\n, thanks for your input.\nI double checked the order of YEP plugins and it should be the same as in the page you recommended. Also, the buffs & states and Action sequences are the versions 1.16 and 1.13. Do you think there can be conflict with other plugins?\nWhen it comes to skill connected with Toxic state, there is none action sequence. Those bandits have only 1 skill, which is basic attack skill and there is used action sequence.\nThis is my action sequence for attack:\nSpoiler:\nattack action sequence\nCode:\n<Pre-Damage Eval>\nif (user.isStateAffected(21)) {\n  user.gainMp(-5);\n}\n</Pre-Damage Eval>\n\n<setup action>\ndisplay action\nimmortal: targets, true\n</setup action>\n<target action>\ncamera focus: target\nopacity not focus: 0, 60\nopacity character 2: 255, 0\nwait for opacity\nif user.attackMotion() !== 'missile'\n move user: targets, front, 20\nelse\nperform start\nend\nzoom: 100%, 30\ncamera screen: target, front center, 30\ncamera focus: target, front center, 30\nwait for movement\nmotion attack: user\nwait: 10\nattack animation: target\nwait for animation\naction effect\n</target action>\n\n<follow action>\nzoom: 100%, 60\nopacity not focus: 100%, 120\n</follow action>\nI'm sending my plugin list as an attachment as well.\nEDIT: I removed the \"Attack\" skill from Bandits and give them the only skill \"Wait\". Now the \"ghosts\" are not appearing, so the conflict/problem should be connected to the \"Attack\" skill with the action sequence above."
+    },
+    {
+      "post_id": "js-post-1474447",
+      "author": "Robro33",
+      "date": "2024-10-08T21:14:41+0900",
+      "body": "i still cant get the same issue with the skill youve shared.\ntry this. disable every plugin except yanfly's battle engine, action sequences, buffs and states, and the skill core. see if that works.\nif it works, reenable all your plugins group by group and test between groups so see which one causes the issue from there\nif just those few plugins presents the same issue, perhaps try redownloading the plugins and report back"
+    },
+    {
+      "post_id": "js-post-1474452",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T21:22:30+0900",
+      "body": "Um...read through your Attack action sequence.\nIn the setup action, it sets the targets to immortal (which is unnecessary since you're only doing one hit), and it never turns it off.\nSo if you ever attack anything, it's getting stuck with an immortal state on it.\nDelete that command."
+    },
+    {
+      "post_id": "js-post-1474454",
+      "author": "Robro33",
+      "date": "2024-10-08T21:27:51+0900",
+      "body": "it is unnecessary, but the default finish action turns off immortality on the targets (and default setup also turns it on regardless. so an attack without any AS tags would do the same things in terms of immortality). the enemy did remain where they were if they had to move for the skill, but when they took the toxic damage they still died and disappeared for me"
+    },
+    {
+      "post_id": "js-post-1474461",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T21:49:53+0900",
+      "body": "@Robro33\nGood call, my brain saw that bottom tag as a finish action, but it's a follow.\nWho uses follow?"
+    },
+    {
+      "post_id": "js-post-1474464",
+      "author": "Sussuri",
+      "date": "2024-10-08T22:04:29+0900",
+      "body": "For the imortal status in action sequence - I turned it off and result was the same as Robro mentioned (but it's interesting call).\nWhen I changed follow on finish the battlers didn't want to return to original position. They will return eventually, but the other side has to attack first.\nFor the plugin testing:\nActive plugins - CoreEngine (v1.32), BattleEngineCore (v1.51), ActSeqPack 1 (v1.13), 2 (v1.13) ,3 (v1.05), BuffsStatesCore (v1.16) and SkillCore (v1.13) were active and the bug is still present."
+    },
+    {
+      "post_id": "js-post-1474467",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T22:16:42+0900",
+      "body": "Sussuri said:\nWhen I changed follow on finish the battlers didn't want to return to original position. They will return eventually, but the other side has to attack first.\nClick to expand...\nNo one said you should do that - I simply commented that I'd never found a use for follow action. Anything you put there could either go at the end of target action or into the finish action (\nin addition\nto the actual finishing things, like moving back).\nI guess it's a matter of style for me, but I don't like having empty sections that do the pre-programmed parts. If I program a skill, I want it all doing what I say.\nshrug\nBut, then, I've also edited the pre-programmed parts in the code, so my usage is clearly not typical\nFor what it's worth, I think the problem may be number-related. I've seen weird stuff like this happen when battlers are hit for decimal values and stuff. I looked at your tag for it earlier and didn't see how that would be the case, but what happens if you change your Regenerate notetag so instead of\nCode:\nuser.gainHp(value)\nyou have\nCode:\nuser.gainHp(-1000)\n(also, just for the correct style, change the stuff below from me that says target to user)"
+    },
+    {
+      "post_id": "js-post-1474471",
+      "author": "Sussuri",
+      "date": "2024-10-08T22:35:03+0900",
+      "body": "I was just curious what will happen and shared a feedback with you, that's all\nBut I have an idea - if you are using the action sequence for attack that will just move one actor to enemy and everyone else is faded out, can you share it with me? I think the error causing the problem is rooted there, so I would like to try some \"verified\" action sequence for attack. If that's possible of course, I don't want to be pushy.\nI tried to change to code, the user (bandit) will take -1000hp, but the ghost will appear anyway.\nSpoiler:\nEdited code for toxic state\nCode:\n<Custom Apply Effect>\nthis._toxicCounter = 1;\n</Custom Apply Effect>\n\n<Custom Regenerate Effect>\nvar n = this._toxicCounter / 3;\nvar value = Math.floor(n * user.mhp * -1);\nuser.gainHp(-1000);\nthis._toxicCounter += 1;\nif (user.hp <= 0)\n    user.performCollapse();\n</Custom Regenerate Effect>"
+    },
+    {
+      "post_id": "js-post-1474473",
+      "author": "Robro33",
+      "date": "2024-10-08T22:36:42+0900",
+      "body": "Sussuri said:\nFor the plugin testing:\nClick to expand...\ni added the other action sequence plugins and i have the exact same set of plugins. i cannot replicate the issue.\njust to make sure. when you open up rpg_core.js with a text editor, what version does it say across the top? 1.6.2?"
+    },
+    {
+      "post_id": "js-post-1474477",
+      "author": "Sussuri",
+      "date": "2024-10-08T22:45:53+0900",
+      "body": "Are you using the same action sequence as I posted above? If yes, then I'm out of ideas...\nAnd yes, I have 1.6.2 (screen bellow)"
+    },
+    {
+      "post_id": "js-post-1474480",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T22:54:01+0900",
+      "body": "But the action sequence has nothing to do with this - it's on a completely different skill, right?"
+    },
+    {
+      "post_id": "js-post-1474482",
+      "author": "Sussuri",
+      "date": "2024-10-08T22:57:21+0900",
+      "body": "Yes, it's on 0001 Attack. But as I mentioned earlier, when I remove Attack skill from Bandits and they are using other skills (such as Wait or Fire ball where there is no movement towards actor) this bug disappears. That's why I'm focused on that concrete action sequence."
+    },
+    {
+      "post_id": "js-post-1474485",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T23:03:14+0900",
+      "body": "I believe that's a false connection - an action sequence doesn't do anything unless the skill is being executed and it's reading the commands. Just having an action sequence doesn't do anything.\nBut you can easily test that by copying your action sequence to your notepad and deleting it from the Attack skill."
+    },
+    {
+      "post_id": "js-post-1474486",
+      "author": "ShadowDragon",
+      "date": "2024-10-08T23:03:38+0900",
+      "body": "out of curiously, you use\nCode:\nvar n = this._toxicCounter / 3;\nwhat happens if you set it exactly as the code on the site\nCode:\nvar n = this._toxicCounter / 16;\ndoes it do the same?\nare the ghost killed by poison? or by regular attack or skill (without poison state)?"
+    },
+    {
+      "post_id": "js-post-1474487",
+      "author": "Robro33",
+      "date": "2024-10-08T23:04:09+0900",
+      "body": "Sussuri said:\nAre you using the same action sequence as I posted above? If yes, then I'm out of ideas...\nClick to expand...\nyep.\nim out of ideas then as well. if you make an entire new project from scratch, give it the above plugins, and copy over the notetags for the skill and state, does it still happen? Ive got nothing left after that if you do\nfound your curse. ive been testing with 2 enemies but i needed more to see it. theres 4 enemies here. 3 poisoned, 1 isnt, only one disappeared\nadd a\nCode:\nWAIT FOR OPACITY\nat the end of your follow effect. it seems like them collapsing while theyre fading back in from the skill makes them not fully disappear from the collapse."
+    },
+    {
+      "post_id": "js-post-1474489",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T23:10:50+0900",
+      "body": "That's awesome,\n@Robro33\nSo just as a note, when I said\nATT_Turan said:\nBut the action sequence has nothing to do with this - it's on a completely different skill, right?\nClick to expand...\nThat would've been a good time for\n@Sussuri\nto point out/remind \"it's at the end of the Attack skill that they're dying from toxic and this bug is happening\"\nGlad you got it sorted!"
+    },
+    {
+      "post_id": "js-post-1474490",
+      "author": "Sussuri",
+      "date": "2024-10-08T23:13:58+0900",
+      "body": "@Robro33\nYes, that's it! Now they're disappearing! Thanks a ton! I just have to find a way how to return them \"sooner\" to their position and THEN wait for the opacity, since now they're stucked for a brief while in actors battlers after attack\n@ATT_Turan\nit was different for some reason with opacity, I tried my best to explain, sorry if that wasn't sufficient :/\n@ShadowDragon\nit was the same, we even tried flat numbers."
+    },
+    {
+      "post_id": "js-post-1474493",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T23:20:08+0900",
+      "body": "Sussuri said:\nI just have to find a way how to return them \"sooner\" to their position and THEN wait for the opacity\nClick to expand...\nDo it with action sequence commands, instead of waiting for the default finish action to do it for you.\nPut a move user: home before the opacity."
+    },
+    {
+      "post_id": "js-post-1474494",
+      "author": "Sussuri",
+      "date": "2024-10-08T23:37:36+0900",
+      "body": "@ATT_Turan\nYep, it's working, thank you!\nJust for addition - I add something more to follow section since the character returned home, but was facing wrong direction for a while. So I managed to turn him instantly to the correct direction.\nSpoiler:\nfollow action\n</follow action>\nCode:\n<follow action>\nzoom: 100%, 60\nmove user: home\nwait for movement\nmove user: forward, 0, 1\nopacity not focus: 100%, 30\nwait for opacity\n</follow action>\nThank you all for participation, problem is now solved, have a good day!"
+    },
+    {
+      "post_id": "js-post-1474498",
+      "author": "ATT_Turan",
+      "date": "2024-10-09T00:01:15+0900",
+      "body": "I suppose that works, but there are also specific commands to change facing in the documentation."
+    },
+    {
+      "post_id": "js-post-1474500",
+      "author": "Sussuri",
+      "date": "2024-10-09T00:08:13+0900",
+      "body": "Didn't find them (maybe I'm too tired\n) so I just improvised."
+    }
+  ]
+}

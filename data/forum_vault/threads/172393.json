@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-way-to-rename-skills-like-in-birth-by-sleep.172393",
+  "title": "A way to rename skills like in Birth By Sleep?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:37.435034+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1473972",
+      "author": "Dreigonix",
+      "date": "2024-10-06T04:54:24+0900",
+      "body": "The title says it all-- I want to implement a way to let the player rename their skills ingame through a Name Input window, like the finisher commands in Birth By Sleep. Is there a plugin that can allow me to do that?"
+    },
+    {
+      "post_id": "js-post-1473977",
+      "author": "ISC",
+      "date": "2024-10-06T05:42:21+0900",
+      "body": "You can change the name of a skill by assigning it the name of an unused actor, which you can rename. Use the \"Name Input\" command and then insert the following script:\nCode:\n$dataSkills[IdSkill].name =$gameActors.actor(IdActor).name();\nReplace IdSkill with the ID of the skill you want to rename.\nReplace IdActor with the ID of the actor you just renamed."
+    },
+    {
+      "post_id": "js-post-1473993",
+      "author": "Dreigonix",
+      "date": "2024-10-06T06:53:31+0900",
+      "body": "ISC said:\nYou can change the name of a skill by assigning it the name of an unused actor, which you can rename. Use the \"Name Input\" command and then insert the following script:\nCode:\n$dataSkills[IdSkill].name =$gameActors.actor(IdActor).name();\nReplace IdSkill with the ID of the skill you want to rename.\nReplace IdActor with the ID of the actor you just renamed.\nClick to expand...\nI've heard it suggested by others that that might permanently change the skills' names even in New Games. Is that true?"
+    },
+    {
+      "post_id": "js-post-1473996",
+      "author": "ISC",
+      "date": "2024-10-06T06:58:26+0900",
+      "body": "No. This fetches the name of the skill from the database and replaces it with the name of an actor. Starting a new game resets everything to the initial state of the database"
+    },
+    {
+      "post_id": "js-post-1474000",
+      "author": "Robro33",
+      "date": "2024-10-06T07:17:29+0900",
+      "body": "ISC said:\nStarting a new game resets everything to the initial state of the database\nClick to expand...\nmaybe other data items work like that, but $dataSkills is only set up when the game is opened iirc. any change made there would be carried over into new saves as well as just swapping files. the changes revert upon closing and reopening the game"
+    },
+    {
+      "post_id": "js-post-1474002",
+      "author": "Dreigonix",
+      "date": "2024-10-06T07:18:54+0900",
+      "body": "Thanks! Though I do wish someone would make a plugin for it so I don't have to use a hundred million conditional branches. But that's life, I guess!"
+    },
+    {
+      "post_id": "js-post-1474015",
+      "author": "ATT_Turan",
+      "date": "2024-10-06T08:19:29+0900",
+      "body": "ISC said:\nUse the \"Name Input\" command and then insert the following script:\nCode:\n$dataSkills[IdSkill].name =$gameActors.actor(IdActor).name();\nClick to expand...\nThat won't work correctly. All $data arrays are loaded directly from the database when you boot the game.\nThat means:\n1 - your change above will not be saved the next time the player runs the game\n2 - it\nwill\npersist into loading any other games or starting any new games until the player closes and reboots the game\nThis isn't doable without a plugin. Either one that saves skill names into objects that are referenced whenever they need to be drawn (preferable) or one that causes a common event to be run every time you load a game to do your script above (undesirable - you should avoid ever trying to modify $data objects during runtime)."
+    },
+    {
+      "post_id": "js-post-1474031",
+      "author": "Dreigonix",
+      "date": "2024-10-06T09:30:45+0900",
+      "body": "ATT_Turan said:\nThat won't work correctly. All $data arrays are loaded directly from the database when you boot the game.\nThat means:\n1 - your change above will not be saved the next time the player runs the game\n2 - it\nwill\npersist into loading any other games or starting any new games until the player closes and reboots the game\nThis isn't doable without a plugin. Either one that saves skill names into objects that are referenced whenever they need to be drawn (preferable) or one that causes a common event to be run every time you load a game to do your script above (undesirable - you should avoid ever trying to modify $data objects during runtime).\nClick to expand...\nAhh.\nDoes\nsuch a plugin exist?"
+    },
+    {
+      "post_id": "js-post-1474081",
+      "author": "BlackGoldSaw",
+      "date": "2024-10-06T19:54:27+0900",
+      "body": "I don't know the nature of how you're allowing the player to rename Skills, but in regards to simply doing it and properly keeping the changes I use Victor Engine's Control Text Plugin. The Basic Module Plugin is needed for it as well:\nVE_BasicModule\nVE_ControlText\nThe Control Text Plugin will let you use Escape Codes in Skill names. Use a dummy Actor and after inputting a name, store that name in a Variable.\nThis example stores the name of Actor 1 as a String inside Variable 7:\nJavaScript:\nName Input Processing : Harold, 8 Characters\nControl Variables : #0007 = \"$gameActors.actor(1).name()\"\nThen in the\nSkill's Name Box\nyou use the Plugin's tag '\n\\#\n' followed by the\nVariable Escape Code\n.\nIn this example the Skill's Name will  be whatever is stored in Variable 7:\nJavaScript:\n\\#\\v[7]\nFrom there you'd repeat those steps using a\ndifferent Variable for each Skill\nyou want to rename."
+    },
+    {
+      "post_id": "js-post-1474379",
+      "author": "Dreigonix",
+      "date": "2024-10-08T06:42:38+0900",
+      "body": "BlackGoldSaw said:\nI don't know the nature of how you're allowing the player to rename Skills, but in regards to simply doing it and properly keeping the changes I use Victor Engine's Control Text Plugin. The Basic Module Plugin is needed for it as well:\nVE_BasicModule\nVE_ControlText\nThe Control Text Plugin will let you use Escape Codes in Skill names. Use a dummy Actor and after inputting a name, store that name in a Variable.\nThis example stores the name of Actor 1 as a String inside Variable 7:\nJavaScript:\nName Input Processing : Harold, 8 Characters\nControl Variables : #0007 = \"$gameActors.actor(1).name()\"\nThen in the\nSkill's Name Box\nyou use the Plugin's tag '\n\\#\n' followed by the\nVariable Escape Code\n.\nIn this example the Skill's Name will  be whatever is stored in Variable 7:\nJavaScript:\n\\#\\v[7]\nFrom there you'd repeat those steps using a\ndifferent Variable for each Skill\nyou want to rename.\nClick to expand...\nThanks! That seems to work!"
+    }
+  ]
+}

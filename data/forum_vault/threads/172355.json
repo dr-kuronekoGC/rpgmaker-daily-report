@@ -1,0 +1,143 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-create-a-state-that-makes-players-un-revivable-in-battle.172355",
+  "title": "How to create a State that makes players un-revivable in battle?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:43.865427+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1473659",
+      "author": "emma_watson",
+      "date": "2024-10-04T15:14:58+0900",
+      "body": "Hi, there is a cool outfit in my game that has certain capabilities, but the stipulation is that the\ncharacter will be unable to get revived.  Permadeath.\nThe only end result of a battle is\nwinning or getting a game over\n.\nDoes anyone know a way to achieve this? Thanks in advance. Preferably I wanted to know if this is somehow doable without using a plugin, however, if that's the only option, I'd love a recommendation of some sort. Thanks for reading."
+    },
+    {
+      "post_id": "js-post-1473664",
+      "author": "Robro33",
+      "date": "2024-10-04T16:13:57+0900",
+      "body": "emma_watson said:\nPreferably I wanted to know if this is somehow doable without using a plugin, however, if that's the only option, I'd love a recommendation of some sort\nClick to expand...\nim not sure if its easily doable without plugins, but i use a few yanfly plugins to pull off a similar effect.\nthe main one for me is the the\nstate categories\nplugin so that i can designate certain states to persist on death. But since yours is a gear effect, you can use the\nauto passives\nplugin to attach the state to the gear. from there, you can use the\nskill core\nplugin to make it so that all revival items revive through the notebox, and then make them fail to work on targets with the denial state on."
+    },
+    {
+      "post_id": "js-post-1473665",
+      "author": "Andar",
+      "date": "2024-10-04T16:15:39+0900",
+      "body": "Most likely you'll have to use a plugin.\nThere are some ways the engine can be redirected or tricked, but they usually have other restrictions and are difficult to implement with such a specific case.\nThe only alternative I can think of at the moment would be to change all revival items and skills to call a common event instead of having a direct effect, then in the common event check if the target has that equipment and if not, revive by event commands.\nBut that will require some length of event code that gets more complex the more actors and the more revival options you have."
+    },
+    {
+      "post_id": "js-post-1473668",
+      "author": "Piyan Glupak",
+      "date": "2024-10-04T16:47:22+0900",
+      "body": "Are you also going to have normal death from which actors can be revived?\nIf you want both normal and permadeath, you might find Himework's Custom Death states useful:\nhttps://himeworks.com/2015/11/custom-death-states/\nNot used it myself, but it should treat the states that you choose as if they are State 1 (death).\nIf you have normal and permadeath you might try running battle events every turn to check whether the actor prone to permadeath is dead, and either adding another state or replacing the death state with the permadeath state.\nWhat may be useful, whether or not you have both permadeath and normal death, is to have a common event parallel process to check the party every few seconds for certain states and remove the affected actor(s) from the party. [Note that parallel common events stop working during combat.] I don't have permadeath in my games, but I move the dead actors to another party so that it is easy to revive them later. (I use Himework's Party Manager to allow more than one party.) You might just check for permadeath, if you are happy with the way normal death is handled."
+    },
+    {
+      "post_id": "js-post-1473671",
+      "author": "BrentBAM",
+      "date": "2024-10-04T17:24:12+0900",
+      "body": "I have not done it. But just an idea I had.\nCould you give the raise spell an element. And then make a permadeath state that resists that revive element, so that they dont heal hp and they'll be at 0?"
+    },
+    {
+      "post_id": "js-post-1473682",
+      "author": "B3N4ZC4L",
+      "date": "2024-10-04T19:40:11+0900",
+      "body": "I got an Idea, Check if the Actor's HP is at 0, then remove him/her out of the battle entirely. you would want to either add him back to the party after the fight or pick him/her back up at a different location"
+    },
+    {
+      "post_id": "js-post-1473687",
+      "author": "Prescott",
+      "date": "2024-10-04T20:38:31+0900",
+      "body": "Run a check in battles where, if an actor's HP is 0 and they're wearing the outfit, it applies another state to them. You can make this state the same as the default Dead one, and use the Traits to force the character with that state to always have 0 HP or the default Dead state so they'll just keep dying again if you try to bring them back. Only downside to this method is that you'll still be able to use revival items on them which will lead to the player wasting them, although that could be kind of interesting from a narrative standpoint (not even revival items will bring them back).\nAlthough, why keep the permadeath'd character in the party at all? Just remove them from the party if they hit 0 HP while wearing the outfit. That's much more elegant. Though I guess the downside to that is that you also immediately lose everything that party member had equipped, including the outfit. Could maybe find a way to work that in to the outfit's description or lore, though. The person who wears it alongside all their belongings will turn to ash if they reach 0 HP, something like that. Could even put an item in the party's inventory of the dead party member's ashes. Maybe they can use those ashes for something else! I'm getting ahead of myself though."
+    },
+    {
+      "post_id": "js-post-1473688",
+      "author": "ATT_Turan",
+      "date": "2024-10-04T20:46:30+0900",
+      "body": "Robro33 said:\nfrom there, you can use the\nskill core\nplugin to make it so that all revival items revive through the notebox, and then make them fail to work on targets with the denial state on.\nClick to expand...\nThis is all good advice. The other possibility at the end would be to use Yanfly's Selection Control to prevent your revival actions from targeting the actor.\nThat looks a bit better interface-wise, but the Selection Control is one of Yanfly's paid plugins, whereas Skill Core is free.\nBrentBAM said:\nCould you give the raise spell an element. And then make a permadeath state that resists that revive element, so that they dont heal hp and they'll be at 0?\nClick to expand...\nElements don't make skills just not do anything - it only has an effect on the value in the damage formula.\nPrescott said:\nRun a check in battles where, if an actor's HP is 0 and they're wearing the outfit, it applies another state to them.\nClick to expand...\nBy default, you can't do that. The only state a battler can have when they're dead is state 1.\nPrescott said:\nYou can make this state the same as the default Dead one, and use the Traits to force the character with that state to always have 0 HP or the default Dead state so they'll just keep dying again if you try to bring them back.\nClick to expand...\nHow?"
+    },
+    {
+      "post_id": "js-post-1473691",
+      "author": "Prescott",
+      "date": "2024-10-04T20:58:55+0900",
+      "body": "ATT_Turan said:\nBy default, you can't do that. The only state a battler can have when they're dead is state 1.\nClick to expand...\nDang, I should really test stuff out before I assume it'll work lol. That's interesting.\nATT_Turan said:\nHow?\nClick to expand...\nTurns out, characters' Max HP is hardcoded to never go below 1 HP either. I'm sure you could change that pretty simply in the code somewhere."
+    },
+    {
+      "post_id": "js-post-1473693",
+      "author": "ATT_Turan",
+      "date": "2024-10-04T21:09:47+0900",
+      "body": "Prescott said:\nThat's interesting.\nClick to expand...\nThat's one of the points of the State Categories plugin\n@Robro33\nmentioned in the first reply, it allows you to tag states to\nnot\nget removed upon death.\nPrescott said:\nTurns out, characters' Max HP is hardcoded to never go below 1 HP either. I'm sure you could change that pretty simply in the code somewhere.\nClick to expand...\nTrue, but if you're using plugins anyway then you might as well go with some that streamline the process a bit"
+    },
+    {
+      "post_id": "js-post-1473700",
+      "author": "ZimXero",
+      "date": "2024-10-04T21:31:24+0900",
+      "body": "IF the expert coders don't come up with something... I think B3N4ZC4L's idea holds potential.  Suppose the character's name is Ned.  You will probably want dead Ned's equipment back.   Run a small script to check if Ned is ever dead in battle.  If so it triggers a variable switch.  Run a parallel event that checks the death switch out of battle.  If it's on, it changes his player icon to a tombstone, removes Ned's equipment, removes Ned from party, and triggers a story notification or sequence.\nHe could still be revived in battle, but maybe you could turn this glitch into a feature/cookie.  If the death switch is on, the party becomes buffed with \"Ned's Last Stand\" and if Ned is revived, he gains haste, and double defense until the end of his final battle."
+    },
+    {
+      "post_id": "js-post-1473707",
+      "author": "ATT_Turan",
+      "date": "2024-10-04T21:47:35+0900",
+      "body": "ZimXero said:\nIF the expert coders don't come up with something...\nClick to expand...\nI mean, the first reply from Robro was pretty comprehensive\nZimXero said:\nI think B3N4ZC4L's idea holds potential...Run a small script to check if Ned is ever dead in battle.\nClick to expand...\nNo need for any script calls, a party member being <= 0% HP is one of the default troop event conditions.\nZimXero said:\nHe could still be revived in battle, but maybe you could turn this glitch into a feature/cookie.\nClick to expand...\nThat's kind of contrary to the entire point of the original request\nBut yes, having a troop event that removes the actor from the party when they die is absolutely a way to do this. You'd have to make sure you copy/paste the event into every troop in your game, but that's not terribly difficult."
+    },
+    {
+      "post_id": "js-post-1473712",
+      "author": "Prescott",
+      "date": "2024-10-04T22:07:00+0900",
+      "body": "Well, don't really take this as a solution, it's probably better to use some of those more robust plugins and stuff if you're trying to achieve something that is elegant. I made this more to see if I could than anything else. It's something that's just really simple and makes it so that 1) max HP can drop to 0 and 2) gauges don't crash if it's dropped to 0. There are probably bugs with it. You can't actually use a revival item when a character has 0 MHP this way so that's interesting.\nI just did this as an exercise and I'm a JS noob so it's probably not your best bet xD but hey if it happens to do what someone wants it to I guess that's cool too, figured I'd post it anyway for the heck of it, took me like an hour to figure out lol.\nSpoiler:\nCode\nJavaScript:\nGame_BattlerBase.prototype.paramMin = function(paramId) {\n    if (paramId === 0) {\n        return 0;  // MHP\n    } else if (paramId === 1) {\n        return 0;    // MMP\n    } else {\n        return 1;\n    }\n};\n\nWindow_Base.prototype.drawGauge = function(x, y, width, rate, color1, color2) {\n    rate = isNaN(rate) ? 0 : rate;\n    var fillW = Math.floor(width * rate);\n    var gaugeY = y + this.lineHeight() - 8;\n    this.contents.fillRect(x, gaugeY, width, 6, this.gaugeBackColor());\n    this.contents.gradientFillRect(x, gaugeY, fillW, 6, color1, color2);\n};\nYou'd still want to run Troop events that check if an actor is at 0 HP, and if so if they are wearing the outfit, and then either remove 9999 from their Max HP or, if you plan on being able to bring them back, store their Max HP into a variable and remove that much instead. It'll be easier to restore whatever their Max HP used to be that way.\nI still think it's probably better to remove them from the party and add some message saying they are gone forever or something along those lines, at least if you're trying to go with a no-plugin approach."
+    },
+    {
+      "post_id": "js-post-1473764",
+      "author": "emma_watson",
+      "date": "2024-10-05T02:58:41+0900",
+      "body": "Robro33 said:\nim not sure if its easily doable without plugins, but i use a few yanfly plugins to pull off a similar effect.\nthe main one for me is the the\nstate categories\nplugin so that i can designate certain states to persist on death. But since yours is a gear effect, you can use the\nauto passives\nplugin to attach the state to the gear. from there, you can use the\nskill core\nplugin to make it so that all revival items revive through the notebox, and then make them fail to work on targets with the denial state on.\nClick to expand...\nThank you for answering, I've read many but this may be good and more flexible.\nTo clarify, the \"outfit\" per se, is actually a Switch! It is a mode the player goes to a witch to turn on, and it changes the characters appearance as well.\nWith this in mind, I would be affecting the revival items with \"Bypass Death Removal\" ? I'd appreciate any clearing up of this, thank you for you and everyone elses answer."
+    },
+    {
+      "post_id": "js-post-1473785",
+      "author": "Robro33",
+      "date": "2024-10-05T05:19:25+0900",
+      "body": "emma_watson said:\nTo clarify, the \"outfit\" per se, is actually a Switch!\nClick to expand...\nthat changes things a little, but itll still work.\nemma_watson said:\nWith this in mind, I would be affecting the revival items with \"Bypass Death Removal\" ?\nClick to expand...\nBypass Death Removal only applies to states, not skills. its how you specify that a state can be applied to a dead battler and that when they die, its not a state that should be removed on death. the idea is that since the permadeath state wouldnt be removable by dying, it would be easy to make revives not be able to work on actors with it active.\nis it a specific actor who gets this outfit applied to them? you probably wont be needing the states category plugin if it is. its the only paid plugin of the bunch i mentioned and you didnt say if you owned it. passives because of how theyre written already persist through death, which is one reason i mentioned it alongside the states categories plugin.\nif its for one actor and you use a switch, you can go the passive route easily. give the actor the \"Permadeath\" state as a passive effect and give it the condition\nCode:\n<Custom Passive Condition>\ncondition = $gameParty.inBattle() && $gameSwitches.value(x);\n</Custom Passive Condition>\nreplace the x for the id of the switch you flipped for the outfit and the state should be on the actor so long as theyre in battle and the switch is active.\nthen for your revive items/skills youd make sure the scope is dead allies, remove the damage formula and effects, and put this in its notebox\nCode:\n<After Eval>\nif (!target.isStateAffected(y)){\n  target.removeState(1);\n  target.gainHp(Math.ceil(target.mhp*.25));\n}\n</After Eval>\nreplace the y for the id of the \"Permadeath\" state. now the revives should revive a dead ally with 25% of their max hp, but only if they dont have the \"Permadeath\" state active\nThe Selection Control plugin Turan mentioned would replace the need for the above tag and you'd just need to make the skills not be able to select battlers with the state. Its a good solution too and lets you keep the formula and effects because you just wont be able to use the revive on the actor entirely and the player wont be able to waste the item/skill cost. it too, is a paid plugin though"
+    },
+    {
+      "post_id": "js-post-1473807",
+      "author": "emma_watson",
+      "date": "2024-10-05T07:12:48+0900",
+      "body": "Robro33 said:\nthat changes things a little, but itll still work.\nBypass Death Removal only applies to states, not skills. its how you specify that a state can be applied to a dead battler and that when they die, its not a state that should be removed on death. the idea is that since the permadeath state wouldnt be removable by dying, it would be easy to make revives not be able to work on actors with it active.\nis it a specific actor who gets this outfit applied to them? you probably wont be needing the states category plugin if it is. its the only paid plugin of the bunch i mentioned and you didnt say if you owned it. passives because of how theyre written already persist through death, which is one reason i mentioned it alongside the states categories plugin.\nif its for one actor and you use a switch, you can go the passive route easily. give the actor the \"Permadeath\" state as a passive effect and give it the condition\nCode:\n<Custom Passive Condition>\ncondition = $gameParty.inBattle() && $gameSwitches.value(x);\n</Custom Passive Condition>\nreplace the x for the id of the switch you flipped for the outfit and the state should be on the actor so long as theyre in battle and the switch is active.\nthen for your revive items/skills youd make sure the scope is dead allies, remove the damage formula and effects, and put this in its notebox\nCode:\n<After Eval>\nif (!target.isStateAffected(y)){\n  target.removeState(1);\n  target.gainHp(Math.ceil(target.mhp*.25));\n}\n</After Eval>\nreplace the y for the id of the \"Permadeath\" state. now the revives should revive a dead ally with 25% of their max hp, but only if they dont have the \"Permadeath\" state active\nThe Selection Control plugin Turan mentioned would replace the need for the above tag and you'd just need to make the skills not be able to select battlers with the state. Its a good solution too and lets you keep the formula and effects because you just wont be able to use the revive on the actor entirely and the player wont be able to waste the item/skill cost. it too, is a paid plugin though\nClick to expand...\nThanks for the response, the \"outfit switch\" is actually applied to all characters at once! Let me know if this changes something. Otherwise, thank you very much for detailed. Will post here again once I can prove this all worked out."
+    },
+    {
+      "post_id": "js-post-1473813",
+      "author": "Robro33",
+      "date": "2024-10-05T07:27:36+0900",
+      "body": "emma_watson said:\nThanks for the response, the \"outfit switch\" is actually applied to all characters at once!\nClick to expand...\nthat too should work then. just give all the actors the passive.\nthe comment was more so if you have a situation where the player chooses an actor to apply the outfit to instead of something like only actor #1 gets it. Cause then, there'd need to be an added step to track who it is so that the passive could be active on them and not others while also having the same general conditions.\nif the entire party gets it at once though, it wouldnt be necessary"
+    },
+    {
+      "post_id": "js-post-1486776",
+      "author": "emma_watson",
+      "date": "2024-12-10T17:02:22+0900",
+      "body": "Prescott said:\nRun a check in battles where, if an actor's HP is 0 and they're wearing the outfit, it applies another state to them. You can make this state the same as the default Dead one, and use the Traits to force the character with that state to always have 0 HP or the default Dead state so they'll just keep dying again if you try to bring them back. Only downside to this method is that you'll still be able to use revival items on them which will lead to the player wasting them, although that could be kind of interesting from a narrative standpoint (not even revival items will bring them back).\nAlthough, why keep the permadeath'd character in the party at all? Just remove them from the party if they hit 0 HP while wearing the outfit. That's much more elegant. Though I guess the downside to that is that you also immediately lose everything that party member had equipped, including the outfit. Could maybe find a way to work that in to the outfit's description or lore, though. The person who wears it alongside all their belongings will turn to ash if they reach 0 HP, something like that. Could even put an item in the party's inventory of the dead party member's ashes. Maybe they can use those ashes for something else! I'm getting ahead of myself though.\nClick to expand...\nHey, I actually want to ask how I could do your solution. I'd love to just have the party member ejected once they're at 0 HP. How can I go about this? Thank you."
+    },
+    {
+      "post_id": "js-post-1486826",
+      "author": "Prescott",
+      "date": "2024-12-10T22:46:54+0900",
+      "body": "emma_watson said:\nHey, I actually want to ask how I could do your solution. I'd love to just have the party member ejected once they're at 0 HP. How can I go about this? Thank you.\nClick to expand...\nThere is a condition to check a party member's HP. You can check if they are at 0 HP and then remove them from the party if they are. If you want to do it within a battle, you can set it up in the eventing for Troops."
+    },
+    {
+      "post_id": "js-post-1486880",
+      "author": "emma_watson",
+      "date": "2024-12-11T03:17:30+0900",
+      "body": "Prescott said:\nThere is a condition to check a party member's HP. You can check if they are at 0 HP and then remove them from the party if they are. If you want to do it within a battle, you can set it up in the eventing for Troops.\nClick to expand...\nThanks a ton"
+    },
+    {
+      "post_id": "js-post-1488669",
+      "author": "emma_watson",
+      "date": "2024-12-19T16:51:39+0900",
+      "body": "Robro33 said:\nthat changes things a little, but itll still work.\nBypass Death Removal only applies to states, not skills. its how you specify that a state can be applied to a dead battler and that when they die, its not a state that should be removed on death. the idea is that since the permadeath state wouldnt be removable by dying, it would be easy to make revives not be able to work on actors with it active.\nis it a specific actor who gets this outfit applied to them? you probably wont be needing the states category plugin if it is. its the only paid plugin of the bunch i mentioned and you didnt say if you owned it. passives because of how theyre written already persist through death, which is one reason i mentioned it alongside the states categories plugin.\nif its for one actor and you use a switch, you can go the passive route easily. give the actor the \"Permadeath\" state as a passive effect and give it the condition\nCode:\n<Custom Passive Condition>\ncondition = $gameParty.inBattle() && $gameSwitches.value(x);\n</Custom Passive Condition>\nreplace the x for the id of the switch you flipped for the outfit and the state should be on the actor so long as theyre in battle and the switch is active.\nthen for your revive items/skills youd make sure the scope is dead allies, remove the damage formula and effects, and put this in its notebox\nCode:\n<After Eval>\nif (!target.isStateAffected(y)){\n  target.removeState(1);\n  target.gainHp(Math.ceil(target.mhp*.25));\n}\n</After Eval>\nreplace the y for the id of the \"Permadeath\" state. now the revives should revive a dead ally with 25% of their max hp, but only if they dont have the \"Permadeath\" state active\nThe Selection Control plugin Turan mentioned would replace the need for the above tag and you'd just need to make the skills not be able to select battlers with the state. Its a good solution too and lets you keep the formula and effects because you just wont be able to use the revive on the actor entirely and the player wont be able to waste the item/skill cost. it too, is a paid plugin though\nClick to expand...\nRobro33 said:\nthat changes things a little, but itll still work.\nBypass Death Removal only applies to states, not skills. its how you specify that a state can be applied to a dead battler and that when they die, its not a state that should be removed on death. the idea is that since the permadeath state wouldnt be removable by dying, it would be easy to make revives not be able to work on actors with it active.\nis it a specific actor who gets this outfit applied to them? you probably wont be needing the states category plugin if it is. its the only paid plugin of the bunch i mentioned and you didnt say if you owned it. passives because of how theyre written already persist through death, which is one reason i mentioned it alongside the states categories plugin.\nif its for one actor and you use a switch, you can go the passive route easily. give the actor the \"Permadeath\" state as a passive effect and give it the condition\nCode:\n<Custom Passive Condition>\ncondition = $gameParty.inBattle() && $gameSwitches.value(x);\n</Custom Passive Condition>\nreplace the x for the id of the switch you flipped for the outfit and the state should be on the actor so long as theyre in battle and the switch is active.\nthen for your revive items/skills youd make sure the scope is dead allies, remove the damage formula and effects, and put this in its notebox\nCode:\n<After Eval>\nif (!target.isStateAffected(y)){\n  target.removeState(1);\n  target.gainHp(Math.ceil(target.mhp*.25));\n}\n</After Eval>\nreplace the y for the id of the \"Permadeath\" state. now the revives should revive a dead ally with 25% of their max hp, but only if they dont have the \"Permadeath\" state active\nThe Selection Control plugin Turan mentioned would replace the need for the above tag and you'd just need to make the skills not be able to select battlers with the state. Its a good solution too and lets you keep the formula and effects because you just wont be able to use the revive on the actor entirely and the player wont be able to waste the item/skill cost. it too, is a paid plugin though\nClick to expand...\nWanted to say this has worked awesomely so far, the only little kink in it is that the items still seem to revive when the item is used outside of battle. Is there anything to account for this? Thanks again."
+    },
+    {
+      "post_id": "js-post-1488711",
+      "author": "Robro33",
+      "date": "2024-12-19T22:37:14+0900",
+      "body": "emma_watson said:\nthe items still seem to revive when the item is used outside of battle\nClick to expand...\nyeah, the tag i gave you for the passive condition has it written so that the passive can only be active in battle. delete the \"$gameParty.inBattle() &&\""
+    }
+  ]
+}

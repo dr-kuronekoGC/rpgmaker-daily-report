@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-create-spawn-timers.172552",
+  "title": "How to create spawn timers?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:33.270554+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1475284",
+      "author": "Danatoth",
+      "date": "2024-10-13T17:31:28+0900",
+      "body": "I'm trying to figure out how I want to do visible enemies that respawn 20 minutes after you kill them. The only way I've thought of doing this is making the enemy a 2 page event. Page one is the enemy itself and on death it triggers switch 1. Page 2 of the event has the condition of switch 1 being on. There is a common event that runs when switch 1 is on. It is a parallel event that is just a wait timer of 20 minutes, then it turns switch 1 off. This would make it so that even if you leave the map a timer is still going, so that the enemy only respawns after 20 minutes.\nConsidering in these 20 minutes though that since this is an action rpg you may kill 40 or more monsters, and you'd have 40 of these simple common parallel events running. In addition, say the game has 1500 enemies total scattered through it, that alone would be more than the 1000 common events that rpg maker mv allows. Can you think of any other ways to do this?"
+    },
+    {
+      "post_id": "js-post-1475287",
+      "author": "Aerosys",
+      "date": "2024-10-13T18:30:52+0900",
+      "body": "There are \"local Variable\" plugins out there that should help you. I haven't tried any yet, but I think the basic flow looks like this:\nThe second page of each event will be set to parallel and count down its individual counter variable (and then wait for 60 frames). When it reaches 0, turn off the Self-Switch.\nThis way, the counters will not count down when the player is in the menu, and\nalso when they is on another map\n! I don't know whether you want it this way, so it's just a remark from my side."
+    },
+    {
+      "post_id": "js-post-1475305",
+      "author": "B3N4ZC4L",
+      "date": "2024-10-13T20:28:09+0900",
+      "body": "You could setup one common event that is checking for enemies that have been defeated that are being respawned every 20 minutes... but that could lead to enemies respawning right next to the player as well if it were ONLY a single timer. one thing that comes to mind at the moment, is to include certain definite \"respawn-switches\" that will respawn enemies in other areas guaranteed as the player needs to reach another Map in the first place. An Inn would be a good place to put it into after the player is resting."
+    },
+    {
+      "post_id": "js-post-1475318",
+      "author": "Andar",
+      "date": "2024-10-13T22:31:41+0900",
+      "body": "while it is possible to do this by eventing, this quickly would become a hassle.\nand not only for the reasons already mentioned.\nPlease search for a plugin called \"event timers\" or so. you should find a few for MV that allows you to give an event its own timer after which a self-switch is triggered."
+    },
+    {
+      "post_id": "js-post-1475351",
+      "author": "Danatoth",
+      "date": "2024-10-14T02:27:25+0900",
+      "body": "Thanks for the advice guys, I went with Galv's spawn timer plugin and it works perfectly~"
+    }
+  ]
+}

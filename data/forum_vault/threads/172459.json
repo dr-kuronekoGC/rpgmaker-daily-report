@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-party-member-that-splits-into-two-fighters.172459",
+  "title": "A party member that splits into two fighters?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:36.631271+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1474431",
+      "author": "MonkeyDLenny",
+      "date": "2024-10-08T16:03:11+0900",
+      "body": "So I have a bit of an out there concept:\nThe idea being the main actor and fighter has a little monster that rides around in his backpack. When a battle begins, one option that can be selected is to \"Split Up\". Once selected, the monster leaps out of the backpack and becomes a second fighter on the field next to him, and stats are split between them. (For example, if the main unit has 100 HP, then when split apart one will have 60 HP and one will have 40 HP)\nBasically the idea is to have the player make decisions over whether it's worth keeping them together and having one stronger unit, or dividing them and having two units who are individually weaker but provide another possible target for enemies to go for, as well as access to unique abilities that could only be achieved while split.\n(An example scenario: Main unit is down to 20 HP, player selects Split Up, player has the secondary unit use a Taunt, and can tank the hit because they have a higher defense and on the next turn both of them attack the enemy)\nIs something like that even possible? Or is that too ambitious for RPG Maker?"
+    },
+    {
+      "post_id": "js-post-1474433",
+      "author": "ShadowDragon",
+      "date": "2024-10-08T17:31:31+0900",
+      "body": "it's possible, you need a summon actor plugin (any probably will do)\nand YEP_BuffStateCore with lunatic code to give the actor and summon\na passive state or either.\nas I don't know much lunatic code, it's doable, if you want the fighter have taunt,\nthan the taunt plugin is needed, or similar to draw provoke to him."
+    },
+    {
+      "post_id": "js-post-1474443",
+      "author": "Andar",
+      "date": "2024-10-08T20:43:43+0900",
+      "body": "there are even several ways to do this depending on what exactly you want.\nfor example you might want to consider summoning two actors and remove the actor pretending to be the combination.\nthat is because otherwise the main actor would keep all skills at full strength from the combination and still gain a second actor (with an additional action per turn) if only the HP is split. That might be unbalancing."
+    },
+    {
+      "post_id": "js-post-1474453",
+      "author": "CleanWater",
+      "date": "2024-10-08T21:26:41+0900",
+      "body": "A simple way of doing this would be to create 3 actors and use Change Party Members command. One actor will be the combo of both, you remove him/her with a Common Event called through a skill and then add two others."
+    },
+    {
+      "post_id": "js-post-1474458",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T21:34:08+0900",
+      "body": "CleanWater said:\nA simple way of doing this would be to create 3 actors and use Change Party Members command.\nClick to expand...\nThere are a few potential issues with this idea.\nOne is that the party size has to be large enough to accommodate the extra actor being added to it. So if the OP already is doing a standard four-actor party, that's not possible without using a plugin anyway (in which case one might as well simply use a summon plugin).\nThe other issue is that removing and adding actors to the party messes with the party order, which will rearrange the actors on the battle HUD, on the battlefield, and then when you leave combat.\n(I've also never tried removing/adding actors during battle, I don't know if that has any intrinsic issues)"
+    },
+    {
+      "post_id": "js-post-1474462",
+      "author": "Andar",
+      "date": "2024-10-08T21:56:49+0900",
+      "body": "CleanWater said:\nuse Change Party Members command\nClick to expand...\nATT_Turan said:\n(I've also never tried removing/adding actors during battle, I don't know if that has any intrinsic issues)\nClick to expand...\nIt depends on the battlesystem.\nChange actor will work with the default battlesystem even when done during battles.\nHowever as soon as you use plugins to change the battlesystem, this depends on the plugins and is NOT guaranteed.\nSome plugins need additional data on the actors for their new features. Those are usually only added at the battle setup, so any later adding of an actor with change member will not get that additional data. And then you get one of the \"undefined\" errors when the plugin tries to use that missing data.\nFor those cases you'll need a compatible summoning plugin because only that knows what data to add to the summons.\nBut because not every battle plugin adds data and some function without it, you can only test yourself whether your specific combination of battle plugins can work with change member or needs a summoning plugin."
+    },
+    {
+      "post_id": "js-post-1474561",
+      "author": "MonkeyDLenny",
+      "date": "2024-10-09T04:54:59+0900",
+      "body": "These are all interesting responses! Glad to see what I want to achieve seems doable!\nATT_Turan said:\nOne is that the party size has to be large enough to accommodate the extra actor being added to it. So\nif the OP already is doing a standard four-actor party\n, that's not possible without using a plugin anyway (in which case one might as well simply use a summon plugin).\nThe other issue is that removing and adding actors to the party messes with the party order, which will rearrange the actors on the battle HUD, on the battlefield, and then when you leave combat.\n(I've also never tried removing/adding actors during battle, I don't know if that has any intrinsic issues)\nClick to expand...\nTo add a little more context, these two would actually be the\nonly\nparty members, it's a story about a duo. Perhaps some guest party-members come and go, but for the majority of the time it's just those two.\nForgive the crudity of my sketches but I drew out sort of what I had in mind"
+    }
+  ]
+}

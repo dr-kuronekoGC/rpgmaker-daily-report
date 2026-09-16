@@ -1,0 +1,179 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/making-special-weapons-unique-with-basic-editor-function.172386",
+  "title": "Making Special Weapons Unique (with basic editor function)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:24.296416+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1473914",
+      "author": "jonthefox",
+      "date": "2024-10-05T23:16:53+0900",
+      "body": "I'd like ideas or some new things to think about when it comes to making different weapons feel distinctive.  Often as you discover unique weapons as you go through a game, it just comes with higher stats, which feels a bit boring.\nThe thing is, it is easy to think of cool ideas *IN THEORY* - but often they would require plugins or a bunch of programming knowledge.  I'm looking for things that can be done with the basic editor, and just require some outside the box thinking.\nAlso:  I don't really want to give weapons their own unique damage formula, since I'd like weapon attributes to still be present when you use various skills (which THEMSELVES have their own unique damage formulas).\nLooking forward to hearing people's ideas and opinions!"
+    },
+    {
+      "post_id": "js-post-1473915",
+      "author": "ATT_Turan",
+      "date": "2024-10-05T23:25:04+0900",
+      "body": "You put this in Game Mechanics Design, which is editor-agnostic, but the fact of the matter is your possibilities greatly depend on the editor you're using. Especially since you say you want to use no plugins, for some reason.\nMZ has much more options than any other engine, with the addition of the Attack Skill trait - you can make any weapon use its own skill for attack, so they can do anything you can configure in a skill in the database.\nBut, then, if you're saying you only want to discuss things that are properties of the weapon that apply to other skills that you use...and you don't want to use plugins...you're pretty darned limited. Open up the Traits window and see what there is\nOr you can attach common events to your skills which check for which weapon the user is wielding and add some kind of other effects after the skill has gone off."
+    },
+    {
+      "post_id": "js-post-1474036",
+      "author": "NamEtag",
+      "date": "2024-10-06T10:48:39+0900",
+      "body": "For a weapon to modify physical skills, it needs to have an attribute that the skill actively checks for use. Normally that's the ATK stat, but you don't want to change the damage formula.\nSo it's going to be a mechanic that the skill triggers, or a state it applies.....without plugins....\nTo a certain degree, you're better off with the weapon having a passive or skill that activates whenever you use a physical skill."
+    },
+    {
+      "post_id": "js-post-1474334",
+      "author": "jerrylikesgreen",
+      "date": "2024-10-08T02:30:57+0900",
+      "body": "My approach would be to focus less on a weapon's direct impact in battle, like attacking or influencing stats, and more on how it shapes the game's experience. This can be achieved using a mix of variables, events, and states, depending on the level of complexity you're aiming for.\nVisuals and audio are powerful tools to enhance the epicness of a moment. For instance, when a character equips a weapon, you could trigger a transformation by changing their state to \"Empowered,\" which then sets off a series of events: changing the player sprite, adding sound effects, or even altering the background music to something more intense. Imagine a Super Saiyan transformation from Dragon Ball Z—simple changes like these can make the moment feel monumental. All of which can be done with no plugins or scripting involved.\nThe possibilities are endless; that was just a quick idea to illustrate the concept.\nIf you'd like more assistance or a brainstorming partner to bounce ideas off of, let me know. Sometimes, having someone to collaborate with can really get the creative juices flowing."
+    },
+    {
+      "post_id": "js-post-1474344",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T03:30:46+0900",
+      "body": "jerrylikesgreen said:\nFor instance, when a character equips a weapon, you could trigger a transformation by changing their state to \"Empowered,\" which then sets off a series of events: changing the player sprite, adding sound effects, or even altering the background music to something more intense. Imagine a Super Saiyan transformation from Dragon Ball Z—simple changes like these can make the moment feel monumental. All of which can be done with no plugins or scripting involved.\nClick to expand...\nHow? There isn't any way in the editor to have anything happen when you equip an item.\nAt the very best, you would have to have a parallel process running to constantly check whether the player had put the item on (which is inefficient, but we'll go with it\n) and you wouldn't see any of this happen until after the player had finished and closed out of the menu.\nIf that's sufficiently dramatic for the OP, then yes, that is possible - it's just entirely possible that the whole special effects will be entirely divorced from the moment of equipping."
+    },
+    {
+      "post_id": "js-post-1474352",
+      "author": "jerrylikesgreen",
+      "date": "2024-10-08T04:01:42+0900",
+      "body": "ATT_Turan said:\nHow? There isn't any way in the editor to have anything happen when you equip an item.\nAt the very best, you would have to have a parallel process running to constantly check whether the player had put the item on (which is inefficient, but we'll go with it\n) and you wouldn't see any of this happen until after the player had finished and closed out of the menu.\nIf that's sufficiently dramatic for the OP, then yes, that is possible - it's just entirely possible that the whole special effects will be entirely divorced from the moment of equipping.\nClick to expand...\nMy intention wasn't for the transformation to occur immediately upon equipping the item. Instead, I envisioned it as a state change that occurs after equipping, where the sprite updates to reflect this new state. To enhance the experience, we could also incorporate audio cues, like bell chimes, to highlight the transition into this new state. I apologize for any confusion on that point.\nEssentially, the flow would be: you open the item or equipment screen, equip the weapon, and your character's state changes as a result. When you return to the game, your character appears transformed, and the game's audio changes to reflect this transformation. I apologize if I wasn't clear before—I sometimes struggle to express my ideas in words.\nRegarding the idea of having a parallel process constantly checking the player's status, I agree that it would be inefficient. That approach wasn't my proposed solution. What I intended to suggest is that the game engine offers numerous ways to integrate your weapons outside of battle, which could help make them feel more unique and special.\nIf we decide to explore this transformation concept further, we should consider a few key factors: the specific mechanics of how the transformation will occur, the reasoning behind it, how it fits within the game's context, and what existing mechanics can be utilized to support this transformation."
+    },
+    {
+      "post_id": "js-post-1474353",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T04:03:49+0900",
+      "body": "jerrylikesgreen said:\nRegarding the idea of having a parallel process constantly checking the player's status, I agree that it would be inefficient. That approach wasn't my proposed solution.\nClick to expand...\nThen what is? How would you have the engine know that the player had equipped a weapon on one of their characters in order for them to transform?\nI don't mean to be overly suspicious, but at least sections of your posts come across like they've been written by AI."
+    },
+    {
+      "post_id": "js-post-1474355",
+      "author": "jerrylikesgreen",
+      "date": "2024-10-08T04:21:21+0900",
+      "body": "ATT_Turan said:\nThen what is? How would you have the engine know that the player had equipped a weapon on one of their characters in order for them to transform?\nI don't mean to be overly suspicious, but at least sections of your posts come across like they've been written by AI.\nClick to expand...\nYou can be as suspicious as you want; it's your mind. No offense taken here. As long as everyone is friendly and cooperative.\nAs far as what is a solution? That comes back to what I said about narrowing down the why and what mechanics are already in place. If you are genuinely interested in discussing this idea, I would be more than happy to talk this through with you. I am sure I would learn from the conversation as you have more experience with the engine itself; however, if your question was just to counter what I am saying due to some suspicion. Well, then, all I have to say is thank you for your insight. Have a good day."
+    },
+    {
+      "post_id": "js-post-1474357",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T04:27:53+0900",
+      "body": "jerrylikesgreen said:\nAs far as what is a solution? That comes back to what I said about narrowing down the why and what mechanics are already in place.\nClick to expand...\nThat frankly doesn't make any sense. You are the one who suggested the OP do all of this fancy transformation scene stuff when the player equipped a weapon on an actor, but have presented exactly zero ways how one could actually do that in RPG Maker without using plugins.\nThere doesn't need to be any prolonged discussion leading up to it, you can simply say \"he could do this\" and describe it or show a screenshot of how you'd accomplish it. There's no reason what you have in mind would depend on any other \"mechanics in place.\" What does that even mean?\nI'm not interested in discussing this idea at all - I could easily implement something like this via writing a plugin that would execute code when equipping a weapon, including interrupting the item scene.\nBut for the sake of the OP I don't want him getting excited by cool notions someone posts with no method of actually implementing them."
+    },
+    {
+      "post_id": "js-post-1474358",
+      "author": "Robro33",
+      "date": "2024-10-08T04:31:43+0900",
+      "body": "jerrylikesgreen said:\nAs far as what is a solution? That comes back to what I said about narrowing down the why and what mechanics are already in place\nClick to expand...\nThe problem is that without a parallel event constantly checking actor equipment, there is no way to do that without a plugin. The engine has no way trigger something like an actor transformation at the time of equipping an item (or atleast roughly. Parallel events dont run in menu scenes). No amount of reevaluating the current mechanics will create a solution other than that\nIf youre going to suggest another person to do something to achieve a certain goal, you should have an idea of how itd work. You cant say you can do it without plugins, and then say the common event wasnt your intention, but then not provide what was"
+    },
+    {
+      "post_id": "js-post-1474361",
+      "author": "jerrylikesgreen",
+      "date": "2024-10-08T04:52:43+0900",
+      "body": "Robro33 said:\nIf youre going to suggest another person to do something to achieve a certain goal, you should have an idea of how itd work. You cant say you can do it without plugins, and then say the common event wasnt your intention, but then not provide what was\nClick to expand...\nThe reason for my original post was not to say, \" Add a transformation via an equipped weapon.\"\nThe reason for my post was to suggest shifting the way the OP is thinking of a solution, which, honestly, I should have better articulated; I genuinely suck at putting thoughts into words.\nI suggested how I would tackle his issue if I were in his shoes. Instead of focusing on how the Weapon could function in battle to make it unique/special, op could think of an idea to make it useful/impactful outside of battle. The bit about transforming was a passing thought to suggest other possibilities to incorporate images and sounds to get his uniqueness across. It was not something I sat and truly thought out or planned out; again, my intention was not to solve his problem but to shift the way he thought about the solution.\nAlso, I can't entirely agree with your idea that I should have a solution if I am going to provide an idea. Throwing ideas back and forth between people should help prompt a solution. It's the reason why people ask for feedback."
+    },
+    {
+      "post_id": "js-post-1474363",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T04:58:33+0900",
+      "body": "jerrylikesgreen said:\nAlso, I can't entirely agree with your idea that I should have a solution if I am going to provide an idea.\nClick to expand...\nIn the specific context of this thread, I agree with\n@Robro33\n- the OP specifically said:\njonthefox said:\nThe thing is, it is easy to think of cool ideas *IN THEORY* - but often they would require plugins or a bunch of programming knowledge.  I'm looking for things that can be done with the basic editor\nClick to expand...\nThat's not an invitation to just brainstorm things and hope someone comes up with a way to implement your idea. That's asking people to tell him\nwhich cool things\ncan actually be done in the editor."
+    },
+    {
+      "post_id": "js-post-1474367",
+      "author": "jerrylikesgreen",
+      "date": "2024-10-08T05:13:29+0900",
+      "body": "ATT_Turan said:\nIn the specific context of this thread, I agree with\n@Robro33\n- the OP specifically said:\nThat's not an invitation to just brainstorm things and hope someone comes up with a way to implement your idea. That's asking people to tell him\nwhich cool things\ncan actually be done in the editor.\nClick to expand...\nYes, the Op did post to be told \"which cool\nthings\n\" can be done, I recognize this, I am not arguing this fact.\nI read his post and saw that his thought process was (in my opinion) narrow, so I intended to suggest a different point of view, \" to think outside of the box\". When someone is in a spot where they see no solutions, often taking a step back can lead to solutions; with that in mind, I wanted to point out that he could look at things differently. Was it a suggestion that he specifically asked for? No. However, I still think hearing what I have to say could be helpful."
+    },
+    {
+      "post_id": "js-post-1474370",
+      "author": "ISC",
+      "date": "2024-10-08T05:18:06+0900",
+      "body": "The first thing that comes to mind is a system where a weapon that deals low damage has a higher hit rate bonus, and vice versa. However, it would be a punishing system for weapons that deal high damage due to the way RPG Maker (MV/MZ) handles hit rate and physical evasion."
+    },
+    {
+      "post_id": "js-post-1474387",
+      "author": "TheAM-Dol",
+      "date": "2024-10-08T07:35:01+0900",
+      "body": "Dang it, I left my bot in PR mode again. Usually when I send out my Marijuana liking bot, I set it \"Bro needs munchies\" mode, but he had to make an impromptu Youtube apology video for getting too high on stream, so I set him to PR mode.\n@jerrylikesgreen\nplease enable your human talk mode, add a few \"bro\"s and \"bruh\"s into your sentences to really convince people you're just a fun loving human from the human planet and not the silicon inside a data center somewhere.\nWhile you're at it, let's deescalate this situation by generating a haiku about Harold.\nThanks, and I apologize to everyone for my Jerry bot."
+    },
+    {
+      "post_id": "js-post-1474465",
+      "author": "Tai_MT",
+      "date": "2024-10-08T22:04:31+0900",
+      "body": "I guess I'm not sure what you're asking for here.  What do you consider \"distinctive\"?  I have stuff that is \"distinctive\" for my game, and maybe a couple items \"distinctive\" for other games.\n\"Preserve TP\" items are an insane rarity within my game, so any weapon that has that on it, is very rare, powerful, and quite distinctive to my game.\nBut, I also have \"Walken Stick\", which is a staff that is above average in Magic Defense and MP gained.  It has a description of \"I got a fever!\" and when used it makes a cowbell sound.  If ya get the joke, ya get the joke.\nBefore I can suggest anything, I'm going to need specifically what you're looking for, since what you're asking is \"subjective\" and can be dependent on the setting/typical abilities within the game itself.\nAs an example, in a low magic game where no items come with elemental effects, a Fire Sword would be insanely memorable and rare."
+    },
+    {
+      "post_id": "js-post-1474488",
+      "author": "jonthefox",
+      "date": "2024-10-08T23:06:41+0900",
+      "body": "@Tai_MT\nI guess what I mean is, say you come across a new, and generally better weapon.  I want it to be appealing and, basically, give the player an incentive to use more than just the \"oh, it's strictly higher ATK than my current weapon.\"   I'd like these weapons to eventually be viable and even potentially situationally preferable because of unique attributes, not just their stat block.  Maybe too ambitious but that's the idea I'm trying to explore here."
+    },
+    {
+      "post_id": "js-post-1474497",
+      "author": "Robro33",
+      "date": "2024-10-08T23:58:26+0900",
+      "body": "you could play around with your elements to make sub elements for weapons.\ndefault mv/z behavior towards multiple attack elements on battler is to use the most effective one iirc. so weapons can have physical as an attack element and a secondary one like slash/bash/pierce that you can use to make situations where they specifically do more damage.\nyou could do something like \"make hammers better against stone enemies\" by giving each hammer phys+bash as attack elements, and then make the stone enemies resistant to phys and weak to bash. you end up with hammers ignoring the phys resistance and exploiting the bash weakness, while others would just hit the phys resistance. the caveat is that you'd have to keep track of all of these for all enemies. if you forget to make a stone enemy strong against slash while its strong to phys, phys only weapons deal reduced damage while swords with slashing will just do normal damage"
+    },
+    {
+      "post_id": "js-post-1474499",
+      "author": "TRIDIUM",
+      "date": "2024-10-09T00:03:13+0900",
+      "body": "It's always a bit tricky with turn based games, because you can't mix it up with stuff like movesets or anything.\nWhat you can do, is give weapons unique skills. I've been playing the FF7 remake, and every weapon has a unique skill. Using that skill a bunch with permanently learn it.\nObviously you don't have to do that exact thing, but it's a start.\nOther than that, weapons that inflict states are always fun, especially if you can switch weapons mid battle.\nChanging animations and sound effects will also help it feel more unique."
+    },
+    {
+      "post_id": "js-post-1474505",
+      "author": "Maliki79",
+      "date": "2024-10-09T00:34:40+0900",
+      "body": "I'm so spoiled off of plugins... I hardly remember what the default behavior is...\nUm... Maybe build a CE with a PP that jumps off by using the gold double trait.  Then it can look for the weapon IDs and go from there...\nOr you can have the weapon grant a skill the CE looks for, right?"
+    },
+    {
+      "post_id": "js-post-1474507",
+      "author": "ATT_Turan",
+      "date": "2024-10-09T00:36:06+0900",
+      "body": "Maliki79 said:\nMaybe build a CE with a PP that jumps off\nClick to expand...\n...wut?"
+    },
+    {
+      "post_id": "js-post-1474509",
+      "author": "Maliki79",
+      "date": "2024-10-09T00:43:31+0900",
+      "body": "Common Event with Parallel Process.\nThen again, the PP doesn't look for conditions like that, does it...?"
+    },
+    {
+      "post_id": "js-post-1474513",
+      "author": "ATT_Turan",
+      "date": "2024-10-09T01:01:38+0900",
+      "body": "Maliki79 said:\nCommon Event with Parallel Process.\nThen again, the PP doesn't look for conditions like that, does it...?\nClick to expand...\nThey also don't function in battle."
+    },
+    {
+      "post_id": "js-post-1474517",
+      "author": "Maliki79",
+      "date": "2024-10-09T01:45:42+0900",
+      "body": "Ah...  Back to the drawing board..."
+    },
+    {
+      "post_id": "js-post-1474531",
+      "author": "Tai_MT",
+      "date": "2024-10-09T02:36:15+0900",
+      "body": "Eh, I work strictly within MV, and I'm not even sure anything I do would be \"distinctive enough\".\nI'm particularly proud of my own \"niche\" weapons/equipment, but I don't think that applies to this topic since they're \"generalized categories\".\nI mean, just as some examples:\nDagger -\nWeak weapon, but always comes with status effects as part of its draw.  Since status effects are powerful in my game, then it might not necessarily be that you want more attack power, but a better chance to inflict Poison or Paralyze on hit instead.\nKatar\n- As weak as the Dagger (just in a different way), but typically comes with a chance for Counter Attack and a high chance to land a critical hit.\nWand -\nVery low damage, but always inflicts \"Weakness to X\" on hit.  It can do this for 1 element or multiple elements.  I have a lot of elements in my game, so picking a wand is less about \"How much overall damage\" the weapon itself does, and more what you want to \"follow up\" or \"support other party members\" with.  It also gives mages a good reason to just hit the \"Attack\" button in combat when out of MP.\nOrb\n- Has no attack damage what-so-ever.  Attacking with it changes the element of your \"Attack\" command to \"Magic\" as well as any other element attached to the Orb.  Essentially, it's the mages' version of an elemental sword, except it can usually hit at least two other elements besides \"Magic\".\nBook\n- This is actually classified as a \"Shield\" within my game, but it does something decently unique in that is provides 100% immunity to specific elements.  This can be a whole Category (like Strength, Magic, or Speed) or a specific Element (like Water).\nBattle Axe\n- This is \"the most damaging class of weapons\" in the entire game, but their accuracy starts at 75% and can go down from there as you equip more and more powerful ones.\n---\nBasically, I have \"categories\" and then \"tiers\" of equipment so that the stat spread is pretty much evened out.  Players are meant to \"fire and forget\" their weapons in most cases and only pick the \"kind of weapon\" they want each character to use most of the time, and then decide what works best within that category for their character builds.  So, there are \"side grades\" and \"weird niches\" within those tiers and categories, but it's all highly situational.\nHeck, I even have a Claymore that is \"Blunt\" element and also has its defense/attack stats switched around so that it can basically be used for tanking (instead of the 16 attack and 8 defense it would normally confer, it gives 4 attack and 20 defense).  Without a player building their characters for using that kind of niche weapon, it would basically just be a very \"limited use case\" type of thing."
+    },
+    {
+      "post_id": "js-post-1476395",
+      "author": "kirbwarrior",
+      "date": "2024-10-19T07:34:46+0900",
+      "body": "TRIDIUM said:\nIt's always a bit tricky with turn based games, because you can't mix it up with stuff like movesets or anything.\nClick to expand...\n...so this is one of the things I do XD New actions can absolutely be a reason to make new equipment awesome, especially if that's the main reason for that equip slot (such as determining what your basic attack is). For something even more widespread, I had one game where everyone learned spells but only one character naturally had the Magic skill type, so any piece of equipment that gave Magic added a slew of additional options (especially when it's a staff that removes physical skills!).\nBut in the general sense, I largely stopped having weapons that are just \"Attack go up\". Sometimes it's as simple as a different number also going up, sometimes it's adding a trait, sometimes it's new immunities, and sometimes it fully changes what a character can do.\njonthefox said:\nI'm looking for things that can be done with the basic editor, and just require some outside the box thinking.\nClick to expand...\nWeapons that simply add minor states can vastly change how players look at them. Really, just look over the traits and there's tons of possibilities. It varies from maker to maker, but even the oldest ones have lots of variations you can use."
+    },
+    {
+      "post_id": "js-post-1482320",
+      "author": "CrystalCat",
+      "date": "2024-11-19T13:36:53+0900",
+      "body": "Tai_MT said:\nIt also gives mages a good reason to just hit the \"Attack\" button in combat when out of MP.\nClick to expand...\nI usually make it so when you attack with a staff, it regenerates 10% of your MP. this way mana isn't something you can only refill with items or an inn. You can turn that into a special weapon if you want. (no plugins needed)"
+    },
+    {
+      "post_id": "js-post-1482326",
+      "author": "Tai_MT",
+      "date": "2024-11-19T15:38:41+0900",
+      "body": "CrystalCat said:\nI usually make it so when you attack with a staff, it regenerates 10% of your MP. this way mana isn't something you can only refill with items or an inn. You can turn that into a special weapon if you want. (no plugins needed)\nClick to expand...\nUnfortunately, that breaks how my game plays.  It's about combat mastery and managing resources.  If the player could just whack enemies before a boss fight to regen all their MP, then it defeats the point of having to manage the resource through the whole dungeon.\nMy players are meant to be buying MP Restoring Consumables and using them.  Combat mastery is when they don't need to use much MP, or many consumables, to fight their way to the boss."
+    }
+  ]
+}

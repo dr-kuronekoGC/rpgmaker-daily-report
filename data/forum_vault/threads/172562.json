@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/solved-how-do-i-change-the-currency-color-in-my-menu-currency-symbol.172562",
+  "title": "[SOLVED] How do I change the currency color in my menu? (currency symbol)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:18.913234+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1475356",
+      "author": "DiscoReunion",
+      "date": "2024-10-14T02:56:03+0900",
+      "body": "Hello!\nI'm using RPG Maker MZ and I want to change the color of my currency that can be seen in my menu screen (the little G), not the value color, just the symbol color.\nI search in the .js file but I didn't find where that can be changed...\nThanks in advance!"
+    },
+    {
+      "post_id": "js-post-1475396",
+      "author": "ATT_Turan",
+      "date": "2024-10-14T09:32:11+0900",
+      "body": "By default, it's drawn using the \"system color\" which is color 16. You can copy the below into a text editor, save as a *.js file, and include as a plugin:\nCode:\nWindow_Base.prototype.drawCurrencyValue = function(value, unit, x, y, width) {\n    var unitWidth = Math.min(80, this.textWidth(unit));\n    this.resetTextColor();\n    this.drawText(value, x, y, width - unitWidth - 6, 'right');\n// Change the next line\n    this.changeTextColor(this.textColor(16));\n    this.drawText(unit, x + width - unitWidth, y, unitWidth, 'right');\n};\nChange the 16 in parentheses to be whichever color you want."
+    },
+    {
+      "post_id": "js-post-1475485",
+      "author": "DiscoReunion",
+      "date": "2024-10-15T02:01:25+0900",
+      "body": "Thanks! I tried your solution but I got this error:"
+    },
+    {
+      "post_id": "js-post-1475488",
+      "author": "ShadowDragon",
+      "date": "2024-10-15T02:19:52+0900",
+      "body": "as you posted in MV while you use MZ, the code didn't work as it's slightly different\nJavaScript:\nWindow_Base.prototype.drawCurrencyValue = function(value, unit, x, y, width) {\n    var unitWidth = Math.min(80, this.textWidth(unit));\n    this.resetTextColor();\n    this.drawText(value, x, y, width - unitWidth - 6, 'right');\n// Change the next line\n    this.changeTextColor(ColorManager.textColor(colorIndex));\n    this.drawText(unit, x + width - unitWidth, y, unitWidth, 'right');\n};\nchange colorIndex to the number you want."
+    },
+    {
+      "post_id": "js-post-1475490",
+      "author": "ATT_Turan",
+      "date": "2024-10-15T02:20:24+0900",
+      "body": "...I was confused by you posting this in the wrong section.\nYour first post does say you're using MZ, but you posted this in MV support so I gave you code for MV.\nThe correct code for MZ is:\nCode:\nWindow_Base.prototype.drawCurrencyValue = function(value, unit, x, y, width) {\n    const unitWidth = Math.min(80, this.textWidth(unit));\n    this.resetTextColor();\n    this.drawText(value, x, y, width - unitWidth - 6, \"right\");\n    this.changeTextColor(ColorManager.textColor(16));\n    this.drawText(unit, x + width - unitWidth, y, unitWidth, \"right\");\n};"
+    },
+    {
+      "post_id": "js-post-1475493",
+      "author": "DiscoReunion",
+      "date": "2024-10-15T02:25:19+0900",
+      "body": "Oh my bad! It's working perfectly, thanks a lot!"
+    },
+    {
+      "post_id": "js-post-1475613",
+      "author": "Ms Littlefish",
+      "date": "2024-10-15T20:01:57+0900",
+      "body": "This thread is closed due to being marked as solved. If you need it reopened, report the thread to let us know. Thank you!"
+    }
+  ]
+}

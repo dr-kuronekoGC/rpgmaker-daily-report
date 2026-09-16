@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/multiple-elements-via-damage-formula.172448",
+  "title": "Multiple Elements via Damage Formula?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:24.778441+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1474303",
+      "author": "jonthefox",
+      "date": "2024-10-08T00:36:14+0900",
+      "body": "Hi!  Wondering if it's possible to create a skill using the damage formula box that incorporates more than one elemental type.\nFor example:  50 + (a.atk*5 - b.def*2) as FIRE ELEMENT damage  plus 30 + (a.atk*6 - b.def*2) as ICE ELEMENT damage\nI'm assuming it would require somehow tagging different parts of the damage formula with an element type, but not sure if this can be done.  Thanks so much in advance"
+    },
+    {
+      "post_id": "js-post-1474307",
+      "author": "Andar",
+      "date": "2024-10-08T00:57:34+0900",
+      "body": "Not possible by damage formula alone as by default, the default element rate applies to the result of the formula.\nTheoretically it might work inf you don't give an overal damage element and call the individual rates by code, but that would still be a very complex formula and not worth the effort.\ninstead, there are several plugins that allow you to handle multiple elements.\nunfortunately I don't use MZ so can't point you to one, but I suspect that at least Visustella's element core has those options."
+    },
+    {
+      "post_id": "js-post-1474308",
+      "author": "caethyril",
+      "date": "2024-10-08T00:59:56+0900",
+      "body": "Without a plugin, you can set the skill to Element: None and do all the rate calculations manually. In the damage formula,\nb.elementRate(5)\ngets the target's damage rate for element 5.\nE.g. if Fire is element 3, and Ice is element 4, then your example could be written as:\n(50 + a.atk * 5 - b.def * 2) * b.elementRate(3) + (30 + a.atk * 6 - b.def * 2) * b.elementRate(4)\nIf you're already using plugins that change element mechanics, e.g. amplify user's fire damage, or check the skill element for display purposes, e.g. custom damage popups, then like Andar says you'll probably want a plugin."
+    },
+    {
+      "post_id": "js-post-1474336",
+      "author": "jerrylikesgreen",
+      "date": "2024-10-08T02:46:56+0900",
+      "body": "I think you can, granted I am new to RPG maker, and my only experience is with MZ, but from what I understand, this is entirely possible with the built-in mechanics in the engine. You need to call elementRate(id) from the database within the damage formula.\nelementRate(id)\n: This is used to get the effectiveness of a specific element against the target. The id represents the elemental type, such as Fire, Ice, or Lightning, and it returns a multiplier based on the target's resistance or weakness to that element.\nSo\n(a.mat * target.elementRate(3) * 0.5) + (a.mat * target.elementRate(4) * 0.5) would take 2 elements into account. Or at least in theory. Not at home to test this oput; anyone else can also chime in."
+    },
+    {
+      "post_id": "js-post-1474338",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T02:57:03+0900",
+      "body": "jerrylikesgreen said:\nNot at home to test this oput; anyone else can also chime in.\nClick to expand...\nWell...it's good that you want to help, but\n@caethyril\nhad already chimed in with that information two hours before you posted this\nAlso, the damage formula doesn't have any\ntarget\nvariable, you have to use\nb\n.\n(as a side note, it absolutely doesn't hurt anything if it makes it easier for you to read the formula, but the parentheses are extraneous - multiplication is all resolved before addition)"
+    },
+    {
+      "post_id": "js-post-1474354",
+      "author": "jerrylikesgreen",
+      "date": "2024-10-08T04:08:12+0900",
+      "body": "ATT_Turan said:\n(as a side note, it absolutely doesn't hurt anything if it makes it easier for you to read the formula, but the parentheses are extraneous - multiplication is all resolved before addition)\nClick to expand...\n@caethyril\nbeat me to the punch!!! I guess I should have read past the 1st reply huh??\nYes!\na. + b. to select targets. Thank you for correcting me here."
+    },
+    {
+      "post_id": "js-post-1474438",
+      "author": "caethyril",
+      "date": "2024-10-08T18:28:57+0900",
+      "body": "(Technically\ntarget\nwill work in the damage formula, but\nb\nis easier to write.)"
+    },
+    {
+      "post_id": "js-post-1474460",
+      "author": "ATT_Turan",
+      "date": "2024-10-08T21:45:45+0900",
+      "body": "caethyril said:\n(Technically\ntarget\nwill work in the damage formula, but\nb\nis easier to write.)\nClick to expand...\nI retract the correction,\n@jerrylikesgreen\n."
+    },
+    {
+      "post_id": "js-post-1474510",
+      "author": "jerrylikesgreen",
+      "date": "2024-10-09T00:45:26+0900",
+      "body": "ATT_Turan said:\nView attachment 319946\nI retract the correction,\n@jerrylikesgreen\n.\nClick to expand...\nOutput:\nI mean, your post is still valid. Using a. + b. is better. Doing it the way I suggested is more work for nothing."
+    },
+    {
+      "post_id": "js-post-1474512",
+      "author": "ATT_Turan",
+      "date": "2024-10-09T00:52:07+0900",
+      "body": "jerrylikesgreen said:\nOutput:\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1474599",
+      "author": "TheAM-Dol",
+      "date": "2024-10-09T08:58:31+0900",
+      "body": "jerrylikesgreen said:\nOutput\nClick to expand...\nHonestly....\nBased."
+    }
+  ]
+}

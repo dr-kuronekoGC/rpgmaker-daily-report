@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-an-srd-timed-attack-core-error.172585",
+  "title": "MV help with an SRD Timed Attack Core error",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-16T13:32:32.890968+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1475462",
+      "author": "viniciusan9elin",
+      "date": "2024-10-14T23:32:36+0900",
+      "body": "I'm using the SRD plugins to make each weapon in the game have a different minegame when using them in battle,\nbut for some reason when I change the plugin parameters so that the minegames are linked to the weapons this error occurs\nDoes anyone know how to resolve this?\nI'm using the following plugins, all from SRD"
+    },
+    {
+      "post_id": "js-post-1475463",
+      "author": "ATT_Turan",
+      "date": "2024-10-14T23:42:27+0900",
+      "body": "When you get an error, you need to press F8, go to the Console tab, and provide a screenshot of the full error trace.\nWe can't help just based on that generic message.\nYou should also show screenshots of how the weapon is set up."
+    },
+    {
+      "post_id": "js-post-1475475",
+      "author": "viniciusan9elin",
+      "date": "2024-10-15T01:14:19+0900",
+      "body": "ATT_Turan said:\nWhen you get an error, you need to press F8, go to the Console tab, and provide a screenshot of the full error trace.\nWe can't help just based on that generic message.\nYou should also show screenshots of how the weapon is set up.\nClick to expand...\noh ok sorry, I added the prints you requested in the post"
+    },
+    {
+      "post_id": "js-post-1475479",
+      "author": "ATT_Turan",
+      "date": "2024-10-15T01:41:04+0900",
+      "body": "viniciusan9elin said:\noh ok sorry, I added the prints you requested in the post\nClick to expand...\nSome of the error trace is visible at the bottom, but that's not the Console tab.\nThe error is saying the timed attack notetag doesn't have a type (the circle part). Are you sure there's no notetag on the skill you're using?\nAside from that, I don't know. Have you started with a new playtest, not loading a save game, since the last time you made any changes?"
+    },
+    {
+      "post_id": "js-post-1475482",
+      "author": "viniciusan9elin",
+      "date": "2024-10-15T01:51:23+0900",
+      "body": "ATT_Turan said:\nSome of the error trace is visible at the bottom, but that's not the Console tab.\nView attachment 320449\nThe error is saying the timed attack notetag doesn't have a type (the circle part). Are you sure there's no notetag on the skill you're using?\nAside from that, I don't know. Have you started with a new playtest, not loading a save game, since the last time you made any changes?\nClick to expand...\nthe error is the same as what appears at the bottom of the print\nypeError: Cannot read property 'type' of undefined\nat Function.BattleManager.updateAction (SRD_TimedAttackCore.js:535)\nat Function.BattleManager.update (rpg_managers.js:2253)\nat Scene_Battle.updateBattleProcess (rpg_scenes.js:2265)\nat Scene_Battle.update (rpg_scenes.js:2257)\nat Function.SceneManager.updateScene (rpg_managers.js:2024)\nat Function.SceneManager.updateMain (rpg_managers.js:1983)\nat Function.SceneManager.update (rpg_managers.js:1907)\nI just checked the notetags and everything is correct"
+    },
+    {
+      "post_id": "js-post-1475483",
+      "author": "ATT_Turan",
+      "date": "2024-10-15T01:55:25+0900",
+      "body": "Sorry, I misspoke - it's not saying the type is missing, it's saying the action doesn't have timed attack data attached to it at all.\nLooks like you'd have to edit line 535 to start with\nCode:\nif(this._action.item().meta[\"SRD TAS\"] && this._action.item().meta[\"SRD TAS\"].type === \"actor\"\nThen similarly on 544\nCode:\n} else if(this._action.item().meta[\"SRD TAS\"] && this._action.item().meta[\"SRD TAS\"].type === \"class\"\nand line 553\nCode:\n} else if(this._action.item().meta[\"SRD TAS\"] && this._action.item().meta[\"SRD TAS\"].type === \"weapon\""
+    },
+    {
+      "post_id": "js-post-1475486",
+      "author": "viniciusan9elin",
+      "date": "2024-10-15T02:07:49+0900",
+      "body": "ATT_Turan said:\nSorry, I misspoke - it's not saying the type is missing, it's saying the action doesn't have timed attack data attached to it at all.\nLooks like you'd have to edit line 535 to start with\nCode:\nif(this._action.item().meta[\"SRD TAS\"] && this._action.item().meta[\"SRD TAS\"].type === \"actor\"\nThen similarly on 544\nCode:\n} else if(this._action.item().meta[\"SRD TAS\"] && this._action.item().meta[\"SRD TAS\"].type === \"class\"\nand line 553\nCode:\n} else if(this._action.item().meta[\"SRD TAS\"] && this._action.item().meta[\"SRD TAS\"].type === \"weapon\"\nClick to expand...\nAh I understand, but where should I put this data? because apparently putting them in the skill notes isn't working with weapons...I tried putting it everywhere possible to type something on the blade of a sword, but that doesn't seem to work either."
+    },
+    {
+      "post_id": "js-post-1475487",
+      "author": "ATT_Turan",
+      "date": "2024-10-15T02:17:23+0900",
+      "body": "I told you which lines in the plugin to edit. You need to open it up in a text editor and change the code."
+    },
+    {
+      "post_id": "js-post-1475495",
+      "author": "viniciusan9elin",
+      "date": "2024-10-15T02:28:50+0900",
+      "body": "ATT_Turan said:\nI told you which lines in the plugin to edit. You need to open it up in a text editor and change the code.\nClick to expand...\nOh yes, I saw it later, sorry. But I haven't been able to test it yet because with the changes in the lines it seems that it stops recognizing the plugin or something like that.\nEven though it is activated, it still asks to put it on"
+    },
+    {
+      "post_id": "js-post-1475496",
+      "author": "ATT_Turan",
+      "date": "2024-10-15T02:33:41+0900",
+      "body": "Looks like you did not edit the lines correctly, causing a syntax error in the code so the plugin isn't being loaded at all.\nDon't change anything after what I showed. So, for example, line 535\nstarts with\nCode:\nif(this._action.item().meta[\"SRD TAS\"].type === \"actor\"\nand you would change that to\nCode:\nif(this._action.item().meta[\"SRD TAS\"] && this._action.item().meta[\"SRD TAS\"].type === \"actor\"\nand not change anything else on the rest of the line."
+    },
+    {
+      "post_id": "js-post-1475499",
+      "author": "viniciusan9elin",
+      "date": "2024-10-15T02:50:01+0900",
+      "body": "ATT_Turan said:\nLooks like you did not edit the lines correctly, causing a syntax error in the code so the plugin isn't being loaded at all.\nDon't change anything after what I showed. So, for example, line 535\nstarts with\nCode:\nif(this._action.item().meta[\"SRD TAS\"].type === \"actor\"\nand you would change that to\nCode:\nif(this._action.item().meta[\"SRD TAS\"] && this._action.item().meta[\"SRD TAS\"].type === \"actor\"\nand not change anything else on the rest of the line.\nClick to expand...\nthank you! But I think I ended up doing something wrong, the same error continues, I think I didn't understand exactly what you said about the lines, what would be the correct shape of the other 2 lines?"
+    },
+    {
+      "post_id": "js-post-1475501",
+      "author": "ATT_Turan",
+      "date": "2024-10-15T02:54:44+0900",
+      "body": "The exact same format that I just showed you above.\nThe only thing that's being done is inserting\nthis._action.item().meta[\"SRD TAS\"] &&\nafter the open parenthesis...it shouldn't be difficult to see where the rest of it is the same."
+    },
+    {
+      "post_id": "js-post-1475504",
+      "author": "viniciusan9elin",
+      "date": "2024-10-15T03:14:51+0900",
+      "body": "ATT_Turan said:\nThe exact same format that I just showed you above.\nThe only thing that's being done is inserting\nthis._action.item().meta[\"SRD TAS\"] &&\nafter the open parenthesis...it shouldn't be difficult to see where the rest of it is the same.\nClick to expand...\nmy God! it worked! Thank you very much ATT_Turan! And sorry for taking up so much of your time with this, thank you very much"
+    }
+  ]
+}
