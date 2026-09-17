@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/disable-counter-tag-behavior.171851",
+  "title": "MV Disable Counter tag behavior",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:43.712087+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1469565",
+      "author": "OpenTangent",
+      "date": "2024-09-12T18:21:51+0900",
+      "body": "I use the VE_TilePriority plugin to correctly handle the z-index of tiles when players or events pass in front of or behind them. All tiles that need to be handled by this plugin must be marked with a \"Counter\" tag. This has the undesirable behavior of turning those tiles into countertops so now the player can, for example, open some chests at a distance. I can recreate the counter tag behavior by using Yanfly's Hitbox Resize plugin, so I just need the default Counter tag behavior disabled."
+    },
+    {
+      "post_id": "js-post-1469590",
+      "author": "ShadowDragon",
+      "date": "2024-09-12T21:10:50+0900",
+      "body": "you can change the \"counter\" ID to something else, but you can also\nmake a condition on the chest itself to be in front of it of 1 tile, not able\nfrom the side or easier, if the player is ON region ID x.\nthis way, you have more control and it cannot be opened on a distance as\nyou can set an else handler on it \"to far to open it\" or something like that\nor nothing.\nbut that would be the easiest work around if your comfortable with it."
+    },
+    {
+      "post_id": "js-post-1469623",
+      "author": "ATT_Turan",
+      "date": "2024-09-13T00:43:09+0900",
+      "body": "Per the\nsection guidelines,\n(really the guidelines for Plugin Support, where this thread belongs, but it's in both\n) please provide links to plugins you're asking questions about.\nI hadn't seen this plugin before...it seems a rather poor way to go about it. If you're using this because you have character sprites that are more than one tile tall, there are other plugins you can use that don't require any special setting up in your tilesets.\nTF_LayeredMap.js  You can walk around the tile!\nTF_LayeredMap.js 1.0.3.1 Tonbi@Tobishima-Factory  Introduction Can move tile front and back like fence. Ideal for using tall size characters such as 'Tonbi's material factory ' That's why? see this comment.  Credits & Terms of Usage!  (c) Tonbi@Tobishima-Factory Released under the MIT License...\nforums.rpgmakerweb.com\nOcRam - Star Tile Fix plugin [RMMV]\nIntroduction  All who have used larger than 1 tile sprites, have propably strugled with star (*) tiles. Star (*) tiles are ALWAYS drawn above characters even if character stands in FRONT of it.  This plugin will fix star tiles Z index based on Y coordinates!  For example large trees are usually...\nforums.rpgmakerweb.com\nThis one still uses terrain tags but nothing else.\nTile Priority plugin for Rpg Maker MV and MZ by Hudell\nAn rpg maker plugin to make tile star passability work with large sprites.\nhudell.itch.io"
+    },
+    {
+      "post_id": "js-post-1469914",
+      "author": "OpenTangent",
+      "date": "2024-09-14T14:37:29+0900",
+      "body": "@ATT_Turan\nMy apologies. Here's the link to the plugin:\nVE_TilePriority\n. Note that I was just providing context, I am not asking for support for that plugin. I chose VE_TilePriority primarily for performance reasons, my maps are large and filled with events and VE_TilePriority is the only one that didn't have a significant impact on performance. Just to reiterate my request, how can I disable the default \"Counter\" tag behavior?"
+    },
+    {
+      "post_id": "js-post-1471514",
+      "author": "OpenTangent",
+      "date": "2024-09-23T16:47:14+0900",
+      "body": "In case someone has the same question, here is the solution to disable the counter tag behavior:\nJavaScript:\n// Disable Counter Tile Functionality in RPG Maker MV\nGame_Map.prototype.isCounter = function(x, y) {\n    // Always return false to completely disable counter behavior\n    return false;\n};"
+    },
+    {
+      "post_id": "js-post-1471798",
+      "author": "ShadowDragon",
+      "date": "2024-09-25T02:23:13+0900",
+      "body": "OpenTangent said:\nIn case someone has the same question, here is the solution to disable the counter tag behavior:\nClick to expand...\nthis is not the best way to do it though as you want them to enable it.\nif it's per region or tileId, or events to say, you want to modify it more\nto check if it has the region to disable, the tagId to disable, or metatag to disable.\nso if it has any of those, it's disabled, else enabled\nthis can be relative easy to add as it seems more user friendly than disable it entirely."
+    }
+  ]
+}

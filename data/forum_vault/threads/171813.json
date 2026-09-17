@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/restoring-custom-window-text-after-equip-change.171813",
+  "title": "MV Restoring custom window/text after equip change",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:45.618664+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1469260",
+      "author": "DarkGTX88",
+      "date": "2024-09-11T02:50:37+0900",
+      "body": "Hello,\nI am using RPG Maker MV with YEP_X_ChangeBattleEquip to allow players to change their equipment mid-battle.\nThis plugin is working perfectly as it should.\nHowever, I am also using a common event to draw a custom enemy status window on screen at start of battle. This too is working as intended.\nUntil...\nEntering the equipment change screen, and subsequently exiting: this causes the custom status window and text to disappear and I do not know how to get it back / redraw it, etc.\nHere is the common event which draws the custom window and text at the start of battle:\nAnd here is what it looks like in-game:\nWhen the equipment scene is called, it is erased (as desired).\nUpon exiting the equipment scene, and returning to battle, the window is gone.\nI would like for it to be recreated / redrawn somehow.\nMy first thought was to simply call the common event again, but I don't know how to do that. I took a look at the YEP_X_ChangeBattleEquip.js file but my Javascript is pretty elementary.\nI was thinking something like: $gameTemp.reserveCommonEvent(61);\nBut I'm not sure if that will work or, more importantly, where to call it within Yanfly's plugin script.\nInitially, the common event is being run through another common event, which executes at the start of battle, like so:\nIf anyone is able to direct me to a simple solution, I would greatly appreciate it. I simply haven't been able to figure it out on my own, using Google, search, etc.\nThank you in advance!"
+    },
+    {
+      "post_id": "js-post-1469276",
+      "author": "ATT_Turan",
+      "date": "2024-09-11T03:54:34+0900",
+      "body": "The trick is that you're actually moving back and forth between two scenes, and MV's editor has no idea how to account or check for that.\nYou can try this (untested). Open the Change Battle Equip plugin in a text editor. Go to line 142 and create a new line after it. Paste in:\nCode:\n$gameTemp.reserveCommonEvent(61);\nsave, refresh the plugin in your plugin manager, save your project, start a new play test.\nThat should do pretty much what you want, I'm not sure what the closest window the engine will have for running the common event, but it should restore the window you made during the rest of the player's turn."
+    },
+    {
+      "post_id": "js-post-1469298",
+      "author": "DarkGTX88",
+      "date": "2024-09-11T04:51:34+0900",
+      "body": "ATT_Turan said:\nYou can try this (untested). Open the Change Battle Equip plugin in a text editor. Go to line 142 and create a new line after it. Paste in:\nCode:\n$gameTemp.reserveCommonEvent(61);\nsave, refresh the plugin in your plugin manager, save your project, start a new play test.\nThat should do pretty much what you want, I'm not sure what the closest window the engine will have for running the common event, but it should restore the window you made during the rest of the player's turn.\nClick to expand...\nThis almost does what I want.\n(See edit below...)\nHowever, I have the equipment cooldown set to zero, so the same character gets to finish their turn after changing equipment and the status screen does not reappear until *after* they complete their turn now. (It reappears at the start of the next player's turn.)\nEDIT: It seems it is not the equipment cooldown (as I tried changing that to '1' and now the 'Gear' option is simply greyed out for the remainder of the character's turn. It must have something to do with my battle system.\nI'm using YEP_X_BattleSysSTB for a Standard Turn-based Battle System with YEP_BattleEngineCore.\nPerhaps, having an equipment change spend a character's turn would make more sense (mechanically) AND help solve this current issue...\nI will keep toying with this; if you have any other suggestions, please let me know.\nThank you!"
+    },
+    {
+      "post_id": "js-post-1469311",
+      "author": "ShadowDragon",
+      "date": "2024-09-11T06:14:13+0900",
+      "body": "JavaScript:\nfunction isPrevScene(classScene) {\n        return SceneManager.isPreviousScene(classScene)\n    };\n    \n    let BattleManager_startInput = BattleManager.startInput;\n        BattleManager.startInput = function() {\n            BBC.BattleManager_startInput.call(this);\n                this.runCommmenEvent();\n        };\n    BattleManager.runCommmenEvent = function() {\n        if (SceneManager._scene instanceof Scene_Equip && isPrevScene(Scene_Battle)) {\n            $gameTemp.reserveCommonEvent(61);\n        }\n    };\ntry this one inside a plugin and run it.\nI use this similar for something else, but it might do what you want on turn 0.\nthis would be plugin and play, but no promises, see if it works out."
+    },
+    {
+      "post_id": "js-post-1469314",
+      "author": "DarkGTX88",
+      "date": "2024-09-11T06:39:32+0900",
+      "body": "ShadowDragon said:\ntry this one inside a plugin and run it.\nI use this similar for something else, but it might do what you want on turn 0.\nthis would be plugin and play, but no promises, see if it works out.\nClick to expand...\nIt doesn't seem to work but perhaps I am not using it correctly. I tried adding it into the YEP plugin as well as using it as a standalone plugin but neither seemed to do anything."
+    },
+    {
+      "post_id": "js-post-1469360",
+      "author": "ATT_Turan",
+      "date": "2024-09-11T11:23:18+0900",
+      "body": "ShadowDragon said:\nit might do what you want on turn 0.\nClick to expand...\nHe doesn't want something done on turn 0.\nHe wants to run the event when returning from the change battle equip scene, which restores you to the input phase in the middle of whatever turn it already was."
+    },
+    {
+      "post_id": "js-post-1469396",
+      "author": "ShadowDragon",
+      "date": "2024-09-11T17:51:17+0900",
+      "body": "ATT_Turan said:\nHe doesn't want something done on turn 0.\nHe wants to run the event when returning from the change battle equip scene, which restores you to the input phase in the middle of whatever turn it already was.\nClick to expand...\nas the troop is set on turn on, but in the middle of it, it needs a different approach.\nbut this basicly runs when entering the battle that than runs the common event.\nI re-read later and alter the code to see if I can make it work.\nEdit:\n@DarkGTX88\nI update the code, place in a stand alone plugin, and see if it works.\nas this should update when you exit the scene, else I need to figure out which\nturn it is as most re-direct during input of the turn, see if it works.\nmaybe we need to target update to make this work as it should be working a refresh\nmethode inside YEP_X_ChangeBattleEquip on line 150 or 297, but it should work on\nthe line ATT_Turan said, but I don't use that plugin."
+    },
+    {
+      "post_id": "js-post-1469513",
+      "author": "DarkGTX88",
+      "date": "2024-09-12T09:20:08+0900",
+      "body": "I have mostly given up on the idea that this can be accomplished from within the plugin itself. Instead, I am working out a plan to have the plugin set a switch to ON after the equipment scene is opened and subsequently closed during a battle, and then using a parallel process to check to see if that switch is ON.\nIf the switch is ON, it will run my common event and turn the switch OFF.\nAny thoughts on this approach? I will aim to keep this thread updated with results once I can perform a test using a switch and parallel process. I imagine the parallel process is minimal enough to not impact performance but if I am missing a more elegant or minimalist approach, please let me know.\nAnd thank you once again for your help, everyone!\nEDIT: Argh! Why do parallel events not seem to work during battle?! *shakes fist angrily at the heavens*"
+    },
+    {
+      "post_id": "js-post-1469520",
+      "author": "Robro33",
+      "date": "2024-09-12T10:23:22+0900",
+      "body": "DarkGTX88 said:\nWhy do parallel events not seem to work during battle\nClick to expand...\nthey dont seem to work because they dont\nyoud need a\nplugin\nto enable them to work in battle.\nDarkGTX88 said:\nAny thoughts on this approach?\nClick to expand...\nat that point, id make the window its own plugin and add it to the list of windows to create at the start of battle. alternatively, you could probably use SRD's HUD plugin to make a HUD element for it and set the condition to being in battle"
+    },
+    {
+      "post_id": "js-post-1469530",
+      "author": "DarkGTX88",
+      "date": "2024-09-12T11:39:06+0900",
+      "body": "Well, I have found a workaround that I am satisfied with, at least for the moment.\nI found this plugin:\nhttps://forums.rpgmakerweb.com/inde...-yep_x-changebattleequip.113932/#post-1008187\nWhich causes the character to lose the rest of their turn after changing battle equipment. I am using the version that does NOT allow the user to receive the rest of their turn if they do not change equipment. Instead, the character will end their turn after exiting the equipment screen, even if they decided not to make changes.\nFor now, I am happy with this solution. Since the equipment screen also allows the player to see the exact breakdown of character stats, I have simply renamed the option in battle to \"Stats & Gear,\" and since this game is heavily influenced by stats—and the player cannot see their stats in battle unless pulling up the equipment screen—it feels at least somewhat justifiable to cost them their turn whether they make changes or not.\nOk, enough over-explaining. Thank you all for the help. Thread can be closed if mods desire."
+    },
+    {
+      "post_id": "js-post-1469588",
+      "author": "Ms Littlefish",
+      "date": "2024-09-12T20:37:02+0900",
+      "body": "This thread is closed due to being indicated as solved. If you need it reopened, report it to let us know. Thank you!"
+    }
+  ]
+}

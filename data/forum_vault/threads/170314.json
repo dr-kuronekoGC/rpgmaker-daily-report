@@ -1,0 +1,137 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/critical-hit-always-damages.170314",
+  "title": "Critical Hit Always Damages",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:55.748462+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1457416",
+      "author": "Timothius",
+      "date": "2024-07-15T14:31:03+0900",
+      "body": "Hello! I am hoping someone can help me. When the characters in my game score a critical hit, there is still a chance no damage happens. I come from D&D mentality where critical means automatic hit and damage multiplied.\nI got the impression from a number of sources that the only way to fix this is in the damage formula. If so, here is my normal attack formula:\n((4 * a.atk ** 2) / (a.atk + b.def)) / 2\nHow do I update this to make it so a critical hit will always get through and do the damage it is supposed to do?\nAlternatively, is there a different way to make criticals always hit and always do damage?"
+    },
+    {
+      "post_id": "js-post-1457434",
+      "author": "Arcaines",
+      "date": "2024-07-15T18:18:30+0900",
+      "body": "Go to your class's or actors screen, Traits, Param tab, Ex-Parameter, Critical rate 100%, there is also\nCritical Control (YEP) - Yanfly.moe Wiki\nwww.yanfly.moe\nWhich gives you more control over how crit works but it's a paid plugin."
+    },
+    {
+      "post_id": "js-post-1457440",
+      "author": "gstv87",
+      "date": "2024-07-15T19:15:53+0900",
+      "body": "Timothius said:\nthere is still a chance no damage happens\nClick to expand...\ndoes that skill have any damage variation?\nalso, the /2 at the end of the formula may give a float value that ends up rounded to 0."
+    },
+    {
+      "post_id": "js-post-1457465",
+      "author": "Roninator2",
+      "date": "2024-07-15T22:22:01+0900",
+      "body": "Martin_Arcainess said:\nWhich gives you more control over how crit works but it's a paid plugin.\nClick to expand...\nExcept the request is for vx ace.\nThat's a very interesting formula. I've never seen anyone use exponent calculation for the damage.\nAt least I think the ** is exponent.\nSo you have the exact values for the actor attack and enemy defense?\nAnd as gstv87 said, what is the variance?\nA critical simple increases the damage\nRuby:\ndef make_damage_value(user, item)\n    value = item.damage.eval(user, self, $game_variables)\n    value *= item_element_rate(user, item)\n    value *= pdr if item.physical?\n    value *= mdr if item.magical?\n    value *= rec if item.damage.recover?\n    value = apply_critical(value) if @result.critical\n    value = apply_variance(value, item.damage.variance)\n    value = apply_guard(value)\n    @result.make_damage(value.to_i, item)\n  end\n  def apply_critical(damage)\n    damage * 3\n  end\nSo the damage is multiplied by 3. But as suggested if the damage is calculated to 0 * 3 then there is no damage."
+    },
+    {
+      "post_id": "js-post-1457476",
+      "author": "ATT_Turan",
+      "date": "2024-07-16T00:15:33+0900",
+      "body": "Martin_Arcainess said:\nGo to your class's or actors screen, Traits, Param tab, Ex-Parameter, Critical rate 100%\nClick to expand...\nThe question is how to make sure critical hits deal damage, not how to make critical hits always happen.\nMartin_Arcainess said:\nthere is also\nClick to expand...\nRPG Maker VX Ace can't use RPG Maker MV plugins.\nThe answer to\n@Timothius\nis:\nTimothius said:\nI come from D&D mentality where critical means automatic hit and damage multiplied.\nClick to expand...\nThat\nis\nhow it works.\nThe problem is that, as\n@Roninator2\ndescribed, your formula can produce 0-value results."
+    },
+    {
+      "post_id": "js-post-1457536",
+      "author": "Timothius",
+      "date": "2024-07-16T04:19:34+0900",
+      "body": "Oh wow, I hadn't thought about it might end up zero and thus multiply zero. Good catch and thank you guys for pointing that out! In that case, is there a quick and easy to make a minimum dmg (and minimum critical damage (such as atk*2 or such) )?\nHmm. So I tested it out and it it actually says \"\nMissed!\n(enemy) took no damage!\" when I crit. It doesn't happen often (had to do test battle about 3 times), but it does happen. I'm not sure why a critical hit would miss, but I thought there was an ex-parameter for it.\nThen I saw the enemy had this 5% Evasion. I tested it out by raising evasion to 50% (100 just made criticals not even occur) and when I crit, it said \"(enemy)\nevaded\nthe attack\", so it isn't evasion that is making me get that \"missed\" message. Apparently, I can somehow miss the enemy with a critical and I can't figure out why. :\\"
+    },
+    {
+      "post_id": "js-post-1457562",
+      "author": "Roninator2",
+      "date": "2024-07-16T05:12:40+0900",
+      "body": "Timothius said:\n\"\nMissed!\n(enemy) took no damage!\"\nClick to expand...\nIf it misses then the damage formula has nothing to do with it. But instead the calculation that is done here.\nRuby:\ndef item_apply(user, item)\n    @result.clear\n    @result.used = item_test(user, item)\n    @result.missed = (@result.used && rand >= item_hit(user, item))\n    @result.evaded = (!@result.missed && rand < item_eva(user, item))\n    if @result.hit?\n      unless item.damage.none?\n        @result.critical = (rand < item_cri(user, item))\n        make_damage_value(user, item)\n        execute_damage(user)\n      end\n      item.effects.each {|effect| item_effect_apply(user, item, effect) }\n      item_user_effect(user, item)\n    end\n  end\nThe critical should only apply if it is a hit.\nSo now I have to ask, what scripts do you have that works with damage calculations?"
+    },
+    {
+      "post_id": "js-post-1457569",
+      "author": "ATT_Turan",
+      "date": "2024-07-16T05:18:57+0900",
+      "body": "I think the question is - if the attack is missing, what evidence do you have that it was a critical?"
+    },
+    {
+      "post_id": "js-post-1457580",
+      "author": "Timothius",
+      "date": "2024-07-16T06:43:58+0900",
+      "body": "Thanks guys, you are definitely helping me get somewhere.\nTo Roninator2, the only script I have that alters damage is Victor's Critical Hit Effects:\nVE - Critical Hits Effects\nThis script allows to have better control over critical rate, damage and stup states to be changed when dealing critical damage.  Download: Victor Engine - Critical Hits Effects   Credits: \tAuthor: Victor Sant  Terms of Use\nforums.rpgmakerweb.com\nTo answer ATT_Turan, I have a script called \"Crit Graphics and Sound\" (and I cannot find the original author) which shows some graphics and plays some sounds just as a critical is about to happen.\nSo it may be that my problem is that the script knows a critical is about to happen should I hit, but doesn't know yet if the attack is going to hit. I don't know how to script, but I am guessing that is decided at the very start of the script. Here is the script:\nSpoiler:\nCritical Graphics and Sound script\nmodule PC27\nmodule CrAn\nDEFAULT_CRITICAL_CALC = true\n# If this switch is not equal to 0, this switch can be used to turn the\n# animation ON or OFF.\nSwitch = 0\n# The two picture id's the script uses to draw the animation. Do not use\n# them for other \"Show Pictures\" events.\nActorPicture = 2\nBackPicture = 1\n# Number of frames the image needs to slide in/out\nSlideInTime = 20\nSlideOutTime = 20\n# Number of frames the image stays and distance it moves in that time\nLingerTime = 60\nLingerDistance = 100\n# This is the sound played at the begin of the animation and the number\n# of frames you want to wait before the picture shows up.\nInitSound = \"Crit_04\"\nInitWait = 30\n# Those are actor specific sounds. It plays one random sound.\nActorSounds = {\n# Actor_ID => [ \"sound1\", \"sound2\", ...],\n1 => [ \"Emerald_battle_transition\"],\n2 => [ \"MavCrit_beginning_of_the_end\", \"MavCrit_gotchya\"],\n3 => [ \"Pan_Battle_Transition\", \"Fire1\", \"Fire2\"],\n4 => [ \"Tim_Battle_Transition\", \"CritTim_Prayers\", \"Fire2\"],\n# 3 => [...\n}\nend\nend\nclass Scene_Battle\ninclude PC27::CrAn\nalias pc27_crit_effect_show_animation show_animation\ndef show_animation(targets, animation_id)\nitem = @subject.current_action.item\nif item.damage.none?\ntargets.each { |target| target.set_crit_to_false }\nelse\ntargets.each { |target| target.eval_crit(@subject, item) }\nend\nshow_critical_animation if actor_crit?(targets)\npc27_crit_effect_show_animation(targets, animation_id)\nend\ndef show_critical_animation\nlo = LingerDistance * 0.5\nplay_initial_sound\nshow_crit_background\nshow_crit_actor\nmove_crit_actor(Graphics.width * 0.5 - lo, SlideInTime)\nplay_random_actor_sound(@subject)\nmove_crit_actor(Graphics.width * 0.5 + lo, LingerTime)\nmove_crit_actor(Graphics.width + 50, SlideOutTime)\nerase_crit_actor\nerase_crit_background\nend\ndef play_initial_sound\nRPG::SE.new(InitSound).play\nwait(InitWait)\nend\ndef play_random_actor_sound(subject)\nRPG::SE.new(ActorSounds[subject.id].sample).play\nend\ndef show_crit_actor\nname = @subject.name + \"CritImg\"\ny = Graphics.height * 0.5\npic = $game_troop.screen.pictures[ActorPicture]\npic.show(name, 1, -50, y, 100, 100, 255, 0)\nend\ndef move_crit_actor(x, time)\ny = Graphics.height * 0.5\npic = $game_troop.screen.pictures[ActorPicture]\npic.move(1, x, y, 100, 100, 255, 0, time)\nwait(time)\nend\ndef erase_crit_actor\n$game_troop.screen.pictures[ActorPicture].erase\nend\ndef show_crit_background\nx = Graphics.width * 0.5\ny = Graphics.height * 0.5\npic = $game_troop.screen.pictures[BackPicture]\npic.show(\"CritBG\", 1, x, y, 100, 100, 255, 0)\nend\ndef erase_crit_background\n$game_troop.screen.pictures[BackPicture].erase\nend\ndef actor_crit?(targets)\nreturn false unless Switch == 0 || $game_switches[Switch]\nreturn false unless @subject.is_a?(Game_Actor)\ntargets.any? {|target| target.result.critical }\nend\nend\nclass Game_Battler\ndef eval_crit(user, item)\n@result.critical = (rand < item_cri(user, item))\nend\ndef set_crit_to_false\n@result.critical = false\nend\ndef item_apply(user, item)\ndefault_crit = PC27::CrAn:\nEFAULT_CRITICAL_CALC\ncrit = @result.critical unless default_crit\n@result.success = false\n@result.used = item_test(user, item)\n@result.missed = (@result.used && rand >= item_hit(user, item))\n@result.evaded = (!@result.missed && rand < item_eva(user, item))\nif @result.hit?\nunless item.damage.none?\n@result.critical = default_crit ? (rand < item_cri(user, item)) : crit\nmake_damage_value(user, item)\nexecute_damage(user)\nend\nitem.effects.each {|effect| item_effect_apply(user, item, effect) }\nitem_user_effect(user, item)\nend\nend\nend\n(Side note, if anyone happens to know who the author is, I would like to know.)"
+    },
+    {
+      "post_id": "js-post-1457584",
+      "author": "Roninator2",
+      "date": "2024-07-16T07:07:42+0900",
+      "body": "Timothius said:\n(Side note, if anyone happens to know who the author is, I would like to know.)\nClick to expand...\nPencilCase27\nHere is an earlier version of that script.\nCritical hit image and sound effect dependent on actor.\nI am in need of a script that while in battle, if an actor gets a critical hit, than just before the actual hit (and before the animation/text goes), the battle will quickly \"pause\" an image and sound effect will show, fallowed by the normal critical text/animation. An example of what I am...\nforums.rpgmakerweb.com\nAnd please use code tags for code not just the spoiler.\nSo I think the culprit that is showing the critical when it misses is Victor Sant's script.\nLine 193\nCode:\ndef make_damage_value(user, item)\n    critical_effects(user, item) if @result.critical && @result.hit?\n    make_damage_value_ve_make_damage_value(user, item)\n  end\nadd on && @result.hit?\nThat should stop it from showing when the attack is a miss"
+    },
+    {
+      "post_id": "js-post-1457597",
+      "author": "Timothius",
+      "date": "2024-07-16T08:00:39+0900",
+      "body": "I would think that would work. Alas, it is still showing that message.\nAlso to test this, I have the character set to critical hit rate of 100% and just fighting these bees a lot. Unsure if there is a better way to test things."
+    },
+    {
+      "post_id": "js-post-1457613",
+      "author": "Roninator2",
+      "date": "2024-07-16T09:01:25+0900",
+      "body": "Ruby:\ndef make_damage_value(user, item)\n  make_damage_value_ve_make_damage_value(user, item)\n  critical_effects(user, item) if @result.critical\nend\nActually try it with the line below the alias.\nThat's not the right order but I would like to see if it still does the critical message\nI think the critical_effects should be in the item_apply then it will work. But that's a rewrite of the script functions."
+    },
+    {
+      "post_id": "js-post-1457620",
+      "author": "Timothius",
+      "date": "2024-07-16T09:32:52+0900",
+      "body": "I was getting very lucky on the RNG so I started to think it worked. But I thought \"keep going\" and on the fourth fight, 2 attacks in, I missed. :\\\nBut at least reversing the lines didn't cause any errors."
+    },
+    {
+      "post_id": "js-post-1457626",
+      "author": "Roninator2",
+      "date": "2024-07-16T10:27:22+0900",
+      "body": "Can you share a screen shot of the skills / actors setup so I can reproduce it?\nOr a demo with the setup necessary to test this.\nI'll work on something tomorrow and see if this can be sorted out.\nBut to what you said, did the critical message show up for the missed attack?"
+    },
+    {
+      "post_id": "js-post-1457635",
+      "author": "Timothius",
+      "date": "2024-07-16T12:23:03+0900",
+      "body": "Wow! Thanks for the willingness to look that deep into it.\nI deleted a bunch of music and sound in this copy so downloading it would go quicker, but anything and everything you would need should be in the start area. Talking to the slime lets you fight the bees. Though I was using the battle test option with the bottom-most troop (100: Bee). Keep in mind I have Maverick set to 100% critical chance via his class. Also, for the downloadable demo I have below, I did swap those lines of code back to what they were before because it did cause an error in-game (apparently didn't cause error for test play for some reason)\nHere is the link:"
+    },
+    {
+      "post_id": "js-post-1458082",
+      "author": "Roninator2",
+      "date": "2024-07-18T08:44:43+0900",
+      "body": "After doing some testing I found that the PencilCase27 script for critical graphics and sound is\ncausing the issue.\nIt does a calculation to determine if the hit will be critical then when the damage is calculated it will recalculate the critical.\nI think this script needs to be reworked.\nBut it can't be recalculated so it needs to have a second method of doing the critical calculation and then if the value is true for the default_crit then it will use the new calculation.\nSomething like that. And that needs to be done where it does the eval_crit.\nTry this instead\nSpoiler:\nPencilcase27 critical hit and sound\nRuby:\n# Critical Graphics and Sound by PencilCase27\nmodule PC27\n  module CrAn\n    # use custom critical calculation\n    DEFAULT_CRITICAL_CALC = true\n    # modification to the critical hit calculation\n    # random value * value below < item_cri calculation\n    DEFAULT_CRITICAL_MOD = 0.45\n    # If this switch is not equal to 0, this switch can be used to turn the\n    # animation ON or OFF.\n    Switch = 0\n    # The two picture id's the script uses to draw the animation. Do not use\n    # them for other \"Show Pictures\" events.\n    ActorPicture = 2\n    BackPicture = 1\n    # Number of frames the image needs to slide in/out\n    SlideInTime = 20\n    SlideOutTime = 20\n    # Number of frames the image stays and distance it moves in that time\n    LingerTime = 60\n    LingerDistance = 100\n    # This is the sound played at the begin of the animation and the number\n    # of frames you want to wait before the picture shows up.\n    InitSound = \"Crit_04\"\n    InitWait = 30\n    # Those are actor specific sounds. It plays one random sound.\n    ActorSounds = {\n      # Actor_ID => [ \"sound1\", \"sound2\", ...],\n      1 => [ \"Emerald_battle_transition\"],\n      2 => [ \"MavCrit_beginning_of_the_end\", \"MavCrit_fear_me\",\n      \"MavCrit_gotchya\", \"MavCrit_lets_finish_this\", \"MavCrit_many_stars\",\n      \"MavCrit_no_fear\", \"MavCrit_no_mercy_for_evil\", \"MavCrit_scatter_to_cosmos\",\n      \"MavCrit_smash_into_space\", \"MavCrit_stop_wasting_my_time\",\n      \"MavCrit_there\", \"MavCrit_theres_no_escape\", \"MavCrit_thisll_hurt_you_more\",\n      \"MavCrit_time_for_final_blow\", \"MavCrit_unstoppable\", \"MavCrit_witness_your_demise\",\n      \"MavCrit_you_cant_run_away\", \"MavCrit_youre_done_for\"],\n      3 => [ \"Pan_Battle_Transition\", \"Fire1\", \"Fire2\"],\n      4 => [ \"Tim_Battle_Transition\", \"CritTim_Prayers\", \"Fire2\"],\n    # 3 => [...\n    }\n  end\nend\n\nclass Scene_Battle\n  include PC27::CrAn\n  alias pc27_crit_effect_show_animation show_animation\n  def show_animation(targets, animation_id)\n    item = @subject.current_action.item\n    if item.damage.none?\n      targets.each { |target| target.set_crit_to_false }\n    else\n      targets.each { |target| target.eval_crit(@subject, item) }\n    end\n    show_critical_animation if actor_crit?(targets)\n    pc27_crit_effect_show_animation(targets, animation_id)\n  end\n    \n  def show_critical_animation\n    lo = LingerDistance * 0.5\n    play_initial_sound\n    show_crit_background\n    show_crit_actor\n    move_crit_actor(Graphics.width * 0.5 - lo, SlideInTime)\n    play_random_actor_sound(@subject)\n    move_crit_actor(Graphics.width * 0.5 + lo, LingerTime)\n    move_crit_actor(Graphics.width + 50, SlideOutTime)\n    erase_crit_actor\n    erase_crit_background\n  end\n \n  def play_initial_sound\n    RPG::SE.new(InitSound).play\n    wait(InitWait)\n  end\n \n  def play_random_actor_sound(subject)\n    RPG::SE.new(ActorSounds[subject.id].sample).play\n  end\n \n  def show_crit_actor\n    name = @subject.name + \"CritImg\"\n    y = Graphics.height * 0.5\n    pic = $game_troop.screen.pictures[ActorPicture]\n    pic.show(name, 1, -50, y, 100, 100, 255, 0)\n  end\n \n  def move_crit_actor(x, time)\n    y = Graphics.height * 0.5\n    pic = $game_troop.screen.pictures[ActorPicture]\n    pic.move(1, x, y, 100, 100, 255, 0, time)\n    wait(time)\n  end\n \n  def erase_crit_actor\n    $game_troop.screen.pictures[ActorPicture].erase\n  end\n \n  def show_crit_background\n    x = Graphics.width * 0.5\n    y = Graphics.height * 0.5\n    pic = $game_troop.screen.pictures[BackPicture]\n    pic.show(\"CritBG\", 1, x, y, 100, 100, 255, 0)\n  end\n \n  def erase_crit_background\n    $game_troop.screen.pictures[BackPicture].erase\n  end\n \n  def actor_crit?(targets)\n    return false unless Switch == 0 || $game_switches[Switch]\n    return false unless @subject.is_a?(Game_Actor)\n    targets.any? {|target| target.result.critical && !target.result.missed && !target.result.evaded}\n  end\nend\n \nclass Game_Battler\n  def eval_crit(user, item)\n    @result.critical = false\n    @result.missed = (@result.used && rand >= item_hit(user, item))\n    @result.evaded = (!@result.missed && rand < item_eva(user, item))\n    if !@result.missed && !@result.evaded\n      if PC27::CrAn::DEFAULT_CRITICAL_CALC\n        @result.critical = (rand * PC27::CrAn::DEFAULT_CRITICAL_MOD < item_cri(user, item))\n      else\n        @result.critical = (rand < item_cri(user, item))\n      end\n    end\n  end\n\n  def set_crit_to_false\n    @result.critical = false\n    @result.missed = (@result.used && rand >= item_hit(user, item))\n    @result.evaded = (!@result.missed && rand < item_eva(user, item))\n  end\n\n  def item_apply(user, item)\n    @result.success = false\n    @result.used = item_test(user, item)\n    if @result.hit?\n      unless item.damage.none?\n        make_damage_value(user, item)\n        execute_damage(user)\n      end\n      item.effects.each {|effect| item_effect_apply(user, item, effect) }\n      item_user_effect(user, item)\n    end\n  end\nend"
+    },
+    {
+      "post_id": "js-post-1458089",
+      "author": "ZimXero",
+      "date": "2024-07-18T08:55:12+0900",
+      "body": "I'm not sure how to write it in, but you could have crit hits drain 1% HP in addition to their normal formula."
+    },
+    {
+      "post_id": "js-post-1458103",
+      "author": "Timothius",
+      "date": "2024-07-18T10:48:26+0900",
+      "body": "Roninator2, you solved my problem! Thank you so much!\nI did about 7 combats with just Maverick and then tested it with the whole team. No errors, and no misses. If I was going to miss an attack, I think it would have happened somewhere in the 42 critical hits I had from those combats.\nI don't know how to thank you - now critical hits should not \"miss\" in my game.\nI will be sure to credit you. Thanks again!"
+    },
+    {
+      "post_id": "js-post-1458104",
+      "author": "Timothius",
+      "date": "2024-07-18T10:49:40+0900",
+      "body": "ZimXero said:\nI'm not sure how to write it in, but you could have crit hits drain 1% HP in addition to their normal formula.\nClick to expand...\nThat is a fun idea, Zim.\nI'm not sure how either, but will keep it in mind. Thanks for the suggestion!"
+    },
+    {
+      "post_id": "js-post-1458106",
+      "author": "Roninator2",
+      "date": "2024-07-18T11:12:58+0900",
+      "body": "Timothius said:\nRoninator2, you solved my problem! Thank you so much!\nI did about 7 combats with just Maverick and then tested it with the whole team. No errors, and no misses. If I was going to miss an attack, I think it would have happened somewhere in the 42 critical hits I had from those combats.\nI don't know how to thank you - now critical hits should not \"miss\" in my game.\nI will be sure to credit you. Thanks again!\nClick to expand...\nJust realized a small error on my part.\nUpdated the script above.\nIt was for if the item had no damage to apply, the missed and evaded were not calculated.\nFixed"
+    },
+    {
+      "post_id": "js-post-1458152",
+      "author": "Timothius",
+      "date": "2024-07-18T16:45:15+0900",
+      "body": "Thanks! Saved your previous script as a backup and updated the script in the game itself.\nReally appreciate all the help!"
+    }
+  ]
+}

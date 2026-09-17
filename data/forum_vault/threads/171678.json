@@ -1,0 +1,191 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/trouble-with-playtesting.171678",
+  "title": "Trouble with Playtesting",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:50.647268+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1468241",
+      "author": "SilverFish",
+      "date": "2024-09-05T06:00:04+0900",
+      "body": "Hello, I am having an issue getting the playtest function to work.\nI recently switched from windows to Linux Mint and this problem only appeared after the switch.\nBoth the button in the engine and doable tapping the index file failed to load anything, though there was no error message or other indicator.\nThis has held true for projects created before and after the switch.\nLaunching from steam."
+    },
+    {
+      "post_id": "js-post-1468268",
+      "author": "utunnels",
+      "date": "2024-09-05T10:29:42+0900",
+      "body": "I don't think there's a nwjs-test for linux. You are running an windows app through steam but if I understand correctly, the play test button will still try to call the windows exe.\nAn alternative is downloading a sdk version of nw.js for your system (e.g., linux 64).\nhttps://dl.nwjs.io/v0.29.0/\nThere are several ways to do that.\n1. You unpack the files into your project folder, and run the executable nw. The problem is when you try to deploy the game, those will will be copied so you have to clean up, not nice.\n2. Like step 1, but you move your project into a www sub folder. It should look like this:\nYou need to copy package.json from nwjs-win folder (check your steam game directory under RPG Maker MV). After that you can run nw to play test the game.\n3. You can also run the game in a browser, but I guess you'll need to put the project inside a local web server and input the url to index.html into your browser (not sure how to do that in linux but I doubt it worths the trouble)."
+    },
+    {
+      "post_id": "js-post-1468280",
+      "author": "SilverFish",
+      "date": "2024-09-05T11:54:05+0900",
+      "body": "Aight I'ma need you to clarify a few of those words, I apologize for my ignorance\nWhen you say to unpack the files are you referring to something like a zip file?  Or are you saying I should take all the stuff in the folders and put it in one folder?\nDoes executable nw mean the \"index.html\" file?\nRegarding step 2.\nis it that I should create a www folder and stick the entire project in there?\nSorry, I'm really new to this stuff, I don't understand most of what I need to do."
+    },
+    {
+      "post_id": "js-post-1468282",
+      "author": "ATT_Turan",
+      "date": "2024-09-05T12:02:37+0900",
+      "body": "SilverFish said:\nWhen you say to unpack the files are you referring to something like a zip file?\nClick to expand...\nYes, if you clicked on the link\n@utunnels\nprovided you'd see a bunch of zip files.\nSilverFish said:\nDoes executable nw mean the \"index.html\" file?\nClick to expand...\nNo, an HTML file is not an executable. It's HTML, a Web page format.\nSilverFish said:\nis it that I should create a www folder and stick the entire project in there?\nClick to expand...\nYes, that's what he said and showed.\nSilverFish said:\nSorry, I'm really new to this stuff, I don't understand most of what I need to do.\nClick to expand...\nCompletely unrelated to RPG Maker, I'm just curious why you chose to move to Linux. That's usually something that particularly tech-savvy people do, so they can customize their operating system in depth."
+    },
+    {
+      "post_id": "js-post-1468288",
+      "author": "utunnels",
+      "date": "2024-09-05T12:19:41+0900",
+      "body": "You know RMMV run games using a program called nw.js right?\nIn order to do playtest on linux you need to get one for linux.\nFor example, this one:\nhttps://dl.nwjs.io/v0.29.0/nwjs-sdk-v0.29.0-linux-x64.tar.gz\nAnd yes I mean like a zip file (or in this case, it is a tar.gz file).\nThere should be a file named nw (see the screenshot I posted), it is the executable for linux.\nTo make it clear, you can go to your installation folder (where steam installs your game) and check the files there. Under RPG Maker MV, there should be a folder called nwjs-lnx. It contains the files the game will use when you deploy it.\n---------------------------------------\nis it that I should create a www folder and stick the entire project in there?\nClick to expand...\nYes, and after that you need to copy the nw.js sdk files like the screenshot shows.\nAfter that you go to that nwjs-lnx folder(sorry I typed nwjs-win last time because I'm currently using windows) I said above and copy package.json (and Game.desktop if you like) as well.\nWhen you want to do play test, you run nw, or Game.desktop."
+    },
+    {
+      "post_id": "js-post-1468290",
+      "author": "SilverFish",
+      "date": "2024-09-05T12:41:35+0900",
+      "body": "Ahhhh, I did not know that!  I do now tho XD\nto make sure I understand, let me repeat back my understanding of what to do.\nI chose and download the zip/other from that list and unpack it into the folder of the chosen project(? or into a wider projects folder?  Would I do this for every project?)\nI found the folder with nw and I see what you mean now.  So I would then make a www file in the folder with the nw and put my entire project (including the new unpacked zip) in it, then copy the package.json to the file with nw.  It should then run from there if I use nw.\nDid I get that all right?\nATT_Turan said:\nCompletely unrelated to RPG Maker, I'm just curious why you chose to move to Linux. That's usually something that particularly tech-savvy people do, so they can customize their operating system in depth.\nClick to expand...\nIt's for a few reasons, the main ones being that it gives me less anxiety over Microsoft and Windows putting spyware onto my device without permission, and the desire to gain knowledge and experience in coding.  Throwing myself in headfirst you could say, because I know I'm more likely to pick it up if I make it something that I need to know to use my computer instead of just being a side thing."
+    },
+    {
+      "post_id": "js-post-1468292",
+      "author": "utunnels",
+      "date": "2024-09-05T12:52:03+0900",
+      "body": "Well just see the screenshot, your project files should be inside that www folder and nw and other nw.js files outside of it.\nYes, for now you need to do that for every project. Unless you write a shell script that run nw.js from another directory. But I'm not proficient in that territory so I just use the easy way."
+    },
+    {
+      "post_id": "js-post-1468294",
+      "author": "SilverFish",
+      "date": "2024-09-05T13:00:40+0900",
+      "body": "Just a little confusion left.  Do I also unpack the zip outside the www folder, or just in the project file?\nIt'd be nice to learn both ways, but I definitely think the easy way matches my skill level atm.  Maybe I'll do that at some point later ;D\nedit: okay no I downloaded the zip and understand that I don't put it outside the www file.  I went and copied the package.json from the nwjs-win to the file, and I'm assuming I let it replace the old one?  I wasn't sure and I didn't want to spam so I just renamed the old one and let them both be there until I could ask."
+    },
+    {
+      "post_id": "js-post-1468297",
+      "author": "utunnels",
+      "date": "2024-09-05T13:45:15+0900",
+      "body": "You need to copy package.json from nwjs-lnx\nOK let's forget the old steps.\n1. Create a www folder inside your project folder, for example, /Project1/www.\n2. Move all your project file inside www folder.\n3. Get this:\nhttps://dl.nwjs.io/v0.29.0/nwjs-sdk-v0.29.0-linux-x64.tar.gz\n4. Extract the files into /Project1\n5. Copy package.json and Game.desktop from nwjs-lnx folder into Project1\n6. Run nw or Game.desktop to test the game\nYour Project1 folder should look like this:"
+    },
+    {
+      "post_id": "js-post-1468300",
+      "author": "SilverFish",
+      "date": "2024-09-05T14:10:40+0900",
+      "body": "Okay so the one I'm testing with looks just like that (except it's \"Game.desktop~\" for some reason) and it isn't loading when I try to run nw.\nDo my projects need to be in the original rmmv project folder to work?  I've had them in a file on my desktop for ease of access but that might be an issue.\nJust to make sure, there should now be another layer in the specific projects file of these and then the original files in the www?"
+    },
+    {
+      "post_id": "js-post-1468302",
+      "author": "utunnels",
+      "date": "2024-09-05T15:15:59+0900",
+      "body": "Your www should contains your original project files.\nAnd the parent folder of www has those nwjs files. Right click on Game or nw and click open and it should run. Or you open a terminal in thise folder and type ./nw, it is the same."
+    },
+    {
+      "post_id": "js-post-1468396",
+      "author": "SilverFish",
+      "date": "2024-09-06T03:31:41+0900",
+      "body": "Okay so I did the ./nw command and got this message:\nFontconfig warning: \"/etc/fonts/fonts.conf\", line 5: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/10-hinting-slight.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/10-scale-bitmap-fonts.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/10-sub-pixel-rgb.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/10-yes-antialias.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/11-lcdfilter-default.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/20-unhint-small-vera.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/30-metric-aliases.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/40-nonlatin.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/45-generic.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/45-latin.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/48-spacing.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/49-sansserif.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/50-user.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/51-local.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/60-generic.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/60-latin.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/65-nonlatin.conf\", line 4: unknown element \"description\"\nFontconfig warning: \"/etc/fonts/conf.d/70-no-bitmaps-except-emoji.conf\", line 4: unknown element \"description\"\n[3214:3214:0905/112915.800788:FATAL\nlatform_font_linux.cc(83)] Check failed: InitDefaultFont(). Could not find the default font\n#0 0x76b9e831c36c <unknown>\n[3248:3248:0905/112915.849042:ERROR:sandbox_linux.cc(377)] InitializeSandbox() called with multiple threads in process gpu-process.\nAborted (core dumped)\nI hope this helps identifying what went wrong.  It looks like the fonts are bugging out, but I don't know what that last one means."
+    },
+    {
+      "post_id": "js-post-1468439",
+      "author": "utunnels",
+      "date": "2024-09-06T07:28:30+0900",
+      "body": "Can you post a screenshot of your folder?  The font is not an issue but it appears sandbox is the problem.  So I suspect your package.json is not right."
+    },
+    {
+      "post_id": "js-post-1468454",
+      "author": "utunnels",
+      "date": "2024-09-06T09:38:30+0900",
+      "body": "Ah, forget it. I tried the terminal and had the same error message. But the game started without no problem. So did you see the game window appear?\nEdit* OK, not exactly the same, I saw your core dump message. Hmmm"
+    },
+    {
+      "post_id": "js-post-1468455",
+      "author": "SilverFish",
+      "date": "2024-09-06T09:45:15+0900",
+      "body": "No, it doesn't seem to want to pop up.  My task manager gets a little blip of activity then goes back to normal.  Maybe I can check if it is running but just isn't showing a window?  What should it have as a name?  The projects name or nw?"
+    },
+    {
+      "post_id": "js-post-1468456",
+      "author": "utunnels",
+      "date": "2024-09-06T09:53:00+0900",
+      "body": "It should be now. But since you have the core dump error message it means the app crashed.\nYou folder and files seems correct, except that Game.desktop which can be deleted as far as I know.\nJus to make sure, this is the content of package.json\nJSON:\n{\n    \"name\": \"KADOKAWA/RPGMV\",\n    \"main\": \"www/index.html\",\n    \"js-flags\": \"--expose-gc\",\n    \"chromium-args\": \"--disable-setuid-sandbox\",\n    \"window\": {\n        \"title\": \"\",\n        \"toolbar\": false,\n        \"width\": 816,\n        \"height\": 624,\n        \"icon\": \"www/icon/icon.png\"\n    }\n}"
+    },
+    {
+      "post_id": "js-post-1468457",
+      "author": "SilverFish",
+      "date": "2024-09-06T10:00:10+0900",
+      "body": "It looks right to me, but here's a screenshot"
+    },
+    {
+      "post_id": "js-post-1468459",
+      "author": "utunnels",
+      "date": "2024-09-06T10:08:03+0900",
+      "body": "Hmm, what if you deploy the game? Cau you run it?"
+    },
+    {
+      "post_id": "js-post-1468460",
+      "author": "SilverFish",
+      "date": "2024-09-06T10:19:27+0900",
+      "body": "I'm not having anymore luck than with the project file\nIt's supposed to look like a copy of the project file right?  And I run it from \"Game\" or \"nw\" right?\nAlso I get this error message when I try to run \"Game.desktop~\" Maybe relevant?  Not sure."
+    },
+    {
+      "post_id": "js-post-1468461",
+      "author": "utunnels",
+      "date": "2024-09-06T10:26:29+0900",
+      "body": "What if you open the project in RMMV? From there you click file > deploy...  then choose linux. Just don't delopy it into your project folder, you can create a new folder somewhere else.\nThe deployed game should has a nw and Game inside it, just try it."
+    },
+    {
+      "post_id": "js-post-1468464",
+      "author": "SilverFish",
+      "date": "2024-09-06T10:37:01+0900",
+      "body": "Oh that's how I did it, I didn't know there was another way to deploy it."
+    },
+    {
+      "post_id": "js-post-1468466",
+      "author": "utunnels",
+      "date": "2024-09-06T10:41:56+0900",
+      "body": "So does the depoyed game run?"
+    },
+    {
+      "post_id": "js-post-1468467",
+      "author": "SilverFish",
+      "date": "2024-09-06T10:43:23+0900",
+      "body": "No it did not, it acted the same as when not deployed."
+    },
+    {
+      "post_id": "js-post-1468472",
+      "author": "utunnels",
+      "date": "2024-09-06T11:01:10+0900",
+      "body": "It sounds like you can't run nw.js on your system at all.\nI tried it on a virtual machine installed cinnamon, with default settings.\nThe project runs without a problem(except it is slow because it is a virtual machine)."
+    },
+    {
+      "post_id": "js-post-1468473",
+      "author": "SilverFish",
+      "date": "2024-09-06T11:05:32+0900",
+      "body": "Hmm then it may be a problem with my computer and nothing to do with rmmv?\nThat gives me another path to explore at least"
+    },
+    {
+      "post_id": "js-post-1468474",
+      "author": "utunnels",
+      "date": "2024-09-06T11:09:38+0900",
+      "body": "https://dl.nwjs.io/v0.91.0/nwjs-sdk-v0.91.0-linux-x64.tar.gz\nWhat if you tried a newer version?  0.29.0 is a bit ancient because RMMV is made years ago."
+    },
+    {
+      "post_id": "js-post-1468475",
+      "author": "SilverFish",
+      "date": "2024-09-06T11:13:57+0900",
+      "body": "Ah!  It worked!  That was the trick, thank you very much for your help!!"
+    },
+    {
+      "post_id": "js-post-1468476",
+      "author": "utunnels",
+      "date": "2024-09-06T11:24:15+0900",
+      "body": "It is no trouble. I am considering making a linux version of my game anyway.\nIt is good to know upgrading nw.js fixed the problem.\n@SilverFish\nOK I just tried running RMMV inside that Linux vm, and the play test button worked just fine. I just realised, if your system can't run old nw.js, maybe you can replace the one inside nwjs-lnx-test so you can actually use the play test button."
+    },
+    {
+      "post_id": "js-post-1468575",
+      "author": "SilverFish",
+      "date": "2024-09-07T03:10:00+0900",
+      "body": "I'll give it a try, thanks!"
+    },
+    {
+      "post_id": "js-post-1523174",
+      "author": "ajawad07",
+      "date": "2025-07-20T20:49:53+0900",
+      "body": "utunnels said:\nhttps://dl.nwjs.io/v0.91.0/nwjs-sdk-v0.91.0-linux-x64.tar.gz\nWhat if you tried a newer version?  0.29.0 is a bit ancient because RMMV is made years ago.\nClick to expand...\nWhere do I put this file after downloading?\n(edit: nevemind figured it out thanks!)"
+    }
+  ]
+}

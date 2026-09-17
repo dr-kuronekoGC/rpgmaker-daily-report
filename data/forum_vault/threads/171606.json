@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/passage-setitngs-not-working-on-select-tiles.171606",
+  "title": "Passage setitngs not working on select tiles",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:38.119656+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1467761",
+      "author": "blanketorghost",
+      "date": "2024-09-02T15:31:30+0900",
+      "body": "Hi! I've been currently testing tilesets and textures for my game, and I came upon a problem that I have with very specific tiles refusing to work properly with the passage settings.\nThese tiles have both the 'passable under tile' and are also restricted to only be passable through specific directions. I had set up other tiles the same way, but have had problems with these ones to cooperate. The ones giving me trouble are circled in red. The ones that are set up similarly are circled in green. I've also attached a video below.\nI don't know what I'm doing wrong here exactly, or if I'm doing anything at all. I have the VizuStella Core MZ plugin on but I'm sure that isn't the problem."
+    },
+    {
+      "post_id": "js-post-1469242",
+      "author": "StultusTemporis",
+      "date": "2024-09-11T01:27:08+0900",
+      "body": "I've observed this as well where tiles that are set to display over the characters that have limited passability don't restrict the player's movement.  The way I fixed it was to create a blank tile with the limited passability setting I needed (e.g. blocked from the top, down, left, or right) that was set to display under the characters, and then place it on another layer of the map.\nI think that the reason certain tiles on your map are blocking player movement even though they are set to display above the players is because they are next to tiles that block player movement from that direction that are set to display under the players.  You can try testing this by placing the tiles you circled in green by themselves (i.e. surrounded by tiles that don't block movement) and seeing if they still block the player's movement the way they do when they are grouped together."
+    },
+    {
+      "post_id": "js-post-1469362",
+      "author": "ATT_Turan",
+      "date": "2024-09-11T11:35:10+0900",
+      "body": "It appears to be specific and intentional that star passability tiles are not taken into account for passability, regardless of the direction settings. See from Game_Map.checkPassage():\nI haven't set up tiles and tested this in a game, but you may get the effect you want by simply removing that check.\nPaste the below into a text editor, save as a *.js file, include as a plugin:\nCode:\nGame_Map.prototype.checkPassage = function(x, y, bit) {\n    const flags = this.tilesetFlags();\n    const tiles = this.allTiles(x, y);\n    for (const tile of tiles) {\n        const flag = flags[tile];\n        if ((flag & bit) === 0) {\n            // [o] Passable\n            return true;\n        }\n        if ((flag & bit) === bit) {\n            // [x] Impassable\n            return false;\n        }\n    }\n    return false;\n};"
+    },
+    {
+      "post_id": "js-post-1470624",
+      "author": "blanketorghost",
+      "date": "2024-09-18T07:35:47+0900",
+      "body": "Thank you so much! I'll try it out on my sandbox"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/can-i-disable-rpg-maker-mz-from-automatically-leveling-up-characters.171672",
+  "title": "Can I disable RPG Maker MZ from automatically leveling up characters?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:35.873409+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1468217",
+      "author": "BurdyWurdy",
+      "date": "2024-09-05T04:37:07+0900",
+      "body": "Seeking a way to prevent players from automatically leveling up.Trying to design a gameplay loop where experience points will instead be spent at an NPC who levels them up manually if they have the required amount to do so. Can this be done through events, or will I need a plug-in?"
+    },
+    {
+      "post_id": "js-post-1468225",
+      "author": "ATT_Turan",
+      "date": "2024-09-05T05:28:22+0900",
+      "body": "Using experience points, no, this can't be done. As I'm sure you've seen from play testing your game, gaining a level when you have the correct number of experience points is automatic.\nYou'd need a plugin to disable that; paste the below into a text editor, save as a *.js file, include as a plugin.\nCode:\nGame_Actor.prototype.changeExp = function(exp, show) {\n    this._exp[this._classId] = Math.max(exp, 0);\n    this.refresh();\n};\nThen you can use this in a Script event command:\nCode:\nif (!actor.isMaxLevel() && actor.currentExp() >= actor.nextLevelExp())\n{\n    let lastSkills = actor.skills();\n    actor.levelUp();\n    actor.displayLevelUp(actor.findNewSkills(lastSkills));\n    actor.refresh();\n}\nThe trick for you is you need to replace every instance of \"actor\" with a reference to an actor, and you need to figure out how you're going to get that from the event you're interacting with.\nFor example, if you do something to store an actor's ID in a variable, you could replace it with\nCode:\n$gameActors.actor($gameVariables.value(42))\nwhere 42 is the ID of the variable."
+    }
+  ]
+}

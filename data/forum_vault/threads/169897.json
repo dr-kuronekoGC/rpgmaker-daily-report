@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/dynamic-weather-system.169897",
+  "title": "Dynamic Weather System",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:58.195169+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1454134",
+      "author": "cthulhusquid",
+      "date": "2024-06-30T05:01:46+0900",
+      "body": "I've been working on a weather system that has 5 different weathers, changes dynamically, and when you go to an inside map and then back outside, it remembers the weather that was outside. However, I've been having some major issues.\nI can get the weathers to change, but the screen effects play at the wrong time or don't work like they are supposed to. This is it setup as a common event, and I am using\nZeus81's Map Effects\nand\nVictor Engine - Fog and Overlay\nscripts.\nThis is a separate common event that has a timer that determines how long a specific weather lasts."
+    },
+    {
+      "post_id": "js-post-1454141",
+      "author": "Andar",
+      "date": "2024-06-30T05:26:58+0900",
+      "body": "your timer can become a problem because on map change, common events reset.\nWhich means if the player for example goes inside a house the 600 frames wait restarts from zero instead of continuing from whatever value it had before. If the player goes in and leaves a map and repeats that quickly enough the weather will never change.\nand aside from that 600 frames are 10 seconds - that is a bit quick for a wrather change in my opinion.\nYou should assign a timercounter variable to that CE, counting it up with a lower wait - for example +1 per 10 frames, and then check if variable > 60 (or other values= then variable =0 and switch weather off.\nFor more help with your other problems, you need to tell us what the event is supposed to do and what it does instead."
+    },
+    {
+      "post_id": "js-post-1454154",
+      "author": "cthulhusquid",
+      "date": "2024-06-30T08:28:26+0900",
+      "body": "Andar said:\nyour timer can become a problem because on map change, common events reset.\nWhich means if the player for example goes inside a house the 600 frames wait restarts from zero instead of continuing from whatever value it had before. If the player goes in and leaves a map and repeats that quickly enough the weather will never change.\nand aside from that 600 frames are 10 seconds - that is a bit quick for a wrather change in my opinion.\nYou should assign a timercounter variable to that CE, counting it up with a lower wait - for example +1 per 10 frames, and then check if variable > 60 (or other values= then variable =0 and switch weather off.\nFor more help with your other problems, you need to tell us what the event is supposed to do and what it does instead.\nClick to expand...\nI was using the 600 frames purely for testing. Anyway...\nSo when you go into an outside map, the weather rolls a variable and 1 of 5 weathers is chosen. 1 is a sunny day, 2 is a brown tint with dusty wind, 3 is a brown tint with a sandstorm that disables sprinting, 4 is a heatwave that adds a wavy screen effect to simulate heat refraction and increases thirst rate along with a bright desaturated yellow tint, and 5 is a radstorm that gives you radiation as a one time thing and has a green tint.\nVariable 80 is a roll of 1-100 for choosing the weather, and it's weighted.\nThe WeatherRolled switch signifies that a specific weather has been chosen, which turns on another common event that has a timer. When WeatherRolled turns off at the end of it, the weather is rolled again and a different weather may happen.\nThe weather 1-5 variables is so the weather system remembers the outside weather, so if you go inside and then outside again, it will stay the same weather and will only change when the timer counts down. The timer should always count down regardless of whether you are inside or outside.\nInstead, the weather screen effects don't match up to the weather they are supposed to be with. Like with weather 2, the screen tint goes brown but with no dust, and then goes to the weather 1 tint but with the dust. Or the screen blurs for the sandstorm, but then goes away and is replaces with the sand part of the sandstorm with a different tint."
+    },
+    {
+      "post_id": "js-post-1454183",
+      "author": "Andar",
+      "date": "2024-06-30T13:50:50+0900",
+      "body": "OK, directly my first guess:\ncould it be that the effects controlled by comments are the parts that are mixed up?\ncan you test that by removing those comments and then check if all other effects work correctly?\nIt is little known fact but it is difficult to read tags from comments, that is why they are rarely used that way. Mainly because comments are expected to be outside the event logic and not part of it."
+    }
+  ]
+}

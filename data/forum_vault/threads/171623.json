@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/type-error-isdead.171623",
+  "title": "MZ Type Error \"isDead\"",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:37.417176+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1467854",
+      "author": "Jaybeats90",
+      "date": "2024-09-03T03:51:08+0900",
+      "body": "Hi I am making an RPG using RPG maker MZ\nIm using FOSSIL to load the plugins from RPG maker MV.\nIm using YEP Battle Engine core.js to customize my game.\nBut when I use a revive spell or item which scope is set to status = \"dead\"\nWhen I got to use an Item/spell it instantly throws the following error message -\n\"TypeError\nCannot read property 'isDead' of undefined\"\nThe Dev consol reads -\nTypeError: Cannot read property 'isDead' of undefined\nat Window_BattleActor.isOkEnabled (YEP_BattleEngineCore.js:4861)\nat Window_BattleActor.Window_Selectable.processHandling (rmmz_windows.js:1150)\nat Window_BattleActor.Window_Selectable.update (rmmz_windows.js:1116)\nat Window_BattleActor.Window_Selectable.update (MOG_MenuCursor.js:670)\nat Window_BattleActor.Window_BattleStatus.update (YEP_BattleEngineCore.js:5323)\nat WindowLayer.update (rmmz_core.js:4202)\nat Scene_Battle.Scene_Base.updateChildren (rmmz_scenes.js:129)\nat Scene_Battle.Scene_Base.updateChildren (MOG_MenuCursor.js:658)\nat Scene_Battle.Scene_Base.update (rmmz_scenes.js:52)\nat Scene_Battle.Scene_Base.update (MOG_MenuCursor.js:646)\njust pulling up one of those sources it looks like this -\nWindow_BattleActor.prototype.isOkEnabled = function() {\nif (this._selectDead) return this.actor().isDead();\nreturn Window_Selectable.prototype.isOkEnabled.call(this);\n------------------------------------------------------------------\nI'm not an expret at coding so im unsure what needs to be done to fix this, but any suggestions as to why this error is happening and how It can be fixed. I'm guessing there is compatibility issues with FOSSIL and this plugin with the definition of \"isDead\" but what sort of work around can I do, without pulling FOSSIL or YEP battle engine as they are big parts of the game.\nthanks"
+    },
+    {
+      "post_id": "js-post-1467861",
+      "author": "caethyril",
+      "date": "2024-09-03T04:26:39+0900",
+      "body": "The\nactor\nmethod of\nWindow_BattleActor\nis designed differently in MZ:\nIn MV, it is called with no arguments, and returns the currently-selected actor.\nIn MZ, it expects to be given an index, and returns the actor at that index.\nYou could try a small patch like this (untested):\nJavaScript:\n/*:\n * @target MZ\n * @plugindesc FOSSIL extension: Window_BattleStatus#actor.\n * @author Caethyril\n * @url https://forums.rpgmakerweb.com/threads/171623/\n * @orderAfter YEP_BattleEngineCore\n * @help Free to use and/or modify for any project, no credit required.\n */\n;void (alias => {\n  Window_BattleStatus.prototype.actor = function(index, ...args) {\n    if (index === undefined)\n      return alias.call(this, this.index(), ...args);\n    return alias.apply(this, arguments);\n  };\n})(Window_BattleStatus.prototype.actor);"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/why-does-my-autorun-event-stop-all-parallel-events-in-the-background.171657",
+  "title": "Why does my Autorun event stop all parallel events in the background",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:34.951637+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1468099",
+      "author": "Bwest09",
+      "date": "2024-09-04T13:18:12+0900",
+      "body": "I have a map set up with a lot of characters moving around on a custom route, set to parallel.\nIf I load up the map all Parallel events work as normal (without autorun enabled). But if I start editing a cutscene with text and stuff, set that to autorun so it starts at the beginning. All the Parallel events/characters stop moving. If I set the cutscene event to parallel instead of autorun everything works, but now the main character can move around, while the cutscene is supposed to be playing out. I feel like this is so simple that it should not be happening. I'm on MZ and have the main free Visustella plugins installed in correct order."
+    },
+    {
+      "post_id": "js-post-1468102",
+      "author": "ATT_Turan",
+      "date": "2024-09-04T13:38:17+0900",
+      "body": "Why are they parallel instead of using custom autonomous move routes?\nHave you tried the basic troubleshooting step of turning off your plugins? This is not how MZ works by default."
+    },
+    {
+      "post_id": "js-post-1468115",
+      "author": "Zahawk",
+      "date": "2024-09-04T15:30:37+0900",
+      "body": "In VXAce the Show Text Command pauses all parrallel processes, there were scripts that fixed this. I'm just not sure if MZ also has that issue and if so, if someone has made a plugin to fix it."
+    },
+    {
+      "post_id": "js-post-1468117",
+      "author": "utunnels",
+      "date": "2024-09-04T15:35:58+0900",
+      "body": "If you don't want your main character to move, you just give him a looping wait route during the cut scene."
+    },
+    {
+      "post_id": "js-post-1468165",
+      "author": "ATT_Turan",
+      "date": "2024-09-05T00:36:15+0900",
+      "body": "Zahawk said:\nI'm just not sure if MZ also has that issue\nClick to expand...\nIt doesn't. I plopped an autorun event with Show Text commands, and all other parallel events are running behind it without any problem.\nutunnels said:\nIf you don't want your main character to move, you just give him a looping wait route during the cut scene.\nClick to expand...\nWhy? That's the purpose of using Autorun, it blocks input so you can't move. This shouldn't be necessary."
+    },
+    {
+      "post_id": "js-post-1468248",
+      "author": "Bwest09",
+      "date": "2024-09-05T07:05:28+0900",
+      "body": "Just got off from work. Tried everything, turned off the Visutella events move core plugin and everything worked normally. Idk why that was the problem. Sucks because I actually wanted to use then 8 direction option from this plugin."
+    },
+    {
+      "post_id": "js-post-1468249",
+      "author": "bgillisp",
+      "date": "2024-09-05T07:10:41+0900",
+      "body": "You should check the settings in that plugin. There is a setting that is stop all events while text is up, and it defaults to ON.\nThere's another to stop all events when another event is running too.\nReason these default to that is so a monster doesn't come up and say HI at an awkward time in game."
+    },
+    {
+      "post_id": "js-post-1468251",
+      "author": "utunnels",
+      "date": "2024-09-05T07:24:20+0900",
+      "body": "ATT_Turan said:\nWhy? That's the purpose of using Autorun, it blocks input so you can't move. This shouldn't be necessary.\nClick to expand...\nWhy not, it is an alternative solution to make cut scene.\nSometimes you also control the movement of the player and release them when the scene is done."
+    },
+    {
+      "post_id": "js-post-1468252",
+      "author": "Bwest09",
+      "date": "2024-09-05T07:38:36+0900",
+      "body": "bgillisp said:\nYou should check the settings in that plugin. There is a setting that is stop all events while text is up, and it defaults to ON.\nThere's another to stop all events when another event is running too.\nReason these default to that is so a monster doesn't come up and say HI at an awkward time in game.\nClick to expand...\nThat was indeed the problem. It was turned on by default. Thanks so much!"
+    },
+    {
+      "post_id": "js-post-1468258",
+      "author": "TheAM-Dol",
+      "date": "2024-09-05T08:21:15+0900",
+      "body": "utunnels said:\nWhy not, it is an alternative solution to make cut scene.\nSometimes you also control the movement of the player and release them when the scene is done.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1468259",
+      "author": "Sword_of_Dusk",
+      "date": "2024-09-05T08:21:29+0900",
+      "body": "utunnels said:\nWhy not, it is an alternative solution to make cut scene.\nSometimes you also control the movement of the player and release them when the scene is done.\nClick to expand...\nYeah, and that's what autorun does. You control everything during the creation of the event, and the autorun setting ensures nothing else is busy moving while the cutscene plays."
+    },
+    {
+      "post_id": "js-post-1468270",
+      "author": "ATT_Turan",
+      "date": "2024-09-05T10:38:10+0900",
+      "body": "I'm not saying that your suggestion won't work, but\nutunnels said:\nWhy not\nClick to expand...\nbecause it's a solution to a problem that doesn't exist.\nIf the OP is using RPG Maker/their plugins correctly, that's the entire purpose of autorun. I think it's better to fix the problem (which\n@bgillisp\ndid) than to make workarounds.\nBut that's my viewpoint, I have absolutely no idea why that option exists in the VisuStella plugin."
+    },
+    {
+      "post_id": "js-post-1468272",
+      "author": "utunnels",
+      "date": "2024-09-05T10:56:09+0900",
+      "body": "@ATT_Turan\nYeah I wonder why but I guess it is hard to guess without knowing what exactly the OP set up the events and plugins."
+    },
+    {
+      "post_id": "js-post-1468276",
+      "author": "Bwest09",
+      "date": "2024-09-05T11:17:59+0900",
+      "body": "utunnels said:\n@ATT_Turan\nYeah I wonder why but I guess it is hard to guess without knowing what exactly the OP set up the events and plugins.\nClick to expand...\nComplete barebones for the most part. Sprites walking in the background with custom route. And auto run event made them all stop (parallel enable or not)for some reason because of that plugin. Had to turn off those default enabled options. No issues in MV doing it the same way. But first time using MZ so I thought I just didn't understand something on my end. But it was the plug in.\nATT_Turan said:\nI'm not saying that your suggestion won't work, but\nbecause it's a solution to a problem that doesn't exist.\nIf the OP is using RPG Maker/their plugins correctly, that's the entire purpose of autorun. I think it's better to fix the problem (which\n@bgillisp\ndid) than to make workarounds.\nBut that's my viewpoint, I have absolutely no idea why that option exists in the VisuStella plugin.\nClick to expand...\nYup yup I agree"
+    },
+    {
+      "post_id": "js-post-1468331",
+      "author": "Andar",
+      "date": "2024-09-05T21:01:37+0900",
+      "body": "Bwest09 said:\nBut it was the plug in.\nClick to expand...\nand you just learned why we always say that you need to read through and configure every single plugin completely before adding another one.\nand that problem isn't new either, it was exactly the same with MV and with scripts in VXA and older.\nI literally can't count the times someone cried bug when using yanfly's message script in VXA and had the size of the text windows reduced to zero because they didn't configure the variables for window size correctly. Or rumbling about equipment values changing randomly with the item core when the \"random value\" default was ON. Or Or Or"
+    },
+    {
+      "post_id": "js-post-1468336",
+      "author": "Bwest09",
+      "date": "2024-09-05T21:16:28+0900",
+      "body": "Yup sure did. Lol sorry if it stresses you out. But I'm happy for the helpful community."
+    }
+  ]
+}

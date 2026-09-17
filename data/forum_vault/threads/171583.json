@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/hide-specific-actor-parameter.171583",
+  "title": "Hide specific actor parameter?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:46.862601+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1467620",
+      "author": "Xbalanque",
+      "date": "2024-09-01T18:27:48+0900",
+      "body": "Hello, I'm using Yanfly's Status Menu Core and I would like to hide Max MP, M.Attack and M.Defense from one of my actors as he does not use those parameters. I tried googling my problem but everything I found was about completly hiding or deleting parameters. I just want to hide them for 1 actor not for all actors. Could anybody help?"
+    },
+    {
+      "post_id": "js-post-1468673",
+      "author": "Xbalanque",
+      "date": "2024-09-07T20:09:53+0900",
+      "body": "hopeless bump"
+    },
+    {
+      "post_id": "js-post-1468712",
+      "author": "ATT_Turan",
+      "date": "2024-09-08T01:23:58+0900",
+      "body": "It would help if you posted a solution you tried that hid all of the parameters for everyone - then someone can give you a simple modification to make it only apply to one actor."
+    },
+    {
+      "post_id": "js-post-1468741",
+      "author": "Xbalanque",
+      "date": "2024-09-08T03:17:38+0900",
+      "body": "ATT_Turan said:\nIt would help if you posted a solution you tried that hid all of the parameters for everyone - then someone can give you a simple modification to make it only apply to one actor.\nClick to expand...\nI've tried using other plugins such as:\n1.\nhttps://forums.rpgmakerweb.com/inde...yanfly-compatability-added-screenshots.90942/\n2.\nhttps://forums.rpgmakerweb.com/index.php?threads/show-parameters.62222/\n3.\nhttps://github.com/aloeguvner/rpg-maker-mv/blob/master/plugins/ALOE_YEP_MenuParameterControl.js"
+    },
+    {
+      "post_id": "js-post-1468792",
+      "author": "ATT_Turan",
+      "date": "2024-09-08T08:29:29+0900",
+      "body": "Okay...you don't need any kind of big plugin for this. I was hoping one of your searches led you to the many threads with snippets posted directly in there.\nSo you can paste the below into a text editor, save as a *.js file, include as a plugin.\nCode:\nWindow_Status.prototype.drawParameters = function(x, y) {\n    var lineHeight = this.lineHeight();\n    for (var i = 0; i < 6; i++) {\n        var paramId = i + 2;\n        if ((paramId == 4 || paramId == 5) && this._actor.actorId() == 42)\n            continue;\n        var y2 = y + lineHeight * i;\n        this.changeTextColor(this.systemColor());\n        this.drawText(TextManager.param(paramId), x, y2, 160);\n        this.resetTextColor();\n        this.drawText(this._actor.param(paramId), x + 160, y2, 60, 'right');\n    }\n};\nReplace 42 with the actor ID you're making this change for.\nAs far as MP, if you're using Yanfly plugins one of them should have the option right in the notetags to remove a gauge from an actor."
+    },
+    {
+      "post_id": "js-post-1468862",
+      "author": "Xbalanque",
+      "date": "2024-09-08T17:25:20+0900",
+      "body": "ATT_Turan said:\nOkay...you don't need any kind of big plugin for this. I was hoping one of your searches led you to the many threads with snippets posted directly in there.\nSo you can paste the below into a text editor, save as a *.js file, include as a plugin.\nCode:\nWindow_Status.prototype.drawParameters = function(x, y) {\n    var lineHeight = this.lineHeight();\n    for (var i = 0; i < 6; i++) {\n        var paramId = i + 2;\n        if ((paramId == 4 || paramId == 5) && this._actor.actorId() == 42)\n            continue;\n        var y2 = y + lineHeight * i;\n        this.changeTextColor(this.systemColor());\n        this.drawText(TextManager.param(paramId), x, y2, 160);\n        this.resetTextColor();\n        this.drawText(this._actor.param(paramId), x + 160, y2, 60, 'right');\n    }\n};\nReplace 42 with the actor ID you're making this change for.\nAs far as MP, if you're using Yanfly plugins one of them should have the option right in the notetags to remove a gauge from an actor.\nClick to expand...\nThe above code seems to be working only when the status menu core plugin is off\nI was able to edit an existing plugin to do what I wanted to. This thred can be closed as the problem has been solved."
+    }
+  ]
+}

@@ -1,0 +1,323 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/skip-part-of-the-event.171791",
+  "title": "Skip part of the event?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T13:31:29.703868+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1469026",
+      "author": "ElvenNeko",
+      "date": "2024-09-09T19:08:21+0900",
+      "body": "I know that end processing can help me end the entire event. But is there a way to skip only part of the event, moving to certain spot of it?"
+    },
+    {
+      "post_id": "js-post-1469030",
+      "author": "Robro33",
+      "date": "2024-09-09T19:18:42+0900",
+      "body": "It depends on what your event is. you can use labels to jump to another portion of the event, but if your event includes stuff like character movement, variable manipualtion, item manipulation, etc. all of that gets skipped"
+    },
+    {
+      "post_id": "js-post-1469084",
+      "author": "ElvenNeko",
+      "date": "2024-09-10T01:16:59+0900",
+      "body": "Robro33 said:\nIt depends on what your event is. you can use labels to jump to another portion of the event, but if your event includes stuff like character movement, variable manipualtion, item manipulation, etc. all of that gets skipped\nClick to expand...\nThat is what i want to do, add option to skip certain scenes. Thank you, will try labels, never used those before."
+    },
+    {
+      "post_id": "js-post-1469088",
+      "author": "AquaEcho",
+      "date": "2024-09-10T01:35:14+0900",
+      "body": "You could just use if statements"
+    },
+    {
+      "post_id": "js-post-1469101",
+      "author": "ElvenNeko",
+      "date": "2024-09-10T02:24:59+0900",
+      "body": "So the labels work, but i have a problem with activating them. I want to give the player a choice to skip the cutscene, but not something he can randomly press. If i try to run the choice window, there is no option for it to not wait for player's input and go on with the event. Is there anything else i can use?\nAquaEcho said:\nYou could just use if statements\nClick to expand...\nI don't know what it is."
+    },
+    {
+      "post_id": "js-post-1469102",
+      "author": "ATT_Turan",
+      "date": "2024-09-10T02:27:47+0900",
+      "body": "ElvenNeko said:\nI want to give the player a choice to skip the cutscene, but not something he can randomly press. If i try to run the choice window, there is no option for it to not wait for player's input and go on with the event. Is there anything else i can use?\nClick to expand...\nNo, that's not the way events work in RPG Maker.\nIf you Google it, there are several plugins dedicated to letting you skip cutscene events.\nElvenNeko said:\nI don't know what it is.\nClick to expand...\nShe meant Conditional Branch."
+    },
+    {
+      "post_id": "js-post-1469107",
+      "author": "ElvenNeko",
+      "date": "2024-09-10T03:31:05+0900",
+      "body": "ATT_Turan said:\nIf you Google it, there are several plugins dedicated to letting you skip cutscene events.\nClick to expand...\nI think i looked into one of them, but it skips the entire event, not the part of it. Will look more.\nATT_Turan said:\nShe meant Conditional Branch.\nClick to expand...\nWill it work for my goals?"
+    },
+    {
+      "post_id": "js-post-1469108",
+      "author": "AquaEcho",
+      "date": "2024-09-10T03:38:17+0900",
+      "body": "A conditional branch/if statement is just a true or false check that gates a block of code. If a condition is true, run the following block of code (e.g. play cutscene). If it's false it just gets skipped."
+    },
+    {
+      "post_id": "js-post-1469117",
+      "author": "ElvenNeko",
+      "date": "2024-09-10T05:02:32+0900",
+      "body": "AquaEcho said:\nA conditional branch/if statement is just a true or false check that gates a block of code. If a condition is true, run the following block of code (e.g. play cutscene). If it's false it just gets skipped.\nClick to expand...\nHow do i implement it? I need a button that will be active all the time during other events play out (characters move, pictures shown) that will skip me to the next label. I can't think about any way to condition choice that. Like, i can make a conditional choice that you move to the label if action button is pressed. But it will work only during the check, and move to the outcome. I have no idea how to make it perform this check all the time during other events playing out."
+    },
+    {
+      "post_id": "js-post-1469119",
+      "author": "ShadowDragon",
+      "date": "2024-09-10T05:35:44+0900",
+      "body": "you can perfectly combine them\nvariable X = 0  (just if you want to control this one, or if parallel, use + 10 wait frame\nif: condition: variable X = 1\ncondition is true\njump to label \"complete 1\"\nelse\nif condition Variable X = 2\ncondition is true\njump to label \"complete 2\"\nelse\nfalse\nend\nend\nkeep in mind using conditional branch, everything BEHIND it still runs if false,\nbut stops if nothing behind it, you need to do it correctly to run it nicely.\nmaybe with a label \"Jump to End\" so it wont run if completed, but it can work\nmuch better than just jump to label as you control the boolean here where as\nnormal jump to label doesn't have it."
+    },
+    {
+      "post_id": "js-post-1469123",
+      "author": "ElvenNeko",
+      "date": "2024-09-10T06:20:03+0900",
+      "body": "ShadowDragon said:\nyou can perfectly combine them\nvariable X = 0  (just if you want to control this one, or if parallel, use + 10 wait frame\nif: condition: variable X = 1\ncondition is true\njump to label \"complete 1\"\nelse\nif condition Variable X = 2\ncondition is true\njump to label \"complete 2\"\nelse\nfalse\nend\nend\nkeep in mind using conditional branch, everything BEHIND it still runs if false,\nbut stops if nothing behind it, you need to do it correctly to run it nicely.\nmaybe with a label \"Jump to End\" so it wont run if completed, but it can work\nmuch better than just jump to label as you control the boolean here where as\nnormal jump to label doesn't have it.\nClick to expand...\nI think that i did... most of it. Not sure what \"condition is true\" and \"false\" means and how i add it to the event. Also unsure about where the event content goes. How would you use it in game. And what's everything of that even means. Maybe i am too sleepy or as usual too stupid when it comes to tech stuff. Will try to figure out tomorrow, or look for plugin."
+    },
+    {
+      "post_id": "js-post-1469171",
+      "author": "ISC",
+      "date": "2024-09-10T14:32:50+0900",
+      "body": "You've already received great solutions, so I'd like to offer an alternative. You could make use of event self-switches (although this would require at least 3 pages for the event).\nOn the first page, add the choice to skip the cutscene. Yes = self-switch C On.\nNo = self-switch B On.\nThe second page, which would activate with the condition B On, contains your scene and at the final command, it activates self-switch C.\nThe third page, which activates with the condition C On, contains the post-scene. You could also do this with just 2 pages, but I think this solution is simpler and more organized."
+    },
+    {
+      "post_id": "js-post-1469186",
+      "author": "ElvenNeko",
+      "date": "2024-09-10T18:09:18+0900",
+      "body": "ISC said:\nYou've already received great solutions, so I'd like to offer an alternative. You could make use of event self-switches (although this would require at least 3 pages for the event).\nOn the first page, add the choice to skip the cutscene. Yes = self-switch C On.\nNo = self-switch B On.\nThe second page, which would activate with the condition B On, contains your scene and at the final command, it activates self-switch C.\nThe third page, which activates with the condition C On, contains the post-scene. You could also do this with just 2 pages, but I think this solution is simpler and more organized.\nClick to expand...\nHow would i keep the choice window active during the scene? I want it to be skippable at any time, not just on the beginning."
+    },
+    {
+      "post_id": "js-post-1469190",
+      "author": "ShadowDragon",
+      "date": "2024-09-10T18:43:51+0900",
+      "body": "variable = 0 on top is a mistake, as it is always 0,  but it is a variable you control\nelse where to control the condition checks nicely.\nor it will always be 0 on interaction."
+    },
+    {
+      "post_id": "js-post-1469196",
+      "author": "ISC",
+      "date": "2024-09-10T20:41:02+0900",
+      "body": "If you want, you could avoid inserting any code at all. By default, if you hold down Z, or the page up and down keys, the scene moves forward at an accelerated speed. It’s not exactly a skip, but it saves you from adding extra code. However, if you want to keep the skip feature, I think pressing a key would be more suitable than using the typical choices."
+    },
+    {
+      "post_id": "js-post-1469208",
+      "author": "ElvenNeko",
+      "date": "2024-09-10T22:08:39+0900",
+      "body": "ISC said:\nIf you want, you could avoid inserting any code at all. By default, if you hold down Z, or the page up and down keys, the scene moves forward at an accelerated speed. It’s not exactly a skip, but it saves you from adding extra code. However, if you want to keep the skip feature, I think pressing a key would be more suitable than using the typical choices.\nClick to expand...\nIt will not work to skip songs and videos. And i want not accelerated scene, but full skip.\nButton will work even better, but i still have no idea how to implement it."
+    },
+    {
+      "post_id": "js-post-1469210",
+      "author": "ISC",
+      "date": "2024-09-10T22:30:30+0900",
+      "body": "Ok. Are we talking about scenes that use only cutscenes, or mixed scenes? Usually, a 'cutscene' refers to the composition of event paths. It's important to understand this because stopping a cutscene is different from stopping a scene with event paths. As for the music, it's easy; there is a fade-out command. Implementing key press control isn’t difficult, but we first need to understand what it needs to act on. So, do we have cutscenes mixed with movement scenes here, or just cutscenes?"
+    },
+    {
+      "post_id": "js-post-1469228",
+      "author": "ATT_Turan",
+      "date": "2024-09-11T00:44:10+0900",
+      "body": "I'm sorry,\n@ISC\n- it's probably a translation issue? but your post makes no sense.\nFor one thing, these two things directly contradict each other:\nISC said:\nUsually, a 'cutscene' refers to the composition of event paths\nClick to expand...\nISC said:\nIt's important to understand this because stopping a cutscene is different from stopping a scene with event paths.\nClick to expand...\nIf a cutscene refers to that, then how are they different?\nAnd what does \"composition of event paths\" even mean? There are no words like that in RPG Maker.\nISC said:\nImplementing key press control isn’t difficult\nClick to expand...\nIt actually is, which is why there are plugins to do this, as I mentioned yesterday - events in RPG Maker don't work the way the OP is requesting in this thread.\nISC said:\nSo, do we have cutscenes mixed with movement scenes here, or just cutscenes?\nClick to expand...\nAgain, what does this mean? What is a \"movement scene\"? Is it the same thing as \"event paths\"? Then what is that? And what is a \"mixed scene\"?\nI've seen almost zero cutscenes where nothing moves, so I don't understand this distinction you're trying to create using non-standard - and changing! - terminology."
+    },
+    {
+      "post_id": "js-post-1469256",
+      "author": "ISC",
+      "date": "2024-09-11T02:31:55+0900",
+      "body": "Sorry, my mistake. English is not my first language, I'm trying to learn it as quickly as possible. The difference I'm referring to is between 'set move route,' which moves events and the player, and 'play movie,' which plays a video. Sorry again, I’ll try to be as precise as possible in the future.\nDefining a button key might not be as simple as I think, but it’s not a very long process either. By this, I mean a common event that runs in parallel, checks for the press of a button key (let's say the Z key), and based on that, stops the progression of the scene."
+    },
+    {
+      "post_id": "js-post-1469296",
+      "author": "ATT_Turan",
+      "date": "2024-09-11T04:37:25+0900",
+      "body": "ISC said:\nI mean a common event that runs in parallel, checks for the press of a button key (let's say the Z key), and based on that, stops the progression of the scene.\nClick to expand...\nHow are you planning to make your parallel process, checking for the press of a button, interact with the Autorun event powering the cutscene so that it can be skipped in the middle of some other command? And so that it knows what's supposed to happen when it's skipped?"
+    },
+    {
+      "post_id": "js-post-1469376",
+      "author": "ISC",
+      "date": "2024-09-11T13:34:55+0900",
+      "body": "By replacing the Autorun with a parallel event.\nThe Autorun is very restrictive in its function, as it runs from start to finish, but the parallel event works in the background, running simultaneously, making it easier to bypass.\nAn example of this is shown in the 2 video (Unskipped_scene and Skip_Scene). The first part (Unskipped_scene) plays my scene, which includes: image movement, movement route on the player, and a text message.\nIn the second part(Skip_Scene), I press the \"Z\" key to skip my scene.\nBack to my question. A scene created this way can be skipped with just a few commands, whereas a scene that uses a video (\"play movie\") becomes more difficult. In fact, we would have to deal with stopping the video and removing the black background that RPG Maker creates for it. Let's say the difference I wanted to highlight is precisely this."
+    },
+    {
+      "post_id": "js-post-1469421",
+      "author": "ATT_Turan",
+      "date": "2024-09-11T22:11:30+0900",
+      "body": "ISC said:\nBy replacing the Autorun with a parallel event.\nClick to expand...\nThen you're losing the whole purpose of autorun, to block input so the player can't walk around and open menus during the cutscene.\nI'm not sure why you're making and zipping videos instead of just posting screenshots of events people can look at, but I'll bow out of this. You clearly have some notion of how you think it can work - I just don't think it'll pan out\nBut I'm not always right - good luck!"
+    },
+    {
+      "post_id": "js-post-1469438",
+      "author": "ISC",
+      "date": "2024-09-12T00:31:10+0900",
+      "body": "The truth is that I have the engine set to my native language. But you're right, to provide better help, event screenshots are necessary. I'll try to change the language of RPG Maker MZ (it seems there's no direct option for it, I'll investigate).\nAs for the mechanic, I did it this way:\nAutorun event with:\nDisable menu\nSwitch \"Skip Button\" = On\nSwitch \"Scene Start\" = On\nErase Event\nParallel map event \"Scene\". Activation Switch: Scene Start\nSet movement route -> Player (Wait)\nMove down\nMove down\nMove down\nMove right\nMove right\nMove right\nShow image(1) ...\nMove image(1) ...(wait)\nText Box\nParallel common event \"SkipScene\" . Switch: Skip Scene\nIf the \"ok\" button is pressed\nSwitch \"Scene Start\" = Off\nErase image(1)\nTransfer Player ...\nSwitch \"Skip Button\" = Off\nEnd\nObviously, this assumes that the player is the one moving through the scene and not an event. As you can see, the player's click is blocked by the movement's Wait (same for the image). The initial autorun also disables the menu to avoid accidental openings.\nIf this is what the requester is asking for, I'll share the code after switching the language."
+    },
+    {
+      "post_id": "js-post-1469469",
+      "author": "AquaEcho",
+      "date": "2024-09-12T03:38:27+0900",
+      "body": "So if the actual issue is that you can't interrupt an autorun event with a button press, and an autorun is what you'd typically use for cutscenes because it blocks player input and disables menu access:\nI'd suggest make it a parallel event instead, disable menu access and use this script to disable player movement\nJavaScript:\nif($gamePlayer.moveByInputCached === undefined)\n//This checks if the value is undefined\n\n$gamePlayer.moveByInputCached = $gamePlayer.moveByInput;\n//If it is undefined, it sets to the current value of $gamePlayer.moveByInput which is 'true'\n\n$gamePlayer.moveByInput = function(){\nreturn false;\n}\nTo enable movement again\nCode:\n$gamePlayer.moveByInput = $gamePlayer.moveByInputCached;\n//This resets the value of moveByInput to the cached value\nThen have another parallel event listening for button press, which would trigger a self switch of the first event, or transfer to new scene (whatever each section of the cutscene is. If on the same map, do the self switch, if different maps, transfer)."
+    },
+    {
+      "post_id": "js-post-1470698",
+      "author": "ElvenNeko",
+      "date": "2024-09-18T22:28:52+0900",
+      "body": "So i searched for plugins, but found only two paid ones, and it seems like both of them are outdated.\nThe only free one i found were for MZ.\nAquaEcho said:\nSo if the actual issue is that you can't interrupt an autorun event with a button press, and an autorun is what you'd typically use for cutscenes because it blocks player input and disables menu access:\nI'd suggest make it a parallel event instead, disable menu access and use this script to disable player movement\nJavaScript:\nif($gamePlayer.moveByInputCached === undefined)\n//This checks if the value is undefined\n\n$gamePlayer.moveByInputCached = $gamePlayer.moveByInput;\n//If it is undefined, it sets to the current value of $gamePlayer.moveByInput which is 'true'\n\n$gamePlayer.moveByInput = function(){\nreturn false;\n}\nTo enable movement again\nCode:\n$gamePlayer.moveByInput = $gamePlayer.moveByInputCached;\n//This resets the value of moveByInput to the cached value\nThen have another parallel event listening for button press, which would trigger a self switch of the first event, or transfer to new scene (whatever each section of the cutscene is. If on the same map, do the self switch, if different maps, transfer).\nClick to expand...\nStill not working. Pressing down cancel does nothing, seems like second parallel is ignored for some reason."
+    },
+    {
+      "post_id": "js-post-1470705",
+      "author": "AquaEcho",
+      "date": "2024-09-18T23:59:55+0900",
+      "body": "ElvenNeko said:\nStill not working. Pressing down cancel does nothing, seems like second parallel is ignored for some reason.\nClick to expand...\nYou can't remotely jump to label on a different event. You can remotely toggle a self switch on another event"
+    },
+    {
+      "post_id": "js-post-1470709",
+      "author": "ElvenNeko",
+      "date": "2024-09-19T00:26:13+0900",
+      "body": "AquaEcho said:\nYou can't remotely jump to label on a different event. You can remotely toggle a self switch on another event\nClick to expand...\nDo you know how? I tried as said here -\nhttps://forums.rpgmakerweb.com/inde...s-self-switch-through-a-script-command.63218/\nBut i am getting the error \"key is not defined\" when event reaching script."
+    },
+    {
+      "post_id": "js-post-1470710",
+      "author": "AquaEcho",
+      "date": "2024-09-19T00:42:38+0900",
+      "body": "ElvenNeko said:\nDo you know how? I tried as said here -\nhttps://forums.rpgmakerweb.com/inde...s-self-switch-through-a-script-command.63218/\nView attachment 318079\nBut i am getting the error \"key is not defined\" when event reaching script.\nClick to expand...\n$gameSelfSwitches.setValue([3,1,'A'], true);\nIt should be formatted like that. Where 3 is the map Id, 1 is the event number and A is the self switch"
+    },
+    {
+      "post_id": "js-post-1470717",
+      "author": "ElvenNeko",
+      "date": "2024-09-19T01:25:29+0900",
+      "body": "Still not working"
+    },
+    {
+      "post_id": "js-post-1470718",
+      "author": "AquaEcho",
+      "date": "2024-09-19T01:30:31+0900",
+      "body": "ElvenNeko said:\nStill not working\nView attachment 318081\nView attachment 318080\nClick to expand...\nYou're still putting the jump to label command in the button press. I told you you can't do that. You have to put the change self switch script in the button press.\nAlso don't put leading zeros. I did not put leading zeros in my example. That makes javascript parse the number as octal. At low numbers there's no difference but above 8 or so it becomes a different number"
+    },
+    {
+      "post_id": "js-post-1470725",
+      "author": "ElvenNeko",
+      "date": "2024-09-19T02:25:45+0900",
+      "body": "AquaEcho said:\nYou're still putting the jump to label command in the button press. I told you you can't do that. You have to put the change self switch script in the button press.\nAlso don't put leading zeros. I did not put leading zeros in my example. That makes javascript parse the number as octal. At low numbers there's no difference but above 8 or so it becomes a different number\nClick to expand...\nSo i need 3 events on parallel run. First is my main event that has the only different is label added to specific spot where skip should end.\nSecond event that self switches third event when button is presssed\nAnd third event that makes jump to label?\nIt still does not work tho. Also just noticed that i forgot to remove self switch from event 2, removed it, still not working."
+    },
+    {
+      "post_id": "js-post-1470727",
+      "author": "ISC",
+      "date": "2024-09-19T02:32:58+0900",
+      "body": "If you're interested, the update to version 1.8.1 includes text skipping."
+    },
+    {
+      "post_id": "js-post-1470728",
+      "author": "AquaEcho",
+      "date": "2024-09-19T02:34:31+0900",
+      "body": "No, you only need two events. One event with the code for the cutscene and another to listen for button press. Your third event does nothing. You can only jump to label within the same event. You cannot make another event force the first event to jump to label.\nYou would have each section of the cutscene in a new event page in the first event. The button press would just force the first event to toggle its self switch and start the next page of the cutscene."
+    },
+    {
+      "post_id": "js-post-1470732",
+      "author": "ElvenNeko",
+      "date": "2024-09-19T02:56:43+0900",
+      "body": "ISC said:\nIf you're interested, the update to version 1.8.1 includes text skipping.\nView attachment 318088\nClick to expand...\nSadly i do not own MZ. And message waits is not what i want to skip.\nAquaEcho said:\nNo, you only need two events. One event with the code for the cutscene and another to listen for button press. Your third event does nothing. You can only jump to label within the same event. You cannot make another event force the first event to jump to label.\nYou would have each section of the cutscene in a new event page in the first event. The button press would just force the first event to toggle its self switch and start the next page of the cutscene.\nClick to expand...\nAh, i think i got the logic of it, will try to do that.\nBut will it work with show movie command? If i remember correctly, even in parallel process it ignores user input."
+    },
+    {
+      "post_id": "js-post-1470745",
+      "author": "AquaEcho",
+      "date": "2024-09-19T04:05:04+0900",
+      "body": "I dont know if it will interrupt a video or not. You might have to put additional code in the button prese script to check if a video is playing and force it to stop."
+    },
+    {
+      "post_id": "js-post-1470750",
+      "author": "ElvenNeko",
+      "date": "2024-09-19T04:23:47+0900",
+      "body": "AquaEcho said:\nI dont know if it will interrupt a video or not. You might have to put additional code in the button prese script to check if a video is playing and force it to stop.\nClick to expand...\nSo it worked as you said. But:\n- Does not skip the scrolling text (event changes, but text remains until it's fully scrolled)\n- Does not skip movies\n- Instantly works on button press. That's the most problematic part, is it possible to make it work on button hold to avoid random pressing?"
+    },
+    {
+      "post_id": "js-post-1470761",
+      "author": "AquaEcho",
+      "date": "2024-09-19T05:11:22+0900",
+      "body": "You can either use the script: Input.isLongPressed('cancel') or have the button press increment a another variable by 1 then trigger the effect once that variable reaches a certain number, e.g. 10"
+    },
+    {
+      "post_id": "js-post-1470768",
+      "author": "ElvenNeko",
+      "date": "2024-09-19T06:21:28+0900",
+      "body": "AquaEcho said:\nYou can either use the script: Input.isLongPressed('cancel') or have the button press increment a another variable by 1 then trigger the effect once that variable reaches a certain number, e.g. 10\nClick to expand...\nThank you, this worked! Would be great if holding were a bit longer (it's like one second now), but it's way better than just pressing, so it will do. Probably the second method should be longer, but i am not exactly sure how to do that, i only recently first tried to work with variables.\nAquaEcho said:\nYou might have to put additional code in the button prese script to check if a video is playing and force it to stop.\nClick to expand...\nDo you know what code might do that? I don't even think that check is necessary because i would use it only during video plays."
+    },
+    {
+      "post_id": "js-post-1470780",
+      "author": "AquaEcho",
+      "date": "2024-09-19T08:40:49+0900",
+      "body": "ElvenNeko said:\nThank you, this worked! Would be great if holding were a bit longer (it's like one second now), but it's way better than just pressing, so it will do. Probably the second method should be longer, but i am not exactly sure how to do that, i only recently first tried to work with variables.\nClick to expand...\nYou can either put a wait 1 frame in the current event or do the variable increment in a conditional within the conditional, e.g.\n>if Cancel is pressed, ButtonPressCount +1\n>If ButtonPressCount = 10\n>Script to toggle self switch\n>ButtonPressCount=0\nElvenNeko said:\nDo you know what code might do that? I don't even think that check is necessary because i would use it only during video plays.\nClick to expand...\nI don't use videos or scrolling text so I don't know any more than you. You can ask in the Javascript questions thread"
+    },
+    {
+      "post_id": "js-post-1470868",
+      "author": "ElvenNeko",
+      "date": "2024-09-19T20:45:57+0900",
+      "body": "AquaEcho said:\n>if Cancel is pressed, ButtonPressCount +1\n>If ButtonPressCount = 10\n>Script to toggle self switch\n>ButtonPressCount=0\nClick to expand...\nSyntax error - unexpected token."
+    },
+    {
+      "post_id": "js-post-1470874",
+      "author": "AquaEcho",
+      "date": "2024-09-19T22:31:52+0900",
+      "body": "ElvenNeko said:\nSyntax error - unexpected token.\nClick to expand...\nA syntax error means you typed something wrong, probably in the script box"
+    },
+    {
+      "post_id": "js-post-1470879",
+      "author": "ElvenNeko",
+      "date": "2024-09-19T22:44:15+0900",
+      "body": "AquaEcho said:\nA syntax error means you typed something wrong, probably in the script box\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1470881",
+      "author": "AquaEcho",
+      "date": "2024-09-19T22:50:05+0900",
+      "body": "ElvenNeko said:\nView attachment 318132\nClick to expand...\nYou know what I typed isn't Javascript, right? It was paraphrased event commands"
+    },
+    {
+      "post_id": "js-post-1471098",
+      "author": "ElvenNeko",
+      "date": "2024-09-21T02:53:22+0900",
+      "body": "AquaEcho said:\nYou know what I typed isn't Javascript, right? It was paraphrased event commands\nClick to expand...\nAh. Now i do know. Is this right? It still turns on after one second of pressing though."
+    },
+    {
+      "post_id": "js-post-1471100",
+      "author": "AquaEcho",
+      "date": "2024-09-21T03:11:47+0900",
+      "body": "You don't need the Input.isLongPressed part if you're checking if cancel is pressed and then incrementing another variable. Change the 10 to 60 or 90 or 120 to adjust the length of how long the button has to be pressed down. Also you might want to make it >=10 in case a frame is skipped."
+    },
+    {
+      "post_id": "js-post-1471463",
+      "author": "ElvenNeko",
+      "date": "2024-09-23T06:50:09+0900",
+      "body": "AquaEcho said:\nYou don't need the Input.isLongPressed part if you're checking if cancel is pressed and then incrementing another variable. Change the 10 to 60 or 90 or 120 to adjust the length of how long the button has to be pressed down. Also you might want to make it >=10 in case a frame is skipped.\nClick to expand...\nThank you so much! It worked! I would like to add you to the titles in the future patch, as i do with people who help me solve issues, unless you don't want that for some reason.\nI only failed to do the > part, because no matter what option i chose there are no such symbol.\nAlso, is it possible to block escape (keyboard key) as well? It seems like i open menu when trying to use at as a cancel.\nNoticed interesting thing when i put main event into autorun instead of parallel process. It somehow works now and event is moving to the page via self switch, but first it plays the event to the last part, and only after switches to the second page."
+    },
+    {
+      "post_id": "js-post-1471472",
+      "author": "AquaEcho",
+      "date": "2024-09-23T07:42:57+0900",
+      "body": "You can add me to your credits if you'd like, but it is not necessary. Just credit me as AquaEcho if you do.\nElvenNeko said:\nI only failed to do the > part, because no matter what option i chose there are no such symbol.\nClick to expand...\n>= is equivalent to this\nElvenNeko said:\nAlso, is it possible to block escape (keyboard key) as well? It seems like i open menu when trying to use at as a cancel.\nClick to expand...\nThat's going to require a plugin to overwrite the function of the esc key\nElvenNeko said:\nNoticed interesting thing when i put main event into autorun instead of parallel process. It somehow works now and event is moving to the page via self switch, but first it plays the event to the last part, and only after switches to the second page.\nClick to expand...\nYes, an autorun event will run its full code to the end and can't be interrupted."
+    },
+    {
+      "post_id": "js-post-1471761",
+      "author": "ElvenNeko",
+      "date": "2024-09-24T23:24:37+0900",
+      "body": "I am stupid. There are event command that disables menu acsess. So, with it, and with script command written by\n@caethyril\nhere:\nhttps://forums.rpgmakerweb.com/inde...-their-own-thread.46341/page-153#post-1471375\nIt is now possible to skip anything except for the scrolling text, and make it with either single press or hold of the button. Thanks again for the help, and, hopefully, it will also be useful to someone who will google same question in the future."
+    },
+    {
+      "post_id": "js-post-1471764",
+      "author": "ISC",
+      "date": "2024-09-24T23:45:31+0900",
+      "body": "ISC said:\nThe truth is that I have the engine set to my native language. But you're right, to provide better help, event screenshots are necessary. I'll try to change the language of RPG Maker MZ (it seems there's no direct option for it, I'll investigate).\nAs for the mechanic, I did it this way:\nAutorun event with:\nDisable menu\nSwitch \"Skip Button\" = On\nSwitch \"Scene Start\" = On\nErase Event\nParallel map event \"Scene\". Activation Switch: Scene Start\nSet movement route -> Player (Wait)\nMove down\nMove down\nMove down\nMove right\nMove right\nMove right\nShow image(1) ...\nMove image(1) ...(wait)\nText Box\nParallel common event \"SkipScene\" . Switch: Skip Scene\nIf the \"ok\" button is pressed\nSwitch \"Scene Start\" = Off\nErase image(1)\nTransfer Player ...\nSwitch \"Skip Button\" = Off\nEnd\nObviously, this assumes that the player is the one moving through the scene and not an event. As you can see, the player's click is blocked by the movement's Wait (same for the image). The initial autorun also disables the menu to avoid accidental openings.\nIf this is what the requester is asking for, I'll share the code after switching the language.\nClick to expand...\nI had marked the 'disable menu' as the first command here. My bad, from now on I will include screenshots to be clearer."
+    },
+    {
+      "post_id": "js-post-1471837",
+      "author": "ElvenNeko",
+      "date": "2024-09-25T06:10:47+0900",
+      "body": "@\nAquaEcho\ndo you know what can cause this error? I successfully used the entire process to make 4 events skippable, and everything worked fine, but on the 5-th it started showing this. It seems like the script that blocking movement causing this, but... i never changed it, just copy-pasted.\nThe event looks like this -"
+    },
+    {
+      "post_id": "js-post-1471868",
+      "author": "AquaEcho",
+      "date": "2024-09-25T08:12:38+0900",
+      "body": "That error implies you're trying to apply moveByInput to something that's not the player. Do you always use the script in a common event? Unless you're calling that common event on more than one map it shouldn't be a common event."
+    },
+    {
+      "post_id": "js-post-1471962",
+      "author": "ElvenNeko",
+      "date": "2024-09-25T20:45:07+0900",
+      "body": "AquaEcho said:\nThat error implies you're trying to apply moveByInput to something that's not the player. Do you always use the script in a common event? Unless you're calling that common event on more than one map it shouldn't be a common event.\nClick to expand...\nYes, i always do use it in common event, never in global.\nWeirdly enough, cutting and pasting the code back solved the issue. And i still have no idea what else it could be applied to...  and why pasting it in the very same place in the event solved everything. But at least it works now."
+    }
+  ]
+}
