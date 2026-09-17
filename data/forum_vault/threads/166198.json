@@ -1,0 +1,125 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/skill-that-does-damage-based-on-hp-consumed.166198",
+  "title": "Skill that does damage based on HP consumed",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T22:52:22.839488+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1425796",
+      "author": "BR5555",
+      "date": "2024-02-27T07:01:30+0900",
+      "body": "I've looked around and seen similar topics to what I'm wanting, but none have helped me.\nThis thread\nhas exactly the skill I was looking for, but it's for MV and the tags proposed won't work for me because of that (not using Yanfly plugins). So to be clear:\nThe skill should leave the user with 1 HP left and should damage the target by the # of spent HP.\nI'm using some VisuStella plugins, including the one that allows for custom skill costs, but even though I could get the cost to leave the user with 1 HP, I was unable to figure out how to make the skill actually do the amount of HP loss as damage. So I'm trying to do it all in the damage formula instead.\nSpoiler\nAs you can no doubt see right away, this gives me the same result as I had with the plugin anyway: The user is left with 1 HP but the target only receives 0 damage because the variable used to calculate damage (I have 15 to constantly be set to the user's HP, only one actor will have access to this skill) ends up being set to 1 before the damage is dealt.\nSince the last line of a damage formula is what actually deals the damage, I don't know how to do what I'm accomplishing. I'm sure there's a rather simple way, but even after reading up on all the things you can do with formulas I still can't figure it out. If there's a way with custom skill costs through VS plugins, I'm okay with that method, too."
+    },
+    {
+      "post_id": "js-post-1425797",
+      "author": "gstv87",
+      "date": "2024-02-27T07:11:49+0900",
+      "body": "Code:\nv = a.hp - 1; a.setHP(1); return v;"
+    },
+    {
+      "post_id": "js-post-1425800",
+      "author": "bass2yang",
+      "date": "2024-02-27T07:20:53+0900",
+      "body": "Try this inside the damage formula:\nJavaScript:\nlet dmg = a.hp - 1; a.gainHp(-dmg); dmg\nThat way, it will show the user's HP sacrificed to damage the target. If it is a miss, no damage will be evaluated.\nEdit: if you are doing an action sequence of some sort before the attack (like a Vegeta style explosion against Majin Boo), you may want to store the \"hp-1\" inside a control variable and then call it inside the damage formula and proceed from there (like v[15] for variable 15)."
+    },
+    {
+      "post_id": "js-post-1425807",
+      "author": "BR5555",
+      "date": "2024-02-27T08:21:30+0900",
+      "body": "gstv87 said:\nCode:\nv = a.hp - 1; a.setHP(1); return v;\nClick to expand...\nThis didn't work for me, for some reason. Not sure why it wouldn't by looking at it though.\nbass2yang said:\nTry this inside the damage formula:\nJavaScript:\nlet dmg = a.hp - 1; a.gainHp(-dmg); dmg\nThat way, it will show the user's HP sacrificed to damage the target. If it is a miss, no damage will be evaluated.\nEdit: if you are doing an action sequence of some sort before the attack (like a Vegeta style explosion against Majin Boo), you may want to store the \"hp-1\" inside a control variable and then call it inside the damage formula and proceed from there (like v[15] for variable 15).\nClick to expand...\nThis however did work!\nThanks to both of you!"
+    },
+    {
+      "post_id": "js-post-1425813",
+      "author": "Tennshii",
+      "date": "2024-02-27T08:50:41+0900",
+      "body": "bass2yang said:\nTry this inside the damage formula:\nJavaScript:\nlet dmg = a.hp - 1; a.gainHp(-dmg); dmg\nThat way, it will show the user's HP sacrificed to damage the target. If it is a miss, no damage will be evaluated.\nEdit: if you are doing an action sequence of some sort before the attack (like a Vegeta style explosion against Majin Boo), you may want to store the \"hp-1\" inside a control variable and then call it inside the damage formula and proceed from there (like v[15] for variable 15).\nClick to expand...\nI'd like to implement a similar system into my skill, except I'd like the user to lose 10% of their health to deal bonus damage based on the health lost times a certain multiplier plus a constant. How would I do this? At the moment I have this (based off your comment):\nlet dmg = (a.atk * 5) + (2*(a.hp - 90%)); a.gainHp(-dmg); dmg\nAt the moment for testing, the user doesn't lose any HP, and the attack itself does 0 damage.\nEdit: To clarify, I'd like the skill to consume 10% of the user's current HP, so the skill is weaker as the user uses it multiple times/the fight drags on."
+    },
+    {
+      "post_id": "js-post-1425823",
+      "author": "bass2yang",
+      "date": "2024-02-27T10:05:05+0900",
+      "body": "Tennshii said:\nI'd like to implement a similar system into my skill, except I'd like the user to lose 10% of their health to deal bonus damage based on the health lost times a certain multiplier plus a constant. How would I do this? At the moment I have this (based off your comment):\nlet dmg = (a.atk * 5) + (2*(a.hp - 90%)); a.gainHp(-dmg); dmg\nAt the moment for testing, the user doesn't lose any HP, and the attack itself does 0 damage.\nEdit: To clarify, I'd like the skill to consume 10% of the user's current HP, so the skill is weaker as the user uses it multiple times/the fight drags on.\nClick to expand...\nIf you are typing in the % sign, that is the modulo operator used to give you the remainder and giving you an error (it is expecting a number after the % sign to complete the equation - you won't need it here since it will not do what you are intending to do). In the case of the damage formula, any error forces it to return 0 as a safety net.\nAlso, based on what you are doing, the user is losing the same amount as the damage. However, based on what you are describing, you only want to sacrifice 10% of your HP to deal 5 times attack + 2 times the 10% of HP used.\nTry this:\nJavaScript:\nlet dmg = a.atk*5 + 2*(a.hp*.1); a.gainHp(-a.hp*.1); dmg"
+    },
+    {
+      "post_id": "js-post-1425829",
+      "author": "Tennshii",
+      "date": "2024-02-27T10:41:05+0900",
+      "body": "bass2yang said:\nIf you are typing in the % sign, that is the modulo operator used to give you the remainder and giving you an error (it is expecting a number after the % sign to complete the equation - you won't need it here since it will not do what you are intending to do). In the case of the damage formula, any error forces it to return 0 as a safety net.\nAlso, based on what you are doing, the user is losing the same amount as the damage. However, based on what you are describing, you only want to sacrifice 10% of your HP to deal 5 times attack + 2 times the 10% of HP used.\nTry this:\nJavaScript:\nlet dmg = a.atk*5 + 2*(a.hp*.1); a.gainHp(-a.hp*.1); dmg\nClick to expand...\nSo far it works exactly as I wanted it to. I just had the multipliers so I can fine tune the damage so the skill isn't super OP (I tested it, and it's in fact very OP). Would it also be possible for the hp loss to round to the nearest whole number? After using the skill multiple times i get to decimal values 8 digits away!"
+    },
+    {
+      "post_id": "js-post-1425838",
+      "author": "ATT_Turan",
+      "date": "2024-02-27T11:55:28+0900",
+      "body": "Just to interject into the help that\n@bass2yang\nis giving - it's important to provide a disclaimer about putting things like this into the damage formula.\nIf you:\n- have battlers on Auto Battle with these skills, or\n- give these skills to enemies\nit can cause the the HP draining to happen multiple times a turn, or even if the skill isn't used.\nThe damage formula is executed internally as a part of the process to determine which skill is best by the engine's AI, so putting functions like that that do something besides contribute to the damage calculation will just happen.\nThat's why it's better practice to put them into notetags as I showed in the thread linked to in the first post. The skill would work fine using that code if the equivalent VisuStella notetags were used.\nTennshii said:\nWould it also be possible for the hp loss to round to the nearest whole number?\nClick to expand...\nYou'd change that portion of the formula to\na.gainHp(Math.round(-a.hp*.1))\nYou may want to do that both places so the multiplier is the same as what's lost."
+    },
+    {
+      "post_id": "js-post-1425849",
+      "author": "bass2yang",
+      "date": "2024-02-27T13:05:54+0900",
+      "body": "ATT_Turan said:\nJust to interject into the help that\n@bass2yang\nis giving - it's important to provide a disclaimer about putting things like this into the damage formula.\nIf you:\n- have battlers on Auto Battle with these skills, or\n- give these skills to enemies\nit can cause the the HP draining to happen multiple times a turn, or even if the skill isn't used.\nThe damage formula is executed internally as a part of the process to determine which skill is best by the engine's AI, so putting functions like that that do something besides contribute to the damage calculation will just happen.\nThat's why it's better practice to put them into notetags as I showed in the thread linked to in the first post. The skill would work fine using that code if the equivalent VisuStella notetags were used.\nYou'd change that portion of the formula to\na.gainHp(Math.round(-a.hp*.1))\nYou may want to do that both places so the multiplier is the same as what's lost.\nClick to expand...\nThank you! This is solid advice (I haven't run into these issues so I wasn't aware of them, but they do make sense - thanks for sharing and will take note for future reference)"
+    },
+    {
+      "post_id": "js-post-1425860",
+      "author": "Tennshii",
+      "date": "2024-02-27T14:37:50+0900",
+      "body": "ATT_Turan said:\nIf you:\n- have battlers on Auto Battle with these skills, or\n- give these skills to enemies\nit can cause the the HP draining to happen multiple times a turn, or even if the skill isn't used.\nThe damage formula is executed internally as a part of the process to determine which skill is best by the engine's AI, so putting functions like that that do something besides contribute to the damage calculation will just happen.\nClick to expand...\nI'm not entirely sure what this means. Auto battlers like where you enter combat and the combat occurs on it's own? I also plan on purely only using my own plugins, so I won't be using the VisuStella ones."
+    },
+    {
+      "post_id": "js-post-1425862",
+      "author": "Kenen",
+      "date": "2024-02-27T15:11:15+0900",
+      "body": "Tennshii said:\nI'm not entirely sure what this means.\nClick to expand...\nThe game will evaluate damage formulas under certain scenarios, e.g. when hashing out enemy AI.\nAnything within those damage formulas that directly alters a battler's attributes via a method, e.g. \"a.gainHp(-a.hp*.1)\" gets executed during those evaluations, even if the skill doesn't actually get used in battle.\nIt's okay to use those types of methods in your damage formulas, but you want to be careful to ensure that the related skills aren't being evaluated by the engine, either via enemy AI, actor auto-battle, or the eval() method in a plugin."
+    },
+    {
+      "post_id": "js-post-1425870",
+      "author": "Tennshii",
+      "date": "2024-02-27T16:41:15+0900",
+      "body": "Kenen said:\nThe game will evaluate damage formulas under certain scenarios, e.g. when hashing out enemy AI.\nAnything within those damage formulas that directly alters a battler's attributes via a method, e.g. \"a.gainHp(-a.hp*.1)\" gets executed during those evaluations, even if the skill doesn't actually get used in battle.\nIt's okay to use those types of methods in your damage formulas, but you want to be careful to ensure that the related skills aren't being evaluated by the engine, either via enemy AI, actor auto-battle, or the eval() method in a plugin.\nClick to expand...\nSince I'm using the auto battle for combat (the waiting one) should I change it?\nI also alternatively want to make a variation where instead of consuming the user's current HP, I instead consume all my allies' current HP and do damage proportionate to the HP taken as well. Help much appreciated."
+    },
+    {
+      "post_id": "js-post-1425914",
+      "author": "ATT_Turan",
+      "date": "2024-02-27T21:58:36+0900",
+      "body": "Tennshii said:\nI'm not entirely sure what this means. Auto battlers like...\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1425987",
+      "author": "Tennshii",
+      "date": "2024-02-28T03:33:38+0900",
+      "body": "ATT_Turan said:\nView attachment 296652\nClick to expand...\nI use a battle system called \"time progress (wait)\""
+    },
+    {
+      "post_id": "js-post-1425989",
+      "author": "ATT_Turan",
+      "date": "2024-02-28T03:50:21+0900",
+      "body": "That has nothing to do with anything I said.\nWhether an actor has the Auto Battle trait, or whether you've assigned a skill to be used by an enemy, is not connected in any way to the battle system you're using."
+    },
+    {
+      "post_id": "js-post-1426007",
+      "author": "Tennshii",
+      "date": "2024-02-28T05:33:16+0900",
+      "body": "ATT_Turan said:\nThat has nothing to do with anything I said.\nWhether an actor has the Auto Battle trait, or whether you've assigned a skill to be used by an enemy, is not connected in any way to the battle system you're using.\nClick to expand...\nConsidering how I'm still lost, I'm assuming that the auto battle trait is not on by default, so I probably don't have it. When I hear \"auto battle\" I literally think of auto battlers though, so I apologize that I thought you were talking about the battle system."
+    },
+    {
+      "post_id": "js-post-1468824",
+      "author": "Inarin",
+      "date": "2024-09-08T11:54:52+0900",
+      "body": "The autobattle is a special condition u can add to an actor, like poison for example (u have to manually make a skill add this via the states). While this state is active, u dont control the actors like u normally do. They attack by themselves. Hence the \"auto\". So it has nothing to do with your case\nI have a question, how can I use this method (if its possible) to make a skill (not attack, important) to consume a % of the actor hp?\nLet me explain me better: I want a skill that \"sacrifices blood\" in order to get a buff of dmg, agi and adds a new base attack (that heals the user for the damage dealt), all of this is working perfectly. But no matter what I have tried I cant make the character to loose health on skill use properly. This far the closest was to add the \"recovery hp = -33%\" which did take the damage but the character was \"inmortal\". Testing I figured that the \"hp\" was now just negative so all the damage she recieved was just \"invisible\" while she had 0 hp because she actually did died from enemy attacks while at 0hp.\nI have been googling a lot but I only have 2 options 1. A pay plugin which I cant afford (I havent even been able to buy rpg maker TwT) and 2. A plugin that didnt work but also break another plugin I have for skill CD, and this one is key for my entire balance so I cant use the 2 option anyway.\nSo to summarize I want a way to make a skill cost hp instead of mp or tp (though costing tp is fine actually)\nOk so I tested to use \" a.gainHp(-a.hp*.3) \", \"damage PV\" and user. But the effects are the same, 0  hp not dying then suddenly dying.  I have checked many times if I accidentaly put resistance to death but no, I didnt. The problem is Im not even sure my theory is correct x.x. Help :,c\nEdit: Fine, I did put the death resist, I forgot that change I made last time (in my defense I was called upon my name to do things hence I forgot the last changes I did.  Cries in ADHD) Anyway I now found a new bug YEII. BUT THIS TIME I FIXED IT BEFORE ASKING. LETS GOOO. It was as simple as to use the Math.floor function! (Thanks to that one lonely video about making a D&D damage system that had that formula x.x, I know 0 coding x.x)"
+    },
+    {
+      "post_id": "js-post-1468851",
+      "author": "Sword_of_Dusk",
+      "date": "2024-09-08T15:15:32+0900",
+      "body": "@Inarin\nFor future reference, it's kinda frowned upon to go hijacking another thread for your own purposes. Always make your own threads when you have questions.\nAlso, the mods will ask you not to double post if they happen to see it. Probably should avoid doing that too."
+    },
+    {
+      "post_id": "js-post-1468860",
+      "author": "slimmmeiske2",
+      "date": "2024-09-08T17:21:17+0900",
+      "body": "@Inarin\n, please refrain from necro-posting in a thread. Necro-posting is posting in a thread that has not had posting activity in over 30 days. You can review our forum rules\nhere\n. Thank you.\nInarin, please avoid double posting, as it is against the forum rules. You can use the \"Edit\" function on your posts to add additional information you've forgotten or respond to multiple people. You can review our forum rules\nhere\n. Thank you.\nPlease make a new thread if you still have any issues."
+    }
+  ]
+}
