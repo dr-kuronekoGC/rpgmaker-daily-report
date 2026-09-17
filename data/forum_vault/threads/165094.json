@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-20003-lighting-in-basemennt.165094",
+  "title": "rpg maker 2000 3 lighting in basemennt",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker 2000",
+  "language": "英語",
+  "archived_at": "2026-09-17T19:44:37.243408+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1417193",
+      "author": "geogress",
+      "date": "2024-01-25T00:21:11+0900",
+      "body": "good evening I have rpg maker 2003 and I'm making a game where the player wants to go to the basement and I need your help with the lighting, everything is black except the player's area"
+    },
+    {
+      "post_id": "js-post-1417213",
+      "author": "sergs111",
+      "date": "2024-01-25T01:57:45+0900",
+      "body": "I don't know how it works in 2003, but in MZ I saw a video tutorial where they made a completely black picture with a transparent spot in the middle, and it is centered by a spot on the x, y of the player. And the picture should be bigger than the game screen.\nAnd you can turn the picture on and off through the general event, like a flashlight."
+    },
+    {
+      "post_id": "js-post-1417307",
+      "author": "DevRPG2k",
+      "date": "2024-01-25T09:43:13+0900",
+      "body": "Hello, try this.\nOn the map that is the cave, create an event in a parallel process.\nCreate two variables that check the player's \"Screen X\" and \"Screen Y\".\nIf the circle is right in the center, I recommend including a subtraction of 12 in the \"Screen Y\" variable.\nAfterwards, call Picture, but in \"Display position\" change it to Variable and select the newly created variables.\nTo avoid lag, wait 0.1 seconds at the end.\nSee an example using variables 21 and 22:\nCode:\n@> Control Variables: [0021:Player-Pic_X] = Player's Screen X\n@> Control Variables: [0022:Player-Pic_Y] = Player's Screen Y\n@> Control Variables: [0022:Player-Pic_Y] -= 12\n@> Show Picture: 1, 'Lantern', Variable [0021][0022], 100%, 0%, M6\n@> Wait: 0.1 seconds\nAlthough the effect works, it will be a little uncomfortable due to the freezes, so if you prefer, remove the hold and use Label to make the Picture just move instead of being created all the time:\nCode:\n@> Control Variables: [0021:Player-Pic_X] = Player's Screen X\n@> Control Variables: [0022:Player-Pic_Y] = Player's Screen Y\n@> Control Variables: [0022:Player-Pic_Y] -= 12\n@> Show Picture: 1, 'Lantern', Variable [0021][0022], 100%, 0%, M6\n@> Label: 1\n@> Control Variables: [0021:Player-Pic_X] = Player's Screen X\n@> Control Variables: [0022:Player-Pic_Y] = Player's Screen Y\n@> Control Variables: [0022:Player-Pic_Y] -= 12\n@> Move Picture: 1, Variable [0021][0022], 100%, 0%, @0.0s, Wait\n@> Jump to Label: 1\nThis is more interesting, if you want the light to be weaker at the end of the circle, just use two Pictures, increasing the transparency for the smaller circle and increasing the zoom of the larger circle to 150%:\nCode:\n@> Control Variables: [0021:Player-Pic_X] = Player's Screen X\n@> Control Variables: [0022:Player-Pic_Y] = Player's Screen Y\n@> Control Variables: [0022:Player-Pic_Y] -= 12\n@> Show Picture: 1, 'Lantern', Variable [0021][0022], 150%, 0%, M6\n@> Show Picture: 2, 'Lantern', Variable [0021][0022], 100%, 25%, M6\n@> Label: 1\n@> Control Variables: [0021:Player-Pic_X] = Player's Screen X\n@> Control Variables: [0022:Player-Pic_Y] = Player's Screen Y\n@> Control Variables: [0022:Player-Pic_Y] -= 12\n@> Move Picture: 1, Variable [0021][0022], 150%, 0%, @0.0s\n@> Move Picture: 2, Variable [0021][0022], 100%, 25%, @0.0s, Wait\n@> Jump to Label: 1\nThis would be the result if I used 4 Pictures, the smaller ones being more transparent:\nAnd using label I could create a lamp like in Zelda on the Super Nintendo or in Minish Cap where the brightness varies."
+    },
+    {
+      "post_id": "js-post-1417857",
+      "author": "geogress",
+      "date": "2024-01-27T18:54:29+0900",
+      "body": "sergs111 said:\nI don't know how it works in 2003, but in MZ I saw a video tutorial where they made a completely black picture with a transparent spot in the middle, and it is centered by a spot on the x, y of the player. And the picture should be bigger than the game screen.\nAnd you can turn the picture on and off through the general event, like a flashlight.\nClick to expand...\nthere is also a video from 2003 but I didn't understand it and it's only one\nDev_With_Coffee said:\nΓεια σας, δοκιμάστε αυτό.\nΣτον χάρτη που είναι το σπήλαιο, δημιουργήστε ένα γεγονός σε παράλληλη διαδικασία.\nΔημιουργήστε δύο μεταβλητές που ελέγχουν το \"Screen X\" και το \"Screen Y\" του προγράμματος αναπαραγωγής.\nΕάν ο κύκλος βρίσκεται ακριβώς στο κέντρο, προτείνω να συμπεριλάβετε μια αφαίρεση 12 στη μεταβλητή \"Screen Y\".\nΣτη συνέχεια, καλέστε την εικόνα, αλλά στο \"Θέση εμφάνισης\" αλλάξτε την σε Μεταβλητή και επιλέξτε τις μεταβλητές που δημιουργήθηκαν πρόσφατα.\nΓια να αποφύγετε την καθυστέρηση, περιμένετε 0,1 δευτερόλεπτα στο τέλος.\nΔείτε ένα παράδειγμα χρησιμοποιώντας τις μεταβλητές 21 και 22:\nCode:\n@> Μεταβλητές ελέγχου: [0021:Player-Pic_X] = Οθόνη X του παίκτη\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] = Οθόνη παίκτη Y\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] -= 12\n@> Εμφάνιση εικόνας: 1, 'Lantern', Variable [0021][0022], 100%, 0%, M6\n@> Αναμονή: 0,1 δευτερόλεπτα\nΑν και το εφέ λειτουργεί, θα είναι λίγο άβολο λόγω των παγώσεων, οπότε αν προτιμάτε, αφαιρέστε το κράτημα και χρησιμοποιήστε το Label για να κάνετε την εικόνα απλώς να κινείται αντί να δημιουργείται συνεχώς:\nCode:\n@> Μεταβλητές ελέγχου: [0021:Player-Pic_X] = Οθόνη X του παίκτη\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] = Οθόνη παίκτη Y\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] -= 12\n@> Εμφάνιση εικόνας: 1, 'Lantern', Variable [0021][0022], 100%, 0%, M6\n@> Ετικέτα: 1\n@> Μεταβλητές ελέγχου: [0021:Player-Pic_X] = Οθόνη X του παίκτη\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] = Οθόνη παίκτη Y\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] -= 12\n@> Μετακίνηση εικόνας: 1, Μεταβλητή [0021][0022], 100%, 0%, @0,0s, Αναμονή\n@> Μετάβαση στην ετικέτα: 1\nΑυτό είναι πιο ενδιαφέρον, αν θέλετε το φως να είναι πιο αδύναμο στο τέλος του κύκλου, απλώς χρησιμοποιήστε δύο Εικόνες, αυξάνοντας τη διαφάνεια για τον μικρότερο κύκλο και αυξάνοντας το ζουμ του μεγαλύτερου κύκλου στο 150%:\nCode:\n@> Μεταβλητές ελέγχου: [0021:Player-Pic_X] = Οθόνη X του παίκτη\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] = Οθόνη παίκτη Y\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] -= 12\n@> Εμφάνιση εικόνας: 1, 'Lantern', Variable [0021][0022], 150%, 0%, M6\n@> Εμφάνιση εικόνας: 2, 'Lantern', Variable [0021][0022], 100%, 25%, M6\n@> Ετικέτα: 1\n@> Μεταβλητές ελέγχου: [0021:Player-Pic_X] = Οθόνη X του παίκτη\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] = Οθόνη παίκτη Y\n@> Μεταβλητές ελέγχου: [0022:Player-Pic_Y] -= 12\n@> Μετακίνηση εικόνας: 1, Μεταβλητή [0021][0022], 150%, 0%, @0,0s\n@> Μετακίνηση εικόνας: 2, Μεταβλητή [0021][0022], 100%, 25%, @0,0s, Αναμονή\n@> Μετάβαση στην ετικέτα: 1\nΑυτό θα ήταν το αποτέλεσμα αν χρησιμοποιούσα 4 εικόνες, με τις μικρότερες να είναι πιο διαφανείς:\nΚαι χρησιμοποιώντας την ετικέτα θα μπορούσα να δημιουργήσω μια λάμπα όπως στο Zelda στο Super Nintendo ή στο Minish Cap όπου η φωτεινότητα ποικίλλει.\nClick to expand...\nnice, thank you very much, but what image should I put in order to fix it?"
+    },
+    {
+      "post_id": "js-post-1417888",
+      "author": "DevRPG2k",
+      "date": "2024-01-27T21:39:25+0900",
+      "body": "I made the image using MS Paint on Windows.\nThe image is 800x600 pixels and the circle is 64x64 right in the center.\nI drew and cut the circle into 4 parts using just one of the slices.\nI made a new 800x600 file divided into 4 parts, then fitted the circle slice in the middle and copied it, rotating it until the other 3 parts fit.\nI changed the background colors to a dark color and saved the image as BMP 256 colors:"
+    },
+    {
+      "post_id": "js-post-1418189",
+      "author": "geogress",
+      "date": "2024-01-29T01:57:41+0900",
+      "body": "Dev_With_Coffee said:\nΈφτιαξα την εικόνα χρησιμοποιώντας το MS Paint στα Windows.\nΗ εικόνα είναι 800x600 pixel και ο κύκλος είναι 64x64 ακριβώς στο κέντρο.\nΣχεδίασα και έκοψα τον κύκλο σε 4 μέρη χρησιμοποιώντας μόνο μία από τις φέτες.\nΈφτιαξα ένα νέο αρχείο 800x600 χωρισμένο σε 4 μέρη, μετά τοποθέτησα τη κυκλική φέτα στη μέση και την αντέγραψα, περιστρέφοντάς την μέχρι να χωρέσουν τα άλλα 3 μέρη.\nΆλλαξα τα χρώματα φόντου σε σκούρο χρώμα και αποθήκευσα την εικόνα ως χρώματα BMP 256:\nView attachment 293237\nClick to expand...\nThanks, they did, but I missed it in the commands\n,"
+    },
+    {
+      "post_id": "js-post-1418221",
+      "author": "DevRPG2k",
+      "date": "2024-01-29T04:53:31+0900",
+      "body": "You are probably not familiar with the Engine language.\nI recommend learning the engine's event commands well and then trying something more complex."
+    },
+    {
+      "post_id": "js-post-1418436",
+      "author": "sergs111",
+      "date": "2024-01-29T21:29:07+0900",
+      "body": "here is this video directional light\nthis demo flashlight\nhttps://yadi.sk/d/7j-LsRy8QLTeDA\nSpot the lantern\ndemo\nhttps://yadi.sk/d/qVGkSpJ6LLQA7w"
+    },
+    {
+      "post_id": "js-post-1418443",
+      "author": "Ms Littlefish",
+      "date": "2024-01-29T22:04:31+0900",
+      "body": "[dpost]\n@sergs111\n[/dpost]"
+    },
+    {
+      "post_id": "js-post-1418479",
+      "author": "geogress",
+      "date": "2024-01-30T01:28:26+0900",
+      "body": "sergs111 said:\nεδώ είναι αυτό το φως κατεύθυνσης βίντεο\nαυτός ο φακός επίδειξης\nhttps://yadi.sk/d/7j-LsRy8QLTeDA\nΒρείτε το φανάρι\nεπίδειξη\nhttps://yadi.sk/d/qVGkSpJ6LLQA7w\nClick to expand...\ni just use rpg maker 2003 is it the same?"
+    },
+    {
+      "post_id": "js-post-1418635",
+      "author": "DevRPG2k",
+      "date": "2024-01-30T13:46:06+0900",
+      "body": "Apparently you didn't understand the instructions or don't know how the RPG Maker 2000 and 2003 graphics import field works...\nI can't really help you if you don't learn the basics from the manual.\nThis is probably something difficult for your translator, but I don't know an easy way to help you, perhaps recording a video of the whole process... but I really don't have time this week."
+    }
+  ]
+}

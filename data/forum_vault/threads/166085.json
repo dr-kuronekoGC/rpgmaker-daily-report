@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/skill-timing-in-ctb-and-atb.166085",
+  "title": "Skill Timing in CTB and ATB",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T19:44:36.015094+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1424873",
+      "author": "ZimXero",
+      "date": "2024-02-23T21:37:30+0900",
+      "body": "It is said everywhere that CTB and ATB speeds are difficult to manage.  To make things worse, there is little information on the math being used by these systems or how they are affected by the speed of skills.  I think most players using these systems go with default settings and resort to play-testing to find balance.\nIn the game I'm designing, I started with an overall storyboard, and a list of likes and dislikes taken from other games, then put total focus into the combat system and skills.  For me, a game has to have great combat structure or I wont play it unless it has a crazy-good story or its unique and short.\nMy skills have ten speed levels for math balance they are approximately linear in terms of the time I wanted them to take to execute during play, but alas, RPG maker does not work that way.  I'm handling this using CTB (only to show the turn order), and the speed adjustments are:\n0 +2000\n1 +1500\n2 +1000\n3 +600\n4 +300\n5 +100\n6  normal\n7 -100\n8 -200\n9 -300\n10 -400\n11 -500\nFor default speed to CTB conversion I'm using ((SPEEDstat+100)/20)+5.  This pumps out at least 5 minimum, gives some cushion for modifiers, and keeps the standard output range between 10 and 40 as speed/agility stat grows from 1 to 600.\nDoes anyone have any tricks, techniques, or insight on timing in their games?"
+    },
+    {
+      "post_id": "js-post-1424890",
+      "author": "ATT_Turan",
+      "date": "2024-02-23T23:08:10+0900",
+      "body": "There's no such thing as \"these systems\" built into MZ - you must be talking about plugins, and how the numbers work would depend on the specific plugin.\nSo...which plugins are you using?"
+    },
+    {
+      "post_id": "js-post-1424978",
+      "author": "ZimXero",
+      "date": "2024-02-24T04:04:19+0900",
+      "body": "VisuStella.\nI am NOT an expert.  I've been playing with the allowed formulas and pulling my hair out.  The formulas I'm using now are shown below:\nInitial Speed\n= Math.random() * 5\n-----------------------------\nlet speed =\n((user.agi +100)/20) + 5;\nconst user = this;\n----------------------------------\nlet speed =\n((baseAgility +100)/20) + 5;\nconst user = this;\nconst baseAgility = user.paramBasePlus(6);\n----------------------------------\nlet relativeSpeed =\nspeed / partyBaseSpeed;\nconst user = this;\nconst speed = user.tpbSpeed()\nconst partyBaseSpeed = $gameParty.tpbBaseSpeed();\n------------------------------------\nlet acceleration =\nspeed / referenceTime;\nconst user = this;\nconst speed = user.tpbRelativeSpeed();\nconst referenceTime = $gameParty.tpbReferenceTime();\n------------------------------------\nlet time =\ndelay / 100;\nconst user = this;\nconst actions = user._actions.filter(action => action.isValid());\nconst items = actions.map(action => action.item());\nconst delay = items.reduce((r, item) => r + Math.max(0, -item.speed), 0);\n---------------------------------------\noriginal CAST TIME FORMULA:  let time = delay / user.tpbSpeed();\nCHANGED TO:\nlet time = delay / 100\nMy Cast time formula makes it so that -1 skill speed is a 1% of a turn delay, so -100 makes you wait a turn till it activates, then another turn yet before you can act.\nI don't know how to make the code read a stat other than the Agility.  It seems like LUK would make sense for start of battle order.  I do not even know what the initiative (start of combat) formula is actually doing.  I would like to see CTB completely redone, but I can't find another plugin that works any better.  After fiddling more, here are the skill settings to use for approximate desired turn speeds:\n0% turn duration  =  +2000ss  +skilltag  <CTB After Speed: 100%>\n20% turn duration  =  +2000ss  +skilltag  <CTB After Speed: 80%>\n40% turn duration  =  +2000 skill speed\n60% turn duration  =  +1400 skill speed\n80% turn duration  =  +700   skill speed\n100% turn duration  =   (no change)\n120% turn duration  =  -20 skill speed\n140% turn duration  =  -40 skill speed\n160% turn duration  =  -60 skill speed\n180% turn duration  =  -80 skill speed\n200% turn duration  =  -100 skill speed"
+    }
+  ]
+}
