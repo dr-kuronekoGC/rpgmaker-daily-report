@@ -49,7 +49,6 @@ SOURCES = [
     official_visustella,
     official_deviantart,
     asset_itchio,
-    community_forum,
     community_guild,
     official_makerdevs,
     official_caspergaming,
