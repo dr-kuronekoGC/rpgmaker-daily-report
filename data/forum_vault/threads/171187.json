@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/exit-to-title-scene-help.171187",
+  "title": "MV Exit to title scene help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T04:56:55.773392+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1464400",
+      "author": "Tonini",
+      "date": "2024-08-18T20:07:14+0900",
+      "body": "Hey guys\nI just started trying to learn a little scripting in RMMV, and ive hit a bit of a wall. Im trying to make a simple end game screen like this\nthis almost works, it goes to title correctly if thats chosen but if i hit cancel this screen pops up\nI have no idea where this came from. If you hit yes it goes to the title, and no takes you back to the first image and itll just loop if you keep hitting cancel.\nfunction Scene_Exit() {\nthis.initialize.apply(this, arguments);\n}\nScene_Exit.prototype = Object.create(Scene_MenuBase.prototype);\nScene_Exit.prototype.constructor = Scene_Exit;\nScene_Exit.prototype.initialize = function() {\nScene_MenuBase.prototype.initialize.call(this);\n};\nScene_Exit.prototype.create = function() {\nScene_MenuBase.prototype.create.call(this);\nthis._exitWindow = new Window_Exit(259, 45, 282, 150);\nthis.createCommandWindow();\nthis.addWindow(this._exitWindow);\n};\nfunction Window_Exit () {\nthis.initialize.apply(this, arguments);\n}\nScene_Exit.prototype.createCommandWindow = function() {\nthis._commandWindow = new Window_GameEnd();\nthis._commandWindow.setHandler('toTitle',  this.commandToTitle.bind(this));\nthis._commandWindow.setHandler('cancel',   this.popScene.bind(this));\nthis.addWindow(this._commandWindow);\n};\nScene_Exit.prototype.commandToTitle = function() {\nthis.fadeOutAll();\nSceneManager.goto(Scene_Title);\n};\n//text window\nWindow_Exit.prototype = Object.create(Window_Base.prototype);\nWindow_Exit.prototype.constructor = Window_Exit;\nWindow_Exit.prototype.initialize = function (x, y, width, height) {\nWindow_Base.prototype.initialize.call(this, x, y, width, height);\nthis.drawAllItems();\n}\nWindow_Exit.prototype.drawAllItems = function (){\nlet Exit = \"Exit to Title Screen?\"\nthis.drawText(Exit, 35, 30, 200,);\n};\nHeres the code I have. I mostly tried to just copy it from the existing files but im not too sure what im doing yet and where it could have come from. If anyone could help id super apprecate it!"
+    },
+    {
+      "post_id": "js-post-1464428",
+      "author": "utunnels",
+      "date": "2024-08-18T23:11:22+0900",
+      "body": "How do you enter Scene_Exit?"
+    },
+    {
+      "post_id": "js-post-1464430",
+      "author": "Tonini",
+      "date": "2024-08-18T23:35:46+0900",
+      "body": "utunnels said:\nHow do you enter Scene_Exit?\nClick to expand...\nWell that part I got figured out now thanks for reminding me I put a box in the common event menu XD\nBUT now that I took that out if i hit cancel it just stays on that first picture instead of exiting the scene\ntheres how its made to leave the scene. I used the picture menu tutorial\nhere\nim guessing i have to have canceled be pressed somehow? but i have no idea how to go about that"
+    },
+    {
+      "post_id": "js-post-1464557",
+      "author": "utunnels",
+      "date": "2024-08-19T09:38:23+0900",
+      "body": "I maybe wrong but the script runs in the map scene.\nSo when it changes to another scene maybe the script stops working?\nAlso I don't think you need to write a plugin for that. Maybe you can just use dialogue + choices ?"
+    },
+    {
+      "post_id": "js-post-1464569",
+      "author": "ATT_Turan",
+      "date": "2024-08-19T10:53:41+0900",
+      "body": "Why are you making a plugin to do something that's built into MV by default?\nEven if you want to pull up the quit option from someplace other than the menu, all you have to do is push Scene_GameEnd and all the code is already written for you.\n(Personal opinion: I hate those confirmation dialogues. In 30-some years of playing video games, I have tried to quit by accident zero times. There's no reason to ask me again. How often do you accidentally quit, that you think it's a good idea?\n)"
+    },
+    {
+      "post_id": "js-post-1464577",
+      "author": "utunnels",
+      "date": "2024-08-19T11:39:40+0900",
+      "body": "Well when they make you a habit to click confirm for everything, a confirm dialogue won't prevent your from making mistakes.\nBut I don't think people usually bother to quit the game via the menu, so if someone see the dialogue there is a higher chance they click it by mistake.\nAs for me, I just press F5 or Alt+F4 or click the X button."
+    },
+    {
+      "post_id": "js-post-1464579",
+      "author": "ATT_Turan",
+      "date": "2024-08-19T11:45:26+0900",
+      "body": "utunnels said:\nWell when they make you a habit to click confirm for everything, a confirm dialogue won't prevent your from making mistakes.\nClick to expand...\nYes, I think that supports my point.\nutunnels said:\nBut I don't think people usually bother to quit the game via the menu...As for me, I just press F5 or Alt+F4 or click the X button.\nClick to expand...\nUnless you and these people are primarily playing RPG Maker games, many-to-most professional games have disabled Alt+F4 and you have to quit via the menu (or pulling up the task manager for some reason). I suspect a significant portion of the gaming populace isn't even knowledgeable about that Windows shortcut.\nNot to mention it would bypass and screw with the \"save and quit\" that most games do."
+    },
+    {
+      "post_id": "js-post-1464597",
+      "author": "Tonini",
+      "date": "2024-08-19T14:05:47+0900",
+      "body": "utunnels said:\nI maybe wrong but the script runs in the map scene.\nSo when it changes to another scene maybe the script stops working?\nAlso I don't think you need to write a plugin for that. Maybe you can just use dialogue + choices ?\nClick to expand...\nI tried doing that first but i didn't want the dialogue window so huge so i started with making the text box. I want everything to fit inside the screen part of the picture. I'm sure there is an easier way to do that with script calls maybe I'll look into that it would have saved me a lot of trouble\nATT_Turan said:\nWhy are you making a plugin to do something that's built into MV by default?\nEven if you want to pull up the quit option from someplace other than the menu, all you have to do is push Scene_GameEnd and all the code is already written for you.\n(Personal opinion: I hate those confirmation dialogues. In 30-some years of playing video games, I have tried to quit by accident zero times. There's no reason to ask me again. How often do you accidentally quit, that you think it's a good idea?\n)\nClick to expand...\nI grabbed what i thought were the important bits from that scene and changed it cause it didnt come with the box on top for text. I made that part first and just renamed the scene_GameEnd code to exit cause I thought you had to keep it all in like one scene. Ive been trying to figure out what things in the code are from trial and error, I started messing with things like 2 days ago I still have no clue what Im doing really\nAlso I wanted to fill the phone menu up with more apps so i did an exit screen to try and make it a little more cluttered, it looked weird so empty XD\nEdit: I just tried calling  scene_GameEnd instead of what i used and it still loops on that screen if i hit cancel :c"
+    },
+    {
+      "post_id": "js-post-1464650",
+      "author": "ATT_Turan",
+      "date": "2024-08-19T21:01:41+0900",
+      "body": "Tonini said:\nI grabbed what i thought were the important bits from that scene and changed it cause it didnt come with the box on top for text. I made that part first and just renamed the scene_GameEnd code to exit cause I thought you had to keep it all in like one scene. Ive been trying to figure out what things in the code are from trial and error, I started messing with things like 2 days ago I still have no clue what Im doing really\nClick to expand...\nMy advice as a coder and teacher - it's going to be very difficult to progress that way. I strongly suggest you take some time to do a JavaScript tutorial/course. It won't have anything strictly to do with RPG Maker in the beginning, but you'll learn and understand what you're doing in a structured fashion with a logical progression of knowledge.\nWhen you're done, everything you read in the code should\nmean\nsomething, such that you can look at MV's code and follow the flow of function calls to know what's happening.\nThere are lots of options if you Google it, I like the w3schools tutorial, starting with the Statements chapter.\nTonini said:\nEdit: I just tried calling  scene_GameEnd instead of what i used and it still loops on that screen if i hit cancel :c\nClick to expand...\nI can't duplicate your bug. I opened a project and, while standing on the map, called\nSceneManager.push(Scene_GameEnd)\nWhen I select Cancel, the window closes and I'm back on the map. There must be a logical error in some other part of how you're getting there."
+    },
+    {
+      "post_id": "js-post-1464728",
+      "author": "Tonini",
+      "date": "2024-08-20T01:00:28+0900",
+      "body": "ATT_Turan said:\nMy advice as a coder and teacher - it's going to be very difficult to progress that way. I strongly suggest you take some time to do a JavaScript tutorial/course. It won't have anything strictly to do with RPG Maker in the beginning, but you'll learn and understand what you're doing in a structured fashion with a logical progression of knowledge.\nWhen you're done, everything you read in the code should\nmean\nsomething, such that you can look at MV's code and follow the flow of function calls to know what's happening.\nThere are lots of options if you Google it, I like the w3schools tutorial, starting with the Statements chapter.\nI can't duplicate your bug. I opened a project and, while standing on the map, called\nSceneManager.push(Scene_GameEnd)\nWhen I select Cancel, the window closes and I'm back on the map. There must be a logical error in some other part of how you're getting there.\nClick to expand...\nI may just have to take your advice and actually do some learning.\nI'm sure I did something somewhere but yeah I just would have no clue\nThanks anyway for trying to help c:"
+    }
+  ]
+}

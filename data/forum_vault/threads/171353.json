@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/animated-sideview-and-sideview-battlers-bug.171353",
+  "title": "MV Animated Sideview and Sideview Battlers bug",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T04:56:45.848269+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1465836",
+      "author": "Shackomatic",
+      "date": "2024-08-24T01:54:06+0900",
+      "body": "So I'm using both of the plugins mentioned in the title and it keeps giving me an error. I believe I have the plugins set correctly (I'm reviewing the Multiple Sideview Frames video by Yami) and I'm still getting the same sort of error.\nThe last image is when I try to run a battle without putting the enemy in the sv_enemies folder. It used to work in an older project but I'm neck deep in it and I don't really know why it's doing that. I only have the idle so far since I'm working piece by piece and it works just fine when I'm using it against an enemy straight from the sv_enemies folder with no coding attached.\nAll of the names n such are correct, so now I'm stumped. I don't know if I needed to create a thread or not but I just really need to know. Smoother animations for my battles is gonna look so good man... I can't let this hinder my progress!"
+    },
+    {
+      "post_id": "js-post-1465840",
+      "author": "firestalker",
+      "date": "2024-08-24T02:03:50+0900",
+      "body": "Why do you need both Plugins...  YEP_AnimatedSVEnemies does all that already by itself. I think the two plugins are conflicting with each other because they're trying to do the same thing at the same time."
+    },
+    {
+      "post_id": "js-post-1465861",
+      "author": "Shackomatic",
+      "date": "2024-08-24T03:21:57+0900",
+      "body": "The tutorial from the video about Sideview Battler has both of the plugins, even highlighting AnimatedSVEnemies. I used both in the past but now I don't know what's happening to make it try and pull from the sv_enemies folder than the sv_actors folder. I have the spritesheet set up in the way they have it in the video as well. The Actor isn't the problem, but it's the enemy now. I tried to get the enemy to load up with the normal sprite sheet format using the Animated Enemies plugin, giving it the proper name and putting it in sv_actors, but now it's not working.\nAnd when I used only the Sideview Battler, this happened.\nAnd when it's just Animated SV Enemies, it looks like this.\nI wanna use both to make the enemies as fluid as the actors...and I followed everything, even formatting the plugins correctly like they did in the video. I don't know what else I'm missing.\nMore evidence of the formatting:"
+    },
+    {
+      "post_id": "js-post-1465890",
+      "author": "ATT_Turan",
+      "date": "2024-08-24T04:33:08+0900",
+      "body": "Shackomatic said:\nThe last image is when I try to run a battle without putting the enemy in the sv_enemies folder. It used to work in an older project but I'm neck deep in it and I don't really know why it's doing that.\nClick to expand...\nBecause you have an image selected in the database entry for your enemy, which can only be selected from the sv_enemies folder.\nYou can get rid of that if you're specifying an image via notetags.\nYour original error is saying you're calling a motion that's not defined. It looks like you don't have the notetags to define the YED motions in your enemy's notes.\nAs a side note, you should not have any filenames in your project with spaces in them. Notice how everything included with RPG Maker MV uses camelCase and underscores - there are no spaces.\nUsing URL-incompatible characters, such as spaces, can cause your files to produce loading errors for people trying to play your deployed game."
+    },
+    {
+      "post_id": "js-post-1465959",
+      "author": "Shackomatic",
+      "date": "2024-08-24T11:47:37+0900",
+      "body": "Ah alright. I'll try to remove the spaces and add the motion coding for the enemy and see if the Actor can still have their 8 frames. I'm still having issues but hopefully working on it one by one can get me some results."
+    },
+    {
+      "post_id": "js-post-1466393",
+      "author": "Shackomatic",
+      "date": "2024-08-26T22:54:05+0900",
+      "body": "Alright so it seems like everything is working now. The player has the smooth frames but I can't exactly make it work with the enemies. I want both enemies and party members to have the smooth frames but the enemies continue to use the old RPG Maker MV SV sprite format. I even used the note tag from the actor who has the smooth frames on the enemy but that doesn't work either, so is there something extra I have to do?"
+    },
+    {
+      "post_id": "js-post-1469115",
+      "author": "Shackomatic",
+      "date": "2024-09-10T04:39:37+0900",
+      "body": "So is there a way I can get the enemy to have the same sort of frames like the actors? They do it in the video but I really wanna make both sides be able to move smoothly... If anyone knows could you please share that sacred knowledge?"
+    },
+    {
+      "post_id": "js-post-1469120",
+      "author": "ATT_Turan",
+      "date": "2024-09-10T05:36:34+0900",
+      "body": "You keep asking questions, but you're not providing any new information.\nWhat does \"smooth frames\" mean?\nWhat does everything in the notebox for the enemy say?\nIt would make the most sense for you to paste all the notetags and attach the actual spritesheet you're trying to use, so someone else could try to help you test."
+    },
+    {
+      "post_id": "js-post-1469173",
+      "author": "Shackomatic",
+      "date": "2024-09-10T14:47:16+0900",
+      "body": "So that's what the IDLE is supposed to look like for the Actor. It has 10 frames and I set it as such.\n<Sideview Battler: SvMagnolia>\n<Sideview Battler Frames: 10>\n<Sideview Battler Speed: 5>\n<Sideview Battler Size: 96, 96>\n<Sideview Battler Motion>\nName: Walk\nIndex: 0\nFrames: 10\nLoop\n</Sideview Battler Motion>\nSo that specific notetag I used for the enemies as well and it doesn't work. It only does what the Animated Enemies plugin does with the normal format.\nso it would only work if it looked like this.\nTHE ISSUE:\nSo I put the notetag for Magnolia as the enemy to see if it would work the same because in the Sideview Battler plugin video I saw that the enemy was also able to have smooth animations just like you could use for the actors for the plugin. When I did it, it only took 3 frames from that sprite and didn't even cut it properly so it looked wonky.\nSo what am I supposed to do?\n1. Use Sideview Battler Plugin rules to get the enemy to be animated like the Actors\n2. Use Animated Enemy Plugin rules to get the enemy to be animated like the Actors\nPlugin setup.\nEdit: Stuff I'm trying to achieve\nI wanna have the enemy look exactly like the actor in the old screenshots. Perfectly moving and everything with the fluid sprites that I made according to the Sideview Battler Plugin rules, and so I can use this character as an actor but I want him as an enemy as well, but the problem comes from me inputing his notetag in the ENEMIES tab instead of the ACTORS tab. He works just fine as an actor but it trips up and only does 3 frames for the enemy.\nCharacter in question:\n<Sideview Battler: SV_Xeno>\n<Sideview Battler Frames: 7>\n<Sideview Battler Speed: 6>\n<Sideview Battler Size: 96, 96>\n<Sideview Battler Motion>\nName: Walk\nIndex: 0\nFrames: 7\nLoop\n</Sideview Battler Motion>\n<Sideview Battler Motion>\nName: Wait\nIndex: 1\nFrames: 7\nLoop\n</Sideview Battler Motion>\n<Sideview Battler Motion>\nName: Chant\nIndex: 2\nFrames: 7\nLoop\n</Sideview Battler Motion>\n<Sideview Battler Motion>\nName: Guard\nIndex: 3\nFrames: 1\nLoop\n</Sideview Battler Motion>\n<Sideview Battler Motion>\nName: Damage\nIndex: 4\nFrames: 3\nLoop\n</Sideview Battler Motion>\n<Sideview Battler Motion>\nName: Swing\nIndex: 5\nFrames: 5\n</Sideview Battler Motion>\n<Sideview Battler Motion>\nName: Thrust\nIndex: 6\nFrames: 6\n</Sideview Battler Motion>\n<Sideview Battler Motion>\nName: Missile\nIndex: 7\nFrames: 6\n</Sideview Battler Motion>\n(And the Notetag.)"
+    },
+    {
+      "post_id": "js-post-1469226",
+      "author": "ATT_Turan",
+      "date": "2024-09-11T00:33:08+0900",
+      "body": "Okay...I understand, but I'd suggest you're confusing people (or at least me) with your non-standard terminology.\nInstead of talking about \"smooth frames,\" \"smooth animations\" (which is the wrong word entirely, you're talking about motions) and \"fluid sprites,\" just say \"Sideview Battler spritesheets.\" Or \"YED sprites.\" Or something like that, using established terminology so we know what you're talking about.\nWhen you talk about your enemy not having smooth frames, it sounds like it's using the spritesheet you made but something is glitching graphically.\nAs far as your issues - I could not reproduce your issue with it only taking 3 frames from your spritesheet. I suspect you might have an incorrectly formatted sheet with the same filename in one of your folders.\nI\ndid\nhave an issue with the sprites flashing from left to right across the screen. I Googled \"rpg maker yami sideview enemy\" to see what problems other people have had, and this post fixed the problem:\nIssue with Yanflys Animated Sideview enemies\nSo this plugin use to work as it was supposed to,    \tbut ever since the rpg maker mv update ive had an issue where the sprites \"dance\"   \tlike so:   \thttps://www.youtube.com/watch?v=N4u0nxYDn2A   \tAny idea how to fix this or if something else could be causing this?\nforums.rpgmakerweb.com\nUsing the spritesheet you provided, the notetags you wrote, and adding\n<Sideview Width: 672>\nit appears to work as expected in my test game."
+    },
+    {
+      "post_id": "js-post-1469235",
+      "author": "Shackomatic",
+      "date": "2024-09-11T01:00:02+0900",
+      "body": "Hey it works! At first it was glitching out when I put JUST the width, but when I put the height as well and put the Animated Enemies plugin over Sideview Battler it works just fine now!\nSOLVED"
+    },
+    {
+      "post_id": "js-post-1469236",
+      "author": "ATT_Turan",
+      "date": "2024-09-11T01:02:32+0900",
+      "body": "Shackomatic said:\nand put the Animated Enemies plugin over Sideview Battler\nClick to expand...\nThat's in the instructions of the YED plugin and you had it correct in your first post - I don't know why you would've changed it.\nThat's\nwhy it was trying to read your spritesheet as a 3-frame MV sheet, because Yanfly's plugin was overwriting the notetags from Yami's.\nI didn't even think to look at the plugin manager you showed in post #9 because it was right before.\nGlad you got it working."
+    }
+  ]
+}

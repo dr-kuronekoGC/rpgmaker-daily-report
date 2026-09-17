@@ -1,0 +1,317 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/steam-achievements-issues.170975",
+  "title": "Steam Achievements Issues...",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T04:56:57.664692+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1462601",
+      "author": "awakecore",
+      "date": "2024-08-10T08:25:19+0900",
+      "body": "Hello!\nI recently followed this tutorial on updating RPGMakerMV's NW.js files as well as Steam Integration..\ntutorial\nI followed every step and the console commands do display my steam username in the top.\n(which is something the tutorial suggests checking to see if Steam Integration works or not.)\nBut I still get this error when calling for a Steam Achievement in-game...\nAny insight would be greatly appreciated! ^^\nThis is where the script call is made...\nThis is the error in-console..."
+    },
+    {
+      "post_id": "js-post-1462606",
+      "author": "utunnels",
+      "date": "2024-08-10T09:04:10+0900",
+      "body": "I don't use orange greenwork, but original greenworks.activateAchievement takes 3 arguments.\nThis is what my plugin looks like. I'm just lazy and use empty functions. So I just need to call ActiveAchievement('achievement001')\nJavaScript:\nvar greenworks = null;\ntry{\n  greenworks = require('./js/greenworks/greenworks'); //path to your greenworks.js\n  greenworks.init();\n}catch(ex){\n  console.log(ex);\n  greenworks = null;\n};\n\nfunction ActiveAchievement(achievement, success_callback, error_callback){\n  try{\n    success_callback = success_callback||function(){};\n    error_callback = error_callback||function(){};\n    greenworks.activateAchievement(achievement, success_callback, error_callback);\n  }catch(ex){\n    console.log('failed to active achievement: ', achievement);\n    console.log(ex);\n  }\n}"
+    },
+    {
+      "post_id": "js-post-1462613",
+      "author": "awakecore",
+      "date": "2024-08-10T09:32:14+0900",
+      "body": "I'm not sure I follow when you say \"\nI don't use orange greenwork, but original...\n\" what do you use instead? Do you mean some kinda plugin called \"\ngreenworks\n\"? Sorry I'm not super knowledgeable on technical MV stuff\nutunnels said:\nI don't use orange greenwork, but original greenworks.activateAchievement takes 3 arguments.\nThis is what my plugin looks like. I'm just lazy and use empty functions. So I just need to call ActiveAchievement('achievement001')\nJavaScript:\nvar greenworks = null;\ntry{\n  greenworks = require('./js/greenworks/greenworks'); //path to your greenworks.js\n  greenworks.init();\n}catch(ex){\n  console.log(ex);\n  greenworks = null;\n};\n\nfunction ActiveAchievement(achievement, success_callback, error_callback){\n  try{\n    success_callback = success_callback||function(){};\n    error_callback = error_callback||function(){};\n    greenworks.activateAchievement(achievement, success_callback, error_callback);\n  }catch(ex){\n    console.log('failed to active achievement: ', achievement);\n    console.log(ex);\n  }\n}\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1462614",
+      "author": "utunnels",
+      "date": "2024-08-10T09:38:53+0900",
+      "body": "Orange greenworks uses greenworks(by greenheartgames). So it is possible you downloaded a different version of greenworks and the steamapi has changed since the plugin was made (it is just my guess).\nGitHub - greenheartgames/greenworks: a node.js plugin to integrate nw.js/electron games with steamworks\na node.js plugin to integrate nw.js/electron games with steamworks - greenheartgames/greenworks\ngithub.com\nThe code I posted was my own little plugin which uses greenworks. I can't check orange greenworks because the links don't work from my working place. lol"
+    },
+    {
+      "post_id": "js-post-1462709",
+      "author": "awakecore",
+      "date": "2024-08-11T00:51:23+0900",
+      "body": "utunnels said:\nI don't use orange greenwork, but original greenworks.activateAchievement takes 3 arguments.\nThis is what my plugin looks like. I'm just lazy and use empty functions. So I just need to call ActiveAchievement('achievement001')\nJavaScript:\nvar greenworks = null;\ntry{\n  greenworks = require('./js/greenworks/greenworks'); //path to your greenworks.js\n  greenworks.init();\n}catch(ex){\n  console.log(ex);\n  greenworks = null;\n};\n\nfunction ActiveAchievement(achievement, success_callback, error_callback){\n  try{\n    success_callback = success_callback||function(){};\n    error_callback = error_callback||function(){};\n    greenworks.activateAchievement(achievement, success_callback, error_callback);\n  }catch(ex){\n    console.log('failed to active achievement: ', achievement);\n    console.log(ex);\n  }\n}\nClick to expand...\nOkay so I added the custom script in a .JS file and made it into a plugin for my game, as well as replacing my greenworks file with a new one (placing that new file in the game's main directory), but I still get an error once doing a script call for \"\nActiveAchievement('insert-achievement')\n\" maybe I made a mistake in my process though.\nconsole commands look like this. (\nalso \"rpgforum.js\" is the code you sent.\n)\nI suspect it is because of this error that plays when the game launches with orangeworks deactivated..."
+    },
+    {
+      "post_id": "js-post-1462710",
+      "author": "utunnels",
+      "date": "2024-08-11T00:59:41+0900",
+      "body": "Oh I forgot to say I put greenworks files inside js f older.\nSo you need to move the files or change the path in the code.\n./js/greenworks/greenworks\nto\n./greenworks"
+    },
+    {
+      "post_id": "js-post-1462712",
+      "author": "awakecore",
+      "date": "2024-08-11T01:10:54+0900",
+      "body": "utunnels said:\nOh I forgot to say I put greenworks files inside js f older.\nSo you need to move the files or change the path in the code.\n./js/greenworks/greenworks\nto\n./greenworks\nClick to expand...\nChanging ./js/greenworks/greenworks to ./greenworks got rid of the missing file error!\nAlthough upon running the game I still get a \"bad argument\" error.\nI should also mention this is the script call I'm making...\nI should also also probably mention that I have no idea what I'm looking for that constitutes an achievement working or not. I'm testing this in MV on steam so obviously I won't be able to unlock achievements for a game I'm not playing, I just figure the console would have no errors and THAT would mean the achievement would work?\nThanks for the help thus far btw ^^"
+    },
+    {
+      "post_id": "js-post-1462714",
+      "author": "utunnels",
+      "date": "2024-08-11T01:27:57+0900",
+      "body": "Well no. It is not supposed to have an error message like that.\nWhat versions are you using? nw.js and, steamsdk and greenworks versions I mean."
+    },
+    {
+      "post_id": "js-post-1462717",
+      "author": "awakecore",
+      "date": "2024-08-11T01:47:55+0900",
+      "body": "utunnels said:\nWell no. It is not supposed to have an error message like that.\nWhat versions are you using? nw.js and, steamsdk and greenworks versions I mean.\nClick to expand...\nFor NW.js I'm using SDK version 0.49.2 as suggested by the tutorial I linked, the SteamSDK im pretty sure is the latest release(\nnot entirely sure how to check that.\n), as well as greenworks being the latest update on github."
+    },
+    {
+      "post_id": "js-post-1462718",
+      "author": "utunnels",
+      "date": "2024-08-11T01:55:00+0900",
+      "body": "Well nw.js should match the greenworks release. The version required can be found at greenworks release page where you download them, make sure to read them before downloading."
+    },
+    {
+      "post_id": "js-post-1462849",
+      "author": "Zeriab",
+      "date": "2024-08-11T17:06:10+0900",
+      "body": "Try using older versions of the Steam SDK. Perhaps that will help.\nYou can find them here:\nhttps://partner.steamgames.com/downloads/list"
+    },
+    {
+      "post_id": "js-post-1463369",
+      "author": "awakecore",
+      "date": "2024-08-14T01:20:12+0900",
+      "body": "utunnels said:\nWell nw.js should match the greenworks release. The version required can be found at greenworks release page where you download them, make sure to read them before downloading.\nClick to expand...\nHey there, sorry I was gone for a few days.\nNow that I've returned, I went back to the original tutorial and ensured that yes, Greenworks' Node files, Steam SDK files, and NW.JS files all match in versions, at least according to the tutorial.\nI Disabled OrangeGreenworks, enabled your custom .js script, and still I end up with this error about a bad argument.\nand again, \"rpgforum.js\" is the script you had written.\nI'm gonna try and mess with Greenworks a bit more, but it seems like the .js file itself doesn't change much between versions but rather the nodes it uses. for clarity I got greenworks node from\nTHIS\npage.\nAt this point I assume the issue is related to how I installed greenworks, rather than orangegreenworks or your code"
+    },
+    {
+      "post_id": "js-post-1463418",
+      "author": "utunnels",
+      "date": "2024-08-14T05:39:52+0900",
+      "body": "Maybe. Since both orange greenworks and my code reported the same error.\nI use official build from here:\nhttps://github.com/greenheartgames/greenworks/releases"
+    },
+    {
+      "post_id": "js-post-1463576",
+      "author": "awakecore",
+      "date": "2024-08-15T00:52:01+0900",
+      "body": "utunnels said:\nMaybe. Since both orange greenworks and my code reported the same error.\nI use official build from here:\nhttps://github.com/greenheartgames/greenworks/releases\nClick to expand...\nI guess at this point I should just ask, what version of NW.JS, STEAM SDK, and Greenworks do you use? Because in the link you sent there is no greenworks release for NW.JS version 49.2,(\nthe version i upgraded to\n) or at least that I could find."
+    },
+    {
+      "post_id": "js-post-1463589",
+      "author": "utunnels",
+      "date": "2024-08-15T03:44:11+0900",
+      "body": "I use NW.js 0.86.\nI think you can just grab the newest, since you already upgraded why not just upgrade to the newest."
+    },
+    {
+      "post_id": "js-post-1463599",
+      "author": "Deleted member 231452",
+      "date": "2024-08-15T04:56:29+0900",
+      "body": "I have been having the same issues.\nI think it has to do with how old the original orangegreenworks plugin was made (For it's intended rpg maker version)"
+    },
+    {
+      "post_id": "js-post-1463612",
+      "author": "ATT_Turan",
+      "date": "2024-08-15T05:32:31+0900",
+      "body": "utunnels said:\nI use NW.js 0.86.\nI think you can just grab the newest, since you already upgraded why not just upgrade to the newest.\nClick to expand...\nBecause many versions break RPG Maker's code and plugins, especially newer ones.\nBoth MV and MZ have had official versions where the NW.js was\ndowngraded\nbecause it caused instability in the engine; and you can find many people in the NW.js upgrading thread and other support threads asking for help because upgrading it broke their game.\nThere are, generally speaking, specific versions that will work correctly."
+    },
+    {
+      "post_id": "js-post-1463613",
+      "author": "Deleted member 231452",
+      "date": "2024-08-15T05:33:59+0900",
+      "body": "ATT_Turan said:\nBecause many versions break RPG Maker's code and plugins, especially newer ones.\nBoth MV and MZ have had official versions where the NW.js was\ndowngraded\nbecause it caused instability in the engine; and you can find many people in the NW.js upgrading thread and other support threads asking for help because upgrading it broke their game.\nThere are, generally speaking, specific versions that will work correctly.\nClick to expand...\nWhat version were you using, If any, With greenworks then ATT? Maybe i'll see if i can downgrade to it, Without breaking any plugins.."
+    },
+    {
+      "post_id": "js-post-1463615",
+      "author": "ATT_Turan",
+      "date": "2024-08-15T05:37:53+0900",
+      "body": "TheRealFame said:\nWhat version were you using, If any, With greenworks then ATT?\nClick to expand...\nSorry, I have no clue where that came from\nI never said I've used Greenworks (I haven't).\nI can only suggest using the versions of everything that people have written guides about getting to work."
+    },
+    {
+      "post_id": "js-post-1463631",
+      "author": "awakecore",
+      "date": "2024-08-15T09:35:31+0900",
+      "body": "ATT_Turan said:\nSorry, I have no clue where that came from\nI never said I've used Greenworks (I haven't).\nI can only suggest using the versions of everything that people have written guides about getting to work.\nClick to expand...\nyeah that seems to be the general issue,\nthis video\n's comments are a great example. the certain versions that do and don't break MV/MZ aren't well documented. Even in my case, all the versions I used match according to\nthis tutorial\nand it still doesn't work properly.\nIt really is a shame. I'll keep messing with greenworks because that's where I assume the issue is, but really there doesn't seem like there is much I can do."
+    },
+    {
+      "post_id": "js-post-1463642",
+      "author": "Deleted member 231452",
+      "date": "2024-08-15T11:07:30+0900",
+      "body": "awakecore said:\nyeah that seems to be the general issue,\nthis video\n's comments are a great example. the certain versions that do and don't break MV/MZ aren't well documented. Even in my case, all the versions I used match according to\nthis tutorial\nand it still doesn't work properly.\nIt really is a shame. I'll keep messing with greenworks because that's where I assume the issue is, but really there doesn't seem like there is much I can do.\nClick to expand...\nAgreed. I hope I can get it working before release.. Maybe I'll even have to wrap something else around rpg maker then call that from the game engine..?"
+    },
+    {
+      "post_id": "js-post-1463651",
+      "author": "utunnels",
+      "date": "2024-08-15T11:40:52+0900",
+      "body": "Well can upgrade nw.js to the newest to see if my code works.\nIf it doesn't(which I highly doubt), the worse result is you revert back to the version the tutorial is using and try to fix orange greenworks again."
+    },
+    {
+      "post_id": "js-post-1463664",
+      "author": "Deleted member 231452",
+      "date": "2024-08-15T13:24:55+0900",
+      "body": "utunnels said:\nWell can upgrade nw.js to the newest to see if my code works.\nIf it doesn't(which I highly doubt), the worse result is you revert back to the version the tutorial is using and try to fix orange greenworks again.\nClick to expand...\n, Let us know the results! I'm really curious if the fix just has to do with wiping nwjs, Or wiping its cache, The only things I was afraid of touching.\nI'm not too code heavy, Or know how to process code. But would this have to do with a reason compatibility isn't working?\n(I mean, It's the only thing i can think of, Would it be thinking the extra arguments the creator lists, are arguments the script filled out have to give to the game..?)\nMy Log Below:"
+    },
+    {
+      "post_id": "js-post-1463878",
+      "author": "utunnels",
+      "date": "2024-08-16T12:28:38+0900",
+      "body": "Well it is quite strange because I check the source code of greenworks back to very early version.\ngeAchievement has 3 arguments, and will throw that bad arguments error if:\n1. the first argument is not a string\n2. number of arguments is smaller than 2\n3. the 2nd or the 3rd argument are not functions\nBoth orange greenworks and my code on the first page provide 3 arguments just in case. So in theory there shouldn't be a problem.\nI notice both of you and the op are using yep something. I'm not sure if that is related, but what if you run the script directly from the console?"
+    },
+    {
+      "post_id": "js-post-1463891",
+      "author": "Deleted member 231452",
+      "date": "2024-08-16T13:01:20+0900",
+      "body": "utunnels said:\nWell it is quite strange because I check the source code of greenworks back to very early version.\ngeAchievement has 3 arguments, and will throw that bad arguments error if:\n1. the first argument is not a string\n2. number of arguments is smaller than 2\n3. the 2nd or the 3rd argument are not functions\nBoth orange greenworks and my code on the first page provide 3 arguments just in case. So in theory there shouldn't be a problem.\nI notice both of you and the op are using yep something. I'm not sure if that is related, but what if you run the script directly from the console?\nClick to expand...\nYep_Core, These plugins actually stop orangegreenworks from crashing the game, Which it does on an semi sample project for me atleast. But that's odd it's only having issues about arguments.. It tells me my steam name! So I know the steam API is working. But all it has to do now is pickup achievements from the game and add them to the account.. Which shouldn't be the harder part.\nMaybe it's just not functional because it expects Atleast 3 arguments. I wonder if it's possible to integrate these achievements directly into the plugin itself, And instead do a plugin command call that internally unlocks that same achievement, Instead of working with greenworks, It could just store a variable of the achievement and do the rest of its processing on the backend when the player calls a plugin command to unlock said plugin. Instead of making the user give it arguments (Using script, In the events tab of rpg maker.)\n(TLDR: A bunch of pondering and thinking.)"
+    },
+    {
+      "post_id": "js-post-1463898",
+      "author": "awakecore",
+      "date": "2024-08-16T13:34:53+0900",
+      "body": "utunnels said:\nWell it is quite strange because I check the source code of greenworks back to very early version.\ngeAchievement has 3 arguments, and will throw that bad arguments error if:\n1. the first argument is not a string\n2. number of arguments is smaller than 2\n3. the 2nd or the 3rd argument are not functions\nBoth orange greenworks and my code on the first page provide 3 arguments just in case. So in theory there shouldn't be a problem.\nI notice both of you and the op are using yep something. I'm not sure if that is related, but what if you run the script directly from the console?\nClick to expand...\nI noticed the issue with the \"YEP.js\" related file errors a while ago. Disabling said plugins just results in a new plugin taking the place in said error (YEP created or not). The YEP plugins from my knowledge have no direct effect on the error from my experimentation."
+    },
+    {
+      "post_id": "js-post-1463902",
+      "author": "utunnels",
+      "date": "2024-08-16T13:39:31+0900",
+      "body": "@TheRealFame\nI don't think it will work. Greenworks is compiled and it is not just a js file. And for that reason node version must match the release.\nWell, it's been a while since this topic was posted. But has you tried downloading from greenworks official release page? Unless the newest nw.js breaks your game, I don't see a reason why it is hard to do.\nFor example:\nGreenworks v0.17.0\nSteamworks SDK 1.60\nNW.js v0.89.0"
+    },
+    {
+      "post_id": "js-post-1463915",
+      "author": "Deleted member 231452",
+      "date": "2024-08-16T16:57:47+0900",
+      "body": "utunnels said:\n@TheRealFame\nI don't think it will work. Greenworks is compiled and it is not just a js file. And for that reason node version must match the release.\nWell, it's been a while since this topic was posted. But has you tried downloading from greenworks official release page? Unless the newest nw.js breaks your game, I don't see a reason why it is hard to do.\nFor example:\nGreenworks v0.17.0\nSteamworks SDK 1.60\nNW.js v0.89.0\nClick to expand...\nDownloading newer nwjs version breaks my game or the ability to actually playtest my game. Only thing I could do is go back a few versions.. but I won't know how far until I test it-"
+    },
+    {
+      "post_id": "js-post-1463917",
+      "author": "utunnels",
+      "date": "2024-08-16T17:06:25+0900",
+      "body": "There is a development version of nw.js on their download page. It is for playtest (the console)."
+    },
+    {
+      "post_id": "js-post-1463918",
+      "author": "Deleted member 231452",
+      "date": "2024-08-16T17:42:42+0900",
+      "body": "utunnels said:\nThere is a development version of nw.js on their download page. It is for playtest (the console).\nClick to expand...\nPlaytest version for what version? I was thinking about rolling back to something akin to 40 updates, Like 44 if it exists."
+    },
+    {
+      "post_id": "js-post-1463925",
+      "author": "utunnels",
+      "date": "2024-08-16T18:21:07+0900",
+      "body": "https://dl.nwjs.io/v0.89.0/\nOh I mean this. There are sdk version of nw.js. So you can open the console by pressing F12 or F8 in game. Why does it breaks your game, can you elaborate?"
+    },
+    {
+      "post_id": "js-post-1463929",
+      "author": "Zeriab",
+      "date": "2024-08-16T18:44:23+0900",
+      "body": "Have you tried using Steamworks SDK 1.53a?"
+    },
+    {
+      "post_id": "js-post-1463930",
+      "author": "Deleted member 231452",
+      "date": "2024-08-16T18:49:43+0900",
+      "body": "utunnels said:\nhttps://dl.nwjs.io/v0.89.0/\nOh I mean this. There are sdk version of nw.js. So you can open the console by pressing F12 or F8 in game. Why does it breaks your game, can you elaborate?\nView attachment 314773\nClick to expand...\nIt just does break my game. I can't export the game, I can't run the game whenever I use an higher version then the 50's version of nwjs. (Yes, I can run 89 without rpg maker, But trying to add it into those files means I essentially bricked the engine. I don't believe 89 to be a stable version.)"
+    },
+    {
+      "post_id": "js-post-1463931",
+      "author": "utunnels",
+      "date": "2024-08-16T19:05:54+0900",
+      "body": "Oh you mean the green play test button of the editor? I didn't know because I tested achievements outside of the editor."
+    },
+    {
+      "post_id": "js-post-1463933",
+      "author": "Deleted member 231452",
+      "date": "2024-08-16T19:12:11+0900",
+      "body": "utunnels said:\nOh you mean the green play test button of the editor? I didn't know because I tested achievements outside of the editor.\nClick to expand...\nIn the editor, And with a deployed game. Using something older makes it impossible to load up any game I've made in the engine."
+    },
+    {
+      "post_id": "js-post-1463934",
+      "author": "utunnels",
+      "date": "2024-08-16T19:26:24+0900",
+      "body": "Oh wait a minute do you replace the files in rpgmaker mv's installation folder?\nYou can export the game before copying nw.js files to the deployed folder you know."
+    },
+    {
+      "post_id": "js-post-1463948",
+      "author": "Deleted member 231452",
+      "date": "2024-08-16T21:11:21+0900",
+      "body": "utunnels said:\nOh wait a minute do you replace the files in rpgmaker mv's installation folder?\nYou can export the game before copying nw.js files to the deployed folder you know.\nClick to expand...\nI'd have to do it for all 3 builds everytime I export the game."
+    },
+    {
+      "post_id": "js-post-1463954",
+      "author": "utunnels",
+      "date": "2024-08-16T21:45:13+0900",
+      "body": "But it is still easy to fix. The editor has a bug that it doesn't fill the name field of package.json.\nYou just need to edit that file and the game should run.\nIt is required anyway otherwise if you have more than one MV games with the same name the icon may display wrongly."
+    },
+    {
+      "post_id": "js-post-1463973",
+      "author": "Deleted member 231452",
+      "date": "2024-08-16T23:16:39+0900",
+      "body": "utunnels said:\nBut it is still easy to fix. The editor has a bug that it doesn't fill the name field of package.json.\nYou just need to edit that file and the game should run.\nView attachment 314780\nIt is required anyway otherwise if you have more than one MV games with the same name the icon may display wrongly.\nClick to expand...\nIll have to try that out- But I still have multiple games! So that could become a problem-"
+    },
+    {
+      "post_id": "js-post-1463983",
+      "author": "awakecore",
+      "date": "2024-08-17T00:25:10+0900",
+      "body": "@utunnels\n, i'm curious, why not to just cite the versions of NW.js you used for your game\nDorf the Dwarf?\n(\nThat way we can just install the SDK and greenworks nodes that match that NW.js version\n) The game seems like a fairly recent release that also has achievements in it. You can check the version of NW.JS by inserting \"\nprocess.versions\n\" into the console."
+    },
+    {
+      "post_id": "js-post-1463988",
+      "author": "utunnels",
+      "date": "2024-08-17T00:49:01+0900",
+      "body": "@awakecore\nI posted before I used nw.js 0.86, well, which is a few months older than current 0.89.\n@TheRealFame\nThat was a bug you need to fix before you release the game. You may have noticed if you ran an rmmv game before, your window icon changes to that game's if you don't provide a name in package.json."
+    },
+    {
+      "post_id": "js-post-1463991",
+      "author": "Deleted member 231452",
+      "date": "2024-08-17T01:04:20+0900",
+      "body": "utunnels said:\n@awakecore\nI posted before I used nw.js 0.86, well, which is a few months older than current 0.89.\n@TheRealFame\nThat was a bug you need to fix before you release the game. You may have noticed if you ran an rmmv game before, your window icon changes to that game's if you don't provide a name in package.json.\nClick to expand...\nWell, I'll try your version for fun. I think i may stick with nwjs 59 which i'm on. If none of this works..\nThinking at this point, The version of the steam api you use, Is the reason why things are working. So i won't try going that high.\nNWJS 0.64.1 now. This uses steam api 1.5.8, Similar to what your's should be using. I may actually have to upgrade fully to what you use- So, I'll try that, If that doesn't work. I'll go back down to 59 and conversate more to the plugin dev/forum."
+    },
+    {
+      "post_id": "js-post-1464003",
+      "author": "awakecore",
+      "date": "2024-08-17T02:48:53+0900",
+      "body": "utunnels said:\nutunnels said:\n@awakecore\nI posted before I used nw.js 0.86, well, which is a few months older than current 0.89.\n@TheRealFame\nThat was a bug you need to fix before you release the game. You may have noticed if you ran an rmmv game before, your window icon changes to that game's if you don't provide a name in package.json.\nClick to expand...\nClick to expand...\nOkay, I upgraded to NW.js 0.86 as well as got all the current greenworks node and steam sdk files that were needed. and by changing the game's \"package\" file and inserting the project's name it allows me to run it! I even got to a point where i wont get an error with your .js code anymore! although there isn't much of a confirmation in the console either. which is what im curious ab, how did you check that achievements worked?\nscript im running:\nconsole response to said script: (aka, nothing)"
+    },
+    {
+      "post_id": "js-post-1464004",
+      "author": "utunnels",
+      "date": "2024-08-17T02:54:16+0900",
+      "body": "There should be a steam pop up telling you got an achievement, for the first time."
+    },
+    {
+      "post_id": "js-post-1464007",
+      "author": "Deleted member 231452",
+      "date": "2024-08-17T03:03:34+0900",
+      "body": "utunnels said:\nBut it is still easy to fix. The editor has a bug that it doesn't fill the name field of package.json.\nYou just need to edit that file and the game should run.\nView attachment 314780\nIt is required anyway otherwise if you have more than one MV games with the same name the icon may display wrongly.\nClick to expand...\nFor my case, This isn't working. It neither works both by using this in my game's directory (Which i have been doing.) Or using it in the playtest's directory."
+    },
+    {
+      "post_id": "js-post-1464008",
+      "author": "awakecore",
+      "date": "2024-08-17T03:06:39+0900",
+      "body": "utunnels said:\nThere should be a steam pop up telling you got an achievement, for the first time.\nClick to expand...\nohh i had been testing it in RPGmakerMV's editor thinking the console would say something.\ndoing my own test build on steam got it to work!"
+    },
+    {
+      "post_id": "js-post-1464465",
+      "author": "utunnels",
+      "date": "2024-08-19T02:11:49+0900",
+      "body": "@awakecore\nIt seems the reason why it doesn't work in RMMV is because greenworks thinks you are playing RMMV. I guess that is because the process is started under RMMV.\nI don't know if anyone has mentioned it before but it sounds familiar."
+    },
+    {
+      "post_id": "js-post-1464475",
+      "author": "awakecore",
+      "date": "2024-08-19T03:00:43+0900",
+      "body": "utunnels said:\nView attachment 315039\n@awakecore\nIt seems the reason why it doesn't work in RMMV is because greenworks thinks you are playing RMMV. I guess that is because the process is started under RMMV.\nI don't know if anyone has mentioned it before but it sounds familiar.\nClick to expand...\nyeah that's true. When the script actually works in MV's testing mode the console won't come up with any errors or success messages, which is a sign that it actually works! I got it resolved a few days ago thanks to this thread and your custom script ^^"
+    },
+    {
+      "post_id": "js-post-1489697",
+      "author": "SpicyA",
+      "date": "2024-12-24T22:05:17+0900",
+      "body": "awakecore said:\nyeah that's true. When the script actually works in MV's testing mode the console won't come up with any errors or success messages, which is a sign that it actually works! I got it resolved a few days ago thanks to this thread and your custom script ^^\nClick to expand...\nGlad to see you solved this problem.\nBut I am still struggling...I used the plugin script offered by\n@utunnels\n,\nand add a script in an event.\nhere are my staff versions:\n1. nw.js  v0.86\n2.greenworks  v0.16.0\n3.steam sdk v1.59\nwhen game starts, log shows:\nSteam API initialized with achievements:\nArray(0)\nwhen click the event, log shows:\nAchievement error: Achievement name is not valid.\nCould you post the versions of all those things for a reference?\n1. nw.js\n2.greenworks\n3.steam sdk"
+    },
+    {
+      "post_id": "js-post-1489705",
+      "author": "utunnels",
+      "date": "2024-12-25T00:03:20+0900",
+      "body": "@SpicyA\nThe versions you are using seem correct.\nDid you launch the game using playtest? If so steam thinks you are playing RMMV instead of the game you are making. So it can't find the achievement.\nIf you want to test the achievement you need to launch it outside of MV and use a steam_appid.txt as it is mentioned in greenworks' document."
+    },
+    {
+      "post_id": "js-post-1489798",
+      "author": "SpicyA",
+      "date": "2024-12-25T17:17:47+0900",
+      "body": "utunnels said:\n@SpicyA\nThe versions you are using seem correct.\nDid you launch the game using playtest? If so steam thinks you are playing RMMV instead of the game you are making. So it can't find the achievement.\nIf you want to test the achievement you need to launch it outside of MV and use a steam_appid.txt as it is mentioned in greenworks' document.\nClick to expand...\nCool, finally, it works.\nI deployed the game and published on steam.\nThen launch the game on steam.\nThank you!"
+    }
+  ]
+}

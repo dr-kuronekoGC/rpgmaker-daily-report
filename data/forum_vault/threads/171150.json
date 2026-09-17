@@ -1,0 +1,17 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/the-npc-doesnt-talk-to-me-rgss.171150",
+  "title": "the npc doesn't talk to me RGSS",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-17T04:56:47.058539+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1464126",
+      "author": "NaMosca",
+      "date": "2024-08-17T13:20:15+0900",
+      "body": "EDIT: FOR SOME REASON NOW ITS WORKING, PROBLEM SOLVED (AND I DON'T EDIT THE SCRIPT O.O)\nHi guys, so, I created this script to call it in a event and display an image, however if I call the script more than once disabling the image again the event/npc stops talking to me and even trying to talk to him again nothing happens nor does the script call anymore\nCode:\nclass Sprite_Dialogo < Sprite\ndef initialize(viewport, image_name)\nsuper(viewport)\n@nome_avatar = image_name\n@bitmap = RPG::Cache.picture(@nome_avatar)\nself.bitmap = @bitmap\nupdate_position\nself.z = 9999\nself.visible = false #controle pelo chamar script\nend\ndef update_position(x = 0, y = 0)\nself.x = x\nself.y = y\nend\ndef update\nsuper\nend\ndef dispose\n@bitmap.dispose if @bitmap\nsuper\nend\nend\n\nclass Spriteset_Map\nalias :verdadeiro_initialize :initialize\nalias :verdadeiro_dispose :dispose\nalias :verdadeiro_update :update\n\ndef initialize\n  #ao invés de usar @avatar_sprite, estou usando $avatar_sprite\n  #para poder torna-la global e poder acessar no chamar script do evento\n  # armazenar a instância de Sprite_Dialogo em uma variável global para que possa acessá-la em qualquer lugar.\nverdadeiro_initialize\n  # Certifica de que o viewport está corretamente inicializado\n    if @viewport1\n      $sprite_dialogo = Sprite_Dialogo.new(@viewport2, \"p1\")\n      $sprite_dialogo.update_position(100, 144)\n    else\n      p \"Viewport não inicializado corretamente.\"\n    end\n \nend\ndef update\nverdadeiro_update\n$avatar_sprite.update if @avatar_sprite\nend\ndef dispose\nverdadeiro_dispose\n$avatar_sprite.dispose if @avatar_sprite\nend\nend"
+    }
+  ]
+}
