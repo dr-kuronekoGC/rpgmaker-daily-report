@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/trying-to-use-mv-plugins-work-in-mz.170096",
+  "title": "MZ Trying to use MV plugins work in MZ",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T04:48:36.026584+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1455701",
+      "author": "Kretyn",
+      "date": "2024-07-07T13:23:03+0900",
+      "body": "Hey all, was hoping someone might be able to help me on this issue.  We're trying to make a game with RPG Maker MZ, but be able to use MV plugins.  I followed along this tutorial:\nHow I Made Moghunter's Chrono Engine Work in MZ\nThis is gonna be a simple blog/tutorial on how I managed to make Moghunter's Chrono Engine work in RPG Maker MZ. For those unaware, the Chrono Engine is a plugin for MV that allows the user to make the game in either the style of the SNES classic, Chrono Trigger (hence the name), or classic...\nforums.rpgmakerweb.com\nI added plugins and files one by one to make sure everything worked.  I got to a point where some of the errors I just couldn't figure out.  It was complaining that `this.digitWidth` is not a function, so I went into the code and changed\n`var w = this.digitWidth();` --> `var w = Sprite_Damage.digitWidth();`\nView attachment 310352\nThis then produced an error that said `this.fontSize` is not a function, which lead me to FOSSIL.js\nView attachment 310353\n- I do have FOSSIL loaded at the top of the plugins in RPG Maker MZ\n- I've been working with another developer on this, as well as ChatGPT\nIf there is anything that isn't clear, please let me know, I'm trying to give as much information as I possibly can.  If you know of anything to help, that would be greatly appreciated!"
+    },
+    {
+      "post_id": "js-post-1455755",
+      "author": "AquaEcho",
+      "date": "2024-07-07T23:13:50+0900",
+      "body": "Are you specifically trying to make a game with Chrono Trigger's battle system in MZ? Thats what that guide is about."
+    },
+    {
+      "post_id": "js-post-1455794",
+      "author": "ATT_Turan",
+      "date": "2024-07-08T02:55:55+0900",
+      "body": "The error message on its own without any idea of which plugin you're trying to install is useless to anyone who might help you.\nYou will also find most coders are very reluctant to help anything that's been modified by ChatGPT (in fact, it's against the section rules). In the future I'd skip that step and just ask humans who know what they're doing.\nKretyn said:\nIf there is anything that isn't clear, please let me know, I'm trying to give as much information as I possibly can.\nClick to expand...\nThe actual plugin and the actual error trace are a good start. (to see the error trace: when the game crashes, press F8 and go to the Console tab)"
+    },
+    {
+      "post_id": "js-post-1455800",
+      "author": "Kretyn",
+      "date": "2024-07-08T03:18:10+0900",
+      "body": "AquaEcho said:\nAre you specifically trying to make a game with Chrono Trigger's battle system in MZ? Thats what that guide is about.\nClick to expand...\nYes!  I am"
+    },
+    {
+      "post_id": "js-post-1455808",
+      "author": "Kretyn",
+      "date": "2024-07-08T04:02:32+0900",
+      "body": "Here are all the errors that I get in the console.  However if I click on the `Sprite_Damage.createDigits` (MOG_DmgPopupEffects.js) it leads me to:\nHowever, there is no mention of `fontSize` here.\nFrom curiosity, I console logged the baseRow and value and got:\n`63, undefined`\nWhere does the 63 come from?  What is baseRow?  I can't find any mention of baseRow in any of the files except here.  Seems like `baseRow` gives me different numbers every time the game is ran, and `value` always comes up as `undefined`.\nChecking to see where Sprite_Damage might be created/called, and see if the error would originate from another code block"
+    },
+    {
+      "post_id": "js-post-1455812",
+      "author": "ATT_Turan",
+      "date": "2024-07-08T04:50:50+0900",
+      "body": "I'll let Aqua handle you since this is her jam. Just to address a few points:\nKretyn said:\nHowever, there is no mention of `fontSize` here.\nClick to expand...\nIt's from FOSSIL. Damage popups are made differently in MZ, they don't use a spritesheet, so there is no digitWidth() method. Line 4430 of FOSSIL calculates the digit width based on the size of the selected font.\nSprite_Damage.fontSize()\nis\na default part of MZ, so getting errors that it's not a function implies to me you might have a plugin conflict or some JavaScript notetags/plugin parameters with typos.\nMake sure you're testing this with\nonly\nthe plugins you need enabled.\nKretyn said:\nWhere does the 63 come from?  What is baseRow?\nClick to expand...\nbaseRow is the name of the first argument being passed into the function.\nThis function will require more rewriting to be compatible with MZ. As I said, MZ no longer pulls the popup numbers from a spritesheet, and that's what baseRow and the derived variable row inside the function are doing.\nYou'd need to compare this function to the createDigits() method in MZ's code and splice them together to create sprites the way MZ expects but add the zooming or whatever this plugin adds. That's why you're getting\nvalue\nis undefined, because everything in MZ is passing only one number into createDigits() where MV passed two. (the varying numbers you're seeing for\nbaseRow\nis the damage being done)\nNote that this plugin is essentially unrelated to the tutorial you linked to above. That only went through the Chrono Engine."
+    },
+    {
+      "post_id": "js-post-1455813",
+      "author": "AquaEcho",
+      "date": "2024-07-08T04:53:54+0900",
+      "body": "I can't really help with this as I don't use MZ or even have a copy of it. You'll have to ask the creator of that guide\n@AmeerAshourDraws\n. You could just try turning off the damage popups plugin."
+    },
+    {
+      "post_id": "js-post-1455961",
+      "author": "AmeerAshourDraws",
+      "date": "2024-07-09T00:08:27+0900",
+      "body": "AquaEcho said:\nI can't really help with this as I don't use MZ or even have a copy of it. You'll have to ask the creator of that guide\n@AmeerAshourDraws\n. You could just try turning off the damage popups plugin.\nClick to expand...\nI hate to disappoint you, but I unfortunately don't know the solution to that. I was trying to get the basic functionality of the engine to work, but after that, I decided to go my own way and try making my own CT-styled system.\nI'm not the best in RPG Maker scripting myself, I'm still a noob, so unfortunately, I can't help with it"
+    },
+    {
+      "post_id": "js-post-1455967",
+      "author": "AquaEcho",
+      "date": "2024-07-09T00:27:59+0900",
+      "body": "Well then I guess the OP's options are to DIY a patch to the damage popups plugin like ATT_Turan suggested, commission a programmer to do it, do without that plugin and see if another MZ damage popups plugin will work with Chrono Engine, or just use MV."
+    },
+    {
+      "post_id": "js-post-1455973",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T00:52:42+0900",
+      "body": "It also depends on what the OP is trying to do.\nIf it's the on-the-map-turn-based-with-positioning like Chrono Trigger, it honestly would be easier to pick up MV with the Steam summer sale discount and use that.\nBut if they're going for the ABS functionality, there are a number of other plugins written natively for MZ to do that."
+    },
+    {
+      "post_id": "js-post-1455981",
+      "author": "AquaEcho",
+      "date": "2024-07-09T01:22:16+0900",
+      "body": "There are people here who have Chrono Engine ABS mode working fine with MZ since Restart made them compatible. It's just the Chrono mode specifically that's not compatible since Restart never used that mode. Same reason his Cross Engine doesn't work with Chrono mode."
+    },
+    {
+      "post_id": "js-post-1456332",
+      "author": "Kretyn",
+      "date": "2024-07-10T23:12:07+0900",
+      "body": "After talking with the rest of the team, we've decided to just go with MV, it seems to be a lot easier for what we want to do.  Thank you all for your input though!"
+    }
+  ]
+}

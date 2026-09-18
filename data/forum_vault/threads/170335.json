@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/having-a-problem-with-pixel_perfect-plugin-pls-help.170335",
+  "title": "having a problem with pixel_perfect plugin,, pls help ;;",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T04:48:27.248662+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1457548",
+      "author": "doodoosalad",
+      "date": "2024-07-16T04:45:43+0900",
+      "body": "i have this issue that ive been trying to fix for a few days now,, almost every plugin user tried Pixel_Perfect plugin to increase the game resolution when in full screen mode (basically, the plugin is used to make the pixels more sharp instead of blurry)\nand ive tried the plugin myself, it did make the pixels sharper but it also made them look messy and too crispy as well, if that makes sense;;\nthe pictures are an example, you can tell the difference\nthe first two images is with the pixel_perfect plugin\nthe third and fourth pics are without the plugin(not in full screen mode)\nidk if im the only one with this issue,, but i need a tutorial or a plugin that makes the pixels non blurry and sharp when in full screen mode without making the pixels look messy,, plz help;; and thank you!!"
+    },
+    {
+      "post_id": "js-post-1457575",
+      "author": "Andar",
+      "date": "2024-07-16T05:43:41+0900",
+      "body": "Technically and practically impossible\nthe only way to get a perfect resize is to limit yourself to full multiples, 200%, 300%, 400% and so on.\nAny resize value between those full values will either result in blur or result in distortions depending on the formula used for the resizing.\nI don't have time now to explain the basics for you - but I already have done so a dozen times in other posts about zoom and resizing, so you might want to look for them."
+    },
+    {
+      "post_id": "js-post-1457586",
+      "author": "Mac15001900",
+      "date": "2024-07-16T07:10:30+0900",
+      "body": "As\n@Andar\nmentioned, scaling an image by a fractional value will inevitably distort things, which is considerably more noticeable with pixel art than with regular images. Doing so without distortions is simply impossible.\nForget about plugins - try opening the smaller image in an image editor and resizing it to the size of the larger one. Notice that whatever you do, some distortion is inevitable.\nAnother way to think about it: look at this simple 7x7 image:\nCan you turn it into an 8x8 image while keeping all proportions the same?"
+    },
+    {
+      "post_id": "js-post-1457587",
+      "author": "AquaEcho",
+      "date": "2024-07-16T07:21:31+0900",
+      "body": "Mac15001900 said:\nAs\n@Andar\nmentioned, scaling an image by a fractional value will inevitably distort things, which is considerably more noticeable with pixel art than with regular images. Doing so without distortions is simply impossible.\nForget about plugins - try opening the smaller image in an image editor and resizing it to the size of the larger one. Notice that whatever you do, some distortion is inevitable.\nAnother way to think about it: look at this simple 7x7 image:\nView attachment 311501\nCan you turn it into an 8x8 image while keeping all proportions the same?\nClick to expand...\nWhat if it's vector art? Does it still get distorted?"
+    },
+    {
+      "post_id": "js-post-1457589",
+      "author": "utunnels",
+      "date": "2024-07-16T07:32:48+0900",
+      "body": "Everything is translate into pixel eventually. I think it is the art style, single pixel width lines tend to look bad if not smoothed."
+    },
+    {
+      "post_id": "js-post-1457590",
+      "author": "bgillisp",
+      "date": "2024-07-16T07:34:10+0900",
+      "body": "Yep. There is a limit. Here is what happened when I scaled the default Harold sprite (48 x 48) to 960 x 960 pixels\nYou're welcome."
+    },
+    {
+      "post_id": "js-post-1457592",
+      "author": "Andar",
+      "date": "2024-07-16T07:43:30+0900",
+      "body": "AquaEcho said:\nWhat if it's vector art? Does it still get distorted?\nClick to expand...\nyes and no\nvectors don't get distorted, but you can't display vectors on any monitor display.\nat some time in the process the vectors get turned into pixel becaused all displays work with pixels only.\nand as soon as something is in pixels, any resize will distord it.\nThe advantage 3D graphics (vector-based graphics) have is that with modern 3D cards the conversion to pixel is the very last step, after resizing to fit the monitor.\nwith 2D graphics, the pixel is the basic unit and everything starts out as pixels."
+    },
+    {
+      "post_id": "js-post-1457593",
+      "author": "Mac15001900",
+      "date": "2024-07-16T07:43:47+0900",
+      "body": "AquaEcho said:\nWhat if it's vector art? Does it still get distorted?\nClick to expand...\nIf course it wouldn't;  it doesn't really have a base resolution to begin with. Maybe I should have specified \"raster image\" instead of \"image\"\nThough you'd need to perform some serious dark unholy rituals on the engine to actually make it use vector graphics."
+    },
+    {
+      "post_id": "js-post-1457600",
+      "author": "TheAM-Dol",
+      "date": "2024-07-16T08:06:39+0900",
+      "body": "There are 2D and 3D vector images. Some Engines, such as Unity, can handle 2D vector images; basically the image is drawn with math and the computer recalculates those points as the resolution increases/decreases, drawing the necessary pixels between the points.\nAs Mac said, though, RM uses purely rasterized images; the pixels have already been set. So when scaling by non-integer values, the engine is going to have to guess at what pixels should be what color.\n*integer scaling means scaling by a whole number. 1, 2, 3, etc. As opposed to 1.5, 2.6, etc.\nWhen using a bi-cubic scaling seen in bg's Extra Large Harold\n(to go , please)\n, the overall image seems to be softened.\nThe nearest neighbor algorithm (what Pixel Perfect plugins do) does a better job at keeping the image crisp, but the result is that non-integer scaling needs to make assumptions about where to put pixels and the result is...well, you discovered it. Distortion.\nThe reason the image goes soft when going full screen is because you are scaling the image up to fit the resolution of your screen.\nA game at 1080p can scale perfectly up to a 4k screen, but any screen (for example 2k/1440p) between 1080p and 4k will not integer scale.\nA game at 720p can scale perfectly up to a 2k screen, but won't scale perfectly to 1080p or 4k.\nAnyways, Mac and Andar said it best in less words, but hopefully you learned something here."
+    }
+  ]
+}

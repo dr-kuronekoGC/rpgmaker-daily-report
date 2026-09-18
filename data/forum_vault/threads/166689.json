@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/mz-wip-advanced-sprite-tool.166689",
+  "title": "MZ [MZ] (WIP) Advanced sprite tool",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T04:48:19.539839+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1429088",
+      "author": "GlaireDaggers",
+      "date": "2024-03-11T15:29:23+0900",
+      "body": "This is a plugin I've started working on which allows RPG maker games to use spritesheet & json files exported from the open source\nTiger sprite animation tool\n.\nRight now I've got it working on party members, vehicles, & events, allowing a notetag to be used which specifies a spritesheet to load from the \"characters_ext\" folder (I am also planning on adding support to battle actors).\nSupporting Tiger animations has the benefit of allowing for arbitrary numbers of frames per animation (and even per direction), arbitrary durations for each frame, arbitrary frame sizes, arbitrary alignment of frames relative to the character, etc.\nMy plugin even supports using Tiger's \"hitbox\" system to tag frames with events that should occur on that frame - for example, if the\nGabeMZ_StepSound plugin\nis installed, my plugin can take advantage of \"step_sfx\" tags to play footstep sounds on particular frames. It also has an \"se: [sound] [volume] [pitch] [pan]\" frame tag which can play arbitrary sound effects.\nSome footage of the plugin in action:\nI'm wondering if anyone would be interested in this, and if so whether there's features I should think of adding to it that I may not have considered yet!"
+    },
+    {
+      "post_id": "js-post-1440643",
+      "author": "GlaireDaggers",
+      "date": "2024-04-29T16:15:36+0900",
+      "body": "Working on SV battle support! A few kinks/limitations to work out but otherwise functional!"
+    },
+    {
+      "post_id": "js-post-1457631",
+      "author": "GlaireDaggers",
+      "date": "2024-07-16T11:45:43+0900",
+      "body": "Alright so bit of an update...\nI recently upended my entire damn workflow by switching my PC to Linux. I made sure to test MZ, Effekseer, and several other tools beforehand to make sure I could continue working on my game as normal (or at least with workarounds)... but I neglected to make sure Tiger worked >.<\nAs it turns out, this tool does NOT like Wine, and an attempt at a custom Linux build failed miserably even though theoretically there are very few platform-specific bits in Tiger... and as I kept looking into it, I realized the last development activity the repo had was nearly a full year ago.\nNow... I actually have already built my own alternative to Tiger. This was a while ago, while experimenting with making my own game engine and tools. I chose Tiger for this plugin primarily because I believed it would be more user friendly for the RPG Maker community, but since it doesn't seem to be actively maintained I have decided to pivot back to my own tool. It's a little rougher around the edges, but it's also very much cross-platform and would be easier for me to just maintain the tool and address any UX issues the community might have.\nYou can download the tool from here btw\n- I just recently added a bunch of quality of life features (including the ability to import sprite frames and animations directly from Aseprite files). I'm still working on the RPG Maker plugin (I'm gonna have to rewrite a few bits, since the export format of my tool is a fair bit different from the export template I made for Tiger)\nAnyway just thought I should mention how things were going!"
+    },
+    {
+      "post_id": "js-post-1458094",
+      "author": "GlaireDaggers",
+      "date": "2024-07-18T09:31:02+0900",
+      "body": "Some updates:\nI've finished refactoring the plugin to use my custom sprite tool instead of Tiger (and ported all of the sprites in my game so far)!\nAdded a few more quality-of-life changes to the sprite tool (and fixed a couple of bugs, whoops)\nI added a new feature to allow cast animation overrides for SV battlers. By default, it expects \"skill\" and \"spell\" animations, which are triggered when the party member uses a skill or a spell, but you can also override this on a per-skill basis by using a <castAnim: \"[anim name here]\"> notetag, and you can set it to any arbitrary animation that's in your sprite (you could for example give a character a unique skill with totally unique animations for it!)\nFixed some bugs related to battler height - when giving your actors a custom battler sprite with a notetag, you generally also clear the built-in battler sprite (because it doesn't really \"override\" it, so the built-in sprite would appear underneath). However, this messes up a bunch of stuff like calculating the position of animations, status icon, etc. To fix this, there's a height field in the notetag you use to set the actor height, and it will assign the actor an invisible dummy bitmap of that size.\nI also got enemies implemented\nFor now it just plays a single animation, \"wait\", though I might investigate trying to do more later (death animations maybe?) For now it's at least an improvement on the totally static enemy sprites"
+    }
+  ]
+}

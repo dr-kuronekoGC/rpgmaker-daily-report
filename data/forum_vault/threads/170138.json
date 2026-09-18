@@ -1,0 +1,107 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/hiding-skills-and-commands-unless-a-certain-tp-threshold-is-met.170138",
+  "title": "Hiding skills and commands unless a certain TP threshold is met.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T04:48:35.235386+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1456014",
+      "author": "Kurbbie",
+      "date": "2024-07-09T03:59:47+0900",
+      "body": "Hello, I'm looking to replicate the limit break system from the FF series. FF7 specifically. So I have the skills and balancing all setup and preserve TP. Is there a way without a plugin to hide the skill and command its listed under unless the certain condition is met? Such as my skill type is \"Limit\" and the skill is \"Sharpshooters Fury\" TP required 100 but isnt listed in the command list or skill list unless TP is 100 then the \"Limit\" command will appear?\nThanks in advance I dunno if I'm able to explain it better"
+    },
+    {
+      "post_id": "js-post-1456016",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T04:04:24+0900",
+      "body": "No, not well.\nThe only thing you could do is put a troop event into every troop that runs at the end of every turn.\nIt would check each actor for whatever your condition is, and if it's true, give them a state with Add Skill Type for Limit; if false, remove that state.\nBut, obviously, that would only take effect at the end of each turn so if your actor gets damage and fills their limit gauge before they enter their action, it wouldn't show up until the next turn.\nAnd you'd have to copy and paste that page into every troop in your game.\nI'm not sure why you specify \"without a plugin,\" because it's pretty simple to do with one."
+    },
+    {
+      "post_id": "js-post-1456026",
+      "author": "Kurbbie",
+      "date": "2024-07-09T04:30:56+0900",
+      "body": "Without a plugin because i dont want plugin bloat. I think this is taken care of in the VZ plugin battle core through notetags.\nIf there is a plugin you know thats lightweight let me know, im looking around for information"
+    },
+    {
+      "post_id": "js-post-1456028",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T04:49:56+0900",
+      "body": "Kurbbie said:\nWithout a plugin because i dont want plugin bloat.\nClick to expand...\nWhatever you like, but that's not really a thing. Plugins are text files that take up a tiny amount of disk space, it really doesn't affect the size of your project.\nUnless you just mean having unwanted features that you have to disable or work around (I'm guessing since you also mention VisuStella).\nKurbbie said:\nIf there is a plugin you know thats lightweight let me know, im looking around for information\nClick to expand...\nYou could do it with my Eval Tags plugin, linked in my signature.\nYou haven't explained how your limit condition works, so I can't give you exact code, but you can put on the actor an <Action Respond Eval> notetag that will check every time the actor gets hit; if the conditions are fulfilled, apply your state that has the Limit skill type. Otherwise, remove it."
+    },
+    {
+      "post_id": "js-post-1456031",
+      "author": "Kurbbie",
+      "date": "2024-07-09T05:05:58+0900",
+      "body": "Youre exactly right by understanding what I meant with plugin bloat. Its difficult with VisuStella but they work well.\nSo my condition is when TP reaches 100 the command can appear as another category called \"Limit\"\nI have it setup to where you can only use the skill with 100 TP so eval tp 100%?"
+    },
+    {
+      "post_id": "js-post-1456032",
+      "author": "Kurbbie",
+      "date": "2024-07-09T05:17:24+0900",
+      "body": "ATT_Turan said:\nWhatever you like, but that's not really a thing. Plugins are text files that take up a tiny amount of disk space, it really doesn't affect the size of your project.\nUnless you just mean having unwanted features that you have to disable or work around (I'm guessing since you also mention VisuStella).\nYou could do it with my Eval Tags plugin, linked in my signature.\nYou haven't explained how your limit condition works, so I can't give you exact code, but you can put on the actor an <Action Respond Eval> notetag that will check every time the actor gets hit; if the conditions are fulfilled, apply your state that has the Limit skill type. Otherwise, remove it.\nClick to expand...\nthe condition is hitting 100 TP. I looked at the note tags and I dont see anything in it that allows me to hide a command unless tp=100"
+    },
+    {
+      "post_id": "js-post-1456033",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T05:24:41+0900",
+      "body": "Kurbbie said:\nI looked at the note tags and I dont see anything in it that allows me to hide a command unless tp=100\nClick to expand...\nI didn't say there was.\nI'm confused by your plugin comments - are you already using VisuStella plugins in your project? If yes, you can do this with the Skills and States Core. Or the Battle Core.\nIf you're\nnot\nusing VisuStella, that's when you would use my Eval Tags. Per my previous post:\nATT_Turan said:\nif the conditions are fulfilled, apply your state that has the Limit skill type. Otherwise, remove it.\nClick to expand...\nSo:\nCode:\n<Action Respond Eval>\nif (target.tp == 100)\n    target.addState(42);\nelse\n    target.removeState(42);\n</Action Respond Eval>\nwhere 42 is the state that has Add Skill Type: Limit in its Traits."
+    },
+    {
+      "post_id": "js-post-1456037",
+      "author": "Kurbbie",
+      "date": "2024-07-09T05:51:22+0900",
+      "body": "ATT_Turan said:\nI didn't say there was.\nI'm confused by your plugin comments - are you already using VisuStella plugins in your project? If yes, you can do this with the Skills and States Core. Or the Battle Core.\nIf you're\nnot\nusing VisuStella, that's when you would use my Eval Tags. Per my previous post:\nSo:\nCode:\n<Action Respond Eval>\nif (target.tp == 100)\n    target.addState(42);\nelse\n    target.removeState(42);\n</Action Respond Eval>\nwhere 42 is the state that has Add Skill Type: Limit in its Traits.\nClick to expand...\nyes i am using visustella. I found the command for removing the skill unless tp is 100\nbut i need to figure out how to remove the command as well. It still shows Limit when i dont cant see the skill yet"
+    },
+    {
+      "post_id": "js-post-1456049",
+      "author": "CrocPirate",
+      "date": "2024-07-09T06:54:54+0900",
+      "body": "I'm doing something similar in my game. Here's how you hide the Limit Break command until the Actor reach 100 TP:\nFirst, I suggest you make TWO Skill Types called Limit Break (Mine is called Blitz). Then in the SkillsStatesCore plugin, under Skill Settings parameters, make sure you hide one of the Limit Skill Type command during Battle. (For me is 10.) The reason for this is so that the player can see what Limit Breaks they have in the Skills Menu:\nNext, for your Limit Break skills, make sure that the skill type is one of the Limit Break Skill Type and use the notetags:\nCode:\n<Skill Types: x,y>\n<TP Cost: 100%>\nReplace x with the ID of the 1st Limit Break skill type and y with the 2nd Limit Break skill type.\nFurthermore, the reason why I'm suggesting you use the <TP Cost: 100%> for these skills, is just in case you want to change how much TP an Actor has using the EnhancedTPSystem plugin. (Like changing it from 100 to 255, for example.) The Limit Break skill will always use 100% of the Actor's TP.\nHere's an example:\nFinally, you will need to create a passive state.\nIn the Traits section of the state, use Add Skill Type to add the Limit Break Command that IS NOT hidden with the SkillsStatesCore plugin.\nThen in the Notes of the State, add this:\nCode:\n<Bypass Combat Log>\n<Hide State Popup>\n<Exclude From Tooltips>\n\n\n<JS Passive Condition>\ncondition = (user.tp === user.maxTp());\n</JS Passive Condition>\nThe state has no icon and the priority is 1. This is what it looks like:\nFinally, in the SkillsStatesCore plugin, under the Passive States Parameters, in the Actors-Only Passives, enter the ID of the Limit Break state. (For me, it's 240)\nAnd that's it!"
+    },
+    {
+      "post_id": "js-post-1456052",
+      "author": "Kurbbie",
+      "date": "2024-07-09T07:10:48+0900",
+      "body": "CrocPirate said:\nI'm doing something similar in my game. Here's how you hide the Limit Break command until the Actor reach 100 TP:\nFirst, I suggest you make TWO Skill Types called Limit Break (Mine is called Blitz). Then in the SkillsStatesCore plugin, under Skill Settings parameters, make sure you hide one of the Limit Skill Type command during Battle. (For me is 10.) The reason for this is so that the player can see what Limit Breaks they have in the Skills Menu:\nView attachment 310774\nView attachment 310775\nNext, for your Limit Break skills, make sure that the skill type is one of the Limit Break Skill Type and use the notetags:\nCode:\n<Skill Types: x,y>\n<TP Cost: 100%>\nReplace x with the ID of the 1st Limit Break skill type and y with the 2nd Limit Break skill type.\nFurthermore, the reason why I'm suggesting you use the <TP Cost: 100%> for these skills, is just in case you want to change how much TP an Actor has using the EnhancedTPSystem plugin. (Like changing it from 100 to 255, for example.) The Limit Break skill will always use 100% of the Actor's TP.\nHere's an example:\nView attachment 310776\nFinally, you will need to create a passive state.\nIn the Traits section of the state, use Add Skill Type to add the Limit Break Command that IS NOT hidden with the SkillsStatesCore plugin.\nThen in the Notes of the State, add this:\nCode:\n<Bypass Combat Log>\n<Hide State Popup>\n<Exclude From Tooltips>\n\n\n<JS Passive Condition>\ncondition = (user.tp === user.maxTp());\n</JS Passive Condition>\nThe state has no icon and the priority is 1. This is what it looks like:\nView attachment 310783\nFinally, in the SkillsStatesCore plugin, under the Passive States Parameters, in the Actors-Only Passives, enter the ID of the Limit Break state. (For me, it's 240)\nView attachment 310784\nAnd that's it!\nClick to expand...\nI really appreciate this!"
+    },
+    {
+      "post_id": "js-post-1456054",
+      "author": "Kurbbie",
+      "date": "2024-07-09T07:23:37+0900",
+      "body": "CrocPirate said:\nI'm doing something similar in my game. Here's how you hide the Limit Break command until the Actor reach 100 TP:\nFirst, I suggest you make TWO Skill Types called Limit Break (Mine is called Blitz). Then in the SkillsStatesCore plugin, under Skill Settings parameters, make sure you hide one of the Limit Skill Type command during Battle. (For me is 10.) The reason for this is so that the player can see what Limit Breaks they have in the Skills Menu:\nView attachment 310774\nView attachment 310775\nNext, for your Limit Break skills, make sure that the skill type is one of the Limit Break Skill Type and use the notetags:\nCode:\n<Skill Types: x,y>\n<TP Cost: 100%>\nReplace x with the ID of the 1st Limit Break skill type and y with the 2nd Limit Break skill type.\nFurthermore, the reason why I'm suggesting you use the <TP Cost: 100%> for these skills, is just in case you want to change how much TP an Actor has using the EnhancedTPSystem plugin. (Like changing it from 100 to 255, for example.) The Limit Break skill will always use 100% of the Actor's TP.\nHere's an example:\nView attachment 310776\nFinally, you will need to create a passive state.\nIn the Traits section of the state, use Add Skill Type to add the Limit Break Command that IS NOT hidden with the SkillsStatesCore plugin.\nThen in the Notes of the State, add this:\nCode:\n<Bypass Combat Log>\n<Hide State Popup>\n<Exclude From Tooltips>\n\n\n<JS Passive Condition>\ncondition = (user.tp === user.maxTp());\n</JS Passive Condition>\nThe state has no icon and the priority is 1. This is what it looks like:\nView attachment 310783\nFinally, in the SkillsStatesCore plugin, under the Passive States Parameters, in the Actors-Only Passives, enter the ID of the Limit Break state. (For me, it's 240)\nView attachment 310784\nAnd that's it!\nClick to expand...\nEverything worked well except getting the skill itself to show up in the skills menu screen, other than that it works great.\nEdit: I figured out the issue. Appreciate the help my man!!"
+    },
+    {
+      "post_id": "js-post-1456062",
+      "author": "CrocPirate",
+      "date": "2024-07-09T07:44:18+0900",
+      "body": "No problem."
+    },
+    {
+      "post_id": "js-post-1456076",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T10:06:05+0900",
+      "body": "For future reference, you'll get better help faster if you give full information in your initial request.\nIf you'd said in the first place that you were already using VisuStella plugins instead of just saying \"without a plugin,\" you would've gotten that answer in the first reply\nGlad you got it working, good luck in your project."
+    },
+    {
+      "post_id": "js-post-1456173",
+      "author": "Kurbbie",
+      "date": "2024-07-09T23:50:07+0900",
+      "body": "ATT_Turan said:\nFor future reference, you'll get better help faster if you give full information in your initial request.\nIf you'd said in the first place that you were already using VisuStella plugins instead of just saying \"without a plugin,\" you would've gotten that answer in the first reply\nGlad you got it working, good luck in your project.\nClick to expand...\nI did.\n\"I think this is taken care of in the\nVZ\nplugin\nbattle core\nthrough notetags.\"\nIf that wasnt enough to imply i was using battle core, my bad."
+    },
+    {
+      "post_id": "js-post-1456175",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T23:57:40+0900",
+      "body": "Kurbbie said:\nIf that wasnt enough to imply i was using battle core, my bad.\nClick to expand...\nIt wasn't, because the full context of that quote was:\nKurbbie said:\nWithout a plugin because i dont want plugin bloat. I think this is taken care of in the VZ plugin battle core through notetags.\nClick to expand...\nThat implies you know it could be done with Battle Core notetags, but you are avoiding using that plugin because you feel it's bloated.\nI figured if you both had Battle Core in your project and knew it could be used for this, your entire first post would've been \"how do I do this with Battle Core?\" not \"how do I do this without plugins?\"\nI was just giving the advice that giving as much information up front will help you get faster/better answers.\nHave fun making games!"
+    },
+    {
+      "post_id": "js-post-1456185",
+      "author": "Kurbbie",
+      "date": "2024-07-10T00:51:33+0900",
+      "body": "ATT_Turan said:\nIt wasn't, because the full context of that quote was:\nThat implies you know it could be done with Battle Core notetags, but you are avoiding using that plugin because you feel it's bloated.\nI figured if you both had Battle Core in your project and knew it could be used for this, your entire first post would've been \"how do I do this with Battle Core?\" not \"how do I do this without plugins?\"\nI was just giving the advice that giving as much information up front will help you get faster/better answers.\nHave fun making games!\nClick to expand...\nthats a huge assumption. I actually didnt know it was available in the plugin because the wiki isnt clarified enough for a lay man to understand it.\nBy plugin bloat I'm referring to how many plugins the game has to check periodically therefore bloating the game causing it to lose frames on mobile or weak pc devices. Which is explained in many, many, many tutorial videos involving rpg maker specifically.\nSo yes, Id much have rather done this simple thing without a plugin at all. The other guy solved the issue and I appreciate that."
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/cropping-images-from-different-sides.170163",
+  "title": "MV Cropping images from different sides",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T04:48:22.853169+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1456249",
+      "author": "ATT_Turan",
+      "date": "2024-07-10T12:41:26+0900",
+      "body": "I have a Window_Base, inside of which I've created a Sprite_Base with a bitmap.\nThis displays an image (woot).\nI have figured out how to use setFrame() on the sprite to crop the image and make parts of it get cut off.\nHowever, it always draws from the upper left of the frame, and therefore cuts off to the right and bottom.\nHow can I cut off the top or left of the image? The bitmap doesn't appear to have an anchor that specifies where it's attached to the sprite, and changing the sprite's anchor makes it go haywire out of the window containing it.\nAm I approaching this entirely the wrong way?\nEdit: I feel the answer is in Bitmap.blt, but I can't figure out how to make it produce a visual result. It seems to draw nothing. For example,\nCode:\nlet bar = ImageManager.loadPicture(\"test\");\n    this.contents.blt(bar, 0, bar.height * percentage, bar.width, bar.height - bar.height * percentage, 0, 0);"
+    },
+    {
+      "post_id": "js-post-1456275",
+      "author": "utunnels",
+      "date": "2024-07-10T14:40:18+0900",
+      "body": "If I recall correctly, loadPicture is async so you need to let it finish. Or you do blt in every update until it is loaded."
+    },
+    {
+      "post_id": "js-post-1456280",
+      "author": "Eliaquim",
+      "date": "2024-07-10T15:06:29+0900",
+      "body": "Hi there!\nI don't know if I understand you correctly. But I did some tests here. I created this window with a sprite inside of it:\nJavaScript:\nclass myWin extends Window_Base{\n    initialize(rect){\n        super.initialize(rect)\n        const bitmap = ImageManager.loadPicture(\"ilia\")\n        bitmap.addLoadListener(() => {\n            this.mySpr = new Sprite(bitmap)\n            this.mySpr.x = (this.width-bitmap.width)/2\n            this.mySpr.y = (this.height-bitmap.height)/2\n            this.addChild(this.mySpr)\n        })\n\n    }\n}\nThen I made some tests on the console, making the window the size of my game screen/resolution:\nOn the first setFrame, I put X and Y to 10. And when I call the function, I realize that it seems that the Sprite moved -10x and -10y. To fix this, I adjusted the sprite position to +10x and +10y.\nNow, for me to give the impression that I'm cutting off the right and bottom of the sprite, I did the second call of the setFrame, but this time changing the width and height of the frame.\nMy conclusion with this is, whathever you set the frame of the sprite and want to give the impression that he is on the same place, just adjust the sprite position X and Y according to the number you put on the setFrame.\nNow, if I did misunderstood what you mean, this is my second attempt!! haha!\nI would do the .blt only after the bitmap is loaded, like\n@utunnels\nsaid.\nIf perhaps what you want is that the sprite only shows the \"cutted\" version of your bitmap, instead of putting the whole bitmap inside the sprite and use the .blt later, do it before, and pass into the sprite a new bitmap with the result of the .blt.\nExample:\nJavaScript:\nclass myWin extends Window_Base{\n    initialize(rect){\n        super.initialize(rect)\n        const faceSetImage = ImageManager.loadFace(\"Monster\")\n        faceSetImage.addLoadListener(() => {\n            const face = new Bitmap(144,144) // Size of a single face inside the faceSet Image\n            const sx = 144*2\n            const sy = 0\n            const sw = 144\n            const sh = 144\n            const dx = 0\n            const dy = 0\n            face.blt(faceSetImage, sx, sy, sw, sh, dx, dy)\n            this.mySpr = new Sprite(face)\n            this.mySpr.x = (this.width-face.width)/2\n            this.mySpr.y = (this.height-face.height)/2\n            this.addChild(this.mySpr)\n          \n        })\n    }\n}\nHope it helps!"
+    },
+    {
+      "post_id": "js-post-1456302",
+      "author": "ATT_Turan",
+      "date": "2024-07-10T21:11:50+0900",
+      "body": "Thank you for responses.\nutunnels said:\nIf I recall correctly, loadPicture is async so you need to let it finish. Or you do blt in every update until it is loaded.\nClick to expand...\nThat's where the code I pasted was, in the window's update() method (I realize I was non-specific).\nEliaquim said:\nIf perhaps what you want is that the sprite only shows the \"cutted\" version of your bitmap, instead of putting the whole bitmap inside the sprite and use the .blt later, do it before, and pass into the sprite a new bitmap with the result of the .blt.\nClick to expand...\nI'll mess around with this. The problem is that I don't\nonly\nwant to show the cropped version, I want to be dynamically resizing it. And I feel like trying to create a new Bitmap every update() is never going to actually load.\nThe ultimate point of this is to display a gauge - I have a background sprite, then the bar to display on top of it. I want the bar to shrink and grow not by transforming/stretching the image, but by cropping it.\nI can get this to work, but only by using setFrame which only crops from the bottom or right."
+    },
+    {
+      "post_id": "js-post-1456314",
+      "author": "Mac15001900",
+      "date": "2024-07-10T22:12:08+0900",
+      "body": "The way I'd do it would indeed be with\nblt\n.\nATT_Turan said:\nThat's where the code I pasted was, in the window's update() method (I realize I was non-specific).\nClick to expand...\nHow exactly did you do that? The two lines you've shared would never work together, since\nbar\nwould continuously get redefined and never actually load, though I'm assuming the actual setup is a bit different."
+    },
+    {
+      "post_id": "js-post-1456315",
+      "author": "ATT_Turan",
+      "date": "2024-07-10T22:20:19+0900",
+      "body": "Mac15001900 said:\nHow exactly did you do that?\nClick to expand...\nI mean, apparently incorrectly?\nHere's a test setup with image files (to be placed in img\\pictures)\nCode:\nScene_Map.prototype.createAllWindows = function() {\n    this.createMessageWindow();\n    this.createScrollTextWindow();\n    this.createTestGauge();\n};\n\nScene_Map.prototype.createTestGauge = function() {\n    this._testGauge = new Window_Base();\n    this.addChild(this._testGauge);\n    this._testGauge.move(0, 0, 640, 25);\n    this._testGauge.opacity = 0;\n    this._testGauge._frame = new Sprite_Base();\n    this._testGauge._frame.bitmap = ImageManager.loadPicture(\"meter-frame\");\n    this._testGauge.addChild(this._testGauge._frame);\n\n/*    The commented out material is what works\n\n    this._testGauge._bar = new Sprite_Base();\n    this._testGauge._bar.bitmap = ImageManager.loadPicture(\"meter-bar\");\n    this._testGauge.addChild(this._testGauge._bar);\n*/\n};\n\nvar origMapUpdate = Scene_Map.prototype.update;\nScene_Map.prototype.update = function()\n{\n    origMapUpdate.call(this);\n\n    this.updateTestGauge();\n};\n\nScene_Map.prototype.updateTestGauge = function()\n{\n// Using a static value for testing, but this will be recalculated during gameplay\n    let fill = .5;\n \n/*    The commented out material is what works\n\n    let bar = this._testGauge._bar;\n    bar.setFrame(bar.x, bar.y, bar.bitmap.width * fill, bar.bitmap.height);\n*/\n// This part doesn't display anything\n    let bar = ImageManager.loadPicture(\"meter-bar\");\n    this._testGauge.contents.blt(bar, bar.width * fill, 0, bar.width - bar.width * fill, bar.height, 0, 0);\n};\nI've also tried with leaving the original bitmap in the createTestGauge() and redrawing it with blt(), doesn't do anything.\nMy current goal would be to show just the right half of the bar.\nMac15001900 said:\nThe two lines you've shared would never work together, since bar would continuously get redefined and never actually load\nClick to expand...\nThat's how it's written in, say, Window_Base.drawFace(). Is it because update() gets called too frequently? Do I need to use update() to track whether the fill percentage has changed, then call a separate refresh function?"
+    },
+    {
+      "post_id": "js-post-1456336",
+      "author": "utunnels",
+      "date": "2024-07-10T23:35:32+0900",
+      "body": "As for the anchor solution:\nJavaScript:\nvar spr1 = new Sprite(ImageManager.loadPicture('Image1'));\nvar spr2 = new Sprite(ImageManager.loadPicture('Image2'));\nvar spr3 = new Sprite(ImageManager.loadPicture('Image3'));\nvar scene = SceneManager._scene;\nspr1.addChild(spr2); spr1.addChild(spr3);\nvar barx=5, bary=5, barwidth = 450, barheight = 22, barpercentage = 0.86;\nspr3.anchor.x = 1; spr3.anchor.y = 0;\nspr2.x = barx, spr2.y = bary;\nspr3.x = barx + barwidth;spr3.y = bary;\nspr2.setFrame(0,0,barwidth*barpercentage,barheight);\nspr3.setFrame(barwidth*barpercentage,0,barwidth*(1-barpercentage),barheight);\nspr1.x = 5; spr1.y = Graphics.height-37; scene.addChild(spr1);"
+    },
+    {
+      "post_id": "js-post-1456348",
+      "author": "Mac15001900",
+      "date": "2024-07-10T23:58:05+0900",
+      "body": "ATT_Turan said:\nThat's how it's written in, say, Window_Base.drawFace()\nClick to expand...\nAh, I see how you got to this.\nWhen an event starts, it looks through some specific commands and preloads any images they need. So drawFace doesn't need to account for an image not being loaded, but when making custom stuff you usually do.\nThe typical approach is similar to the one shared by\n@Eliaquim\n: created a listener for the image being loaded, and only do things with it when it's actually loaded.\nSo when the window is created, you'd do\nJavaScript:\nlet barTemp = ImageManager.loadPicture(\"meter-bar\");\nbarTemp.addLoadListener(() => {\n    this.bar = barTemp;\n});\nAnd then only do blt when that\nthis.bar\nexists.\nFor some examples,\nhere\nis a window that simply displays a specific image, and\nhere\nis a more complex one that displays a bunch of images that move on each frame."
+    },
+    {
+      "post_id": "js-post-1456352",
+      "author": "ATT_Turan",
+      "date": "2024-07-11T00:38:21+0900",
+      "body": "utunnels said:\nAs for the anchor solution:\nClick to expand...\nSo I appreciate the help, but I'm having a little bit of a hard time grokking it because of how you changed the setup into three sprites - it\nappears\nas if your code is using setFrame to show still the left portion of spr3, just positioning it next to spr2.\nThat's not what I want - I want specifically to show the right or bottom portion of an image: the bar is an example, presume it should work with asymmetrical images.\nBut I'll poke at it, see if I'm misunderstanding what you're doing.\nMac15001900 said:\nSo when the window is created, you'd do\nAnd then only do blt when that\nthis.bar\nexists.\nClick to expand...\nThis did not appear to work. I modified the code/file I provided above as such:\nCode:\nScene_Map.prototype.createTestGauge = function() {\n    this._testGauge = new Window_Base();\n    this.addChild(this._testGauge);\n    this._testGauge.move(0, 0, 640, 25);\n    this._testGauge.opacity = 0;\n    this._testGauge._frame = new Sprite_Base();\n    this._testGauge._frame.bitmap = ImageManager.loadPicture(\"meter-frame\");\n    this._testGauge.addChild(this._testGauge._frame);\n\n// 'Cause Mac told me to\n    let barTemp = ImageManager.loadPicture(\"meter-bar\");\n    barTemp.addLoadListener(() => {\n        this.barSprite = barTemp;\n    });\n};\nScene_Map.prototype.updateTestGauge = function()\n{\n    let fill = .5;\n    if (this._testGauge.barSprite)\n    {\n        let bar = this._testGauge.barSprite.bitmap;\n        this._testGauge.contents.blt(bar, bar.width * fill, 0, bar.width - bar.width * fill, bar.height, 0, 0);\n    }\n};\nbut it still draws nothing.\nI'll look at the examples you linked to, see if I can figure out what I'm doing differently."
+    },
+    {
+      "post_id": "js-post-1456355",
+      "author": "Mac15001900",
+      "date": "2024-07-11T01:03:36+0900",
+      "body": "ATT_Turan said:\nThis did not appear to work. I modified the code/file I provided above as such:\nClick to expand...\nYou seem to be adding\nbarSprite\nas a property of Scene_Map, but checking if this property exists on\n_testGauge\n.\nThere's also no need to access its bitmap property, it already is one\nTry this:\nJavaScript:\nScene_Map.prototype.updateTestGauge = function()\n{\n    let fill = .5;\n    if (this.barSprite)\n    {\n        let bar = this.barSprite;\n        this._testGauge.contents.blt(bar, bar.width * fill, 0, bar.width - bar.width * fill, bar.height, 0, 0);\n    }\n};"
+    },
+    {
+      "post_id": "js-post-1456357",
+      "author": "ATT_Turan",
+      "date": "2024-07-11T01:13:46+0900",
+      "body": "Mac15001900 said:\nYou seem to be adding\nbarSprite\nas a property of Scene_Map, but checking if this property exists on\n_testGauge\n.\nClick to expand...\nI do\nseem\nto be doing that, don't I?\nWell, while I\nseem\nto be doing that, what I'm\nreally\ndoing is seeing if you're paying attention!\n...I fixed it and it still doesn't draw anything\nCode:\nScene_Map.prototype.createTestGauge = function() {\n// Stuff stuff stuff for the gauge window\n\n    let barTemp = ImageManager.loadPicture(\"meter-bar\");\n    barTemp.addLoadListener(() => {\n        this._testGauge.bar = barTemp;\n    });\n};\n\nScene_Map.prototype.updateTestGauge = function()\n{\n    let fill = .5;\n\n    if (this._testGauge.bar)\n    {\n        let bar = this._testGauge.bar;\n        this._testGauge.contents.blt(bar, bar.width * fill, 0, bar.width - bar.width * fill, bar.height, 0, 0);\n    }\n};"
+    },
+    {
+      "post_id": "js-post-1456360",
+      "author": "utunnels",
+      "date": "2024-07-11T01:23:45+0900",
+      "body": "@ATT_Turan\nWell, anchor is where the \"center\" point of the sprite. So change x to 1 will make it \"anchor\" to the right side.\nI made two new images so you can see more clearly.\nJust call updatebar function and give it a new percentage value.\nYou don't need to adjust position once it is anchored to the right side.\nJavaScript:\nwindow.spr1 = new Sprite(ImageManager.loadPicture('Image1'));\nwindow.spr2 = new Sprite(ImageManager.loadPicture('Image2'));\nwindow.spr3 = new Sprite(ImageManager.loadPicture('Image3'));\nvar scene = SceneManager._scene;\nspr1.addChild(spr2); spr1.addChild(spr3);\nObject.assign(window, {barx:5, bary:5, barwidth:450, barheight:22, barpercentage:0.86});\nspr3.anchor.x = 1; spr2.x = barx; spr2.y = bary; spr3.x = barx + barwidth; spr3.y = bary;\nspr1.x = 5; spr1.y = Graphics.height-37; scene.addChild(spr1);\nwindow.updatebar=function (){\n    spr2.setFrame(0,0,barwidth*barpercentage,barheight);//green bar\n    spr3.setFrame(barwidth*barpercentage,0,barwidth*(1-barpercentage),barheight);//red bar\n};\nupdatebar();"
+    },
+    {
+      "post_id": "js-post-1456361",
+      "author": "Mac15001900",
+      "date": "2024-07-11T01:26:24+0900",
+      "body": "Alright, first thing on the \"Why is my block transfer not working this time?\" checklist:\nMaking sure the contents area is large enough... which re-reading the code, I think it might be not be. I assumed it must have been since the other approach worked, but I guess that one doesn't use contents in the first place. Try doing\nthis._testGauge = new Window_Base(0, 0, 640, 25);\ninstead of leaving the constructor empty.\nEDIT: Or actually, maybe increase that 25, since it might be too small for the contents area to fit between padding?"
+    },
+    {
+      "post_id": "js-post-1456367",
+      "author": "ATT_Turan",
+      "date": "2024-07-11T01:50:38+0900",
+      "body": "Mac15001900 said:\nMaking sure the contents area is large enough... which re-reading the code, I think it might be not be. I assumed it must have been since the other approach worked, but I guess that one doesn't use contents in the first place. Try doing\nthis._testGauge = new Window_Base(0, 0, 640, 25);\ninstead of leaving the constructor empty.\nEDIT: Or actually, maybe increase that 25, since it might be too small for the contents area to fit between padding?\nClick to expand...\nAhhh, that did something! I would have to screw with the window dimensions and figure out how to get rid of the padding and such, but it achieved things.\nutunnels said:\nWell, anchor is where the \"center\" point of the sprite. So change x to 1 will make it \"anchor\" to the right side.\nYou don't need to adjust position once it is anchored to the right side.\nClick to expand...\nOkay - I understand what you're saying, but I'm having a hard time adapting your example because your syntax for the whole thing is completely different from how I started. So I'm trying to figure out which bits are a part of your solution and which bits I'd ignore because it's attaching the sprites directly to the scene instead of a window, etc.\nI tried this, and I don't see anything:\nCode:\nScene_Map.prototype.createTestGauge = function()\n{\n    this._testGauge = new Window_Base(0, 0, 640, 50);\n    this.addChild(this._testGauge);\n    this._testGauge.opacity = 0;\n    this._testGauge._frame = new Sprite_Base();\n    this._testGauge._frame.bitmap = ImageManager.loadPicture(\"meter-frame\");\n    this._testGauge.addChild(this._testGauge._frame);\n\n// Based on your example\n    this._testGauge._bar = new Sprite_Base();\n    this._testGauge._bar.bitmap = ImageManager.loadPicture(\"meter-bar\");\n    this._testGauge._bar.anchor.x = 1;\n    this._testGauge._bar.x = 640;\n    this._testGauge.addChild(this._testGauge._bar);\n};"
+    },
+    {
+      "post_id": "js-post-1456370",
+      "author": "utunnels",
+      "date": "2024-07-11T02:02:26+0900",
+      "body": "Strange. What's the different between Sprite and Sprite_Base? I never use the Base type. Are you sure it is visible by default?"
+    },
+    {
+      "post_id": "js-post-1456373",
+      "author": "Mac15001900",
+      "date": "2024-07-11T02:04:00+0900",
+      "body": "Nice, I'm glad that worked. For an explanation as to why: Windows create their contents bitmap inside the constructor, and if you don't give them any arguments, it will be a 0x0 bitmap, unable to display anything. That bitmap is *not* resized when resizing the window (since it can't really be resized at all).\nATT_Turan said:\nfigure out how to get rid of the padding\nClick to expand...\nThis is mildly annoying, since you can't change padding before your window exists, but after you create it the bitmap already has a size that's based on default padding. I'd generally make them this way (assuming you want no padding in a window with size 640x25):\nJavaScript:\nlet padding = Window_Base.prototype.standardPadding();\nthis._testGauge = new Window_Base(0, 0, 640 + padding * 2, 25 + padding * 2);\nthis._testGauge.standardPadding = () => 0;\nthis._testGauge.padding = 0;\nthis._testGauge.move(0, 0, 640, 25);"
+    },
+    {
+      "post_id": "js-post-1456374",
+      "author": "ATT_Turan",
+      "date": "2024-07-11T02:06:42+0900",
+      "body": "utunnels said:\nStrange. What's the different between Sprite and Sprite_Base?\nClick to expand...\nSprite_Base is...what RPG Maker uses?\nSprite_Character, Sprite_Battler, Sprite_Actor, Sprite_StateOverlay, Sprite_Weapon, Sprite_Balloon all inherit from Sprite_Base.\nI haven't delved into the difference between them because I've never needed the knowledge, so I can't immediately answer the question.\nutunnels said:\nI never use the Base type. Are you sure it is visible by default?\nClick to expand...\nYes - as I mentioned originally, all of the code I had worked and I could see all the sprites (and the frame you see in post #14 is the same Sprite_Base), I just couldn't control which way it cropped.\nBut changing the code in post 14 to declare a new Sprite as opposed to Sprite_Base has no effect, I still don't see anything of the bar.\nMac15001900 said:\nNice, I'm glad that worked. For an explanation as to why: Windows create their contents bitmap inside the constructor, and if you don't give them any arguments, it will be a 0x0 bitmap, unable to display anything. That bitmap is *not* resized when resizing the window (since it can't really be resized at all).\nClick to expand...\nSo couldn't I not use the contents, instead creating the sprite directly in the window the way I was, and blocking onto that? e.g.\nScene_Map._testGauge.bar.bitmap.blt()\n?\n(this is not with what I was suggesting above, this is with your window padding tweak)"
+    },
+    {
+      "post_id": "js-post-1456381",
+      "author": "utunnels",
+      "date": "2024-07-11T02:35:33+0900",
+      "body": "@ATT_Turan\nWell, that is even more strange, because I copied your code and save it as a plugin, it just worked. The only difference is the image files.\nI called the function using an event."
+    },
+    {
+      "post_id": "js-post-1456386",
+      "author": "ATT_Turan",
+      "date": "2024-07-11T02:53:04+0900",
+      "body": "utunnels said:\n@ATT_Turan\nWell, that is even more strange, because I copied your code and save it as a plugin, it just worked.\nClick to expand...\nIt's because of my update(). I didn't think to disable/change it initially, because I figured I'd see\nsomething\n. But I had to reexamine my math inside it.\nThat code\ndoes\nnow work to display the bar. I just had to change my arguments for setFrame() - looking back at your earlier example, I see that even though the anchor is changed, the coordinates for setFrame() are still placing the upper left corner of the frame.\nI adjusted that and it works\nThanks to you and\n@Mac15001900\nfor two functioning solutions."
+    },
+    {
+      "post_id": "js-post-1456394",
+      "author": "Mac15001900",
+      "date": "2024-07-11T03:21:58+0900",
+      "body": "ATT_Turan said:\nSo couldn't I not use the contents, instead creating the sprite directly in the window the way I was, and blocking onto that? e.g.\nScene_Map._testGauge.bar.bitmap.blt()\n?\nClick to expand...\nI'm not sure, but I guess this might work, since they seem to use the same Bitmap class as the contents of a window. I mostly use windows since there are already so many ways (both from the engine and ones I've made myself) for manipulating them, but there shouldn't be any problems with using a sprite as a container.\nI guess you could go a step further and instead of creating anything that has a bitmap as a component just make a bitmap directly."
+    },
+    {
+      "post_id": "js-post-1456397",
+      "author": "Ms Littlefish",
+      "date": "2024-07-11T03:31:49+0900",
+      "body": "This thread is closed due to being reported as solved. If you need it reopened, let us know. Thank you!"
+    },
+    {
+      "post_id": "js-post-1456406",
+      "author": "hiddenone",
+      "date": "2024-07-11T03:55:19+0900",
+      "body": "Reopened at OP's request."
+    },
+    {
+      "post_id": "js-post-1456407",
+      "author": "ATT_Turan",
+      "date": "2024-07-11T04:03:21+0900",
+      "body": "Mac15001900 said:\nWindows create their contents bitmap inside the constructor, and if you don't give them any arguments, it will be a 0x0 bitmap, unable to display anything. That bitmap is *not* resized when resizing the window (since it can't really be resized at all).\nClick to expand...\nJust to have the info in one place, that part is not completely right.\nI ran into this with one of my other plugins - there's a Window_Base.createContents() which resizes the (creates a new) contents bitmap based on the current width and height.\nSo, since I'm allowing user-provided images which I don't know the dimensions of ahead of time, I should be able to do (haven't tested it yet):\nJavaScript:\nlet padding = Window_Base.prototype.standardPadding();\nthis._testGauge = new Window_Base();\nthis._testGauge.standardPadding = () => 0;\nthis._testGauge.padding = 0;\n\nthis.addChild(this._testGauge);\nthis._testGauge.opacity = 0;\nthis._testGauge._frame = new Sprite_Base();\nthis._testGauge._frame.bitmap = ImageManager.loadPicture(\"meter-frame\");\nthis._testGauge.addChild(this._testGauge._frame);\n\nthis._testGauge.contentsWidth = () => this._testGauge._frame.bitmap.width;\nthis._testGauge.contentsHeight = () => this._testGauge._frame.bitmap.height;\n\nthis._testGauge.createContents();"
+    },
+    {
+      "post_id": "js-post-1456411",
+      "author": "Mac15001900",
+      "date": "2024-07-11T04:13:29+0900",
+      "body": "ATT_Turan said:\nthere's a Window_Base.createContents() which resizes the (creates a new) contents bitmap based on the current width and height.\nClick to expand...\nGood point, remaking the bitmap is definitely an option I should have mentioned, what I wrote sounded more like it's some constant unchangeable thing. You can't resize it, but you absolutely can just replace it, the performance impact should be really small.\nATT_Turan said:\nhaven't tested it yet\nClick to expand...\nI can save you some debugging and point out that you can't access the width and height properties of an image until it has been loaded"
+    },
+    {
+      "post_id": "js-post-1456415",
+      "author": "ATT_Turan",
+      "date": "2024-07-11T04:33:49+0900",
+      "body": "@Mac15001900\nFair enough! I just wanted that option included for posterity, in case anyone else comes across this trying to do the same insanity. Thanks again."
+    },
+    {
+      "post_id": "js-post-1456424",
+      "author": "hiddenone",
+      "date": "2024-07-11T05:17:08+0900",
+      "body": "Closing for real this time."
+    }
+  ]
+}

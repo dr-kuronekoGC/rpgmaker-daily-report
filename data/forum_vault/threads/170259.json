@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-solving-android-deployment-lag.170259",
+  "title": "Help Solving Android Deployment Lag",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T04:48:19.984358+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1457011",
+      "author": "aLostSolo",
+      "date": "2024-07-14T01:43:57+0900",
+      "body": "Hello everyone,\nI wanted to test my RPG Maker MV game on my Android device - Google Pixel 6 and I've encountered very disturbing lag issues.\nNow I know this has been addressed on multiple threads as I've read through each and every one of them to try and solve multiple issues I've encountered and all were resolved except for the lag.\nI noticed the most noticeable lag occurs when animations are played - Especially during battles.\nThere is also some small lag when interacting with events that open a message box.\nTo me, this makes the game pretty much unplayable.\nDetails about everything I've tried (And haven't tried for a reason):\nI have approximately 1.2GB of assets which consist of audio and images. I know this is a lot and I have plans to minimize it but I doubt it'll be less than ~800MB as my game is quite big with a lot of content.\nI saw\nthis thread\nwhere\n@Milennin\nmentioned having the same issues and was recommended to reduce the assets sizes, however that\ndid not\nsolve the issue after reducing ~70-80% files size.\nThat's the main reason I haven't tried it, though I do plan to do it anyways for optimization reasons.\nI have used\nthis guide\nby\n@TehGuy\n(Combined with\nthis guide\n),\nwithout the Google Play Store part\n, to move all my assets to an OBB file and that seems to have worked as my APK is ~7MB in size and the game works but I did not see any improvement in the lag.\nAll parallel process events have a small \"wait 5 frames\" to improve performance on all maps.\nI have a lot of Yanfly's scrips that have some optimizations and have written a lot of code myself and did the best to optimize my own code as well.\nI know a lot of assets are already cached either by the latest updates to RPG Maker MV or the optimizations done by Yanfly's core plugin so I'm not sure if adding even more caching would help, especially when I've read there's still a limit to the amount of memory allocated to the app even in a relatively strong device as the Pixel 6.\nAs a side note, I've solved all other issues like Iconset size being 4096px in height resulting in black boxes for icons and setting `PRECISION_FRAGMENT` to \"highp\" to solve the tilesets black lines issue.\nAnother thing worth mentioning is that I run my game on a very strong PC and relatively weak laptop on battery and I have never encountered anything like the lag I experience.\nI'd like to know if anyone has any suggestions on how to solve this as I was really hoping to release it not only for PC...\nThanks in advance for you patience and help."
+    },
+    {
+      "post_id": "js-post-1457021",
+      "author": "ShadowDragon",
+      "date": "2024-07-14T03:17:26+0900",
+      "body": "what android did you test it on and what is their specs?\nas if the specs are lower or not the required, it can lag as well.\nif you keep the remember the cache to keep in memory, remove those\nand try again because I doubt what you did should work."
+    },
+    {
+      "post_id": "js-post-1457023",
+      "author": "aLostSolo",
+      "date": "2024-07-14T03:37:21+0900",
+      "body": "@ShadowDragon\nMy Pixel 6 is running Android version 14, 8GB RAM with CPU Google Tensor (5 nm).\nCompiled the APK with minSdkVersion = 21, ANDROID_SDK_TARGET = 29.\nI ran much more demanding games on it and they worked well so I think the phone should handle an PG Maker game..\nRegarding what you mentioned about the cache, I did not make any additional caching than what is already done in the latest RPG Maker MV versions, if that's what you meant.\nIf not, please explain as I may have misunderstood.\nThank you."
+    },
+    {
+      "post_id": "js-post-1457027",
+      "author": "ShadowDragon",
+      "date": "2024-07-14T03:54:09+0900",
+      "body": "on the phone, you have 3 lines, or dots or something else.\npressing it will open the cache of the android (also know as fast access)\nthat is last opened, this cache can slow down games too.\nbut while I don't know the Pixel 6 or CPU name of 5nm, I cannot help you.\nas there are tons of game, 8gb ram and 14 should work.\ndepends on what plugin you use, you can try adding MVCommon or another\nto increase the cache limited (default is 1000*1000*1000) if not mistaken.\nin the param you can increase it 1000 if it is set to 10-100.\ndepending what plugin you use, like MrTs_Monsterbook, that plugin has a nasty\nbug that can make the game lag fast as there is a fix made for it.\nalso in Olivia_HorrorEffect is a nasty bug which also has a bug.\nif you don't use those 2, and only YEP plugins for example in the correct order,\nthan I have no idea what it could cause."
+    },
+    {
+      "post_id": "js-post-1457028",
+      "author": "aLostSolo",
+      "date": "2024-07-14T04:04:32+0900",
+      "body": "Thank you\n@ShadowDragon\n.\nI checked the cache used by the app and see it's ~300KB. I guess it's because it's just the beginning of the game so nothing was loaded yet but then it appears this isn't the cause for the lag.\nI don't use any of the plugins you mentioned.\nMostly Yanfly, GALV and custom made plugins the should not affect performance.\nThank you again"
+    },
+    {
+      "post_id": "js-post-1457039",
+      "author": "Andar",
+      "date": "2024-07-14T05:17:01+0900",
+      "body": "What is the average size of your maps, and how big is your biggest map?\nare you using default mapping or is there anything added to the mapping process (Parallax, doodads, external editor,...)\naLostSolo said:\nI ran much more demanding games on it and they worked well\nClick to expand...\ndoesn't really matter as those other cames are most likely compiled for Android.\nRPG Maker is NOT a compiler engine, but an interpreter based engine - actually it's doubly interpreted in case of event code, and that costs a lot of performance.\nWhich is the reason why you have to keep the limitations of android in mind even before beginning to develop the game, or you end up looking for where the lag comes from."
+    },
+    {
+      "post_id": "js-post-1457128",
+      "author": "aLostSolo",
+      "date": "2024-07-14T14:50:25+0900",
+      "body": "Thank you\n@Andar\n.\nThe average size of my maps is ~100KB with very big variations - The biggest map is 4.75MB but that's due to lots of events and it was never loaded in my play tests on mobile (I played for 1 minute).\nHowever the first \"biggest map\" the game actually loads in my play test on mobile is ~70KB and the first map with battles is much smaller than that.\nI'm using the default mapping - No Parallax or anything."
+    },
+    {
+      "post_id": "js-post-1457132",
+      "author": "SangHendrix",
+      "date": "2024-07-14T16:08:39+0900",
+      "body": "Experienced RPG Maker Android dev here. You'd be surprised by how unoptimized most plugins on the forum are (for mobile). Large maps alone don't affect performance as you think they would.\nAvoid big sprite files. Mobile can't handle a large sprite sheet. Something above 500x500 that is constantly being called would already give massive lag. Just don't use the default RPG Maker spritesheet animation system lol."
+    },
+    {
+      "post_id": "js-post-1457138",
+      "author": "Andar",
+      "date": "2024-07-14T16:45:29+0900",
+      "body": "aLostSolo said:\nThe average size of my maps is ~100KB with very big variations\nClick to expand...\nI wanted to know the mapsize in tiles, not the filesize\nPlease give both the average and biggest map in tiles (a x b).\nWhile the json files of map data are not compressed and thereby not as badly out of range as picture files, they still do not give a true estimate of the map size due to containing other data like event codes and more."
+    },
+    {
+      "post_id": "js-post-1457143",
+      "author": "aLostSolo",
+      "date": "2024-07-14T16:58:47+0900",
+      "body": "@SangHendrix\nThanks. What about the animations files? They are much bigger, are you suggesting the file sizes are the problem?\nI am using a lot of default animation and others that are the same style.\n@Andar\nSorry. The biggest map is 173x106 but that's really standing out.\nThe average is about 70x70 - For example the first city which I tested in the play test was 60x40 and the map with the battle testing was 40x39."
+    },
+    {
+      "post_id": "js-post-1457146",
+      "author": "utunnels",
+      "date": "2024-07-14T18:21:29+0900",
+      "body": "Have you tried to pack a small project, which doesn't use any plugin?\nIt is odd because I have played some MV projects on my phone's browser, and I have never seen notable lags.\nYou mentioned dialogues also have lags. I only had the problem on some very ancient pc (i3 45xx or something like that, and it's running other programs in the background)."
+    },
+    {
+      "post_id": "js-post-1457147",
+      "author": "aLostSolo",
+      "date": "2024-07-14T18:23:35+0900",
+      "body": "@utunnels\nActually you mentioned playing on your phone's\nbrowser.\nI am talking about an APK but I am definitely considering testing this on some server and seeing if it works as that might suffice (Not sure how that would affect the experience for users though)."
+    },
+    {
+      "post_id": "js-post-1457150",
+      "author": "SangHendrix",
+      "date": "2024-07-14T18:51:50+0900",
+      "body": "aLostSolo said:\n@SangHendrix\nThanks. What about the animations files? They are much bigger, are you suggesting the file sizes are the problem?\nI am using a lot of default animation and others that are the same style.\n@Andar\nSorry. The biggest map is 173x106 but that's really standing out.\nThe average is about 70x70 - For example the first city which I tested in the play test was 60x40 and the map with the battle testing was 40x39.\nClick to expand...\nSo for example, if you have a 1024x1024 animation spritesheet file running constantly or a lot of animation is being played using said file, it'll overload your mobile device due to it having to load the file and run it again and again, making the fps drops. RPG Maker is extremely bad for mobile development. Barely anyone put their game on mobile so the subject was not widely discussed. I had to create my own animation system using singular frames instead of spritesheets for this matter alone, lol.\nHere are my tips for a good performance on mobile:\n- Don't use a large spritesheet file, something above 1000x1000 is already large (depending on how powerful the device is). LOTS of people use low-end phones so probably 500x500 is already too big.\n- Compressing your file size also helps a little. An extra 2 - 3 framerate is better than nothing.\n- Check all your plugins. Optimize any plugins that have a function to update along with the game every frame, these plugins contributed A LOT to your performance failure. They're basically like when you're running parallel events but not all tasks are lightweight. Optimize them by yourself (cuz devs are probably retired)."
+    },
+    {
+      "post_id": "js-post-1457161",
+      "author": "aLostSolo",
+      "date": "2024-07-14T20:21:11+0900",
+      "body": "@SangHendrix\nThank you very much!\nInteresting insight on the fact there aren't that many mobile deployments...\nThis makes me think I should attempt using a server and let users run the game from their browser.\nIt'll probably take some time but I'll go over your tips and see if there's any change.\nThanks again!"
+    }
+  ]
+}
