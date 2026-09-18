@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/which-is-better-multiple-maps-or-extra-switches-variables-common-events.171020",
+  "title": "Which is better, multiple maps or extra switches/variables/common-events?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T22:36:50.254746+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1463020",
+      "author": "CreatureCola",
+      "date": "2024-08-12T10:02:04+0900",
+      "body": "Curious which is better in the long run for functionality and lag prevention.\nI'm just wondering which of the two i should go with, would making duplicate maps of any place with houses to switch the doors to not be able to open during a specific day of the week, (market day) or use switches/variables/common events to control each of the doors? i feel like duplicating completed maps and just changing the door events would be the easiest way, but i don't want to do that if its harder on the system than setting up additional switches/variables, ect.\nThere would be roughly 7 duplicate maps in my game if i did it this way.\nI can't set the door's page to directly link to a day variable because it asks for a number OR HIGHER meaning any days past it during the week would still function the same unless i changed it to sunday ( variable day 7 )or added extra switches/pages and conditional branches, so doing different maps feels easier? because i can say = exact number in the original condition- go to x map, else go to other map. without all the extra pages and what not. make sense?\nThe doors are already setup in a way to only be enterable between certain hours calculated by total minutes in a day, which also changes the page based off how much someone likes you ( can stay later, and can enter when they're not home, ect )\nPeople have suggested doing this with dungeons at night to spawn different monsters, and that would be WAY more maps than doing it just for maps with houses/doors. My forest \"dungeon\" alone has 40 total floors and i'm planning 4 full sized dungeons (160 maps total, x2? ) would /that/ cause serious lag? only 2 of those dungeons are fully outside, so i suppose the other 2 don't need night time spawns. so about 80 x2. *shrug*"
+    },
+    {
+      "post_id": "js-post-1463022",
+      "author": "Andar",
+      "date": "2024-08-12T10:11:12+0900",
+      "body": "the number of maps has nothing to do with lag, because only one map is loaded at any given time.\nev3en the number of events on a map has limited effect on lag - the only events that can cause a lot of lag are badly structured parallel process events, and those have nothing to do with mapping.\nthe question on when a duplicate map is better and when a number of different event is better depends completely on the map - and simply adding another page to a door event to block that door when a certain switch is ON is not enough to warrant a duplicate map.\nduplicate maps are more for differtent cutscenes with many moving events and similar cases where the map would get confusing if too many events need to behave differently.\nor for your own example of using different map properties like different encounter tables."
+    },
+    {
+      "post_id": "js-post-1463023",
+      "author": "Eternidade_1",
+      "date": "2024-08-12T10:14:31+0900",
+      "body": "Why can't you create a door event with 8 pages?\nFor example, any variable marked on page 0 or 1 for Sunday, on the other page 1 or 2, on the third page 2 or 3 and so on up to the location page, with the default door page."
+    },
+    {
+      "post_id": "js-post-1463025",
+      "author": "ATT_Turan",
+      "date": "2024-08-12T10:19:41+0900",
+      "body": "CreatureCola said:\nCurious which is better in the long run for functionality and lag prevention.\nClick to expand...\nNothing you describe here has anything effect on your game's functionality, nor any effect on lag.\nIt's entirely organizational for you within your project.\nLag is caused by your processor having to work hard. Things in an RPG Maker game which can cause that:\n- Too many Autorun or parallel events doing too much stuff with no Wait\n- Loading large files\nMerely\nhaving\na file (a map, an image, a plugin, whatever) in your project does absolutely nothing. It sits there on your hard drive."
+    },
+    {
+      "post_id": "js-post-1463028",
+      "author": "CreatureCola",
+      "date": "2024-08-12T10:26:14+0900",
+      "body": "Andar said:\nthe number of maps has nothing to do with lag, because only one map is loaded at any given time.\nev3en the number of events on a map has limited effect on lag - the only events that can cause a lot of lag are badly structured parallel process events, and those have nothing to do with mapping.\nthe question on when a duplicate map is better and when a number of different event is better depends completely on the map - and simply adding another page to a door event to block that door when a certain switch is ON is not enough to warrant a duplicate map.\nduplicate maps are more for differtent cutscenes with many moving events and similar cases where the map would get confusing if too many events need to behave differently.\nor for your own example of using different map properties like different encounter tables.\nClick to expand...\nI was also considering the fact that on \"market day\", NPCs also won't have movement routes on said maps during those same days, so it would be an easy way to remove them all in one go, but i'm not entirely sure yet if i want that for every NPC or just the ones who actively have shops open at the market.\nWas kind of thinking of making those days function similarly to \" festival days \" in the HM series, or stardew valley. people aren't at home because they're all at the market during its open hours.\nAlso, thanks for the clarification, i was under the impression number of maps would affect the games ability to run efficiently, only based that off of info i got from some misleading stuff online a while back, don't recall where tho.\nPretty much none of the characters or other \" events \" would be triggerable during these \" festival \" like days, meaning any cutscenes that may be available normally after some switches are activated, WONT be when entering the map.\nThe only \" events \" that would still be the same on these maps would be background things ( animals, effects, ect. ) and fishing locations, typical background stuff.\nI also have a couple cutscenes that trigger in the forest that have digital CG scenes that i would ONLY want to trigger during the day, and if its night tell you to turn back and not go deeper into the forest to avoid triggering it at the wrong time, or passing it by mistake and never seeing it, so night time versions of maps might be ideal in this scenario.\nATT_Turan said:\nNothing you describe here has anything effect on your game's functionality, nor any effect on lag.\nIt's entirely organizational for you within your project.\nLag is caused by your processor having to work hard. Things in an RPG Maker game which can cause that:\n- Too many Autorun or parallel events doing too much stuff with no Wait\n- Loading large files\nMerely\nhaving\na file (a map, an image, a plugin, whatever) in your project does absolutely nothing. It sits there on your hard drive.\nClick to expand...\nQuick question, will EMPTY events slow the game down a lot? Trying to find the best way to add seasonal veggies to a farm map, that automatically change with the season as a background thing, not interactable, just sitting there with the image.\nTrying to make the farm map work with the space i have, but to fill that space in efficiently, it requires a LOT of veggies and can only show one image per event, would require over 100 lol\nIf that would cause an issue ( which i suspect it will with such a high volume ) then i'll just have to do it another way, this is just the easiest so i thought i'd ask. I've just never had experience with this before and idk what the threshold generally is for one map."
+    },
+    {
+      "post_id": "js-post-1463084",
+      "author": "Andar",
+      "date": "2024-08-12T16:13:01+0900",
+      "body": "as I already wrote above, only parallel process events can add significantly to the lag. and it doesn't matter if those are with content or empty - so yes, and empty parallel process is bad.\nanything else (like an empty action button event) is simply a decoration and you can add hundreds of them."
+    },
+    {
+      "post_id": "js-post-1463085",
+      "author": "CreatureCola",
+      "date": "2024-08-12T16:18:06+0900",
+      "body": "Andar said:\nas I already wrote above, only parallel process events can add significantly to the lag. and it doesn't matter if those are with content or empty - so yes, and empty parallel process is bad.\nanything else (like an empty action button event) is simply a decoration and you can add hundreds of them.\nClick to expand...\nSo as long as the  event is set to action button, it's not going to really add any significant changes to the fsp or anything? awesome, thanks for clearing that up!"
+    },
+    {
+      "post_id": "js-post-1463086",
+      "author": "TheAM-Dol",
+      "date": "2024-08-12T16:18:31+0900",
+      "body": "CreatureCola said:\nwill EMPTY events slow the game down a lot?\nClick to expand...\nAndar said:\nev3en the number of events on a map has limited effect on lag - the only events that can cause a lot of lag are badly structured parallel process events\nClick to expand...\nPlease read what people have already written.\nTechnically, yes data must be used to know that an event is there, but it is so negligible that it's not something you should care about.\nNow, the editor sometimes has a hard time coping with a lot of events on a map, but we are talking when you get into 1k+ events on a map.\nNone of this sounds like it will cause lag, but sounds disorganized and a poor way of managing your project. You may want to consider using common events to create \"event folders\" and better utilize the tools available for structuring logical flow to reduce redundant switches, variables, maps, and events.\nAs the professor of my (failed) programming course said:\nIf you find yourself writing the same function many times, there is probably a more efficient way of handling it."
+    },
+    {
+      "post_id": "js-post-1463107",
+      "author": "ATT_Turan",
+      "date": "2024-08-12T20:10:58+0900",
+      "body": "CreatureCola said:\nQuick question, will EMPTY events slow the game down a lot?\nClick to expand...\nATT_Turan said:\nThings in an RPG Maker game which can cause that:\n- Too many Autorun or parallel events doing too much stuff with no Wait\n- Loading large files\nClick to expand...\nAndar said:\nthe only events that can cause a lot of lag are badly structured parallel process events\nClick to expand...\nI don't know what else you need here.\nI gave you a brief description of what lag is - why or how would an empty event create extra work for your processor?"
+    },
+    {
+      "post_id": "js-post-1463113",
+      "author": "utunnels",
+      "date": "2024-08-12T20:41:23+0900",
+      "body": "Well I'm already regret of having multiple copies of things because if I change one I need to change the copies."
+    },
+    {
+      "post_id": "js-post-1463120",
+      "author": "Ms Littlefish",
+      "date": "2024-08-12T21:28:05+0900",
+      "body": "This thread is closed at OP’s request."
+    }
+  ]
+}

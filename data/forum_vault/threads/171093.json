@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/making-one-event-move-to-another-event-by-name-specifically.171093",
+  "title": "MZ Making one event move to another event by name specifically",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T22:36:49.651742+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1463601",
+      "author": "wormonastringMZ",
+      "date": "2024-08-15T05:00:07+0900",
+      "body": "Hi! I was wondering if there was any kind of plugin based on the title above. If it works with VisuStella's furniture system plugin, I would be happiest!\nBasically, I'm working on a project in which an NPC would be spawned from one map to another. This map would be one where custom furniture can be placed anywhere, and each furniture piece is an event using VisuStella's plugin. Once spawned, the NPC would walk over to this furniture event and interact with it.\nI've found other movement plugins, but I've yet to see one which does it by the event's name. This makes it difficult, as I don't know how I'd be able to make the NPCs move to events that have an unpredictable ID.\nThank you so much for looking into this! If this is the wrong category, please let me know as I am unfamiliar with this site.\nI will also use a plugin for MV, but prefer MZ as it is the one I am making my project on."
+    },
+    {
+      "post_id": "js-post-1463603",
+      "author": "Arcaines",
+      "date": "2024-08-15T05:07:47+0900",
+      "body": "Yeah so JS plugin request if you want a plugin made for you, JS support is help in regards to a plugin you are using and need help with said plugin.\nHave you tried doing it by Event ID rather then by name?"
+    },
+    {
+      "post_id": "js-post-1463604",
+      "author": "wormonastringMZ",
+      "date": "2024-08-15T05:13:49+0900",
+      "body": "Martin_Arcainess said:\nYeah so JS plugin request if you want a plugin made for you, JS support is help in regards to a plugin you are using and need help with said plugin.\nHave you tried doing it by Event ID rather then by name?\nClick to expand...\nYes, I have tried by Event ID. While it does work, it unfortunately only does for events on that map, and not for furniture placed by the VisuStella plugin. I was hoping to find a plugin that could work with both!\nWould it be better to move this to plugin support, and if so, how can I move it?"
+    },
+    {
+      "post_id": "js-post-1463605",
+      "author": "AquaEcho",
+      "date": "2024-08-15T05:14:45+0900",
+      "body": "This is doable by script, the problem is more than one event can have the same name.\nIf you have three \"chair\"s in the map, which one would you go to?"
+    },
+    {
+      "post_id": "js-post-1463606",
+      "author": "wormonastringMZ",
+      "date": "2024-08-15T05:18:55+0900",
+      "body": "AquaEcho said:\nThis is doable by script, the problem is more than one event can have the same name.\nIf you have three \"chair\"s in the map, which one would you go to?\nClick to expand...\nDo you know what script you'd have to do? If so, I would love to know and thank you as well!\nI also had this concern, though I figured this could potentially be something that's checked through eventing."
+    },
+    {
+      "post_id": "js-post-1463608",
+      "author": "AquaEcho",
+      "date": "2024-08-15T05:26:45+0900",
+      "body": "Something like\nCode:\nfor (var i = 0; i < $gameMap.events().length; i++){ if ($gameMap.events()[i].event().name == \"Chair\"){ $gameVariables.setValue(20, $gameMap.events()[i]._id); break;} }\nLoop through every event on the map, if the event is named \"Chair\", set Game Variable 20 to its id, stop at the first result.\nThen you would just use your movement script to move to event ID ($gameVariables.value(20))"
+    },
+    {
+      "post_id": "js-post-1463609",
+      "author": "wormonastringMZ",
+      "date": "2024-08-15T05:28:14+0900",
+      "body": "AquaEcho said:\nSomething like\nCode:\nfor (var i = 0; i < $gameMap.events().length; i++){ if ($gameMap.events()[i].event().name == \"Chair\"){ $gameVariables.setValue(20, $gameMap.events()[i]._id); break;} }\nLoop through every event on the map, if the event is named \"Chair\", set Game Variable 20 to its id, stop at the first result.\nThen you would just use your movement script to move to event ID ($gameVariables.value(20))\nClick to expand...\nThank you! I'll have to test this, I'll let you know how it works asap."
+    },
+    {
+      "post_id": "js-post-1463610",
+      "author": "ATT_Turan",
+      "date": "2024-08-15T05:28:30+0900",
+      "body": "To find the first event ID on a map with a given name, you can set a variable to\nCode:\n$gameMap.events().find(event => event.event().name == \"chair\").eventId()"
+    },
+    {
+      "post_id": "js-post-1463611",
+      "author": "wormonastringMZ",
+      "date": "2024-08-15T05:31:36+0900",
+      "body": "ATT_Turan said:\nTo find the first event ID on a map with a given name, you can set a variable to\nCode:\n$gameMap.events().find(event => event.event().name == \"chair\").eventId()\nClick to expand...\nThank you! I'm a beginner at this, would you put this before the moving command?"
+    },
+    {
+      "post_id": "js-post-1463614",
+      "author": "ATT_Turan",
+      "date": "2024-08-15T05:35:22+0900",
+      "body": "kurokami said:\nThank you! I'm a beginner at this, would you put this before the moving command?\nClick to expand...\nYou do that in the script field for Control Variables to put the event ID in it.\nYou would have to have some way to be able to use that ID in a move route - some movement plugin or something. That's not built into RPG Maker.\nI suppose you could use Control Variables math to calculate the X and Y differences between your current position and the chair event, then use Loop event commands with moving a single space at a time to get there, but that wouldn't account for any other furniture in the way."
+    },
+    {
+      "post_id": "js-post-1463616",
+      "author": "Slaughty",
+      "date": "2024-08-15T05:50:08+0900",
+      "body": "The furniture system has a Javascript on place notetag where you could store the event x and y coordinates to variables and then use the event and movement core plugin command move the event to those x y coordinates"
+    },
+    {
+      "post_id": "js-post-1463739",
+      "author": "wormonastringMZ",
+      "date": "2024-08-15T23:48:14+0900",
+      "body": "Just wanted to report to everybody that I've got it all working. Thank you to everybody's suggestions, you were a lot of help!"
+    }
+  ]
+}

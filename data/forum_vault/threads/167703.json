@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/trouble-setting-up-multiple-respawning-resource-nodes.167703",
+  "title": "Trouble setting up multiple respawning resource nodes",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum素材",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T22:36:53.518392+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1437001",
+      "author": "Shy_Yhormie",
+      "date": "2024-04-13T15:40:43+0900",
+      "body": "Hello, I'm a first time poster and semi-new to RPG Maker in general. I'm currently trying to set up multiple respawning resource nodes. Since I plan on having quite a few I've tried making a couple of common events with self-switches so each node will have it's own respawn time. I have a harvest common event that works properly, but the respawn counter common event seems to not turn off, even after the correct number of respawn hours pass. I've tried quite a few different ways of writing these events as well, and they either get stuck on the \"Node is empty\" message, or end up \"dead\" after the first node usage. I've tried a couple of tutorials, scouring the forum, and spending a few hours experimenting but I can't figure it out on my own currently. Thanks in advance for any help! I can attach pictures tomorrow, as I haven't been able to figure out how to screenshot a single screen since I got a second one for the life of me and I am posting this before bed and don't feel like booting up my laptop lol."
+    },
+    {
+      "post_id": "js-post-1437019",
+      "author": "AquaEcho",
+      "date": "2024-04-13T18:29:21+0900",
+      "body": "Without seeing your event page we cant help you much. You could use Trihan's code or Galv's Event Spawn Timers plugin\nHow to create respawning resource nodes using a single variable and a common event.\nTutorial Title: How to create respawning resource nodes  Brief Description: This tutorial will teach you how to implement a system of harvestable resource nodes which replenish themselves on a timer without the need for many game variables or huge nests of conditional branches.  Requirements...\nforums.rpgmakerweb.com\nMV Event Spawn Timers\nFEATURES Allows you to set a respawn time for events that can activate a self switch or switch once their timer has expired. This time is kept from map to map. This could be used for things like pl…\ngalvs-scripts.com"
+    },
+    {
+      "post_id": "js-post-1437066",
+      "author": "Shy_Yhormie",
+      "date": "2024-04-14T02:56:34+0900",
+      "body": "That makes sense and I apologize for not attaching them sooner. I've attached my common events and a couple of the ways I've tried implementing them. The only difference is one event has a second page with the self switch A on and it contains the respawn common event. I've tried a few other ways, but these two seem to work with varying degrees of success. The first harvest works, the second harvest MAY work, and then they seem to stop working all together. Half the time during the second harvest the action trigger needs to be pressed twice for it to actually work as well. So if you're not mashing the action trigger you'd most likely assume resources do not respawn. I feel like I've gotten close but am still missing something to make it work and keep it working consistently. Thanks again for any help and thanks for the resources to check out."
+    },
+    {
+      "post_id": "js-post-1437067",
+      "author": "AquaEcho",
+      "date": "2024-04-14T03:06:13+0900",
+      "body": "What is counting up the respawn timer? What is on the second page of your event 1?"
+    },
+    {
+      "post_id": "js-post-1437070",
+      "author": "Shy_Yhormie",
+      "date": "2024-04-14T03:27:28+0900",
+      "body": "I assumed the respawn timer would start counting up when self switch A turned on. Is that not how it works? I have a time counter as well that runs parallel to a control switch called time that turns on as soon as the game is started. Do self switches not activate these sort of counters like control switches? I also have a pass time function that adds to the time counter and respawn counter, so even if they're not automatically increasing wouldn't that cause it to still respawn when it hits the required number? Also the second event page just contains the Resource_Respawn common event, with the event page having self-switch A on."
+    },
+    {
+      "post_id": "js-post-1437073",
+      "author": "AquaEcho",
+      "date": "2024-04-14T03:45:44+0900",
+      "body": "What does the entire page for the respawn common event and the second page of event 1 look like? Because the way you have it written, variables are only ever incrementing when you interact with the events.\nAlso post the other time events you didn't show."
+    },
+    {
+      "post_id": "js-post-1437101",
+      "author": "Shy_Yhormie",
+      "date": "2024-04-14T06:29:35+0900",
+      "body": "Would it work if I had a control switch that was turned on by self-switch A for the respawn counter to run parallel to? And here's the full respawn event, event page two and the time counter."
+    },
+    {
+      "post_id": "js-post-1437127",
+      "author": "AquaEcho",
+      "date": "2024-04-14T09:08:18+0900",
+      "body": "Did you make a control switch called \"Self Switch A\"? Control switches are supposed to be global, self switches are to track changes on individual events. Every event has self switches, so making a global switch called that doesn't tell you which event's self switch it is.\nThere is also no reason to be using up several global variables to track the respawn time of one event. You only need to count frames, which represent 1/60th of a second. If the respawn time is one minute then you would count down 360 frames."
+    },
+    {
+      "post_id": "js-post-1437130",
+      "author": "Shy_Yhormie",
+      "date": "2024-04-14T09:26:25+0900",
+      "body": "I didn't make a control switch called self-switch A. I tried making a control switch called respawn time for the respawn counter to run parallel to whenever a self-switch is activated after the resource node is used. I was trying to get the resource nodes set up using just two common events or so, but I think I'll need to use control switches so that each node activates a separate counter probably? Yeah I'll shorten the counters variable usage."
+    },
+    {
+      "post_id": "js-post-1437131",
+      "author": "AquaEcho",
+      "date": "2024-04-14T09:32:38+0900",
+      "body": "Set the second event page to parallel, put Wait:360 frames, then Self Switch A: OFF\nThat will set it back to the first event page after a minute. Change 360 to whatever number of frames you want the respawn time to be."
+    },
+    {
+      "post_id": "js-post-1437140",
+      "author": "Shy_Yhormie",
+      "date": "2024-04-14T10:49:24+0900",
+      "body": "When I tried this method earlier I wasn't able to figure out a way to force frames to pass with the sleep system I have. It's just a simple event that adds however many control variable hours to the time counter event when used. So the in game time would pass, but the respawn time for the items was still linked to the frames passing. I'm trying to set the respawn time to be 48 in game hours, that's how I ended up making everything complicated lol. I've been checking out the respawning resource nodes tutorial linked earlier as well a bit but haven't fully grasped it yet. I may try to see if I can somehow set it up with the in-engine timers maybe?"
+    },
+    {
+      "post_id": "js-post-1437142",
+      "author": "AquaEcho",
+      "date": "2024-04-14T10:56:16+0900",
+      "body": "That's going to be a lot more complicated and you're better off using either the script or plugin I linked in my first post instead of reinventing the wheel."
+    },
+    {
+      "post_id": "js-post-1437143",
+      "author": "Shy_Yhormie",
+      "date": "2024-04-14T10:59:44+0900",
+      "body": "Aaaaah damn alrighty I was hoping it'd be simple lol. Thanks very much for your time and help!"
+    },
+    {
+      "post_id": "js-post-1437144",
+      "author": "AquaEcho",
+      "date": "2024-04-14T11:03:03+0900",
+      "body": "It's not simple because now you're introducing variable times and events that can remotely affect the timers on other events. You'd have to keep a list of every event with a timer then loop through it to add/subtract from those timers. It's basically what Trihan's script does and he already wrote it so no reason to write it again."
+    }
+  ]
+}
