@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-do-you-use-an-absorb-skill-that-hurts-a-group-of-enemies-and-then-heals-the-entire-party-as-opposed-to-just-the-user.171035",
+  "title": "How do you use an absorb skill that hurts a group of enemies and then heals the entire party as opposed to just the user?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:51.724789+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1463124",
+      "author": "SuperPhillip",
+      "date": "2024-08-12T21:38:52+0900",
+      "body": "Struggling to figure this out in my return to RPG Maker MV, and I imagine it'd be easier if I had the Yanfly Skill Core plugin but unfortunately, I do not possess that one. However, I do have the Battle Core Engine that provides with me the delightful side view, if that assists in helping me.\nRegardless, I have a summon that is intended to hurt all enemies, absorb some of their HP, and give it to the user's party. Currently, however, it does hurt all enemies (that much is correct), but for instance, if there are three enemies, it will only heal the user of the skill and it will do so three times (i.e. it will show three healing HP numbers one after the other in succession like a tower of numbers).\nHow would I go about creating the battle scenario I am wanting? Thanks for reading!"
+    },
+    {
+      "post_id": "js-post-1463128",
+      "author": "ATT_Turan",
+      "date": "2024-08-12T22:02:22+0900",
+      "body": "Phil32 said:\nI imagine it'd be easier if I had the Yanfly Skill Core plugin but unfortunately, I do not possess that one.\nClick to expand...\nWhy? You just download it.\nChange the skill's damage type to HP Damage. Change your damage formula as follows:\nCode:\nv[42] = your damage formula here; v[42]\nwhere 42 is the ID of an available variable. (It will look best for you to set the damage variance to 0% and put any randomness in your formula if you want it)\nThen give it the Skill Core notetag:\nCode:\n<Post-Damage Eval>\n$gameParty.aliveMembers().forEach(actor =>\n{\n    actor.gainHp(v[42]);\n    actor.startDamagePopup();\n});\n</Post-Damage Eval>\nAgain, changing the 42 to whatever ID you used above. If you don't want them to heal the amount the enemies were damaged, you can perform whatever math you like inside the parentheses where the variable is."
+    },
+    {
+      "post_id": "js-post-1463139",
+      "author": "SuperPhillip",
+      "date": "2024-08-12T23:17:55+0900",
+      "body": "ATT_Turan said:\nWhy? You just download it.\nClick to expand...\nAh, goofy here didn't recall that was one of the base plugins. >_<; I really need to stop taking breaks from this software.\nATT_Turan said:\nChange the skill's damage type to HP Damage. Change your damage formula as follows:\nCode:\nv[42] = your damage formula here; v[42]\nwhere 42 is the ID of an available variable. (It will look best for you to set the damage variance to 0% and put any randomness in your formula if you want it)\nThen give it the Skill Core notetag:\nCode:\n<Post-Damage Eval>\n$gameParty.aliveMembers().forEach(actor =>\n{\n    actor.gainHp(v[42]);\n    actor.startDamagePopup();\n});\n</Post-Damage Eval>\nAgain, changing the 42 to whatever ID you used above. If you don't want them to heal the amount the enemies were damaged, you can perform whatever math you like inside the parentheses where the variable is.\nClick to expand...\nSo, currently--and heaven forbid I'd get variables correct and be a fast learner--I have it where the enemies are damaged, but now it shows three numbers as heals for all three of my party members as opposed to just one healing number for each party member. I'd prefer it if each party member just got one that wasn't the sum of all three monsters taking damage. How would I resolve this, and would you need to see my current setup I have created skill menu-wise? That's no problem, if so. I'll just need to take some screengrabs.\nRegardless, thank you so much for your help so far today and your patience! You've been a great assistance."
+    },
+    {
+      "post_id": "js-post-1463144",
+      "author": "ATT_Turan",
+      "date": "2024-08-12T23:36:54+0900",
+      "body": "Oh, yeah, just doing it that way with skill core the scope of all enemies would count as resolving the action on each - that was my bad.\nTo get that to work properly, you'll need to either program the skill using Yanfly's Action Sequences, or use Auto Passive States (which also requires Buffs & States).\nThe latter is a bit simpler - you'd make a state that's granted as a passive state by the skill. You'll also need a game switch - I'll use ID 69, you change it to whatever.\nThen you give the state:\nCode:\n<Custom Turn Start Effect>\n$gameSwitches.setValue(69, false);\n</Custom Turn Start Effect>\nAnd you change the skill notetag to read:\nCode:\n<Post-Damage Eval>\nif (!$gameSwitches.value(69))\n{\n    $gameParty.aliveMembers().forEach(actor =>\n    {\n        actor.gainHp(v[42]);\n        actor.startDamagePopup();\n    });\n    $gameSwitches.setValue(69, true);\n}\n</Post-Damage Eval>"
+    }
+  ]
+}

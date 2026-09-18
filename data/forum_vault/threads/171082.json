@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-do-you-hide-the-tp-gauge-from-view-until-later-in-a-given-game.171082",
+  "title": "How do you hide the TP gauge from view until later in a given game?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:48.370675+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1463502",
+      "author": "SuperPhillip",
+      "date": "2024-08-14T16:12:59+0900",
+      "body": "Hello, all. Wanting to use TP for my summoning system, but summoning isn't an option until a little later in my game. Thus, I don't wish to have the TP gauge visible in menus--whether battle or elsewhere--until summoning becomes available--again, until a little later in my game. Otherwise players might wonder what the gauge is there for, why it's filling up, and all that kind of player confusion.\nHow would I go about doing this? Do I need a specific plugin to make this work? If so, which one, and what do I need to alter to make it work?\nThanks for reading!!"
+    },
+    {
+      "post_id": "js-post-1463513",
+      "author": "Arcaines",
+      "date": "2024-08-14T18:16:05+0900",
+      "body": "This should work.\nSkill Core (YEP) - Yanfly.moe Wiki\nwww.yanfly.moe\nI'm not 100% sure how to add back on but it shouldn't be that difficult."
+    },
+    {
+      "post_id": "js-post-1463532",
+      "author": "Slaughty",
+      "date": "2024-08-14T21:15:26+0900",
+      "body": "You could use skill core and give a state the notetage <swap 3: null> and give that state to the actor and then remove the state when you want tp to appear."
+    },
+    {
+      "post_id": "js-post-1463542",
+      "author": "SuperPhillip",
+      "date": "2024-08-14T21:42:07+0900",
+      "body": "Thanks for these answers so far, you two!\nHmm. I must be doing something wrong. I believe I set the state correctly, adding the <swap 3: null> in the right notetag inside it. I then put the \"Add State\" to both party members who are at the beginning of the game. However, the TP bar still showed within the mock battle of sorts that happens during the beginning of the game.\nHere are a pair of screens of what I have. Any guidance is most appreciated!"
+    },
+    {
+      "post_id": "js-post-1463555",
+      "author": "Slaughty",
+      "date": "2024-08-14T22:14:58+0900",
+      "body": "My bad, I think it's supposed to be capitalized, <Swap Gauge 3: Null>"
+    },
+    {
+      "post_id": "js-post-1463556",
+      "author": "SuperPhillip",
+      "date": "2024-08-14T22:23:31+0900",
+      "body": "There we go! Got it working so far. Thank you very much!"
+    },
+    {
+      "post_id": "js-post-1463560",
+      "author": "ATT_Turan",
+      "date": "2024-08-14T22:54:34+0900",
+      "body": "Slaughty said:\nMy bad, I think it's supposed to be capitalized, <Swap Gauge 3: Null>\nClick to expand...\nJust to note - the capitalization does not matter. The very different words between <swap 3> and <swap gauge 3> do matter\nOf course,\n@Phil32\nwould have done best to verify your suggested notetag with the actual instructions"
+    },
+    {
+      "post_id": "js-post-1463638",
+      "author": "SuperPhillip",
+      "date": "2024-08-15T10:49:52+0900",
+      "body": "All righty. I've stumbled upon an issue with my current setup. When a party member in battle gets K.O.'d, the TP gauge returns. How would I go about making that not happen? I could possibly put the null state on the K.O. notetag, but when I would want TP to be able to eventually get used, then the gauge would always disappear when a party member was K.O.'d."
+    },
+    {
+      "post_id": "js-post-1463644",
+      "author": "Slaughty",
+      "date": "2024-08-15T11:10:35+0900",
+      "body": "Oh yeah, states are cleared on ko.\nIf you are using the steam version of rpg maker in the dlc folder that ships with rpg maker mv is a plugin called retain states on death or retain on death. It has a notetag to put on the state where it doesn't get cleared on ko."
+    },
+    {
+      "post_id": "js-post-1463652",
+      "author": "SuperPhillip",
+      "date": "2024-08-15T11:41:49+0900",
+      "body": "Yep! Have that DLC folder and plugin, so thanks for that! Found it with ease.\nI definitely goofed something up in its implementation, though, because when I have the plugin ON, it causes the error in the first screenshot. I'm not sure what \"push\" is in this case or how I would go about defining it. I'm guessing this goes into Javascript territory, though, so this might make this thread off subject or in the wrong category perhaps. :x"
+    },
+    {
+      "post_id": "js-post-1463654",
+      "author": "Slaughty",
+      "date": "2024-08-15T11:55:23+0900",
+      "body": "I don't think it likes battle core or buffs and states core. What's your plugin order look like? Try putting retainstateondeath below all yanfly plugins."
+    },
+    {
+      "post_id": "js-post-1463655",
+      "author": "SuperPhillip",
+      "date": "2024-08-15T12:00:50+0900",
+      "body": "Slaughty said:\nI don't think it likes battle core or buffs and states core. What's your plugin order look like? Try putting retainstateondeath below all yanfly plugins.\nClick to expand...\nHere you go! Hopefully the order isn't overly (or ideally, at all) repulsive!"
+    },
+    {
+      "post_id": "js-post-1463657",
+      "author": "ATT_Turan",
+      "date": "2024-08-15T12:23:00+0900",
+      "body": "Since you appear to own the Yanfly library, this is also in Yanfly's State Categories plugin (which would not have any conflicts with Buffs & States, etc.)."
+    },
+    {
+      "post_id": "js-post-1463658",
+      "author": "Maliki79",
+      "date": "2024-08-15T12:23:03+0900",
+      "body": "A little late, but I made a small plugin that hides TP and can be turned on/off via script calls.\nMight be a bit easier to handle as it doesn't depend on states.\nLINK\nHope it helps!"
+    },
+    {
+      "post_id": "js-post-1463667",
+      "author": "SuperPhillip",
+      "date": "2024-08-15T14:01:53+0900",
+      "body": "ATT_Turan said:\nSince you appear to own the Yanfly library, this is also in Yanfly's State Categories plugin (which would not have any conflicts with Buffs & States, etc.).\nClick to expand...\nOoh, I actually didn't have that one. I had several plugins from Yanfly from around the years on an \"as-needed basis\"--and this was before most of them were put behind a paywall (they're well-worth the money, to be fair). So I just went ahead and purchased all the battle ones for $10 as a bundle, which has already made things easier and given me so many more options than what I had battle-wise. Thanks!\nMaliki79 said:\nA little late, but I made a small plugin that hides TP and can be turned on/off via script calls.\nMight be a bit easier to handle as it doesn't depend on states.\nLINK\nHope it helps!\nClick to expand...\nThanks for this, as well! I didn't see this until later--after I purchased the plugin pack--but that's okay!"
+    }
+  ]
+}

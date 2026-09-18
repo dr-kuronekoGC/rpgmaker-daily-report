@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/issue-between-synrec-preloader-and-galvmessagesoundeffect.170985",
+  "title": "Issue between Synrec Preloader and GalvMessageSoundEffect",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:36.202312+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1462696",
+      "author": "cacamarx",
+      "date": "2024-08-10T22:40:32+0900",
+      "body": "Hello everyone, I’m nearing the end of the development of my game demo. That's why, a few days ago, I decided to take care of some of the less important details that were left. Among these details was the \"blipblipblip\" sound when characters speak. I quickly found the GalvMessageSoundEffect plugin. I applied it to all the dialogues in the demo. At first, everything worked fine, but after a few dialogues, I started noticing some bugs. Some sound effects weren’t playing, some dialogues no longer had the \"blipblip,\" and eventually, no one had the \"blipblip\" anymore.\nI deactivated all my plugins and tested them one by one to see where the problem was coming from. I eventually found out that it was caused by the Synrec Preloader. Here are the links to the two plugins:\nhttps://synrec.itch.io/rpg-maker-mz-preloader\nhttps://forums.rpgmakerweb.com/index.php?threads/galvs-message-sound-effects.49418/\nWhen the preloader is deactivated, everything works fine. However, I can't remove it from my game. To implement a multi-language system, I use JSON, which is hard to load for vanilla RPG Maker. The preloader helps keep everything running smoothly. So, it’s really impossible for me to remove it.\nI don't think this incompatibility is unsolvable. The preloader plugin has many options that might be able to fix the problem, but I don't understand all of them. I usually manage to solve my problems through deduction, but my coding skills and understanding are quite limited.\nI did try to force the loading of the sound effects that weren’t playing, but it didn’t change anything. And yes, it's always the same sound effects at the same moments that stop loading, until eventually, nothing loads anymore. This issue doesn’t come from my code or events because once the preloader is deactivated, everything works fine. It's like after a certain time or a certain number of events played, the preloader make it all bugged.\nI’m including a copy of the options offered by the plugin in case it might help."
+    },
+    {
+      "post_id": "js-post-1462698",
+      "author": "SGHarlekin",
+      "date": "2024-08-10T23:05:00+0900",
+      "body": "Have you tried just not preloading all audio? You're not preloading anything else from the settings you show, so I wonder why you think the preloader helps with anything."
+    },
+    {
+      "post_id": "js-post-1462699",
+      "author": "cacamarx",
+      "date": "2024-08-10T23:10:52+0900",
+      "body": "SGHarlekin said:\nHave you tried just not preloading all audio? You're not preloading anything else from the settings you show, so I wonder why you think the preloader helps with anything.\nClick to expand...\nI tried and some SE are still not played. I don't know what to do."
+    },
+    {
+      "post_id": "js-post-1462700",
+      "author": "SGHarlekin",
+      "date": "2024-08-10T23:16:38+0900",
+      "body": "I just wonder why you think the preloader helps with anything. You're only preloading audio, which is like... Minimal effect. Usually you'd go and preload images, as that can help getting rid of flickering and lag during animation load in battles.\nAs far as I can judge it, this preloader doesn't do anything for you. Regardless, another thing you can try is changing up the plugin order. Putting the message sound plugin below or above the preloader might just solve the problem.\nAnother thing could be just using a different preloader. I have heard from plenty of people that synrec's doesn't work. (Although I use it myself, albeit with some personal edits he made for me.) So maybe give that a shot as well."
+    },
+    {
+      "post_id": "js-post-1462702",
+      "author": "Andar",
+      "date": "2024-08-10T23:21:19+0900",
+      "body": "preloaders aren't miracle workers, they all have limitations.\nand the biggest problem is that they can't create RAM to hold all data - if you preload too many things, the RAM will be filled up and the first files preloaded will be removed.\nThe best preloaders are those who give you script commands to allow you to load files shortly before they are needed during the game instead of filling RAM at engine start with files that aren't needed for many hours of gameplay."
+    },
+    {
+      "post_id": "js-post-1462740",
+      "author": "cacamarx",
+      "date": "2024-08-11T04:16:53+0900",
+      "body": "SGHarlekin said:\nI just wonder why you think the preloader helps with anything. You're only preloading audio, which is like... Minimal effect. Usually you'd go and preload images, as that can help getting rid of flickering and lag during animation load in battles.\nAs far as I can judge it, this preloader doesn't do anything for you. Regardless, another thing you can try is changing up the plugin order. Putting the message sound plugin below or above the preloader might just solve the problem.\nAnother thing could be just using a different preloader. I have heard from plenty of people that synrec's doesn't work. (Although I use it myself, albeit with some personal edits he made for me.) So maybe give that a shot as well.\nClick to expand...\nBasically, I first installed a preloader to help my dialogues load more smoothly. I have a plugin that uses a JSON file for each language in the game—I have two, English and French. However, without the preloader, the text is slow to load. For example, when a character is speaking and I press the spacebar to skip to the end of their dialogue, the game freezes for about 0.5 seconds, and then all the text suddenly appears. I’m not sure if that explanation is clear.\nA friend of mine suggested that I might need a preloader. Interestingly, Synrec's preloader didn’t seem to solve my problem at first (since it's only for images and sound), but it actually did make my dialogues load correctly when it was enabled. I assume this is an unintended side effect of the plugin but this side effect make this plugin essential to me.\nI can’t disable it now, or I’ll need a special plugin to preload my JSON files (and I haven’t found any that do that)"
+    },
+    {
+      "post_id": "js-post-1462764",
+      "author": "SGHarlekin",
+      "date": "2024-08-11T07:03:07+0900",
+      "body": "Not sure what part of this is correcting my text, you've just repeated the problem we already understood. We're just making suggestions at what could potentially help.\nAnyway, good luck and all that."
+    },
+    {
+      "post_id": "js-post-1462770",
+      "author": "cacamarx",
+      "date": "2024-08-11T07:35:34+0900",
+      "body": "Andar said:\npreloaders aren't miracle workers, they all have limitations.\nand the biggest problem is that they can't create RAM to hold all data - if you preload too many things, the RAM will be filled up and the first files preloaded will be removed.\nThe best preloaders are those who give you script commands to allow you to load files shortly before they are needed during the game instead of filling RAM at engine start with files that aren't needed for many hours of gameplay.\nClick to expand...\nDo you have an example of this type of preloader? My game will be long, so the JSON files will be quite large. If the files are fully loaded but the first lines are removed, I could run into significant issues. These two language JSON files are the only reason I need a preloader plugin and the type of preloader that you're talking about seems very interesting for this case.\nSGHarlekin said:\nNot sure what part of this is correcting my text, you've just repeated the problem we already understood. We're just making suggestions at what could potentially help.\nAnyway, good luck and all that.\nClick to expand...\nI may be very dumb, but the freeze problem with dialogues doesn’t come from the loading of the JSON file. You were right; I don’t need a preloader for my JSON file. The issue with the text freezing is due to the Victor Engine SFont plugin. The freezing occurs because of the loading of the font image for each textbox, which causes the problem. The Synrec preloader doesn’t affect my JSON file; it just loads the font image. This is why it resolves the textbox freezing issue.\nNow that I understand the problem, there's still another issue. The Synrec preloader still interferes with my SE (sound effects) and Bibipbip from the Galv MessageSE plugin. I’ve tried other preloaders (including some I created with ChatGPT), but none of them worked. Synrec seems to be the only one that fixes the freeze caused by VE SFont. Is there a simple way to preload all the images in the img/sfonts folder for my entire game?"
+    },
+    {
+      "post_id": "js-post-1463148",
+      "author": "utunnels",
+      "date": "2024-08-12T23:47:08+0900",
+      "body": "Well if you want to preload an image from that folder just call ImageManager.loadBitmap(\n'img/sfonts/', 'filename')\nCreate a little plugin file and put all those load lines inside.\nImageManager.loadBitmap('img/sfonts/', 'file1')\nImageManager.loadBitmap('img/sfonts/', 'file2')\nImageManager.loadBitmap('img/sfonts/', 'file3')\nImageManager.loadBitmap('img/sfonts/', 'file4')\nI can see synrec preloader removed ImageManager.clear method, which could be a problem if you have tons of image."
+    },
+    {
+      "post_id": "js-post-1463159",
+      "author": "cacamarx",
+      "date": "2024-08-13T01:22:40+0900",
+      "body": "utunnels said:\nWell if you want to preload an image from that folder just call ImageManager.loadBitmap(\n'img/sfonts/', 'filename')\nCreate a little plugin file and put all those load lines inside.\nImageManager.loadBitmap('img/sfonts/', 'file1')\nImageManager.loadBitmap('img/sfonts/', 'file2')\nImageManager.loadBitmap('img/sfonts/', 'file3')\nImageManager.loadBitmap('img/sfonts/', 'file4')\nClick to expand...\nThanks you so much ! Bro, I've been struggling for days and the fact that the anwser is so simple is hard to believe. I have no doubt that it preload the image but this code make the same issue that other preloader I tried. the image og the sfont is no longer shown. I have the little blipblip from GalvMessageSE and i have the faces of my actor in the textbox, I can also skip them but no text is shown. Do you know why ?"
+    },
+    {
+      "post_id": "js-post-1463222",
+      "author": "utunnels",
+      "date": "2024-08-13T06:58:21+0900",
+      "body": "I can't be sure without knowing what translate plugin you are using. Also it might help if you post some screen shot of the code you preload the sfonts and what the sfont folder looks like."
+    }
+  ]
+}

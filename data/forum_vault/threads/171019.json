@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-can-i-add-new-blend-modes-to-galvs-layers-graphics-plugin.171019",
+  "title": "MZ How can I add new blend modes to Galv's \"Layers Graphics\" plugin?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:32.630533+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1463015",
+      "author": "Fcrlovem",
+      "date": "2024-08-12T09:50:37+0900",
+      "body": "The other day working in clip studio paint, we achieved a beautiful effect for the map illuminations.\nI have tried to make it look the same in the game using the Galv Layers Graphics plugin but in clip studio we have used blending modes that the plugin doesn't have, these would be \"Soft Light\" and \"Glow Dodge\".\nI'm looking for someone who can help me solve or achieve this please help .\nThank you all so much for being part of this community ."
+    },
+    {
+      "post_id": "js-post-1463031",
+      "author": "utunnels",
+      "date": "2024-08-12T10:37:58+0900",
+      "body": "According to pixi.js it seems only a few a supported in webGL mode.\nYou'll need to change to canvas mode to use most of them.\nJavaScript:\n/**\n * Various blend modes supported by PIXI.\n *\n * IMPORTANT - The WebGL renderer only supports the NORMAL, ADD, MULTIPLY and SCREEN blend modes.\n * Anything else will silently act like NORMAL.\n *\n * @static\n * @constant\n * @memberof PIXI\n * @name BLEND_MODES\n * @type {object}\n * @property {number} NORMAL\n * @property {number} ADD\n * @property {number} MULTIPLY\n * @property {number} SCREEN\n * @property {number} OVERLAY\n * @property {number} DARKEN\n * @property {number} LIGHTEN\n * @property {number} COLOR_DODGE\n * @property {number} COLOR_BURN\n * @property {number} HARD_LIGHT\n * @property {number} SOFT_LIGHT\n * @property {number} DIFFERENCE\n * @property {number} EXCLUSION\n * @property {number} HUE\n * @property {number} SATURATION\n * @property {number} COLOR\n * @property {number} LUMINOSITY\n */\nvar BLEND_MODES = exports.BLEND_MODES = {\n  NORMAL: 0,\n  ADD: 1,\n  MULTIPLY: 2,\n  SCREEN: 3,\n  OVERLAY: 4,\n  DARKEN: 5,\n  LIGHTEN: 6,\n  COLOR_DODGE: 7,\n  COLOR_BURN: 8,\n  HARD_LIGHT: 9,\n  SOFT_LIGHT: 10,\n  DIFFERENCE: 11,\n  EXCLUSION: 12,\n  HUE: 13,\n  SATURATION: 14,\n  COLOR: 15,\n  LUMINOSITY: 16,\n  NORMAL_NPM: 17,\n  ADD_NPM: 18,\n  SCREEN_NPM: 19\n};"
+    },
+    {
+      "post_id": "js-post-1463069",
+      "author": "Fcrlovem",
+      "date": "2024-08-12T14:29:35+0900",
+      "body": "utunnels said:\nAccording to pixi.js it seems only a few a supported in webGL mode.\nYou'll need to change to canvas mode to use most of them.\nJavaScript:\n/**\n * Various blend modes supported by PIXI.\n *\n * IMPORTANT - The WebGL renderer only supports the NORMAL, ADD, MULTIPLY and SCREEN blend modes.\n * Anything else will silently act like NORMAL.\n *\n * @static\n * @constant\n * @memberof PIXI\n * @name BLEND_MODES\n * @type {object}\n * @property {number} NORMAL\n * @property {number} ADD\n * @property {number} MULTIPLY\n * @property {number} SCREEN\n * @property {number} OVERLAY\n * @property {number} DARKEN\n * @property {number} LIGHTEN\n * @property {number} COLOR_DODGE\n * @property {number} COLOR_BURN\n * @property {number} HARD_LIGHT\n * @property {number} SOFT_LIGHT\n * @property {number} DIFFERENCE\n * @property {number} EXCLUSION\n * @property {number} HUE\n * @property {number} SATURATION\n * @property {number} COLOR\n * @property {number} LUMINOSITY\n */\nvar BLEND_MODES = exports.BLEND_MODES = {\n  NORMAL: 0,\n  ADD: 1,\n  MULTIPLY: 2,\n  SCREEN: 3,\n  OVERLAY: 4,\n  DARKEN: 5,\n  LIGHTEN: 6,\n  COLOR_DODGE: 7,\n  COLOR_BURN: 8,\n  HARD_LIGHT: 9,\n  SOFT_LIGHT: 10,\n  DIFFERENCE: 11,\n  EXCLUSION: 12,\n  HUE: 13,\n  SATURATION: 14,\n  COLOR: 15,\n  LUMINOSITY: 16,\n  NORMAL_NPM: 17,\n  ADD_NPM: 18,\n  SCREEN_NPM: 19\n};\nClick to expand...\nMmm thank you very much for the answer.\nSo I have to change the canvas mode of pixi.js? The canvas mode is something written with code? Sorry, I don't know how to program or anything\nBut if I get to understand what it is I can google the steps to do it. Thank you very much"
+    },
+    {
+      "post_id": "js-post-1463081",
+      "author": "utunnels",
+      "date": "2024-08-12T16:05:59+0900",
+      "body": "There should be a plugin called Community basic that allows you to change that.\nOr you can edit package.json and add canvas behind html\n\"main\": \"index.html?canvas\","
+    },
+    {
+      "post_id": "js-post-1463129",
+      "author": "Fcrlovem",
+      "date": "2024-08-12T22:05:59+0900",
+      "body": "utunnels said:\nThere should be a plugin called Community basic that allows you to change that.\nOr you can edit package.json and add canvas behind html\n\"main\": \"index.html?canvas\",\nClick to expand...\nOoh I understand\nI'll try both as soon as possible.\nThank you very much."
+    },
+    {
+      "post_id": "js-post-1463683",
+      "author": "Fcrlovem",
+      "date": "2024-08-15T16:13:13+0900",
+      "body": "@utunnels\nGood morning, I have some bad news .\nI tried to edit package.json as you explained me but when I open the game file it edits the code automatically deleting what I added.\nOn the other hand I've searched for the community basic plugin and I can't find it  I found a comunity lighting, I even found a video where they used comunity basic together with the layers Graphics plugin from Galv but it didn't say where to find the community plugin"
+    },
+    {
+      "post_id": "js-post-1463684",
+      "author": "utunnels",
+      "date": "2024-08-15T16:39:31+0900",
+      "body": "Ah, maybe RMMZ removed canvas mode?\nEdit*\nYeah, it seems like that. I recall RMMZ uses a different animation format that can only be loaded using webGL."
+    },
+    {
+      "post_id": "js-post-1463694",
+      "author": "Fcrlovem",
+      "date": "2024-08-15T18:30:22+0900",
+      "body": "What should I do then?"
+    },
+    {
+      "post_id": "js-post-1463703",
+      "author": "utunnels",
+      "date": "2024-08-15T19:59:32+0900",
+      "body": "The best bet is try to implement them using shaders and filters. However I don't think there is a plugin made for MZ yet.\nThere is an implement for example, but not a RPGmaker plugin. :/\nGitHub - pixijs-userland/picture: A plugin that includes a sprite renderer that reduces border artifacts and 3 blend mode implementations for WebGL\nA plugin that includes a sprite renderer that reduces border artifacts and 3 blend mode implementations for WebGL - pixijs-userland/picture\ngithub.com"
+    },
+    {
+      "post_id": "js-post-1463704",
+      "author": "Fcrlovem",
+      "date": "2024-08-15T20:12:00+0900",
+      "body": "Entiendo, veré qué se puede hacer. Muchas gracias"
+    },
+    {
+      "post_id": "js-post-1463706",
+      "author": "utunnels",
+      "date": "2024-08-15T20:22:08+0900",
+      "body": "Don't worry without them you can still create beautiful art.\nJust you need to combined the existing blend mode and make change to your pictures. Just need a bit more effort to try."
+    }
+  ]
+}

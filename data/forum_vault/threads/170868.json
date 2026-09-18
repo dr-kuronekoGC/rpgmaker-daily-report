@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/problem-with-extending-buffs-debuffs.170868",
+  "title": "Problem with extending Buffs/Debuffs",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:41.382439+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1461684",
+      "author": "Lizardcats",
+      "date": "2024-08-05T18:21:00+0900",
+      "body": "Hi everyone.\nSo I've been using Visustella's plugins for my game. And I'm trying to create a skill that extends all debuffs currently applied to the target. Unfortunately though, every time I test things the game crashes when I use the skill. Can't seem to figure out why, though that's probably because I'm not at all versed with Javascript.\nStrangely enough another skill with similar tags works fine on States, so my initial workaround was to change the buffs and debuffs to States. I want them to work like regular buffs/debuffs, where if a \"buff\" is applied to a upon a \"debuffed\" target (or vice-versa) it removes the \"debuff\" instead of applying the \"buff\", but I can't seem to get it to work, skills just keep both the buff and debuff on the target.\nCould someone please help me fix either method so at least one works? If I haven't supplied enough information, I can provide more."
+    },
+    {
+      "post_id": "js-post-1462006",
+      "author": "ATT_Turan",
+      "date": "2024-08-07T05:24:58+0900",
+      "body": "It looks like you're using the notetags correctly - it's not really possible to help you debug anything in a VisuStella plugin because the code is obfuscated. You'd have to follow the steps on their itch page to submit a bug report.\nIt's hard to help you with the second question, about states, because you've cropped your screenshots down and we can't see the IDs of the states you're putting the notetags in.\nIt doesn't look like the notetags would work because you haven't correctly formatted the closing tag. It needs to be </JS On Add State> with no space after the word \"State\"."
+    },
+    {
+      "post_id": "js-post-1462110",
+      "author": "Lizardcats",
+      "date": "2024-08-07T19:06:34+0900",
+      "body": "Welp, taking the space out after the State fixed the second method. I do feel a bit stupid after missing something as simple as that though.\nI guess I'll go submit a bug report to Visustella. But as long as what I have works, I'm happy.\nThanks for the fix."
+    },
+    {
+      "post_id": "js-post-1462114",
+      "author": "Robro33",
+      "date": "2024-08-07T19:38:06+0900",
+      "body": "for the first, you could try doing it in a more manual way with the js skill notetags.\ntry this\nCode:\n<JS Post-Apply>\nfor (var i = 2; i < 7; i++)\n  if (target._buffs[i] < 0)\n    target._buffTurns[i] += 3;\n</JS Post-Apply>"
+    }
+  ]
+}

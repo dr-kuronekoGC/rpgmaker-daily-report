@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-to-cycle-between-dialogue-each-time-you-speak-to-the-same-npc-but-with-a-catch.171099",
+  "title": "How to cycle between dialogue each time you speak to the same NPC--but with a catch?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumチュートリアル",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:47.927995+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1463679",
+      "author": "SuperPhillip",
+      "date": "2024-08-15T15:16:06+0900",
+      "body": "Hello, all. Mulling over how to do something related with quests and changing up dialogue in RPG Maker MV, but I guess this is more a general eventing/scripting question. Regardless, forgive me if my title for this topic is too obtuse or vague.\nAt any rate, I aim to have a quest station NPC that essentially tells rumors of people needing help (i.e. quest opportunities within the game world). This way if there are out-of-the-way quests or quests that the player may not want to investigate the entire world to find and discover, they can be \"guided\" towards these quests, and not in a \"hit you over the head\" sort of way.\nSome quick notes on what I'm looking for and wanting--all at once from this NPC:\n- I want it to update with new rumors/quest opportunities on a regular basis through story progression.\n- I want it to cycle through all available rumors, one rumor given each time the NPC is talked to--thus, once say, all three currently available rumors have been told, it'd cycle back to the first of those three rumors the next time the NPC was talked to.\n- I want it to remove rumors when the quest pertaining/related to that rumor is successfully completed by the player.\nHow would you most efficiently--or since I'm not exactly the brightest with the more technical aspects of eventing/scripting--most easily accomplish such a feat? Thanks for reading!"
+    },
+    {
+      "post_id": "js-post-1463681",
+      "author": "JohnDoeGames",
+      "date": "2024-08-15T15:50:45+0900",
+      "body": "This all comes down to conditions. If there is just 1 condition, you can use a switch.\nYou get a condition like:\nIf switch Met Before is off:\n\"Hi, I am polly.\"\nTurn switch on\nElse:\n\"Nice to see you again. Remember me?\" I'm Polly!\"\nIf you have more cases, you might want to use a variable.\nIf var Met Before is 0:\n\"Hi, I am polly.\"\nIf var Met Before is 1:\n\"Hi, we Met once before, right?\"\nIf var Met before > 2:\n\"We keer walking into each other. Maybe it's meant to be.\""
+    },
+    {
+      "post_id": "js-post-1463685",
+      "author": "Andar",
+      "date": "2024-08-15T17:06:04+0900",
+      "body": "As said above you'll need to use variable - but getting all your conditions in will be much more complex than the example above.\nThe key is the maximum number of rumors - the higher that is the more problematic this becomes with eventing alone.\nthe first step would be to make some sort of matrix where every possible rumor gets some sort of storage to decide on \"active\"/\"inactive\".\nthen you'll need a rumor counter - each time you trigger the NPC it would give the rumor assigned to that specific number, then check the matrix and count up to the next active number\nand your different quest givers would activate a rumor in the matix when it becomes available and inactivate it when the quest is solved."
+    },
+    {
+      "post_id": "js-post-1463697",
+      "author": "ShadowDragon",
+      "date": "2024-08-15T18:52:53+0900",
+      "body": "for guided info towards a quest, you can check the quest is in progress.\nor use a switch and variable.\ncondition: script: $gameSwitches.value(x) && $gameVariables.value(y) == 1\nguide for step 2\nelse\ncondition: script: $gameSwitches.value(x) && $gameVariables.value(y) == 0\nguide for step 1 if needed\nend\nkeep in mind, the condition is reverse, one its true, you can do it in order as well\nfor  0, 1, 2, 3 etc as it checks if the value is equal to the number, so it can guide you.\nvariables are powerful if used correctly, you can also use labels if you want to\nto check if a step is completed and jump to the correct label.\ndepends on the step and complicity, find the best way that suit you."
+    },
+    {
+      "post_id": "js-post-1463714",
+      "author": "ATT_Turan",
+      "date": "2024-08-15T21:15:27+0900",
+      "body": "Just as a quick addendum, I don't see any reason to resort to script calls to check variable values. The regular Conditional Branch allows you to look at a variable's value for a quest being active/at a certain stage.\nThe tricky/weird part of this is keeping your place in the rumors while completing quests or whatever which might change your place.\nTo that end, I actually suggest the opposite of what Andar did. Do\nnot\nhave and modify a variable which indicates the maximum number of rumors found. Instead, when you talk to the NPC, it increments your placement in the stack if that rumor isn't pertinent. For example:\nAt the beginning of the game, set Rumor Count to 1\nThen, in the Rumor NPC:\nConditional Branch -> Rumor Count == 1\n- Give the first rumor\n- Control Variables -> Rumor Count + 1\n- Exit Event Processing\nConditional Branch -> Rumor Count == 2\n- Control Variables -> Rumor Count + 1\n- Conditional Branch -> You have the quest to find the thing\n- - Give the rumor about that quest\n- - Exit Event Processing\nConditional Branch -> Rumor Count == 3\n- If you did not have the quest in the prior conditional, 2 will automatically become 3 and go to this"
+    },
+    {
+      "post_id": "js-post-1464353",
+      "author": "Showsni",
+      "date": "2024-08-18T11:45:39+0900",
+      "body": "Seems to me that the easiest way would be to just keep all the rumours in an array, and add or remove from it as necessary. So, when you first start the game, set up a list in one of your variables with the starting rumours (I'm storing mine in variable 3 here):\n(All of these are Script event commands)\nCode:\nconst array = ['hint 1', 'hint 2', 'hint 3'];\n$gameVariables.setValue(3, array)\nThen, when you talk to the NPC, they can have a Script that says:\nCode:\n$gameMessage.add($gameVariables.value(3)[0]);\n$gameVariables.value(3).push($gameVariables.value(3).shift())\nWhich will display the first message in the list, and then cycle it to the end.\nTo add new messages to the list, you'd do:\nCode:\n$gameVariables.value(3).push('hint 4')\nAnd to remove them from the list once you've completed a quest, you'd do:\nCode:\nconst index = $gameVariables.value(3).indexOf('hint 2');\nif (index > -1) {\n  $gameVariables.value(3).splice(index, 1);\n}"
+    },
+    {
+      "post_id": "js-post-1464356",
+      "author": "ATT_Turan",
+      "date": "2024-08-18T12:10:59+0900",
+      "body": "@Showsni\nyou could absolutely implement it like that.\nI would strongly disagree with it being the simplest way. It's the most efficient, in terms of how long the conversation event will be.\nBut there are numerous disadvantages to doing it that way, especially the fact that all of the conveniences of the Show Text command are taken away.\n- If the event has a face displayed, that's an additional script call the OP has to learn; and if it's a different face for any of the rumors, it's an entire additional chunk of code with an array of which hints have which faces, or turning the array into an array of objects with the face index and the rumor itself...that simple thing can get very messy.\n- If the OP isn't using a plugin for word wrapping, they'll have to use another piece of software or keep manual track of the character count and manually insert line breaks. Speaking of:\n- Any escape codes will have to be written differently to account for being stored in an external string.\nAlso, it only works well at all if the extent of the event is literally talk to the NPC, get a rumor, end. If there's anything else that can happen for some of them - multiple messages being shown, or the player getting choices to ask questions in return - it falls apart. Granted, the OP didn't specify anything like that, but it's easily accounted for by the eventing solution above and not really possible in this code version.\nFinally, there's a strong disadvantage in that the push() method puts the new hint at the\nend\nof the array. So when the player gets a new quest, they won't hear a rumor about it until they've gone all the way through everything else the NPC has to say. You'd need additional code to put the new, pertinent rumor at the beginning."
+    },
+    {
+      "post_id": "js-post-1464360",
+      "author": "utunnels",
+      "date": "2024-08-18T12:53:26+0900",
+      "body": "Using\n@ATT_Turan\n‘s idea:\nCode:\n◆If：rumortalk = 1\n  ◆If：rumor1 is ON\n    ◆Text：None, Window, Bottom\n    ：    ：let's talk about rumor #1\n    ◆\n  ：End\n  ◆Control Variables：#0001 rumortalk += 1\n  ◆Exit Event Processing\n  ◆\n：End\n◆If：rumortalk = 2\n  ◆If：rumor2 is ON\n    ◆Text：None, Window, Bottom\n    ：    ：let's talk about rumor #2\n    ◆\n  ：End\n  ◆Control Variables：#0001 rumortalk += 1\n  ◆Exit Event Processing\n  ◆\n：End\n◆If：rumortalk = 3\n  ◆If：rumor3 is ON\n    ◆Text：None, Window, Bottom\n    ：    ：let's talk about rumor #3\n    ◆\n  ：End\n  ◆Control Variables：#0001 rumortalk = 1\n  ◆Exit Event Processing\n  ◆\n：End\nEdit* Fixed the last one."
+    }
+  ]
+}

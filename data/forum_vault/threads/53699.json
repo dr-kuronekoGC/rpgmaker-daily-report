@@ -1,0 +1,875 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/iavra-localization.53699",
+  "title": "Iavra Localization",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:31.386225+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-529902",
+      "author": "Iavra",
+      "date": "2015-12-26T08:13:56+0900",
+      "body": "Note: Refer to the following posts for a detailed description of all subplugins belonging to this one.\nAuthor\nIavra\nTerms of Use\nFree to use for both commercial and non-commercial games. Please give credit.\nDownload\nCore:\nhttp://pastebin.com/DQjGF7DC\nMenu:\nhttp://pastebin.com/zLjzkeei"
+    },
+    {
+      "post_id": "js-post-529903",
+      "author": "Iavra",
+      "date": "2015-12-26T08:14:15+0900",
+      "body": "IAVRA.I18N.language;         Returns the current language.\nIAVRA.I18N.language = lang;  Sets the current language to lang.\nIAVRA.I18N.languages();      Returns a list of all available languages.\nIAVRA.I18N.localize(text);   Localizes the given text.\nPlugin\nIavra Localization - Core\nDescription\nThe core plugin for localization, which contains all logic to load text and convert escape codes.\nParameters\n@param Escape Code\n@desc Code, that will be used to retrieve localized strings. \"{key}\" serves as placeholder for the text key.\n@default #{{key}}\n@param Languages\n@desc Comma-separated list of languages, that should be supported. The first entry will be used as the default.\n@default en\n@param File Path\n@desc Path to the language files to load. The sequence \"{lang}\" will be replaced with the languages entered above.\n@default {lang}.json\nHow to Use\nTo setup this plugin, register all supported languages inside the \"Languages\" parameter, separated by commas. You also need to place the corresponding files inside your project folder. So, for example, if you want to support the languages \"en\" (english) and \"de\" (german) and the parameter \"File Path\" is set to its default value, you'll need to add the two files \"de.json\" and \"en.json\" to the root folder of your project.\nThe first language will automatically used as the default langage.\nDuring runtime, every instance of \"#{...}\" (can be changed via plugin parameter \"Escape Code\") will get replaced with a localized string, where \"...\" stands for a text key. So, if your language file looks like this:\n{\n\"text.test\": \"This is a test text\"\n}\nEvery instance of \"#{text.test}\" will be replaced with \"This is a test text\". For better maintainability, it's also possible to split keys at dots:\n{\n\"text\": {\n\"test\": \"This is a test text\"\n}\n}\nThe above example will result in the same key as the first one, but makes it easier to construct nested keys, for example for the names of all actors. Instead of objects, you can also use arrays, like this:\n{\n\"text\": [\n\"Text 1\",\n\"Text 2\",\n\"Text 3\"\n]\n}\nThis will create the keys \"text.0\", \"text.1\" and \"text.2\", each pointing to the text listed at that array index. If needed, you are free to combine the object and array notations.\nKeys can also contain keys themselves, which will be replaced recursively. This allows you, to define important strings, like city names, at a single position and reference it everywhere else:\n{\n\"text\": \"Hi, my name is #{actor}\",\n\"actor\": \"Harold\"\n}\nYou can use all escape characters, like \"\\V[...]\" inside the files, but will need to double the backslashes. Line breaks can be entered by using \"\\n\", since JSON doesn't support real linebreaks inside strings.\nThe plugin offers the following script calls:\nCode:\nIAVRA.I18N.language;         Returns the current language.\nIAVRA.I18N.language = lang;  Sets the current language to lang.\nIAVRA.I18N.languages();      Returns a list of all available languages.\nIAVRA.I18N.localize(text);   Localizes the given text."
+    },
+    {
+      "post_id": "js-post-529904",
+      "author": "Iavra",
+      "date": "2015-12-26T08:14:22+0900",
+      "body": "Plugin\nIavra Localization - Menu\nDescription\nAdds a \"Language\" option to the options menu, that can be used to change game language on the fly.\nParameters\n@param Option Label\n@desc Label to be used for the option in the options menu.\n@default Language\n@param Language Labels\n@desc Comma-separated list of \"language:label\" pairs, to be used for the language selection.\n@default en:English\nHow to Use\nSimply place this plugin in your plugin list after \"Iavra Localization - Core\". The parameters \"Option Label\" and \"Language Labels\" are used to define the text to be shown. You are free to use escape codes inside those parameters, as well, though i recommend against localizing the language labels."
+    },
+    {
+      "post_id": "js-post-529905",
+      "author": "Iavra",
+      "date": "2015-12-26T08:14:39+0900",
+      "body": "Reserved for future text exporter/importer plugin (don't hate me, mods...)."
+    },
+    {
+      "post_id": "js-post-530231",
+      "author": "Makeratore",
+      "date": "2015-12-27T01:59:35+0900",
+      "body": "Can you provide a very small demo with 2 or 3 sample languages? I'm trying to use these plugins, but I don't understand well how to use them properly.\nEDIT: Sorry, I think that I've figured out how the plugins work. Thanks anyway!"
+    },
+    {
+      "post_id": "js-post-530334",
+      "author": "Iavra",
+      "date": "2015-12-27T06:50:51+0900",
+      "body": "I created a small demo and linked it in the OP (didn't translate everything, but it should give a general idea). I don't have a personal webspace, so i picked a random freehoster...\nA small note, that i forgot to mention before: If your plugin contains special characters (for example german ä, ö, ü, ß), you should save the language files in UTF-8 (Notepad++ can do this, for example). Otherwise, the characters won't get displayed correctly."
+    },
+    {
+      "post_id": "js-post-554047",
+      "author": "Lunawolfcomics",
+      "date": "2016-02-10T10:21:15+0900",
+      "body": "Hey so this is a fantastic plug-in thank you! I downloaded the demo.dem but I'm not sure how to actually play it haha. How do I open the .dem file?"
+    },
+    {
+      "post_id": "js-post-554195",
+      "author": "Iavra",
+      "date": "2016-02-10T17:29:52+0900",
+      "body": "Something seems to have gone wrong, while uploading the demo :/ I don't have it anymore, since i switched to a new computer since i made this plugin. The plugin shouldn't actually be too hard to use, though."
+    },
+    {
+      "post_id": "js-post-554643",
+      "author": "DreamX",
+      "date": "2016-02-11T14:44:26+0900",
+      "body": "Wonderful plugin. I love it."
+    },
+    {
+      "post_id": "js-post-566013",
+      "author": "NeroAkuryoo",
+      "date": "2016-03-07T02:09:25+0900",
+      "body": "EDIT¹: Managed to figure out how to write the json files. But I've read in the development threat that is possible to use the keys on plugins, anyone knows if it's possible and how to do it?\nEDIT²: Also, anyone knows if it's possible to make buttons text from plugins to change with this one?"
+    },
+    {
+      "post_id": "js-post-566349",
+      "author": "Iavra",
+      "date": "2016-03-07T16:43:58+0900",
+      "body": "The plugin replaces keys, when text is written on a window or bitmap. So, as long as the plugin displays its text via one of these options, it will be translated."
+    },
+    {
+      "post_id": "js-post-566431",
+      "author": "NeroAkuryoo",
+      "date": "2016-03-08T00:00:23+0900",
+      "body": "Thanks for the quick answer. The problem was that I tried to use that \"\\\\:[key]\" formart that was used in the development thread. Traded it for the \"#{key}\" format and now it's working fine. You really saved my skin because I need to use this for my college course work."
+    },
+    {
+      "post_id": "js-post-580422",
+      "author": "Parable Games",
+      "date": "2016-04-04T07:37:50+0900",
+      "body": "Greetings.\nI am using your plugin in my project, and it is working fine. However, when I use \"Change Name\" event, it shows #{(my_variables)} instead of char name (I am storing some char names in .json files because the names change as the language).\nHow can I solve this? Temporarily I created a menu when the player choose the default char name or input a new name (first it blanks the char name then call change name screen).\nThank you very much!"
+    },
+    {
+      "post_id": "js-post-580963",
+      "author": "Iavra",
+      "date": "2016-04-05T05:02:27+0900",
+      "body": "I see...Window_NameEdit draws the actor name 1 character at a time, so it won't get replaced with the actual text. For now i don't have the time to fix it, but i'll see what i can do when i get to rewrite the plugin."
+    },
+    {
+      "post_id": "js-post-581060",
+      "author": "Parable Games",
+      "date": "2016-04-05T08:16:54+0900",
+      "body": "Iavra said:\nI see...Window_NameEdit draws the actor name 1 character at a time, so it won't get replaced with the actual text. For now i don't have the time to fix it, but i'll see what i can do when i get to rewrite the plugin.\nClick to expand...\nOk, thank you! While I wait you rewrite the plugin, I will continue using my temp solution."
+    },
+    {
+      "post_id": "js-post-583595",
+      "author": "Iavra",
+      "date": "2016-04-09T19:20:53+0900",
+      "body": "I decided, that i won't support the input name scene out of the box. It won't be able to coexist together with games, that want to localize their character names, so i have to decide to go follow one of those routes. You can use the following snippet to resolve the character name prior to calling the scene:\nCode:\n(function($) {\n    var alias_initialize = $.prototype.initialize;\n    $.prototype.initialize = function(actor, maxLength) {\n        actor._name = IAVRA.I18N.localize(actor._name);\n        alias_initialize.call(this, actor, maxLength);\n    }\n})(Window_NameEdit)"
+    },
+    {
+      "post_id": "js-post-583651",
+      "author": "Parable Games",
+      "date": "2016-04-09T23:07:24+0900",
+      "body": "Iavra said:\nI decided, that i won't support the input name scene out of the box. It won't be able to coexist together with games, that want to localize their character names, so i have to decide to go follow one of those routes. You can use the following snippet to resolve the character name prior to calling the scene:\n(function($) {\nvar alias_initialize = $.prototype.initialize;\n$.prototype.initialize = function(actor, maxLength) {\nactor._name = IAVRA.I18N.localize(actor._name);\nalias_initialize.call(this, actor, maxLength);\n}\n})(Window_NameEdit)\nClick to expand...\nIt worked perfectly! Thank you very much, iavra!"
+    },
+    {
+      "post_id": "js-post-594474",
+      "author": "AnnTenna",
+      "date": "2016-05-06T05:35:42+0900",
+      "body": "Thank you for an interesting plugin.\nIt is very sad that there is no exporter / importer functions.\nWhen you planning to add this?"
+    },
+    {
+      "post_id": "js-post-602864",
+      "author": "srazysnake",
+      "date": "2016-05-27T16:13:16+0900",
+      "body": "Thank  you! Very nice!\nfound out that I can just use comma(,) on each text line and add words to create new lines.\nmy question is... for a really long sentence- is there a way to put half of it under it? (pressing space in normal editing.)\nthank you, I hope for your reply."
+    },
+    {
+      "post_id": "js-post-604927",
+      "author": "oktchau",
+      "date": "2016-06-01T07:47:34+0900",
+      "body": "Thanks fort the great plugin. Very versatile. I just would like to add that Windows Defender has been giving false positive for Trojan:Win32/Spursint.A!cl\non both scripts."
+    },
+    {
+      "post_id": "js-post-605104",
+      "author": "srazysnake",
+      "date": "2016-06-01T16:47:05+0900",
+      "body": "oktchau said:\nThanks fort the great plugin. Very versatile. I just would like to add that Windows Defender has been giving false positive for Trojan:Win32/Spursint.A!cl\non both scripts.\nClick to expand...\nyeah... it did it to me too.\nkinda had to trust you in this one... lolz. []\noh here's a very short Korean-English game I made using your plugin iavra, thank you.\n(you're mentioned in the credits too! XD)\nPC:\nhttp://www.mediafire.com/download/51kmm45osc9otui/03.+Project03+v3.4a.zip\nAndroid:\nhttp://www.mediafire.com/download/xigxysgeku49iu7/03.+Project03-armv7.android.20160529175533.apk\nquite a nice capability it has, too bad it is a bit tedious to change every term manually by typing-in #{keys}...;;\n... still searching for how to change/break lines of the dialogues in #{keys} itself. []\nmaybe it can be added in the future? lolz."
+    },
+    {
+      "post_id": "js-post-605163",
+      "author": "Iavra",
+      "date": "2016-06-01T21:26:15+0900",
+      "body": "I planned to add an exporter, that would create a json file from all text content in the game, while (optionally?) replacing it with generated keys, but i don't really have the time now.\nLine breaks can be inserted by using \\n."
+    },
+    {
+      "post_id": "js-post-605326",
+      "author": "oktchau",
+      "date": "2016-06-02T02:36:36+0900",
+      "body": "The exporter would be great.\nIavra said:\nI planned to add an exporter, that would create a json file from all text content in the game, while (optionally?) replacing it with generated keys, but i don't really have the time now.\nClick to expand...\nThis would be great. Multilanguage is an overlooked aspect on RPG Maker MV. We are making RPGs, the text is the single most important thing going on! Much more important than any custom battle system.\nI've used your plugin to translate all the database and plugins terms. I will replace/translate all the text boxes once the game is finished so I hope you eventually get the time and motivation to add the exporter in the next semester : )"
+    },
+    {
+      "post_id": "js-post-605362",
+      "author": "srazysnake",
+      "date": "2016-06-02T03:33:11+0900",
+      "body": "Iavra said:\nI planned to add an exporter, that would create a json file from all text content in the game, while (optionally?) replacing it with generated keys, but i don't really have the time now.\nLine breaks can be inserted by using \\n.\nClick to expand...\nThnx!\n@oktchau\nYeah... exporter would be smashing.\nI'm also doing the same with Korean localization... but doing it a new from scratch since all the terms became like...\n#{text.term01}, #{text.term02}..... and so on and became un-readable altogether XD. []\ndon't make the same mistake I made, next time- name your keys the same key names you're replacing it with! XD\neg) Harold > #{Harold}, not #{actor1} haha;;;"
+    },
+    {
+      "post_id": "js-post-609169",
+      "author": "srazysnake",
+      "date": "2016-06-10T09:57:11+0900",
+      "body": "Another request/question after I noticed a problem while translating.\nI noticed, within game- you use the command:\n\\n[actor number]\nto make the NPCs address you directly, eg: I name my character Mark- and NPCs can say 'Hi Mark!' if I use that command.\n......and here's the problem.\nyour plugin's line-break command is:\n\\n\n....so it just breaks lines, and leaves the '[]' part shown within the game.\nis there a different command for your plugin for specifically addressing actors?\nor is there a way to make the 1st command isolated from your plugin's break-line command?"
+    },
+    {
+      "post_id": "js-post-609261",
+      "author": "Iavra",
+      "date": "2016-06-10T15:13:47+0900",
+      "body": "You double the backslashes. Any character sequence preceded by a \\ is interpreted (\\n is a line break, \\t a tab, etc). \\\\ prints the backslash itself, which can then get interpreted by the maker."
+    },
+    {
+      "post_id": "js-post-612735",
+      "author": "Raystorm7",
+      "date": "2016-06-17T18:48:18+0900",
+      "body": "Thanks for the excellent plugin!!\nIt's possible to have a command for call the language menu?\nI would like to show, after the game starts and before the title screen appears, a simple list with languages and then the user can choose one of it.\nThanks!"
+    },
+    {
+      "post_id": "js-post-612774",
+      "author": "Iavra",
+      "date": "2016-06-17T20:55:21+0900",
+      "body": "That would probably be an additional plugin, since the current menu hooks into the options screen. It shouldn't be that hard to do, since it would only be a basic window backed by the existing data, but i really don't have the time for that right now..."
+    },
+    {
+      "post_id": "js-post-612777",
+      "author": "Raystorm7",
+      "date": "2016-06-17T21:05:52+0900",
+      "body": "Iavra said:\nThat would probably be an additional plugin, since the current menu hooks into the options screen. It shouldn't be that hard to do, since it would only be a basic window backed by the existing data, but i really don't have the time for that right now...\nClick to expand...\nOk!\nThanks for the tip!"
+    },
+    {
+      "post_id": "js-post-619186",
+      "author": "Sajiki",
+      "date": "2016-07-01T20:20:47+0900",
+      "body": "Hey\nThats Plugin no working\nI have two language files, en.json and de.json.\nCore:\nEscape Code -> #{{key}}\nLanguage -> en,de\nFile Path -> {lang}.json\nMenu:\nOption Label -> Language\nLanguage Labels -> en:English,de:German\nFiles Path:\nen.json and de.json is in root from game.\nPlugins in JS/Plugins.\nRPG Maker MV from Steam!\nI can switch in the options but dont working\nWhy?"
+    },
+    {
+      "post_id": "js-post-619217",
+      "author": "Iavra",
+      "date": "2016-07-01T21:54:06+0900",
+      "body": "Does the text doesn't get displayed at all or are you only unable to switch between languages? If the former, try switching the language manually by executing the following script in console (F8 during testplay, F12 in chrome):\nIAVRA.I18N.language = 'de';\t\t// or any other language.\nYou can use the following script to get the language, that's currently active:\nCode:\nIAVRA.I18N.language;"
+    },
+    {
+      "post_id": "js-post-619321",
+      "author": "Sajiki",
+      "date": "2016-07-02T02:14:55+0900",
+      "body": "Thanks, its work\nI created a new demo for you. Its unpacked and you can Show all.\nbpc_demo_language.rar\nHave fun guys.\nMfg\nSajiki"
+    },
+    {
+      "post_id": "js-post-619333",
+      "author": "Kyuukon",
+      "date": "2016-07-02T02:38:56+0900",
+      "body": "I've been playing around with this plugin. I really like how easy and versatile it is\nGood job!"
+    },
+    {
+      "post_id": "js-post-636588",
+      "author": "Kyuukon",
+      "date": "2016-08-13T19:48:40+0900",
+      "body": "Hm. When I try to use the escape code \"\\\\N[1]\" (draw actor 1 name) it gives me the error: \"Unexpected Token N\". Same happens with variables. I'm using Yanfly Message Core, just in case.\nAny clue\n?\nSolved it by placing the plugin above Yanfly's."
+    },
+    {
+      "post_id": "js-post-658489",
+      "author": "Val",
+      "date": "2016-10-07T02:38:45+0900",
+      "body": "Iavra said:\nReserved for future text exporter/importer plugin (don't hate me, mods...).\nClick to expand...\nAny update on a future extension to export/import text for you're great plugin lavra ?"
+    },
+    {
+      "post_id": "js-post-658669",
+      "author": "Iavra",
+      "date": "2016-10-07T17:28:10+0900",
+      "body": "Not for that one, but i remade the core plugin a long time ago. Andar is pretty much beta testing it, while i'm adding new features ^^"
+    },
+    {
+      "post_id": "js-post-658670",
+      "author": "Andar",
+      "date": "2016-10-07T17:32:57+0900",
+      "body": "unfortunately I haven't had time to even start the betatest, but I hope to get there next week (unless something else goes wrong in RL)"
+    },
+    {
+      "post_id": "js-post-663328",
+      "author": "Val",
+      "date": "2016-10-20T10:30:13+0900",
+      "body": "Andar said:\nunfortunately I haven't had time to even start the betatest, but I hope to get there next week (unless something else goes wrong in RL)\nClick to expand...\nHave you tried to betatesting the plugin of lavra?"
+    },
+    {
+      "post_id": "js-post-663425",
+      "author": "Andar",
+      "date": "2016-10-20T16:54:54+0900",
+      "body": "started, but didn't do much due to time limitations - and I need to test the new functions I asked for before end of Oct for keeping some other timeline..."
+    },
+    {
+      "post_id": "js-post-665936",
+      "author": "Val",
+      "date": "2016-10-27T04:44:13+0900",
+      "body": "Andar said:\nstarted, but didn't do much due to time limitations - and I need to test the new functions I asked for before end of Oct for keeping some other timeline...\nClick to expand...\nCan I give you some help on beta testing this feature?"
+    },
+    {
+      "post_id": "js-post-665944",
+      "author": "Andar",
+      "date": "2016-10-27T05:22:42+0900",
+      "body": "@Val\nyou have to ask\n@Iavra\nabout that, it's not my plugin (I just asked for a new feature for it, that's why I got to betatest that)"
+    },
+    {
+      "post_id": "js-post-668985",
+      "author": "Elundia",
+      "date": "2016-11-04T10:33:50+0900",
+      "body": "Thanks a lot for this plugin, which perfectly makes the job  BD\nBtw, i'm looking by myself to add a new title screen menu entry for language, which opens a separate option windows for language selection.\nBecause, in original state, it let the player think that switching language in the options menu doesn't do anything and need to go back to view any changes."
+    },
+    {
+      "post_id": "js-post-671951",
+      "author": "nerochepiace",
+      "date": "2016-11-13T03:23:56+0900",
+      "body": "Is possible to have an array of the languages (like IAVRA.I18N.languages()\n, but that used in the menu?\nEx: I don't want En and Es as value, but English and Espanol."
+    },
+    {
+      "post_id": "js-post-677986",
+      "author": "ben99",
+      "date": "2016-11-29T14:57:58+0900",
+      "body": "When I tried to download this plugin, my MSE delete the file and not allow me to download it. When I check MSE, it's report virus found.\nIs it false alarm? Have anyone facing the same problem?"
+    },
+    {
+      "post_id": "js-post-697838",
+      "author": "Lucie",
+      "date": "2017-01-26T09:20:12+0900",
+      "body": "@Iavra\nAm I supposed to translate the game myself or is there some way to get language packs for MV?"
+    },
+    {
+      "post_id": "js-post-697964",
+      "author": "Andar",
+      "date": "2017-01-26T19:14:19+0900",
+      "body": "The plugin can only allow you to change between texts provided by you or others - there is no automatic translation anywhere on the web that is of a decent quality.\nSo yes, even with this (or other) multi-language plugins, you have to do the translation manually."
+    },
+    {
+      "post_id": "js-post-698020",
+      "author": "Lucie",
+      "date": "2017-01-26T23:20:41+0900",
+      "body": "OK, thanks :3"
+    },
+    {
+      "post_id": "js-post-699937",
+      "author": "masterlobo",
+      "date": "2017-02-01T04:34:37+0900",
+      "body": "Hmmm, is the demo missing from 1st post?\nAnd is this supposed to work on the Terms section of the DB?"
+    },
+    {
+      "post_id": "js-post-700119",
+      "author": "masterlobo",
+      "date": "2017-02-03T13:58:54+0900",
+      "body": "Just for the record, it does work on the Terms section of the DB.\nThis plugin is amazing.\nI suggest you all implement early in development though!"
+    },
+    {
+      "post_id": "js-post-704141",
+      "author": "Gendorin",
+      "date": "2017-02-14T21:35:22+0900",
+      "body": "Hi.\nJust about time the registration system started to work.\nI have finished an initial version of a translation extractor for this plugin. You can download (and test) it from\nhttps://github.com/TiS/rpgmv-translation-extractor\n(see the 'releases' tab).\nIt needs java installed on your computer,\nmind that.\nMind that: this is an EXPERIMENTAL version of an extractor. I am not responsible for any damage to your current translation files, so... make a backup before running it.\nFeel free to test it and tell me, what you think about it."
+    },
+    {
+      "post_id": "js-post-709541",
+      "author": "masterlobo",
+      "date": "2017-03-02T15:32:54+0900",
+      "body": "Iavra, I love this plugin. It's superb!\nBut I do have one concern...\nIf the translation file gets too large, would it have perf issues? Has anyone finished a full game with this?\nGendorin said:\nHi.\nJust about time the registration system started to work.\nI have finished an initial version of a translation extractor for this plugin. You can download (and test) it from\nhttps://github.com/TiS/rpgmv-translation-extractor\n(see the 'releases' tab).\nIt needs java installed on your computer,\nmind that.\nMind that: this is an EXPERIMENTAL version of an extractor. I am not responsible for any damage to your current translation files, so... make a backup before running it.\nFeel free to test it and tell me, what you think about it.\nClick to expand...\nPardon my ignorance, but what is the extractor for? What exactly are you extracting?"
+    },
+    {
+      "post_id": "js-post-714516",
+      "author": "narome2b",
+      "date": "2017-03-18T07:28:35+0900",
+      "body": "Hello everybody !\nFirst of all, thank you very much Iavra for your plugin !\nThen, I have a little issue when I start my game (look at the picture). Do you have any idea to solve it ?\nMoreover, I didn't understand well where I have to put #{text.test}? Is it in an event ?\nRegards\nhttp://image.noelshack.com/fichiers/2017/11/1489789907-unex-error.jpg"
+    },
+    {
+      "post_id": "js-post-718366",
+      "author": "narome2b",
+      "date": "2017-03-29T14:39:19+0900",
+      "body": "up"
+    },
+    {
+      "post_id": "js-post-718375",
+      "author": "Andar",
+      "date": "2017-03-29T15:43:01+0900",
+      "body": "@narome2b\nwe can't really help you with an error unless you give us the full console screenshot.\nBest guess however is that something went wrong when you last updated the project, so please update it again to 1.4.0 (the project, not the editor - but you can update both if you didn't update the editor yet.\nthe text code goes into the show text command for example"
+    },
+    {
+      "post_id": "js-post-718887",
+      "author": "narome2b",
+      "date": "2017-03-31T04:19:01+0900",
+      "body": "I attached the full console in my picture\nI will try to update RMMV, but I think it won't be solve my probleme\nThanks for your help !"
+    },
+    {
+      "post_id": "js-post-718905",
+      "author": "Andar",
+      "date": "2017-03-31T05:24:51+0900",
+      "body": "narome2b said:\nI attached the full console in my picture\nClick to expand...\nWrong - your attached picture contains a tiny part of the console where several messages were cut off.\nThe only thing obvious from that screenshot is that you made several mistakes when updating your project, because that is the only way to get an error in the html file.\nPlease update your project again, following exactly the steps as given in the update topic (I suggest to 1.4.0). If that doesn't solve your problem, please give the full screenshot of the console output after that update when the next error happens"
+    },
+    {
+      "post_id": "js-post-721007",
+      "author": "Lynvia",
+      "date": "2017-04-06T00:30:00+0900",
+      "body": "I've been using IAVRA's Localization plugin for translation, and it's been working very well. Thanks,\n@Iavra\n, for a wonderful plugin!\nHowever, I've finally gotten to the point where I want to test deployment, and it's not working for some reason.\nI can deploy to Windows, and it creates an EXE that loads and runs with no problem (up until the first real battle, where an animation caused an error I'll cover in another post.\nHowever, the deploy to HTML, Android and iOS isn't working, it just returns an HTML window with Error - Script Error.\nWhen I launch the Chrome Dev tools/console, it's giving an uncaught error loading the json files for the game.\nAs this is my first time attempting to launch the HTML at all, and I'm doing it locally (off a memory stick)\nis this going to have to go on a website to operate, or can I launch it as a self-contained web page on my computer?\nAlso,\nis there an issue with loading JSON at all?\nI notice 23 errors and they don't all have to do with IAVRA's plugin."
+    },
+    {
+      "post_id": "js-post-722381",
+      "author": "Lady",
+      "date": "2017-04-10T08:49:08+0900",
+      "body": "I created a tutorial guide using picture. I need to use conditional branch to check what language they choose. Does any know what is the script call to detect what language the user choose?"
+    },
+    {
+      "post_id": "js-post-723017",
+      "author": "Lynvia",
+      "date": "2017-04-12T08:09:25+0900",
+      "body": "That I believe is in the help text of the plugin as well as readable in the js file with a text editor..."
+    },
+    {
+      "post_id": "js-post-729213",
+      "author": "JoePie",
+      "date": "2017-04-30T02:32:49+0900",
+      "body": "Hi\n@Iavra\n! I'm using different font for alternate language and I'm wondering is there anyway to change the font when you switch language? Many thanks for the amazing plugin!"
+    },
+    {
+      "post_id": "js-post-740313",
+      "author": "Velare92",
+      "date": "2017-06-03T12:37:36+0900",
+      "body": "It seem's like I'm way to stupid to use this plugin\nCan somebody please make a step-by-step tutorial for the dumbest idiot around here? I would love to use it, but I have NO Idea what you are all talking about. Please help!"
+    },
+    {
+      "post_id": "js-post-740429",
+      "author": "RosePortal",
+      "date": "2017-06-03T20:09:53+0900",
+      "body": "I get this...\nEverything (the game, etc.) works fine without the Lava Core script."
+    },
+    {
+      "post_id": "js-post-740854",
+      "author": "Lynvia",
+      "date": "2017-06-05T01:51:48+0900",
+      "body": "@RosePortal\n- I get errors like that when there is an issue with my language JSON file. What I would suggest to you is to save it off to another txt file, then copy the following over it:\n{\n\"temp\": {\n\"001\": \"testing to ensure everything is working right...\",\n\"002\": \"here's an end entry\"\n}\n}\nSave that for your language file, and verify the game launches. If it does, you have a typo somewhere in your JSON file.\n@RosePortal\nand\n@Velare92\nHere's what you need to know about the JSON files:\nThe JSON file is just a text file with data in it. It always starts with a curly brace { and always ends with a close brace }.\nAll the data is separated by commas and colons, and the final end of each 'container' in the set should NOT have a comma.\nThe data also HAS to have double-quotes at the beginning and end of the data.\nThe way the IAVRA plugin is set up, you can put everything in one 'set'...\n{\n\"msg01\": \"Hi, Marv, did you find a job yet?\",\n\"msg02\": \"Nah, I can't spell 'resume', much less spell what's on it.\",\n\"actor01\": \"Marv is a high school dropout with no clue and a great destiny.\",\n\"actor02\": \"Jane is a black haired beauty that only has eyes the the loser Marv.\",\n\"weapon1\": \"This rusty knife looks like it will fall apart if the wind blows on it.\",\n\"weapon2\": \"The sword belonged to Jane's grandfather. Nobody knows what the runes on the blade mean.\",\n'item1\": \"The bandaid is a stylish healing patch with an exciting anime character colorfully printed on it. The picture doesn't improve its healing properties.\",\n\"item2\": This silver key must go to something, but as tarnished as it is, the lock probably won't work.\"\n}\nNotice that it has quotes and colons separating it... Also, that each entry but the LAST one has a comma, just like in a list.\ni.e. when you go to the store remember to pick up milk, bread, and eggs.\n{\n\"name\": \"description\"\n}\nOr, you can use SUB-lists, which makes the JSON more readable (by you):\n{\n\"msg\": {\n\"01\": \"Hi, Marve, blah blah.\",\n\"02\": \"Nah, blah blah.\"\n},\n\"actors\": {\n\"Marv\": \"Marve blah blah.\",\n\"Jane\": \"Jane blah blah.\"\n},\n\"weapon\": {\n\"knife\": \"This rusty knife blah blah.\",\n\"sword\": \"This sword blah blah.\"\n},\n\"item\": {\n\"bandaid\": \"The bandaid blah blah.\",\n\"silverkey\": \"This silver key blah blah.\"\n}\n}\nNote that the SUB containers (msg, actors, weapon, item) have commas separating each entry but the LAST one (02, Jane, sword, silverkey).\nAlso note that each SUB container has a comma AFTER it, except the LAST one.\nYou can use the above data as a starting point for your JSON file.\nThe JSON file has to be saved in the root folder of your project. (for Windows, that would be Documents/Game/MyGame/) in the same place you see the audio, data, fonts etc folders.\nAnywhere in the game designer, you can put a IAVRA tag to replace the name or description, message text, etc, with what's in the IAVRA text file. It's just ingenious.\nThe tag is #{name}, where name = the tag for the text.\nFor example, Marv, above, would have the following text in his description in the editor:\n(for the non-SUB design) - #{actor01}\n(for the SUB design) - #{actors.Marv}\nIn the opening event, you could have Jane meeting Marv on the street, and use the msg exchange:\n#{msg01}\nor\n#{msg.01}\ndepending on whether you use SUB containers.\nAnyway, hope this helps. No pictures."
+    },
+    {
+      "post_id": "js-post-742653",
+      "author": "LanceRPG",
+      "date": "2017-06-09T23:53:15+0900",
+      "body": "Oh God,  another mutilanguage plugin which I can understand nothing,\nI think game developers like us can't always follow you in coding ,  in coding you are of course clever ...\n... I really wish to use this plugin , but the offical demo is missing, and there is no step-by-step tutorials.....\nI think it's very hard for people to understand how to use this plugin exactly.      (~_~)"
+    },
+    {
+      "post_id": "js-post-742761",
+      "author": "Lynvia",
+      "date": "2017-06-10T06:25:55+0900",
+      "body": "See page 2 (\nhttps://forums.rpgmakerweb.com/index.php?threads/iavra-localization.53699/page-2\n) for a demo project.\nI used that to get an understanding of the plugin, and how to create the JSON text file.\nThere's really no programming required at ALL.  It's just necessary to understand where to put the JSON text file, and how to format the data in it.\nTutorial:\n1. Create a NEW PROJECT\n2. Add the IAVRA plugin to it (leave all the defaults, make sure it has language \"en\" as the first or only language...)\n3. Create a simple starter map with an event, by action button\n4. In the Event, create a Text Message, and for the message, type #{start.message}\n5. Create a text file in notepad. type the following into it:\n{ \"start\": {\n\"message\": \"Congratulations, if you see this it's working!\"\n}\n}\n6. save your text file as en.json in the ROOT folder of your game\\project\\\n7. Playtest your game.\nIf you see a black screen with an Error, you have a typo in your JSON file.(step#5, above)\nIf you can spacebar your event and get the Congratulations message, your language plugin is clearly working.\nif you see #{strt.msg}, or some such, it's because the text in the JSON (start, and message) have to match what's in your text event, or it doesn't know to substitute.\nSeriously, the demo should help. It's sort of a tutorial. And my notes several posts above will hopefully help. Good luck!\nBy the way IAVRA, beautiful and critical plugin, I couldn't have done my game without it."
+    },
+    {
+      "post_id": "js-post-742909",
+      "author": "LanceRPG",
+      "date": "2017-06-10T16:02:41+0900",
+      "body": "Lynvia said:\nSee page 2 (\nhttps://forums.rpgmakerweb.com/index.php?threads/iavra-localization.53699/page-2\n) for a demo project.\nI used that to get an understanding of the plugin, and how to create the JSON text file.\nThere's really no programming required at ALL.  It's just necessary to understand where to put the JSON text file, and how to format the data in it.\nTutorial:\n1. Create a NEW PROJECT\n2. Add the IAVRA plugin to it (leave all the defaults, make sure it has language \"en\" as the first or only language...)\n3. Create a simple starter map with an event, by action button\n4. In the Event, create a Text Message, and for the message, type #{start.message}\n5. Create a text file in notepad. type the following into it:\n{ \"start\": {\n\"message\": \"Congratulations, if you see this it's working!\"\n}\n}\n6. save your text file as en.json in the ROOT folder of your game\\project\\\n7. Playtest your game.\nIf you see a black screen with an Error, you have a typo in your JSON file.(step#5, above)\nIf you can spacebar your event and get the Congratulations message, your language plugin is clearly working.\nif you see #{strt.msg}, or some such, it's because the text in the JSON (start, and message) have to match what's in your text event, or it doesn't know to substitute.\nSeriously, the demo should help. It's sort of a tutorial. And my notes several posts above will hopefully help. Good luck!\nBy the way IAVRA, beautiful and critical plugin, I couldn't have done my game without it.\nClick to expand...\nThanks for your detailed instructions , I am testing it ,  the Korean-English game demo, I checked it ,  it looks OK ,\nbut there's no project file,\nI can't open it in MV-editor, that means I can't see how it is edited.    What's more, I have a tool to unpack things of this kind, but it seems doesn't work for this demo, I don't know why."
+    },
+    {
+      "post_id": "js-post-742910",
+      "author": "LanceRPG",
+      "date": "2017-06-10T16:06:20+0900",
+      "body": "Lynvia said:\nSee page 2 (\nhttps://forums.rpgmakerweb.com/index.php?threads/iavra-localization.53699/page-2\n) for a demo project.\nI used that to get an understanding of the plugin, and how to create the JSON text file.\nThere's really no programming required at ALL.  It's just necessary to understand where to put the JSON text file, and how to format the data in it.\nTutorial:\n1. Create a NEW PROJECT\n2. Add the IAVRA plugin to it (leave all the defaults, make sure it has language \"en\" as the first or only language...)\n3. Create a simple starter map with an event, by action button\n4. In the Event, create a Text Message, and for the message, type #{start.message}\n5. Create a text file in notepad. type the following into it:\n{ \"start\": {\n\"message\": \"Congratulations, if you see this it's working!\"\n}\n}\n6. save your text file as en.json in the ROOT folder of your game\\project\\\n7. Playtest your game.\nIf you see a black screen with an Error, you have a typo in your JSON file.(step#5, above)\nIf you can spacebar your event and get the Congratulations message, your language plugin is clearly working.\nif you see #{strt.msg}, or some such, it's because the text in the JSON (start, and message) have to match what's in your text event, or it doesn't know to substitute.\nSeriously, the demo should help. It's sort of a tutorial. And my notes several posts above will hopefully help. Good luck!\nBy the way IAVRA, beautiful and critical plugin, I couldn't have done my game without it.\nClick to expand...\nEdit Edit :   Well ,  I have put the \"Game.rpgproject\"  to the folder \"WWW\" , and now I can open it , it's fine.....(0_0)\nXXXX--------Delete-----By the way , I am new to RPGmaker MV.  I used VX Ace before 2017-June, there might be some stupid misunderstanding of some basics to me  -------XXXXX Delete\n​"
+    },
+    {
+      "post_id": "js-post-742921",
+      "author": "LanceRPG",
+      "date": "2017-06-10T17:14:48+0900",
+      "body": "Frankly speaking , I know that this kind of language selecting plugin might be complicated,\nbut it really should be more easily to understand what is going on,   how can there be so many specific terms :\n\"keys\" \"instances\"  \"escaping code\"  ,  I mean there should be a simple way or basic way to describ it.    If I am a scripter, I prefer to let\neven children in school to understand it.\nLynvia said:\nSee page 2 (\nhttps://forums.rpgmakerweb.com/index.php?threads/iavra-localization.53699/page-2\n) for a demo project.\nI used that to get an understanding of the plugin, and how to create the JSON text file.\nThere's really no programming required at ALL.  It's just necessary to understand where to put the JSON text file, and how to format the data in it.\nTutorial:\n1. Create a NEW PROJECT\n2. Add the IAVRA plugin to it (leave all the defaults, make sure it has language \"en\" as the first or only language...)\n3. Create a simple starter map with an event, by action button\n4. In the Event, create a Text Message, and for the message, type #{start.message}\n5. Create a text file in notepad. type the following into it:\n{ \"start\": {\n\"message\": \"Congratulations, if you see this it's working!\"\n}\n}\n6. save your text file as en.json in the ROOT folder of your game\\project\\\n7. Playtest your game.\nIf you see a black screen with an Error, you have a typo in your JSON file.(step#5, above)\nIf you can spacebar your event and get the Congratulations message, your language plugin is clearly working.\nif you see #{strt.msg}, or some such, it's because the text in the JSON (start, and message) have to match what's in your text event, or it doesn't know to substitute.\nSeriously, the demo should help. It's sort of a tutorial. And my notes several posts above will hopefully help. Good luck!\nBy the way IAVRA, beautiful and critical plugin, I couldn't have done my game without it.\nClick to expand...\nabout 2 days and another whole afternoon,  I tested this plugin.  Now I think I am gonna give it up,\nThanks for reply anyway,  but up to now, maybe it's usable or useful , but I really have no idea of how to make it going .\nLet alone , the compatbility with other text-showing plugins is not tested.      I am just gonna use my old way of making seperated language pack Game files."
+    },
+    {
+      "post_id": "js-post-751529",
+      "author": "Tody",
+      "date": "2017-07-05T07:37:57+0900",
+      "body": "Awesome plugin!\nI learned how to use it, but... I still do not know how to translate the Menu (Item, Skill, Options...) and the Title (New game, Continue...)\nI don't know programming so I'm kinda lost.\nSomeone can help me?"
+    },
+    {
+      "post_id": "js-post-752110",
+      "author": "Lynvia",
+      "date": "2017-07-07T01:01:56+0900",
+      "body": "@Tody\n- Think the sample game on page 2 of this thread has a bank of Terms at the bottom of the included JSON.\nYou have to replace the terms on the terms panel with #{text.term01} etc in order for it to work. It makes looking in the editor and game engine cumbersome, but it it makes all the types, terms, etc. exposed for translation.\nI created subsets as explained earlier for Skills, weapons, armor, etc. and keep the JSON open in notepad so I can see what's going on.\nThe terms the sample game used are generic, and would be better if they were terms.item, terms.skill, terms.weapon, etc. but I just kept them as is."
+    },
+    {
+      "post_id": "js-post-752134",
+      "author": "Tody",
+      "date": "2017-07-07T02:37:54+0900",
+      "body": "Oh... I had already tried using that game as an example, but I forgot to change the terms in the terms panel hahahhaha\nThank you\n@Lynvia\n, you saved me"
+    },
+    {
+      "post_id": "js-post-752245",
+      "author": "Tody",
+      "date": "2017-07-07T09:46:42+0900",
+      "body": "Letters with accents do not appear...\nI think json does not recognize accents :/"
+    },
+    {
+      "post_id": "js-post-752319",
+      "author": "LadyBaskerville",
+      "date": "2017-07-07T14:29:02+0900",
+      "body": "@Tody\nMake sure you save your json file in UTF-8 encoding (most text editors will show the option on the Save As screen). Also make sure that the font you use in-game supports these letters."
+    },
+    {
+      "post_id": "js-post-752509",
+      "author": "Tody",
+      "date": "2017-07-08T01:34:05+0900",
+      "body": "It worked!\nThank you very much\n@LadyBaskerville\n!"
+    },
+    {
+      "post_id": "js-post-752691",
+      "author": "ChampX",
+      "date": "2017-07-08T13:03:21+0900",
+      "body": "This plugin is really amazing. I honestly think this is one of my favorite plugins for RPG Maker MV altogether and it's put together real well. Keep up the good work!"
+    },
+    {
+      "post_id": "js-post-753183",
+      "author": "JamesRyan",
+      "date": "2017-07-10T01:27:53+0900",
+      "body": "I couldn't seem to make it work with my menu. In Database/Terms, i tried to localize my menu commands.\nI changed \"skill\" to #{options.skill}:\nSpoiler\nand wrote this key in my lang file:\nSpoiler\nHowever, right when i started playing test, i got this error:\nSpoiler\nAnd here is the console log:\nSpoiler\nEdit: Ah! Sorry it was my bad! I forgot the coma between each line in my lang files.\nBtw, in Options, i saw \"Battle Camera\" command, but i could not find it anywhere to localize. Anyone has a solution for this?"
+    },
+    {
+      "post_id": "js-post-762381",
+      "author": "RRAlmeida",
+      "date": "2017-08-05T00:55:53+0900",
+      "body": "Sajiki said:\nThanks, its work\nI created a new demo for you. Its unpacked and you can Show all.\nbpc_demo_language.rar\nHave fun guys.\nMfg\nSajiki\nClick to expand...\nThe file was deleted.\nAny Demo?"
+    },
+    {
+      "post_id": "js-post-776791",
+      "author": "Noark",
+      "date": "2017-09-21T05:34:36+0900",
+      "body": "Thanks for all of your work.\nI have only one problem. I have well configured the core, it works very very fine for me with the sintax simplified:\n{\n\"test\": \"Hellooo\"\n}\nbut I have problems with the menu. In my game I see the menu option and can change, but in the game doesn´t works for me. When I change the path of the deffault lang it works fine, but it doesn't when I change the option in the menu.\nAny idea?\nThanks"
+    },
+    {
+      "post_id": "js-post-780947",
+      "author": "phamtruong1992",
+      "date": "2017-10-05T05:12:17+0900",
+      "body": "A small demo would be appreciated. The ones had been posted all's got deleted. Any compability issue for now?\nP/s: And the plugin's link is dead too"
+    },
+    {
+      "post_id": "js-post-798602",
+      "author": "Tyrving",
+      "date": "2017-11-23T03:30:44+0900",
+      "body": "I have a question related to this plugin:\nI need to create a conditional branch to show different images - first while language is set for English and second while language is set for Spanish. Can someone please tell me how should I write script in the conditional branch menu?"
+    },
+    {
+      "post_id": "js-post-798955",
+      "author": "Lynvia",
+      "date": "2017-11-24T05:36:47+0900",
+      "body": "Based on IAVRA's help text in the Localization Core, the following script returns the current language name:\nIAVRA.I18N.language;\nTherefore, if your language codes in the Iavra localization plugin are 'esp' for Espanol, and 'eng' for English:\nIf: Script: IAVRA.I18N.language === 'esp'\nText: None, Window, Bottom\n:     : Spanish\nELSE\nText: None, Window, Bottom\n;      : English\nEND\nObviously, I'm using text commands after the check for language. Tested this code, and it worked.\nIf you have more languages, this will require possibly either cascading IFs or sequential IFs with a GOTO label."
+    },
+    {
+      "post_id": "js-post-799140",
+      "author": "Tyrving",
+      "date": "2017-11-25T01:16:21+0900",
+      "body": "Thank you very much for the help. It works like a charm! I love this plugin, it's so handy to have all the text from game in one external file!"
+    },
+    {
+      "post_id": "js-post-809087",
+      "author": "_l3m35_",
+      "date": "2017-12-25T07:18:40+0900",
+      "body": "I feel the stupidest person on the planet since I didn't  understand a thing about how it works... After installing, there is an error \"unexpected end of input\". A tutorial or something like would be really welcome."
+    },
+    {
+      "post_id": "js-post-809880",
+      "author": "Zarsla",
+      "date": "2017-12-27T16:42:11+0900",
+      "body": "@l3m35\nOn page 2 there is a small demo made by\n@Sajiki\nthat's a great place to start."
+    },
+    {
+      "post_id": "js-post-809978",
+      "author": "_l3m35_",
+      "date": "2017-12-28T00:14:06+0900",
+      "body": "Thank you, tested here and working fine.\nFor those with problem breaking lines (like I was): \\n (single slash) and double for things like \\\\v[x], \\\\n, etc.\nEDIT\nJust to report: there's an issue with YEP Message Core. Item names doesn't show properly, so if I use \"\\\\i[1]\", only the icon appears and the escape code (I know it's more like a YEP MC problem)."
+    },
+    {
+      "post_id": "js-post-811991",
+      "author": "SangHendrix",
+      "date": "2018-01-01T21:06:13+0900",
+      "body": "Any way I can put two\n\"\nsymbol together? I have a pic right here.\nAnd I think I've found an issue. If I put the symbol \"\n-\n\" in a key (ex: pop10\n-\nd), it will show the key on dialogs instead of the text that you wanted it to show.  For example, on the message window, instead of showing \"Page 10 - They run around a circle\", it'll show \"pop10-d\" instead. But if I remove \"\n-\n\", everything works fine. Can you help me with this?"
+    },
+    {
+      "post_id": "js-post-812020",
+      "author": "Zarsla",
+      "date": "2018-01-01T22:56:52+0900",
+      "body": "@l3m35\nwhen using YEP_Message Core you need to use \\\\ii[x] to show the item name & icon, as \\\\i[x] is the default rpg masker mv code for just showing the icon."
+    },
+    {
+      "post_id": "js-post-812046",
+      "author": "_l3m35_",
+      "date": "2018-01-02T01:02:15+0900",
+      "body": "Lee Sang said:\nAny way I can put two\n\"\nsymbol together? I have a pic right here.\nClick to expand...\nThis?\n\"\\\"Someone's waiting for you...\\\"\","
+    },
+    {
+      "post_id": "js-post-812049",
+      "author": "_l3m35_",
+      "date": "2018-01-02T01:08:44+0900",
+      "body": "Zarsla said:\n@l3m35\nwhen using YEP_Message Core you need to use \\\\ii[x] to show the item name & icon, as \\\\i[x] is the default rpg masker mv code for just showing the icon.\nClick to expand...\nSorry, typo. That's exactly what I'm using to that result."
+    },
+    {
+      "post_id": "js-post-812341",
+      "author": "SangHendrix",
+      "date": "2018-01-03T00:27:08+0900",
+      "body": "@l3m35\nThank you. But any solution for the second issue?\nAnd I think I've found an issue. If I put the symbol \"\n-\n\" in a key (ex: pop10\n-\nd), it will show the key on dialogs instead of the text that you wanted it to show. For example, on the message window, instead of showing \"Page 10 - They run around a circle\", it'll show \"pop10-d\" instead. But if I remove \"\n-\n\", everything works fine. Can you help me with this?\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-812353",
+      "author": "Lynvia",
+      "date": "2018-01-03T01:14:27+0900",
+      "body": "Lee Sang said:\n@l3m35\nThank you. But any solution for the second issue?\nClick to expand...\nNot sure if the issue you are raising is with the IAVRA Localization or whether the '-' is a reserved JSON delimiter (I doubt it is), but the answer would be to avoid using special characters in the identifiers at any level of the JSON, to make sure it works correctly.\nI actually have almost a thousand lines of custom text in my text file, and it's not having any issues, that is, as long as I put the #{item.001n} in the text window, and have\n\"item\": {\n\"001n\": \"Heal Tab\",\n....\n\"099n\": \"end marker\" }\nit works ok.\nNote that the tags I am using just use letters and numbers. This may also be the problem\n@l3m35\nis having...\nIf you ever get an error when launching your game, unexpected token, etc, you can copy the contents of your JSON text file and paste them into the box at the following website:\nhttps://jsonlint.com/\nI found that site to be unbelievably invaluable in fixing issues like that."
+    },
+    {
+      "post_id": "js-post-812357",
+      "author": "SangHendrix",
+      "date": "2018-01-03T01:19:26+0900",
+      "body": "@Lynvia\nNvm, I switched back to the old version of the plugin and it works fine now."
+    },
+    {
+      "post_id": "js-post-812430",
+      "author": "_l3m35_",
+      "date": "2018-01-03T04:55:10+0900",
+      "body": "No idea about this issue with hyphens, but if there's no special reason to use it, I would go with underscores, instead.\nLynvia said:\nNote that the tags I am using just use letters and numbers. This may also be the problem\n@l3m35\nis having...\n.\nClick to expand...\nNo luck for me. I've tried with underscore, only letters, etc. Same thing."
+    },
+    {
+      "post_id": "js-post-813411",
+      "author": "ashyramoonwolf",
+      "date": "2018-01-06T00:27:15+0900",
+      "body": "The demo from sajiki no longer is available... If someone got one i'll be glad. else i will mange it by my own, but i admit it will be quicker with a demo... Nice work anyway"
+    },
+    {
+      "post_id": "js-post-814221",
+      "author": "TenshiG Gaming",
+      "date": "2018-01-07T20:09:02+0900",
+      "body": "How do you translate the menu?"
+    },
+    {
+      "post_id": "js-post-814528",
+      "author": "---",
+      "date": "2018-01-08T14:36:29+0900",
+      "body": "ashyramoonwolf said:\nThe demo from sajiki no longer is available... If someone got one i'll be glad. else i will mange it by my own, but i admit it will be quicker with a demo... Nice work anyway\nClick to expand...\nCheck this link:\nhttp://download1517.mediafire.com/jjp6p7wxrtyg/51kmm45osc9otui/03.+Project03+v3.4a.zip\nIt's other post\nTenshiG Gaming said:\nHow do you translate the menu?\nClick to expand...\nI had the same question. You can translate. It's text. You only need to put in System:\n#{tname}\nExample:\n#{text.term01}\n#{text.term02}\n#{text.term03}\n#{text.term04}\n#{text.term05}\nYou can see the demo I posted in this comment. It helps a lot."
+    },
+    {
+      "post_id": "js-post-846604",
+      "author": "KazutoSensei",
+      "date": "2018-03-31T07:25:07+0900",
+      "body": "Thank you for your wonderful plugin. I searched for a plugin like yours.\nI started my first game and will send you an update for the first test phases.\nOf course you're mentioned in my credits.\nAnd I have one question. Is there an option to ask you that privatly or do you insist that I ask the question here?\nGreetings\nKazutoSensei"
+    },
+    {
+      "post_id": "js-post-860533",
+      "author": "burb",
+      "date": "2018-05-10T07:59:03+0900",
+      "body": "This plugin is fantastic and does everything it says on the tin.\nOne issue, however, is that loading a save file after closing the game results in the language being reset to default.\nFor example:\nIf I'm in the middle of a game, and I've set the language to German, I can save and exit.\nWhen I open the game again later, and load my save file, the language has reverted to English (the default set by the plugin). Ideally, I want to be able to continue playing in German, since I have already selected that from the options.\nIs there a way to retain the current language when the game is saved and loaded?"
+    },
+    {
+      "post_id": "js-post-860960",
+      "author": "Lynvia",
+      "date": "2018-05-11T11:35:22+0900",
+      "body": "Only way I can think of would be to keep the current language as a variable, and trigger an event on Load, that would read and set the language after the save file has been loaded up."
+    },
+    {
+      "post_id": "js-post-875321",
+      "author": "Momode",
+      "date": "2018-06-26T18:53:44+0900",
+      "body": "Spoiler:\nerror\nWhat's wrong? Its core.js, only add one language and menu label."
+    },
+    {
+      "post_id": "js-post-877246",
+      "author": "DragonSkills99",
+      "date": "2018-07-03T01:05:08+0900",
+      "body": "For the one's who found the editing of the JSON files by hand too annoying I've a lil' app, maybe it's even something you'll find good\n@Iavra\n.\nIf you think it's bad you can delete my message, if not just enjoy it. Its free and you won't need to name me in the credits, just enjoy. ^^\nIAVRA Localization Translation-Editor\nGreetings\nDragonSkills99\nPS: For any help or bug-fix please contact me the ways described in my\ncontact-page\n."
+    },
+    {
+      "post_id": "js-post-883150",
+      "author": "goldcut",
+      "date": "2018-07-21T09:09:31+0900",
+      "body": "DragonSkills99 said:\nFor the one's who found the editing of the JSON files by hand too annoying I've a lil' app, maybe it's even something you'll find good\n@Iavra\n.\nIf you think it's bad you can delete my message, if not just enjoy it. Its free and you won't need to name me in the credits, just enjoy. ^^\nIAVRA Localization Translation-Editor\nGreetings\nDragonSkills99\nClick to expand...\nCan you make the program more...redistributable? I am now in the middle of installing 6+ GB of Visual Studio IDE in order to install the required Newtonsoft.JSON and Noesis.Javascript. Not that I hate it but it should not be a necessary step for the average user.\nEdit: Now that it turned out I only need two dlls, but nevetheless it gives 'startIndex can not be larger than string length' error and could not parse any text."
+    },
+    {
+      "post_id": "js-post-883218",
+      "author": "DragonSkills99",
+      "date": "2018-07-21T16:09:04+0900",
+      "body": "goldcut said:\nCan you make the program more...redistributable? I am now in the middle of installing 6+ GB of Visual Studio IDE in order to install the required Newtonsoft.JSON and Noesis.Javascript. Not that I hate it but it should not be a necessary step for the average user.\nEdit: Now that it turned out I only need two dlls, but nevetheless it gives 'startIndex can not be larger than string length' error and could not parse any text.\nClick to expand...\nThe dlls shouldn't even be needed because they are merged into the application. Just .net is needed, but it's included in the windows updates. And for the error can you please copy the full error and send it to me (to the mail connected to this account or the one on the contact page of my website) Because this shouldn't develop to a debug thread for my Program^^"
+    },
+    {
+      "post_id": "js-post-883334",
+      "author": "goldcut",
+      "date": "2018-07-22T02:52:19+0900",
+      "body": "DragonSkills99 said:\nThe dlls shouldn't even be needed because they are merged into the application. Just .net is needed, but it's included in the windows updates. And for the error can you please copy the full error and send it to me (to the mail connected to this account or the one on the contact page of my website) Because this shouldn't develop to a debug thread for my Program^^\nClick to expand...\nDone. Please check your gmail."
+    },
+    {
+      "post_id": "js-post-883365",
+      "author": "DragonSkills99",
+      "date": "2018-07-22T05:19:17+0900",
+      "body": "For anyone else, in future please just write me an E-Mail and don't post in this forum, if you encounter any bug with my program. I don't want to annoy Iavra. And this is just a thread for his plugin. I will try to fix any error, sent to me by mail. And the error from goldcut is fixed, so if you've already downloaded the program. You can just visit my website and download the new version.\nGreetings\nDragonSkills99"
+    },
+    {
+      "post_id": "js-post-887361",
+      "author": "keizz",
+      "date": "2018-08-03T12:24:38+0900",
+      "body": "Hello\nHow can I call .json file ? anyone have some demo ?"
+    },
+    {
+      "post_id": "js-post-887415",
+      "author": "DragonSkills99",
+      "date": "2018-08-03T17:05:51+0900",
+      "body": "keizz said:\nHello\nHow can I call .json file ? anyone have some demo ?\nClick to expand...\nThose files are plain text-files with a special structure. They can be opened by any text program like the Windows Editor, Notepad++, Sublime Text,...\nGreetings\nDragonSkills99"
+    },
+    {
+      "post_id": "js-post-887421",
+      "author": "keizz",
+      "date": "2018-08-03T18:06:40+0900",
+      "body": "DragonSkills99 said:\nThose files are plain text-files with a special structure. They can be opened by any text program like the Windows Editor, Notepad++, Sublime Text,...\nGreetings\nDragonSkills99\nClick to expand...\nOh..I meaning how to use it? I don't understand how to use and how I call them to use."
+    },
+    {
+      "post_id": "js-post-887422",
+      "author": "DragonSkills99",
+      "date": "2018-08-03T18:13:14+0900",
+      "body": "keizz said:\nOh..I meaning how to use it? I don't understand how to use and how I call them to use.\nClick to expand...\nIavra already wrote how to use them along with his plugin just read this thread (not the comments) fully. Those files can't be called, they are just text-files for saving data. They just can be read, and the one reading these files in this case is Iavras plugin."
+    },
+    {
+      "post_id": "js-post-887428",
+      "author": "keizz",
+      "date": "2018-08-03T19:23:55+0900",
+      "body": "DragonSkills99 said:\nIavra already wrote how to use them along with his plugin just read this thread (not the comments) fully. Those files can't be called, they are just text-files for saving data. They just can be read, and the one reading these files in this case is Iavras plugin.\nClick to expand...\nThank you very much , it's easy than I think. I confused to be use this script now I got it\nthanks again."
+    },
+    {
+      "post_id": "js-post-888492",
+      "author": "Prescott",
+      "date": "2018-08-07T04:52:06+0900",
+      "body": "This plugin is not playing nicely with my project in 1.6.1. I receive the following error in the debug menu when trying to use it:\nUncaught SyntaxError: Unexpected token c in JSON at position 118075\nat JSON.parse (<anonymous>)\nat XMLHttpRequest.request.onload (Iavra Localization - Core.js:129)\nI cannot find a way to use this which I desperately need to, considering all of the text in my game is in a json.\nEDIT: I feel so stupid.\nI needed two backslashes on color codes.\nrip the last 3 hours of my life."
+    },
+    {
+      "post_id": "js-post-889828",
+      "author": "keizz",
+      "date": "2018-08-11T12:51:26+0900",
+      "body": "DragonSkills99 said:\nIavra already wrote how to use them along with his plugin just read this thread (not the comments) fully. Those files can't be called, they are just text-files for saving data. They just can be read, and the one reading these files in this case is Iavras plugin.\nClick to expand...\nanother question please,how can I create new group of text? I want to separate text between normal text for chat and text for shop or event."
+    },
+    {
+      "post_id": "js-post-906669",
+      "author": "Vanyar",
+      "date": "2018-10-13T09:35:27+0900",
+      "body": "Hey\n@Iavra\nThis is a great plugin! ^^\nI'm not sure if this plugin is still supported but I'll ask anyway: I've tried to use the script calls but none of them seem to work. I especially try to use \"IAVRA.I18N.language = lang;\" but I just get an error saying \"lang is not defined\". I also tried to change lang to en because I want the language to change to English that way but that didn't work either. I want to give the player the option to select the language before the title screen even appears (I do this through Hime's PreEventTitle-Plugin).\nAm I doing something wrong or does the script call doesn't work anymore because of updates to the engine?\nI would be happy if you could give me an answer\nIf it doesn't work because of updates I'll just have to roll with it and wouldn't ask you to update the plugin"
+    },
+    {
+      "post_id": "js-post-906713",
+      "author": "SuperMasterSword",
+      "date": "2018-10-13T13:56:51+0900",
+      "body": "@Padramyr\nThe script call isn't working because it's looking for a variable named lang or en, which probably aren't defined. You should use quotes around the name.\nSo it would be:\nIavra.l18N.language = \"en\";"
+    },
+    {
+      "post_id": "js-post-906774",
+      "author": "Vanyar",
+      "date": "2018-10-13T21:18:07+0900",
+      "body": "SuperMasterSword said:\n@Padramyr\nThe script call isn't working because it's looking for a variable named lang or en, which probably aren't defined. You should use quotes around the name.\nSo it would be:\nIavra.l18N.language = \"en\";\nClick to expand...\nThat worked, thank you!"
+    },
+    {
+      "post_id": "js-post-915229",
+      "author": "Eliaquim",
+      "date": "2018-11-14T04:11:28+0900",
+      "body": "Hello!\nAnyone can teel me, in the plugin parameters on the file path, i'm suppose to do this:\n{en, pt-BR}.json\nOR\nen.json, pt-BR.json\nOR\n{en}.json, {pt-BR}.json\n?"
+    },
+    {
+      "post_id": "js-post-938378",
+      "author": "ZeroBreak",
+      "date": "2019-01-31T10:56:54+0900",
+      "body": "A quick question.\nRegarding the JSON, what should I do about a 6029 position error message at boot?"
+    },
+    {
+      "post_id": "js-post-944606",
+      "author": "cedr777",
+      "date": "2019-02-20T02:38:41+0900",
+      "body": "I don't even know where to begin with this plugin...."
+    },
+    {
+      "post_id": "js-post-949115",
+      "author": "Lynvia",
+      "date": "2019-03-05T00:10:55+0900",
+      "body": "@cedr777\npaste the contents of your JSON into the window at this website. It apparently has a formatting error. The page should tell you what line in your file has the issue:\nhttps://jsonlint.com/"
+    },
+    {
+      "post_id": "js-post-949122",
+      "author": "Lynvia",
+      "date": "2019-03-05T00:56:20+0900",
+      "body": "@BreakerZero\nsee my previous post. If the website for JSONLint gives you a line# in error, open the file in Notepad or whatever text editor you have for viewing straight text, and scroll to that line. Odds are you are missing a comma, or have one at the end of a set, that doesn't need to be there, or a missing end or beginning quote or brace or bracket.\nThe error at startup shown in\n@cedr777\n's screen shot is common when there is a formatting error in the JSON, which is loaded at start and has to at least be correctly formatted to work. the braces and brackets have to be in pairs, the lists have to be separated by commas. Read through this thread for some of the more common formatting issues..."
+    },
+    {
+      "post_id": "js-post-949306",
+      "author": "ZeroBreak",
+      "date": "2019-03-05T10:40:15+0900",
+      "body": "Thanks for the link, seeing this may well be the same problem (which I obviously had to verify one way or the other). Anyway, I checked on things and noticed that a couple of definitions had spaces that got misinterpreted. Aside from escape code issues relevant to MV everything now seems to click as it should. And if you have something like Visual Studio Code installed, the editor's code check function will basically do the same thing as the website you linked to (and where it is as well so you know what to fix).\nEDIT: Another issue: Unexpected token. This is going to require a switch to flat-rate pricing where it doesn't quite fit the purpose of my intentions.\nEDIT 2: Workaround. Forgot to consider breaking up the definitions to account for this."
+    },
+    {
+      "post_id": "js-post-966878",
+      "author": "Eliaquim",
+      "date": "2019-05-06T11:33:20+0900",
+      "body": "Hi guys!\nFirst of all, this plugin work in mobile development?\nBecause i was using the SrdTranslationEngine, and in the Desktop it works very well!\nBut in mobile the plugin don't work =/\nEl Dragón Blanco said:\nCheck this link:\nhttp://download1517.mediafire.com/jjp6p7wxrtyg/51kmm45osc9otui/03.+Project03+v3.4a.zip\nIt's other post\nI had the same question. You can translate. It's text. You only need to put in System:\n#{tname}\nExample:\n#{text.term01}\n#{text.term02}\n#{text.term03}\n#{text.term04}\n#{text.term05}\nYou can see the demo I posted in this comment. It helps a lot.\nClick to expand...\nWell, thanks for the demo!\nI'm trying to learn use this plugin. But i cant understand how do you do in the demo since the project is already deployed...\nI'm looking into the en.json\nand i see this:\n\"mino01\": \"How dare a human sully this sanctuary!\",\n\"mino02\": \"Begone, now!\",\n\"mino03\": \"Alright... I'm going..\",\n\"mino04\": \"Nay!\",\n\"mino05\": \"Nheeee! I shall make you begone!\",\nClick to expand...\nDuring the game i have to name the events? Then i use that name to translate everything?\nThe numbers, 01,02,03 are the line 1, line2, line 3... of this event?"
+    },
+    {
+      "post_id": "js-post-966879",
+      "author": "cedr777",
+      "date": "2019-05-06T11:35:04+0900",
+      "body": "unwatched."
+    },
+    {
+      "post_id": "js-post-967047",
+      "author": "ZeroBreak",
+      "date": "2019-05-07T04:39:40+0900",
+      "body": "Eliaquim said:\nHi guys!\nFirst of all, this plugin work in mobile development?\nBecause i was using the SrdTranslationEngine, and in the Desktop it works very well!\nBut in mobile the plugin don't work =/\nClick to expand...\nThat would be in your event definitions. For the targeted position where the item name, conversation or descriptor would be used, place the following in the respective function call, variable name, description etc:\nCode:\n#{text.mino01}\nObviously you should change that according to your requirements.  And for localized targeting you'll want to be sure that you have a data file relative to each portion of your audience, e.g. ja.json, es.json etc.\nAs for mobile development it depends on your setup and device target, although for selective reasons you should package accordingly. Mac deployments already do this to a degree, and I believe there's a tool somewhere on the forums to assist with Android targeting. And as long as the localized data files are properly distributed with the game package I think you should be good to go on that. Or at least it should, 'cause otherwise I don't know what to expect. I'll probably run my project in a virtual environment at some point to verify this."
+    },
+    {
+      "post_id": "js-post-967099",
+      "author": "Eliaquim",
+      "date": "2019-05-07T07:23:43+0900",
+      "body": "BreakerZero said:\nThat would be in your event definitions. For the targeted position where the item name, conversation or descriptor would be used, place the following in the respective function call, variable name, description etc:\nCode:\n#{text.mino01}\nObviously you should change that according to your requirements.  And for localized targeting you'll want to be sure that you have a data file relative to each portion of your audience, e.g. ja.json, es.json etc.\nAs for mobile development it depends on your setup and device target, although for selective reasons you should package accordingly. Mac deployments already do this to a degree, and I believe there's a tool somewhere on the forums to assist with Android targeting. And as long as the localized data files are properly distributed with the game package I think you should be good to go on that. Or at least it should, 'cause otherwise I don't know what to expect. I'll probably run my project in a virtual environment at some point to verify this.\nClick to expand...\nYep! I got how to use it now, i made some tests and its works on mobile!\nNow i'm in the process to make a scene for change the language instead of the options. For the ones who want to the player choose a language before the tittle screen"
+    },
+    {
+      "post_id": "js-post-968859",
+      "author": "Eliaquim",
+      "date": "2019-05-13T21:40:40+0900",
+      "body": "Hi people!\nMaking some tests here.\nI try to translate, but there are something that i cannot translate.\nI already saved the json file with UTF-8.\nI can't use \"?\", \"ó\" and capital letters?"
+    },
+    {
+      "post_id": "js-post-968948",
+      "author": "BazSupport",
+      "date": "2019-05-14T04:19:18+0900",
+      "body": "Eliaquim said:\nHi people!\nMaking some tests here.\nI try to translate, but there are something that i cannot translate.\nI already saved the json file with UTF-8.\nI can't use \"?\", \"ó\" and capital letters?\nClick to expand...\nHave you tried DK localization plugin?"
+    },
+    {
+      "post_id": "js-post-968971",
+      "author": "Eliaquim",
+      "date": "2019-05-14T06:05:29+0900",
+      "body": "bazrat said:\nHave you tried DK localization plugin?\nClick to expand...\nNo... This plugin work fine. My doubt is only a question of \"design\". Because in the translation, the signals (?óáé etc) work. But only in the TAG that don't work. But the plugin is working fine ^^"
+    },
+    {
+      "post_id": "js-post-1054137",
+      "author": "Eliaquim",
+      "date": "2020-04-11T15:24:36+0900",
+      "body": "in case anyone is interested, I made an upgrade\nhere\n. Not a super upgrade though."
+    },
+    {
+      "post_id": "js-post-1082801",
+      "author": "TitanKaempfer",
+      "date": "2020-06-28T05:57:20+0900",
+      "body": "So for some reason the game does not switch languages when I change them in the options menu.\nI can actually change them via console commands and then my text is shown in the chosen language but chaning it in the options does absolutely nothing and it will always use the default language or the language I chose via console command.\nAny idea what I'm doing wrong?"
+    },
+    {
+      "post_id": "js-post-1082805",
+      "author": "Eliaquim",
+      "date": "2020-06-28T06:04:15+0900",
+      "body": "TitanKaempfer said:\nSo for some reason the game does not switch languages when I change them in the options menu.\nI can actually change them via console commands and then my text is shown in the chosen language but chaning it in the options does absolutely nothing and it will always use the default language or the language I chose via console command.\nAny idea what I'm doing wrong?\nClick to expand...\nHi!\nMaybe you have a parallel or autorun event setting the language back to the original?\nI didn't record to get this issue, but a long time ago I made a patch that put these two plugins altogether and fixed some things too. Maybe you could give it a try?\nin case anyone is interested, I made an upgrade\nhere\n. Not a super upgrade though.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1082814",
+      "author": "TitanKaempfer",
+      "date": "2020-06-28T06:22:31+0900",
+      "body": "Maybe you have a parallel or autorun event setting the language back to the original?\nClick to expand...\nActually no because I just downloaded the plugin and was trying to test it in my project. Put just a single line of text in a json in various languages. And when I change the language by console command it actually uses the language I changed it to (like using english when I type in english or german when I type in german) but for some reason the option menu itself does not work. (It didn't even show a language until I selected one to begin with)\nI made a patch that put these two plugins altogether and fixed some things too. Maybe you could give it a try?\nClick to expand...\nWhile this version fixes the problem of not having a start language selected in the menu I still can't seem to save my choice and this one actually goes back to my default language.\nI just tried creating a whole new empty project and it works there. So it might be incompatible with some other plugin I have. Any idea what kind of plugins could cause such problems? Like are there maybe some methods or something I should look out that would change something in the way how the language plugin saves it's option?\nEdit: I just tried changing the order of my plugins and now it works. Still thanks for the help and the advice to use your updated version."
+    },
+    {
+      "post_id": "js-post-1228472",
+      "author": "LukeHNTD",
+      "date": "2021-11-14T00:23:18+0900",
+      "body": "Iavra said:\nIAVRA.I18N.language;         Returns the current language.\nIAVRA.I18N.language = lang;  Sets the current language to lang.\nIAVRA.I18N.languages();      Returns a list of all available languages.\nIAVRA.I18N.localize(text);   Localizes the given text.\nPlugin\nIavra Localization - Core\nDescription\nThe core plugin for localization, which contains all logic to load text and convert escape codes.\nParameters\n@param Escape Code\n@desc Code, that will be used to retrieve localized strings. \"{key}\" serves as placeholder for the text key.\n@default #{{key}}\n@param Languages\n@desc Comma-separated list of languages, that should be supported. The first entry will be used as the default.\n@default en\n@param File Path\n@desc Path to the language files to load. The sequence \"{lang}\" will be replaced with the languages entered above.\n@default {lang}.json\nHow to Use\nTo setup this plugin, register all supported languages inside the \"Languages\" parameter, separated by commas. You also need to place the corresponding files inside your project folder. So, for example, if you want to support the languages \"en\" (english) and \"de\" (german) and the parameter \"File Path\" is set to its default value, you'll need to add the two files \"de.json\" and \"en.json\" to the root folder of your project.\nThe first language will automatically used as the default langage.\nDuring runtime, every instance of \"#{...}\" (can be changed via plugin parameter \"Escape Code\") will get replaced with a localized string, where \"...\" stands for a text key. So, if your language file looks like this:\n{\n\"text.test\": \"This is a test text\"\n}\nEvery instance of \"#{text.test}\" will be replaced with \"This is a test text\". For better maintainability, it's also possible to split keys at dots:\n{\n\"text\": {\n\"test\": \"This is a test text\"\n}\n}\nThe above example will result in the same key as the first one, but makes it easier to construct nested keys, for example for the names of all actors. Instead of objects, you can also use arrays, like this:\n{\n\"text\": [\n\"Text 1\",\n\"Text 2\",\n\"Text 3\"\n]\n}\nThis will create the keys \"text.0\", \"text.1\" and \"text.2\", each pointing to the text listed at that array index. If needed, you are free to combine the object and array notations.\nKeys can also contain keys themselves, which will be replaced recursively. This allows you, to define important strings, like city names, at a single position and reference it everywhere else:\n{\n\"text\": \"Hi, my name is #{actor}\",\n\"actor\": \"Harold\"\n}\nYou can use all escape characters, like \"\\V[...]\" inside the files, but will need to double the backslashes. Line breaks can be entered by using \"\\n\", since JSON doesn't support real linebreaks inside strings.\nThe plugin offers the following script calls:\nCode:\nIAVRA.I18N.language;         Returns the current language.\nIAVRA.I18N.language = lang;  Sets the current language to lang.\nIAVRA.I18N.languages();      Returns a list of all available languages.\nIAVRA.I18N.localize(text);   Localizes the given text.\nClick to expand...\nwhere do I find the file \"en.json\"?"
+    },
+    {
+      "post_id": "js-post-1228847",
+      "author": "Eliaquim",
+      "date": "2021-11-15T11:51:29+0900",
+      "body": "LukeHNTD said:\nwhere do I find the file \"en.json\"?\nClick to expand...\nHi!\nYou need to create it in the root folder. The same folder that has the index.html"
+    },
+    {
+      "post_id": "js-post-1252554",
+      "author": "YuukiToyaro",
+      "date": "2022-02-17T00:28:56+0900",
+      "body": "Hi! Does anyone have still the demo file? Sadly, i have a lot of trouble with this plugin.."
+    },
+    {
+      "post_id": "js-post-1307807",
+      "author": "plokr",
+      "date": "2022-10-26T04:38:06+0900",
+      "body": "Hi, since there wasn't any new post for this plugin: I tested the plugin with RPG Maker MZ and it works fine and I attached a demo project to this thread.\nFor sure, not the entire project: Create a new MZ project and copy all files with overwrite into your new project folder - that's all.\nI wrote this simple scene to test if the plugin is working. I tested translation in two languages with option menu, in database and event commands e.g. ShowText including variables.\nI did a small change to the code so that the warning in MZ plugin manager is avoided but no change in functionality."
+    },
+    {
+      "post_id": "js-post-1362952",
+      "author": "RageOfFire",
+      "date": "2023-07-10T00:06:35+0900",
+      "body": "Hi ! Is anyone try to use this plugin to translate a \"plugin parameters\" before ? Everything work fine to my but only \"plugin parameters\" even when I order plugin up or down the plugin have that parameters."
+    },
+    {
+      "post_id": "js-post-1409713",
+      "author": "djkouza",
+      "date": "2023-12-28T02:55:48+0900",
+      "body": "EDIT\n(Figured it out)\n: Found my issue....  #{Actor3.RandomText[2]}  should have been #{Actor3.RandomText.2}   Leaving the question though as maybe it will help others think of how they can combine the JSON attributes to make language files.\nHi all, odd question. I've used this plugin with both Object and Array in the same file, but what about an object that contains objects AND arrays?\nSomething like this\n{\n\"Actor3\": {\n    \"Name\": \"Dr. Actor 3\",\n    \"RandomText\": [\n          \"I'm a doctor\",\n          \"Are you a patient here?\",\n         \"Are you still here?\"\n    ]\n}\n}\n#{Actor3.Name} works,  but #{Actor3.RandomText[2]} does not work"
+    },
+    {
+      "post_id": "js-post-1463132",
+      "author": "usteisiy",
+      "date": "2024-08-12T22:15:12+0900",
+      "body": "Hi, thanks for your perfect localisation plugin.\nIt works great, but I have a strange problem - artefacts appear in characters in different languages. I've checked everything and can't understand where is the problem. The json is utf-8 encoded.\nRPG Maker MZ.\nSpoiler:\nImg"
+    },
+    {
+      "post_id": "js-post-1463133",
+      "author": "ATT_Turan",
+      "date": "2024-08-12T22:34:01+0900",
+      "body": "usteisiy said:\nIt works great, but I have a strange problem - artefacts appear in characters in different languages. I've checked everything and can't understand where is the problem. The json is utf-8 encoded.\nRPG Maker MZ.\nClick to expand...\n1 - This is an MV plugin. That doesn't mean you can't use it in MZ, necessarily, but it should be a first consideration for any bugs.\n2 - There have been a handful of threads about font artifacts like that. They've all been related to people using VisuStella's Message Core, as far as I've seen, and have to do with some incompatibility between that plugin and the version of NW.js that MZ ships with."
+    },
+    {
+      "post_id": "js-post-1517953",
+      "author": "TheNewSon",
+      "date": "2025-06-11T22:00:09+0900",
+      "body": "Is there an easy way to combine\nIavra's locatization menu plugin\nwith\nYanfly's options core plugin\n?\nI'm afraid I don't have enough javascript knowledge to code that option myself, so I'd be grateful if someone could shed some light, please..."
+    },
+    {
+      "post_id": "js-post-1517954",
+      "author": "ShadowDragon",
+      "date": "2025-06-11T22:09:47+0900",
+      "body": "TheNewSon said:\nIs there an easy way to combine\nIavra's locatization menu plugin\nwith\nYanfly's options core plugin\n?\nI'm afraid I don't have enough javascript knowledge to code that option myself, so I'd be grateful if someone could shed some light, please...\nClick to expand...\nyou can, but this require more modifications to the optionsCore plugin on some\nplaces where you can set Enable/Disable and refer to the code in locatization plugin.\nthere is patch for this one, and even a few more powerful ones that might work better."
+    },
+    {
+      "post_id": "js-post-1517955",
+      "author": "TheNewSon",
+      "date": "2025-06-11T22:12:07+0900",
+      "body": "ShadowDragon said:\nyou can, but this require more modifications to the optionsCore plugin on some\nplaces where you can set Enable/Disable and refer to the code in locatization plugin.\nthere is patch for this one, and even a few more powerful ones that might work better.\nClick to expand...\nOh! Would you kindly show me which ones, please?\nAs for the patch, do you know where I can find it?"
+    },
+    {
+      "post_id": "js-post-1517978",
+      "author": "ShadowDragon",
+      "date": "2025-06-12T02:02:19+0900",
+      "body": "TheNewSon said:\nOh! Would you kindly show me which ones, please?\nAs for the patch, do you know where I can find it?\nClick to expand...\nhere is a patch and improvement that fixed bugs and merge plugins\nfound here [\nIavra_MasterLocatization\n].\nbut DK has one too (free and paid), and there other paid, but it depends\nhow far the you want to go on translation, there is also another free one.\nbut forgot the name of it."
+    }
+  ]
+}

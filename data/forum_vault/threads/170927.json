@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-mz-implementing-stat-drain-when-you-are-hit-while-guarding.170927",
+  "title": "RPG Maker MZ - implementing stat drain when you are hit while guarding.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:38.552831+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1462257",
+      "author": "IndividuallyWrapped",
+      "date": "2024-08-08T05:39:42+0900",
+      "body": "I use MP as stamina, so each turn, the player recovers some MP. I want to make it so if they guard, and are hit while guarding, it drains some MP. I don't want this to happen if they are hit while not guarding, however."
+    },
+    {
+      "post_id": "js-post-1462324",
+      "author": "ATT_Turan",
+      "date": "2024-08-08T13:20:52+0900",
+      "body": "You'll need to use a plugin that allows you to attach code to a state.\nIf you're using VisuStella plugins, their Battle Core has notetags for it. If you're not, you can use my Eval Tags plugin, linked in my signature.\nUsing my Eval Tags, you'd give your Guard state the notetag:\nCode:\n<Action Respond Eval>\nif (skill.isDamage())\n    target.gainMp(-10);\n</Action Respond Eval>\nThat will make you lose 10 MP every time you're hit while guarding. You can change the number or make it a formula inside the parentheses."
+    },
+    {
+      "post_id": "js-post-1462386",
+      "author": "IndividuallyWrapped",
+      "date": "2024-08-08T23:00:39+0900",
+      "body": "Wow! Thanks very much for this. Much appreciated."
+    },
+    {
+      "post_id": "js-post-1463142",
+      "author": "IndividuallyWrapped",
+      "date": "2024-08-12T23:25:02+0900",
+      "body": "ATT_Turan said:\nYou'll need to use a plugin that allows you to attach code to a state.\nIf you're using VisuStella plugins, their Battle Core has notetags for it. If you're not, you can use my Eval Tags plugin, linked in my signature.\nUsing my Eval Tags, you'd give your Guard state the notetag:\nCode:\n<Action Respond Eval>\nif (skill.isDamage())\n    target.gainMp(-10);\n</Action Respond Eval>\nThat will make you lose 10 MP every time you're hit while guarding. You can change the number or make it a formula inside the parentheses.\nClick to expand...\nJust a question, I get\nTypeError\nthis.checkEnemyEval is not a function\nwhen entering battle, with this notetag applied to the guard state."
+    },
+    {
+      "post_id": "js-post-1463145",
+      "author": "ATT_Turan",
+      "date": "2024-08-12T23:38:36+0900",
+      "body": "When you get crashes, please press F8, go to the Console tab, and post a screenshot of the full error trace.\nI'll look at it, but it would help to see where that's coming from in the code. That line should never be getting called for an actor.\nThe code in an Action Respond Eval also shouldn't be getting run when you enter a battle. So I'm confused by the whole situation."
+    },
+    {
+      "post_id": "js-post-1463150",
+      "author": "IndividuallyWrapped",
+      "date": "2024-08-13T00:01:34+0900",
+      "body": "Apologies. Pressing F8 on my pc after rpg maker crashes doesn't open the boot options. I'm not sure how to get to the tab you are asking about. If you have any suggestion that would be appreciated."
+    },
+    {
+      "post_id": "js-post-1463151",
+      "author": "ATT_Turan",
+      "date": "2024-08-13T00:13:43+0900",
+      "body": "Are you on Mac? You should be able to get there with F12, also, but F8 is the hotkey created by MZ.\nIf you're not able to provide the error trace for the crash, there's not much I can do to help."
+    },
+    {
+      "post_id": "js-post-1463160",
+      "author": "IndividuallyWrapped",
+      "date": "2024-08-13T01:24:37+0900",
+      "body": "I'm on pc. I'll try to find a way to provide error trace. Thanks."
+    },
+    {
+      "post_id": "js-post-1463162",
+      "author": "ATT_Turan",
+      "date": "2024-08-13T01:26:24+0900",
+      "body": "Both F8 and F12 should work on PC unless you have other plugins interfering with it."
+    },
+    {
+      "post_id": "js-post-1463163",
+      "author": "IndividuallyWrapped",
+      "date": "2024-08-13T01:29:18+0900",
+      "body": "I have a several plugins going, like multitweaks, etc. I'll have to eliminate them to see if any are interfering with F8/12. I have a couple plugins that effect battle, but I unchecked them and still got the crash. I will see what I can do.\nEdit:\n@ATT_Turan"
+    },
+    {
+      "post_id": "js-post-1465322",
+      "author": "IndividuallyWrapped",
+      "date": "2024-08-22T00:01:23+0900",
+      "body": "ATT_Turan said:\nBoth F8 and F12 should work on PC unless you have other plugins interfering with it.\nClick to expand...\nSorry to pester you, just wanted to check if you have a second. The above screenshot is the report."
+    },
+    {
+      "post_id": "js-post-1465323",
+      "author": "ATT_Turan",
+      "date": "2024-08-22T00:10:41+0900",
+      "body": "Just so you know, editing in tags doesn't create a notification for the person\nI dunno, the error makes no sense to me. That line of the code (327) is not calling that function (checkEnemyEval)\nMy only suggestions are:\n- try re-downloading the plugin from my post. Put it in your plugins folder, then right-click it in your plugin manager and Refresh. Save project and start a new playtest.\n- If that doesn't help, try turning off\nall\nother plugins, save, start new playtest.\nIf you're still getting the error when that's the only plugin running, show me that trace as you did above. And maybe if you can duplicate it in a test project that you can share with me."
+    },
+    {
+      "post_id": "js-post-1472595",
+      "author": "IndividuallyWrapped",
+      "date": "2024-09-29T00:51:09+0900",
+      "body": "ATT_Turan said:\nJust so you know, editing in tags doesn't create a notification for the person\nI dunno, the error makes no sense to me. That line of the code (327) is not calling that function (checkEnemyEval)\nView attachment 315339\nMy only suggestions are:\n- try re-downloading the plugin from my post. Put it in your plugins folder, then right-click it in your plugin manager and Refresh. Save project and start a new playtest.\n- If that doesn't help, try turning off\nall\nother plugins, save, start new playtest.\nIf you're still getting the error when that's the only plugin running, show me that trace as you did above. And maybe if you can duplicate it in a test project that you can share with me.\nClick to expand...\nLate reply. Thanks for your help. It was the Enemy Actor MZ plugin by VSMA that was interfering. It allows animated SV enemy actors."
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/my-game-wont-save-how-do-i-fix-it.170810",
+  "title": "My game won't save! How do I fix it?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:42.307411+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1461139",
+      "author": "skatefilter5",
+      "date": "2024-08-03T01:57:16+0900",
+      "body": "Whatever I save the game, the error message pop-ups it does autosaves sometimes depend how many parallel events are running especially comment events.\nI'm make a platforming game that requires a lot of parallel events without any performance drops."
+    },
+    {
+      "post_id": "js-post-1461153",
+      "author": "fizzly",
+      "date": "2024-08-03T02:58:40+0900",
+      "body": "Did the path where your game is allows to write files? Game is on local drive?"
+    },
+    {
+      "post_id": "js-post-1461161",
+      "author": "skatefilter5",
+      "date": "2024-08-03T03:50:12+0900",
+      "body": "fizzly said:\nDid the path where your game is allows to write files? Game is on local drive?\nClick to expand...\nYes. I usually store my projects in C:/Folder just incase I don't lose it\nAfter setting up my scripts for jump and movement my PC froze after I finish testing it and I have to restart my PC and now project is now corrupted but all everything but the game.exe are okay. So I have to transfer all my stuff that isn't corrupt into the new project. The save works ok in the custom main menu after I boot up. But when started all parallel events start processing then I can't save."
+    },
+    {
+      "post_id": "js-post-1461163",
+      "author": "SeaPhoenix",
+      "date": "2024-08-03T04:01:11+0900",
+      "body": "Are you using any plugins that modify how games are saved? Since you mentioned that the game autosaves, does the error message pop up during a regular save (going to the menu, and then going to \"Save\"), during autosave, or both?"
+    },
+    {
+      "post_id": "js-post-1461172",
+      "author": "skatefilter5",
+      "date": "2024-08-03T04:33:44+0900",
+      "body": "visastella save core I only use. I also tested without this plugin and it still won't let me save."
+    },
+    {
+      "post_id": "js-post-1461177",
+      "author": "skatefilter5",
+      "date": "2024-08-03T04:57:38+0900",
+      "body": "SeaPhoenix said:\nAre you using any plugins that modify how games are saved? Since you mentioned that the game autosaves, does the error message pop up during a regular save (going to the menu, and then going to \"Save\"), during autosave, or both?\nClick to expand...\nOkay i found a way to save my map by turning off these switches for common events that runs platformin then switch to a blank map and save and IT WORKED! The only thing I can't save was in the main menu.\nParallRun =ON ------- These switches causes to not save due to multi parallel-common events\n◆Control Variables：#0861 PlayerSaveGame X = Map X of Player\n◆Control Variables：#0862 PlayerSaveGame Y = Map Y of Player\n◆Control Variables：#0863 MAP SaveGame ID = Map ID\n◆Control Switches：#0020 ParallRun = OFF\n◆Control Switches：#0001 Run Whatever..... = OFF\n◆Control Switches：#0200 Temp. Run = OFF   -\n◆Transfer Player：Save Game Screen (7,6)\n◆Change Transparency：ON\n◆Script：$gameScreen.clearPictures()\n◆Wait：1 frame\n◆Open Save Screen\n◆Wait：1 frame\n◆Transfer Player：{MAP SaveGame ID} ({PlayerSaveGame X},{PlayerSaveGame Y})\n◆Change Transparency：OFF\n◆Control Switches：#0020 ParallRun = ON\n◆Control Switches：#0001 Run Whatever..... = ON\n◆Control Switches：#0200 Temp. Run = ON\n◆Control Switches：#0300 Set Save Point = OFF\n◆Control Switches：#0299 Set Save Point Warp = OFF\nI guess I solve it myself then.\nCHEERS!"
+    }
+  ]
+}

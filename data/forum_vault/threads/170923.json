@@ -1,0 +1,191 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/changing-classes-using-variables.170923",
+  "title": "Changing classes using variables?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:40.038109+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1462149",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T00:41:35+0900",
+      "body": "I'm making an ability for one of my characters to take on the class of another character mid battle. The problem is i dont know how to store a class ID in a variable or how to change the targets class to that variable. Help would be apreciated, thank you."
+    },
+    {
+      "post_id": "js-post-1462153",
+      "author": "Aerosys",
+      "date": "2024-08-08T00:56:34+0900",
+      "body": "Put this in a Variable OP\nGet Class ID from x-th actor in your party:\nCode:\n$gameParty.members()[x] ? $gameParty.members()[x].currentClass().id : 0\nReplace x with the index. Sorry, I don't remember whether you need to type 0 or 1, just try it out.\nThis call returns 0 when this actor isn't present in your party.\nGet Class ID from x-th actor from your database:\nCode:\n$gameActors.actor(x).currentClass().id\nPut this in a Script Call\nSet Class from x-th actor in your party by Variable\nCode:\n$gameParty.members()[x].changeClass($gameVariables.value(1), true)\nSet Class from x-th actor from your database\nCode:\n$gameActors.actor(x).changeClass($gameVariables.value(1), true)"
+    },
+    {
+      "post_id": "js-post-1462154",
+      "author": "ATT_Turan",
+      "date": "2024-08-08T00:56:51+0900",
+      "body": "Your question doesn't really provide enough context to just give you an answer.\nBroadly speaking, you store a class ID the same way you store anything else in a variable, the script call for that is in the pinned thread of script calls and should pop right up when you Google the question.\nBut what's your point of reference for the class ID? Whose class ID? A specific other actor? Is this a skill targeting a party member of the player's choice and you're using that actor's class?"
+    },
+    {
+      "post_id": "js-post-1462155",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T01:00:09+0900",
+      "body": "ATT_Turan said:\nYour question doesn't really provide enough context to just give you an answer.\nBroadly speaking, you store a class ID the same way you store anything else in a variable, the script call for that is in the pinned thread of script calls and should pop right up when you Google the question.\nBut what's your point of reference for the class ID? Whose class ID? A specific other actor? Is this a skill targeting a party member of the player's choice and you're using that actor's class?\nClick to expand...\nit's targeting a party member of the players choice. I'm not really in the clearest of headscpaces when facing multipe problems so i'm not the bets at explaining when i'm like that sorry. The other problem im facing is actually reverting back to the original class once the effect ends, but i cant figure out how to run a common event through a state, searches suggest its impossible, and plugins suggest yanfly but as an MZ dev thats not an option.\nOkay i'll give a spacific explination of the skill\nParty member 5 is the only one with access to the skill.\nThe variable checks what the target party members current class is and applies that class to party member 5\ni needed this done by variables as i use a class changing system.\nthe skill is supposed to end after 4 turns or at the end of battle.\nFor flair i also wanted to change the actors battle image to the target actor but that may be a bit much considering i dont know how i would change it back, as i assume it wouldn't be able to do that automaticaly after the effect ends, especially not if i somehow do it without a state"
+    },
+    {
+      "post_id": "js-post-1462156",
+      "author": "ATT_Turan",
+      "date": "2024-08-08T01:15:40+0900",
+      "body": "BeanmanBowen said:\ni cant figure out how to run a common event through a state, searches suggest its impossible, and plugins suggest yanfly but as an MZ dev thats not an option.\nClick to expand...\nCorrect, you can't \"run a common event through a state,\" you'd need to do this through code. Yanfly's plugins are written for MV, but there are MZ plugins which do the same things.\nThe direct port of Yanfly's plugins for MZ is done by VisuStella, but if you're not already using their products you can do this with my lighter weight\nEval Tags plugin\n.\nYou would give the skill the notetag:\nCode:\n<Action Apply Eval>\nuser.origClass = user.currentClass().id;\nuser.changeClass(target.currentClass().id, true);\n// Specify the ID of your state on this line\nuser.addState(69);\n</Action Apply Eval>\nreplace 69 with the ID of the state which determines how long the effect lasts.\nThen, give the state the notetag:\nCode:\n<State Remove Eval>\nuser.changeClass(user.origClass, true);\ndelete user.origClass;\n</State Remove Eval>"
+    },
+    {
+      "post_id": "js-post-1462158",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T01:20:24+0900",
+      "body": "ATT_Turan said:\nCorrect, you can't \"run a common event through a state,\" you'd need to do this through code. Yanfly's plugins are written for MV, but there are MZ plugins which do the same things.\nThe direct port of Yanfly's plugins for MZ is done by VisuStella, but if you're not already using their products you can do this with my lighter weight\nEval Tags plugin\n.\nYou would give the skill the notetag:\nCode:\n<Action Apply Eval>\nuser.origClass = user.currentClass().id;\nuser.changeClass(target.currentClass().id, true);\n// Specify the ID of your state on this line\nuser.addState(69);\n</Action Apply Eval>\nreplace 69 with the ID of the state which determines how long the effect lasts.\nThen, give the state the notetag:\nCode:\n<State Remove Eval>\nuser.changeClass(user.origClass, true);\ndelete user.origClass;\n</State Remove Eval>\nClick to expand...\nI am in fact using visustella plugins, though i cant find anything relating to common events in the skillstates core and i couldnt find out what other plugin would do the same thing. But i’ll try the one you suggested thank you"
+    },
+    {
+      "post_id": "js-post-1462160",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T01:29:22+0900",
+      "body": "ATT_Turan said:\nCorrect, you can't \"run a common event through a state,\" you'd need to do this through code. Yanfly's plugins are written for MV, but there are MZ plugins which do the same things.\nThe direct port of Yanfly's plugins for MZ is done by VisuStella, but if you're not already using their products you can do this with my lighter weight\nEval Tags plugin\n.\nYou would give the skill the notetag:\nCode:\n<Action Apply Eval>\nuser.origClass = user.currentClass().id;\nuser.changeClass(target.currentClass().id, true);\n// Specify the ID of your state on this line\nuser.addState(69);\n</Action Apply Eval>\nreplace 69 with the ID of the state which determines how long the effect lasts.\nThen, give the state the notetag:\nCode:\n<State Remove Eval>\nuser.changeClass(user.origClass, true);\ndelete user.origClass;\n</State Remove Eval>\nClick to expand...\nDoes your plugin also allow the battler change or is that too far fetched?"
+    },
+    {
+      "post_id": "js-post-1462163",
+      "author": "ATT_Turan",
+      "date": "2024-08-08T01:33:44+0900",
+      "body": "BeanmanBowen said:\nBut i’ll try the one you suggested thank you\nClick to expand...\nATT_Turan said:\nif you're not already using their products you can do this with my lighter weight\nEval Tags plugin\n.\nClick to expand...\nThat's not what I said - my plugin will not work correctly if you have VisuStella plugins in your project.\nBeanmanBowen said:\nI am in fact using visustella plugins, though i cant find anything relating to common events in the skillstates core\nClick to expand...\nATT_Turan said:\nyou can't \"run a common event through a state,\" you'd need to do this through code.\nClick to expand...\nI'm really not sure what you're doing to confuse yourself - you seem to be going at right angles to everything I told you\nThe VisuStella Battle Core has an entire section of the table of contents dedicated to\nMechanics-Related notetags\n.\nYou would change what I wrote as Action Apply Eval to JS Post-Apply As User.\nSimilarly, the Skills and States Core has a section in their table of contents for state notetags,\nOn Add/Erase/Expire.\nSo you would change what I wrote as State Remove Eval to JS On Erase State.\nBeanmanBowen said:\nDoes your plugin also allow the battler change or is that too far fetched?\nClick to expand...\nYou can look up - again in the pinned thread of script calls, or via Google - the syntax to change the battler image and add that code in.\nIt also sounds like you're going for a full transformation state, and there are many tutorial articles and threads about how to do that. For example:\nHow to implement every possible Yanfly Tips & Tricks effect in MZ with VisuStella plugins\nHi all. This is by far one of the biggest topics I've seen people asking about, to the point where I've been commissioned twice to make an MZ project containing all of the T&T effects. So I figured I'd make a topic about how to implement them all yourselves. If no other plugins are specified...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1462166",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T01:39:57+0900",
+      "body": "ATT_Turan said:\nThat's not what I said - my plugin will not work correctly if you have VisuStella plugins in your project.\nI'm really not sure what you're doing to confuse yourself - you seem to be going at right angles to everything I told you\nThe VisuStella Battle Core has an entire section of the table of contents dedicated to\nMechanics-Related notetags\n.\nYou would change what I wrote as Action Apply Eval to JS Post-Apply As User.\nSimilarly, the Skills and States Core has a section in their table of contents for state notetags,\nOn Add/Erase/Expire.\nSo you would change what I wrote as State Remove Eval to JS On Erase State.\nYou can look up - again in the pinned thread of script calls, or via Google - the syntax to change the battler image and add that code in.\nIt also sounds like you're going for a full transformation state, and there are many tutorial articles and threads about how to do that. For example:\nHow to implement every possible Yanfly Tips & Tricks effect in MZ with VisuStella plugins\nHi all. This is by far one of the biggest topics I've seen people asking about, to the point where I've been commissioned twice to make an MZ project containing all of the T&T effects. So I figured I'd make a topic about how to implement them all yourselves. If no other plugins are specified...\nforums.rpgmakerweb.com\nClick to expand...\nI've had a look through the battle core and skillstates core again, both manually and using the find function on the term \"common event\" and i see nothing in either to add a common event to a state. as for the second part of your post. i am not experienced in any form of coding, so i just got really confused and lsot, i'm sorry"
+    },
+    {
+      "post_id": "js-post-1462167",
+      "author": "Robro33",
+      "date": "2024-08-08T01:40:38+0900",
+      "body": "BeanmanBowen said:\nI am in fact using visustella plugins, though i cant find anything relating to common events in the skillstates core\nClick to expand...\nJust putting it out there, thats because that visustella plugin doesnt specifically add the ability to run a common event from a state. it allows you to run javascript in more places, and with that, you can you can use the engine's\nscript calls\nto run a common event from a state. Theyre not going to list every little thing you can do with JS inside their documentation when you can do just about anything with JS. They'd just document what features the plugin itself adds\nalthough if youre already using JS in a notetag and you know how to write the thing you want your common event to do, youre generally better off skipping the common event and doing the thing you want directly in the notetag, like as already shown with changing class"
+    },
+    {
+      "post_id": "js-post-1462169",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T01:43:56+0900",
+      "body": "Robro33 said:\nJust putting it out there, thats because that visustella plugin doesnt specifically add the ability to run a common event from a state. it allows you to run javascript in more places, and with that, you can you can use the engine's\nscript calls\nto run a common event from a state. Theyre not going to list every little thing you can do with JS inside their documentation when you can do just about anything with JS. They'd just document what features the plugin itself adds\nalthough if youre already using JS in a notetag and you know how to write the thing you want your common event to do, youre generally better off skipping the common event and doing the thing you want directly in the notetag, like as already shown with changing class\nClick to expand...\nI think doing it through common event would be easier for my brain to handle. adding every single feature through JS sounds a bit crazy for my 0 experience brain. I wouldn't even know where to start consdiering i already have a list of 10 actorsd to choose from and with more to come. I guees i'll attempt to figure out how to run the event through javascript. thank you."
+    },
+    {
+      "post_id": "js-post-1462170",
+      "author": "ATT_Turan",
+      "date": "2024-08-08T01:46:53+0900",
+      "body": "I suggest you try to un-fixate yourself on common events if you're trying to make the engine do things beyond what it's made to do.\nThe majority of plugins do not tie into common events, because the engine can't just run a common event whenever you want - there are specific times when they execute. So if you want something to happen outside of those timing windows, you use code.\nI was confused because I already told you this, then you went back to talking about common events again.\nBeanmanBowen said:\nI wouldn't even know where to start consdiering i already have a list of 10 actorsd to choose from and with more to come.\nClick to expand...\nI just don't know what you're talking about.\nI gave you the code\nto do this above. I\ngave you\na link to Trihan's thread which has code you copy and paste.\nYou put this code in two places - the skill and the state. You are not required to do anything with a list of ten actors. You are not required to write any code yourself, you copy and paste.\nWhat is so difficult?\nAnyway, if that doesn't work for you, maybe someone else will be able to help with whatever method you're going for. Good luck with your project."
+    },
+    {
+      "post_id": "js-post-1462171",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T01:51:37+0900",
+      "body": "ATT_Turan said:\nI suggest you try to un-fixate yourself on common events if you're trying to make the engine do things beyond what it's made to do.\nThe majority of plugins do not tie into common events, because the engine can't just run a common event whenever you want - there are specific times when they execute. So if you want something to happen outside of those timing windows, you use code.\nI was confused because I already told you this, then you went back to talking about common events again.\nI just don't know what you're talking about.\nI gave you the code\nto do this above. I\ngave you\na link to Trihan's thread which has code you copy and paste.\nYou put this code in two places - the skill and the state. You are not required to do anything with a list of ten actors. You are not required to write any code yourself, you copy and paste.\nWhat is so difficult?\nAnyway, if that doesn't work for you, maybe someone else will be able to help with whatever method you're going for. Good luck with your project.\nClick to expand...\nI was under the impression your code only worked for one actor, i wouldnt know how to open a list for the player to choose what actor they want actor 5 to copy through notetags alone. Im so lost and confused and im sorry im so dumb i really want tk make this but i just cant figure out all this code stuff, and even the slightest adjustment to anything terrifies me cus i might end up messing this or that up with no clue how to fix it let alone how to make the code correctly, i’m really sorry."
+    },
+    {
+      "post_id": "js-post-1462174",
+      "author": "Robro33",
+      "date": "2024-08-08T02:03:58+0900",
+      "body": "BeanmanBowen said:\nand even the slightest adjustment to anything terrifies me cus i might end up messing this or that up with no clue how to fix it let alone how to make the code correctly,\nClick to expand...\nas he already said, you dont have to adjust what he gave you to make it work. so long as the skill with that skill tag is used on any actor, and they get the associated state with that state tag in it, itll change the class and change it back.\nTrihan already has what you need for the visual transformation typed out. all you have to do is copy it into the state and then change the file names and indices (highlighted in green and purple) for the ones your project uses"
+    },
+    {
+      "post_id": "js-post-1462176",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T02:06:22+0900",
+      "body": "Robro33 said:\nas he already said, you dont have to adjust what he gave you to make it work. so long as the skill with that skill tag is used on any actor, and they get the associated state with that state tag in it, itll change the class and change it back.\nTrihan already has what you need for the visual transformation typed out. all you have to do is copy it into the state and then change the file names and indices (highlighted in green and purple) for the ones your project uses\nClick to expand...\nI’ve given it an attempt. I copy pasted the code, and replaced the notetags with the visustella ones as instructed, but nothing happened when using the skill"
+    },
+    {
+      "post_id": "js-post-1462178",
+      "author": "Robro33",
+      "date": "2024-08-08T02:14:01+0900",
+      "body": "BeanmanBowen said:\nI’ve given it an attempt. I copy pasted the code, and replaced the notetags with the visustella ones as instructed, but nothing happened when using the skill\nClick to expand...\nits best to show exactly what your skill/state looks like and provide the exact contents of their noteboxes so that no guessing games have to be played in figuring out what went wrong, but also just to make sure - you did save your project after putting the notetags in? changes to noteboxes and plugins arent saved to the game until you save the project"
+    },
+    {
+      "post_id": "js-post-1462180",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T02:19:10+0900",
+      "body": "Robro33 said:\nits best to show exactly what your skill/state looks like and provide the exact contents of their noteboxes so that no guessing games have to be played in figuring out what went wrong, but also just to make sure - you did save your project after putting the notetags in? changes to noteboxes and plugins arent saved to the game until you save the project\nClick to expand...\nYes i start a new playtest after every change.\nI'll include the skill and state"
+    },
+    {
+      "post_id": "js-post-1462187",
+      "author": "Robro33",
+      "date": "2024-08-08T02:45:22+0900",
+      "body": "i see it now\ndont use <JS Post-Apply as User>. its not meant for skills\nuse <JS Post-Apply> instead"
+    },
+    {
+      "post_id": "js-post-1462189",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T02:50:18+0900",
+      "body": "Robro33 said:\ni see it now\ndont use <JS Post-Apply as User>. its not meant for skills\nuse <JS Post-Apply> instead\nClick to expand...\nYep that seems to have fixed it, class changing works now. But i looked through the code att_turan left, the one about how to implement all yanfly tricks in visustella. and i'm not sure how to go about the visual transformation. i doubt it'd be easy to make actor 5 replace its own battler with taht of the selected actor rather than a set file."
+    },
+    {
+      "post_id": "js-post-1462193",
+      "author": "Robro33",
+      "date": "2024-08-08T03:10:55+0900",
+      "body": "BeanmanBowen said:\ni doubt it'd be easy to make actor 5 replace its own battler with taht of the selected actor rather than a set file.\nClick to expand...\ni missed that point then. you need some small adjustments then.\nadd this somewhere inside the skill notetag:\nCode:\nuser.transformTarget = target;\nand you want to change the 5 lines that begin with const inside the add state tag to this so that it just uses the target's images instead of a file name\nCode:\nconst charName = user.transformTarget._characterName;\nconst charIndex = user.transformTarget._characterIndex;\nconst faceName = user.transformTarget._faceName;\nconst faceIndex = user.transformTarget._faceIndex;\nconst battlerName = user.transformTarget._battlerName;"
+    },
+    {
+      "post_id": "js-post-1462196",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T03:25:47+0900",
+      "body": "The game now crashes on launch with these changes. i determinded the issue lies within the state notetag so i'll add it here\n<JS On Add State>\nif (user.isActor()) {\nuser._prevCharName ??= user._characterName;\nuser._prevCharIndex ??= user._characterIndex;\nuser._prevFaceName ??= user._faceName;\nuser._prevFaceIndex ??= user._faceIndex;\nuser._prevBattlerName ??= user._battlerName;\nconst charName = user.transformTarget._characterName;\nconst charIndex = user.transformTarget._characterIndex;\nconst faceName = user.transformTarget._faceName;\nconst faceIndex = user.transformTarget._faceIndex;\nconst battlerName = user.transformTarget._battlerName;\nuser.setCharacterImage(charName, charIndex);\nuser.setFaceImage(faceName, faceIndex);\nuser.setBattlerImage(battlerName);\nuser.refresh();\n}\n</JS On Add State>\n<JS On Erase State>\nconst charName = user._prevCharName;\nconst charIndex = user._prevCharIndex;\nconst faceName = user._prevFaceName;\nconst faceIndex = user._prevFaceIndex;\nconst battlerName = user._prevBattlerName;\nuser.setCharacterImage(charName, charIndex);\nuser.setFaceImage(faceName, faceIndex);\nuser.setBattlerImage(battlerName);\ndelete user._prevCharacterName;\ndelete user._prevCharacterIndex;\ndelete user._prevFaceName;\ndelete user._prevFaceIndex;\ndelete user._prevBattlerName;\nuser.refresh();\n</JS On Erase State>\n<JS On Erase State>\nuser.changeClass(user.origClass, true);\ndelete user.origClass;\n</JS On Erase State>"
+    },
+    {
+      "post_id": "js-post-1462198",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T03:28:05+0900",
+      "body": "BeanmanBowen said:\nThe game now crashes on launch with these changes. i determinded the issue lies within the state notetag so i'll add it here\nView attachment 313979\n<JS On Add State>\nif (user.isActor()) {\nuser._prevCharName ??= user._characterName;\nuser._prevCharIndex ??= user._characterIndex;\nuser._prevFaceName ??= user._faceName;\nuser._prevFaceIndex ??= user._faceIndex;\nuser._prevBattlerName ??= user._battlerName;\nconst charName = user.transformTarget._characterName;\nconst charIndex = user.transformTarget._characterIndex;\nconst faceName = user.transformTarget._faceName;\nconst faceIndex = user.transformTarget._faceIndex;\nconst battlerName = user.transformTarget._battlerName;\nuser.setCharacterImage(charName, charIndex);\nuser.setFaceImage(faceName, faceIndex);\nuser.setBattlerImage(battlerName);\nuser.refresh();\n}\n</JS On Add State>\n<JS On Erase State>\nconst charName = user._prevCharName;\nconst charIndex = user._prevCharIndex;\nconst faceName = user._prevFaceName;\nconst faceIndex = user._prevFaceIndex;\nconst battlerName = user._prevBattlerName;\nuser.setCharacterImage(charName, charIndex);\nuser.setFaceImage(faceName, faceIndex);\nuser.setBattlerImage(battlerName);\ndelete user._prevCharacterName;\ndelete user._prevCharacterIndex;\ndelete user._prevFaceName;\ndelete user._prevFaceIndex;\ndelete user._prevBattlerName;\nuser.refresh();\n</JS On Erase State>\n<JS On Erase State>\nuser.changeClass(user.origClass, true);\ndelete user.origClass;\n</JS On Erase State>\nClick to expand...\nNevermind, i've already determined the issue myself. The problem was that i had <on erase state> twice...Howver the visual transformation effect did not occur"
+    },
+    {
+      "post_id": "js-post-1462205",
+      "author": "Robro33",
+      "date": "2024-08-08T03:42:32+0900",
+      "body": "BeanmanBowen said:\nNevermind, i've already determined the issue myself. The problem was that i had <on erase state> twice...Howver the visual transformation effect did not occur\nClick to expand...\ncopy paste the contents of one of the erase state tags into the other. IDK how visustella plugins handle duplicates of a tag.\nalso i know i said \"add this somewhere inside the skill notetag\", but make it the first thing in the notetag. you didnt show a screenshot of the skill after putting it in, but if its after the addState line the then state's notetags wouldnt be able to use it"
+    },
+    {
+      "post_id": "js-post-1462210",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T03:47:33+0900",
+      "body": "Robro33 said:\ncopy paste the contents of one of the erase state tags into the other. IDK how visustella plugins handle duplicates of a tag.\nalso i know i said \"add this somewhere inside the skill notetag\", but make it the first thing in the notetag. you didnt show a screenshot of the skill after putting it in, but if its after the addState line the then state's notetags wouldnt be able to use it\nClick to expand...\nI've changed the location of the notetag in the skill and it works now! thank you so much! i was getting really worried that i'd need to scrap everything! you're a lifesaver!\nI'm sorry a new issue has popped up. I'm using a plugin for custom equip slots per class. And it seems to conflict. the game crashes when i tried to flee a battle. I'm going to test if winning the battle or removing the state via time has the same effect\nWinning a battle and letting the state expire have no effects. The issue seemed to be a one time thing somehow, because fleeing worked fine too. besides the state not ending one time...This is strange but i believe it works fine enough if i can find the root of the strange crash"
+    },
+    {
+      "post_id": "js-post-1462219",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T04:08:15+0900",
+      "body": "BeanmanBowen said:\nI've changed the location of the notetag in the skill and it works now! thank you so much! i was getting really worried that i'd need to scrap everything! you're a lifesaver!\nI'm sorry a new issue has popped up. I'm using a plugin for custom equip slots per class. And it seems to conflict. the game crashes when i tried to flee a battle. I'm going to test if winning the battle or removing the state via time has the same effect\nWinning a battle and letting the state expire have no effects. The issue seemed to be a one time thing somehow, because fleeing worked fine too. besides the state not ending one time...This is strange but i believe it works fine enough if i can find the root of the strange crash\nClick to expand...\nHere's the error message. I am once again a confused lost puppy with no idea how to/If it can be fixed"
+    },
+    {
+      "post_id": "js-post-1462228",
+      "author": "Robro33",
+      "date": "2024-08-08T04:26:16+0900",
+      "body": "were you able to get that error consistently, or is it still unknown as to why it happens? I dont have the time to look into that equip slot plugin, but if you can find a consistent cause, gather the steps to reproduce it, and ask Puppet Knight about it, they might have an idea"
+    },
+    {
+      "post_id": "js-post-1462231",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T04:32:10+0900",
+      "body": "Robro33 said:\nwere you able to get that error consistently, or is it still unknown as to why it happens? I dont have the time to look into that equip slot plugin, but if you can find a consistent cause, gather the steps to reproduce it, and ask Puppet Knight about it, they might have an idea\nClick to expand...\nIt seems to only happen if flee is the first action taken after using the skill"
+    },
+    {
+      "post_id": "js-post-1462233",
+      "author": "Robro33",
+      "date": "2024-08-08T04:34:11+0900",
+      "body": "BeanmanBowen said:\nIt seems to only happen if flee is the first action taken after using the skill\nClick to expand...\nthe first action in general, or the first action taken by the transformed actor?"
+    },
+    {
+      "post_id": "js-post-1462235",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T04:36:10+0900",
+      "body": "Robro33 said:\nthe first action in general, or the first action taken by the transformed actor?\nClick to expand...\nThe first action taken post use of the skill by any actor\nUpon further testing it happens if flee is used by any character that's not the actor with the state, timing doesn't matter\nAnother test later, ive tried with both Enhanced TP and the puppetknight plugin off, neither of which cause the issue as it still happens\nI've decided on a makeshift solution. For some reason the escape skill does not trigger the crash. so i'll make it a universal skill and remove the escape command"
+    },
+    {
+      "post_id": "js-post-1462262",
+      "author": "BeanmanBowen",
+      "date": "2024-08-08T05:53:44+0900",
+      "body": "BeanmanBowen said:\nThe first action taken post use of the skill by any actor\nUpon further testing it happens if flee is used by any character that's not the actor with the state, timing doesn't matter\nAnother test later, ive tried with both Enhanced TP and the puppetknight plugin off, neither of which cause the issue as it still happens\nI've decided on a makeshift solution. For some reason the escape skill does not trigger the crash. so i'll make it a universal skill and remove the escape command\nClick to expand...\nonce again an issue arrises. The satte doesnt revert, if the battle ends before the state does. even with the \"if battle end\" trigger is on, it doesnt get removed by walking either. neither the image nor the class. I think it's a lost cause and i should just give up and stop wasting time on this"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/yanfly-message-core-stuck-with-small-tiny-font.170955",
+  "title": "MV Yanfly Message Core - Stuck with small/tiny font",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:55.470883+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1462431",
+      "author": "n04s",
+      "date": "2024-08-09T07:16:40+0900",
+      "body": "Hi, I'm using the Yanfly Engine Core and Yanfly Message Core. I created a fresh project and was able to recreate this issue perfectly, so I know it's not plugin order or something with my project.\nWhen I try to use a font that isn't GameFont for the Yanfly Message Core, all text will be tiny.\n\\n<Name>Test font\n^exact code used for the above screenshot\nI saw another thread about this but the only thing that was mentioned is that the font name needs to be formatted correctly, but there's no clarity on how...\nI've tried just \"Roboto\" and \"Roboto-Regular\", but it seems the plugin can't find it and defaults to some serif font (looks like Times New Roman). If I put \"Roboto-Regular.ttf\", it correctly uses the right font, but the font is really small. I've tried two fonts and it happens with both of them. As you might be able to see, I tried adding the other fonts in the family with a comma but that did nothing.\nIf I change the size larger, the font still stays small, but the spacing acts like the font is large.\nNothing is changed in Core Engine whatsoever. For Message Core, I've only changed the \"Font Name\" under parameters.\nI've also looked all over the Yanfly Message Core documentation, but almost nothing is mentioned about the \"Font Name\" parameter.\nAnyone know what I'm doing wrong? Or is this plugin not actually able to change the message font?"
+    },
+    {
+      "post_id": "js-post-1462471",
+      "author": "ATT_Turan",
+      "date": "2024-08-09T13:39:36+0900",
+      "body": "That's not a valid format for the plugin parameter.\nThere can, by definition, only be one \"default font\" used for the Message Window. You put the name of the font family.\nIf you're not using one of the default fonts in RPG Maker MV, you need to load it by modifying the CSS file or using Yanfly's Load Custom Fonts:"
+    },
+    {
+      "post_id": "js-post-1462554",
+      "author": "n04s",
+      "date": "2024-08-10T00:50:01+0900",
+      "body": "THANK YOU that was it!! I was able to get everything working by adding the font into the gamefont.css file.\nFor anyone wondering, it looks like this to add in a new font :\n@font-face {\nfont-family: GameFont;\nsrc: url(\"BubblegumSans-Regular.otf\");\n}\n@font-face {\nfont-family: Roboto;\nsrc: url(\"Roboto-Regular.otf\");\nAnd now it's working when I set the parameter to \"Roboto\""
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/do-sub-folders-improve-loading-time-of-images.170925",
+  "title": "Do sub folders improve loading time of images?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T12:59:38.928594+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1462191",
+      "author": "Zia_",
+      "date": "2024-08-08T03:00:07+0900",
+      "body": "Hi all,\nI'm working on a kind of picture heavy game. Sometimes, there is a noticeable delay in loading pictures. E.g. when you open a character menu, the player artworks might be loaded in a second later.\nI guess the game works through the whole img/pictures folder, searching for the requested image.\nWould it help to work with sub folders, to split up the amount of images to check per request?\nOr wouldn't that matter much, since the game would check the entire pictures anyway, or the delay has other reasons?\nSince it's very risky to change all the picture paths afterwards, I'd like to be sure, this actually might solve the issue.\nThanks,\nZia"
+    },
+    {
+      "post_id": "js-post-1462195",
+      "author": "inc0der",
+      "date": "2024-08-08T03:21:50+0900",
+      "body": "Subfolder likely won't make a difference, unless you have an actual plugin that is scanning the directory everytime you open the menu, which is unlikely. An image is loaded with the direct url/filepath, so it's not reading a directory it's simply reading the file right away.\nUsually performance issues like you describe are caused by large images, if the images are used often, then it may be a good idea to preload the images when your game boots up.\nYou can check out Synrec's preloader to help you with that\nhttps://synrec.itch.io/rpg-maker-mz-preloader"
+    },
+    {
+      "post_id": "js-post-1462197",
+      "author": "ATT_Turan",
+      "date": "2024-08-08T03:26:32+0900",
+      "body": "Zia_ said:\nI guess the game works through the whole img/pictures folder, searching for the requested image.\nClick to expand...\nNo, that's not how operating systems work.\nZia_ said:\nWould it help to work with sub folders, to split up the amount of images to check per request?\nClick to expand...\nNo.\nZia_ said:\nOr wouldn't that matter much, since the game would check the entire pictures anyway, or the delay has other reasons?\nClick to expand...\nAs\n@inc0der\nsays, it's more likely to do with the size of your images and whether or not they're being cached.\nDoes your game do the same thing on other people's systems? It could even be a hardware issue."
+    },
+    {
+      "post_id": "js-post-1462206",
+      "author": "Zia_",
+      "date": "2024-08-08T03:44:51+0900",
+      "body": "Thank you. The images in question aren't that big. At least not all of them. Maybe 1 to 4 kb.\nI'm pretty sure my hardware is fine. I use the HUD Maker Ultra for some of my menu screens, and that plugin in particular seems to be a little fast sometimes. But I encountered image loading delay in situations w/o HUD Maker Ultra as well.\nIn some situations I use a script to preload the image. Could someone confirm, that I did it right and this actually does what I think it sould do?\nCode:\nvar variableValue = $gameVariables.value(1105); // Check value of v1105\nvar imageName = \"TradingCard_\" + variableValue; // Create file name based on variable\n\nImageManager.loadPicture(imageName);\nIf so, I'll add it to more events, with some logic to anticipate, which image is about to be used."
+    },
+    {
+      "post_id": "js-post-1462220",
+      "author": "gstv87",
+      "date": "2024-08-08T04:11:26+0900",
+      "body": "are we talking a compiled game or the test build?\nif it's compiled, it could be that the system takes a little longer to decode the package, every time.\nif it's an HDD, it could be badly fragmented.\nanyway, any on-the-fly heavy image processing should use a preloader... especially with your size of image, it would get rid of any loading time while playing. Just load the whole bunch in memory one time, and keep it there."
+    },
+    {
+      "post_id": "js-post-1462224",
+      "author": "ATT_Turan",
+      "date": "2024-08-08T04:15:36+0900",
+      "body": "Zia_ said:\nCode:\nvar variableValue = $gameVariables.value(1105); // Check value of v1105\nvar imageName = \"TradingCard_\" + variableValue; // Create file name based on variable\nImageManager.loadPicture(imageName);\nClick to expand...\nThe first line is unnecessary, and is inaccurate - it's not checking anything, it's just declaring a variable.\nYou could simply do\nCode:\nvar imageName = \"TradingCard_\" + $gameVariables.value(1105);\n(of course, you also don't need the imageName variable and could just put all of that as the argument for ImageManager).\nAlso, just calling ImageManager.loadPicture() doesn't change anything unless you're doing it at an actual different time than when you're trying to display the image. You'd need to set something equal to its return value in order to have it wait for the loading to complete. (as far as I know)\nThis should be done internally by default, inside the drawFace() method - are you using a plugin to customize your menu? If yes, I would suggest fixing the plugin rather than trying to find ways to work around the issue."
+    },
+    {
+      "post_id": "js-post-1462236",
+      "author": "Zia_",
+      "date": "2024-08-08T04:36:57+0900",
+      "body": "ATT_Turan said:\nAlso, just calling ImageManager.loadPicture() doesn't change anything unless you're doing it at an actual different time than when you're trying to display the image. You'd need to set something equal to its return value in order to have it wait for the loading to complete. (as far as I know)\nThis should be done internally by default, inside the drawFace() method - are you using a plugin to customize your menu? If yes, I would suggest fixing the plugin rather than trying to find ways to work around the issue.\nClick to expand...\nThis specific preload is used for a flip card effect. You see the back of the card first, and it will turn into the preloaded card. This is event based. Sure, in this case, there's plenty of time to initialize the image early on, but that's not the case with all of my HUDs using the HUD Maker Ultra for example. It comes with an own editor to build HUDs, converting the result into JSON files. I can't modify the editor.\nIt contains call ups for images via custom code, like\nCode:\nreturn \"img/pictures/MonsterAvatar_\" + $gameVariables.value(1048) + \".png\";\nand these take slightly longer than the rest of the HUD layout to load.\nPS:\ngstv87 said:\nare we talking a compiled game or the test build?\nanyway, any on-the-fly heavy image processing should use a preloader... especially with your size of image, it would get rid of any loading time while playing. Just load the whole bunch in memory one time, and keep it there.\nClick to expand...\nIt's the test build."
+    },
+    {
+      "post_id": "js-post-1462239",
+      "author": "ATT_Turan",
+      "date": "2024-08-08T04:51:45+0900",
+      "body": "Are you saying there is a field within the HUDMaker interface where you'd paste that line of code?\nOr is that a line of code from inside the plugin?\nBecause that value being returned is just a string that's the filepath - it has to be getting\nused\nsomeplace to load an image."
+    },
+    {
+      "post_id": "js-post-1462243",
+      "author": "Zia_",
+      "date": "2024-08-08T05:06:45+0900",
+      "body": "The HUD Maker comes with a stand alone editor where you can place and modify all kind of HUD elements and configurate them into oblivion. From display conditions to code based context sensitive selection of the needed graphic or text you want to display.\nThe result is a JSON file, which will interpret my \"return\"-line to get the specific graphic at the right spot. It comes with coordinates, conditions etc. of course as well.\nHUD Maker Ultra – MZ Tool & Plugin – RPG Maker MZ Plugins\nsumrndm.site\nUnfortunately the author doesn't support it anymore.\nAnyway, I will experiment with a preloader plugin, after reading your answers, I'm positive, that it will fix the issues. If not, I'll poke again, thank you!"
+    },
+    {
+      "post_id": "js-post-1462255",
+      "author": "ATT_Turan",
+      "date": "2024-08-08T05:34:31+0900",
+      "body": "Yes, it's just that managing preloader plugins can be difficult and it shouldn't be needed if the plugin were written correctly.\nBut not so many people are willing to try to fix SRD's work for him, and of course that's the most complex one."
+    },
+    {
+      "post_id": "js-post-1462304",
+      "author": "gstv87",
+      "date": "2024-08-08T09:15:05+0900",
+      "body": "@Zia_\nyou don't really need a preloader plugin per se, if you're not concerned about memory leaks.\nyou can put a loop at the beginning of the program to just bulk-load all images into memory, and another one at the end before shutdown to clear the memory.\nthe plugin just gives you the chance to fine-tune what you load, and when."
+    }
+  ]
+}
