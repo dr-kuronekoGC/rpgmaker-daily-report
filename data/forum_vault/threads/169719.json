@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/activate-a-script-mid-game.169719",
+  "title": "Activate a script mid-game",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T19:03:22.730474+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1452604",
+      "author": "Omega_Gamer_87",
+      "date": "2024-06-23T10:59:47+0900",
+      "body": "Out of sheer curiosity I wonder if it is possible to have a script, let's say one that adds ATB to battle, but only have it activate after a certain point in the game, like by having a switch turn on or something triggers the effect and boom now the game system has more depth, just wondering"
+    },
+    {
+      "post_id": "js-post-1452770",
+      "author": "DevRPG2k",
+      "date": "2024-06-24T06:25:12+0900",
+      "body": "Yes, it is possible, many old RMXP scripts had conditions for a switch defined at the beginning of the code so that the developer could anti-activate or disable it when convenient."
+    },
+    {
+      "post_id": "js-post-1453013",
+      "author": "Omega_Gamer_87",
+      "date": "2024-06-25T07:21:44+0900",
+      "body": "Dev_With_Coffee said:\nYes, it is possible, many old RMXP scripts had conditions for a switch defined at the beginning of the code so that the developer could anti-activate or disable it when convenient.\nClick to expand...\nmind sending me an example so that I can see how it works ?"
+    },
+    {
+      "post_id": "js-post-1453089",
+      "author": "DevRPG2k",
+      "date": "2024-06-25T14:45:03+0900",
+      "body": "Disable/Enable Message System with switch\nDisable/Enable Message System with switch\nforum.chaos-project.com"
+    },
+    {
+      "post_id": "js-post-1453128",
+      "author": "Omega_Gamer_87",
+      "date": "2024-06-25T20:28:25+0900",
+      "body": "It says it's for VX Ace, does the DISABLE_SWITCH command work on XP as well ?"
+    },
+    {
+      "post_id": "js-post-1453152",
+      "author": "DevRPG2k",
+      "date": "2024-06-25T22:43:00+0900",
+      "body": "Maybe you are not familiar with programming languages, because this is not a command, it is an RGSS variable.\nIn the line that checks the SWITCH, he used it by calling the variable that is in the module, that is, this way the developer does not need to look for in the SCRIPT where to define the numerical ID:\nIf you don't use this, the game developer will need to find the line, which is 906, and modify the numeric ID to the desired value, for example \"$game_switches[100]\".\nFor the record I never learned RGSS, I'm just going by logic."
+    },
+    {
+      "post_id": "js-post-1453159",
+      "author": "Omega_Gamer_87",
+      "date": "2024-06-25T23:11:46+0900",
+      "body": "Yeah I'm fairly new to programming, I only know the big basis of GodotScript and Haxe ahahah, thanks a lot for the detailed explaination I'll try to apply what I learned tonight on my project, I'll ket you know if it worked thanks a lot"
+    },
+    {
+      "post_id": "js-post-1453193",
+      "author": "Andar",
+      "date": "2024-06-26T00:54:15+0900",
+      "body": "First, you can never disable an entire script while the engine is running, only functions of a script and only if they were prepared to be disabled.\nThink of it like working on the engine of your car. You cannot do it while driving on the highway at 50 km per hour, but if someone installed a switch in the cockpit then you can turn that to change something while driving.\nHowever, like with installing a switch in your car it will only work if the one doing the install knows what he/she is doing.\nFor example if the script makes changes to the savefiles to save its own data, then you need to keep those changes no matter what is switched - which means you cannot have the switch over the entire scripßt but only over part of the script.\nIf you would make the switch over the entire script, the savefiles would become incompatible the second the switch turns off the part that modifies the savefiles."
+    },
+    {
+      "post_id": "js-post-1453204",
+      "author": "Omega_Gamer_87",
+      "date": "2024-06-26T01:15:59+0900",
+      "body": "Andar said:\nFirst, you can never disable an entire script while the engine is running, only functions of a script and only if they were prepared to be disabled.\nFor example if the script makes changes to the savefiles to save its own data, then you need to keep those changes no matter what is switched - which means you cannot have the switch over the entire scripßt but only over part of the script.\nIf you would make the switch over the entire script, the savefiles would become incompatible the second the switch turns off the part that modifies the savefiles.\nClick to expand...\nyeah but an ATB script doesn't really do that, does it ?"
+    },
+    {
+      "post_id": "js-post-1453278",
+      "author": "DevRPG2k",
+      "date": "2024-06-26T07:10:02+0900",
+      "body": "If you are referring to the \"XRXS_BP 3\" Script, probably created by Fukuyama, even in the original language you would notice that there is no configuration that relates to the use of the game's SWTICHES.\nProbably no one thought that someone would want to change the battle style in the middle of the player's journey.\nIt's not a complicated thing to include, but I really don't know the license to use these old SCRIPTS, or if they are on some kind of list of abandoned codes so that users can create modifications and distribute them here, which could still imply restrictions on creation of commercial games.\nMaybe some older member knows better, in my opinion it's a gray area. I recommend opening a topic to request modification if no one knows how to clarify, the worst that can happen is that it will be locked by the moderator."
+    },
+    {
+      "post_id": "js-post-1453280",
+      "author": "Omega_Gamer_87",
+      "date": "2024-06-26T07:19:46+0900",
+      "body": "That is precisely the script in question yes, I do not think that whichever license it uses is *that* important since all that I'm doing is merging two games together to be played back to back as a singular experience rather than two executables. These games were made in 2004 and 2006 by a french kid who 10 years later released them to the public as bad but fun novelties to be played by whoever cares enough to download them.\nThe only coding difference between the two is this very script and I think it'd be very cool to see it change midgame as soon as you reach the second game's start, I don't even plan on distributing the game to the masses, just a handful of friends and myself, so that's why I don't think changing a few lines of code to have a cool surprise is going to be breaking any major rule or gentleman agreement to not edit any script, but I respect your coding integrity, I raise my hat to you my friend"
+    },
+    {
+      "post_id": "js-post-1453316",
+      "author": "Andar",
+      "date": "2024-06-26T10:12:19+0900",
+      "body": "Omega_Gamer_87 said:\nwhichever license it uses is *that* important s\nClick to expand...\nwrong\nthe licence is the most important part of any resource, since it really is all that prevent that work from being stolen out of games."
+    },
+    {
+      "post_id": "js-post-1453327",
+      "author": "Omega_Gamer_87",
+      "date": "2024-06-26T11:00:12+0900",
+      "body": "Andar said:\nwrong\nthe licence is the most important part of any resource, since it really is all that prevent that work from being stolen out of games.\nClick to expand...\nYeah okay I phrased it wrong, of course it's very important and necessary with code to avoid theft, I fully get that, I just meant that in my current context : adding a cool gameplay-style transition to get my friends off guard when I put them through what is quite possibly the worst rpg of france, well does it really matter if three lines of code are changed in a 20 year old script that has been abandonned eons ago ? Either way, I found a way to load the script midway WITHOUT editing the code by using text files and common events, so in the end I respect the licensing deal anyway"
+    },
+    {
+      "post_id": "js-post-1453428",
+      "author": "hiddenone",
+      "date": "2024-06-27T00:20:29+0900",
+      "body": "This forum does not support editing someone else's game without permission. Closing."
+    }
+  ]
+}

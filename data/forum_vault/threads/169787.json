@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/stop-menu-from-closing-when-skill-is-used.169787",
+  "title": "stop menu from closing when skill is used",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-18T19:03:18.718959+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1453240",
+      "author": "swanaws",
+      "date": "2024-06-26T04:08:31+0900",
+      "body": "im still really new to this but i think i found a thread that deals with my problem but for a different rpg maker and was wondering how to translate that solution to xp\nlink to mentioned thread\ncall menu again after common event closes it\nHello everyone! I know there are other threads with similar questions, but I didn't find any that answers exactly my problem (or which I could derive an answer from). When you call a common event with an open menu (eg Skill or Item) the menu is closed (I understand that is because it don't have...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1453284",
+      "author": "KK20",
+      "date": "2024-06-26T08:01:51+0900",
+      "body": "You will need to add this script to your project:\nRuby:\nclass Scene_Skill\n  attr_reader :actor_index\nend\n\nclass Game_Temp\n  attr_reader :skill_scene_actor_index\n  alias init_skill_scene_actor_index initialize\n  def initialize\n    init_skill_scene_actor_index\n    @skill_scene_actor_index = 0\n  end\n \n  def common_event_id=(id)\n    if $scene.is_a?(Scene_Skill)\n      @skill_scene_actor_index = $scene.actor_index\n    end\n    @common_event_id = id\n  end\nend\nAnd in your skill's common event, your script call back to the menu is going to be this:\nCode:\n$scene = Scene_Skill.new(\n$game_temp.skill_scene_actor_index)"
+    },
+    {
+      "post_id": "js-post-1453301",
+      "author": "swanaws",
+      "date": "2024-06-26T09:18:23+0900",
+      "body": "thank you so much it works great"
+    }
+  ]
+}
