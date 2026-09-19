@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-do-i-change-the-character-between-maps.169157",
+  "title": "How do I change the character between maps?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T04:41:43.227837+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1448054",
+      "author": "TABUBOI1",
+      "date": "2024-06-01T05:07:30+0900",
+      "body": "I'm making a game with entirely custom visuals and using galv's character frames, I measured the character for the outside map's however I would like for the inside maps to be more detailed and closer to the camera therefore I would like to have two sizes of all the character and switch between them for different maps."
+    },
+    {
+      "post_id": "js-post-1448056",
+      "author": "ATT_Turan",
+      "date": "2024-06-01T05:12:42+0900",
+      "body": "So whenever you use an event with the Transfer Player command, also use the Change Actor Images command to change them to a larger character sprite.\nIf you also want the actual tiles to be larger (which you didn't say), you could instead look up a camera plugin and use plugin commands to change the zoom when you transfer."
+    },
+    {
+      "post_id": "js-post-1448063",
+      "author": "TABUBOI1",
+      "date": "2024-06-01T05:48:03+0900",
+      "body": "ATT_Turan said:\nSo whenever you use an event with the Transfer Player command, also use the Change Actor Images command to change them to a larger character sprite.\nIf you also want the actual tiles to be larger (which you didn't say), you could instead look up a camera plugin and use plugin commands to change the zoom when you transfer.\nClick to expand...\nI did that and the bigger character appears over the smaller one, but I can only play as the small one and the big one just stands there even when they are not supposed to.\nsorry, but what I've got no rpg maker expirience so could you please tell me what to do next?"
+    },
+    {
+      "post_id": "js-post-1448072",
+      "author": "ATT_Turan",
+      "date": "2024-06-01T06:49:19+0900",
+      "body": "TABUBOI1 said:\nI did that and the bigger character appears over the smaller one, but I can only play as the small one and the big one just stands there even when they are not supposed to.\nClick to expand...\nI have no idea what that means or how you would have done it. If you did what I said in my previous post, there's only one image being shown.\nAnd those house pictures you keep posting mean nothing to me, I don't see any character sprites at all.\nTABUBOI1 said:\nsorry, but what I've got no rpg maker expirience so could you please tell me what to do next?\nClick to expand...\nThen you might want to spend some more time doing tutorials and practice games before trying to make your first real project - but at the least, you need to show screenshots of what you've done in the transfer event for us to have any idea of what's going on."
+    },
+    {
+      "post_id": "js-post-1448075",
+      "author": "TABUBOI1",
+      "date": "2024-06-01T06:56:51+0900",
+      "body": "Yeah sorry, forgot about screenshots, I got it done anyways by adding and removing actors from the party.\nIt works for now, also thanks for the help you can close this thread now.\nHow do I make an event that changes my character sprites when moving maps? I am making a game with entirely custom graphics and had measured my character for outside maps while for inside cells I made them \"closer to the camera\" therefore I would like to switch between two different character sprites of different sizes, can yall tell me what to put in the transfer event in order to make that work? Here are the two methods I tried out so far:\n1: Change actor images: honestly doesn't work at at all, how do I make it work?\n2: Adding and substracting party members, I have 2 actors set up for different character sizes. Using this one When I transition the map 1'st time (map 1 -> map 2) the player character switches from the small character size to the big one for the proper intended effect, however when I use the same event configuration to change the big character to the small one/ reenter the map 1 from map 2 then I can move the character around the map but no sprite appears.\nHow do I get either of these events to work?"
+    },
+    {
+      "post_id": "js-post-1448149",
+      "author": "SGHarlekin",
+      "date": "2024-06-01T17:54:00+0900",
+      "body": "Your problem is you're transfering the player before the other things, which then no longer get executed since the player is no longer on the map. This works sometimes, but is prone to errors.\nWhat I found works best for me:\nUse a black image as fadeout:\nShow picture: Black fadeout opacity 0\nMove picture: opacity 255 duration 120\nI do this because I find the regular fade with the transfer command too short, but you can use this to hide all sorts of things. In your case:\nShow black fadout, transfer player\nOn the new map have an autorun event that changes the player sprite, then move picture black fadeout opacity 0 duration 120\nerase image\nerase event\nThis will neatly hide you changing the sprites while making sure it always happen when you enter this specific map from anywhere.\nIt's the same thing with your second event."
+    },
+    {
+      "post_id": "js-post-1448292",
+      "author": "ATT_Turan",
+      "date": "2024-06-02T10:33:16+0900",
+      "body": "SGHarlekin said:\nYour problem is you're transfering the player before the other things, which then no longer get executed since the player is no longer on the map. This works sometimes, but is prone to errors.\nClick to expand...\nThis shouldn't be the case. Any non-parallel event that includes a Transfer Player command should complete all of its instructions before getting removed from the interpreter.\n(this event setup works perfectly in my test game)\n@TABUBOI1\nWhy did you make another topic about this when you\nalready had one\nwith replies in it? Just post any additional/new information there."
+    },
+    {
+      "post_id": "js-post-1448329",
+      "author": "TABUBOI1",
+      "date": "2024-06-02T18:10:14+0900",
+      "body": "I feel like this thread is more succinct so I will use this one, sorry, didn't try to apply the fix yet, gonna try that right now.\nHello I just now realized that when setting up the change actor images it give you the list of actors and what you are supposed to do I thought for some reason was to select a different actor from the list and not select an actor for whom you want to change images for and then actually changing their sprite, sorry, I'm a huge noob still when it comes to making these games, guess I solved my problem already. Tested it works perfectly... sorry for being a huge noob."
+    }
+  ]
+}

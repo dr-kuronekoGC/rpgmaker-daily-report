@@ -1,0 +1,185 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/why-is-scenemanager-renderscene-called-on-every-requested-frame.169623",
+  "title": "MV Why is SceneManager.renderScene() called on every requested frame?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T04:41:39.639566+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1451818",
+      "author": "Mac15001900",
+      "date": "2024-06-19T21:02:11+0900",
+      "body": "TLDR: I've halved my game's CPU usage with one very simple change and I'm rather confused as to why this isn't the default.\nSo, this is something I've just noticed, and it rather stumped me.\nSceneManager.updateMain\nis a function that's called every frame, using\nrequestAnimationFrame\n, and is primarily responsible for figuring out how many in-engine frames need to be processed. E.g. if 3/60th of a second passed since the last frame was ran, it will process 3 frames at once, but if less that 1/60th of a second has passed, it will process none.\nNow, this makes perfect sense to me, but then at the end it goes on to call\nthis.renderScene()\n... every time. Even if no frame has actually been processed, so it's just re-rendering everything even if nothing has changed. This means that, for example, on my 165Hz monitor the scene gets re-rendered 165 times per second, even though it only changes 60 times.\nI've changed it so that it only calls\nrenderScene\nif a new frame has actually been produced, and it more than halved my CPU usage (from 16% to 7% in the game's laggiest room) with no apparent ill effects. The game runs the same, the cursor still updates at 165fps since it's handled elsewhere.\nIs there something I'm missing here? Is there some reason why it does that which I'm not aware of? Or is it just another case of core script writers not knowing that monitors with refresh rates above 60Hz exist?"
+    },
+    {
+      "post_id": "js-post-1451821",
+      "author": "ShadowDragon",
+      "date": "2024-06-19T21:17:21+0900",
+      "body": "I didn't know this, but I'm curious on your answer and what you changed.\nas it might be useful."
+    },
+    {
+      "post_id": "js-post-1451825",
+      "author": "TheAM-Dol",
+      "date": "2024-06-19T21:47:38+0900",
+      "body": "I'd be interested in implementing this and testing it some more myself, if you don't mind sharing whatever needs to be modified.\nedit:\nalso, if one of our resident Wizards is having to ask, I'm afraid maybe only the other resident Wizards may be able to answer.\nThus, we must summon the wizards and have them convene on this:\n@chaucer\n@Arthran\n@caethyril"
+    },
+    {
+      "post_id": "js-post-1451828",
+      "author": "bass2yang",
+      "date": "2024-06-19T21:59:53+0900",
+      "body": "Is it in some ways similar to a parallel event with a wait frame so that it doesn't execute every frame? And, does it have to come from a higher refresh rate of 165Hz, 144Hz, etc. in order to work?\nCommenting to follow post."
+    },
+    {
+      "post_id": "js-post-1451829",
+      "author": "ATT_Turan",
+      "date": "2024-06-19T22:01:22+0900",
+      "body": "bass2yang said:\nCommenting to follow post.\nClick to expand...\nYou can click the Watch button at the top of the thread."
+    },
+    {
+      "post_id": "js-post-1451834",
+      "author": "Mac15001900",
+      "date": "2024-06-19T22:16:29+0900",
+      "body": "TheAM-Dol said:\nI'd be interested in implementing this and testing it some more myself, if you don't mind sharing whatever needs to be modified.\nClick to expand...\nAt this point I've collected so many high refresh rate-related fixes that I'll probably bundle them all into a plugin if this one turns out not to have any unforeseen problems. But for now do feel free to try this:\nJavaScript:\nSceneManager.updateMain = function () {\n    let newFrame = false;\n    if (Utils.isMobileSafari()) {\n        this.changeScene();\n        this.updateScene();\n        newFrame = true;\n    } else {\n        var newTime = this._getTimeInMsWithoutMobileSafari();\n        var fTime = (newTime - this._currentTime) / 1000;\n        if (fTime > 0.25) fTime = 0.25;\n        this._currentTime = newTime;\n        this._accumulator += fTime;\n        while (this._accumulator >= this._deltaTime) {\n            newFrame = true;\n            this.updateInputData();\n            this.changeScene();\n            this.updateScene();\n            this._accumulator -= this._deltaTime;\n        }\n    }\n    if(newFrame) this.renderScene();\n    this.requestUpdate();\n};\nIt would actually be quite useful to hear from a bunch of people with different games and systems on whether this breaks anything.\nbass2yang said:\nIs it in some ways similar to a parallel event with a wait frame so that it doesn't execute every frame? And, does it have to come from a higher refresh rate of 165Hz, 144Hz, etc. in order to work?\nClick to expand...\nI guess that's some way to describe it - it is a bit like that.\nIt should help with any refresh rate higher than 60Hz.\nTo temper expectations a bit: this fix will not increase frame rates in any situation - if a computer can't handle 60 frames, then rendering on each of those makes sense. But it should reduce resource consumption on machines that can handle way more than 60."
+    },
+    {
+      "post_id": "js-post-1451841",
+      "author": "bass2yang",
+      "date": "2024-06-19T22:40:33+0900",
+      "body": "ATT_Turan said:\nYou can click the Watch button at the top of the thread.\nClick to expand...\nI'm not skilled enough to follow like a ninja...\nHaha. Thanks - I forgot about the button."
+    },
+    {
+      "post_id": "js-post-1451850",
+      "author": "Robro33",
+      "date": "2024-06-19T23:26:02+0900",
+      "body": "Mac15001900 said:\nIt would actually be quite useful to hear from a bunch of people with different games and systems on whether this breaks anything.\nClick to expand...\nIll take you up on this and let you know if it causes any strange behavior"
+    },
+    {
+      "post_id": "js-post-1451854",
+      "author": "bass2yang",
+      "date": "2024-06-20T00:01:20+0900",
+      "body": "Mac15001900 said:\nIt would actually be quite useful to hear from a bunch of people with different games and systems on whether this breaks anything.\nClick to expand...\nCurrently, no issues.\n60Hz refresh rate does not have an impact with normal code or your code with 3-7% CPU usage.\n120Hz refresh rate with normal code runs at around 6-10% CPU usage.\n120Hz refresh rate with your code runs at around 4-9% CPU usage.\nEdit: It does stay at the lower range around 4-6% as I am playing through it more.\nThere were moments of it staying around 7 and 8% with either code in use so I'm guess when it doesn't need to refresh, the CPU is lower.\n*Edit: thoughts to self since Mac did address this already - I just wanted to make sure I also understood it the same way:\n(If you are not using higher than 60Hz, there isn't much of a benefit. That being said, those who are running higher refresh rates might benefit at least from what I can see right now with what I am doing. It doesn't hurt to have it in there from what it seems whether the user is running 60Hz or 120Hz, etc.)\nDidn't really see any frame drops. Also tested a variable increase count on a parallel event to see if it adds up to 60 after 1 second and it was fine.\nI'll leave the code in there and let you know if there are issues later down the road.\nRunning MV 1.6.2 on Surface Pro 9 i5 (12th Gen) 2.5 Ghz with 16GB RAM."
+    },
+    {
+      "post_id": "js-post-1451861",
+      "author": "ATT_Turan",
+      "date": "2024-06-20T00:22:09+0900",
+      "body": "bass2yang said:\nIf you are not using higher than 60Hz, there isn't much of a benefit.\nClick to expand...\nThe whole point is that if you're\nnot\nusing a higher than 60hz monitor there's no change\nYour monitor is only requesting the refresh 60 times per second if it's a 60hz monitor, so limiting the refreshes to 60 times per second does nothing.\nThere's not supposed to be any benefit to 60hz monitor systems, it's supposed to reduce CPU usage on systems with faster monitors."
+    },
+    {
+      "post_id": "js-post-1451866",
+      "author": "bass2yang",
+      "date": "2024-06-20T00:38:36+0900",
+      "body": "ATT_Turan said:\nThe whole point is that if you're\nnot\nusing a higher than 60hz monitor there's no change\nYour monitor is only requesting the refresh 60 times per second if it's a 60hz monitor, so limiting the refreshes to 60 times per second does nothing.\nThere's not supposed to be any benefit to 60hz monitor systems, it's supposed to reduce CPU usage on systems with faster monitors.\nClick to expand...\nThanks, Turan!\nIt was more of a statement for me to make sure I am also understanding since everyone is very helpful (edited the message above to reflect this) - and, it's nice to test it as well for myself. I wasn't trying to present anything new, rather, to make sure that I am also understanding what he did."
+    },
+    {
+      "post_id": "js-post-1451935",
+      "author": "caethyril",
+      "date": "2024-06-20T04:48:02+0900",
+      "body": "Yea, it looks to me like another high-Hz oversight in the core scripts.\nThat said, I would've expected extra render passes to mostly impact GPU usage rather than CPU. Perhaps the bias is due to PIXI, integrated graphics, and/or plugins.\n(\n@TheAM-Dol\n- just so you know, tagging people in an edit doesn't send a notification. I magically saw this anyway, though~\n)"
+    },
+    {
+      "post_id": "js-post-1451939",
+      "author": "ATT_Turan",
+      "date": "2024-06-20T04:52:27+0900",
+      "body": "caethyril said:\ntagging people in an edit doesn't send a notification.\nClick to expand...\nYeah, that's a source of annoyance for me. It also appears that people don't get notified when tagged in a post that requires approval."
+    },
+    {
+      "post_id": "js-post-1451966",
+      "author": "TheAM-Dol",
+      "date": "2024-06-20T06:49:35+0900",
+      "body": "caethyril said:\ntagging people in an edit doesn't send a notification\nClick to expand...\nOh no\nWell, one wizard has seen it...then I must do the summoning ritual again. Correctly this time.\nEarth, Wind, Fire, I call upon\n@Arthran\nand\n@chaucer\n@Mac15001900\nI'll put this in my game as \"Mac_IfSh!tBreaks-disableThisFirst\"\n(hopefully) Soon I'll be doing a lot of playtesting of my game, so I think I'll have a good chance to see where things go wrong, but Caethyril makes it sound like it's just ol dev's forgetting things exist above 60 again.\nClearly they aren't Monster & Redbull fueled twitchy FPS players who need literally every frame."
+    },
+    {
+      "post_id": "js-post-1451974",
+      "author": "chaucer",
+      "date": "2024-06-20T07:40:53+0900",
+      "body": "Hmmm.... this is very interesting! I never really looked too deeply into the core of the game loop logic, but this is definitely a good find, this can greatly improve performance in a lot of cases as it removes unnecessary render calls! I don't see any harm in this? it does not make sense to re-render the last frame if nothing has changed.\nBut as a side not if you want a REALLY big boost in performance just completely comment out \"this.renderScene()\" and it free's up the GPU usage by nearly 100%!!! This is something the rpg maker dev's dont want you to know, in fact this thread will probably be deleted shortly, so definitely take this advice while you can!\nClearly I am joking, don't actually do that, cause then your game won't render XD  but for reals though, yeah OP's finding seem valid? does this perhaps have any effect on the \"fast forward\" button of currently running events? I.E. when an event is runnning and you hold the ok button, I know that somewhere it double updates the scene when this occurs, I dont remember exactly where or when, but that's the only thing I could possibly think MAY be an issue, if it is at all.\nAlternatively, this code i believe also is only valid for MV users, as MZ handles the render call elsewhere, via a pixi ticker, looking into the code very briefly( I could be wrong, but dont think so ), MZ MAY already account for this, I'd need to test further to confirm this\nI'll run a quick test to confirm this right now..\nEDIT:\nJust tested MZ, and my assumption was correct, because it is in a ticker, it seems this issue is not there in MZ, I ran my monitor in both 144 hz, and 60 hz, and there is never an instance where it renders needlessly."
+    },
+    {
+      "post_id": "js-post-1451979",
+      "author": "TheAM-Dol",
+      "date": "2024-06-20T07:57:41+0900",
+      "body": "chaucer said:\nMZ MAY already account for this,\nClick to expand...\nThat's because during development of MZ one of the developers started playing CS:GO competitively.\nThereafter they suddenly learned that things can go faster than 60."
+    },
+    {
+      "post_id": "js-post-1452013",
+      "author": "chaucer",
+      "date": "2024-06-20T10:36:39+0900",
+      "body": "TheAM-Dol said:\nThat's because during development of MZ one of the developers started playing CS:GO competitively.\nThereafter they suddenly learned that things can go faster than 60.\nClick to expand...\nanything higher than 60hz refresh rate is simply a marketing gimmick just like Resolutions size, the human eye can't even see more than 60 fps, and it can't see higher than 4k resolution :x\nOkay sorry I'll stop joking around and derailing the topic now D; but yeah, I checked the code, and this seems solid, I can't see any issues coming from this. Good find\n@Mac15001900\n!\nMac15001900 said:\nAt this point I've collected so many high refresh rate-related fixes that I'll probably bundle them all into a plugin if this one turns out not to have any unforeseen problems.\nClick to expand...\nYou should definitely do this! It could benefit a lot of projects!"
+    },
+    {
+      "post_id": "js-post-1452016",
+      "author": "ATT_Turan",
+      "date": "2024-06-20T10:41:06+0900",
+      "body": "chaucer said:\nanything higher than 60hz refresh rate is simply a marketing gimmick...the human eye can't even see more than 60 fps\nClick to expand...\nIt depends on what is changing on the screen.\nHow many frames per second can the human eye really see?\n30 fps? 60 fps? If you've ever debated framerates, the cognitive researchers we spoke to have some complex answers for you.\nwww.pcgamer.com"
+    },
+    {
+      "post_id": "js-post-1452018",
+      "author": "TheAM-Dol",
+      "date": "2024-06-20T10:47:05+0900",
+      "body": "ATT_Turan said:\nIt depends on what is changing on the screen.\nHow many frames per second can the human eye really see?\n30 fps? 60 fps? If you've ever debated framerates, the cognitive researchers we spoke to have some complex answers for you.\nwww.pcgamer.com\nClick to expand...\nI'm pretty sure he's making a joke, and while hardly scientific:\nNvidia did research into it and found an improvement in games. They are not impartial though, because obviously they sell \"more frames\".\nSo I believe Linus (of LTT) challenged the claim in a small sample group (just folks around the office) and found that it's diminishing returns, but definitely anyone playing on a monitor over 60hz could actually perform better.\nIt seemed the returns fell off over 120/144hz.\nSecondly, it's worth mentioning that tons of research went into VR to reduce the simulation sickness that VR causes, and the research showed that at minimum 90hz was required to at least create the illusion of smooth motion in such a confined space, and greater reduces the sickness."
+    },
+    {
+      "post_id": "js-post-1452019",
+      "author": "chaucer",
+      "date": "2024-06-20T10:49:11+0900",
+      "body": "ATT_Turan said:\nIt depends on what is changing on the screen.\nHow many frames per second can the human eye really see?\n30 fps? 60 fps? If you've ever debated framerates, the cognitive researchers we spoke to have some complex answers for you.\nwww.pcgamer.com\nClick to expand...\noh haha i was just joking xD I mean, I can definitely tell the difference between 30, and 60, and DEFINITELY between 60 and 120+  but I've never seen a 200hz+ monitor irl to compare xD I just remember this argument a long time ago, and idk why it popped into my head when he mentioned 60 fps lol but yeah, you can definitely see more than 60fps, and can definitely see more than 4k, I mean tha last one is relative to the size of the screen I'd say but yeah xD my bad lol\nTheAM-Dol said:\nSo I believe Linus (of LTT) challenged the claim in a small sample group (just folks around the office) and found that it's diminishing returns, but definitely anyone playing on a monitor over 60hz could actually perform better.\nClick to expand...\nThis is true u_u but this was only to detect if there was any benefit to higher fps monitors iirc... I think he did a seperate video to determine if people could actually tell the refresh rates of a monitor( or maybe it was someone else ), and iirc, almost everyone could tell the monitors correctly, therefore proving the human eye can DEFINITELY see more than 60 fps lol. Just it doesn't really benefit you to have a monitor that's like 240hz for gameplay necessarily lol. also for people like me who have poor reflexes anyways I dont even think 30 fps -> 60fps would help me play better, imo you gotta have good reflexes, but this is purely my opinion I've done 0 testing on this XD\nTheAM-Dol said:\nSecondly, it's worth mentioning that tons of research went into VR to reduce the simulation sickness that VR causes, and the research showed that at minimum 90hz was required to at least create the illusion of smooth motion in such a confined space, and greater reduces the sickness.\nClick to expand...\nAs someone who's both played, and built a VR( prototype ) game, I can DEFINITELY confirm this.. and 90hz.. is really the BARE minimum, I would not recommend playing a vr game at 90hz if it has a lot of motion in it... I'd recommend something more like 120... :/"
+    },
+    {
+      "post_id": "js-post-1452031",
+      "author": "TheAM-Dol",
+      "date": "2024-06-20T12:53:48+0900",
+      "body": "chaucer said:\nI dont even think 30 fps -> 60fps would help me play better,\nClick to expand...\nThat's because you also have to fuel yourself with 500mg of caffeine every play session, and warm up with a few jokes about doing the other team's mom.\nHow else do you think I'm popping quads with a positive k/d?\nOnly when I'm tweaking out on a lethal dose of gamer fuel while popping a quad on your mom last night."
+    },
+    {
+      "post_id": "js-post-1452033",
+      "author": "Arthran",
+      "date": "2024-06-20T13:38:34+0900",
+      "body": "I actually don't believe that this was an oversight by the developers. Although they rewrote all this particular code in MZ, they still did it essentially the same way (where it calls the render function outside of the time-corrected part of the loop), so I am leaning toward the assumption that it's intentional.\nGraphics stuff isn't really my forte, but if I were to venture a guess as to why they would choose to do this, I'd say that it could be because they wanted to reduce the chances of screen tearing. Although screen tearing most commonly happens when the game renders faster than your monitor's refresh rate, it can also still happen (albeit less noticeably) when the reverse is true, because the graphics card might try to push a new frame to the monitor during the middle of a refresh cycle.\nEven if it means re-rendering unchanged frames, synchronizing the game's frame rate with the monitor's refresh rate will help align frame buffer updates with the monitor's refresh intervals, which should help prevent that tearing.\nI don't think that this is particularly unusual. Many games that I've played seem to have the game logic and input processing decoupled from the rendering.\nchaucer said:\nJust tested MZ, and my assumption was correct, because it is in a ticker, it seems this issue is not there in MZ, I ran my monitor in both 144 hz, and 60 hz, and there is never an instance where it renders needlessly.\nClick to expand...\nYou are correct that MZ use's Pixi's ticker, whereas MV implements its own ticker using requestAnimationFrame. However, Pixi's ticker is also driven by requestAnimationFrame, and (to my understanding) both implementations will generally match the ticks to the display's refresh rate.\nHere is the relevant function in MZ:\nJavaScript:\nGraphics._onTick = function(deltaTime) {\n    this._fpsCounter.startTick();\n    if (this._tickHandler) {\n        this._tickHandler(deltaTime); // Graphics._tickHandler holds a reference to SceneManager.update\n    }\n    if (this._canRender()) {\n        this._app.render();\n    }\n    this._fpsCounter.endTick();\n};\nThis function calls SceneManager.update, which then uses deltaTime (the time elapsed since the last frame) to call SceneManager.updateMain approximately 60 times per second. But as you can see, the render function is called outside of that--every tick."
+    },
+    {
+      "post_id": "js-post-1452041",
+      "author": "TheAM-Dol",
+      "date": "2024-06-20T14:54:44+0900",
+      "body": "@Arthran\nbased on my understanding of v-sync, this would make sense, actually.\nIn which case, it might be nice to change this into an options menu option plugin to enable/disable v-sync (not to be confused with Yanfly's questionably named Video Synch plugin)."
+    },
+    {
+      "post_id": "js-post-1452044",
+      "author": "chaucer",
+      "date": "2024-06-20T15:34:47+0900",
+      "body": "Arthran said:\nGraphics stuff isn't really my forte, but if I were to venture a guess as to why they would choose to do this, I'd say that it could be because they wanted to reduce the chances of screen tearing. Although screen tearing most commonly happens when the game renders faster than your monitor's refresh rate, it can also still happen (albeit less noticeably) when the reverse is true, because the graphics card might try to push a new frame to the monitor during the middle of a refresh cycle.\nClick to expand...\nHmm.. I would have to disagree here.. if the scene is already rendered... re-rendering it when nothing has changed doesn't really change anything. it's like... having a sprite sheet where the first frame, and second frame are identical... nothing has changed from frame A -> frame B. Also this wouldn't necessarily mitigate screen tearing.. cause as before frame A -> frame B are the same.\nScreen tearing occurs when the monitor begins drawing the contents of the game, BUT it's already finished drawing frame A but in the middle of drawing frame B... but again, if frame A and B are identical there's really nothing to tear to begin with...\nAlso the only way ensure screen tearing doesn't occur, is to ensure that the GPU is finished drawing the next frame, before the screen displays it, which this doesn't really do.. because it's simply rendering at the same rate as usual.. E.G. roughly every 16.6666666667 ms, so it's not really attempting to sync the gpu to the monitor in any way here. it's just rendering at the usual intervals, and if the GPU is rendering at the same set intervals, which are out of sync with the screens refresh rate, which is also at the same set intervals( whatever frame rate your monitor can display at ), then nothing is changing, and no attempt is made to \"sync\" the display\nAnyone correct me if I'm wrong here on this ^^; I've not delved TOO heavily into vsync/gsync/freesync, but I have done.. a bit of research into it.\nAlso this is most definitely not an interpretation of vsync, vsync CAN be applied to an rpg maker game.. Actually again, correct me if I'm wrong again here, I believe vsync is enabled by default here via nwjs/chromium. It can be disabled via a special chromium flag \"--disable-gpu-vsync\"\nArthran said:\nYou are correct that MZ use's Pixi's ticker, whereas MV implements its own ticker using requestAnimationFrame. However, Pixi's ticker is also driven by requestAnimationFrame, and (to my understanding) both implementations should generally match the display's refresh rate.\nClick to expand...\nYou are correct here ^^ as for the MZ implementation though, it seems to incur any unecessary draws, at least as far as I tested in both 60, and 144 hz. ^^ unfortunately these are the only two rates my monitor can reach :c so I can't test anything other than these, but the scene update seems to fire at every interval of the ticker, as does the render, even at 144 hz, there unecessary renders that I could find. ^^\nAnother neat thing about the pixi ticker object as well, is that you can set a max fps as well, somewhat related\ntherefore, you could easily set a game to target 60 fps on all hardware, by setting the \"maxFPS\" value of the ticker.\nTheoretically, you COULD add a 30 fps/60 fps toggle for your game, but due to the way rpg maker handles movement, and animations, and several other things if you set it to 30 fps, things will run at half speed( at least some things, not all ), lol."
+    },
+    {
+      "post_id": "js-post-1452045",
+      "author": "Arthran",
+      "date": "2024-06-20T16:48:56+0900",
+      "body": "chaucer said:\nHmm.. I would have to disagree here.. if the scene is already rendered... re-rendering it when nothing has changed doesn't really change anything. it's like... having a sprite sheet where the first frame, and second frame are identical... nothing has changed from frame A -> frame B. Also this wouldn't necessarily mitigate screen tearing.. cause as before frame A -> frame B are the same.\nScreen tearing occurs when the monitor begins drawing the contents of the game, BUT it's already finished drawing frame A but in the middle of drawing frame B... but again, if frame A and B are identical there's really nothing to tear to begin with...\nAlso the only way ensure screen tearing doesn't occur, is to ensure that the GPU is finished drawing the next frame, before the screen displays it, which this doesn't really do.. because it's simply rendering at the same rate as usual.. E.G. roughly every 16.6666666667 ms, so it's not really attempting to sync the gpu to the monitor in any way here. it's just rendering at the usual intervals, and if the GPU is rendering at the same set intervals, which are out of sync with the screens refresh rate, which is also at the same set intervals( whatever frame rate your monitor can display at ), then nothing is changing, and no attempt is made to \"sync\" the display\nClick to expand...\nMaybe I didn't explain myself well, or maybe I'm misunderstanding you, but I feel like you might be under the impression that I said the opposite of what I did (or what I intended to atleast).\nI was not saying that re-rendering an identical frame could cause screen tearing--I was saying the opposite of that. I was saying that rendering a *changed* frame while the monitor is still in the process of drawing the previous frame could cause screen tearing.\nMy suggestion was that maybe the engine devs' thinking, when they chose to force a render every tick (instead of only after the game state has potentially changed), was that it could help prevent the chances of the rendering becoming misaligned with the monitor's refresh cycle, since it would then be rendering at the same rate that your monitor refreshes.\nBut all that being said, after having thought about it a bit more, I don't believe that it would really make a difference in this case. To my understanding, requestAnimationFrame is designed to synchronize with the monitor's refresh, so even when using Mac's modification, I think that the chances of misalignment occurring are probably pretty slim."
+    },
+    {
+      "post_id": "js-post-1452047",
+      "author": "Poryg",
+      "date": "2024-06-20T17:05:11+0900",
+      "body": "Arthran said:\nGraphics stuff isn't really my forte, but if I were to venture a guess as to why they would choose to do this, I'd say that it could be because they wanted to reduce the chances of screen tearing.\nClick to expand...\nScreen tearing is the opposite of a screen lag - you're rendering the frames faster than your monitor can do it.\nThat being said, there's no way this is even remotely possible in MV's game loop.\nMV is single-threaded and frame-capped at monitor's refresh rate. As such, there is never a situation where you'd be rendering two frames simultaneously. Because regardless when you push the new frame, the previous one will already have finished rendering."
+    },
+    {
+      "post_id": "js-post-1452056",
+      "author": "Mac15001900",
+      "date": "2024-06-20T20:30:01+0900",
+      "body": "I'd agree that there doesn't seem to be a way for this change to cause screen tearing. Since we're still only drawing frames from a function synced with\nrequestAnimationFrame\n, they will always be synchronised with the refresh rate, regardless of if we skip rendering some of them or not."
+    },
+    {
+      "post_id": "js-post-1452092",
+      "author": "chaucer",
+      "date": "2024-06-21T00:44:56+0900",
+      "body": "Arthran said:\nI was not saying that re-rendering an identical frame could cause screen tearing--I was saying the opposite of that. I was saying that rendering a *changed* frame while the monitor is still in the process of drawing the previous frame could cause screen tearing.\nMy suggestion was that maybe the engine devs' thinking, when they chose to force a render every tick (instead of only after the game state has potentially changed), was that it could help prevent the chances of the rendering becoming misaligned with the monitor's refresh cycle, since it would then be rendering at the same rate that your monitor refreshes.\nClick to expand...\nCorrect, I understood this, what I was saying is that re-rendering an unchanged scene would not stop screen tearing, nor would it cause it, as again if your rendering the exact same data, at the exact same intervals, so nothing is really changed in this case. Sorry If I was unclear :x but I was simply saying if frame A is the same as frame B, then no data has changed since frame A was rendered, so re-rendering frame B which would end up exactly the same as frame B, wouldn't really fix, nor cause any additional screen tearing.\nAlso these ticks occur at ( roughly ) the same intervals regardless, as the ticks occur at set intervals, so if the rendering was ALREADY misaligned to begin with, then when you re-render the frame, when nothing has changed, it would STILL be rendering in this misaligned loop, this this would really not do anything for tearing.\nMac15001900 said:\nI'd agree that there doesn't seem to be a way for this change to cause screen tearing. Since we're still only drawing frames from a function synced with\nrequestAnimationFrame\n, they will always be synchronised with the refresh rate, regardless of if we skip rendering some of them or not.\nClick to expand...\nThis was what I was trying to say lol, it's still synced to the same invervals of requestAnimationFrame, which if it was ALREAADY misaligned with the screens refresh rate, does not fix any tearing which may occur :x\nThis was what i was trying to state ^^; apologies, haha, I'm terrible at explaining things, lol, this is why I suck at documenting code i work on Q__Q lol. But yeah, just at a glance, this is my take on the matter, again if I'm wrong someone correct me, as I am not SUPER knowledgable on the topic of syncing gpu with monitor refresh rates. I have done some studies on the matter, as well as some studies on physics, the process of 3D rendering, and several other topics, but I am not confident in saying I am an expert in any ^^; lol\nBut regardless, it's always nice to have more opinions, as it helps widen any given persons perspective on the matter, So i apologize\n@Arthran\n, I wasn't trying to insult you or anything if I came off that way, I was just posting my take on the matter, and I would like to say thanks for your insight into this as well\nagain it's always helpful to get many takes on a topic! ^^"
+    },
+    {
+      "post_id": "js-post-1470844",
+      "author": "Mac15001900",
+      "date": "2024-09-19T17:36:54+0900",
+      "body": "Mac15001900 said:\nAt this point I've collected so many high refresh rate-related fixes that I'll probably bundle them all into a plugin if this one turns out not to have any unforeseen problems\nClick to expand...\nWell, this took a while, since I took a bit of break from RM, but that plugin is ready. So for anyone who's still watching this thread for it:\nhere it is\n."
+    }
+  ]
+}

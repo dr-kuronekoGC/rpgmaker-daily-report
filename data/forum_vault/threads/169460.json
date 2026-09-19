@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/character-profile-page.169460",
+  "title": "Character profile page",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T04:41:42.199337+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1450399",
+      "author": "kR1pt0n1t3",
+      "date": "2024-06-13T05:24:11+0900",
+      "body": "Hi.\nI'm trying to make a character profile page for the game I'm working on but I don't know how to pull up variables and stuff for how I envisioned it. I will make for each character a background image that will have all the characters, window borders, and text boxes drawn out and as much text filled out as possible. The only thing I would need to fill in is the profile page and game_variables which should be pulled from the game.\nI don't think you could do that through an editor but maybe you can I just don't know what script calls to make.\nWhat I made so far is this:\nWhen a player uses an item, a common event is called and the player selects which character's profile page he wants to open. Based on his selection, a profile image for that character is displayed (through show picture) and information stored in game_variables should be displayed or x character.\nThis is the part where I'm having trouble. I don't know how to make a script call to pull out a variable value and display it in x,y position. This needs to be done for all other variables. And when a player closes the image, I need to be able to clear all the variables as well.\nAm I going about this the wrong way? My knowledge of scripting is very limited. I can edit an already existing script, but to make my own is impossible. This was the only way I could think of doing this.\nDoes anyone know any scripts I could maybe use/edit to make something like this?"
+    },
+    {
+      "post_id": "js-post-1450427",
+      "author": "Andar",
+      "date": "2024-06-13T08:55:55+0900",
+      "body": "most of the game values you can get through control variable : game data (which is much more than just the map ID).\nyou can place variables inside show text to display them, and with message type plugins and gab window plugins you can move and resize the show text however you want.\nand you can place text into any variable by placing a string with \"string\"  into the script box of control variable, it will be automatically displayed as text inside the show text."
+    },
+    {
+      "post_id": "js-post-1450483",
+      "author": "kR1pt0n1t3",
+      "date": "2024-06-13T20:01:05+0900",
+      "body": "I found somewhere that you can use ChatGPT to make scripts for RPG Maker and I just tried and it's insane how good it works. The AI just created this whole script in about ten minutes. Most of the time was me telling it to add, change, and remove stuff from the script. The script works exactly how I want it. The only thing I need to do now is make small script changes to display the character information that I want. The AI even added the scroll left and right through available characters. Amazing stuff. It blows my mind.\nI wonder just how good this script is. I mean it works, but is it well made?\nI just noticed the scrolling thing doesn't work right. I want it to only through the characters that have their switch turned on. Switches are from 601 to 611. But I have to wait until I can ask him to change that for 3 hours. LOL. I get error when I scroll and the characters switch isn't turned on.\nRuby:\n#==============================================================================\n# ** Scene_CharacterProfile\n#------------------------------------------------------------------------------\n# This scene shows the character profile including actor information and image.\n#==============================================================================\nclass Scene_CharacterProfile < Scene_Base\n  # Initialize the scene with the actor's ID from game variable 221\n  def initialize\n    @actor_id = $game_variables[221]\n  end\n\n  # Start the scene\n  def start\n    super\n    create_background\n    create_actor_info\n  end\n\n  # Create the background\n  def create_background\n    @background_sprite = Sprite.new\n    @background_sprite.bitmap = Cache.picture(\"Profile_Background\")\n  end\n\n  # Create the actor information display\n  def create_actor_info\n    @actor = $game_actors[@actor_id]\n    if @actor.nil?\n      msgbox(\"Actor with ID #{@actor_id} does not exist.\")\n      $scene = Scene_Map.new\n      return\n    end\n\n    # Create and position the character image\n    @character_sprite = Sprite.new\n    begin\n      @character_sprite.bitmap = Cache.picture(\"actor_#{@actor_id}\")\n    rescue\n      msgbox(\"Image for actor ID #{@actor_id} not found.\")\n      $scene = Scene_Map.new\n      return\n    end\n    @character_sprite.x = 0\n    @character_sprite.y = 0\n\n    # Create the information window with the specified size\n    @info_window = Window_Base.new(0, 0, 544, 416)\n    update_info_window\n  end\n\n  # Update the information window with the actor's data\n  def update_info_window\n    @info_window.contents.clear\n    @info_window.contents.draw_text(0, 0, 544, 32, \"Name: #{@actor.name}\")\n    @info_window.contents.draw_text(0, 32, 544, 32, \"Class: #{@actor.class.name}\")\n    @info_window.contents.draw_text(0, 64, 544, 32, \"Level: #{@actor.level}\")\n    # Add additional actor information based on game variables\n    @info_window.contents.draw_text(0, 96, 544, 32, \"HP: #{$game_variables[1]}\")\n    @info_window.contents.draw_text(0, 128, 544, 32, \"MP: #{$game_variables[2]}\")\n  end\n\n  # Terminate the scene\n  def terminate\n    super\n    dispose_background\n    dispose_actor_info\n  end\n\n  # Dispose of the background\n  def dispose_background\n    @background_sprite.bitmap.dispose\n    @background_sprite.dispose\n  end\n\n  # Dispose of the actor information display\n  def dispose_actor_info\n    @character_sprite.bitmap.dispose if @character_sprite.bitmap\n    @character_sprite.dispose\n    @info_window.dispose\n  end\n\n  # Update the scene\n  def update\n    super\n    update_actor_selection if Input.trigger?(Input::LEFT) || Input.trigger?(Input::RIGHT)\n    if Input.trigger?(Input::B) # Return to the previous scene when the B button is pressed\n      Sound.play_cancel\n      $scene = Scene_Map.new\n    end\n  end\n\n  # Update actor selection based on input\n  def update_actor_selection\n    if Input.trigger?(Input::LEFT)\n      previous_actor\n    elsif Input.trigger?(Input::RIGHT)\n      next_actor\n    end\n    update_info_window\n    update_character_image\n  end\n\n  # Select the previous actor\n  def previous_actor\n    loop do\n      @actor_id = (@actor_id - 1)\n      @actor_id = 10 if @actor_id < 1\n      break if $game_actors[@actor_id] && $game_switches[600 + @actor_id]\n    end\n    @actor = $game_actors[@actor_id]\n  end\n\n  # Select the next actor\n  def next_actor\n    loop do\n      @actor_id = (@actor_id + 1) % 11\n      @actor_id = 1 if @actor_id == 0\n      break if $game_actors[@actor_id] && $game_switches[600 + @actor_id]\n    end\n    @actor = $game_actors[@actor_id]\n  end\n\n  # Update the character image\n  def update_character_image\n    @character_sprite.bitmap.dispose if @character_sprite.bitmap\n    @character_sprite.bitmap = Cache.picture(\"actor_#{@actor_id}\")\n  end\nend\n\n# Script call to open the character profile page\ndef open_character_profile\n  $scene = Scene_CharacterProfile.new\nend"
+    },
+    {
+      "post_id": "js-post-1450486",
+      "author": "TRIDIUM",
+      "date": "2024-06-13T20:22:23+0900",
+      "body": "Chat GPT doesn't know anything, and pretty much every coder here won't debug or help with scripts generated by it. You'd be better off doing what Andar said."
+    },
+    {
+      "post_id": "js-post-1450487",
+      "author": "Andreavnn",
+      "date": "2024-06-13T20:23:13+0900",
+      "body": "You will have a hard time finding anyone on these forums to help with Chatgpt or AI generated stuff.\nEDIT*\n@TRIDIUM\n- Stop reading my mind!"
+    },
+    {
+      "post_id": "js-post-1450494",
+      "author": "Andar",
+      "date": "2024-06-13T21:10:16+0900",
+      "body": "kR1pt0n1t3 said:\nyou can use ChatGPT to make scripts for RPG Maker and I just tried and it's insane how good it works.\nClick to expand...\nNo, it doesn't work at all - you just have been very lucky with the randomiser inside the AI.\nWhat all AIs do is compile a list of existing parts created by real programmers (or artists or musicians ...) tagged witrh keywords of what they do, then ran your keywords against the list of keywords they have and randomly select one of the code that has fitting keywords before running it through a syntax check and so on.\nif there are enough preexisting scripts that do what you want and if you know how to pinpoint keywords, then you have a good chance of getting something working.\nbut since it's copied from existing scripts/plugins you are mostly still better off looking for the  original.\nIf you want something that was never done before or if you have no idea how to describe what you want, the results of any AI are absolute crap, and the programmers of this forum have long grown tired of trying to fix those randomized jumbles of pseudo-script.\nAs someone once said - it is only a question of time until an alphanumeric randomizer recreates shakespeare's complete works - a question of very, very long time..."
+    },
+    {
+      "post_id": "js-post-1450495",
+      "author": "kR1pt0n1t3",
+      "date": "2024-06-13T21:11:02+0900",
+      "body": "I can understand people's aversion to AI stuff since they probably invested a lot of hours of coding and reading material to get to the level they are now. I just didn't know the aversion was this bad in the community. I guess I'll probably stop asking for help here then.\nEDIT:\nOh, I didn't know that. So the AI is just blatantly copying parts of other people's scripts? Hm... Dunno...\nI haven't read much into the inner workings of AI. I guess I'll need to read a bit about it before I come to some kind of opinion about it all."
+    },
+    {
+      "post_id": "js-post-1450496",
+      "author": "TRIDIUM",
+      "date": "2024-06-13T21:13:16+0900",
+      "body": "Did you read any of what he said?\nIt's not because some coders are butthurt that AI is taking their jobs. That's a whole nuther thing.\nDid you actually try what Andar suggested?"
+    },
+    {
+      "post_id": "js-post-1450497",
+      "author": "Andar",
+      "date": "2024-06-13T21:13:44+0900",
+      "body": "@kR1pt0n1t3\nthis aversion has absolutely nothing to do with the numbers of hours someone used to learn programming.\nit has to do with how AIs work internally, and you probably missed my answer above where I described that."
+    },
+    {
+      "post_id": "js-post-1450498",
+      "author": "Danatoth",
+      "date": "2024-06-13T21:22:56+0900",
+      "body": "We really did a disservice to humanity as a whole by adopting calling large language models \"Ai\". To the layman it gives the wrong impression of things. I wonder in the distant future when we have actual artificial intelligence what we'll need to adjust our language to call it. Synthetic consciousness?"
+    },
+    {
+      "post_id": "js-post-1450502",
+      "author": "kR1pt0n1t3",
+      "date": "2024-06-13T21:27:03+0900",
+      "body": "The text above edit was posted before Andar's message.\nI didn't come here to start with the intention to start an AI debate. If I knew people were so heated about it, I wouldn't have even mentioned it that I tried it.\nIn any case, I'm pretty sure I can modify the AI-generated script to suit my needs since basically all the stuff I didn't know how to do works in the script, and the rest I know how to modify and adjust. A mod can close or delete this thread.\nThank you all."
+    },
+    {
+      "post_id": "js-post-1450504",
+      "author": "TRIDIUM",
+      "date": "2024-06-13T21:34:18+0900",
+      "body": "Well, I think you're missing the point, but I respect the desire to not get into another AI debate. Good luck with your project!"
+    },
+    {
+      "post_id": "js-post-1450515",
+      "author": "Ms Littlefish",
+      "date": "2024-06-13T22:34:00+0900",
+      "body": "This thread is closed due to being solved. If you need it reopened, let us know. Thank you!"
+    }
+  ]
+}
