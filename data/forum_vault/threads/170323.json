@@ -1,0 +1,125 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/state-that-alters-character-image-in-battle.170323",
+  "title": "State that alters character image in battle",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:31:44.260768+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1457487",
+      "author": "BB45",
+      "date": "2024-07-16T00:48:18+0900",
+      "body": "I am using a picture to display my character in front-view battles. I would like the picture to change to an \"off-balance\" variant whenever it is affected by the state \"off-balance\". I thought to use a common event tied to the state like I would with a skill for example but it seems like I cannot use a common event for \"states\". For now, I've been using this work-around in a battle event page with the\nConditions: Turn end\nand\nSpan: Turn\nJavaScript:\n◆If：Player is affected by off-balance\n  ◆Erase Picture：#1\n  ◆Show Picture：#2, player_off_balance\n  ◆\n：Else\n  ◆Erase Picture：#2\n  ◆Show Picture：#1, player_normal\n  ◆\n：End\nIt seems to work as intended except when the \"off-balance\" state wears off, the picture change to \"player_normal\" is being delayed towards the turn end, due to the condition trigger. So the question is how do I make the picture change as soon as the state is removed, or even taking one step back, is there a better way to make this whole \"state affects player picture so long as state is active\" thing to work properly?"
+    },
+    {
+      "post_id": "js-post-1457490",
+      "author": "ATT_Turan",
+      "date": "2024-07-16T00:52:19+0900",
+      "body": "You would use a plugin that executes code when the state is added and removed.\nMy Eval Tags can do that, linked in my signature; or if you're already using VisuStella plugins, their Skills and States Core has notetags for that."
+    },
+    {
+      "post_id": "js-post-1457557",
+      "author": "BB45",
+      "date": "2024-07-16T04:59:54+0900",
+      "body": "ATT_Turan said:\nYou would use a plugin that executes code when the state is added and removed.\nMy Eval Tags can do that, linked in my signature; or if you're already using VisuStella plugins, their Skills and States Core has notetags for that.\nClick to expand...\nAlright, thanks. I am using the mentioned VisuStella plugin and I've heard about notetags but I have no clue as to what I need to write into it to achieve desired effect. I am aware of the plugin's help section but I don't know how to navigate through it either since it is alot of written text that I would have to go through manually. What exactly am I looking for? Thanks in advance"
+    },
+    {
+      "post_id": "js-post-1457574",
+      "author": "ATT_Turan",
+      "date": "2024-07-16T05:30:46+0900",
+      "body": "I recommend using the Web documentation:\nSkills and States Core VisuStella MZ - Yanfly.moe Wiki\nwww.yanfly.moe\nThe table of contents has links directly to the state notetags you're looking for.\nThen you go to the Script Call list and look up the code for Show Picture and Erase Picture.\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1457583",
+      "author": "BB45",
+      "date": "2024-07-16T06:58:06+0900",
+      "body": "ATT_Turan said:\nI recommend using the Web documentation:\nSkills and States Core VisuStella MZ - Yanfly.moe Wiki\nwww.yanfly.moe\nThe table of contents has links directly to the state notetags you're looking for.\nThen you go to the Script Call list and look up the code for Show Picture and Erase Picture.\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com\nClick to expand...\nThank you very much! I found the script call page just a few minutes prior to your answer but wasn't sure if that is what I need for the notetags.\nThe script calls\nShow Picture\nand\nErase Picture\nare working properly. But I am still missing the conditional branch\nIf：Player(x) is affected by off-balance\nas I have two players on screen (forgot to mention). So I would need a conditional branch or something similar, otherwise the player picture for a specific character changes no matter who is afflicted by the off-balance state. Currently, Player1's picture changes although it is Player2 who got the off-balance state.\nEdit: The problem is I can't find the script call for\nConditional Branch\nor rather there is no script call for it on the spreadsheet (?)"
+    },
+    {
+      "post_id": "js-post-1457585",
+      "author": "ATT_Turan",
+      "date": "2024-07-16T07:09:59+0900",
+      "body": "BB45 said:\nBut I am still missing the conditional branch\nIf：Player(x) is affected by off-balance\nas I have two players on screen\nClick to expand...\nThe notetag instructions should say you're provided with a\nuser\nvariable to represent the battler getting (or losing) the state.\nSo to check which actor ID is being affected, you do this inside the notetag:\nCode:\nif (user.actorId() == 2)\n{\n// script call to erase actor ID 2's picture\n// script call to draw actor ID 2's off-balance picture\n}\nelse\n{\n// script call to erase the other actor's picture\n// script call to draw the other actor's off-balance picture\n}\nThen the notetag for when the state is removed, obviously you just reverse which pictures are being erased and drawn."
+    },
+    {
+      "post_id": "js-post-1457623",
+      "author": "BB45",
+      "date": "2024-07-16T09:58:35+0900",
+      "body": "It doesn't seem work as it doesn't change the picture at all now. I assume it's because I have problems understanding the\n(user.actorId() == 2)\npart of the code.\nFirst of all, I don't understand where\nuser.actorId()\nis coming from as I can't ctrl+F this in neither the notetag instructions nor the script call spreadsheet. What does\n==2\nmean in this context? How do I learn about this stuff? Is it all just general JavaScript knowledge? Either way I assume I have to put in the ID corresponding to my (second) Actor? Since just using\n(user.actorId() == 2)\nin the notetag didn't do anything. But\n(user.actorId(2) == 2)\ndidn't work either so I am confused as what to do with it now. Here is how I implemented it into the notes anyway."
+    },
+    {
+      "post_id": "js-post-1457624",
+      "author": "ATT_Turan",
+      "date": "2024-07-16T10:05:25+0900",
+      "body": "As a tip, if you want someone specific to reply to you, you should either\n@tag\ntheir name or Reply or Quote their post (which will then do it automatically) so they get a notification from the thread.\nBB45 said:\nI have problems understanding the\n(user.actorId() == 2)\npart of the code.\nClick to expand...\nI put the instructions right in my previous post.\nBB45 said:\nWhat does\n==2\nmean in this context?\nClick to expand...\nATT_Turan said:\nCode:\nif (user.actorId() == 2)\n// script call to erase actor ID 2's picture\n// script call to draw actor ID 2's off-balance picture\nClick to expand...\nI thought it was pretty clear with my repeated reference to actor ID 2 that if you were not trying to refer to actor ID 2, you would change that number.\nYou have also left out half of the code I gave you, which is why nothing at all is happening - I'm not sure why you made that choice.\nBB45 said:\nHow do I learn about this stuff? Is it all just general JavaScript knowledge?\nClick to expand...\nYes.\nIf you still can't get it to work, please show the\nentire\nthing - your picture above is missing half the code provided, and has the script call for the picture cut off so we can't see the entire thing.\nWhy change the Picture ID from 1 to 2?"
+    },
+    {
+      "post_id": "js-post-1457716",
+      "author": "BB45",
+      "date": "2024-07-16T22:11:44+0900",
+      "body": "ATT_Turan said:\nI thought it was pretty clear with my repeated reference to actor ID 2 that if you were not trying to refer to actor ID 2, you would change that number.\nClick to expand...\nYes I understood that in the beginning but since it didn't work I thought I must be misunderstanding the code.\nATT_Turan said:\nYou have also left out half of the code I gave you, which is why nothing at all is happening - I'm not sure why you made that choice.\nClick to expand...\nBecause I wanted to test if the code on Actor2 works first before essentially copy/pasting the same for Actor1 into the \"else\" branch. Since that is not the case, I don't understand how including the \"else\" branch of the code would change anything. Previously, the picture of Actor2 would alter correctly, the issue was that it would also alter whenever Actor1 is affected by the state. After including the\nif (user.actorId() == 2)\nin the code, it stops working completely. But it should still at the very least alter Actor2's picture anyway, no?\nHere is the code now with the other half of your code included. Still not working unfortunately.\nCode:\n<JS On Add State>\nif (user.actorId() == 2)\n{\n$gameScreen.erasePicture(1);\n$gameScreen.showPicture(1, 'Mel_KnockedOver', 0, 248, 456, 100, 100, 255, 0);\n}\nelse\n{\n$gameScreen.erasePicture(2);\n$gameScreen.showPicture(2, 'Nat_KnockedOver', 0, 200, 521, 100, 100, 255, 0);\n}\n<JS On Add State>\nATT_Turan said:\nWhy change the Picture ID from 1 to 2?\nClick to expand...\nToo long to explain, the short of it is that I am dumb.\nEdit: In case this is of any relevance. The state is applied on Actor from an enemy attack\nEdit: Tried out\n(target.actorId() == 2)\ninstead of\n(user.actorId() == 2)\nsince in the notetag instructions using \"target\" instead of \"user\" made more sense to me logically and the code actually works now. Thanks for your patience up until now btw and have a nice day"
+    },
+    {
+      "post_id": "js-post-1457721",
+      "author": "ATT_Turan",
+      "date": "2024-07-16T22:30:33+0900",
+      "body": "You're not closing the notetag correctly.\nIt should have a slash, </JS On Add State>"
+    },
+    {
+      "post_id": "js-post-1457726",
+      "author": "BB45",
+      "date": "2024-07-16T22:37:11+0900",
+      "body": "ATT_Turan said:\nYou're not closing the notetag correctly.\nIt should have a slash, </JS On Add State>\nClick to expand...\nYes, you're right. It is written the right way inside the notetag of the state, I just mistyped in the thread."
+    },
+    {
+      "post_id": "js-post-1457737",
+      "author": "ATT_Turan",
+      "date": "2024-07-16T22:59:23+0900",
+      "body": "Okay. It's best to copy and paste directly - if that can happen, then you could also have a typo in the code which is accidentally corrected when you type it into the thread.\nPresuming everything else matches but the notetag is formatted correctly, you should be seeing something happen. So:\n- When you get the state in battle, press F8, go to the Console tab, and post a screenshot of that window.\n- Show a screenshot of the state in your database, the skill applying it, and the two actors in the battle."
+    },
+    {
+      "post_id": "js-post-1457762",
+      "author": "BB45",
+      "date": "2024-07-16T23:58:13+0900",
+      "body": "Not sure if you saw my edits of my previous post or not so I am just gonna quote it here.\nBB45 said:\nEdit: Tried out\n(target.actorId() == 2)\ninstead of\n(user.actorId() == 2)\nsince in the notetag instructions using \"target\" instead of \"user\" made more sense to me logically and the code actually works now. Thanks for your patience up until now btw and have a nice day\nClick to expand...\nI wasn't sure if I should post it as a separate message as I've seen mods mentioning in other threads that \"double posting\" is against the rules and you should edit your previous post instead.\nATT_Turan said:\n- When you get the state in battle, press F8, go to the Console tab, and post a screenshot of that window.\nClick to expand...\nOtherwise if you would like me to do that anyway then let me know and I can submit the screenshot later"
+    },
+    {
+      "post_id": "js-post-1457778",
+      "author": "ATT_Turan",
+      "date": "2024-07-17T00:46:11+0900",
+      "body": "Ah, it looks like you were editing it while I was typing my reply.\nThat is pretty confusing, since in the equivalent plugin for MV user and target are the same thing in that notetag.\nBut I'm glad you got it working!"
+    },
+    {
+      "post_id": "js-post-1458074",
+      "author": "BB45",
+      "date": "2024-07-18T07:06:36+0900",
+      "body": "@ATT_Turan\nSorry to bother you again but I have decided to add another condition into my notetag, which is a switch that must be turned on before the picture changes are applied.\nCode:\n<JS On Add State>\nif (target.actorId() == 2 && $gameSwitches.setValue(6, true));\n{\n$gameScreen.erasePicture(1);\n$gameScreen.showPicture(1, 'Mel_KnockedDown', 0, 248, 456, 100, 100, 255, 0);\n}\n</JS On Add State>\nI think I am using the wrong script call as it only just \"sets\" the switch to on/off but I couldn't find any other script call that is actually \"checking\" a switch.\nI have seen however, in another post for the RGSS engine, that someone used\nif $Game_Switches[103] == true\nbut to no surprise this did not work in MZ."
+    },
+    {
+      "post_id": "js-post-1458076",
+      "author": "Robro33",
+      "date": "2024-07-18T08:03:15+0900",
+      "body": "BB45 said:\nI think I am using the wrong script call as it only just \"sets\" the switch to on/off\nClick to expand...\nyes\nwhere did you find that function if the one you wanted wasnt directly next to that? its $gameSwitches.value(id) to get the value of a switch. if you cant find a particular script call, theres a list of them pinned here in this section of the forums\nRPG Maker MV / MZ Script Call List\nThis Script Call list applies to both RPG Maker MV and RPG Maker MZ. Link here to see the entire list.    Supplementary Material for RPG Maker MZ: https://forums.rpgmakerweb.com/index.php?threads/rpg-maker-mz-script-call-reference.122501/  Have fun eventing~\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1458086",
+      "author": "BB45",
+      "date": "2024-07-18T08:48:52+0900",
+      "body": "Robro33 said:\nits $gameSwitches.value(id) to get the value of a switch.\nClick to expand...\nBecause that is actually the other script call that I've tried already. Should have mentioned that in my previous post, my bad. This is how I implemented it.\nCode:\nif (target.actorId() == 2 && $gameSwitches.value(6) == true);\nTo make sure that this switch isn't actually ON before the code checks, I removed the only event that controls the switch and even forced the switch to be off with an event command to be extra safe. It still changes the picture with the switch being off.\nEDIT: Even with\nif ($gameSwitches.value(6) == true);\nbeing the only condition for the picture to change, it still does. Even going so far as to use a switchID that I haven't used before, the picture still changes."
+    },
+    {
+      "post_id": "js-post-1458095",
+      "author": "ATT_Turan",
+      "date": "2024-07-18T09:56:05+0900",
+      "body": "You added a semicolon at the end of the\nif (stuff)\nline.\nThat's incorrect, and you'll notice it wasn't there before.\nSemicolons go at the end of a command. So by placing it there, you are saying the one command that gets done after the if is evaluated is nothing. Then the next lines of code are just there, they're not inside the if."
+    },
+    {
+      "post_id": "js-post-1458096",
+      "author": "BB45",
+      "date": "2024-07-18T10:18:32+0900",
+      "body": "ATT_Turan said:\nYou added a semicolon at the end of the\nif (stuff)\nline.\nThat's incorrect, and you'll notice it wasn't there before.\nSemicolons go at the end of a command. So by placing it there, you are saying the one command that gets done after the if is evaluated is nothing. Then the next lines of code are just there, they're not inside the if.\nClick to expand...\nYou are right, this fixed it. I was going crazy as to why it wouldn't \"just\" work. Thank you once again."
+    }
+  ]
+}

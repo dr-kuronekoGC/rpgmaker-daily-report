@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/specific-item-quest-conditions-control-variable-switch-boogaloo.168496",
+  "title": "Specific Item Quest Conditions (Control Variable/Switch Boogaloo)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:32:18.377851+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1443127",
+      "author": "Sp3ckt3r",
+      "date": "2024-05-09T15:51:03+0900",
+      "body": "When it comes to specific items conditions and making sure the game CHECKS to see if those specific items have been obtained by the player character, how would one go about setting up a valid control variable for that, presuming control variables are the right move for such a thing?\nFor reference/context: During the beginning part of a practice project, My hero (the player character) and Goddess characters (\"Ancoro\" & Rifare\" respectively) teleport outside of a village and Rifare instructs the player character to go to the Weapon and Armor shop to pick up their respective equipment before the she explains to the basics of combat training to Ancoro. However the issue is that, once the two make it to town, not only does the initial quest not activate upon the player landing on it but SOMEHOW ... Rifare is completely absent during this interaction. I genuinely don't know if this is perhaps in error with control variables on my end or not but I'll post any and all necessary screencaps of the situation to (hopefully) better explain and (potentially) remedy this situation.\nThe first four screen caps include the typed contents, the Event name (and pages) as well as the conditions of which have been made, with the first two being the introduction upon entering the Village (which has stopped triggering altogether) and the control variable for \"Finish talking to Rifare\" checked ON and the second two are of the second event page, where Rifare is meant to ask Ancoro (the player character) if they've obtained the necessary equipment of which the game is meant to check if so. Yet, even after obtaining them both, Rifare repeats the line: \"Enter the Village of Swynforth and buy your starting sword and protection. The shop would be at the far right\" with the necessary conditional branches made for the game to check if the player actually has them (and equipped)\nThe fifth image is of the control switches made and named to avoid potential confusion to which has only caused MASS confusion for myself. The sixth is of the shopkeeper who sells the player character their starting gear. I wasn't sure if control variables were needed for the shopkeeper in general during this but if it is, please let me know if that's the case. The seventh and eighth images respectively are of Rifare asking Ancoro if they obtained their equipment, to which the aforementioned quoted line gets repeated with the same conditional branches being used her with THESE ones having Rifare's graphic attached to them. The ninth and last image is Rifare being completely absent during the introduction before it even begins. I was maneuvering myself around control variables and self-switches during the day, only for even more issues to arise. I am extremely sorry for how long-winded this post is but its to give anyone an inkling of an idea as to how I could fix this. If anyone knows, please don't hesitate to reach out. I will try to reply at the earliest convenience!"
+    },
+    {
+      "post_id": "js-post-1443131",
+      "author": "Andar",
+      "date": "2024-05-09T16:25:36+0900",
+      "body": "your first autorun - it requires the switch 2 to be on as a condition, but you turn it on at the end of the event?\nthat is a logic error like locking the box with the key still inside."
+    },
+    {
+      "post_id": "js-post-1443257",
+      "author": "Sp3ckt3r",
+      "date": "2024-05-10T03:19:05+0900",
+      "body": "Andar said:\nyour first autorun - it requires the switch 2 to be on as a condition, but you turn it on at the end of the event?\nthat is a logic error like locking the box with the key still inside.\nClick to expand...\nSo in order to fix this, I'll have to turn on the switch 2 on as one of the conditions but have them both set before and after the contents have been finished respectively? If I'm misunderstanding please let me know (these current screenshots are what needed to be fixed if this is supposedly correct? As said, this is my first time dabbling with things like control switches and variables so any and all help is greatly appreciated)"
+    },
+    {
+      "post_id": "js-post-1443266",
+      "author": "Andar",
+      "date": "2024-05-10T03:50:18+0900",
+      "body": "Sp3ckt3r said:\nSo in order to fix this, I'll have to turn on the switch 2 on as one of the conditions but have them both set before and after the contents have been finished respectively?\nClick to expand...\nNo\nyou either need to remove the condition, or a different event needs to turn it on.\nYou cannot get into a locked box if the only key is inside the box. The box needs to be either unlocked (no condition) or the key needs to be outside the box (control switch in a different event)\njust check your first screenshot and really read what is written there in the first condition and the first line:\nCondition: switch 1 first quest is ON\nfirst line: control switch 1 first quest ON\nwhich means the event can only run if the switch 1 is on, otherwise it does not exist for the game.\nif the event is running, you are guaranteed to have the switch 1 already ON - why do you set it to on again?\nif the event is not running, the switch is OFF - which means that the commands inside the event are never processed."
+    }
+  ]
+}

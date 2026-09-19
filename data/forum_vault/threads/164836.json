@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/base-town-city-building-in-game.164836",
+  "title": "Base/Town/City Building in game.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:31:51.414068+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1415022",
+      "author": "Vallian",
+      "date": "2024-01-16T19:52:24+0900",
+      "body": "Hi.\nI'm tying to add an element of Base / Town building into my game. What I'm trying to do:\nHave certain blocks of land available to build on if the requirements are met.\nDifferent sized blocks for different sized buildings.\nHave multiple building options when requirements are met for several buildings at the same time.\nHave the option of removing a building and setting it back up on a different same sized block.\nHow I want it to function in the game is basically:\nGet approval for a building (thinking of having the player receive a key item for this eg. \"DA Approval - Bakery)\nPick a block of the right size (probably just click a sign in front of the block)\nShow a list of all the options for approved buildings shown\nPick the preferred option\nBuilding is placed down\nOption to build that building now removed from list unless it is torn down.\nAny help would be greatly appreciated."
+    },
+    {
+      "post_id": "js-post-1415024",
+      "author": "fizzly",
+      "date": "2024-01-16T20:03:50+0900",
+      "body": "1. I hope you are not a beginner user of RM if you want to do those things.\n2.\nThis\nwill help you for sure, but it's paid. Also, look for some \"big event\" plugin got bigger objects/things.\n3. Most of the things can be done just in default engine itself. Common events are your heroes."
+    },
+    {
+      "post_id": "js-post-1415025",
+      "author": "ZombieKidzRule",
+      "date": "2024-01-16T20:11:28+0900",
+      "body": "I don't know if I completely understand exactly how you want this to work, but here is a link to a video I made about allowing the player to select where to put a large yurt (tent) almost anywhere on the map. And I did it without any plugins.\nIt might be a similar concept. If I am even remotely correct about what you want to do, I think you could take the concepts of the video and modify them to place different things for buildings, etc.\nBut I would definitely be limited by the available assets.\nGood luck and let me know if you have any questions about the video."
+    },
+    {
+      "post_id": "js-post-1415026",
+      "author": "rpgLord69",
+      "date": "2024-01-16T20:14:02+0900",
+      "body": "If you just want to do what you explained, I don't think it's too hard. Like if you have predetermined spots etc.\nYou can just show the spots where you can build with colored events (control them depending on the requirements).\nThen have the colored events be a click trigger that brings out pictures of your buildings (different buildings depending on what fits in that event area and which buildings you've unlocked).\nThen when you click on a building picture, it sets the event's switch to a page that has an event graphic for that building. It also controls the picture events so that that building won't be shown anymore.\nAnd each building event page is also on click trigger that brings up a choice (among other choices?) \"demolish building?\" -> If you choose \"yes\", it will remove the building by changing the event graphic to the \"empty\" colored image and control the picture event so that the building appears there again."
+    },
+    {
+      "post_id": "js-post-1415027",
+      "author": "Vallian",
+      "date": "2024-01-16T20:19:04+0900",
+      "body": "Great, thanks for the reply. Happy to purchase a plugin if it makes things simpler, I'll have a look into it. I actually came across a plugin for actual base building:\nhttps://drag-and-plug-in.itch.io/sandbox-map-for-mz\n.\nThough it doesn't have mouse support, which I'd prefer to have the option for."
+    },
+    {
+      "post_id": "js-post-1415270",
+      "author": "Vallian",
+      "date": "2024-01-17T20:38:16+0900",
+      "body": "I've been trying to figure it out but having some difficulties. So this is my basic concept:\n1) talk to a person in the world and ask them to come to your town\n2) they say they want a particular building there and they will come\n3) now you can get a quest from let's say the \"DA\" to get \"DA Approval\" for that building.\n(Each building will be designated as either Small / Medium / Large)\nExample: You receive a key item called \"DA Approval - Bakery (small)\" or something similar\n3) When that quest is done you get Approval and can now build that building on a certain plot of land that is designated Small / Medium / Large\n4) Select the block you want, you get a list of all the DA approved buildings you can build that are not currently built in the town\n5) pick the building you want, it is constructed after a fade in fade out screen or something similar\n6) the person who asked for the building will now disappear from the world as they will now be in the building you just built.\n7) you can enter the building - so will need to be able to set the transfer events some how automatically\n8) You can choose to \"Demolish\" a building and if so it will once again appear in the options list for buildings again.\nI may just end up going for a simpler setup if I can't get it working. Might just do what I know and have it so you can just build one particular building in just one spot. Not as cool but I know I can make that happen.\nThanks!"
+    },
+    {
+      "post_id": "js-post-1415274",
+      "author": "rpgLord69",
+      "date": "2024-01-17T20:54:14+0900",
+      "body": "That is all doable with switches, self switches and conditional choices. Conditional choices would require a plugin (VisuStella Message Core works).\nThe first person controls the quest giver to give you a quest.\nWhen the quest is finished, the quest giver controls a switch which adds to the 'show choices' in the empty building spots.\nYour building spots show the choices depending on their size and what conditional choices have been activated by quest finish switches. When you choose a building, it controls a self-switch/switch to set the spot graphic to the correct building graphic and also controls a switch that sets the person who asked for the building on an empty sprite page (make them disappear). It also turns off the switch that allowed the building to appear in the conditional choices (the one which was turned on at quest finish).\nEach building page is on action button, and the event asks a choice: Enter / Demolish. Enter is just transfer. Demolish returns the building page to the first page without any building graphic. When demolishing, you again turn on the switch that allows the building to show up on the conditional choices. Also when demolishing, you maybe return the character living there to the original map, by controlling their switch also."
+    },
+    {
+      "post_id": "js-post-1415541",
+      "author": "Vallian",
+      "date": "2024-01-18T17:09:12+0900",
+      "body": "rpgLord69 said:\nThat is all doable with switches, self switches and conditional choices. Conditional choices would require a plugin (VisuStella Message Core works).\nThe first person controls the quest giver to give you a quest.\nWhen the quest is finished, the quest giver controls a switch which adds to the 'show choices' in the empty building spots.\nYour building spots show the choices depending on their size and what conditional choices have been activated by quest finish switches. When you choose a building, it controls a self-switch/switch to set the spot graphic to the correct building graphic and also controls a switch that sets the person who asked for the building on an empty sprite page (make them disappear). It also turns off the switch that allowed the building to appear in the conditional choices (the one which was turned on at quest finish).\nEach building page is on action button, and the event asks a choice: Enter / Demolish. Enter is just transfer. Demolish returns the building page to the first page without any building graphic. When demolishing, you again turn on the switch that allows the building to show up on the conditional choices. Also when demolishing, you maybe return the character living there to the original map, by controlling their switch also.\nClick to expand...\nok thanks heaps for your response. I will have a crack at it and see how far I get. Was hoping to have it so I can just walk into the doors of the building and enter without pressing a button as that is how I have my other entrances setup in the game. Figured I could just keep the sign there and click on it if I wanted to demolish it.\nThanks again, I'll have a look at the VisuStella plugin you mentioned."
+    },
+    {
+      "post_id": "js-post-1415566",
+      "author": "Vallian",
+      "date": "2024-01-18T21:20:42+0900",
+      "body": "Awww yeah!! After a bunch of hours messing around I managed to get it working the way I wanted!\nThanks heaps for your suggestion about the conditional choice plugin. I am actually using the WD_ConditionalChoice one (\nhttps://winterdreamgamescreator.itch.io/rpg-maker-mz-script-hide-or-disable-choices\n) as it works with items and other things too which is something I wanted to work into it.\nThanks again!!"
+    },
+    {
+      "post_id": "js-post-1457031",
+      "author": "SergioV7",
+      "date": "2024-07-14T04:40:52+0900",
+      "body": "fizzly said:\n1. I hope you are not a beginner user of RM if you want to do those things.\n2.\nThis\nwill help you for sure, but it's paid. Also, look for some \"big event\" plugin got bigger objects/things.\n3. Most of the things can be done just in default engine itself. Common events are your heroes.\nClick to expand...\nHey tried to see what plugin you were talking about but i wasnt able to open the link"
+    },
+    {
+      "post_id": "js-post-1457033",
+      "author": "AquaEcho",
+      "date": "2024-07-14T04:51:00+0900",
+      "body": "SergioV7 said:\nHey tried to see what plugin you were talking about but i wasnt able to open the link\nClick to expand...\nIt's Ritter Map Transform. While it's a good plugin, it's paid. For a free alternative you can use Shaz Tile Changer or Ocram's Map Editor\nEdit:MZ\nRitter Map Transform (RPG Maker MZ) by notRitter\nEasily Change the tiles on your game map! All Layers! Regionids! Shadows!\nnotritter.itch.io\nTile Changer (Shaz's plugin for MV ported to MZ)\nShaz_TileChangerMZ.js by Shaz (original plugin) and SeaPhoenix (edits for MZ)  Prologue @Shaz has a great plugin to copy tiles and change tiles for MV, and I got their approval to port this plugin to MZ. The main edits are for compatibility, especially in terms of the plugin commands, and...\nforums.rpgmakerweb.com\nOcRam_Map_Editor (edit maps in-game!)\nIntroduction  Unlike my other plugins this plugin won't need OcRam_Core in order to work.  This plugin provides autotiling (and B-E tiling) in-game for your RPG Maker projects! Enable autosave/load for edited map data with 1 plugin parameter!  OR then just do it with custom logics and disable...\nforums.rpgmakerweb.com"
+    }
+  ]
+}

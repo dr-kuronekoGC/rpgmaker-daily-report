@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/mz-stop-textbox-from-holding-the-game.169089",
+  "title": "[ MZ ] Stop Textbox from holding the game",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:31:57.862672+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1447515",
+      "author": "Zia_",
+      "date": "2024-05-29T20:05:36+0900",
+      "body": "Hi all,\nis there any way to tell a specific textbox message, not to hold the game in MZ?\nWhat I mean is:\n* you can't move with a textbox open\n* you can't open a menu\n* you can't trigger \"On Hero Touch\" events\n* etc.\nI have some passive textboxes that appear above the heads of your party members. Your party members chitchat randomly from time to time.\nBut the player shouldn't be affected by that.\nI made a plugin working that allows you to continue walking while the textbox is open. But I can't figure out everything else (HeroTouch, Menu, etc).\nSo ... Is there a way to tell a textbox, not to pause everything?\nThank you!"
+    },
+    {
+      "post_id": "js-post-1447518",
+      "author": "Danatoth",
+      "date": "2024-05-29T20:21:57+0900",
+      "body": "Gab Window VisuStella MZ - Yanfly.moe Wiki\nwww.yanfly.moe"
+    },
+    {
+      "post_id": "js-post-1447522",
+      "author": "Zia_",
+      "date": "2024-05-29T20:38:45+0900",
+      "body": "Thank you!\nI would prefer a solution to temper with the actual textbox, instead of adding a new system.\nThe suggestion seems to be similar to the SideChatter, bringing in messages at the side of the screen. That wouldn't be matching the style of my other message boxes (textboxes that appear above the heads / Galv Message Styles)."
+    },
+    {
+      "post_id": "js-post-1447523",
+      "author": "AquaEcho",
+      "date": "2024-05-29T21:04:02+0900",
+      "body": "There is a Caethyril script that makes the textbox a parallel event. It's M33 or Q33 or something.\nMZ - Cae_Tweaks - lots of little features\nCae_Tweaks v19 updated 2026-06-16 (UTC+0)  Terms of Use MIT License: https://opensource.org/licenses/mit-license.html  Description The plugin file must be named Cae_Tweaks.js.  This plugin contains a bunch of different things. It's mostly just me slowly making a game and coding some more stuff...\nforums.rpgmakerweb.com"
+    },
+    {
+      "post_id": "js-post-1447537",
+      "author": "Zia_",
+      "date": "2024-05-29T22:54:25+0900",
+      "body": "Thank you! If I got it right, it changes the behaviour for all text messages that are handled in a Parallel Process, which would be a little too much. I didn't see any way to turn it on and off on the fly, maybe I missed something.\nFor now I found Galvs MV Timed Message Popups and use it with FOSSIL.\nMV Timed Message Popups\nFEATURES Display popup messages on the screen or over characters. These messages do not prevent player movement and last for a specified amount of time before closing. Added: Ability to specify dif…\ngalvs-scripts.com\nIt shows the message immediately, instead of appearing letter by letter, which is a little drawback. Also an MZ solution without FOSSIL would be great.\nSo, if someone has an idea, I would be happy to hear it!"
+    },
+    {
+      "post_id": "js-post-1447551",
+      "author": "AquaEcho",
+      "date": "2024-05-30T00:06:49+0900",
+      "body": "Zia_ said:\nThank you! If I got it right, it changes the behaviour for all text messages that are handled in a Parallel Process, which would be a little too much. I didn't see any way to turn it on and off on the fly, maybe I missed something.\nClick to expand...\nYou could probably just wrap the function in a conditional statement if($gameSwitches.value(x)){\nCode\n}\nWhere x is the switch that needs to be on, but you can ask in caethyril's thread to make sure."
+    },
+    {
+      "post_id": "js-post-1447560",
+      "author": "caethyril",
+      "date": "2024-05-30T00:44:57+0900",
+      "body": "@Zia_\n- I found this small plugin by triacontane:\nRPGMakerMV/MessageUnlockBusy.js at mz_master · triacontane/RPGMakerMV\nRPGツクールMV、MZで動作するプラグインです。. Contribute to triacontane/RPGMakerMV development by creating an account on GitHub.\ngithub.com\nBasically, try using\n\\UL\nin relevant Show Text commands? Looks like it just changes the interpreter wait mode, so I think Show Text commands will still have to wait for the message to be free. That's one reason many plugins for non-interrupting-messages (a.k.a. \"gabs\") define their own window for it.\n@AquaEcho\n- for something like that I'd instead suggest editing the\nisParallel\nfunction in my plugin code, to add a check for the chosen switch, e.g.\nJavaScript:\nconst isParallel = function(interpreter) {\n        return SceneManager._scene instanceof Scene_Map\n            && interpreter !== $gameMap._interpreter\n            && $gameSwitches.value(123);    // added\n    };\nThat's the function my plugin uses to decide how to handle each Show Text command."
+    },
+    {
+      "post_id": "js-post-1447570",
+      "author": "Zia_",
+      "date": "2024-05-30T01:36:07+0900",
+      "body": "caethyril said:\n@Zia_\n- I found this small plugin by triacontane:\nRPGMakerMV/MessageUnlockBusy.js at mz_master · triacontane/RPGMakerMV\nRPGツクールMV、MZで動作するプラグインです。. Contribute to triacontane/RPGMakerMV development by creating an account on GitHub.\ngithub.com\nBasically, try using\n\\UL\nin relevant Show Text commands? Looks like it just changes the interpreter wait mode, so I think Show Text commands will still have to wait for the message to be free. That's one reason many plugins for non-interrupting-messages (a.k.a. \"gabs\") define their own window for it.\nClick to expand...\nGave it a try. It does in fact proceed futher parts of the event without waiting for the textbox to close.\nBut it doesn't affect the player movement. You can't move until the textbox is gone."
+    },
+    {
+      "post_id": "js-post-1447643",
+      "author": "bass2yang",
+      "date": "2024-05-30T08:23:29+0900",
+      "body": "This might be worth looking at:\nHakuen Studio Message Manager for RPG Maker by Hakuen Studio\nImproves the Message System with several changes!\nhakuenstudio.itch.io"
+    },
+    {
+      "post_id": "js-post-1455900",
+      "author": "hatesec",
+      "date": "2024-07-08T16:28:16+0900",
+      "body": "Try this out\n@Zia_\nTry the plugin I just made, and put \\MOV ahead of a Show text. For example: \\MOVNow we walk and talk!\nPairs nicely with galv's Messages Styles MZ plugin\nMZ Message Styles\nFEATURES This plugin allows you to display messages above characters on the map like ‘speech bubbles’ to show which character is talking. Plugin commands allow changing the windowskin a…\ngalvs-scripts.com\nOf course, you can then add this at the end and your message will even go away on its own \\|\\|\\^\nCode:\n//-----------------------------------------------------------------------------\n//  MessagesWithoutWaitingMZ for RPG Maker MZ by hatesec\n//-----------------------------------------------------------------------------\n//  For: RPGMAKER MZ\n//  MessagesWithoutWaitingMZ.js\n//-----------------------------------------------------------------------------\n// Credit Hatesec, Lebal Drocer, Inc.\n// https://lebal-drocer.com\n//-----------------------------------------------------------------------------\n\n/*:\n * @plugindesc (v.1.0) Allows the player to walk around during any show text event by typing \\MOV in the show text message window.\n * @help Use the escape code \\MOV in the message window to allow player movement during the display of that message.\n */\n\n(function() {\n\n    const _Window_Message_startMessage = Window_Message.prototype.startMessage;\n    Window_Message.prototype.startMessage = function() {\n        this._allowPlayerMovement = false;\n        const texts = $gameMessage._texts.map(text => {\n            if (text.includes(\"\\\\MOV\")) {\n                this._allowPlayerMovement = true;\n                return text.replace(\"\\\\MOV\", \"\");\n            }\n            return text;\n        });\n        $gameMessage._texts = texts;\n        _Window_Message_startMessage.call(this);\n    };\n\n    const _Window_Message_updateMessage = Window_Message.prototype.updateMessage;\n    Window_Message.prototype.updateMessage = function() {\n        if (this._allowPlayerMovement) {\n            this._showFast = true;\n            this._lineShowFast = true;\n        }\n        return _Window_Message_updateMessage.call(this);\n    };\n\n    const _Game_Player_canMove = Game_Player.prototype.canMove;\n    Game_Player.prototype.canMove = function() {\n        if ($gameMessage.isBusy() && SceneManager._scene._messageWindow._allowPlayerMovement) {\n            return true;\n        }\n        return _Game_Player_canMove.call(this);\n    };\n\n})();"
+    },
+    {
+      "post_id": "js-post-1456232",
+      "author": "VOCALKENNI",
+      "date": "2024-07-10T09:21:29+0900",
+      "body": "@hatesec\nTHIS PLUGIN IS SCRUMPTIOUS OML\nDo you need credit if I were to use it in my game? :3"
+    },
+    {
+      "post_id": "js-post-1456236",
+      "author": "hatesec",
+      "date": "2024-07-10T09:53:47+0900",
+      "body": "Glad you like it!\nI don't need credit, but it would be nice :>"
+    },
+    {
+      "post_id": "js-post-1456240",
+      "author": "VOCALKENNI",
+      "date": "2024-07-10T10:26:12+0900",
+      "body": "hatesec said:\nGlad you like it!\nI don't need credit, but it would be nice :>\nClick to expand...\nAlrighty! I'll add it in, tysm :3"
+    },
+    {
+      "post_id": "js-post-1519364",
+      "author": "MiguelRPG",
+      "date": "2025-06-22T03:17:03+0900",
+      "body": "@hatesec\nWhat a great plugin! Create a topic just for it, my friend.\nIt can replace Galv's thread just fine!\nThe only problem you might have is that when the message is still open, others won't start.\nhatesec said:\nTry this out\n@Zia_\nTry the plugin I just made, and put \\MOV ahead of a Show text. For example: \\MOVNow we walk and talk!\nPairs nicely with galv's Messages Styles MZ plugin\nMZ Message Styles\nFEATURES This plugin allows you to display messages above characters on the map like ‘speech bubbles’ to show which character is talking. Plugin commands allow changing the windowskin a…\ngalvs-scripts.com\nOf course, you can then add this at the end and your message will even go away on its own \\|\\|\\^\nCode:\n//-----------------------------------------------------------------------------\n//  MessagesWithoutWaitingMZ for RPG Maker MZ by hatesec\n//-----------------------------------------------------------------------------\n//  For: RPGMAKER MZ\n//  MessagesWithoutWaitingMZ.js\n//-----------------------------------------------------------------------------\n// Credit Hatesec, Lebal Drocer, Inc.\n// https://lebal-drocer.com\n//-----------------------------------------------------------------------------\n\n/*:\n * @plugindesc (v.1.0) Allows the player to walk around during any show text event by typing \\MOV in the show text message window.\n * @help Use the escape code \\MOV in the message window to allow player movement during the display of that message.\n */\n\n(function() {\n\n    const _Window_Message_startMessage = Window_Message.prototype.startMessage;\n    Window_Message.prototype.startMessage = function() {\n        this._allowPlayerMovement = false;\n        const texts = $gameMessage._texts.map(text => {\n            if (text.includes(\"\\\\MOV\")) {\n                this._allowPlayerMovement = true;\n                return text.replace(\"\\\\MOV\", \"\");\n            }\n            return text;\n        });\n        $gameMessage._texts = texts;\n        _Window_Message_startMessage.call(this);\n    };\n\n    const _Window_Message_updateMessage = Window_Message.prototype.updateMessage;\n    Window_Message.prototype.updateMessage = function() {\n        if (this._allowPlayerMovement) {\n            this._showFast = true;\n            this._lineShowFast = true;\n        }\n        return _Window_Message_updateMessage.call(this);\n    };\n\n    const _Game_Player_canMove = Game_Player.prototype.canMove;\n    Game_Player.prototype.canMove = function() {\n        if ($gameMessage.isBusy() && SceneManager._scene._messageWindow._allowPlayerMovement) {\n            return true;\n        }\n        return _Game_Player_canMove.call(this);\n    };\n\n})();\nClick to expand..."
+    }
+  ]
+}

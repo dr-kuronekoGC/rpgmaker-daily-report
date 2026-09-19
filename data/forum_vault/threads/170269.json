@@ -1,0 +1,95 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/editing-combat-menu-options.170269",
+  "title": "MV Editing Combat Menu Options",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:32:09.682438+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1457062",
+      "author": "Woeward",
+      "date": "2024-07-14T06:24:41+0900",
+      "body": "I'm using\nChrono Engine\nfor my game's battle system and noticed that I can't get any of my custom skills into the available 'Techs' that populate in Combat.\nI first noticed this when using\nSomeRandomDude's\nSummon Core\nplug-in to create a Summon Familiar skill; it pops up for the Character with the skill in the Game Menu, but will not show up in combat.\nThis has also been keeping me from adding additional Party Members to the roster because when I try to change the formation I get a new error.\nWhen I looked into this error I noticed that the Chrono Engine unique characters had extra spritesheets to handle the animations tied to each 'Tech' within it's native combat skills.\nIt seems like if I ever want to add new 'Techs' from my personal Skill list (or Characters from the MV generator) I need to uncover not only how to edit the ActionName.js file that I believe controls the menu options available in combat;\nbut ALSO how to generate these spritesheets to give new Characters the animations needed to use the same skills as the native party that comes with the Chrono Engine plugin suite.\nIs anyone familiar with Chrono Engine enough to help guide me in retooling the hardset 'Tech' skill list and add new Characters to the Party's Formation?"
+    },
+    {
+      "post_id": "js-post-1457111",
+      "author": "hiddenone",
+      "date": "2024-07-14T10:56:26+0900",
+      "body": "I've moved this thread to Plugin Support. Thank you."
+    },
+    {
+      "post_id": "js-post-1457112",
+      "author": "AquaEcho",
+      "date": "2024-07-14T11:09:04+0900",
+      "body": "I'm not all that familiar with Chrono Mode as I use ABS mode but MOG_ActionName.js is what creates the banner at the top of the screen. I'm also pretty sure the character sheets with the different poses were made in an image editing software and weren't generated (the base characters were generated, but not the poses)\nCould you post your custom skill settings page?\nI'm also not sure if Chrono Mode will even work with more than three party members without editing the code as all the battle positioning and skills seem to be designed for three party members max."
+    },
+    {
+      "post_id": "js-post-1457121",
+      "author": "Woeward",
+      "date": "2024-07-14T12:43:11+0900",
+      "body": "AquaEcho said:\nI'm not all that familiar with Chrono Mode as I use ABS mode but MOG_ActionName.js is what creates the banner at the top of the screen. I'm also pretty sure the character sheets with the different poses were made in an image editing software and weren't generated (the base characters were generated, but not the poses)\nCould you post your custom skill settings page?\nI'm also not sure if Chrono Mode will even work with more than three party members without editing the code as all the battle positioning and skills seem to be designed for three party members max.\nClick to expand...\nThanks for the reply!\nI still want the battles to only have three active party members, I just want to be able to swap them out for other party members both in and out of combat\nSo I was able to get a placeholder character in the Party and swap out the formation to get them to act in battle. I first needed to disable the CharPoses mod which controls the animations I was referring to earlier (I believe).\nI then gave Billy the same weapon (if he doesn't have a weapon he won't do basic attacks) and class (was worried about tech animations bugging out but will test with a custom class next) as Ash the Paladin\nas well as his own Face_id & Actor_id in their respective img folders so no errors will occur due to a lack of pictures to call in the battle hud (something I ran into).\nNow that I can get more people into the party I tried to get Silvia to test out my Summon Familiar skill to no avail. I learned how to make the Summon Familiar skill from\nSRD's Tutorial\non the plugin\nI followed\nthis tutorial\nto learn how to make skills in Chrono Engine and followed the instructions to the best of my ability but it seems like there's a conflict between the two plugins keeping me from summoning my familiar placeholder into battle by keeping Silvia from even accessing a third-layer of the techs menu\nI also tried using SRD's\nTimed Attack Core\n&\nCircle\nPlugins to try and make a different skill using the basic attack on the mystic class\nand the tri-slash single Tech on the paladin class\nbut nothing happened at all when I tested it's functionality in combat. Currently I'm seeing if there's something I can do on the Tool Map to try and rectify the issue as that's where all the information these skills need to run is held there."
+    },
+    {
+      "post_id": "js-post-1457136",
+      "author": "AquaEcho",
+      "date": "2024-07-14T16:39:27+0900",
+      "body": "Those plugins don't work because they modify the battle scene. Chrono Engine battles take place on the map scene. You could recreate the effects in the map scene but you would really have to know your way around Chrono Engine, the tool event pages, and possibly other map scene plugins. It really is not something to try to do as a beginner."
+    },
+    {
+      "post_id": "js-post-1457171",
+      "author": "Woeward",
+      "date": "2024-07-14T22:52:54+0900",
+      "body": "AquaEcho said:\nThose plugins don't work because they modify the battle scene. Chrono Engine battles take place on the map scene. You could recreate the effects in the map scene but you would really have to know your way around Chrono Engine, the tool event pages, and possibly other map scene plugins. It really is not something to try to do as a beginner.\nClick to expand...\nDaaaaaaaaang that's a tough pill to swallow since that's how I've always envisioned the combat to be in my game. Are there other ways to event out Timed Attacks without using SRD's plugins that can modify the map scene? I'm willing to learn a different way or muscle through figuring out how to get these plugins to work, I just can't compromise on the way I'd like combat to play out"
+    },
+    {
+      "post_id": "js-post-1457173",
+      "author": "AquaEcho",
+      "date": "2024-07-14T23:01:35+0900",
+      "body": "Timed attacks are just quick time events. There are several guides and plugins for on map QTEs."
+    },
+    {
+      "post_id": "js-post-1457177",
+      "author": "Woeward",
+      "date": "2024-07-14T23:12:35+0900",
+      "body": "AquaEcho said:\nTimed attacks are just quick time events. There are several guides and plugins for on map QTEs.\nClick to expand...\nSounds good, I'll go do the proper research and then pop back if I have trouble calling the common events when a skill activates. Do you have any ideas on why my Summon Familiar skill crashes the game? Am I just gonna have to nix SRD's plugins and hand make the features he provides??\nAlso; do you think using Yanfly's Battle Engine to utilize\nthis plugin\nwill conflict with the Chrono Engine?  I'd prefer to keep things moderately simple with plugins, but if need be I can learn how to hand make each style of QTE-- I'd just like to try and find a quicker solution first as a stopgap"
+    },
+    {
+      "post_id": "js-post-1457185",
+      "author": "AquaEcho",
+      "date": "2024-07-14T23:28:48+0900",
+      "body": "You will just have to try it and see. It says it does both battle scene and map scene QTEs"
+    },
+    {
+      "post_id": "js-post-1457385",
+      "author": "Woeward",
+      "date": "2024-07-15T10:28:49+0900",
+      "body": "AquaEcho said:\nYou will just have to try it and see. It says it does both battle scene and map scene QTEs\nClick to expand...\nSo I attempted to follow the\ninstructions\nto the best of my ability and tried initializing the QTE and using the proper script commands to run it for the Single Tech Tri-Slash-- opting to not add the result after the QTE to keep things simple for now\nand received this error upon running the game for a test\nI've also double checked the hierarchy and Chrono Engine and it's plugins are beneath the Yanfly plugins that should be controlling this. I've also tried changing the parameters in the plugin to no avail\nI believe it has something to do with this excerpt from the thread\nI'm just not 100% certain what modification I need to complete the task at hand\nI did notice a similar error from others in his thread, but my plugins are properly named so it doesn't seem like that's the issue"
+    },
+    {
+      "post_id": "js-post-1457392",
+      "author": "Woeward",
+      "date": "2024-07-15T11:04:07+0900",
+      "body": "Removing the QTEAddon from the active plugins in the database seemed to fix the crashing issue I was having but now everything has a black box over there heads and the skill I'm testing this out with doesn't deal any damage (in addition to the QTE not activating)"
+    },
+    {
+      "post_id": "js-post-1457405",
+      "author": "AquaEcho",
+      "date": "2024-07-15T12:36:08+0900",
+      "body": "I'll be honest with you, I can't help you much with this as I just don't use Chrono Mode or that QTE plugin. You're trying to do some way advanced things (summoning an actor instance on the map and triggering QTE sequences in the middle of an on map battle). While it is technically possible, there is not going to be any documentation for what you're trying to do and you'll largely be on your own, and it will most likely require you to edit and patch the plugins to work together."
+    },
+    {
+      "post_id": "js-post-1457408",
+      "author": "Woeward",
+      "date": "2024-07-15T12:48:02+0900",
+      "body": "AquaEcho said:\nI'll be honest with you, I can't help you much with this as I just don't use Chrono Mode or that QTE plugin. You're trying to do some way advanced things (summoning an actor instance on the map and triggering QTE sequences in the middle of an on map battle). While it is technically possible, there is not going to be any documentation for what you're trying to do and you'll largely be on your own, and it will most likely require you to edit and patch the plugins to work together.\nClick to expand...\nThat is very unfortunate. I'd be fine with nixing the Summon Core thing that uses actors, I just want to be able to summon familiars in-battle that come from tamed monsters in the game-- as well as having quick time events in my battle system. I figured using Chrono Engine would be the quickest way to do it since it already had most of what I was looking for in a combat system; just with a few \"minor\" tweaks.\nI have also been unable to find comparable plugins to Mog's Chrono Engine that give me that on map battle scenario that mimics Chrono Trigger. I figured mashing together Chrono Trigger and Paper Mario combat would be an easier feat than it's turning out to be with my limited comprehension and the available documentation"
+    },
+    {
+      "post_id": "js-post-1457470",
+      "author": "AquaEcho",
+      "date": "2024-07-15T23:25:05+0900",
+      "body": "Woeward said:\nI just want to be able to summon familiars in-battle that come from tamed monsters in the game-- as well as having quick time events in my battle system. I figured using Chrono Engine would be the quickest way to do it since it already had most of what I was looking for in a combat system; just with a few \"minor\" tweaks.\nClick to expand...\nIf you want the summons to just be spells but with a picture of the summoned creature that's pretty easy and you would just modify the timing and animations of one of the template spells. If you want them to actually be another actor instance moving around the map that you give commands to that's a lot harder and would have to be built from scratch.\nYou could also just make those tamed monsters be permanent party members you take into battle.\nWoeward said:\nI have also been unable to find comparable plugins to Mog's Chrono Engine that give me that on map battle scenario that mimics Chrono Trigger.\nClick to expand...\nBecause barely anyone uses it. I've seen less than 10 people total using Chrono Mode. Another plugin dev would just look at how few people use it and the amount of work it would take to make a competing plugin and nope out."
+    }
+  ]
+}

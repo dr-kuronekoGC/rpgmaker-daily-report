@@ -1,0 +1,263 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/a-simple-questlog.159257",
+  "title": "A simple QuestLog",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:31:53.801820+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1363929",
+      "author": "Winthorp",
+      "date": "2023-07-13T03:13:33+0900",
+      "body": "QuestLog Plugin v2.4\nBy Winthorp Darkrites\n​\nThis is my take on a simple QuestLog plugin, it's nothing exceptional, it's really basic, but I tried to make it as customizable as possible to make it compatible with multilanguage games.\nThe core functionality is really simple, create quest, display quest, remove quest. That's it.\nWhat may be of interest for someone who doesn't write is own plugin is the (I hope) versatility.\nHow to call the questlog:\nYou can do it by script line\nYou can do it by Plugin Command\nYou can add a command in the main menu activating the option in the Plugin Parameters. You can also rename the command either via Plugin Parameter or Plugin Command.\nHow to create a quest:\nQuest will be created by Plugin Command with the following parameters:\nID:\nThe ID of the quest, useful to use Remove Quest and Set Quest Completion commands. Please be sure to use unique ID and I suggest to keep track of your quests on a note somewhere as you can check it in game.\nIcon:\nIt will show the desired Icon in the Quest Info window. Of course it refer to the games Icons.\nName:\nThe quest name, keep it short.\nIndex:\nThe order it will be displayed on the quest list. (First the active quest will be ordererd, then the completed quests)\nGiver:\nWho gave you the quest [\nNOTE:\nStandard format will be \"From: (this value). You can change \"From:\" via Plugin Parameter or Plugin Command\n]\nArea:\nWhere is located the quest [\nNOTE:\nStandard format will be \"Area: (this value). You can change \"Area:\" via Plugin Parameter or Plugin Command\n]\nDescription:\nThe description of the text.\nIMPORTANT:\nText doesn't line break automatically, it will try to fit in the window by shrinking. For this reason I added a check that will search for \\n line break and splits the text into a new line.\nCompletion:\nFrom Version 1.3 the quest can be Ongoing (active), Completed or Failed! [\nNOTE:\nStandard format will be \"Status: Ongoing/Completed. You can change \"Status:\", \"Ongoing\" and \"Completed\" via Plugin Parameter or Plugin Command\n]\nLayout:\nThe layout is really simple, a Title window showing the name for the QuestLog (you can edit the title via Plugin Parameters and Plugin Command; also you can edit the font size, for now only via Plugin Parameter), a window showing an ordered quest list and a window showing the active quest informations.\nManaging the plugin:\nAs I said before, you need to add the quests via Plugin Command, you can set their completion always via Plugin Command either by name (exact name) or by ID. In the same way, you can remove the quests from the list.\nScreenshoot\nVideo\nTerms of use\n​\nFree for personal and commercial projects, read the\nToS\nbefore using\nVersion, bugs and further development\n​\nVERSION 1.0:\nInitial Release\nVERSION 1.1:\nAdded new plugin command to edit an existing quest description by ID or Quest Name\nAdded new Plugin Command to change FontSize\nVERSION 1.2:\nMerged \"Set Completion by ID / by Name\" and \"Remove Quest by ID / by Name\"\nChanged font size for the Quest List and Quest Description, you can change them via Plugin Parameters or Plugin Command\nChanged the alignemnt con Quest List from \"left\" to \"Center\", can be changed via Plugin Parameter\nCreated a command that checks if a quest is completed and stores the result in a Switch of your choice (ON for Complete, OFF for Ongoing)\nCreated a plugin command to change the Quest Icon searching it by ID or Name\nVERSION 1.2.1:\nFixed an issue reported by Grillmonger where QuestList would wipe if game was closed entrely and then reloaded. Upon further investigation the fix  was extended to the other Plugin Parameters too (Such as Title Font, etc..) that would not carry over the changes if done via Plugin Command\nVERSION 1.2.2:\nHotfix for changes made in 1.2.1 as Plugin Parameters from Plugin Manager where not correctly loaded (Report by Grillmonger)\nVERSION 1.3:\nUpdated the code to a newer version with, but not limited to, tweaks to the save and load functionality.\nAdded the \"Failed\" status to the Quests with the needed changes to \"Add Quest\", \"Set Completion\" and \"Check Completion\". Added bits of code to allow retrocompatibility with the older versions.\nAdded the option to Autoset the Description Font Size, the plugin will range from a font size of 100 to a font size of 10, trying to fit the text both in width and height. You still need to break the lines with \\n as before. The autosize text is only left aligned due to a limitation of the DrawTextEx feature used. (On the positive side, it should accept the usual RMMZ text code like \\I for icons, didn't tried it)\nAdded the possibility to add a longer title that will be displayed in the Quest Informations window (while the short name will be used for the quest list on the left). If you don't need it just leave blank the field.\nMinor fix on a bug that could cause the menu button to change name due to a conflict with the Quest List items\nVERSION 1.3.1:\nHotfix for a small bug that would turn the menu command name to \"true\", thanks to ryf for the report!\nVERSION 1.3.2:\nFixed an old part of the code creating two problems: A black layer under the scene and no centering if the Game UI was changed from the System 2 tab as reported from ryf and Puppet Knight\nVERSION 1.4:\nAdded the setting to show or hide the title in the QuestLog\nAdded the possibility to switch the quest list / quest info layout\nAdded the option to use 100% of the graphic box (standard setting for this plugin) or 90% (standard RPG Maker MZ scene compatible with cancel touch button)\nAdded the possibility to hide the cancel touch button (useful for 100% size, but make sure the player has access to non touch controls)\nAdded the possibility to change the windows skin for the QuestLog only, also you can change the colors tone (by re-selecting the default skin you can apply different color tones to it)\nAdded a new plugin command to change all the above mid-game\nVERSION 1.5:\nFixed an unexpected behaviour in the Auto Size description text that resets the font size after correctly finding the fitting value\nAdded a padding value to the text to have the desired look to the text graphic\nAdded a full support for RMMZ text codes while keeping the alignment options\nMinor tweaks to the Plugin Parameters\nNow the plugin will automatically support compatibility with v1.1 or lower without having to choose different files\nVERSION 1.6:\nFixed a bug were the old quest files would be deleted if any quest action (like accepting a quest) would be done after reloading a save and before opening the questlog. (Thanks to TewiInaba for the report)\nFixed a minor bug in the \"Complete Quest\" command\nChanged the Icon selection parameters from a number to an icon selector\nAdded an external script call to check quest completion, see help\nVERSION 1.6.1:\nChanged the Quest Title from DrawText to DrawTextEx. The text will still be centered but now you can add the standard RMMZ commands such as \\I for Icons or \\C for colours\nVERSION 2.0:\nCode rebuilt and updated but kept compatible with older versions\nUpdated the Discord invite link in the help file that was invalid, embarassing!\nAdded translations managed via WD_Core\nDynamic Resize has been moved to WD_Core, plus a new text management option has been added: AutoWrap. Just write your sentence (supports RMMZ text codes) and the code will automatically wrap the text in the designed area. No need to manually use the \\n code (but you still can if you want to force a new line). If the text is still too big, the AutoWrap will try to shrink the font size to the minimum required.\nAdded the optional rule to display an expanded data log if the player clicks on the quest\nAdded the optional rule to activate a small Quest List on the map scene (either managed by the player or by the dev)\nAdded Quest Categories to group quests together\nVERSION 2.0.1:\nThe plugin wasn't saving correctly the quests! Thanks to kricu for the report, now it's all correct. NOTE: Old savefiles won't work, sadly, only work with new saves.\nThe tracking system now correctly saves the tracking preference and loads them when the player loads a savefile\nVERSION 2.0.2:\nCorrected a typo that would block the \"Edit Quest Descriptor\" command,  thanks to tinribs26 for the report!\nAlso correct a misplaced code line that would crash the above command when launched\nVERSION 2.1:\nFixed a nasty memory bug that would \"remember\" the quests when exiting an existing game and starting a new one without exiting the executable\nAdded a command to check if a quest already exist (useful if you want to add a quest from different sources)\nVERSION 2.2:\nChanged the quest window refresh method to adapt it to Android deployments (Thanks to Stevynn for the report)\nFixed incorrect font variable used in manual text mode\nVERSION 2.3:\nThe Language control has been moved to WinterDream Core (you will need v1.3 or higher). QuestLog loses the parameters \"Default Language\" and AutoDetect language, now controller by the central plugin\nVERSION 2.4:\nAdded the option to hide/show a quest\nAdded the option to show the quest title in the tracking HUD\nNow  you can mass store quests undere ID driven storages, this will make it  super easy to switch between different characters or parties\nTracked quests will now automatically be removed when they are set to    Completed or Failed\nFixed a bug in the conversion of old Quests to the new format\nFixed a bug in logs activation / deactivation\nFixed a bug in the Export Quest Completion functionality\nVERSION 2.4.1:\nNow Categories names and Quest Titles accept RMMZ text commands, especially useful for colours\nThanks to Tails for this two reports\nFixed a bug on the \"Add or Remove Quest Tracking\" flag parameter that was a string instead of a boolean\nFixed the \"Change tracking text\" plugin command that wouldn't refresh the HUD informations\nVERSION 2.4.2:\nThanks to tinribs26 for those two reports!\nFixed a bug in the new Quest Containers functionality that would break the savegames load. It's now patched with retrocompatibility for old broken saves.\nFixed a font reset problem during category and quest titles display\nFurther developments will include:\n-\nDownload for free on\nItch.io"
+    },
+    {
+      "post_id": "js-post-1364810",
+      "author": "snesfreak",
+      "date": "2023-07-16T06:09:34+0900",
+      "body": "Nice!\nThis is pretty much exactly what I need, especially once the update description feature is added."
+    },
+    {
+      "post_id": "js-post-1364961",
+      "author": "Winthorp",
+      "date": "2023-07-16T22:21:38+0900",
+      "body": "snesfreak said:\nNice!\nThis is pretty much exactly what I need, especially once the update description feature is added.\nClick to expand...\nDone and done"
+    },
+    {
+      "post_id": "js-post-1364964",
+      "author": "Winthorp",
+      "date": "2023-07-16T22:35:29+0900",
+      "body": "New Version is out!\n- Added new plugin command to edit an existing quest description by ID or Quest Name\n- Added new Plugin Command to change FontSize\nImportant compatibility note from 1.0 to 1.1: To correctly use the Edit Description command by ID quest must be created with an ID above 0. If any quest before 1.1 was created with Quest ID = 0 it will still work but can't be edited via Plugin Command using ID (will still be possible to change description via Name)"
+    },
+    {
+      "post_id": "js-post-1369215",
+      "author": "Winthorp",
+      "date": "2023-07-30T18:38:55+0900",
+      "body": "VERSION 1.2 is out!\nMerged \"Set Completion by ID / by Name\" and \"Remove Quest by ID / by Name\"\nChanged font size for the Quest List and Quest Description, you can change them via Plugin Parameters or Plugin Command\nChanged the alignemnt con Quest List from \"left\" to \"Center\", can be changed via Plugin Parameter\nCreated a command that checks if a quest is completed and stores the result in a Switch of your choice (ON for Complete, OFF for Ongoing)\nCreated a plugin command to change the Quest Icon searching it by ID or Name\nNow the QuestLog looks more neat with a new font size for Description and for the List!\nPlus I hope you like the new features allowing you to change icon (want to make a progressive icon? now you can!) and a command to check if the quest is completed or not, passing it to a Switch, so your QuestLog can now interact with the world you created.\nImportant note, you will find a \"Regular\" folder and a \"Compatibility\" folder. If you are new to the plugin use the \"Regular\" but if you used Version 1.1 or 1.0 and your game uses \"SetCompletion by ID / Name\" and \"Remove Quest by ID / Name\" you need to use \"Compatibility\" to keep them working\nFurther developments will include:\nAdding a \"Failed\" status to the Quests, Making different a different field for Short Title (Command) and Long Title (Info Screen) with retrocompatibility"
+    },
+    {
+      "post_id": "js-post-1369648",
+      "author": "NeoSoulGamer",
+      "date": "2023-07-31T22:05:28+0900",
+      "body": "I can't speak for the community, but I feel like we need more eyes on this. I find other quest systems to be far too robust for a lot of games that use them. We just don't have many options. Thanks for this! Fantastic job!"
+    },
+    {
+      "post_id": "js-post-1369690",
+      "author": "Winthorp",
+      "date": "2023-08-01T00:19:44+0900",
+      "body": "Neo Soul Gamer said:\nI can't speak for the community, but I feel like we need more eyes on this. I find other quest systems to be far too robust for a lot of games that use them. We just don't have many options. Thanks for this! Fantastic job!\nClick to expand...\nMany thanks, I really appreciate it!\nIf by using it you come across any problem or you see something useful missing I'll gladly hear out your opinion"
+    },
+    {
+      "post_id": "js-post-1369933",
+      "author": "Winthorp",
+      "date": "2023-08-01T17:53:16+0900",
+      "body": "VERSION 1.2.1 is out!\nFixed an issue reported by Grillmonger where QuestList would wipe if game was closed entrely and then reloaded. Upon further investigation the fix  was extended to the other Plugin Parameters too (Such as Title Font, etc..) that would not carry over the changes if done via Plugin Command"
+    },
+    {
+      "post_id": "js-post-1370203",
+      "author": "Winthorp",
+      "date": "2023-08-02T17:09:26+0900",
+      "body": "Sorry for yet another reply but yesterday release contained a bug that won't read the Plugin Parameters from the Editor, released an hotfix"
+    },
+    {
+      "post_id": "js-post-1403210",
+      "author": "Winthorp",
+      "date": "2023-12-06T00:15:23+0900",
+      "body": "Version 1.3 of the QuestLog plugin for RPG Maker MZ is out!\nUpdated the code to a newer version with, but not limited to, tweaks to the save and load functionality.\nAdded the \"Failed\" status to the Quests with the needed changes to \"Add Quest\", \"Set Completion\" and \"Check Completion\". Added bits of code to allow retrocompatibility with the older versions.\nAdded the option to Autoset the Description Font Size, the plugin will range from a font size of 100 to a font size of 10, trying to fit the text both in width and height. You still need to break the lines with \\n as before. The autosize text is only left aligned due to a limitation of the DrawTextEx feature used. (On the positive side, it should accept the usual RMMZ text code like \\I for icons, didn't tried it)\nAdded the possibility to add a longer title that will be displayed in the Quest Informations window (while the short name will be used for the quest list on the left). If you don't need it just leave blank the field.\nMinor fix on a bug that could cause the menu button to change name due to a conflict with the Quest List items\nI've made several retrocompatibility tests and they all worked with no errors, I can't stress enough that updating the code to the new plugin command is way SAFER than relying on retrocompatibility"
+    },
+    {
+      "post_id": "js-post-1404641",
+      "author": "Christoffer",
+      "date": "2023-12-10T12:37:46+0900",
+      "body": "Hi! Just wanted to ask a question regarding the plugin. I added it into my game and noticed that for the first instance you open the menu it will show up as \"Quest Log\" as I defined in the plugin parameters. But whenever I click on anything else and return to the menu again it shows up as \"true\" instead and stays that way.\nWould you have any idea how to fix it?\nAlso, would it be possible to have an icon attached to the menu command portion? It looks a bit out of place with the rest of the menu without an icon\nThanks!\nSpoiler:\nImages"
+    },
+    {
+      "post_id": "js-post-1404679",
+      "author": "Winthorp",
+      "date": "2023-12-10T18:32:33+0900",
+      "body": "ryf said:\nHi! Just wanted to ask a question regarding the plugin. I added it into my game and noticed that for the first instance you open the menu it will show up as \"Quest Log\" as I defined in the plugin parameters. But whenever I click on anything else and return to the menu again it shows up as \"true\" instead and stays that way.\nWould you have any idea how to fix it?\nAlso, would it be possible to have an icon attached to the menu command portion? It looks a bit out of place with the rest of the menu without an icon\nThanks!\nSpoiler:\nImages\nView attachment 287279\nView attachment 287280\nView attachment 287281\nClick to expand...\nI found the bug, I'll upload the hotfix in the next minutes! Thanks for bringing this to my attention\nAs for the icon, I see you are using a modified menu, the QuestLog simply add an original command to the Scene Menu. It depends on how your plugin works, if it changes all the original commands maybe it's enough to write \"\\I[1]QuestLog\", if it has a more complex way to do it, I would need to know what plugin it is"
+    },
+    {
+      "post_id": "js-post-1404681",
+      "author": "Winthorp",
+      "date": "2023-12-10T18:38:29+0900",
+      "body": "VERSION 1.3.1 Changelog\nHotfix for a small bug that would turn the menu command name to \"true\", thanks to ryf for the report!"
+    },
+    {
+      "post_id": "js-post-1404693",
+      "author": "Christoffer",
+      "date": "2023-12-10T19:43:57+0900",
+      "body": "So this is the plugin I'm using for the menu:\nhttps://awaya3ji.seesaa.net/article/491067894.html\nHopefully it's an easy add-on for the icon? Sorry I'm not really good at reading code haha\nAlso, if it won't be too much of a bother would it be possible to change the background of the quest log? I was hoping to keep it semi-transparent like in the image in the link but it's just showing up as black to me. If it's too much work then it's fine otherwise\nAgain, thanks for the plugin!"
+    },
+    {
+      "post_id": "js-post-1404703",
+      "author": "Winthorp",
+      "date": "2023-12-10T22:12:38+0900",
+      "body": "You can easily add the icon with those steps:\nBe sure that MenuPlus is ABOVE QuestLog in the Rpg Maker MZ plugins list\nOpen MenuPlus properties\nOpen IconTable parameters\nDouble Click on \"Extended Settings\"\nDouble Click on an empty row\nOn symbol write\nquest\n(all lowe case)\nOn Icon set the icon ID you want\nI tested it and it works\nAs for the background, let me check I might find something"
+    },
+    {
+      "post_id": "js-post-1404709",
+      "author": "Puppet Knight",
+      "date": "2023-12-10T22:55:45+0900",
+      "body": "I love the simplicity of set up for quests with this plugin and will definitely be using it. Albeit\nalongside\na more complicated one actually.\nI see this being a menu where players cann take a quick glance on story progress for certain beats while another quest plugins menu will be used for the inn dept info.\nI'll let ya'll know how it goes!"
+    },
+    {
+      "post_id": "js-post-1404710",
+      "author": "Winthorp",
+      "date": "2023-12-10T22:57:45+0900",
+      "body": "Puppet Knight said:\nI love the simplicity of set up for quests with this plugin and will definitely be using it. Albeit\nalongside\na more complicated one actually.\nI see this being a menu where players cann take a quick glance on story progress for certain beats while another quest plugins menu will be used for the inn dept info.\nI'll let ya'll know how it goes!\nClick to expand...\nI can't wait for the feedback\nIf you feel like there should be more feature feel free tell me, I'm always ready to improve my plugins"
+    },
+    {
+      "post_id": "js-post-1404716",
+      "author": "Puppet Knight",
+      "date": "2023-12-10T23:17:02+0900",
+      "body": "One ask i will put out there outright is size and position of the window and its sections"
+    },
+    {
+      "post_id": "js-post-1404718",
+      "author": "Winthorp",
+      "date": "2023-12-10T23:27:38+0900",
+      "body": "Puppet Knight said:\nOne ask i will put out there outright is size and position of the window and its sections\nClick to expand...\nWould you like an advanced mode where you have total control or a series of options?"
+    },
+    {
+      "post_id": "js-post-1404765",
+      "author": "Puppet Knight",
+      "date": "2023-12-11T03:08:09+0900",
+      "body": "Functionally I wouldnt recommend anything more advanced because I think your plugin would lose its exact appeal. Its a straight up quest log that lets you create quests from the plugin commands themselves without involving categories and other craziness.\nWinthorp said:\nWould you like an advanced mode where you have total control or a series of options?\nClick to expand...\nSort've an in between.\nThe window is using the System 2 UI size settings as it should. However for some reason (for me) the Quest Log doesn't draw centered on the screen\nMain Menu:\nQuest Log:\nSo by default it\nshould\nbe centered, with potentially a plugin parameter option to let users define a specific location where it will be drawn and how large.\nAdditionally, the auto black background is a bit jarring especially if the users Menus don't normally take up the whole Screen Width/Height. Ideally by default this would be to draw like any other menu/scene and make blacking out the background into an option (if that).\nNice to have: Allow users to choose a window skin specific to Scene_Quest\nRequest (if it doesn't already): Allow Variables/JS/Text Codes for Menu Fields like \"Quest Name\" just so folks can jazz up their texts a bit. Also allows for more personalization if the User wants to reference an Actor's name that the player can choose.\nHope this helps!"
+    },
+    {
+      "post_id": "js-post-1404766",
+      "author": "Winthorp",
+      "date": "2023-12-11T03:15:19+0900",
+      "body": "Those are some useful info, I didn't took into consideration the possibility of a bigger UI so the QuestLog is created at x: 0, making it centered should be easy enough!\nAbout the Auto Black Background I'm wrapping my head around it, honestly I didn't set it and my other plugins don't have it, yet for some reasons it happens with the QuestLog, I'll try to fix it and make it optional\nFor the other suggestions, sure thing, that something to add in 1.4 ^^"
+    },
+    {
+      "post_id": "js-post-1404905",
+      "author": "Christoffer",
+      "date": "2023-12-11T16:15:54+0900",
+      "body": "Winthorp said:\nYou can easily add the icon with those steps:\nBe sure that MenuPlus is ABOVE QuestLog in the Rpg Maker MZ plugins list\nOpen MenuPlus properties\nOpen IconTable parameters\nDouble Click on \"Extended Settings\"\nDouble Click on an empty row\nOn symbol write\nquest\n(all lowe case)\nOn Icon set the icon ID you want\nI tested it and it works\nAs for the background, let me check I might find something\nClick to expand...\nThis worked! Thank you!"
+    },
+    {
+      "post_id": "js-post-1405087",
+      "author": "Winthorp",
+      "date": "2023-12-12T04:27:11+0900",
+      "body": "Version 1.3.2 is out:\nFixed an old part of the code creating two problems: A black layer under the scene and no centering if the Game UI was changed from the System 2 tab as reported from ryf and Puppet Knight\nryf said:\nSo this is the plugin I'm using for the menu:\nhttps://awaya3ji.seesaa.net/article/491067894.html\nHopefully it's an easy add-on for the icon? Sorry I'm not really good at reading code haha\nAlso, if it won't be too much of a bother would it be possible to change the background of the quest log? I was hoping to keep it semi-transparent like in the image in the link but it's just showing up as black to me. If it's too much work then it's fine otherwise\nAgain, thanks for the plugin!\nClick to expand...\nPuppet Knight said:\nFunctionally I wouldnt recommend anything more advanced because I think your plugin would lose its exact appeal. Its a straight up quest log that lets you create quests from the plugin commands themselves without involving categories and other craziness.\nSort've an in between.\nThe window is using the System 2 UI size settings as it should. However for some reason (for me) the Quest Log doesn't draw centered on the screen\nMain Menu:\nView attachment 287376\nQuest Log:\nView attachment 287377\nSo by default it\nshould\nbe centered, with potentially a plugin parameter option to let users define a specific location where it will be drawn and how large.\nAdditionally, the auto black background is a bit jarring especially if the users Menus don't normally take up the whole Screen Width/Height. Ideally by default this would be to draw like any other menu/scene and make blacking out the background into an option (if that).\nNice to have: Allow users to choose a window skin specific to Scene_Quest\nRequest (if it doesn't already): Allow Variables/JS/Text Codes for Menu Fields like \"Quest Name\" just so folks can jazz up their texts a bit. Also allows for more personalization if the User wants to reference an Actor's name that the player can choose.\nHope this helps!\nClick to expand...\nBlack backdrop and not centered problems have been solved"
+    },
+    {
+      "post_id": "js-post-1405099",
+      "author": "Puppet Knight",
+      "date": "2023-12-12T05:39:25+0900",
+      "body": "Confirming the fix for background and centering:\nAppreciate the quick turnarounnd!"
+    },
+    {
+      "post_id": "js-post-1416061",
+      "author": "Winthorp",
+      "date": "2024-01-20T22:46:05+0900",
+      "body": "VERSION 1.4 is out and it comes with a focus on Graphics, this update tweaks some minor lines of code regarding the windows creations and population while it adds a new sets of controls for the devs:\nAdded the setting to show or hide the title in the QuestLog\nAdded the possibility to switch the quest list / quest info layout\nAdded the option to use 100% of the graphic box (standard setting for this plugin) or 90% (standard RPG Maker MZ scene compatible with cancel touch button)\nAdded the possibility to hide the cancel touch button (useful for 100% size, but make sure the player has access to non touch controls)\nAdded the possibility to change the windows skin for the QuestLog only, also you can change the colors tone (by re-selecting the default skin you can apply different color tones to it)\nAdded a new plugin command to change all the above mid-game"
+    },
+    {
+      "post_id": "js-post-1426354",
+      "author": "Winthorp",
+      "date": "2024-02-29T08:22:55+0900",
+      "body": "Version 1.5 is out\nand I've called it\n\"Let's describe our quest!\"\nsince I did some major work on the quest description field!\nThe main goal was to add RMMZ text codes support (like variables display or actors names display) but guess what, I even noticed that the Auto Size was not working! Or better... It was working, but then the drawText decided to trick me and reset the font settings vanishing all the work! Such a meanie...\nAnyway, I fixed the Auto Sizer, now it works as intented and no matter what option you pick auto or manual, the text now aligns as you wish!\nBoth method now supports RMMZ text codes and they align properly despite the text being dynamically generated, that was the hardest part of the work\nAs a bonus, now the plugin file is only one, you don't have to pick between \"Regular\" and \"Compatibility\" as Regular now supports old v1.1 and v1.0 commands while not allowing to create outdated instructions.\nFixed an unexpected behaviour in the Auto Size description text that resets the font size after correctly finding the fitting value\nAdded a padding value to the text to have the desired look to the text graphic\nAdded a full support for RMMZ text codes while keeping the alignment options\nMinor tweaks to the Plugin Parameters\nNow the plugin will automatically support compatibility with v1.1 or lower without having to choose different files"
+    },
+    {
+      "post_id": "js-post-1447215",
+      "author": "RagingRowen",
+      "date": "2024-05-28T01:06:59+0900",
+      "body": "Yo! I'm currently trying this and I'm having an issue.\nI'm trying to use Set Quest Completion Parameter to set a Quest to Completed in a Common Event, but in-game with the command performed, it still comes up as Ongoing. I've tried it with the ID and the Quest Name correctly, but none work.\nUpdate. I really dunno the problem. Originally I had the quest ID set to 1, but changed it to 101 and filled in the quest blanks, and it's fine now.\nUpdate 2. It seems to just be kinda inconsistent, because one time it remained as Ongoing but then most of the time it's Completed."
+    },
+    {
+      "post_id": "js-post-1447227",
+      "author": "Winthorp",
+      "date": "2024-05-28T02:30:05+0900",
+      "body": "Can you send me a pic of the editor where you set up the quest and the completion? I never experienced this bug"
+    },
+    {
+      "post_id": "js-post-1447763",
+      "author": "RagingRowen",
+      "date": "2024-05-30T22:17:34+0900",
+      "body": "Here's a vid of the issue:\nLeft Attached File is the command that's meant to come out as completed in the video. I also tried the Quest Name instead of the ID, no luck.\nRight Attached File shows the command setting up the quest."
+    },
+    {
+      "post_id": "js-post-1447789",
+      "author": "Winthorp",
+      "date": "2024-05-31T00:56:42+0900",
+      "body": "I don't know what to say, works just fine for me even using a Common Event\nHow is the common event? Is it a parallel or autorun? Is it in a loop?\nDoes the plugin work when you don't use Common Events?"
+    },
+    {
+      "post_id": "js-post-1447799",
+      "author": "RagingRowen",
+      "date": "2024-05-31T01:18:18+0900",
+      "body": "Winthorp said:\nI don't know what to say, works just fine for me even using a Common Event\nHow is the common event? Is it a parallel or autorun? Is it in a loop?\nDoes the plugin work when you don't use Common Events?\nClick to expand...\nOh this one isn't attached to the common event. This is a separate quest. It seems to be a general issue."
+    },
+    {
+      "post_id": "js-post-1447814",
+      "author": "Winthorp",
+      "date": "2024-05-31T03:23:48+0900",
+      "body": "RagingRowen said:\nOh this one isn't attached to the common event. This is a separate quest. It seems to be a general issue.\nClick to expand...\nThen there is something that is causing an incompatibility in your project, this bug never happened before.\nBest I can do in this case is offering to check it out, if you want to send me privately a zip of your RMMZ project I can run a line by line check, of course I understand if you don't want"
+    },
+    {
+      "post_id": "js-post-1456891",
+      "author": "Winthorp",
+      "date": "2024-07-13T04:37:30+0900",
+      "body": "Thanks to the useful report of TewiInaba I fixed several bugs related to a specific use of the command, using a quest command after a game load and before opening the questlog!\nWhile on it I changed the icon selector from a number input to an actual icon showcase!\nAlways on suggestion of TewiInaba I added a couple of Script Calls to check quest completion by ID or name from anywhere in RPG Maker MZ or from other scripts!\nEnjoy!\nVERSION 1.6:\nFixed a bug were the old quest files would be deleted if any quest action (like accepting a quest) would be done after reloading a save and before opening the questlog. (Thanks to TewiInaba for the report)\nFixed a minor bug in the \"Complete Quest\" command\nChanged the Icon selection parameters from a number to an icon selector\nAdded an external script call to check quest completion, see help"
+    },
+    {
+      "post_id": "js-post-1460432",
+      "author": "Winthorp",
+      "date": "2024-07-30T05:44:00+0900",
+      "body": "v1.6.1: Pimp that Title!​\nFollowing the suggestion of Apoplectix I've made a small change to the Title of the QuesTLog!\nNow you can use the RMMZ codes in the title, such as icons, colours, actors' name, gold, etc...\nYeah, you are probably going for the first two examples but if you feel creative you can use the whole RMMZ codes range!\nVERSION 1.6.1:\nChanged the Quest Title from DrawText to DrawTextEx. The text will still be centered but now you can add the standard RMMZ commands such as \\I for Icons or \\C for colours"
+    },
+    {
+      "post_id": "js-post-1507912",
+      "author": "Winthorp",
+      "date": "2025-04-05T19:59:52+0900",
+      "body": "Big News!\nQuestLog plugin goes 2.0!\nThe code has been rebuilt but kept compatible with the previous versions!\nThe new version comes with translation packs, language detection, extended logs and HUD tracking!\nVERSION 2.0:\nCode rebuilt and updated but kept compatible with older versions\nUpdated the Discord invite link in the help file that was invalid, embarassing!\nAdded translations managed via WD_Core\nDynamic Resize has been moved to WD_Core, plus a new text management option has been added: AutoWrap. Just write your sentence (supports RMMZ text codes) and the code will automatically wrap the text in the designed area. No need to manually use the \\n code (but you still can if you want to force a new line). If the text is still too big, the AutoWrap will try to shrink the font size to the minimum required.\nAdded the optional rule to display an expanded data log if the player clicks on the quest\nAdded the optional rule to activate a small Quest List on the map scene (either managed by the player or by the dev)\nAdded Quest Categories to group quests together\nN.B: Quest plugin v2 needs Core 1.1"
+    },
+    {
+      "post_id": "js-post-1511580",
+      "author": "Roocifer",
+      "date": "2025-04-30T07:56:50+0900",
+      "body": "I'm excited for this plugin! Thanks so much for it and all the updates. This is something I've been looking for and here it is."
+    },
+    {
+      "post_id": "js-post-1511609",
+      "author": "Winthorp",
+      "date": "2025-04-30T15:24:59+0900",
+      "body": "Roocifer said:\nI'm excited for this plugin! Thanks so much for it and all the updates. This is something I've been looking for and here it is.\nClick to expand...\nYou're welcome, hope it useful to your project"
+    },
+    {
+      "post_id": "js-post-1514496",
+      "author": "Winthorp",
+      "date": "2025-05-18T18:17:25+0900",
+      "body": "QuestLog VERY IMPORTANT hotfix is here!\nSeems like I cannot release a major version of questlog without forgetting to add all the necessary saves!\nThe plugin in version 2.0 wasn't actually saving the quests unless followed by some description changes, on top of that I noticed the tracking system wasn't actually loading all the needed data (and was not saving the actual tracked quests) when a game was reloaded\nSo this hotfix is entirely dedicated to saving and loading your game!\nP.s: Sadly the \"wrong\" saved files cannot be recovered, those won't correctly load the quests, this fix works with new saves\nVERSION 2.0.1:\nThe plugin wasn't saving correctly the quests! Thanks to kricu for the report, now it's all correct. NOTE: Old savefiles won't work, sadly, only work with new saves.\nThe tracking system now correctly saves the tracking preference and loads them when the player loads a savefile!"
+    },
+    {
+      "post_id": "js-post-1546521",
+      "author": "Winthorp",
+      "date": "2026-02-02T19:31:17+0900",
+      "body": "Forgot to announce the last update, so here is the two together!\nVERSION 2.0.2:\nCorrected a typo that would block the \"Edit Quest Descriptor\" command,  thanks to tinribs26 for the report!\nAlso correct a misplaced code line that would crash the above command when launched\nVERSION 2.1:\nFixed a nasty memory bug that would \"remember\" the quests when exiting an existing game and starting a new one without exiting the executable\nAdded a command to check if a quest already exist (useful if you want to add a quest from different sources)"
+    },
+    {
+      "post_id": "js-post-1551755",
+      "author": "Winthorp",
+      "date": "2026-03-26T05:19:35+0900",
+      "body": "I never deployed an Android game so I was unaware that the QuestLog wasn't working that system, thanks to Stevynn'd report I could track and find the bug that prevented the display of the quests on those deployements.\nWhile I was at it, I found a couple of bugs that gone under the radar in the previous versions, one was relative to the \"Manual\" text settings, probably one of the less used, and the other was about the height calculation of the details text area!\nVERSION 2.2:\nChanged the quest window refresh method to adapt it to Android deployments (Thanks to Stevynn for the report)\nFixed incorrect font variable used in manual text mode\nFixed description text drawing area calculation"
+    },
+    {
+      "post_id": "js-post-1554883",
+      "author": "Winthorp",
+      "date": "2026-04-29T16:22:16+0900",
+      "body": "QuestLog v2.4 – Quality of Life & System Upgrade​\nThis update focuses on\nbetter control, cleaner tracking and more flexibility\nwhen managing quests in complex projects.\nIt lays the groundwork for more advanced quest management systems (multi-party, narrative branches and beyond)\nNew Features​\nHide / Show Quests\nYou can now control quest visibility, perfect for secret quests, phased content or cleaner logs.\nTracking HUD Improvements\nOption to display the\nquest title directly in the tracking HUD\n, making it clearer for the player what they are following.\nStorage System (ID-based)\nIntroduced a powerful new system to\nstore and swap quest states using IDs\n.\n→ Ideal for\nmultiple parties, characters or timelines\nwith separate progress.\nImprovements​\nAuto-clean Tracking\nTracked quests are now\nautomatically removed\nwhen marked as\nCompleted\nor\nFailed\n.\n→ No more manual cleanup, smoother UX for the player.\nFixes​\nFixed an issue in\nold quest format conversion\nFixed\nlog activation/deactivation inconsistencies\nFixed a bug in\nExport Quest Completion\nVERSION 2.4:\nAdded the option to hide/show a quest\nAdded the option to show the quest title in the tracking HUD\nNow  you can mass store quests undere ID driven storages, this will make it  super easy to switch between different characters or parties\nTracked quests will now automatically be removed when they are set to    Completed or Failed\nFixed a bug in the conversion of old Quests to the new format\nFixed a bug in logs activation / deactivation\nFixed a bug in the Export Quest Completion functionality"
+    },
+    {
+      "post_id": "js-post-1556018",
+      "author": "Winthorp",
+      "date": "2026-05-11T06:31:13+0900",
+      "body": "Two hotfix updates!\nQuestLog v2.4.1 – Text Control & Bug Fixes​\nA small but impactful update focused on\nbetter text customization\nand fixing a couple of important edge cases.\nNew Features​\nRMMZ Text Commands Support\nCategories names and Quest Titles now support\nRMMZ text commands\n.\n→ Especially useful for\ncolors, formatting and dynamic text\ninside your quest log.\nFixes​\nFixed an issue with the\n\"Add or Remove Quest Tracking\"\nflag\n→ It was handled as a string instead of a boolean\nFixed the\n\"Change Tracking Text\"\nplugin command\n→ It now correctly\nrefreshes the HUD in real-time\nCredits​\nThanks to\nTails\nfor reporting these issues!\nVersion 2.4.2 — Stability & Compatibility Update\n​\nA small but very important update focused on stability and polish!\nSpecial thanks to\ntinribs26\nfor the helpful reports and support\nFixes​\nFixed a bug in the new\nQuest Containers\nsystem that could break savegame loading\nAdded\nretrocompatibility support\nto safely recover affected old saves\nFixed a font reset issue affecting category and quest title display\nThis update mainly improves reliability and ensures a smoother experience for both developers and players"
+    }
+  ]
+}

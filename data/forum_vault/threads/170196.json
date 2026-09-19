@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/applying-buffs-and-debuffs-globally-in-rpg-maker-mz.170196",
+  "title": "Applying Buffs and Debuffs Globally in RPG Maker MZ",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "RPG Maker MZ",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:31:55.831810+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1456482",
+      "author": "cozathemaster",
+      "date": "2024-07-11T11:11:18+0900",
+      "body": "Hello everyone,\nI'm working on a project in RPG Maker MZ and need help with applying buffs and debuffs in the damage calculation.\nProblem:\nCurrently, RPG Maker MZ applies buffs and debuffs to the base attack value before applying the damage formula. This makes buffs and debuffs unpredictable for the player, as the final damage result depends on the enemy's defense. I would like buffs and debuffs to be applied to the final damage result so that they are easier to understand and predict.\nExample:\nFor a basic attack, I use the formula: a.atk * 4 - b.def * 2.If a character applies a buff that increases damage by 200%, I want this buff to be applied to the final damage result. That is, if the attack did 100 damage, with the buff it should do 200 damage.\nWhat I'm Looking For:\nI want a method (preferably a plugin) that ensures any buff or debuff applied through states, skills, equipment is applied to the final damage result.\nAny help or suggestions would be greatly appreciated. Thanks in advance!"
+    },
+    {
+      "post_id": "js-post-1456499",
+      "author": "ATT_Turan",
+      "date": "2024-07-11T13:46:17+0900",
+      "body": "So...what is a \"buff that increases damage\"? There's no such thing in the editor.\nYou could have a buff that increases atk, or a buff that increases mat, but as you say that adjusts the parameter itself - there's no way to buff all damage.\nInstead of using buffs, you should be applying a state and using a plugin that gives you ways to modify damage via notetags in the states.\nYou can use my Eval Tags, linked in my signature; or if you already have VisuStella plugins in your project, you can use their Battle Core.\nWith my Eval Tags, you'd give a state a notetag:\nCode:\n<Action Hit Eval>\nif (skill.isDamage())\n    value *= 2;\n</Action Hit Eval>\nThat will cause all damage you do while you have that state to be doubled."
+    },
+    {
+      "post_id": "js-post-1456607",
+      "author": "cozathemaster",
+      "date": "2024-07-12T06:08:53+0900",
+      "body": "Thank you for the quick answer!\nI tested it with your plugin and works like a charm!!!\nI'm using the VisuStella Battle Core, so I was thinking... maybe it would be better to use the capabilities of that plugin to achieve the same effect and thus avoid adding another plugin to the list? Or does it not matter that much?\nHonestly, I checked the help and information for the Battle Core plugin, but I didn't know how to search for what I'm trying to achieve...\nDo you have any idea of what (keywords?) I should be looking for?\nI'm not trying to be lazy or take advantage of your willingness to help, it's just that I'm genuinely a bit lost.\nAnyway, if you don't have any ideas, the issue is already solved through your plugin, so I'm totally grateful to you =)"
+    },
+    {
+      "post_id": "js-post-1456609",
+      "author": "ATT_Turan",
+      "date": "2024-07-12T06:23:47+0900",
+      "body": "cozathemaster said:\nI'm using the VisuStella Battle Core, so I was thinking... maybe it would be better to use the capabilities of that plugin to achieve the same effect and thus avoid adding another plugin to the list? Or does it not matter that much?\nClick to expand...\nThat's why I said\nATT_Turan said:\nif you already have VisuStella plugins in your project, you can use their Battle Core.\nClick to expand...\nThe code in my Eval Tags will cause conflicts with VisuStella plugins. They are not designed to be used at the same time.\ncozathemaster said:\nHonestly, I checked the help and information for the Battle Core plugin, but I didn't know how to search for what I'm trying to achieve...\nDo you have any idea of what (keywords?) I should be looking for?\nClick to expand...\nGo to their\nWeb-based documentation,\nand in the table of contents click on Mechanics-related notetags.\nYou'll find equivalents for what I gave you (it's probably, like, JS On Hit as User or something).\nThe code would be the same, except replace\nskill\nwith\nthis"
+    },
+    {
+      "post_id": "js-post-1456616",
+      "author": "cozathemaster",
+      "date": "2024-07-12T06:45:15+0900",
+      "body": "I followed your advice and found the way to achieve the desired effect trough the battle Core.\nIt was:\n<JS Pre-Damage as User>\nif (this.isDamage())\nvalue *= 2;\n</JS Pre-Damage as User>\nThank you again, for real. This helps me so much with my project\nThis thread can be closed now =)"
+    },
+    {
+      "post_id": "js-post-1456723",
+      "author": "cozathemaster",
+      "date": "2024-07-12T10:35:47+0900",
+      "body": "Hello again... I think I celebrated victory too soon.\nThe notetag works, the damage is doubled, but I forgot that I want to differentiate buffs that enhance normal attack (`a.atk`) from those that enhance magic attack (`a.mat`), rather than always applying something general that includes both types of attack.\nIs there a way to do this with this method?"
+    },
+    {
+      "post_id": "js-post-1456724",
+      "author": "ATT_Turan",
+      "date": "2024-07-12T10:41:02+0900",
+      "body": "If you need to specifically look inside the damage formula, that's a little bit more complicated. But if you have your skills using the Hit Type to distinguish between Physical Attack and Magical Attack, you can change the conditional to be\nCode:\nif (this.isDamage() && this.isPhysical())\nor\nCode:\nif (this.isDamage() && this.isMagical())"
+    },
+    {
+      "post_id": "js-post-1456726",
+      "author": "cozathemaster",
+      "date": "2024-07-12T10:55:55+0900",
+      "body": "Unfortunately, it doesn't work... using either type of damage, the attack damage, whether magical or physical, is doubled without distinguishing. I tried changing the attack to `a.atk` and then to `a.mat`, but there is no difference.\nThe type of attack is \"HP damage\".\nAny other ideas? :/\nEDIT1:\nIt worked! I didn't understand the \"hit type\" part... I had it fixed on \"physical,\" so it didn't take effect...\n...\nNow it does. I'm going to run a few tests to make sure it's working properly. I'll report back in a few minutes.\nEDIT2: It's working consistenly =) Thanks again for your help!! I'm going to try this with defensive buffs too, I'll report if everything works. But I think I'm getting the \"logic\" in here... thanks.\nEDIT3: I got it working for physical and magical defensive buffs =) =D"
+    }
+  ]
+}

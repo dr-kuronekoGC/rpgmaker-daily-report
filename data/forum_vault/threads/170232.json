@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/advanced-javascript-question-concerning-yep_battlestatuswindow.170232",
+  "title": "MV Advanced javascript question concerning YEP_BattleStatusWindow",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:32:11.420820+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1456851",
+      "author": "Fortunastreet",
+      "date": "2024-07-13T01:12:27+0900",
+      "body": "Hello there,\nI have a quite advanced js question:\nI'm currently trying to fix the big slowdown that happens when I am navigating the skills/items windows in battle and there are a lot of options to choose from (at least enough to make the 8 spaces available not enough to display everything, see the linked video to see the slowdown in action).\nI think I have found the cause of it: in YEP_BattleStatusWindow line 251 there is code added when an action is cleared or its skill/item/itemobject is set.\nJavaScript:\n//=============================================================================\n// Game_Battler\n//=============================================================================\n\nYanfly.BSW.Game_Action_clear = Game_Action.prototype.clear;\nGame_Action.prototype.clear = function() {\n    Yanfly.BSW.Game_Action_clear.call(this);\n    this.subject().refresh();\n};\n\nYanfly.BSW.Game_Action_setSkill = Game_Action.prototype.setSkill;\nGame_Action.prototype.setSkill = function(skillId) {\n    Yanfly.BSW.Game_Action_setSkill.call(this, skillId);\n    this.subject().refresh();\n};\n\nYanfly.BSW.Game_Action_setItem = Game_Action.prototype.setItem;\nGame_Action.prototype.setItem = function(itemId) {\n    Yanfly.BSW.Game_Action_setItem.call(this, itemId);\n    this.subject().refresh();\n};\n\nYanfly.BSW.Game_Action_setItemObject = Game_Action.prototype.setItemObject;\nGame_Action.prototype.setItemObject = function(object) {\n    Yanfly.BSW.Game_Action_setItemObject.call(this, object);\n    this.subject().refresh();\n};\nThis code causes the subject to refresh itself, which means the game has to recompute a lot of stuff needed for other plugins, in particular the target selection for YEP_X_SelectionControl. All of that adds up to cause a noticeable slowdown.\nMaking a refresh just for that seems quite excessive, I was thinking about replacing those 4 refresh by the following code:\nJavaScript:\nif (this.subject().isActor()) {\n    this.subject().battleStatusWindowRefresh();\n}\nThis modification indeed gets rid of the slowdown, but I am a bit worrying concerning potential unwanted side-effects.\nDo you see any reason why a refresh is absolutely necessary rather than a simpler battleStatusWindowRefresh?"
+    },
+    {
+      "post_id": "js-post-1456858",
+      "author": "ATT_Turan",
+      "date": "2024-07-13T01:37:52+0900",
+      "body": "Fortunastreet said:\nI think I have found the cause of it: in YEP_BattleStatusWindow line 251 there is code added when an action is cleared or its skill/item/itemobject is set.\nClick to expand...\nI'm confused by you saying the modification solves your problem, because none of that should be happening during what you show in your clip.\nThe Game_Action is the skill actually resolving during the battler's turn. It doesn't exist yet when you're scrolling through the list - the window you show with the items listed there should have nothing to do with the data type you're looking at."
+    },
+    {
+      "post_id": "js-post-1456892",
+      "author": "Robro33",
+      "date": "2024-07-13T04:38:01+0900",
+      "body": "Fortunastreet said:\nI'm currently trying to fix the big slowdown that happens when I am navigating the skills/items windows in battle and there are a lot of options to choose from (at least enough to make the 8 spaces available not enough to display everything, see the linked video to see the slowdown in action).\nClick to expand...\ndo you by chance have yanfly's selection control installed as well?\nEDIT: I should have read a bit more more\nAloe Guvner made a patch for it for that reason as well. it might be worth checking out for you\nrpg-maker-mv/plugins/ALOE_YEP_BSW_SelectControl_Optimization.js at master · aloeguvner/rpg-maker-mv\nRPG Maker MV Plugins. Contribute to aloeguvner/rpg-maker-mv development by creating an account on GitHub.\ngithub.com"
+    },
+    {
+      "post_id": "js-post-1456894",
+      "author": "ATT_Turan",
+      "date": "2024-07-13T04:45:43+0900",
+      "body": "Wow. I didn't realize the selection control created an action for every item on the screen to determine whether it's enabled."
+    },
+    {
+      "post_id": "js-post-1456904",
+      "author": "Fortunastreet",
+      "date": "2024-07-13T06:19:48+0900",
+      "body": "Robro33 said:\ndo you by chance have yanfly's selection control installed as well?\nEDIT: I should have read a bit more more\nAloe Guvner made a patch for it for that reason as well. it might be worth checking out for you\nrpg-maker-mv/plugins/ALOE_YEP_BSW_SelectControl_Optimization.js at master · aloeguvner/rpg-maker-mv\nRPG Maker MV Plugins. Contribute to aloeguvner/rpg-maker-mv development by creating an account on GitHub.\ngithub.com\nClick to expand...\nSeems like someone found the exact same problem and has a more elegant solution.\nFunny enough, this patch actually doesn't get rid of all the lag, as Game_Action.clear (who is called when initializing the action) also trigger a refresh. I will edit that one as well.\nThanks for the help guys."
+    }
+  ]
+}

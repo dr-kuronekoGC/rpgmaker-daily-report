@@ -1,0 +1,365 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/conditional-show-choices-hide-or-disable-choices.96941",
+  "title": "Conditional \"Show Choices\"  (hide or disable choices)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:32:08.484544+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-875542",
+      "author": "Aloe Guvner",
+      "date": "2018-06-27T10:16:25+0900",
+      "body": "Conditional \"Show Choices\"\nby Aloe Guvner\nDownload Link\n​\nNote:\nThis plugin is not under active maintenance.\nBackground:\nThis plugin allows developers to set conditions directly in the \"Show Choices\" event command.\nThese conditions can determine whether the choice is hidden or disabled.\nNo scripting knowledge or plugin commands are required!\nEverything is done directly in the \"Show Choices\" event command, providing an intuitive and efficient way to increase the depth of your story-telling through more interesting choices.\nHow to use:\nThe conditions to hide or disable the choice are written\ndirectly into the choice\n.\nAn example is shown below. In this example, the first choice is hidden if switch #1 is ON, and the second choice is hidden if variable #1 is greater than zero. The third choice does not contain any conditions.\nSpoiler:\nExample\n◆Show Choices：First Choice <<s[1]>>, Second Choice <<v[1] > 0>>, Third Choice (Window, Right, #3, #2)\n：When First Choice <<s[1]>>\n◆\n：When Second Choice <<v[1] > 0>>\n◆\n：When Third Choice\n◆\n：End\nThe format of the conditions is:\n<<HIDE,DISABLE>>\nIf the HIDE condition is true, the choice will be hidden.\nIf the DISABLE condition is true, the choice will be disabled.\nTo include only a HIDE condition, no comma is needed:\n<<HIDE>>\nTo include only a DISABLE condition, a comma is needed:\n<<,DISABLE>>\nTo include both a HIDE and a DISABLE condition, separate with a comma:\n<<HIDE,DISABLE>>\nShort-Hand Abbreviations:\nThe following short-hand abbreviations may be used inside the conditions to make it easier to write conditions:\ns[x] --> Game Switch #x\nv[x] --> Game Variable #x\na[x] --> Actor #x (database id)\np[x] --> Party Member x (index, which starts at 0)\nt[x] --> Troop Member x (index, which starts at 0)\nss[x] --> Self Switch 'X' (these are from the Yanfly plugin, not the normal Self Switches)\nsv[x] --> Self Variable 'X' (from the Yanfly plugin)\nJavascript reference:\nAll valid Javascript is usable within the conditions. Some useful references:\n&& --> AND\n||     --> OR\n!      --> NOT\n===   --> EQUAL TO\n!==    --> NOT EQUAL TO\n>        --> GREATER THAN\n>=      --> GREATER THAN OR EQUAL TO\n<        --> LESS THAN\n<=     --> LESS THAN OR EQUAL TO\n+     --> ADDITION\n-      --> SUBTRACTION / NEGATIVE\n*      --> MULTIPLICATION\n/      --> DIVISION\n%    --> MODULO\n**    --> EXPONENT\nExamples:\nTo hide a choice if Switch # 4 is ON:\n◆My Choice <<s[4]>>\nTo disable a choice if Switch #4 is ON:\n◆My Choice <<,s[4]>>\nTo hide a choice if Switch # 6 is OFF:\n◆My Choice <<!s[6]>>\nTo hide a choice if Variable # 2 is greater than 10:\n◆My Choice <<v[2] > 10>>\nTo hide a choice if Variable # 3 is less than or equal to 10:\n◆My Choice <<v[3] <= 10>>\nTo hide a choice if Variable #1 is less than 10 and disable if Variable #1 is less than 20:\n◆My Choice <<v[1] < 10, v[1] < 20>>\nTo hide a choice if Switch #17 AND Switch #18 are ON:\n◆My Choice <<s[17] && s[18]>>\nTo disable a choice if Variable #17 equals 100 OR Variable #18 equals 100:\n◆My Choice <<,v[17] === 100 || v[18] === 100>>\nTo hide a choice if the Party leader's HP is less than 50:\n◆My Choice <<p[0].hp < 50>>\nTo disable a choice if the Actor #1's name is NOT Banjo:\n◆My Choice <<,a[1].name() !== 'Banjo'>>\nTo hide a choice if none in the party are named Kazooie:\n◆My Choice <<p.every(member => member.name() !== 'Kazooie')>>\nTo hide a choice if any in the party learned skill #4:\n◆My Choice <<p.some(member => member.hasSkill(4))>>\nTo disable a choice if every troop member's HP is below 25%:\n◆My Choice <<,t.every(member => member.hp < member.mhp * .25)>>\nCompatibility:\nThis plugin is compatible with the\nHIME Large Choices\nplugin.\nMake sure to install this plugin\nabove\nHIME's plugin.\nThis plugin is compatible with\nYanfly's Self Variables and Self Switches\nplugin.\nNote the instructions in the help file for accessing these variables and switches. Plugin order doesn't matter for this one.\nTerms of Use:\nFree for use in commercial or non-commercial projects.\nCredits required to: Aloe Guvner\nVersion History:\nv1.2.0 (September 9 2018)\nUpdate variable retrieval to use getters to avoid undefined values\nv1.1.0 (August 23 2018)\nAdded capability to use Yanfly's Self Variables and Self Switches in conditions\nv1.0.1 (July 1 2018)\nFixed bug with the width of the choice window\nv1.0.0 (June 26 2018)\nInitial release\nDownload Link"
+    },
+    {
+      "post_id": "js-post-875545",
+      "author": "Sauteed_Onion",
+      "date": "2018-06-27T10:27:43+0900",
+      "body": "Thanks so much\n@Aloe Guvner\n!"
+    },
+    {
+      "post_id": "js-post-875547",
+      "author": "Mystic_Enigma",
+      "date": "2018-06-27T10:31:31+0900",
+      "body": "This is something that has been on my mind for a while now. Thanks a bunch!"
+    },
+    {
+      "post_id": "js-post-876026",
+      "author": "Kenode",
+      "date": "2018-06-28T21:28:27+0900",
+      "body": "I've been messing with it a little, and finally understood it's syntax. (I was a little confused at first, but turns out they're enabled by default, and will disable only if all options are true, so I had to reverse the options)\nWorks great, but I have a question. Is it normal for it to extend the options menu width like this?\nAlso, not sure if intentional, but it doesn't seem to hide an option if I am using the choices menu in a script. Not a big deal anyway, the main reason I was using scripted events before was to mess around with the hidden choices before this plugin, but I thought it would be worth mentioning."
+    },
+    {
+      "post_id": "js-post-876697",
+      "author": "Aloe Guvner",
+      "date": "2018-07-01T02:13:32+0900",
+      "body": "@Kenode\nI need to check on the width issue, I think it must be calculating the width including the <<HIDE>>, but it needs to ignore that when calculating the width.\nI'll let you know when that part is fixed.\nFor the other question, yeah, it only works from the event command \"Show Choices\", because I'm getting the choices directly from the event command and then processing it. I actually had to do it that way to be compatible with the HIME plugin (which is important for me).\nHowever, if you're constructing your choices all through scripts, then you don't even need this - just add the conditional logic into your script calls!"
+    },
+    {
+      "post_id": "js-post-876709",
+      "author": "Kenode",
+      "date": "2018-07-01T03:36:08+0900",
+      "body": "Aloe Guvner said:\nHowever, if you're constructing your choices all through scripts, then you don't even need this - just add the conditional logic into your script calls!\nClick to expand...\nThat's actually the issue\n. I'm not sure how to do that effectively through conditionals. What I was trying was creating a list, and add to that list the options if certain condition is true, however I don't even know if I was doing that correctly. Still, this plugin is useful when in need to nest multiple functions, but I'd still like to know how to do it through script if I need to."
+    },
+    {
+      "post_id": "js-post-877062",
+      "author": "Aloe Guvner",
+      "date": "2018-07-02T08:21:15+0900",
+      "body": "The bug with calculating the correct width of the window has been fixed, please download it again and try it!"
+    },
+    {
+      "post_id": "js-post-877066",
+      "author": "Kenode",
+      "date": "2018-07-02T08:24:33+0900",
+      "body": "I've just tested it, I can confirm the bug has been fixed. Thanks!"
+    },
+    {
+      "post_id": "js-post-889108",
+      "author": "Tea++",
+      "date": "2018-08-09T04:18:00+0900",
+      "body": "Very cool, thank you very much"
+    },
+    {
+      "post_id": "js-post-889255",
+      "author": "Amarok",
+      "date": "2018-08-09T19:17:31+0900",
+      "body": "this is an amazing plugin, thank you!"
+    },
+    {
+      "post_id": "js-post-893484",
+      "author": "Aloe Guvner",
+      "date": "2018-08-24T05:39:50+0900",
+      "body": "Update!\nYou can now use Self Variables and Self Switches from\nYanfly's Self Variables and Self Switches\nplugin in the conditions. This can cut down greatly on the complexity of large events. These can be access by using the following shortcuts in the condition.\nss[x]  --> Self Switch 'X' (from Yanfly's plugin, not the normal Self Switch)\nsv[x] --> Self Variable 'X' (from Yanfly's plugin)"
+    },
+    {
+      "post_id": "js-post-893744",
+      "author": "eXalted",
+      "date": "2018-08-25T02:42:31+0900",
+      "body": "Aloe Guvner said:\nUpdate!\nYou can now use Self Variables and Self Switches from\nYanfly's Self Variables and Self Switches\nplugin in the conditions. This can cut down greatly on the complexity of large events. These can be access by using the following shortcuts in the condition.\nss[x]  --> Self Switch 'X' (from Yanfly's plugin, not the normal Self Switch)\nsv[x] --> Self Variable 'X' (from Yanfly's plugin)\nClick to expand...\nThank you for the new update. Your plugin is awesome!\nUnfortunately, I'm receiving the following error when the Yanfly plugin is disabled:\nTypeError: Cannot read property 'ss' of undefined\nat Window_ChoiceList.markDisabledCommands (ALOE_ConditionalChoices.js:314)\nMaybe the two vars need to be in an\nImported.YEP_SelfSwVar\ncheck?"
+    },
+    {
+      "post_id": "js-post-893754",
+      "author": "Aloe Guvner",
+      "date": "2018-08-25T03:37:43+0900",
+      "body": "You're right, that was a silly mistake!\nIt's fixed now, and works with or without YEP_SelfSwVar. Also, I fixed it so the plugin order doesn't matter either."
+    },
+    {
+      "post_id": "js-post-893756",
+      "author": "Frogboy",
+      "date": "2018-08-25T03:40:28+0900",
+      "body": "This looks sweet. I'll definitely be using this it at some point. Awesome work!"
+    },
+    {
+      "post_id": "js-post-897889",
+      "author": "Summer夏",
+      "date": "2018-09-08T19:27:00+0900",
+      "body": "This plugin is very useful,I found a small problem\nIf the variable is initial(Variable #1=0),<<v[3] <= 10>>Will not take effect"
+    },
+    {
+      "post_id": "js-post-898342",
+      "author": "Aloe Guvner",
+      "date": "2018-09-10T06:44:36+0900",
+      "body": "Great observation!\nIn Javascript, if a variable is not declared, it gets an\nundefined\nvalue. Even though it shows \"0\" on the screen, it's actually undefined until a value is given to it. The issue is any condition such as `v[3] <= 10` is actually evaluated as `undefined <= 10` which will definitely not work as intended.\nI uploaded a new version (v1.2.0) that fixes this issue, please give it a try!"
+    },
+    {
+      "post_id": "js-post-898439",
+      "author": "Summer夏",
+      "date": "2018-09-10T14:14:09+0900",
+      "body": "Aloe Guvner said:\nGreat observation!\nIn Javascript, if a variable is not declared, it gets an\nundefined\nvalue. Even though it shows \"0\" on the screen, it's actually undefined until a value is given to it. The issue is any condition such as `v[3] <= 10` is actually evaluated as `undefined <= 10` which will definitely not work as intended.\nI uploaded a new version (v1.2.0) that fixes this issue, please give it a try!\nClick to expand...\nThank you for your prompt reply, the problem has been fixed!"
+    },
+    {
+      "post_id": "js-post-904472",
+      "author": "NeoSoulGamer",
+      "date": "2018-10-04T18:06:44+0900",
+      "body": "Maybe it's just me, as I haven't tested it in a completely new project yet... But I'm getting quite the lag spike when loading the choice window while using this plugin. I'm going to run a few tests when I get home from work this evening. I just figured I'd mention it in case anyone ran into the same issue and knew the cause.\nEDIT: Disregard. Found the culprit after testing. This plugin works VERY well considering how much better it handles disabled/hidden choices compared to Yanfly's Extended Message Pack 1. Great job Aloe!"
+    },
+    {
+      "post_id": "js-post-905606",
+      "author": "Aloe Guvner",
+      "date": "2018-10-09T11:20:03+0900",
+      "body": "@Neo Soul Gamer\nSorry, just saw this post.\nWas there a specific plugin that conflicted and caused the lag (just for curiosity)? I did a decent amount of testing using complex hide/disable conditions and never saw any lag, but of course, there's always a possibility of compatibility issues given the amount and variation of other people's plugins.\nNormally, I would try to pre-load the calculations for the hide/disable conditions to reduce potential lag, but given that you could change a variable immediately before a choice list, that wasn't possible."
+    },
+    {
+      "post_id": "js-post-906057",
+      "author": "NeoSoulGamer",
+      "date": "2018-10-11T05:04:42+0900",
+      "body": "I'll be honest, I can't remember exactly what it was. LOL.\nHowever, I've heard about the bug before and it's totally unrelated. Your plugin wouldn't even be needed to reproduce the error."
+    },
+    {
+      "post_id": "js-post-934542",
+      "author": "daisyfairy42",
+      "date": "2019-01-18T10:47:17+0900",
+      "body": "Heyo, wanted to post a thank you! This is an absolute life-saver for me! I dropped it in, set it up like you said, and it worked like a charm!"
+    },
+    {
+      "post_id": "js-post-935793",
+      "author": "lendokhar",
+      "date": "2019-01-22T14:17:18+0900",
+      "body": "It doesn't work for me, once I run the game the choices show the <<s[1]>> and <<v[1]>> strings.\nIs the plugin broken already?"
+    },
+    {
+      "post_id": "js-post-935803",
+      "author": "Aloe Guvner",
+      "date": "2019-01-22T15:28:57+0900",
+      "body": "@lendokhar\nWorks fine in all the tests I've run.\nSome basic problem solving questions for you:\nDo you have the latest version?\nDoes it work with all other plugins turned off?\nIf yes, it's a compatibility issue. You need to identify the incompatible plugin by turning them on one-by-one until the issue is found\nIf it's a compatibility issue, please post a screenshot of the list of plugins you use from your Plugin Manager\nDid you rename the plugin to something besides the original name?\nDid you change the plugin parameters to use something besides << and >> ?\nPlease post a screenshot of the settings of this plugin from the Plugin Manager\nDo any errors appear in the console? (press F8 during playtest to open it)"
+    },
+    {
+      "post_id": "js-post-937981",
+      "author": "Qqernometabom",
+      "date": "2019-01-30T10:20:56+0900",
+      "body": "Is there a way to put a sound when selecting the disabled choice?\nI don't know if i have authorization to change your plug-in.\nFor example:\nCode:\nvar se = {};\n        se.name = 'Item3';\n        se.pan = 0;\n        se.pitch = 100;\n        se.volume = 90;\n        AudioManager.playSe(se);\nIt looks awesome !\nEDITED:\nOnly now occurred to me that i disabled all rmmv default audio settings, and the default \"disabled choice audio\" will probably play when selecting. xD\nEDITED 2:\nYes, it does. Lol, i'm sorry.\nDon't know how to deleted this spam. D:"
+    },
+    {
+      "post_id": "js-post-938163",
+      "author": "Aloe Guvner",
+      "date": "2019-01-31T00:04:58+0900",
+      "body": "I never tested for sound, so it's good to know it works\nPeople are allowed to edit my plugins, if the edit can benefit most people then I request the edit is shared and I add it to a new version of the plugin."
+    },
+    {
+      "post_id": "js-post-939449",
+      "author": "jakr8911",
+      "date": "2019-02-03T20:10:41+0900",
+      "body": "Is there a way to change the word on the option when player confrim their selection? I want to fool the player a bit"
+    },
+    {
+      "post_id": "js-post-939579",
+      "author": "Aloe Guvner",
+      "date": "2019-02-04T04:38:45+0900",
+      "body": "What do you mean? When the player \"confirms their selection\"?\nWhen the player selects a choice, the choice window goes away and the event moves to the next command. There would be no text to change."
+    },
+    {
+      "post_id": "js-post-958029",
+      "author": "Orleron",
+      "date": "2019-04-03T10:56:34+0900",
+      "body": "lendokhar said:\nIt doesn't work for me, once I run the game the choices show the <<s[1]>> and <<v[1]>> strings.\nClick to expand...\nI have this same problem and I can confirm that it is because of the Yanfly Extended Messaging Pack 1 (YEP_X_ExtMesPack1).  When I switch that plugin off, the problem goes away.  Unfortunately, the extended messaging pack is quite valuable for my game.\nfyi, thanks."
+    },
+    {
+      "post_id": "js-post-958085",
+      "author": "Kenode",
+      "date": "2019-04-03T16:17:59+0900",
+      "body": "Orleron said:\nI have this same problem and I can confirm that it is because of the Yanfly Extended Messaging Pack 1 (YEP_X_ExtMesPack1).  When I switch that plugin off, the problem goes away.  Unfortunately, the extended messaging pack is quite valuable for my game.\nfyi, thanks.\nClick to expand...\nI don't seem to have this issue myself, and I'm running a big load of plugins, are you placing Aloe's plugin BELOW Yanfly's?"
+    },
+    {
+      "post_id": "js-post-958777",
+      "author": "---ytruuytr",
+      "date": "2019-04-06T05:19:17+0900",
+      "body": "OR statement doesn't work.\n<<,v[119] < 8 || ,v[119] >= 17>>\nMy 119 variable is set to 15 and it's disabled.\nbtw is it possible to check for an item? If party has item ID 3, show choice?"
+    },
+    {
+      "post_id": "js-post-958809",
+      "author": "Aloe Guvner",
+      "date": "2019-04-06T07:12:42+0900",
+      "body": "I've tested \"or\" statements, it works fine\nkako05 said:\n<<,v[119] < 8 || ,v[119] >= 17>>\nClick to expand...\nThere's an extra comma after the || operator that's probably causing a syntax error, if you remove the comma it should work. I log all errors to the console which can be opened in playtest by pressing F8.\nYou can also do it based on if the party has an item or not. You'll want to use the\ngame party has item\nfunction.\nCode:\ngp.hasItem($dataItems[ID])\nReplace ID with the ID# of the item. \"gp\" is an abbreviation for \"$gameParty\" only for this plugin."
+    },
+    {
+      "post_id": "js-post-958816",
+      "author": "---ytruuytr",
+      "date": "2019-04-06T07:48:31+0900",
+      "body": "gp.hasItem($dataItems[ID]) works just fine, but instead of disabling I need to enable a choice.\nI tried <<,gp.hasItem($dataItems[ID]) <= 0>> which should disable a choice if party has zero items? but had no success.\nAlso, you were right, it was a syntax error.\nReally good plugin, one of my favorites. It helps with quest givers and progression of the quests."
+    },
+    {
+      "post_id": "js-post-958965",
+      "author": "Aloe Guvner",
+      "date": "2019-04-07T01:00:34+0900",
+      "body": "No problem - here's a quick tip:\nIn Javascript there are different types of data. The most common types are:\nNumbers\nStrings (letters / text)\nBoolean (true or false)\nThe \"has Item\" function returns a boolean, so the result is either\ntrue\nor\nfalse\n.\nTrue\nif the party has the item and\nfalse\nif the party doesn't have the item (there must be a function that tells you how many items the party has but I forget what it is!)\nTo flip it so the choice is\nenabled\nwhen the party has an item, you do the opposite - in Javascript and many programming languages this is called a\nnot operator\nand it is a \"!\" mark.\nCode:\n<<,!gp.hasItem($dataItems[ID])>>\nIn English, this means \"Disable if the party does\nnot\nhave item\" which is exactly the same as saying \"Enable if the party\ndoes\nhave item\"\nHopefully this makes sense?"
+    },
+    {
+      "post_id": "js-post-958972",
+      "author": "---ytruuytr",
+      "date": "2019-04-07T01:15:46+0900",
+      "body": "Oh, thanks! That makes sense. Really appreciate. I made a workaround with IF command and control variables (if this item = set variable to X), but it'll be easier for the next event knowing what you told me\nbtw I'm using it with galv's picture choices\nhttps://galvs-scripts.com/2016/12/09/mv-choice-pictures/\nunfortunately, if the choice has a command << anything >> it won't display a picture upon choosing the choice. Would you take a look at it and what's causing it? I would pay for a compatibility patch"
+    },
+    {
+      "post_id": "js-post-958973",
+      "author": "Aloe Guvner",
+      "date": "2019-04-07T01:22:15+0900",
+      "body": "If you find you are setting variables equal to the quantity of items a lot, you might be\ninterested in this plugin\n. I found myself setting variables a lot so I wrote that to make it easier.\nI'll look at the Galv plugin to see if there is a conflict.\nEdit: Try putting my plugin below Galv's. He overwrites a function, I don't overwrite it (Window_ChoiceList.prototype.makeCommandList)"
+    },
+    {
+      "post_id": "js-post-958982",
+      "author": "---ytruuytr",
+      "date": "2019-04-07T02:14:59+0900",
+      "body": "Good news. I did that, it still didn't work. I managed to fix it by changing\nDog House <p:travel_dog_1,960,368> <<v[112] < 1>>\nto\nDog House <<v[112] < 1>> <p:travel_dog_1,960,368>\nGalvs must be in front of the syntax."
+    },
+    {
+      "post_id": "js-post-983404",
+      "author": "CCCreations",
+      "date": "2019-07-07T14:11:11+0900",
+      "body": "was referred to this utility by another because i was having issues with another like plugin... (it kept freezing my game TT~~TT ) and it was SUPER SIMPLE!!! Thanks so much!!!"
+    },
+    {
+      "post_id": "js-post-990215",
+      "author": "Almightypebble",
+      "date": "2019-08-03T03:01:13+0900",
+      "body": "Hey!\nI seem to have a problem with this plugin when combined with\nGalv's Visual Novel Choices\n. If I put this plugin on top of his, your plugin doesn't seem to work, but if I put it below his, the pictures for his visual novel choices don't load and it cuts off the beginning and the end of my text.\nShould I edit something in the plugins?"
+    },
+    {
+      "post_id": "js-post-990216",
+      "author": "---ytruuytr",
+      "date": "2019-08-03T03:05:25+0900",
+      "body": "Almightypebble said:\nHey!\nI seem to have a problem with this plugin when combined with\nGalv's Visual Novel Choices\n. If I put this plugin on top of his, your plugin doesn't seem to work, but if I put it below his, the pictures for his visual novel choices don't load and it cuts off the beginning and the end of my text.\nShould I edit something in the plugins?\nClick to expand...\nGalv's vnc is not compatible with this plugin. With this plugin, the text is pushed off the center in my project since this plugin code is invisible on gamerun, but it's treated as an additional text in dialogue menu. I add empty spaces to counter that, but it's a messy way to do it."
+    },
+    {
+      "post_id": "js-post-1052303",
+      "author": "palatkorn",
+      "date": "2020-04-05T00:30:25+0900",
+      "body": "Excellent. This plugin works great. Hide and easily choose options.\nGood work"
+    },
+    {
+      "post_id": "js-post-1079937",
+      "author": "Solar_Flare",
+      "date": "2020-06-22T05:29:18+0900",
+      "body": "If anyone was using this but not Yanfly's self switches and variables, I've modified it to support the built-in self switches (Yanfly support is not touched, at least theoretically - I haven't tested it). I can post it if anyone wants it."
+    },
+    {
+      "post_id": "js-post-1110551",
+      "author": "dyoghenes",
+      "date": "2020-08-27T16:36:31+0900",
+      "body": "Hey! Could someone make this plugin compatible with MZ? I find this plugin to be the easiest to use."
+    },
+    {
+      "post_id": "js-post-1193917",
+      "author": "DonatelloNerd",
+      "date": "2021-06-13T16:35:51+0900",
+      "body": "Hi, really great plugin u did there.\nI wanted to show a choice\nonly if a actor is in the party\n, otherwise hide it.\nI tried it as it's shwon in the picture, but since I dont have a clue about Javascript, i couldnt figure out how to do it properly...\nI know it's an old thread, hope u still read this\n.\nThx"
+    },
+    {
+      "post_id": "js-post-1193976",
+      "author": "ATT_Turan",
+      "date": "2021-06-14T02:05:27+0900",
+      "body": "DonatelloNerd said:\nI wanted to show a choice\nonly if a actor is in the party\n, otherwise hide it.\nClick to expand...\nWhen you say \"if thing,\" without referencing any kind of value or state, it's going to be true if that thing exists. So you're saying \"if this actor exists,\" which it must if it's defined in your database, that's always going to be true.\nTry:\n$gameParty.members().contains(a[X])\nwhere X is the actor ID for each choice."
+    },
+    {
+      "post_id": "js-post-1193981",
+      "author": "DonatelloNerd",
+      "date": "2021-06-14T03:07:12+0900",
+      "body": "ATT_Turan said:\nWhen you say \"if thing,\" without referencing any kind of value or state, it's going to be true if that thing exists. So you're saying \"if this actor exists,\" which it must if it's defined in your database, that's always going to be true.\nTry:\n$gameParty.members().contains(a[X])\nwhere X is the actor ID for each choice.\nClick to expand...\nThank you so much, I have no Idea of code in general. I did what u proposed and it totally registers, but now it works only backwards. After some testing I got that u need to put \"!\" at the beginning to make it work like i wanted.\nThank u so much!"
+    },
+    {
+      "post_id": "js-post-1194007",
+      "author": "ATT_Turan",
+      "date": "2021-06-14T05:38:58+0900",
+      "body": "DonatelloNerd said:\nAfter some testing I got that u need to put \"!\" at the beginning to make it work like i wanted.\nClick to expand...\nCorrect - gameParty.members() will say whether the actor is in the party. As described in the first post for this plugin, ! is the operator for NOT (which you already\nhad\nin your code, so I didn't think I needed to say it again).\nGlad you got it working!"
+    },
+    {
+      "post_id": "js-post-1194033",
+      "author": "Restart",
+      "date": "2021-06-14T06:52:51+0900",
+      "body": "dyoghenes said:\nHey! Could someone make this plugin compatible with MZ? I find this plugin to be the easiest to use.\nClick to expand...\nShould work in latest version of fossil."
+    },
+    {
+      "post_id": "js-post-1194182",
+      "author": "xiamumomo",
+      "date": "2021-06-14T23:28:09+0900",
+      "body": "I don't know why, I set V[3] = game gold, option 1: I have money<<v[3] > 1000>>my initial 0 gold, when I get 1001 gold later, this option still shows, which means that there is no real-time change. I don't know if it's my problem or I remember that it won't happen when I test at noon. I'm worried now, and I don't know how to solve this problem"
+    },
+    {
+      "post_id": "js-post-1194315",
+      "author": "xiamumomo",
+      "date": "2021-06-15T17:49:03+0900",
+      "body": "Well, well, I was so stupid that I forgot to set up something"
+    },
+    {
+      "post_id": "js-post-1254624",
+      "author": "Toby_doesnt_know_code",
+      "date": "2022-02-25T06:45:26+0900",
+      "body": "Solar_Flare said:\nIf anyone was using this but not Yanfly's self switches and variables, I've modified it to support the built-in self switches (Yanfly support is not touched, at least theoretically - I haven't tested it). I can post it if anyone wants it.\nClick to expand...\nIf it's okay with the original creator I'd love to use yours, was looking around for something that uses the built in self switches"
+    },
+    {
+      "post_id": "js-post-1254835",
+      "author": "Solar_Flare",
+      "date": "2022-02-26T03:59:07+0900",
+      "body": "According to Aloe's GitHub, it's released under MIT license, so sharing a modified version should be fine.\nI just updated it to bump the version number and make sure I'm credited and everything.\nHere\n's the resulting file.\nIt theoretically supports both regular self switches and Yanfly self switches at the same time, but I don't have Yanfly so I can't test that."
+    },
+    {
+      "post_id": "js-post-1279063",
+      "author": "alphawiz",
+      "date": "2022-06-06T10:44:03+0900",
+      "body": "Is there something that has to be done in order to activate the plugin, or put it in a specific order in the Plugin Manager before it will work?\nI have a hide option set on one choice in a menu (#3 of 4 choices) and it is not hiding it.\nSwitch 284 is off but the option is still showing up."
+    },
+    {
+      "post_id": "js-post-1279155",
+      "author": "ShadowDragon",
+      "date": "2022-06-06T23:11:32+0900",
+      "body": "@alphawiz\nif you want to show it when the switch is OFF, place use <<!s[284]>>\nif you only want to show it when the switch = ON, use the one you use.\ndepending on the plugins, it should be above HIME_LargeChoices,\nand if you use YEP_SelfSwVar, than it depends if your plugins are in\nthe correct order.\nwould be hard to know.\nI would set Cancel to choice 4 as well or a branch."
+    },
+    {
+      "post_id": "js-post-1290689",
+      "author": "xabileug",
+      "date": "2022-07-28T19:10:20+0900",
+      "body": "how to make this compatible with SRD_PictureChoices? i tried placing above or below SRD's, no change, even if the << X >> is before or after the /picture[]"
+    },
+    {
+      "post_id": "js-post-1437486",
+      "author": "V-DeLuna",
+      "date": "2024-04-16T03:31:24+0900",
+      "body": "Hi I've been using your plugin for a little while now, but I seem to be messing something up. I don't know if it's because of something with just how the plugin works, but it seems to hide the option I want it to, but then mess up the order by which the answers to the option would be given. Any help always appreciated."
+    },
+    {
+      "post_id": "js-post-1457348",
+      "author": "Feli0_TheWriter",
+      "date": "2024-07-15T07:07:03+0900",
+      "body": "I know this thread is so old, but I'm trying to get this plugin to work with checking if an actor has an equipped armor. Tried improvising a javascript 'if false' statement, but I don't know javascript, so it didn't work. How do I do that?\nEDIT: Disregard. If anyone else wants to know how I did it, I used Isiah's Equip Common Event plugin and have a common event that enables or disables a switch for equipping and unequipping each item.\nxabileug said:\nhow to make this compatible with SRD_PictureChoices? i tried placing above or below SRD's, no change, even if the << X >> is before or after the /picture[]\nClick to expand...\nDamn, I wish it worked with that plugin too. I hope someone makes an update for it!"
+    },
+    {
+      "post_id": "js-post-1457399",
+      "author": "ATT_Turan",
+      "date": "2024-07-15T11:55:34+0900",
+      "body": "Feli0_TheWriter said:\nI know this thread is so old, but I'm trying to get this plugin to work with checking if an actor has an equipped armor. Tried improvising a javascript 'if false' statement, but I don't know javascript, so it didn't work. How do I do that?\nClick to expand...\nThe two easiest resources are:\nGoogling \"rpg maker mv thing you want script call\"\nWill almost always pop up a thread on here where the question is asked and answered.\nSecond is the pinned thread in Learning JavaScript of MV Script Calls.\nYou're not specific with what you want - is \"an actor\" any actor in your party? A specific actor ID? The party leader?\nBut if you're going for a specific actor ID, the condition would be\nCode:\n$gameActors.actor(x).armors().includes($dataArmors[Y])\nwhere X is the ID of the actor and Y is the ID of the armor, no leading zeros."
+    },
+    {
+      "post_id": "js-post-1500536",
+      "author": "hmkay",
+      "date": "2025-02-22T18:12:31+0900",
+      "body": "Solar_Flare said:\nAccording to Aloe's GitHub, it's released under MIT license, so sharing a modified version should be fine.\nI just updated it to bump the version number and make sure I'm credited and everything.\nHere\n's the resulting file.\nIt theoretically supports both regular self switches and Yanfly self switches at the same time, but I don't have Yanfly so I can't test that.\nClick to expand...\nSorry for the necro post is this plugin compatible with the YEP_X_ExtMesPack1 plugin and the YEP_QuestJournal plugin bzw all relatet quest plugins from yep? If i get that right from the plugin i need to call the switches ss name of the selfswitch?Or is ther maybe are mistake on my side because the plugin say's ss[x] but the plugin from yanfle say's you need to call them Self Sw and Self Var.\nMy Choice <<sv[142] > 7  && sv[143] > 0 && sv[144] > 0 >>\nthat is correct if i whant to hide choice 1 and the frist var is greater then 7 and the orther two var's greater as zero?\nMy Choice <<sv[142] > 7 && sv[143] && sv[144] >>\nOr works it like this if only the frist var is greater as 7 and the orther two only greater as 0 but lower as 7?\nAnd what i need to call the switches for that ss[a]?\nIf i thing about it maybe ss[name of the switch]?"
+    },
+    {
+      "post_id": "js-post-1519645",
+      "author": "Solar_Flare",
+      "date": "2025-06-24T13:46:48+0900",
+      "body": "I have made a new version of this plugin which fixes a bug in my previous Self Switch change when used in a parallel event, and also adds support for Self Variables from Himeworks (HIME_SelfVariables)."
+    }
+  ]
+}

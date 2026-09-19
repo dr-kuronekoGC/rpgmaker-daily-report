@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-variables-in-visustellas-dice-rolls.170000",
+  "title": "MZ Help With Variables in VisuStella's Dice Rolls",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:31:57.458978+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1454896",
+      "author": "ellebell28",
+      "date": "2024-07-04T02:30:36+0900",
+      "body": "Hi All!\nI am using this plugin in my game from VisuStella:\nDice Rolls and RNG Seeds\nbut I'm running into an issue.\nI am trying to add an Automatic Bonus Modifier based on an in-game variable. Basically, if I have a variable labeled \"Main Char Proficiency Bonus\" that =2, I want to add +2 to a Dice Roll automatically.\nThe plugin has a selection for auto dice effects. I've been playing with \"General Auto-Effects\" and \"Variable Requirements\" to achieve this, however neither of them are working.\nThe easiest would be the General Auto-Effects. When using General Auto-Effects, I can add an automatic bonus to a roll using Dice Effects>Modifier (Static), but it does not seem to recognize either variable text code: \\V[n] or +\\V[n] despite the tool tip saying \"You may use code.\" I'm getting an error every time.\nLess useful would be using the Variable Requirements. When using Variable Requirements the plugin will check that a variable hit a specific number before applying an effect, but it only checks if the variable is\nat least X amount.\nThis means if I set up a bunch of Variable Requirement Bonuses for a Dice Roll like \"Main Char Proficiency Bonus 1 then add 1, Main Char proficiency Bonus 2 then add 2\" it will add\nall of the Variable Requirement Bonuses as the Characters Proficiency Bonus Variable increases.\nRight now I'm stuck either:\n1. Creating 5 variables for each character (1 for each proficiency bonus they'll receive as they level up), changing each variable from 0 to 1 when they reach that bonus and then from 1 to 0 when they gain the next one. Then, adding 5 Variable Requirement Effects to every dice roll that checks which proficiency bonus is currently set at 1 and then adding only that bonus modifier.\n2. Creating 5 skills for each character (1 for each proficiency bonus they'll receive as they level up) and then learning/unlearning each skill for the next when they reach the next proficiency bonus. Then adding 5 Skill Check Requirements to every dice roll that will check for each of the 5 different proficiency skills and add their relevant bonus if they're currently learned.\nObviously both of these methods are tedious and add to the amount of database items I'll be managing (and therefore increasing the chances for error.)\nIt would be so much simpler to just have an Automatic Bonus Modifier pull the exact variable number and add that to the dice roll. I do not know why it's not working when it says I can use code. My only thought is it means JS code which I am unfamiliar with.\nAny ideas or help is appreciated! Thank you!"
+    },
+    {
+      "post_id": "js-post-1454898",
+      "author": "ATT_Turan",
+      "date": "2024-07-04T02:42:48+0900",
+      "body": "ellebell28 said:\nit does not seem to recognize either variable text code: \\V[n] or +\\V[n] despite the tool tip saying \"You may use code.\"\nClick to expand...\nEscape codes (despite having the word \"code\" in the term) are not code. When a plugin says \"you may use code,\" it means JavaScript. If it meant escape codes like in strings, it would specifically say escape codes, escape characters, text codes, something like that.\nIf you were to Google \"rpg maker mz script call variable\" you'd quickly find the answer is\nCode:\n$gameVariables.value(x)\nwhere x is the ID of the variable. Do not include any leading zeros.\nGood luck!"
+    },
+    {
+      "post_id": "js-post-1456190",
+      "author": "ellebell28",
+      "date": "2024-07-10T01:08:43+0900",
+      "body": "ATT_Turan said:\nEscape codes (despite having the word \"code\" in the term) are not code. When a plugin says \"you may use code,\" it means JavaScript. If it meant escape codes like in strings, it would specifically say escape codes, escape characters, text codes, something like that.\nIf you were to Google \"rpg maker mz script call variable\" you'd quickly find the answer is\nCode:\n$gameVariables.value(x)\nwhere x is the ID of the variable. Do not include any leading zeros.\nGood luck!\nClick to expand...\nThis is exactly what I was looking for. Thank you so much!!"
+    }
+  ]
+}

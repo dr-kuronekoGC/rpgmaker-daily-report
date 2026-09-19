@@ -1,0 +1,77 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-me-to-use-srd-skill-extender-plugin.170172",
+  "title": "MV Help me to use SRD skill extender plugin",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:32:14.700297+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1456293",
+      "author": "donghoy",
+      "date": "2024-07-10T19:02:06+0900",
+      "body": "Hi, I'm a newbie who enjoy making a game.\nI have a problem with SRD skill extender plugin.\nI wrote commend <Extend Skills: 2, 3, 4> in a note tag of skill 1.\nThen, when I clicked skill 1 in the skill window, skill 2, 3 and 4 are displayed in the sub skill window. It worked well.\nHOWEVER, the skill 2, 3 and 4 are displayed with skill 1 in the skill window too!\nThis problem occurs also in a battle.\nWhy are the extended skills in skill 1 remained in the skill window?!\nI couldn't find a case like mine yet.\nMaybe this problem occurs only for me\nPlease help me to use this useful plugin."
+    },
+    {
+      "post_id": "js-post-1456304",
+      "author": "Andreavnn",
+      "date": "2024-07-10T21:28:36+0900",
+      "body": "You going to need to get a screengrab of your plugin list for starters, then a screen of the full skill window of skill 1. That will help someone to actually help with this."
+    },
+    {
+      "post_id": "js-post-1456305",
+      "author": "ATT_Turan",
+      "date": "2024-07-10T21:31:12+0900",
+      "body": "Just a quick note - when you say skill 1, do you actually mean ID 1 or is it just an example? You should not be modifying skill 1, the basic attack (and it shouldn't be showing in a skill window).\nAside from that, it looks like the plugin should be handling this automatically - so, as mentioned above, please provide screenshots so we can double check how you have it set up.\nDo you have other plugins active in your project or are you testing with just the Skill Extender?"
+    },
+    {
+      "post_id": "js-post-1456347",
+      "author": "Robro33",
+      "date": "2024-07-10T23:56:37+0900",
+      "body": "donghoy said:\nHOWEVER, the skill 2, 3 and 4 are displayed with skill 1 in the skill window too!\nThis problem occurs also in a battle.\nClick to expand...\niirc, the skills dont have to be learned by the actor or be a part of an available skilltype to show up and be usable in the extend list.\nyou could remove those skills from your class's learning list or give those skills an entirely different skilltype that that actor cannot use"
+    },
+    {
+      "post_id": "js-post-1456461",
+      "author": "donghoy",
+      "date": "2024-07-11T08:57:05+0900",
+      "body": "Thank you for your help!\nPlease see below reply I wroted."
+    },
+    {
+      "post_id": "js-post-1456486",
+      "author": "donghoy",
+      "date": "2024-07-11T12:11:46+0900",
+      "body": "Sorry, I should have attached screenshots\nTo make it clear, I tested it with a new game.\nI added only SRD skill extender.\nAnd I made skills and wrote the command in the skill 1 note tag.\nThe actor learned skills through his class.\n(This problem still occurs when the skills are learned through other methods.)\nAs I mentioned, the skills are visible in the skill window.\nBut the skills 2, 3 and 4 are included in the skill 1... It's weird.\nAs Robro33 said, When the actor doesn't learn skills 2, 3 and 4, they are not visible in the skill window but they are visible in the sub skill window of skill 1. It's good. But, when the actor learns skills 2, 3 and 4, the skills are visible in the skill window.\nNormally, whether I add the skills in any way or not, when skills 2, 3, and 4 are included in skill 1, Shouldn't skills 2, 3, and 4 not be visible in the skill window?\nSo this plugin has this command <Extend Skills Must Be Learned> for that the skills don't be visible in the sub skill window when they aren't learned.\nThis means, The actor must to be able to learn the skills regardness of whether the skills are visible in the skill window.\nEven if you watch the introduction video of this plugin, you can see a scene where skills are added to actor traits.\nIs there anything I'm misunderstanding and doing wrong?"
+    },
+    {
+      "post_id": "js-post-1456503",
+      "author": "ATT_Turan",
+      "date": "2024-07-11T14:42:43+0900",
+      "body": "donghoy said:\nIs there anything I'm misunderstanding and doing wrong?\nClick to expand...\nNo. I don't see any code in the plugin that prevents a contained skill from also showing up in the regular skill list.\nI would consider it a glaring design flaw, but you aren't doing anything wrong.\nYou could see if someone's interested in making an extension/patch for the plugin, or you could work around it.\nWith Yanfly's Skill Core installed, you can give the contained skill the notetag:\nCode:\n<Custom Show Eval>\nvisible = SceneManager._scene instanceof Scene_Battle && SceneManager._scene._skillExtend.isOpen();\n</Custom Show Eval>\nAnd that should hide it from your regular list, but show it in the skill extend window."
+    },
+    {
+      "post_id": "js-post-1456514",
+      "author": "donghoy",
+      "date": "2024-07-11T16:29:06+0900",
+      "body": "ATT_Turan said:\nNo. I don't see any code in the plugin that prevents a contained skill from also showing up in the regular skill list.\nI would consider it a glaring design flaw, but you aren't doing anything wrong.\nYou could see if someone's interested in making an extension/patch for the plugin, or you could work around it.\nWith Yanfly's Skill Core installed, you can give the contained skill the notetag:\nCode:\n<Custom Show Eval>\nvisible = SceneManager._scene instanceof Scene_Battle && SceneManager._scene._skillExtend.isOpen();\n</Custom Show Eval>\nAnd that should hide it from your regular list, but show it in the skill extend window.\nClick to expand...\nThank you for your help!\nI'll try to test the code you wrote for me\nI still don't understand that this plugin doesn't have a code which remove the extended skills in the skill window.\nBecause, In the introduction video of this plugin, the extended skills don't be displayed in the skill window like below picture."
+    },
+    {
+      "post_id": "js-post-1456516",
+      "author": "Robro33",
+      "date": "2024-07-11T16:39:38+0900",
+      "body": "donghoy said:\nBecause, In the introduction video of this plugin, the extended skills don't be displayed in the skill window like below picture.\nClick to expand...\nin a latter portion of the video he showed how he did it, and it suggests that there wasnt code to automatically hide skills that are part of another skill's extend list.\nHe had the skilltype for \"fire\" be \"Magic\", and then changed the skilltypes for all the other fire spells so that they wouldnt show up in the \"Magic\" list. its the same idea as when i said\nRobro33 said:\nyou could... give those skills an entirely different skilltype that that actor cannot use\nClick to expand...\nwhen an actor learns a skill, they still have it learned even if they cant use the skill's skilltype. even if you dont have the skilltype, the extend window will show it. The tag you mentioned will prevent a skill that isnt learned from showing up in the list\nThis means in general you can have the extended skills be of some skilltype the class doesnt use to hide it from the skill type list, and in the case of having to learn the skills, you can have the class learn the skills as it levels up and have those skills absent from the skilltype list by by making them of some inaccessible skilltype. they still be usable from the extend window when you use the note tag."
+    },
+    {
+      "post_id": "js-post-1456536",
+      "author": "donghoy",
+      "date": "2024-07-11T22:41:17+0900",
+      "body": "Robro33 said:\nin a latter portion of the video he showed how he did it, and it suggests that there wasnt code to automatically hide skills that are part of another skill's extend list.\nHe had the skilltype for \"fire\" be \"Magic\", and then changed the skilltypes for all the other fire spells so that they wouldnt show up in the \"Magic\" list. its the same idea as when i said\nwhen an actor learns a skill, they still have it learned even if they cant use the skill's skilltype. even if you dont have the skilltype, the extend window will show it. The tag you mentioned will prevent a skill that isnt learned from showing up in the list\nThis means in general you can have the extended skills be of some skilltype the class doesnt use to hide it from the skill type list, and in the case of having to learn the skills, you can have the class learn the skills as it levels up and have those skills absent from the skilltype list by by making them of some inaccessible skilltype. they still be usable from the extend window when you use the note tag.\nClick to expand...\nWow, I realized why the extended skills are visible in the skill window and how remove them due to your help!\nAs you told me, The point was the skill type! The skills have to be 'None' not to display!\nI missed this thing because it is a simple thing but also it's important.\nNow I can move on to the next step in creating my game\nThank you very much Robro33 and Turan!"
+    },
+    {
+      "post_id": "js-post-1495166",
+      "author": "slickdeath97",
+      "date": "2025-01-22T11:06:49+0900",
+      "body": "ATT_Turan said:\nNo. I don't see any code in the plugin that prevents a contained skill from also showing up in the regular skill list.\nI would consider it a glaring design flaw, but you aren't doing anything wrong.\nYou could see if someone's interested in making an extension/patch for the plugin, or you could work around it.\nWith Yanfly's Skill Core installed, you can give the contained skill the notetag:\nCode:\n<Custom Show Eval>\nvisible = SceneManager._scene instanceof Scene_Battle && SceneManager._scene._skillExtend.isOpen();\n</Custom Show Eval>\nAnd that should hide it from your regular list, but show it in the skill extend window.\nClick to expand...\nSo, I noticed an issue I am having with the show eval code. When I put it in the skill and try to use the learned skill, it won't allow me to use it in the menu or in battle. If it is not in the notetag, I can use the skill just fine. How do I fix this?"
+    }
+  ]
+}

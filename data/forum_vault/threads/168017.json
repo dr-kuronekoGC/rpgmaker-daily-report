@@ -1,0 +1,83 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/looping-boulder-trap.168017",
+  "title": "Looping boulder trap",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:32:21.344648+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1439398",
+      "author": "Rinq-Master",
+      "date": "2024-04-24T00:55:55+0900",
+      "body": "Hello first time poster here! I'm trying to make an automatic looping boulder trap for the player to avoid carefully. And by looping boulder trap I mean those traps from stuff like frogger on the game boy advance, like frogger in general actually. Like how the cars loop from one side of the screen to the other. How can I do this in this engine? Can I even accomplish this?"
+    },
+    {
+      "post_id": "js-post-1439400",
+      "author": "ATT_Turan",
+      "date": "2024-04-24T00:58:10+0900",
+      "body": "Can you show the work you've already done on the event?\nIt sounds like it should be as simple as moving a certain number of spaces then transferring itself back to the starting coordinates."
+    },
+    {
+      "post_id": "js-post-1439402",
+      "author": "Rinq-Master",
+      "date": "2024-04-24T01:02:37+0900",
+      "body": "Okay so you step on the event next to the character right? Then the boulder moves down to other die of the room. But I can't make it loop back to its starting position unless you step on the event square again. This needs to be done automatically as the whole room will be filled with them.\nAlso the boulder kills you if you come in contact with it."
+    },
+    {
+      "post_id": "js-post-1439406",
+      "author": "ATT_Turan",
+      "date": "2024-04-24T01:24:23+0900",
+      "body": "That is not a picture of the event, that's a picture of your map. It doesn't show us how you've tried to make it work."
+    },
+    {
+      "post_id": "js-post-1439409",
+      "author": "Rinq-Master",
+      "date": "2024-04-24T01:32:14+0900",
+      "body": "Apologies here\nI've tried using the loop command too, but that just freezes the player in place."
+    },
+    {
+      "post_id": "js-post-1439410",
+      "author": "ATT_Turan",
+      "date": "2024-04-24T01:36:38+0900",
+      "body": "That's the wrong place to put all of those commands.\nThat's saying your boulder is going to sit in one place and when the player touches it (Trigger: Player Touch) it will set a switch and set its location and move back and forth and turn a switch off (except the switch will never turn off unless the player walks into it again).\nIt also doesn't appear to do what you said you want - you said you want it to go down and teleport back to the beginning (loop), but that move route is moving down and moving back up.\nThe movement commands should go in the Autonomous Movement section and the event commands are whatever you want to happen to the player when the boulder hits them.\nThe script call at the bottom is to teleport it back to its starting location - I Googled \"rpg maker vx ace script call transfer\" and got this syntax:\nCode:\n$game_map.events[4].moveto(11, 6)\nThe 4 is the event ID of the boulder, and the 11, 6 are the X, Y map coordinates for it to go to."
+    },
+    {
+      "post_id": "js-post-1439411",
+      "author": "Rinq-Master",
+      "date": "2024-04-24T01:42:20+0900",
+      "body": "That script syntax seems to have crashed the game, although maybe i need to edit the numbers hold on."
+    },
+    {
+      "post_id": "js-post-1439414",
+      "author": "Rinq-Master",
+      "date": "2024-04-24T01:48:08+0900",
+      "body": "Yes the boulder is looping now!"
+    },
+    {
+      "post_id": "js-post-1439473",
+      "author": "TotalyNate",
+      "date": "2024-04-24T05:51:30+0900",
+      "body": "Another way you could do it is just set the \"Autonomous movement\" to going up and down, and then make it so when you touch the bolder you die, (or go back to the start) using the trigger \"Player Touch\". I'm at a loss for why you need scripts???\nWould this not work???"
+    },
+    {
+      "post_id": "js-post-1439481",
+      "author": "Fawfulthegreat64",
+      "date": "2024-04-24T06:12:46+0900",
+      "body": "I'm assuming they want the boulder to only go in one direction, like a boulder rolling down a hill would."
+    },
+    {
+      "post_id": "js-post-1439520",
+      "author": "ATT_Turan",
+      "date": "2024-04-24T08:58:48+0900",
+      "body": "CoolBeans said:\nI'm at a loss for why you need scripts???\nClick to expand...\nRinq-Master said:\nI mean those traps from stuff like frogger...loop from one side of the screen to the other.\nClick to expand...\nIt's what the OP said they wanted."
+    },
+    {
+      "post_id": "js-post-1439523",
+      "author": "Roninator2",
+      "date": "2024-04-24T09:22:26+0900",
+      "body": "CoolBeans said:\nI'm at a loss for why you need scripts???\nClick to expand...\nBecause your solution is a back and forth and the desired solution goes in one direction.\nSo the event needs to be transferred back to the starting point."
+    }
+  ]
+}

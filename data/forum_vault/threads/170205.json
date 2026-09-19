@@ -1,0 +1,89 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/help-with-compatibility-issues-for-hime_moreenemydrops.170205",
+  "title": "MV Help with Compatibility issues for HIME_MoreEnemyDrops",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:32:13.224648+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1456559",
+      "author": "firestalker",
+      "date": "2024-07-12T02:33:27+0900",
+      "body": "So I want to use\nthis plugin\nfor my enemy drops since this plugin can determine the amount of each item to be given not just one at a time. Like you can use a variable to give extra potions instead of just one at a time. Yanfly's plugin doesn't have that option, but I wish it did.\nAs it is, HME's plugin has a bunch of compatibility issues with other plugins I have... and need so I can't get rid of them.\nThis is the error:\nAnd this is the Console:\nPlugin list:\nThis list doesn't have YEP_ItemCore - since I believe I accidentally cut it off when piecing it together in a single image.\nI don't know what any of that means... Any help would be appreciated. However, I would like a patch for the HIME plugin to work with my plugins...  Barring that, if there could be a patch for Yanfly's plugin to allow changing the amounts of items given that would be awesome too.\nLet me know if there is any thing I can do to help."
+    },
+    {
+      "post_id": "js-post-1456563",
+      "author": "Andreavnn",
+      "date": "2024-07-12T02:44:30+0900",
+      "body": "First thing, most people will tell you is to check you YEP plugin order. If those plugins are out of order, it can cause a lot of unforeseen issues within your game. You can check the order\nhere\n.\n**EDIT*** Also,\nExtra_Enemy_Drops_(YEP)"
+    },
+    {
+      "post_id": "js-post-1456578",
+      "author": "firestalker",
+      "date": "2024-07-12T03:16:51+0900",
+      "body": "Andreavnn said:\nFirst thing, most people will tell you is to check you YEP plugin order. If those plugins are out of order, it can cause a lot of unforeseen issues within your game. You can check the order\nhere\n.\n**EDIT*** Also,\nExtra_Enemy_Drops_(YEP)\nClick to expand...\nYep...  I've already got the plugins in the right order according to the Plugin List on\nThis Site\n.\nSecond...  As I mentioned in my original post,\nExtra Enemy Drops\ndoes not allow for variable amounts. You can place multiple of the same item over and over again to get more of that item, but if you want to have that option be determined by a variable then you can't.\nLet me see if I can explain this better:\nExtra Enemy Drops:\nCode:\n<Conditional Item 1 Drop>\n  VARIABLE 1 === 1: 50%\n</Conditional Item 1 Drop>\nThis code can be repeated as many times as you want to get this item over and over again at a 50% rate as long as the variable is at 1.\nBut there is no option to allow you to determine the actual amount of the item given by variable.\nSomething like HIME's script which is like this:\nCode:\n<enemy drop>\n  item_code: \"i1\",\n  amount: v.value(1),\n  chance: \"50\"\n</enemy drop>\nor\nCode:\n<enemy drop>\n  item_code: \"i1\",\n  amount: 5\n</enemy drop>\nwhich will now give my player 5 of item 1 without having to make multiple copies of the same code. Plus, if I want to make the item amount based on a stat [say the combined Luck stat of the entire party]... Like if the combined party LUck is over 100 then give 1 item, and add a plus one item for every 100 Luck the party has. So they could get 5 items if they have a combined Luck stat of 500.\nUsing HIME's plugin that would be a simple Notetag...  Using YEP_ExtraEnemyDrops I would have to place a Notetag for each item that could be given at each variable change.\nSomething like this:\nCode:\n<Conditional Item 1 Drop>\nVARIABLE 1 === 4: 100%\n</Conditional Item 1 Drop>\n<Conditional Item 1 Drop>\nVARIABLE 1 === 4: 100%\n</Conditional Item 1 Drop>\n<Conditional Item 1 Drop>\nVARIABLE 1 === 5: 100%\n</Conditional Item 1 Drop>\n<Conditional Item 1 Drop>\nVARIABLE 1 === 5: 100%\n</Conditional Item 1 Drop>\n<Conditional Item 1 Drop>\nVARIABLE 1 === 5: 100%\n</Conditional Item 1 Drop>\n<Conditional Item 1 Drop>\nVARIABLE 1 === 5: 100%\n</Conditional Item 1 Drop>\n<Conditional Item 1 Drop>\nVARIABLE 1 === 5: 100%\n</Conditional Item 1 Drop>\nAnd I would have to do that every single possibility I can think up."
+    },
+    {
+      "post_id": "js-post-1456580",
+      "author": "Maliki79",
+      "date": "2024-07-12T03:33:00+0900",
+      "body": "I looked to see if any of my plugins were in there.  None seen.  Oh well.\nThat aside, making the edit to YF drops looks like fun and would probably be a safer route considering you already use so many YF plugins, so I'll look into it, time permitting.\nSo you'd like to be able to designate a number of items to get per tag, correct?"
+    },
+    {
+      "post_id": "js-post-1456582",
+      "author": "Andar",
+      "date": "2024-07-12T03:35:18+0900",
+      "body": "@firestalker\nYour error has absolutely nothing to do with any incompatibility or any other plugin.\n\"syntax error\" is the computer's way of telling you \"you made a typo\" or \"you wrote nonsense\".\nSo you should start with a screenshot of whereever you made the notetag for the use of that plugin, and we can check what mistake you made in the notetag."
+    },
+    {
+      "post_id": "js-post-1456586",
+      "author": "firestalker",
+      "date": "2024-07-12T03:47:28+0900",
+      "body": "Andar said:\n@firestalker\nYour error has absolutely nothing to do with any incompatibility or any other plugin.\n\"syntax error\" is the computer's way of telling you \"you made a typo\" or \"you wrote nonsense\".\nSo you should start with a screenshot of whereever you made the notetag for the use of that plugin, and we can check what mistake you made in the notetag.\nClick to expand...\nBut the error is an \"Invalid or Unexpected Token\" error...  Is that the same thing?\nThis is the Notetag:\nCode:\n<enemy drop>\nitem_code: \"i22\",\namount: \"2\",\nchance: “90”\n</enemy drop>\nI changed it from this one to see if the variable was the reason but I got the same error for each:\nCode:\n<enemy drop>\nitem_code: \"i22\",\namount: v.value(80),\nchance: “90”\n</enemy drop>\nMaliki79 said:\nI looked to see if any of my plugins were in there.  None seen.  Oh well.\nThat aside, making the edit to YF drops looks like fun and would probably be a safer route considering you already use so many YF plugins, so I'll look into it, time permitting.\nSo you'd like to be able to designate a number of items to get per tag, correct?\nClick to expand...\nIf possible that would be great. Instead of having 5 note tags to get 5 item 1s If I could just do one note tag and have the amount in that note tag that would be great. I would also love to have the amount be able to use a variable as well...  Thanks.\nMaybe something like:\nCode:\n<Enemy Drops>\n  Item 1: $gameVariable.value(1), 50%\n</Enemy Drops>\nOr maybe something similar?"
+    },
+    {
+      "post_id": "js-post-1456587",
+      "author": "Andar",
+      "date": "2024-07-12T03:49:56+0900",
+      "body": "firestalker said:\nBut the error is an \"Invalid or Unexpected Token\" error... Is that the same thing?\nClick to expand...\nThat is a detail of the error, and it basically tells you \"I came to a part of a notetag that I don't understand\", because tokens are part of notetags.\nSo please give a screenshot of where you made one such notetag"
+    },
+    {
+      "post_id": "js-post-1456599",
+      "author": "firestalker",
+      "date": "2024-07-12T04:50:59+0900",
+      "body": "@Andar\nHere you go:"
+    },
+    {
+      "post_id": "js-post-1456608",
+      "author": "Andar",
+      "date": "2024-07-12T06:18:06+0900",
+      "body": "Several possibilities.\nFirst is that the error is later in the notetag and everything I write below has nothing to do with it.\nPlease test that by making a test with only the first notetag, deleting everything after that.\nIf that suddenly works, then we need a copy of the entire notetag because you made a typo in a later part.\nIf the error is in the first notetag, the part that most likely causes the syntax error is the line with v.value(80)\nPlease read the instructions with more care:\n<enemy drop>\nitem_code: \"ID\",\namount: number,\nchance: \"FORMULA\"\n</enemy drop>\nv.value(80) is part of a formula and not a direct number, as you can see in tsukihime's examples.\nNow there are two possibilities, and unfortunately I couldn't determine which from the plugin code alone.\nFirst option, you have a chance of getting it to work if you enter it as a formula as well, e.g.\namount: \"v.value(80)\",\nIf that doesn't work either, then either amount has to be a number or the error is further below in the later parts of the notetag."
+    },
+    {
+      "post_id": "js-post-1456611",
+      "author": "Maliki79",
+      "date": "2024-07-12T06:30:17+0900",
+      "body": "Did a little digging.\nThe amount part of the tag doesn't allow for evals and only accepts integers.\nThis might be why the token error is popping up.\nI can try to add the eval, but I'm not super familiar with the way Hime did that function and it don't know if it would work.\n(YF's is actually a bit tougher for me, so at least for now, Hime's Plugin might be easier for me, but I'll still have to figure the syntax out...)"
+    },
+    {
+      "post_id": "js-post-1456613",
+      "author": "ShadowDragon",
+      "date": "2024-07-12T06:34:01+0900",
+      "body": "I believe SRD has a small extension to YEP_MoreEnemyDrops to allow bulk drops.\nso you can give out 1, 3, 5 or a range of 1 - 5.\ncheck this plugin and see if that solve your problem found [\nhere\n]."
+    },
+    {
+      "post_id": "js-post-1456615",
+      "author": "firestalker",
+      "date": "2024-07-12T06:44:58+0900",
+      "body": "Andar said:\nSeveral possibilities.\nFirst is that the error is later in the notetag and everything I write below has nothing to do with it.\nPlease test that by making a test with only the first notetag, deleting everything after that.\nIf that suddenly works, then we need a copy of the entire notetag because you made a typo in a later part.\nIf the error is in the first notetag, the part that most likely causes the syntax error is the line with v.value(80)\nPlease read the instructions with more care:\n<enemy drop>\nitem_code: \"ID\",\namount: number,\nchance: \"FORMULA\"\n</enemy drop>\nv.value(80) is part of a formula and not a direct number, as you can see in tsukihime's examples.\nNow there are two possibilities, and unfortunately I couldn't determine which from the plugin code alone.\nFirst option, you have a chance of getting it to work if you enter it as a formula as well, e.g.\namount: \"v.value(80)\",\nIf that doesn't work either, then either amount has to be a number or the error is further below in the later parts of the notetag.\nClick to expand...\nSo, I tried what you suggested...  I deleted the notetags and left one there. I tried the \"v.value()\" and that didn't work, I got the same error. I then tried changing the notetag so that the amount is number and that didn't work, same error.\nSo out of curiosity, I removed the chance formula and left the amount as a number...  That worked, no error. So I tried to add the v.value() to the amount and nope, error again. So that seems to be one of the problems, but it also seems to be the formula condition as well.\nAnd then out of curiosity, Again, I added $gameVariables.value(80) to the amount condition...  This worked, no error.... and then re-adding the chance condition...  again no error.\nSo, yay! And thank you for helping me out...  I got the idea to try all that I because you guys pointed me in that direction. Thank you!\nShadowDragon said:\nI believe SRD has a small extension to YEP_MoreEnemyDrops to allow bulk drops.\nso you can give out 1, 3, 5 or a range of 1 - 5.\ncheck this plugin and see if that solve your problem found [\nhere\n].\nClick to expand...\nThanks for this...  This could come in handy for other things. Thanks.\nMaliki79 said:\nDid a little digging.\nThe amount part of the tag doesn't allow for evals and only accepts integers.\nThis might be why the token error is popping up.\nI can try to add the eval, but I'm not super familiar with the way Hime did that function and it don't know if it would work.\n(YF's is actually a bit tougher for me, so at least for now, Hime's Plugin might be easier for me, but I'll still have to figure the syntax out...)\nClick to expand...\nThanks for looking into it...  I've found a way to make it work there's that. But thank you for looking into it for me. I appreciate the time you took."
+    },
+    {
+      "post_id": "js-post-1456672",
+      "author": "utunnels",
+      "date": "2024-07-12T07:22:36+0900",
+      "body": "<enemy drop>\nitem_code: \"i22\",\namount: \"2\",\nchance: “90”\n</enemy drop>\n“90” \"90\"\nSee the difference?"
+    }
+  ]
+}

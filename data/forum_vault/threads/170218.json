@@ -1,0 +1,29 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/timed-common-event.170218",
+  "title": "Timed common event",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T12:31:54.771788+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1456761",
+      "author": "Avocado",
+      "date": "2024-07-12T16:17:55+0900",
+      "body": "Hi! I'm having problems trying to make some changes to a button mash event by Caz (\nhttps://itch.io/queue/c/1353582/cookie-cutter-mz-rpg-maker-mz-project-templates?game_id=979800\n).\nHere are some snippets of the parts I need to edit. I want to make it so the player has 10 seconds to complete the button mash event, if not the event stops and a defeat event starts. The event is a common one if that might help\n. Thank you so so much!"
+    },
+    {
+      "post_id": "js-post-1456766",
+      "author": "Artille",
+      "date": "2024-07-12T17:32:14+0900",
+      "body": "You would have to implement a timer logic to this structure.\nYou could try something like this :\nCode:\n◆ Control Switches: #0208 Begin button meshing = ON\n    ◆ Control Variables: #0235 Button Mesh Width = 0\n◆ Control Variables: #0236 Timer = 0\n◆ Loop\n  ◆ Control Variables: #0236 Timer += 1\n  ◆ If: Button [OK] is pressed\n    ◆ Control Variables: #0235 Button Mesh Width += 2\n    ◆ Show Picture: #3, BME-PressOK2, Upper Left (360,430), (100%,100%), 255, Normal\n    ◆ Wait: 3 frames\n    ◆ Control Variables: #0236 Timer += 3\n    ◆ Show Picture: #3, BME-PressOK1, Upper Left (360,430), (100%,100%), 255, Normal\n  ◆ End\n\n  ◆ If: Button Mesh Width ≥ 100\n    ◆ Control Switches: #0208 Begin button meshing = OFF\n    ◆ Show Text: \"Event Succes\"\n    ◆ Break Loop\n  ◆ End\n\n  ◆ If: Control Variables: #0236 Timer ≥ 600\n    ◆ Control Switches: #0208 Begin button meshing = OFF\n    ◆ Show Text: \"Defeat Event\"\n    ◆ Break Loop\n  ◆ End\n\n  ◆ Wait: 1 frame\n◆ Repeat Above\n\n◆ If: Button Mesh Width ≤ 0\n  ◆ Control Variables: #0235 Button Mesh Width = 0\n◆ End\n\n◆ If: Button Mesh Width ≥ 100\n  ◆ Control Variables: #0235 Button Mesh Width = 100\n◆ End\nDid not test, but should do the job\nYou can change\n◆ Show Text: \"Defeat Event\"\nby anything you want it to be for \"Defeat\", an event call, or anything else\nYou won't have to reset the timer, as every time this event starts the timer will be set to 0.\nBut think about resetting the\nButton Mesh Width\nvalue.\nIf you are at ease with javascript and want a more accurate timing, you could use something like this :\nJavaScript:\n//Before the loop begins, set the current time\n$gameVariables.setValue(237, Date.now())\n// 237 would be the start of the timer\n\n//Before checking for the Mesh value and Timer value, set the elapsed time\n$gameVariables.setValue(236, (Date.now() - $gameVariables.value(237)) / 1000)\n// 236 would be the elapsed time based on the start timer\nThen, instead of checking for a value of 600 (600 frames = roughly 10 seconds) you can check for a value of 10 or more (current time - start time, which will be a float)"
+    },
+    {
+      "post_id": "js-post-1456791",
+      "author": "Avocado",
+      "date": "2024-07-12T21:53:55+0900",
+      "body": "Artille said:\nYou would have to implement a timer logic to this structure.\nYou could try something like this :\nCode:\n◆ Control Switches: #0208 Begin button meshing = ON\n    ◆ Control Variables: #0235 Button Mesh Width = 0\n◆ Control Variables: #0236 Timer = 0\n◆ Loop\n  ◆ Control Variables: #0236 Timer += 1\n  ◆ If: Button [OK] is pressed\n    ◆ Control Variables: #0235 Button Mesh Width += 2\n    ◆ Show Picture: #3, BME-PressOK2, Upper Left (360,430), (100%,100%), 255, Normal\n    ◆ Wait: 3 frames\n    ◆ Control Variables: #0236 Timer += 3\n    ◆ Show Picture: #3, BME-PressOK1, Upper Left (360,430), (100%,100%), 255, Normal\n  ◆ End\n\n  ◆ If: Button Mesh Width ≥ 100\n    ◆ Control Switches: #0208 Begin button meshing = OFF\n    ◆ Show Text: \"Event Succes\"\n    ◆ Break Loop\n  ◆ End\n\n  ◆ If: Control Variables: #0236 Timer ≥ 600\n    ◆ Control Switches: #0208 Begin button meshing = OFF\n    ◆ Show Text: \"Defeat Event\"\n    ◆ Break Loop\n  ◆ End\n\n  ◆ Wait: 1 frame\n◆ Repeat Above\n\n◆ If: Button Mesh Width ≤ 0\n  ◆ Control Variables: #0235 Button Mesh Width = 0\n◆ End\n\n◆ If: Button Mesh Width ≥ 100\n  ◆ Control Variables: #0235 Button Mesh Width = 100\n◆ End\nDid not test, but should do the job\nYou can change\n◆ Show Text: \"Defeat Event\"\nby anything you want it to be for \"Defeat\", an event call, or anything else\nYou won't have to reset the timer, as every time this event starts the timer will be set to 0.\nBut think about resetting the\nButton Mesh Width\nvalue.\nIf you are at ease with javascript and want a more accurate timing, you could use something like this :\nJavaScript:\n//Before the loop begins, set the current time\n$gameVariables.setValue(237, Date.now())\n// 237 would be the start of the timer\n\n//Before checking for the Mesh value and Timer value, set the elapsed time\n$gameVariables.setValue(236, (Date.now() - $gameVariables.value(237)) / 1000)\n// 236 would be the elapsed time based on the start timer\nThen, instead of checking for a value of 600 (600 frames = roughly 10 seconds) you can check for a value of 10 or more (current time - start time, which will be a float)\nClick to expand...\nHi! Thank you so much for your reply!\nEdit: Thank you so so much it works!"
+    }
+  ]
+}
