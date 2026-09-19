@@ -1,0 +1,23 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/choosing-several-actions-during-a-turn-action-points.166795",
+  "title": "MZ Choosing several actions during a turn / Action Points",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T22:21:02.354717+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1430013",
+      "author": "Oddgasm",
+      "date": "2024-03-15T00:23:02+0900",
+      "body": "Hello everyone,\nI'm looking for a way to make each character in battle have Action Points (AP), a new resource that limits the usage of skills :\nUsing a command in battle takes more or less AP. As long as the AP pool isnt empty, the battler's turn shouldnt end, and they should be able to play again : In the case of an actor not auto-battling, the player should select a new command after each action taken from the character they control.\nAs I don't think Rpg Maker offers a way to force actor/enemy to use several times commands during their turn, this is where I need a plugin.\nI don't want the action to be executed several times I'd like actors to choose another action right after they acted as long as they're able to (have some AP left) :\n=====\neg :\nIn the case of a party of 2 actors against a boss :\nTURN 1\n[\nGREEN\n||\n4 AP\n] uses for Attack for\n2 AP\n. -->\nGreen starts with 4 AP. She uses a standard attack that costs 2 AP.\n[\nGREEN\n||\n2 AP\n] uses Potion for\n1 AP\n. -->\nGreen's AP > 0, the player is able to select another action for Green to use.\n[\nGREEN\n||\n1 AP\n] skips her turn. -->\nGreen decides to skip her turn, saving remaining AP but ending her turn prematurely.\n[\nALEX\n||\n4 AP\n] uses Potion for\n1 AP\n.\n[\nALEX\n||\n3 AP\n] uses Super-Attack for\n3 AP\n. -->\nDifferent types of actions mean different AP costs.\n[\nALEX\n||\n0 AP\n] has no\nAP\nleft !\nALEX\nends his turn. -->\nAlex's AP = 0, his turn ends.\n[\nBOSS\n|| 6 AP] uses Attack for 2 AP. -->\nThis is not a regular enemy. It starts with the maximum of 6 AP.\n[\nBOSS\n|| 4 AP] uses Giga-Attack for all is AP ! -->\nAP/AP cost should be manipulable through formulas and notetags (states, item, equipments, actors and enemies)\nTURN 2\n[\nGREEN\n||\n5 AP\n] gets 4 AP for beginning her turn ! -->\nAP are refulled at a fixed rate. Since Green didnt spend all of her AP last turn, she stacks it together (up to a maximum of a fixed cap) for a total of 5 AP to start her turn with.\n=====\nTo specify the needs :\n-Battlers should be able to act several times during their turn, after using the chosen command.\n-This ability to play again should be tied with a custom resource (eg AP).\n-If said resource = 0, turn should end for that battler.\n-Custom resource should have a maximum cap / regeneration rate.\n-It should be able to manipulate the custom resource parameter in formulas.\n-it should be able to manipulate resource as notetags : cost, base rate, regen rate (for actors/enemies/states/items/equip)\n-Resource should be visible on the hud/menus.\n-It could have a CoolDown system for balance issues.\nTo my knowledge, the only plugin that offers everything above is VCM's :\nhttps://vcm-plugins.itch.io/vcm-actionpoints\nUnfortunately it doesn't exist for MZ.\nThanks for your time"
+    },
+    {
+      "post_id": "js-post-1431295",
+      "author": "Oddgasm",
+      "date": "2024-03-20T01:44:41+0900",
+      "body": "For anyone interested, I figured how to implement this system, but I have to use a plugin that allows instant casting (VisuStella's OTB battle system comes with this functionnality, i'm not sure about other plugins) :\n-Give a skill some MP cost (I use MP instead of a new parameter)\n-Give this skill the \"Instant cast\" Tag (which is <OTB Instant> for the plugin I use)\n-Create a new state : Set it to \"Cannot Move\", \"End of Action 0 ~ 0\"\n-In skill's formula (i use the basic Attack skill formula) : a.mp > 0 ? a.atk * 4 - b.def * 2 : a.addState(31);\n-Grant your actors/enemies MP regeneration (ExParam), or they won't be able to act after their first turn.\nWhat it does : If user's MP are above 0, the skill/attack will be executed as normal. If not, the user gets the state \"31\", which virtually \"stuns\" them = turn passes.\nIt is required to get a \"instant cast\" plugin for the trick to work : that way turns are \"free\" (for a MP cost), until MP goes to 0.\nHowever it doesnt work for items as I can't set MP cost for it. I could use a formula, to set a cost and reduce MP but it won't show the cost automatically, I'll have to inform the player in the description."
+    }
+  ]
+}

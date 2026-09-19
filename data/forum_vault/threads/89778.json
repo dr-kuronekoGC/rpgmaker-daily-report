@@ -1,0 +1,53 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/script-call-for-wait-command.89778",
+  "title": "Script call for wait command.",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T22:20:55.035055+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-815921",
+      "author": "Magusalfador",
+      "date": "2018-01-12T13:43:14+0900",
+      "body": "Hi! I was reviewing the script call list for the scriptcall wait.\nIt says $gameInterpreter.wait(frames); but when I use it, it comes with $gameInterpreter is not defined.\nAm I missing something? this looked like one of the simplest things.\nThanks!"
+    },
+    {
+      "post_id": "js-post-815925",
+      "author": "Llareian",
+      "date": "2018-01-12T13:53:55+0900",
+      "body": "There is no $gameInterpreter. Names preceded by a $ are global variables, but Game_Interpreter is a class used to define a variable during an event command (not globally).\nWait is actually a pretty complicated command, since it involves multiple functions. Why are you trying to use a script call to create a wait command?"
+    },
+    {
+      "post_id": "js-post-815934",
+      "author": "Magusalfador",
+      "date": "2018-01-12T14:58:23+0900",
+      "body": "Im calling  two animations from script, I need one to finish then start the other. Or is there a call like wait animation to finish?"
+    },
+    {
+      "post_id": "js-post-816025",
+      "author": "Aloe Guvner",
+      "date": "2018-01-12T22:17:00+0900",
+      "body": "I've been trying to figure this out for a while, but no luck yet. Would love to know if other people know the answer\nMy workaround is to call a common event and then include the animation with wait command in that."
+    },
+    {
+      "post_id": "js-post-816102",
+      "author": "Magusalfador",
+      "date": "2018-01-13T02:05:15+0900",
+      "body": "Yeah, apparently is not that simple. Now, I cant call a common event because the animations are in battle, so i cant specify target or user as origin source. I might force a skill though, but it would be very usefull to know how to do \"wait\" via script. If anything, Ill let you know.\nCheers!"
+    },
+    {
+      "post_id": "js-post-816115",
+      "author": "Andar",
+      "date": "2018-01-13T02:32:06+0900",
+      "body": "It is not simple because there is no wait command at all, the wait command works differently internally and is only called \"wait\" because that is how the effects looks to the player. Otherwise you wouldn't be able to use \"wait\" to reduced lag in parallel processes for example.\nThere is a game loop that is executed every frame. This loop contains every parallel process, every active event, every move route, every update function and so on as its elements.\nWhat the wait command does is tell the game loop \"skip processing this element for the next x loops\". Or in case of the \"wait for completion\" options it tells \"skip processing until that other element is completed\".\nAs such the wait can never be a command, it is always a property of an element inside the game loop. If you have that element or object, you can set its property by script - but you need an object inside the game loop for that to work at all."
+    },
+    {
+      "post_id": "js-post-1455949",
+      "author": "kyshuo",
+      "date": "2024-07-08T22:56:22+0900",
+      "body": "This is very old, but I'm answering because maybe someone is developing a game today and has a similar question.\nI've dealt with the Game_Interpreter and it seems to have somewhat complex logic. It's easy to wait for a message, but not for an animation. So you have to implement this waiting yourself.\nWhat I'm saying requires you to understand a little bit of JavaScript and create your own plugin, but don't be scared, in essence creating a plugin is just saving a JavaScript file (.js) in the plugins folder, activating it in RPG Maker and that's all, with that the code written in it will be executed.\nAll\nGame_Characers\n(events, the player, etc.) have an\nupdate\nfunction that is called 60 times per second (once per frame), and they also have the boolean operation\nisAnimationPlaying\n, which indicates whether that character is currently running an animation or not. You must override the\nupdate\noption so that when the animation in question is running, the other animation is not launched.\nYou can simply query\nisAnimationPlaying\nand when it returns false then you use\nrequestAnimation\non the event you want the next animation to play.\nIt could be optimized a little more, since adding it to update will cause the check to be done throughout the game, even when you are no longer interested in the matter, but it is a way.\nIn the following code I override the\nupdate\noperation of\nGame_Map\ninstead of\nGame_Character\n. This is because the map will update 60 times per second, but if I were to override\nupdate\nin\nGame_Character\n, this would be done 60 times per second for each event existing on the map, and doing all this checking every time for each event is nonsense. Even this code could be improved further, but I tried to make it clear rather than optimal.\nThis must be tested in a .js file on plugin folder, not in a script call.\nJavaScript:\n//Reference to the original update function\nvar firstAnimationDone = false, secondAnimationDone = false;\nvar firstAnimationStart = false, secondAnimationStart = false;\nvar _Game_Map_update = Game_Map.prototype.update;\nGame_Map.prototype.update = function(sceneActive) {\n    //Call normal map update function\n    _Game_Map_update.call(this,sceneAtive);\n    \n    //Check animation. In this example the animation is over the player ($gamePlayer).\n    //We must to know the ID of animations to run, in this example the first animation\n    //is the numnber 1 and the second is the number 2. The animation ID can be shown\n    //in RPG Maker animations on Data Base.\n    if(firstAnimationDone==false){\n        $gamePlayer.requestAnimation(1); //Start first animation.\n        firstAnimationStart = true;\n    }\n    \n    //Check if first animation is done.\n    if(!$gamePlayer.isAnimationPlaying() && firstAnimationStart){\n        firstAnimationDone = true;\n    }//Check if second animation is done.\n    else if(!gamePlayer.isAnimationPlaying() && secondAnimationStart){\n        secondAnimationDone = true;\n    }\n    \n    //Check if first animation has done and if we must start the second.\n    if(firstAnimationDone && !secondAnimationStart){\n        $gamePlayer.requestAnimation(2); //Start second animation.\n        secondAnimationStart;\n    }\n}"
+    }
+  ]
+}

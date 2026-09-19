@@ -1,0 +1,167 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/encounter-control-mv-mz.170130",
+  "title": "Encounter Control (MV/MZ)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T22:20:53.398752+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1455969",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T00:29:53+0900",
+      "body": "Encounter Control 1.5\nATT_Turan\n​\nIntroduction\nThis plugin was inspired by a comment from\n@RCXGaming\nthat I thought led into a nice little set of features. The overall purpose is to give the developer more control over encounters while still allowing them to be randomized, and without having to get into eventing them all.\nI have tested the basic functionality, please let me know if you encounter any errors. I will consider making compatibility patches if the other plugin is free to use (or one I own, such as a Yanfly product) and unobfuscated. Otherwise, other authors are free to modify this code to make it compatible with theirs so long as I am still credited.\nSpoiler:\nFeatures\nThis plugin is designed to give more control over how random encounters are treated. One half is giving a minimum number of steps between encounters, to prevent the frustration of finishing a battle and getting into another almost immediately.\nThe other is tracking which troop was just fought, so as to prevent a repeat of the same exact battle. If you have many troops listed in a map, you can remember more than one, to force even more variety before the player sees a repeat.\nAdditionally, a notetag is provided to force the player to encounter specific troops in a specific order, as well as one that disables encounters at a given party level.\nAs a non-control feature, an encounter gauge can be added to the map screen. This uses images provided by the user which move as the player takes steps and approaches their next encounter - this can make a gauge drain or fill, amongst other things. Sample images are provided and may be freely used so long as credit is given to hiddenone.\nSpoiler:\nNotetags\nMap Notetags\nCode:\n<encountersteps: x>\nWhere x is the decimal percent of Enc. Steps the player must have before an encounter is possible. This overrides the Minimum Steps plugin parameter for this specific map.\nExample:\n<encountersteps: .6>\nCode:\n<encounterorder: x y z>\nList the troop IDs (no leading zeros) you wish the player to encounter, in the order you wish them to be encountered. Once all troops have been encountered, the list will start again from the beginning.\nThis disregards any settings in the Encounters section of the map properties, as well as the Remembered Troops plugin parameter or notetag.\nExample:\n<encounterorder: 12 8 15 22 49 6>\nCode:\n<rememberedtroops: x>\nWhere x is the number of troops the game will track before allowing any repeat encounters. Supplying a number larger than the number of troops you have listed in the map properties will have no effect.\nExample:\n<rememberedtroops: 2>\n- will make the last 2 troops the player  fought be ignored as candidates when determining which troop they are about to encounter.\nCode:\n<encounterlevel: x>\nWhere x is the level at which the player will no longer get any random encounters on this map. It is compared to the average level of all battle  party members.\nCode:\n<encounterregions: x:y a:b>\nWhere each pair is a region ID followed by its modifier for steps toward an encounter. Positive values will make steps in that region count more toward an encounter, whereas negative values will make them count more slowly.\nNote that any negative values must be a decimal value greater than -1 or it will completely negate the step and encounters will never happen, aside from with bush modifiers.\nExample:\n<encounterregions: 2:2 3:-.5 4:3>\nTerms and Credits\nFree for non-commercial and commercial use. Credit ATT_Turan."
+    },
+    {
+      "post_id": "js-post-1455971",
+      "author": "Silenity",
+      "date": "2024-07-09T00:42:39+0900",
+      "body": "Ooh I really like that remember troops function!"
+    },
+    {
+      "post_id": "js-post-1456003",
+      "author": "ShadowDragon",
+      "date": "2024-07-09T03:32:03+0900",
+      "body": "ATT_Turan said:\nExample:\n<encounterorder: 12 8 15 22 49 6>\nClick to expand...\nwhile the troop id is removed from this list, is it also just possible it take\n1 random from this list without removing to be able to gain a battle again?\nor some like:\n<encounter>\ntroop 12:  .4\ntroop 1: .05  (if rare enemy)\n....\n....\n</encounter>\nor similair?"
+    },
+    {
+      "post_id": "js-post-1456004",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T03:34:37+0900",
+      "body": "ShadowDragon said:\nwhile the troop id is removed from this list, is it also just possible it take\n1 random from this list without removing to be able to gain a battle again?\nClick to expand...\nCan you try to explain your question in a different way?\nI don't see how your example is different from the regular system of listing encounters in the Map Properties with a weight to make some rare."
+    },
+    {
+      "post_id": "js-post-1456010",
+      "author": "ShadowDragon",
+      "date": "2024-07-09T03:40:10+0900",
+      "body": "ATT_Turan said:\nin the order you wish them to be encountered. Once all troops have been encountered, the list will start again from the beginning.\nClick to expand...\nfor the order, so the list will be empty before it refilled and probably in the same order,\nwhy not just pick 1 at random so you can also encounter the same twice.\nthe reason of the other tag mention is that each encounter can different.\nwhile encounter steps = 30 on note tag, I don't know if this means minimal 30 steps.\nor steps taken is minimal 30 to max for its encounter so there is a bit more range\nas I don't know exactly how the default one works."
+    },
+    {
+      "post_id": "js-post-1456012",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T03:49:00+0900",
+      "body": "I'm still having a hard time - it would help if you gave an actual example of what you would like to happen in the game to the player.\nShadowDragon said:\nfor the order, so the list will be empty before it refilled and probably in the same order,\nwhy not just pick 1 at random so you can also encounter the same twice.\nClick to expand...\nAs I said above - I don't understand how that's different from the default system. You go to Map Properties, make a list, and every encounter chooses from it randomly. How is what you're asking for different?\nShadowDragon said:\nthe reason of the other tag mention is that each encounter can different.\nwhile encounter steps = 30 on note tag, I don't know if this means minimal 30 steps.\nClick to expand...\nThere's no such thing as encounter steps = 30 in a notetag.\nThe instructions say:\nATT_Turan said:\nWhere x is the decimal percent of Enc. Steps the player must have before an encounter is possible.\nClick to expand...\nSo if you entered in the Map Properties:\nAnd put - either in the Minimum Steps plugin parameter or the <encountersteps> notetag - the value .5, then .5 * 30 = the player can't possibly get into an encounter unless they've made at least 15 steps.\nShadowDragon said:\nas I don't know exactly how the default one works.\nClick to expand..."
+    },
+    {
+      "post_id": "js-post-1456019",
+      "author": "ShadowDragon",
+      "date": "2024-07-09T04:11:27+0900",
+      "body": "now I get the encounter steps between them,  so the map encounter list\nof troops are still added towards the notetag, but than its done in order\nif added, if not added, than the troop list idea is still randomized that way.\nif so, than it is clear what it does"
+    },
+    {
+      "post_id": "js-post-1456020",
+      "author": "ATT_Turan",
+      "date": "2024-07-09T04:17:04+0900",
+      "body": "ShadowDragon said:\nnow I get the encounter steps between them,  so the map encounter list\nof troops are still added towards the notetag, but than its done in order\nif added, if not added, than the troop list idea is still randomized that way.\nClick to expand...\nNo.\nThe entire point of the <encounterorder> notetag is to\nreplace\nthe troops you list in Map Encounters. In fact, if you have the notetag, the Map Encounters section should just be empty.\nYou\ndo not have\nto use this notetag for anything else in the plugin to work. In fact, if you have this notetag, the Remembered Troops plugin parameter and notetag do not function on that map. I will update my instructions to be more explicit in that fact.\nIt is designed to do the opposite of how the engine normally works - instead of randomly determining a troop, you specify \"the players will always fight these troops in this order.\""
+    },
+    {
+      "post_id": "js-post-1456843",
+      "author": "ATT_Turan",
+      "date": "2024-07-13T00:50:52+0900",
+      "body": "Major update!\nA new feature has been added - you're now able to display an encounter gauge that shows the player how long they have until their next encounter.\nIt's referred to as a gauge in the plugin description and parameters, but I've designed it flexibly so that any two images can be used. There's no warping or stretching, so you can use images that are curved or a specific shape, not just a straight bar.\nAnd if that's not cool enough, a beautiful sample gauge has been provided, courtesy of\n@hiddenone\n- you're free to use it in your projects with this plugin, just add her to your credits."
+    },
+    {
+      "post_id": "js-post-1456873",
+      "author": "Tai_MT",
+      "date": "2024-07-13T02:52:21+0900",
+      "body": "This is pretty cool.  I looked at it because it sounded like I could just replace what I was already using to control this effect.  Alas, not quite there.\nBut, with that in mind:\nDo you have any plans to add an \"encounter ceiling\" to this plugin?  A feature that would dictate \"guaranteed encounter at X amount of steps\"?  Or does the plugin simply use the \"average steps per encounter\" as the maximum?"
+    },
+    {
+      "post_id": "js-post-1456874",
+      "author": "ATT_Turan",
+      "date": "2024-07-13T03:02:23+0900",
+      "body": "Tai_MT said:\nDo you have any plans to add an \"encounter ceiling\" to this plugin?  A feature that would dictate \"guaranteed encounter at X amount of steps\"?  Or does the plugin simply use the \"average steps per encounter\" as the maximum?\nClick to expand...\nIt would be simple to add that, but it's already sort of there.\nBy default, the map calculates how many steps it takes you to have an encounter by doing\n(random number from 0 to your Enc. Steps) + (random number from 0 to your Enc. Steps) + 1\nSo the number you type into Enc. Steps already determines a guaranteed value, it's 2x - 1.\nRPG Maker doesn't do what some other JRPGs do, where they make a random check every step.\nSo, in summary - I could add it as a plugin parameter, but it's already determined by what you enter in the map properties so I don't know what it would accomplish."
+    },
+    {
+      "post_id": "js-post-1456875",
+      "author": "Tai_MT",
+      "date": "2024-07-13T03:16:27+0900",
+      "body": "That's pretty interesting information to know.  I only asked because I was hoping that it were possible to have a \"range\" for the encounters.  Like say I wanted the player to be able to take 11 steps before they could get an encounter, but could take no more than 40 before an encounter was forced on them.\nBut, it sounds like if I were to put 20 in the Encounter Steps field then .9 for the minimum, I could have an encounter anywhere from 18 to 39 steps.  If that's the case, then it could be tricky to personally fine-tune those numbers to get the ranges I would potentially want.  Still, that's a \"me\" problem, and what I was hoping for is probably pretty niche if we're honest.\nAnyway, thanks for the info.  Plugin sounds great.  Keep up the good work!"
+    },
+    {
+      "post_id": "js-post-1456877",
+      "author": "ATT_Turan",
+      "date": "2024-07-13T03:29:16+0900",
+      "body": "Tai_MT said:\nBut, it sounds like if I were to put 20 in the Encounter Steps field then .9 for the minimum, I could have an encounter anywhere from 18 to 39 steps.\nClick to expand...\nYou could put .55 in the minimum steps to get 11 from 20. But you're correct, you can't naturally have an even value as the maximum.\nIf you go to line 239, you can pretty easily change the equation - either deleting the\n+ 1\nat the end or changing it to a 2. Either way would produce an even value on the maximum random rolls."
+    },
+    {
+      "post_id": "js-post-1532411",
+      "author": "ATT_Turan",
+      "date": "2025-10-05T13:24:25+0900",
+      "body": "Updated to version 1.3 to add a request by\n@Pikuseruatisuto\n- you can now use map notetags to make specific region IDs contribute more or less toward your encounter steps."
+    },
+    {
+      "post_id": "js-post-1532412",
+      "author": "Piyan Glupak",
+      "date": "2025-10-05T13:58:50+0900",
+      "body": "It looks as if it has some really nice features.  I will try it out.\nThe only feature that the plugin that I currently use for random encounters has that this doesn't is letting you use variables for encounter rates. In my current (MZ) project the town gets a little bit more dangerous at night. In previous (MV) projects I have done the old \"kill the gang leader and the encounter rate for town goes very high to give less encounters\" trick more than once.\nEdit\n: I seem to be having a little trouble (maybe I don't understand the parameters). To enable random encounters at all, I seem to need a <encounterorder: > notetag for the map. Here are some screenshots:\nand the map with the random encounters:\nI have tried it without the other plugin (which shrinks the party on the overworld map), and it doesn't make any difference."
+    },
+    {
+      "post_id": "js-post-1532473",
+      "author": "ATT_Turan",
+      "date": "2025-10-06T06:57:58+0900",
+      "body": "Piyan Glupak said:\nEdit\n: I seem to be having a little trouble (maybe I don't understand the parameters). To enable random encounters at all, I seem to need a <encounterorder: > notetag for the map.\nClick to expand...\nMy quick feature addition last night also added a bug. I've corrected it in 1.4, download from the first post.\nPiyan Glupak said:\nThe only feature that the plugin that I currently use for random encounters has that this doesn't is letting you use variables for encounter rates.\nClick to expand...\nThat's a decent idea, I can add that in later."
+    },
+    {
+      "post_id": "js-post-1532496",
+      "author": "Piyan Glupak",
+      "date": "2025-10-06T13:58:45+0900",
+      "body": "Thank you for the update.\nErr... You aren't going to like this, but the \"Remembered Troops\" feature doesn't seem to be working. I think that this may have been masked by the previous need for an <encounterorder: > notetag.\nI deleted the <encounterorder: > notetag from the map with the enemies, and got random encounters okay. Unfortunately, I noticed that the troop would sometimes be the same as in the previous encounter, so I tried changing the \"Remembered Troops\" parameter to 2, but to no avail.\nThe only other thing that I did to the test project was to make a new map with the default inn event, so that I can play-test for lots of random encounters without starting a new game.\nATT_Turan said:\nThat's a decent idea, I can add that in later.\nClick to expand...\nThank you in advance. Allowing variables to be used for encounter rates would would give this plugin a lot of flexibility."
+    },
+    {
+      "post_id": "js-post-1532588",
+      "author": "ATT_Turan",
+      "date": "2025-10-07T07:14:06+0900",
+      "body": "Piyan Glupak said:\nErr... You aren't going to like this, but the \"Remembered Troops\" feature doesn't seem to be working.\nClick to expand...\nNo problem - it was just a little typo. I corrected that and added the plugin parameter for using a variable per your request."
+    },
+    {
+      "post_id": "js-post-1532621",
+      "author": "Piyan Glupak",
+      "date": "2025-10-07T14:39:08+0900",
+      "body": "Thank you for the update. The \"Remembered Troops\" works fine now. I also put enemies on the overworld map, with two regions, and the \"Encounter Regions\" note-tag works well.\nThe \"Encounter Variable\" parameter affects the encounter frequency of the maps when a variable is assigned. When the variable is set to a high number (such as 100), you get a random encounter every 2 steps. Setting the variable to 2 makes things more normal, but still a little more lively. From what you wrote in the help section, I assume that setting the variable a value of 1 means that the map encounter rates and any \"Encounter Region\" note-tags are not adjusted.\nSetting the variable chosen for the Encounter Variable parameter to 0 really reduces the number of encounters. If you set it to -1, you only seem to get encounters where an \"Encounter Regions\" note-tag was positive (such as 2).\nThanks again."
+    },
+    {
+      "post_id": "js-post-1532665",
+      "author": "ATT_Turan",
+      "date": "2025-10-07T20:41:32+0900",
+      "body": "Piyan Glupak said:\nThe \"Encounter Variable\" parameter...\nClick to expand...\nI'm not sure what you're trying to report/give as feedback here, but then perhaps I wasn't sure how you expected it to work in the first place.\nI think the description in the documentation is clear - if you use the encounter variable, the value of the variable replaces the normal step counter.\nBy default, in the engine, moving 1 tile will subtract 1 from your remaining steps until an encounter. If you have the encounter variable defined, it will subtract\nwhatever the value of the variable\nis instead. So a variable with a value of 2 will subtract 2 steps every tile.\nThen all other modifiers for encounter regions and bushes are applied as they always are."
+    },
+    {
+      "post_id": "js-post-1532672",
+      "author": "Piyan Glupak",
+      "date": "2025-10-07T21:29:57+0900",
+      "body": "Thanks for your reply that helps me understand how the feature works.\nI tend to keep notes about plugins that I use, or intend to use, and with your permission, will add your last 3 paragraphs to them.\nMy current project has Trihan's plugin imbedded fairly deeply, but I intend to use yours for the next one (which might be done concurrently with what is now the current project)."
+    },
+    {
+      "post_id": "js-post-1532934",
+      "author": "Solar_Flare",
+      "date": "2025-10-10T02:32:42+0900",
+      "body": "I was trying to figure out if it was safe to set the \"Remembered Troops\" value to 2 when I have only 4 possible encounters, 2 of which don't meet the encounter conditions (eg, they require a different region than the current one, though I also have some custom enconter conditions in my game).\nSo, to figure it out, I looked at the code and spotted the bug you just fixed (the one you two were discussing a couple days ago).\nWith that fixed, I can see that it's trying to correct for the case where there aren't enough encounters to fill the memory. But even then, I don't think it'll work very well, unless I'm missing something else (I didn't look at everything in detail, only spotted that one thing). For example, if you have 10 encounters, 2 of which are on the entire map and the rest of which all have different region requirements, and you set remembered troops to 2… what happens? My possibly-naïve code reading suggests that, as long as you don't enter one of the regions, you'll get at most 2 encounters and then no more – because after getting each of the entire map encounters once, no encounter meets its conditions."
+    },
+    {
+      "post_id": "js-post-1532973",
+      "author": "ATT_Turan",
+      "date": "2025-10-10T10:37:20+0900",
+      "body": "Solar_Flare said:\nWith that fixed, I can see that it's trying to correct for the case where there aren't enough encounters to fill the memory. But even then, I don't think it'll work very well, unless I'm missing something else\nClick to expand...\nYou may have missed my note in the documentation\nIt specifically says that the user needs to manage that by making sure there are enough troops in a region-divided map when using encounter remembering.\nI could absolutely add calculations that account for it, but I'm leery of spending more time than it's worth on a plugin that I didn't even know anyone was using. You may notice you are the first person to request this feature (and only the second person to indicate they're using it at all, both of which happened this week, a year and a half after the plugin released).\nSo if I get some free time, I may refine that bit to account for the troop lists as filtered by regions. Or I may do some other plugin inspired by a different request to drift off into the void"
+    },
+    {
+      "post_id": "js-post-1532976",
+      "author": "Solar_Flare",
+      "date": "2025-10-10T12:15:14+0900",
+      "body": "I did miss that note in the documentation, even after reading through it. At least it's mentioned, I suppose.\nI did really want to set it to 2 even though, under certain conditions, one of my regions only has 2 encounters (there are 2 others, but they are subject to special conditions, so if those conditions aren't met there's only 2 total), because every\nother\nregion has more than 2. But, it's not that big of a deal to leave it at 1."
+    },
+    {
+      "post_id": "js-post-1532977",
+      "author": "Piyan Glupak",
+      "date": "2025-10-10T13:39:03+0900",
+      "body": "On bit of a tangent, I have been trying out compatibility with a couple of other random encounter plugins. Neither caused caused the game to crash when used with this plugin.\nUnfortunately, Maliki79's MalMZ_EncounterConditions (which lets you assign conditions for each troop to appear on the map) doesn't work when used with this plugin, but your's still does.\nEdit of paragraph above\n: It looks as if I might have been incorrect. Maliki79's Encounter Conditions does seem to be working with your plugin. This is very useful.\n2nd Edit\n: Put Malkini79's plugin above ATT_Turan's!\nTrihan's RandomEncounters works with this one, and vica versa. The features of yours that I tried were the note-tag that avoids random encounters on a map after the party reaches a chosen level, your note-tag to change the frequency of encounters between regions of the same map, and your parameter variable that affects the number of encounters for all maps. I tested Trihan's regional encounter rates, including the option of using a variable for one region of a particular map.\nI think the nuances of using both your and Trihan's encounter plugins in the same project need a bit of getting your head round, at least for someone like myself! For a path with few encounters out of a dungeon that has treasure and other goodies in more 'lively' regions, yours has the edge. For maps that have a region that you want to alter within the game, leaving other regions and maps unaltered, Trihan's has a lot to offer.\nSo far, I only tried this in MZ because I think that I will be using it more than MV for new projects.\n3rd Edit\n: Converted my current project to use this plugin (also using Maliki79's). Features that I use include the global parameter for changing all encounter rates, adjustments between encounter rates for regions on the same map, level-cap on encounters for the undergound passage from the inn to outside the town. I like the feature that you don't get encounters using the same troop immediately. Haven't tried using the encounter gauge because it might not suit my game.\nWell done, and thanks again to\n@ATT_Turan\nfor an excellent plugin!"
+    },
+    {
+      "post_id": "js-post-1535120",
+      "author": "Solar_Flare",
+      "date": "2025-10-30T00:15:00+0900",
+      "body": "Just noting a minor issue I experienced with your plugin: when running an Event Test from a Troop Event, the game crashed. I made the following change and it worked, not sure if this is the best way to fix it though:\nDiff:\n@@ -444,7 +444,7 @@ Scene_Map.prototype.updateEncounterGauge = function()\n \n Scene_Map.prototype.onMapLoaded = function() \n {\n-    if (this._transfer) \n+    if (this._transfer && $dataMap && $dataMap.meta) ^M\n        {\n         $gamePlayer.performTransfer();\nThough since the plugin has no bearing on the running of events, I suppose you could also temporarily disable it if you wanted to use Event Test mode."
+    }
+  ]
+}

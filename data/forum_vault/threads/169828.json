@@ -1,0 +1,59 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/subroutines-within-script.169828",
+  "title": "MZ Subroutines within script",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumプラグイン",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T22:20:57.416106+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1453569",
+      "author": "courser242",
+      "date": "2024-06-27T10:07:16+0900",
+      "body": "So basically, I have a huge amount of if/else processing to do, and I'm referencing arrays of objects so I have no choice but to use scripts to do so. The processing could be broken into several broad categories, and I'd rather make a separate common event to handle each broad category instead of making a single, massive, confusing (for me) if/else block handling each and every condition and sub-condition.\nBut unfortunately, I'm not seeing a way to call a common event through script that works the same way as when you use RPG Maker's (MZ) built-in command. I need the call to act like a subroutine, processing within the first script, then returning to that script and letting it continue from the jumping-off point.\nAs an alternative, I tried using the script for \"jump to label.\" I checked the script call database, but I'm not understanding how to \"set\" the label (for MZ), only to jump to it. And I can't get it to jump to a label defined outside of the script. The instructions aren't as clear as they are for MV, or more likely my newb-brain just isn't getting it yet.\nAnyway , I'd be fine if anyone could offer any solution that would work the way I've described. Thanks in advance."
+    },
+    {
+      "post_id": "js-post-1454765",
+      "author": "myenemy",
+      "date": "2024-07-03T16:36:46+0900",
+      "body": "This is the function the editor runs when calling a common event:\nGame_Interpreter.prototype.command117 = function(params) {\nconst commonEvent = $dataCommonEvents[params[0]];\nif (commonEvent) {\nconst eventId = this.isOnCurrentMap() ? this._eventId : 0;\nthis.setupChild(commonEvent.list, eventId);\n}\nreturn true;\n};\nrmmz_objects.js:10071 (on 1.0.2)\nIt picks the common event from the list, then makes sure it's not empty, and if the player is not transitioning maps for example, and then it adds it to the list of executing events in the map. You basically need to make sure to run it under the same conditions for it to work the same.\nThen, for the other question, the labeling function is part of the event itself, so we only get a \"true\" value from running it as a script. There seems to be some kind of per event page array of labels, each defined as\n{\n\"code\": 118,\n\"indent\": 0,\n\"parameters\": [\n\"This is a label\"\n]\n}\nSo you'd have to dynamically edit your $dataMap and reload your $gameMap every single time you add one. That, or simply sort and group the code in functions and run them in proper order."
+    },
+    {
+      "post_id": "js-post-1454795",
+      "author": "utunnels",
+      "date": "2024-07-03T19:00:04+0900",
+      "body": "RMMV - Call common events via script\nIt seems, by calling $gameTemp.reserveCommonEvent multiple times in a row, only the last one is actually execute. Besides, the common event is reserved, means it is only called after current script has finished. So if you want to call multiple common events via script,  or execute them right...\nforums.rpgmakerweb.com\nOh I just saw your post after I posted my own. lol\nWhat a coincidence.\nI'm using mv, but I guess they are more or less the same."
+    },
+    {
+      "post_id": "js-post-1454882",
+      "author": "ATT_Turan",
+      "date": "2024-07-04T01:18:57+0900",
+      "body": "It seems (without seeing samples of your work) that what you're doing might benefit from outsourcing some of the script calls (or even events) to functions in a plugin file.\nThat way, you can call whatever you need and continue with the next event command.\nAlternatively, you can de-modularize and instead of calling other events, just paste their commands into the appropriate places in your first event."
+    },
+    {
+      "post_id": "js-post-1454945",
+      "author": "courser242",
+      "date": "2024-07-04T05:59:44+0900",
+      "body": "Thanks all for your responses!\nYes, it seems function calls to a plugin would be the way to go. Unfortunately, it's been 20+ years since I had a programming class, and in my few weeks with RPG Maker I'm just now learning how to import and use plugins without breaking things lol, much less creating them myself.\nBut it'd be worth it to learn, and I'm sure the process is easier than I make it out to be. I learned Java (not script) back in the day, and I remember it being fairly easy to define a class and functions. Just gotta learn the syntax for Javascript.\nIn the meantime, my current massive if/else block-in-progress isn't quite as bad to work with as I'd thought, so long as I go out of my way to format it so even a dunce like me can follow along lol. Anyway, appreciate the input!\nIf I could ask one more quick question... I'm not too sure how plugins interact in RPG Maker. As in, if I import a plugin, then write a script referencing it... does my script just recognize the plugin is 'there'? Or do I need to include a header or some such to import it directly into the script?"
+    },
+    {
+      "post_id": "js-post-1455067",
+      "author": "myenemy",
+      "date": "2024-07-04T17:19:03+0900",
+      "body": "There's general concensus on a global variable, \"Imported\" to set if a plugin has been already read or not by the editor. It's used for plugin extensions.\nvar Imported = Imported || {};\nImported.myPlugin = true;\nThere are many other ways to find it, but it's the easiest to do it that way.\nIf there are more global variables set or modified in the first plugin, you can use them after checking they are there.\nFor example...\nif (Imported.myPlugin)\n{\n//Do stuff\n}\nor\nif ($gameParty.parameterAddedOnAPluginSetAboveThis)\n{\n//Do stuff\n}"
+    },
+    {
+      "post_id": "js-post-1455220",
+      "author": "ATT_Turan",
+      "date": "2024-07-05T12:01:52+0900",
+      "body": "courser242 said:\nI'm not too sure how plugins interact in RPG Maker. As in, if I import a plugin, then write a script referencing it... does my script just recognize the plugin is 'there'? Or do I need to include a header or some such to import it directly into the script?\nClick to expand...\nI think this question is different from what\n@myenemy\nanswered.\nThe answer is that no, you don't need to do anything. All js files included in the project can use code from each other; you can just call functions and reference objects from the core files within your plugin. And\nvice versa\nbetween two plugins.\nThere's no #include or anything like that.\nThe answer above is giving a way to check whether a specific other plugin has been installed, but it's not necessary to reference its code."
+    },
+    {
+      "post_id": "js-post-1455245",
+      "author": "courser242",
+      "date": "2024-07-05T15:26:19+0900",
+      "body": "Ok, that helps. Thanks to all who answered!"
+    }
+  ]
+}

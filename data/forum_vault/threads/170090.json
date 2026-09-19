@@ -1,0 +1,101 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/symphony-style-level-up-music.170090",
+  "title": "MZ 'Symphony Style' Level Up Music",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T22:20:55.924922+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1455652",
+      "author": "Drewster237",
+      "date": "2024-07-07T07:36:08+0900",
+      "body": "Okay, this is a VERY hard thing to put into words, but basically I want a plugin that plays a base level up track, and depending on who levels up, plays different sound layers for the different actors. Basically, just check what actors levelled up, and then at the end, all play their sound layers all at once, creating a symphony of music.\nSomething like what is shown in this video:\nI've tried fiddling with existing plugins like\nthis one by Aloe Guvna\n, but no dice.\nIf anyone could even point me in the right direction, that would be awesome!\nThanks"
+    },
+    {
+      "post_id": "js-post-1455671",
+      "author": "ATT_Turan",
+      "date": "2024-07-07T09:39:40+0900",
+      "body": "MZ's audio functions by default only play one ME at a time.\nRather than mess with that and have unexpected consequences in the rest of your game, I think it's easier to use an audio editor to create the different possible permutations of tracks as separate files, then use conditionals to see which one should get played.\nAre you using a plugin for a victory aftermath on the battle scene, or the default message window on the map afterward?"
+    },
+    {
+      "post_id": "js-post-1455674",
+      "author": "Drewster237",
+      "date": "2024-07-07T09:54:04+0900",
+      "body": "ATT_Turan said:\nMZ's audio functions by default only play one ME at a time.\nRather than mess with that and have unexpected consequences in the rest of your game, I think it's easier to use an audio editor to create the different possible permutations of tracks as separate files, then use conditionals to see which one should get played.\nAre you using a plugin for a victory aftermath on the battle scene, or the default message window on the map afterward?\nClick to expand...\nI was also thinking the combinations method could work.\nI'm using a victory aftermath, so it might be more difficult, although the plugin i mentioned can already handle playing level up music in the aftermath section."
+    },
+    {
+      "post_id": "js-post-1455675",
+      "author": "ATT_Turan",
+      "date": "2024-07-07T09:56:50+0900",
+      "body": "Drewster237 said:\nI'm using a victory aftermath\nClick to expand...\nOkay...that's not an immensely helpful answer, but I suppose I could have been more exacting in the question of my wording\nWhich aftermath plugin are you using\n, because doing this would require modifying the code for it."
+    },
+    {
+      "post_id": "js-post-1455676",
+      "author": "Drewster237",
+      "date": "2024-07-07T10:02:26+0900",
+      "body": "ATT_Turan said:\nWhich aftermath plugin are you using\n, because doing this would require modifying the code for it.\nClick to expand...\nsorry about that! I'm using a combo of YEP_VictoryAftermath, YEP_X_AftermathLevelUp, and the aforementioned AL0E_YEP_AftermathLevelUp_SE"
+    },
+    {
+      "post_id": "js-post-1455677",
+      "author": "ATT_Turan",
+      "date": "2024-07-07T10:31:17+0900",
+      "body": "Try this, not tested. Paste the below into a text editor, save as a *.js file, include as a plugin beneath the Aftermath Level Up.\nCode:\nvar origVictoryPostLevel = BattleManager.prepareVictoryPostLevel;\nBattleManager.prepareVictoryPostLevel = function()\n{\n    origVictoryPostLevel.call(this);\n\n    if (this._leveledActors.length)\n    {\n        let actorList = this._leveledActors;\n        actorList.sort((a, b) => a.name() - b.name());\n        let musicName = \"\";\n        actorList.forEach(actor => musicName += actor.name());\n        Yanfly.Param.VABgmName = musicName;\n    }\n};\nThen, in the Victory Aftermath plugin, take line 342 and cut it, pasting it after line 344 (before the closing brace).\nThis will look for an audio track in your BGM folder that has the names of the actors in alphabetical order. Example: HaroldLuciusTherese.ogg"
+    },
+    {
+      "post_id": "js-post-1455680",
+      "author": "Drewster237",
+      "date": "2024-07-07T11:01:34+0900",
+      "body": "ATT_Turan said:\nTry this, not tested. Paste the below into a text editor, save as a *.js file, include as a plugin beneath the Aftermath Level Up.\nClick to expand...\nThank you!\nThis works so well! It's awesome as is, but is there a way to make it play after the victory music? If not, that's completely fine, because this little plugin is awesome!"
+    },
+    {
+      "post_id": "js-post-1455683",
+      "author": "ATT_Turan",
+      "date": "2024-07-07T11:50:36+0900",
+      "body": "Erm...when? The Yanfly plugin you're using is written to play one track, defined in the Victory BGM plugin parameter.\nSo of course anything is possible, but you'd have to say exactly\nwhen\nyou want it played and stick a new function in there to change the music. By default, there is no \"after the victory music\" - the victory music goes back to the map music."
+    },
+    {
+      "post_id": "js-post-1455686",
+      "author": "Drewster237",
+      "date": "2024-07-07T11:58:42+0900",
+      "body": "ATT_Turan said:\nexactly\nwhen\nyou want it played and stick a new function in there to change the music.\nClick to expand...\nOkay, so after looking in the code, there's a spot with all the level up display functions. If possible, could you call the level up music when the level up display is called? The level up code is around line 415 of the victory aftermath plugin."
+    },
+    {
+      "post_id": "js-post-1455687",
+      "author": "ATT_Turan",
+      "date": "2024-07-07T12:10:20+0900",
+      "body": "No, it's not\nThe only thing done around line 415 is changing whether the engine prints level up information in a message window or not, there's nothing there to make it start doing so.\nBut I still don't really get the point - drawing the experience screen happens almost instantaneously. The only time difference between the code I gave you and what you're asking for is the length of the Cheer Wait plugin parameter (by default, a second and a half).\nSo unless you plan to extend that way out and make the player watch their cheering actors for several seconds just to listen to the music, I don't see the difference."
+    },
+    {
+      "post_id": "js-post-1455697",
+      "author": "Drewster237",
+      "date": "2024-07-07T13:00:31+0900",
+      "body": "ATT_Turan said:\nThe only time difference between the code I gave you and what you're asking for is the length of the Cheer Wait plugin parameter\nClick to expand...\ntrue, and sorry about the code mix up, I'm still learning lol\nIt would be nice to have the victory music play, even for a second and a half, but if you can't do it, I completely understand"
+    },
+    {
+      "post_id": "js-post-1455720",
+      "author": "TheAM-Dol",
+      "date": "2024-07-07T17:51:38+0900",
+      "body": "I try not to back-seat dev, or at least I don't do it unless I can also offer an answer to the OP. Unfortunately that's not the case here.\nI just wanted to say that this sounds like a tremendous amount of effort for a very low pay-off. Is this something that would really elevate your game to becoming something special, or could you use that time making other aspects of your game far better?\nThat's not to discourage you from adding fun little unnecessary bits into your game, but I would take some time to consider whether the time investment amounts to a worthy addition to the game.\nAnyways, regardless, good luck with the music making."
+    },
+    {
+      "post_id": "js-post-1455749",
+      "author": "Drewster237",
+      "date": "2024-07-07T22:44:01+0900",
+      "body": "TheAM-Dol said:\nIs this something that would really elevate your game to becoming something special, or could you use that time making other aspects of your game far better?\nClick to expand...\nHonestly, I'm happy with what was provided it's fantastic, and yeah, I feel like it would make the game pretty special, even if it is a very small detail."
+    },
+    {
+      "post_id": "js-post-1455796",
+      "author": "ATT_Turan",
+      "date": "2024-07-08T03:09:45+0900",
+      "body": "Since you're assembling the files in an audio editor anyway, why don't you just put the same second and a half at the beginning of all of them?\nSeems like that copy and pasting would be much easier than writing new code and changing what I already gave you in order to play one file and then a second one immediately afterward."
+    },
+    {
+      "post_id": "js-post-1455798",
+      "author": "Drewster237",
+      "date": "2024-07-08T03:17:06+0900",
+      "body": "ATT_Turan said:\nwhy don't you just put the same second and a half at the beginning of all of them?\nClick to expand...\nThis is an amazing idea! I can't believe I didn't think of that"
+    }
+  ]
+}
