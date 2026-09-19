@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-there-any-way-to-guarantee-an-escape-in-rpgm2k-failing-that-is-it-possible-to-make-a-tried-to-escape-branch.162108",
+  "title": "Is there any way to guarantee an escape in RPG M2K? Failing that, is it possible to make a \"tried to escape\" branch?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T18:38:04.995603+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1389624",
+      "author": "taiguerrobocopi",
+      "date": "2023-10-18T10:33:14+0900",
+      "body": "I was planning on a boss fight with an 100% escape rate on the first turn, as the boss is sparing the player out of pity. From the second turn onwards he attacks normally, because the assumption is that any action that the player takes on the first turn that isn't \"Escape\" is a refusal to accept the mercy.\nTrouble is, one third of the time I press \"Escape\" and it doesn't work, and the boss enters the dialogue of the player trying to fight even though he isn't.\nI tried setting enemy speed to 1 to see if it helps but it doesn't seem like it does. (There is a second form to the boss that has 400 speed, but it doesn't spawn until the first form is destroyed... could that be interfering? Do inactive or dead forms count as obstacles?)\nAlternatively, is there a way to make it so if the player tries but fails to escape, the boss doesn't react? I thought about making it so that there is a fake \"first form\" of the boss that is there just to take damage from an attack, and activates his pattern once hp is less than 100%, that way the player would have infinite turns to try to escape until it succeeds, but that would allow for the player to have infinite turns to cast buffs before the battle if they want to go that route, as well. Or cas skills that do zero damage such as blinding the boss before attacking.\nIf push comes to shove I suppose I could give the player a \"Show Choices\" menu to escape, or a one-battle \"surrender\" skill or something, but I think those solutions feel kind of janky."
+    },
+    {
+      "post_id": "js-post-1389766",
+      "author": "DevRPG2k",
+      "date": "2023-10-19T00:54:48+0900",
+      "body": "From what I understand you are specifically using RPG Maker 2000, only in version 2003 we can change the battle commands.\nI can't say anything about what I remember, but I believe it's something related to the battle events to resolve.\nAs soon as I get home I will try to find some time to study a solution."
+    },
+    {
+      "post_id": "js-post-1390254",
+      "author": "taiguerrobocopi",
+      "date": "2023-10-20T20:17:37+0900",
+      "body": "Dev_With_Coffee said:\nFrom what I understand you are specifically using RPG Maker 2000, only in version 2003 we can change the battle commands.\nI can't say anything about what I remember, but I believe it's something related to the battle events to resolve.\nAs soon as I get home I will try to find some time to study a solution.\nClick to expand...\nYa, I'm using 2000, basically because I don't want to use the ATB.\nEither way, I found a jank solution that still works; digging around it seems escape rates are roughly calculated in a way that if your combined party's agility is over twice as fast as the combined agility of all enemies, the chances of escaping are 100%, and also the way RPGM2000 is coded, the escape rates are defined at the very start of the battle and aren't updated\nSo I created extra four fake characters each with a agility of 999, then just before the battle starts I remove all party members (saving them into variables), and add the four fake characters in, then at turn 0 remove all four fake characters and re-add the original party in using the variables.\nThat basically means that my party at all times during the battle can escape as if they had a combined agility of 3996, but during the actual moves in battle they have their natural AGI and are still slower than the boss.\nThe issue then is that they can always 100% escape at all times, even if they decide to fight. I'd rather they were prevented from doing so, but I'll just cut my losses and add a switch at turn 1 that changes the event if they do so with the boss not letting them go and re-starting the battle."
+    },
+    {
+      "post_id": "js-post-1390471",
+      "author": "DevRPG2k",
+      "date": "2023-10-21T04:41:32+0900",
+      "body": "I was just able to test it now, the solution is actually simple, using the turn checking system for the monster's actions.\nThe dialogue is in the \"troop\" events tab."
+    }
+  ]
+}

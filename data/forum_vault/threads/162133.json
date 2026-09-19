@@ -1,0 +1,41 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/is-there-a-way-to-use-the-wait-command-without-freezing-the-entire-game-inside-of-an-event.162133",
+  "title": "Is there a way to use the 'wait' command without freezing the entire game inside of an event?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-19T18:38:05.309483+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1389865",
+      "author": "WeaselWeaselW",
+      "date": "2023-10-19T05:23:33+0900",
+      "body": "Basically the title. Say an event is triggered, in which a series of two things happen, one after an other. And there is a 'wait 1 sec' command in between the two. If I run the game, the player completely freezes until that wait time is over - but I don't want that to happen. Is there a way to only pause the EVENT ITSELF, but not the rest of the game?"
+    },
+    {
+      "post_id": "js-post-1389867",
+      "author": "midnightzelda",
+      "date": "2023-10-19T05:26:45+0900",
+      "body": "Also make sure wait for completion is ticked off, sorry for the confusion. Also realised this was for rpg maker 2000. Never used that one before but there should still be a movement route for events so the logic may apply. sorry if I couldn't be any more help."
+    },
+    {
+      "post_id": "js-post-1389884",
+      "author": "DrXGB",
+      "date": "2023-10-19T06:20:44+0900",
+      "body": "Yes, parallel process events are made for this. You can call it via switch by map events or common events.\nExample:\nAnd then you call simply turning the switch ON:\nAlso you can use a lock technique like this:\nOr a more elegant solution:"
+    },
+    {
+      "post_id": "js-post-1390001",
+      "author": "Cherry",
+      "date": "2023-10-19T18:53:09+0900",
+      "body": "You need to understand that there are several event interpreters scheduled to run in parallel. (Technically not exactly in parallel because execution is single-threaded, but each interpreter will yield execution to other interpreters after either 10,000 lines of code or when certain commands are reached which result in waiting time.)\nThere is one main interpreter, and then there is another interpreter for every parallel process event that exists.\nThe main interpreter is special in that it is designed to be the active thing the player is currently interacting with. If a player interacts with an event on the map by pressing the decision key for example, then that event is loaded into the main interpreter. If there is nothing else loaded in the main interpreter but there is an \"autostart\" event somewhere on the map or in the common events, that \"Autostart\" event is loaded into main interpreter instead (if there are multiple such events, the next one is loaded once the previous one finished, and after the last one it loops back to the first). While some event is executed in the main interpreter, the player cannot walk around or do other actions. It is designed for things which are inherently a player-blocking operation like interactions with NPCs or cutscenes.\nThis also explains the difference between \"Autostart\" and \"Parallel Process\" - the \"Autostart\" events block the player interactions and also any other autostart events because they are loaded into the main interpreter, while \"Parallel Process\" events can run in parallel to the main interpreter and to each other because each such event has its own interpreter. This is also why having an \"Autostart\" event that never ends because its start condition is always met will \"hang\" the game, because it is essentially a blocking infinite loop.\nTherefore, if you have an event that runs in the main interpreter because it is either set as \"Autostart\" or activated by a player interaction with an event on the map, then no other player interaction can occur until that event finished (this includes times during which a \"Wait\" command in that event is active).\nIf you don't want that, then instead of having the code directly in that event, you need to use a parallel process event (either on the map or as a common event) which you activate via a switch from the trigger event. Don't forget to turn the switch back off at the end though, otherwise the parallel process will loop.\nNote that simply calling the parallel process event from the trigger event will not work because then even though the event code that will run during the call is defined in an event otherwise set as \"parallel process\", it is not run from its own parallel interpreter but from the main interpreter from which it was called!\nFor a full technical explanation, check out my article\nhere\n. (In that article I called the interpreters \"workers\" instead.)"
+    },
+    {
+      "post_id": "js-post-1390115",
+      "author": "WeaselWeaselW",
+      "date": "2023-10-20T02:06:04+0900",
+      "body": "Cherry said:\nYou need to understand that there are several event interpreters scheduled to run in parallel. (Technically not exactly in parallel because execution is single-threaded, but each interpreter will yield execution to other interpreters after either 10,000 lines of code or when certain commands are reached which result in waiting time.)\nThere is one main interpreter, and then there is another interpreter for every parallel process event that exists.\nThe main interpreter is special in that it is designed to be the active thing the player is currently interacting with. If a player interacts with an event on the map by pressing the decision key for example, then that event is loaded into the main interpreter. If there is nothing else loaded in the main interpreter but there is an \"autostart\" event somewhere on the map or in the common events, that \"Autostart\" event is loaded into main interpreter instead (if there are multiple such events, the next one is loaded once the previous one finished, and after the last one it loops back to the first). While some event is executed in the main interpreter, the player cannot walk around or do other actions. It is designed for things which are inherently a player-blocking operation like interactions with NPCs or cutscenes.\nThis also explains the difference between \"Autostart\" and \"Parallel Process\" - the \"Autostart\" events block the player interactions and also any other autostart events because they are loaded into the main interpreter, while \"Parallel Process\" events can run in parallel to the main interpreter and to each other because each such event has its own interpreter. This is also why having an \"Autostart\" event that never ends because its start condition is always met will \"hang\" the game, because it is essentially a blocking infinite loop.\nTherefore, if you have an event that runs in the main interpreter because it is either set as \"Autostart\" or activated by a player interaction with an event on the map, then no other player interaction can occur until that event finished (this includes times during which a \"Wait\" command in that event is active).\nIf you don't want that, then instead of having the code directly in that event, you need to use a parallel process event (either on the map or as a common event) which you activate via a switch from the trigger event. Don't forget to turn the switch back off at the end though, otherwise the parallel process will loop.\nNote that simply calling the parallel process event from the trigger event will not work because then even though the event code that will run during the call is defined in an event otherwise set as \"parallel process\", it is not run from its own parallel interpreter but from the main interpreter from which it was called!\nFor a full technical explanation, check out my article\nhere\n. (In that article I called the interpreters \"workers\" instead.)\nClick to expand...\nThanks! This was exactly what I was looking for."
+    }
+  ]
+}
