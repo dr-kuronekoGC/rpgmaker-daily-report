@@ -1,0 +1,65 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/how-would-i-trigger-a-common-event-when-player-health-mind-stat-drops-below-a-certain-number.169110",
+  "title": "How would I trigger a common event when player health/mind stat drops below a certain number?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-20T04:57:33.544600+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1447673",
+      "author": "GrimRose",
+      "date": "2024-05-30T11:34:36+0900",
+      "body": "I've just recently started on my first project in Rpg Maker Mv. I have two status bars for the player character. (health/hp and mind instead of mp)\nIf either Mind/Health drops to zero it will trigger a game over screen. I also wanted to have it where if the health/mind stat drops below a certain number it will have an effect on the player character. For example if the Max health/Mind is 20, the effect would only trigger if the character's health is below 5.\nSpoiler:\nMind/Health Menu\nI was trying to set up a common event that changes the player character sprite/face, plays certain bgs/bgm and adds filter effects over top the screen.\nSpoiler:\nNormal\nSpoiler:\nLow Mind Stat\nI was wondering how I would get the common event to be triggered if the characters health/mind stat drop below 5 and have the common event end/not run if the characters health is above 5. Any suggestions/help would be greatly appreciated."
+    },
+    {
+      "post_id": "js-post-1447713",
+      "author": "Andar",
+      "date": "2024-05-30T17:22:56+0900",
+      "body": "There are two ways to do this.\nthe complicated but better way and the easy but lag-prone way.\nFor the complicated way yoiu simply call a common event on everything that changes the player health after it has changed.\nthis is easy for battles (troop event condition actor health<5% then check the exact value), but you would have to add that call to every event on maps that does damage and to all heaking skills and so on. And it might still cause problems with damaging tiles as they don't have such triggers.\nThe easy way is to make a common event parallel process with a wait(5) and then check the current health the normal way (control variable and conditional branch).\nThe problem with this is that if your game uses too many parallel processes, it will cause lag.\nYou'll have to decide for yourself which way to go based on the rest of your game"
+    },
+    {
+      "post_id": "js-post-1447854",
+      "author": "GrimRose",
+      "date": "2024-05-31T06:41:02+0900",
+      "body": "Andar said:\nThere are two ways to do this.\nthe complicated but better way and the easy but lag-prone way.\nFor the complicated way yoiu simply call a common event on everything that changes the player health after it has changed.\nthis is easy for battles (troop event condition actor health<5% then check the exact value), but you would have to add that call to every event on maps that does damage and to all heaking skills and so on. And it might still cause problems with damaging tiles as they don't have such triggers.\nThe easy way is to make a common event parallel process with a wait(5) and then check the current health the normal way (control variable and conditional branch).\nThe problem with this is that if your game uses too many parallel processes, it will cause lag.\nYou'll have to decide for yourself which way to go based on the rest of your game\nClick to expand...\nThe game wouldn't have battles. I was planning on having certain enemies chase players and  have the players health/mind drop if the event/enemy touches them.\nThat or certain puzzles/traps if activated/done wrong would do damage. I would also include certain items the player can pick up/find that can restore health/mind.\nI know a bit about conditional branches, but still a bit unsure how variables work."
+    },
+    {
+      "post_id": "js-post-1447855",
+      "author": "gstv87",
+      "date": "2024-05-31T06:53:34+0900",
+      "body": "GrimRose said:\nthe event/enemy touches them.\nClick to expand...\nthere.\nhook everything to the same common event that starts with the condition to check for sanity.\nif sane, subtract.\nif below threshold, handle.\nit's called common event precisely for that."
+    },
+    {
+      "post_id": "js-post-1447880",
+      "author": "ATT_Turan",
+      "date": "2024-05-31T09:35:12+0900",
+      "body": "GrimRose said:\nI know a bit about conditional branches, but still a bit unsure how variables work.\nClick to expand...\nThen you probably want to do some tutorials and practice to shore that up before you try to get too far into starting your serious project.\nVariables are a very basic concept, and necessary to be able to use to make a game/story of any complexity.\n(just like in math class, right? x = 4)"
+    },
+    {
+      "post_id": "js-post-1447936",
+      "author": "Andar",
+      "date": "2024-05-31T15:07:59+0900",
+      "body": "GrimRose said:\nbut still a bit unsure how variables work.\nClick to expand...\nsearch the forum for the \"variables guide\" - it is a tutorial game that will show you how to use variables.\nignore that it is for VXAce - as said above, variables are mathematics and mathematics haven't changed in the last four thousand years at all. and control variable is identical for VX/VXA/MV/MZ.\nif you don't find it by searching, it is also linked in my starting point tutorial in my signature."
+    },
+    {
+      "post_id": "js-post-1448128",
+      "author": "GrimRose",
+      "date": "2024-06-01T12:05:09+0900",
+      "body": "I don't know if I did this the most efficient way. But I was able to make it work.\nSpoiler:\nEnemy\nI set a variable that starts at 20 at the beginning of the game and changes based on damage to the player or healing items. Each time an enemy/event does damage, it will check if the variable is below a certain number and if so, it will trigger the event.\nI created a common event that would change the variable, that I also linked to the healing item.\nSpoiler:\nHealing Item\nSpoiler:\nCommon Event"
+    },
+    {
+      "post_id": "js-post-1448131",
+      "author": "GrimRose",
+      "date": "2024-06-01T12:29:33+0900",
+      "body": "gstv87 said:\nthere.\nhook everything to the same common event that starts with the condition to check for sanity.\nif sane, subtract.\nif below threshold, handle.\nit's called common event precisely for that.\nClick to expand...\nI got it to work. Thank you!"
+    },
+    {
+      "post_id": "js-post-1448150",
+      "author": "GrimRose",
+      "date": "2024-06-01T18:32:42+0900",
+      "body": "ATT_Turan said:\nThen you probably want to do some tutorials and practice to shore that up before you try to get too far into starting your serious project.\nVariables are a very basic concept, and necessary to be able to use to make a game/story of any complexity.\n(just like in math class, right? x = 4)\nClick to expand...\nI definitely need to figure out how variables work since I plan on having multiple possible endings/character interactions in game."
+    }
+  ]
+}

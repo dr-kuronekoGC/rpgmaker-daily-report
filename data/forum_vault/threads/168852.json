@@ -1,0 +1,71 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-maker-vn-styled-dialogue-streamline-help.168852",
+  "title": "RPG Maker VN styled dialogue streamline help",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-20T04:57:51.500336+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1445654",
+      "author": "kiriponan",
+      "date": "2024-05-20T17:44:21+0900",
+      "body": "Hello! I've been looking around for best ways to input dialogue in RPG maker but wasn't able to find anything. I've followed a tutorial to put two talking busts like in visual novels where only the person who isn't talking has a dark tint.\nCredit for picrew art：\nhttps://picrew.me/ja/image_maker/2122621\nBut the actual execution looks like this which got messy and confusing very quickly.\nI'm aware that there's Galv's bust plugin but from my understanding is that it can only draw one bust at a time and you will still need a show picture function for the other character. I was just wondering if there was a more efficient/streamlined way to add dialogue (without a paid plugin)\nThank you!"
+    },
+    {
+      "post_id": "js-post-1445657",
+      "author": "Andar",
+      "date": "2024-05-20T18:22:03+0900",
+      "body": "kiriponan said:\nit can only draw one bust at a time and you will still need a show picture function for the other character.\nClick to expand...\nthe problem is that the editor has only one face per show text, so you'll always need a second command for a second bust, no matter what.\nthat you want a changing tint only complicates matter after that.\nPlugins can do a lot, but they can't work miracles - and creating data from nothing would be a miracle.\nyou can request a custom plugin that combines a lot of commands, but you still have to somehow tell them what to do.\nso unless you can come up with a way to give all the info that is in these different event commands in a better way, it will be difficult to do so.\nWhat I can think of to make things easier is to use galv's message busts combined with a third picture:\nyou make a background picture with both busts and permanently tinted, then use galv's plugin to place a second (untinted) bust by show text face, with galv's mirror command to get it to the correct side.\nif you position everything carefully the bust from the plugin/show text would overlay the tinted show picture bust so that it can  no longer be seen. and as soon as the show text is gone, the tinted picture would be visible again.\nyou would still have to use show text for the tinted busts, but the switching between show text would no longer need any other commands, just your show text messages with an additional plugin command to mirror/right/left the active bust."
+    },
+    {
+      "post_id": "js-post-1445658",
+      "author": "Danatoth",
+      "date": "2024-05-20T18:50:46+0900",
+      "body": "There are several really well made plugins for visual novels, but they are all paid unfortunately. If it's a core component of your game it might be worth saving up. As for free stuff, I don't know of any that handle double busts. I personally just use Galv's for the single bust at a time."
+    },
+    {
+      "post_id": "js-post-1445689",
+      "author": "kiriponan",
+      "date": "2024-05-20T22:13:43+0900",
+      "body": "Andar said:\nyou can request a custom plugin that combines a lot of commands, but you still have to somehow tell them what to do.\nso unless you can come up with a way to give all the info that is in these different event commands in a better way, it will be difficult to do so.\nClick to expand...\nThank you so much for the detailed response! This was more or less what I was wondering in terms of streamlining it.  Is there an existing script that has an example on what combining commands looks like?\nAndar said:\nWhat I can think of to make things easier is to use galv's message busts combined with a third picture:\nyou make a background picture with both busts and permanently tinted, then use galv's plugin to place a second (untinted) bust by show text face, with galv's mirror command to get it to the correct side.\nif you position everything carefully the bust from the plugin/show text would overlay the tinted show picture bust so that it can  no longer be seen. and as soon as the show text is gone, the tinted picture would be visible again.\nyou would still have to use show text for the tinted busts, but the switching between show text would no longer need any other commands, just your show text messages with an additional plugin command to mirror/right/left the active bust.\nClick to expand...\nIt took me a few reads until I was able to understand this but ah thank you! That definitely does streamline things.\nI was also wondering how people get the coordinates to draw images instead of just trial/error. Does everyone also just write their text line by line like this?"
+    },
+    {
+      "post_id": "js-post-1445704",
+      "author": "TeiRaven",
+      "date": "2024-05-20T23:03:09+0900",
+      "body": "I don't know if it works in later engines, but in the one I use (RMXP), screen size is fixed at 640x480, so anything I want to line up pixel perfect is a 640x480 image. Perfect bust/faux windowskin/textbox alignment every time. MV doesn't use 640x480, obviously, but the premise may still apply as long as the the game window proportions never change.\nMost of us do text box by box, yes. As mentioned, I use a much older engine and am not totally up to speed on what plugins the kids are using these days. There was (is still?) something called Batch Text Entry that allows you to fill several text boxes at once, but if you need event commands between (such as for busts) you're probably better off with normal Show Text.\nIt would take a kajillion Common Events, but if your cast is small you could possibly create common events for your bust changes. That way you'd be able to set them up once and easily use them with a Call Commin Event. But if the more characters you have to deal with, the faster that will get very unwieldy."
+    },
+    {
+      "post_id": "js-post-1445716",
+      "author": "kiriponan",
+      "date": "2024-05-21T00:07:51+0900",
+      "body": "TeiRaven said:\nI don't know if it works in later engines, but in the one I use (RMXP), screen size is fixed at 640x480, so anything I want to line up pixel perfect is a 640x480 image. Perfect bust/faux windowskin/textbox alignment every time. MV doesn't use 640x480, obviously, but the premise may still apply as long as the the game window proportions never change.\nClick to expand...\nDo you save your images in comparison to the size of the screen? :0 like even if it was a bust image you would save it as a 640x480 but position the bust to where you would want it to be with the rest of the space empty?\nTeiRaven said:\nMost of us do text box by box, yes. As mentioned, I use a much older engine and am not totally up to speed on what plugins the kids are using these days. There was (is still?) something called Batch Text Entry that allows you to fill several text boxes at once, but if you need event commands between (such as for busts) you're probably better off with normal Show Text.\nIt would take a kajillion Common Events, but if your cast is small you could possibly create common events for your bust changes. That way you'd be able to set them up once and easily use them with a Call Commin Event. But if the more characters you have to deal with, the faster that will get very unwieldy.\nClick to expand...\nomg I had no idea batch text entry was a thing thank you! Is there a way to call for event commands in batch entry?"
+    },
+    {
+      "post_id": "js-post-1445725",
+      "author": "TeiRaven",
+      "date": "2024-05-21T01:26:36+0900",
+      "body": "Yep! For example:\nThe document that holds Rosie's portrait is 640x480, with the portrait positioned right where I want it. I usually stick a screenshot of a textbox on my canvas for reference, then delete it once I'm happy with the portrait placement. That way, I can just ShowPicture: \"RosiePortrait\" and not have to fuss around with my coordinates--she'll line up in relation to the textbox correctly every time. No extra typing, no muss, no fuss XD\nAlas no, I don't believe you can add event commands in Batch Text! It'll just string text boxes end to end for you. You\nshould\nbe able to go back and add event commands between them afterwards, I think--I don't use Batch Text much because XP has a weird glitch with textboxes. There was room in them for 4 lines of text, but the program stopped you typing at 3. You could get around that by using Batch Text Entry, but if you tried to edit those 4-line boxes afterwards, it was confused by the fourth line and you couldn't type in them. Very definitely a bug, not a feature, so hopefully MV doesn't have that same issue and Batch Text helps smooth out your workflow the way you want!"
+    },
+    {
+      "post_id": "js-post-1445837",
+      "author": "Andar",
+      "date": "2024-05-21T09:06:57+0900",
+      "body": "kiriponan said:\nI was also wondering how people get the coordinates to draw images instead of just trial/error.\nClick to expand...\nfor cases like positioning two pictures side by side, you are unfortunately down to trial and error.\nbut there is a reason why the show picture comand can be switched between center and upper left:\nIf you use center anchor it doesn't matter how large a picture is, you can always center it on the screen by using half-screen coordinates for placement.\nso if your screen is 640x480 and you use center position to targets 320, 240 then the center of the picture will be placed on the center of the screen, no matter how large the picture is."
+    },
+    {
+      "post_id": "js-post-1445884",
+      "author": "TheAM-Dol",
+      "date": "2024-05-21T13:01:35+0900",
+      "body": "I have a few suggestions that may help you.\nI recall there being some sort of third party game text input software. I think it was called ink? It is not something I use, but I do recall someone making an integration for MV/MZ.\nA quick Google search turned up this:\nInk Integration\nAbout This plugin integrates Ink with RPG Maker MZ/MV. This allows you to write all your dialogue in Ink and display it using a simple plugin command, which for me at least is much easier than managing message box events!  Features  Run Ink scripts starting from arbitrary knots/stitches Start...\nforums.rpgmakerweb.com\nBut actually I don't think that was the specific integration I was thinking of. I could have sworn the one I was thinking of had an explanation for the third party software.\nRegardless, you could probably do some research into this, as it may simplify the text input workflow.\nFor controlling pictures, I built an event system for my game to simplify this process.\nBasically at the start of every cutscene, 2 parallel common events get enabled.\n1 common event control's the main character's bust.\nThe second common event controls the NPC's bust.\nThe change is handled by changing the value of a few variables.\n1 variable defines which NPC is being spoken to. Changing this value changes the NPC's bust set that gets called.\nAnother variable is used to define what reaction the NPC displays. Changing this changes their expression.\nFinally for the NPCs is one variable to control the tint. I set up 4 pre-defined picture tints (Normal, dimmed, flash bright and fade to normal, flash bright and fade to dim). Changing this variable controls the tint of the NPC's picture.\nFor the player it is set up much the same, but with the player's own variables:\n1 variable for the player character's reaction.\n1 variable to control the player's tint.\n(there's also an additional variable to control the player's costume and/or alternate appearances - but this one isn't necessary for this explanation)\nThere are pros and cons to this and it was built specifically for my game so how you want to represent your VN-like moments may differ from me.\nThe pros is that you can simplify your events by just using script calls to set the variable value all on a single line, cleaning things up a lot.\nAdditionally, a huge pro to this is that all of this is handled by only 2 common events, which allows making changes to bust positions, tint, etc very easy later on. I won't have to go through every single cutscene and apply those adjustments.\nThe con with my specific implementation is:\nYou will need to remember (or keep a reference list) of what the value of, say for example, 8 means. Is that the angry reaction or the sad reaction?\n(A better way would be to use conditionals checking for strings, but I kept integers so that changes can be made more quickly, rather than typing out \"angry\")\nThis implementation only allows for 1 NPC on screen at a time.\nYou could instead make it 2 common events, one to check the left side character and the right side character, and just assign the player art as like...value 1 in both.\nHope that at least gives you some ideas."
+    },
+    {
+      "post_id": "js-post-1445886",
+      "author": "ATT_Turan",
+      "date": "2024-05-21T13:09:24+0900",
+      "body": "TheAM-Dol said:\nYou will need to remember (or keep a reference list) of what the value of, say for example, 8 means. Is that the angry reaction or the sad reaction?\nClick to expand...\nAnother (supplemental) option is Yanfly's Message Macros.\nThat allows you to create your own escape codes, then define in the plugin parameters what they mean.\nSo you might make \\fidelangry and it automatically does the correct combination of escape codes.\nYou could even combine it with Hakuen Studio's Escape Codes to create an easy-to-remember macro that refers to an eval, allowing it to run JavaScript. So you could use escape codes in your messages to make the script calls that draw and tint the appropriate pairs of busts, whatever.\nThis is all stuff that will take some time to set up properly but should then save you time when actually making the game."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/rpg-mz-hook-system-animation-help.169128",
+  "title": "[ RPG MZ] Hook System (Animation, Help)",
+  "source": "RPG Maker Web Forum",
+  "category": "Forum質問",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-20T04:57:31.129161+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1447860",
+      "author": "sensen",
+      "date": "2024-05-31T07:28:17+0900",
+      "body": "I have my Hook system ready and functional, the problem is that I don't know how to make the hook, rope, chain, I don't know if it would be easier to do it as an animation in Effeksser or using a sprite...\nI accept any recommendation...\nFor example: when the player throws the hook it lengthens to its maximum point. (In my game I only have it when it reaches the maximum point) not when it returns to the player. And when the hook touches a place to hook, when the player moves towards that place the rope, chain shortens... that is, Zelda style."
+    },
+    {
+      "post_id": "js-post-1447871",
+      "author": "ATT_Turan",
+      "date": "2024-05-31T08:50:30+0900",
+      "body": "This is a little tricky, because it's not really the kind of thing RPG Maker is designed to do.\nUsing either kind of animation will require you to have chains of specific lengths at specific angles. If there's always a specific spot you have to be standing in to grab the hook, that might be fine - say, you know it's always going to be two tiles over and one up (or even if you have just a few different options), you can make an animation that will exactly fit.\nBut if you can grab a hook from different locations and have a different movement arc, an animation can't dynamically adjust to where the actor is. You can use JavaScript commands to draw lines between sprites, and Pixi to create effects, but I don't know if you can use it to create a textured effect like a chain."
+    },
+    {
+      "post_id": "js-post-1447874",
+      "author": "TheAM-Dol",
+      "date": "2024-05-31T09:02:12+0900",
+      "body": "If you aren't using 8 directional sprites, and just using cardinal directions, you might be able to create an old-skool style effect of drawing the chain by spawning events \"chain\" events behind the hook.\nI would imagine in whatever common event (I assume you are using) for your hookshot, you'd just add a loop until the hook's movement is \"blocked\" by checking if the hook is on the same tile as the last loop; if so, break the loop. If not, spawn a chain event.\nThe reverse would basically have to be done when the player character is moving.\nThis technically could also be done with 8 directional sprites assuming it's still grid based, but you'd need to make corner sprites, and alternate the sprite spawning from a whole tile spawn, to spawning 2 sprites with the chain drawn in the diagonal corners. Anyways, it obviously gets more complicated that way.\nSo, really only recommend this for 4 direction, grid based stuff."
+    },
+    {
+      "post_id": "js-post-1447890",
+      "author": "sensen",
+      "date": "2024-05-31T10:02:30+0900",
+      "body": "ATT_Turan said:\nThis is a little tricky, because it's not really the kind of thing RPG Maker is designed to do.\nUsing either kind of animation will require you to have chains of specific lengths at specific angles. If there's always a specific spot you have to be standing in to grab the hook, that might be fine - say, you know it's always going to be two tiles over and one up (or even if you have just a few different options), you can make an animation that will exactly fit.\nBut if you can grab a hook from different locations and have a different movement arc, an animation can't dynamically adjust to where the actor is. You can use JavaScript commands to draw lines between sprites, and Pixi to create effects, but I don't know if you can use it to create a textured effect like a chain.\nClick to expand...\nThank you so much for the idea\nTheAM-Dol said:\nIf you aren't using 8 directional sprites, and just using cardinal directions, you might be able to create an old-skool style effect of drawing the chain by spawning events \"chain\" events behind the hook.\nI would imagine in whatever common event (I assume you are using) for your hookshot, you'd just add a loop until the hook's movement is \"blocked\" by checking if the hook is on the same tile as the last loop; if so, break the loop. If not, spawn a chain event.\nThe reverse would basically have to be done when the player character is moving.\nThis technically could also be done with 8 directional sprites assuming it's still grid based, but you'd need to make corner sprites, and alternate the sprite spawning from a whole tile spawn, to spawning 2 sprites with the chain drawn in the diagonal corners. Anyways, it obviously gets more complicated that way.\nSo, really only recommend this for 4 direction, grid based stuff.\nClick to expand...\nThank you very much, if I was thinking of doing something similar to what you said."
+    }
+  ]
+}

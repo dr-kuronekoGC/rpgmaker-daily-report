@@ -1,0 +1,35 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/troop-condition-not-working.168915",
+  "title": "Troop condition not working?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-20T04:57:49.627625+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1446262",
+      "author": "Harpuia",
+      "date": "2024-05-23T09:07:28+0900",
+      "body": "Hey there.\nI'm trying to re-learn RPG Maker and I'm following\nthis tutorial\nto get a grip about the basics.\nCurrently, I'm stuck trying to make a boss dissapear after it is defeated.\nI tried to pinpoint where the problem is, and I think the problem is in the troop's condition, specially when I want to check if the enemy's HP is 0% or below\nThis is what I have.\nThis is the current Troop's condition (The first one is just a message before launching an specific atttack)\nThis is the event:\nI know Erase event will not permanently delete the event, and for that I should create a new Event Page and activate Self Switch, but still, I don't know how I could do that if I can't seems to be able to detect when the boss is defeated, any idea what could be wrong?"
+    },
+    {
+      "post_id": "js-post-1446268",
+      "author": "Coolie",
+      "date": "2024-05-23T10:26:25+0900",
+      "body": "Considering it is not a battle that can be fled from, simply turn the switch on at the start of the battle. There is no need to wait for the HP of the enemy to be zero to trigger it, since that is a required outcome to avoid a game over.\nYou may need to restructure your event to handle what happens when the switch is on, via another event page. Erasing the event doesn't seem like the right call."
+    },
+    {
+      "post_id": "js-post-1446269",
+      "author": "ATT_Turan",
+      "date": "2024-05-23T10:38:06+0900",
+      "body": "1 - Your troop event isn't happening because the battle ends as soon as the boss dies, the event never has a chance to run. Like\n@Coolie\nsaid, just turn on the switch at turn 0 instead (or do it on the map event, after the Battle Processing command).\n2 - Your conditional branch wouldn't doing anything because it's on a page set to event touch. That can't change anything about the event just sitting there on the map, you'd have to run into it a second time.\n3 - The correct way to do this is to make a second page on the map event that has no graphics or event commands and is action trigger, and give it the condition of the Dragon Slain switch."
+    },
+    {
+      "post_id": "js-post-1446271",
+      "author": "Harpuia",
+      "date": "2024-05-23T10:50:46+0900",
+      "body": "Thanks\n@Coolie\nand\n@ATT_Turan\n, now I have a better understanding on how the event pages works.\nSo in the end I just did the following:\n1. Remove the conditional branch and just left the battle processing and added a condition to turn self switch A to ON\n2. a second event page with nothing in it which is active only if the self switch A is ON.\nNow it is working as intended, thanks a lot"
+    }
+  ]
+}

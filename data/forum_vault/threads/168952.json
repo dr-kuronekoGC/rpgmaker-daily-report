@@ -1,0 +1,119 @@
+{
+  "url": "https://forums.rpgmakerweb.com/threads/on-map-show-picture-image-of-health-bar.168952",
+  "title": "On map show picture image of health bar?",
+  "source": "RPG Maker Web Forum",
+  "category": "Forumその他",
+  "engine": "unknown",
+  "language": "英語",
+  "archived_at": "2026-09-20T04:57:49.251691+00:00",
+  "posts": [
+    {
+      "post_id": "js-post-1446589",
+      "author": "Sakurra",
+      "date": "2024-05-25T01:43:01+0900",
+      "body": "EDIT: Slowly figuring this out. I have a working health bar image. The image is in the top left of the screen. But I want a set HP variable. Currently if the variable is at 0, the bar stays in place. But if I set it to a higher number, it moves. So the question is, how do I make this bar with a set health number? What if I wanted 500 health points for a character? And for the bar to move slower down? I mean I want different life bars, actors/characters health are not equal to 0.\nEdit 2: I'm using this tutorial\n)\nI'd like to learn how to make a health bar on map for a tournament like event. (So it wouldn't be on map all the time)\nI've been looking up tutorials online and videos. I've done similar show picture events before. So I know this can be done with multiple show pictures commands, variables and conditional branches.\nA related video showcased a bar can he done with a image of a frame and an image of a colored bar. (And I would have two on both corners of the top screen)\nDoes anyone know a tutorial already here on the web? Seems like this would be done already but I can't find a basic tutorial.\nThanks for reading.\nEdit:\nStarting to think this isn't possible\n. It seems like without plugins, Rpg Maker MV cannot create a show picture event of a bar that moves according to how much Health something has...\nOkay so, I have a working image bar that moves left or right depending on a variable. Now my question is, is it possible to have that variable be based on an actor's hp or another variable? The image of the bar moves regardless.\nRight now I literally just have an image of a bar I can move around the screen. That seems to be based on X and Y coordinates and seems to be set at 0. (But it's not based on any specific number)\nI'd like to keep the images I have working and moving but somehow have it based on another variable for Hp. (Health points)\nI apologize if I am not making much sense, I think I have some trouble understanding here also.."
+    },
+    {
+      "post_id": "js-post-1447152",
+      "author": "rpgLord69",
+      "date": "2024-05-27T17:23:11+0900",
+      "body": "Well if you're fine with your health bar being on the very top left of the screen, you can just show a picture of a green bar (on top of a picture of a black bar). And then the green bar just moves to/from outside the screen using the move picture command.\nFirst show the pictures of the bars and then move the green bar with something like script in parallel event:\nlet hpRatio = $gameActors.actor(1).hp / $gameActors.actor(1).mhp * 100\n$gameScreen.picture(2).move(1, -100 + hpRatio, 0, 100, 100, 255, 0, 5);"
+    },
+    {
+      "post_id": "js-post-1447154",
+      "author": "Danatoth",
+      "date": "2024-05-27T17:26:49+0900",
+      "body": "This is what you want, can do anything with a hud, is free, and super easy to use:\nHUD Maker – MV Plugin – RPG Maker MZ Plugins\nsumrndm.site"
+    },
+    {
+      "post_id": "js-post-1447165",
+      "author": "ZombieKidzRule",
+      "date": "2024-05-27T18:39:42+0900",
+      "body": "I did an experiment with this a short time ago using simple Event commands. I will have to find my Event again. But here is the simple concept.\nTake an image of a full stat bar. Each time it needs to change, either positive or negative, determine by how much of the total. Then, just change the WIDTH of the Show Picture image by that amount/percentage/whatever. Changing the width of the Show Picture image will make it look like the bar is decreasing or increasing. It was actually very easy to do without any plugins.\nYou just need Event checks to make sure it can't exceed the maximum or minimum for what the full or empty bar."
+    },
+    {
+      "post_id": "js-post-1447185",
+      "author": "rpgLord69",
+      "date": "2024-05-27T21:29:26+0900",
+      "body": "Okay, if that works then Zombie's proposal is the easiest. (I thought that by using the x-width it would widen in both directions.) So just replace the x-width number in the move picture script with a variable."
+    },
+    {
+      "post_id": "js-post-1447648",
+      "author": "Sakurra",
+      "date": "2024-05-30T09:10:02+0900",
+      "body": "Thank you everyone!!\nUpdate 5-31-2024\n: So I am a  little confused here. I've got a working image bar that slides at the top left of the screen. But that bar is based on where the image is currently at on the X and Y map locations. How do I make the bar and its images show movement & eventually empty; based on a variable number I am using for Health points?"
+    },
+    {
+      "post_id": "js-post-1448055",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-01T05:10:58+0900",
+      "body": "By changing the image scale for width it will get shorter or longer. You don’t change the X or Y coordinates. Just the scale width.\nFor health, you would have to do some math to determine how much to change the scale width by.\nFor instance, say the scale width is set at 100 and your health is 100 when full. You lose 20 Health. In this example, I would just decrease the scale width by 20. That works because of the numbers. The scale and the health are the same number. 1 health equals 1 width.\nWith other numbers, you would probably want to convert the remaining health as a percentage of the full health and then reduce the scale width of the image accordingly. Requires math.\nNot sure if that helps or not."
+    },
+    {
+      "post_id": "js-post-1448064",
+      "author": "Sakurra",
+      "date": "2024-06-01T06:02:55+0900",
+      "body": "Thank you for explaining.\nI think that makes sense...But this whole time I thought when I subtracted the variable, the \"bar\" moved on the screen, not changed it's width...\nThis is what I am using in a common event.​\n◆Control Variables：#0717 Hp_Bar X Position = Player Health\n◆If：Hp_Bar X Position > 500\n◆Control Variables：#0717 Hp_Bar X Position = 500\n◆\n：Else\n◆If：Hp_Bar X Position < -500\n◆Control Variables：#0717 Hp_Bar X Position -= 500\n◆\n：End\n◆\n：End\n◆Move Picture：#2, Upper Left ({Hp_Bar X Position},{Hp_Bar Y Position}), (100%,100%), 255, Normal, 60 frames\n◆Wait：60 frames\nSo how do I adjust the scale for width and height? Or did I totally misunderstand you?\nIf anyone knows of a tutorial of something like what ZombieKidzRule or something similar, please share! I'd be grateful.\nThis is something I made from watching this tutorial"
+    },
+    {
+      "post_id": "js-post-1448078",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-01T07:05:47+0900",
+      "body": "So it looks like you are moving an indicator which would require you to actually move the picture.\nMy method was for a solid bar where the bar itself either increases or decreases. That is when change the width applies.\nEDIT: Here is a quick sample Event along with the PNG bar used and the full script that isn't visible in the screenshot.\n$gameScreen.showPicture(1, 'Preview Button Blank', 0, 0, 20, $gameVariables.value(763), 100, 255, 0);"
+    },
+    {
+      "post_id": "js-post-1448091",
+      "author": "Sakurra",
+      "date": "2024-06-01T08:41:43+0900",
+      "body": "Thanks! I will try this and update here when I remember. (Really appreciate it)"
+    },
+    {
+      "post_id": "js-post-1448152",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-01T18:41:25+0900",
+      "body": "I hope it helps a little. This is just an example of one approach. But as long as the health bar is showing a proportional amount of the actual health, it should work.\nAnd you could always put an image like the one I shared as an example on top of another image that is like a background for the health bar. So it looks like the background \"box\" or slightly larger bar is emptying or filling as the slightly smaller bar is increasing or decreasing in width.\nBut again, if you wanted to use the moving indicator, you would have to do a different approach and move the indicator by changing the X or Y coordinate, depending on if the bar is horizontal or vertical.\nGood luck!"
+    },
+    {
+      "post_id": "js-post-1448218",
+      "author": "Sakurra",
+      "date": "2024-06-02T03:34:13+0900",
+      "body": "Yes, thank you. And I do have a background for my bar!\nBut wasn't really sure how to add a frame\nand\nmake the bar \"deplete\".\n(But no big deal, I don't have to have a frame)\nI was able to make it work. And now I am wondering if this can also be done but for the opposite side of the screen? The images I think are a great visual.\nEdit: I assume I just changed properties and stuff but the \"bar\" was loading the wrong direction with how I set it up. xD\n(But I did get the bar to the other side of the screen)"
+    },
+    {
+      "post_id": "js-post-1448240",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-02T05:25:18+0900",
+      "body": "@Sakurra\nI am sure there must be a better way to do this, but here is a way that works. You just have to set the bar either to the right edge of the screen or you could also put another picture with a higher value Picture ID where the bar picture can move under it to disappear.\nHere is a screenshot of a quick, not pretty example. Essentially, you are changing the X coordinate of the bar image and moving it off the screen (or under another image). When you gain health, you change the X coordinate to move the bar back onto the screen.\nSo in this example, the bar image is never actually changing size. You could actually do the same thing on the other size of the screen because you can move images completely off the screen by going below 0 for X or above 816.\nAgain, there is probably a better way to do this, but this works.\n$gameScreen.showPicture(1, 'Preview Button Blank', 0, $gameVariables.value(761), 20, 150, 100, 255, 0);"
+    },
+    {
+      "post_id": "js-post-1448422",
+      "author": "Sakurra",
+      "date": "2024-06-03T03:23:25+0900",
+      "body": "ZombieKidzRule said:\nSo in this example, the bar image is never actually changing size. You could actually do the same thing on the other size of the screen because you can move images completely off the screen by going below 0 for X or above 816.\nClick to expand...\nSo this is movement but keeps track of health still? (Health as in a variable with a number)\nAnd thank you. I will probably update and edit my post later. I will try this out. Thanks so much!"
+    },
+    {
+      "post_id": "js-post-1448429",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-03T04:21:30+0900",
+      "body": "Yes, you would need to use Variables to determine how much health is lost or gained and change the X coordinate of the bar image accordingly. As you can see from the Show Picture script example, I used a Variable for the X coordinate."
+    },
+    {
+      "post_id": "js-post-1449978",
+      "author": "Sakurra",
+      "date": "2024-06-11T06:04:47+0900",
+      "body": "Thanks!\nI have another question and it is about the event command \"show picture\"\nDo you know of a script that flips the images horizontally? I didn't see that as an option but was wondering if such a thing was possible."
+    },
+    {
+      "post_id": "js-post-1449981",
+      "author": "ZombieKidzRule",
+      "date": "2024-06-11T06:13:35+0900",
+      "body": "Here is an example from the MZ Script Call List.\n// Turn picture 1 to 45° clockwise from its original state\n$gameScreen.picture(1)._angle = 45;\nI have used this to turn the picture. Pretty much pick any angle you want."
+    },
+    {
+      "post_id": "js-post-1449983",
+      "author": "Danatoth",
+      "date": "2024-06-11T06:21:09+0900",
+      "body": "Danatoth said:\nThis is what you want, can do anything with a hud, is free, and super easy to use:\nHUD Maker – MV Plugin – RPG Maker MZ Plugins\nsumrndm.site\nClick to expand...\nJust linking this again, because this does exactly what you want to do with 0 trouble. It is super easy to do without having to go through all the convoluted eventing you are attempting to do. It's also extremely light weight. Can do what you are attempting in about 10 seconds."
+    }
+  ]
+}
