@@ -40,6 +40,7 @@ from config import (
 
 SOURCES = [
     community_reddit,
+    community_forum,
     official_site,
     official_steam,
     official_opengameart,
@@ -55,10 +56,6 @@ SOURCES = [
     official_triacontane,
 ]
 
-
-# ==========================================
-# Global seen
-# ==========================================
 
 GLOBAL_SEEN_FILE = "seen_global.json"
 
@@ -83,64 +80,30 @@ def filter_global_seen(
     items,
     global_seen,
 ):
-
     filtered_items = []
     new_global_seen = list(global_seen)
 
-    seen_set = set(
-        global_seen
-    )
+    seen_set = set(global_seen)
 
     for item in items:
-
-        if item.get(
-            "forum_backfill",
-            False,
-        ):
-
-            filtered_items.append(
-                item
-            )
-
-            continue
-
-        key = get_global_key(
-            item
-        )
+        key = get_global_key(item)
 
         if key is None:
-
-            filtered_items.append(
-                item
-            )
-
+            filtered_items.append(item)
             continue
 
         if key in seen_set:
-
             continue
 
-        filtered_items.append(
-            item
-        )
-
-        new_global_seen.append(
-            key
-        )
-
-        seen_set.add(
-            key
-        )
+        filtered_items.append(item)
+        new_global_seen.append(key)
+        seen_set.add(key)
 
     return (
         filtered_items,
         new_global_seen,
     )
 
-
-# ==========================================
-# Pending
-# ==========================================
 
 def get_pending_key(item):
     """
@@ -177,11 +140,9 @@ def add_to_pending(
     }
 
     for item in new_items:
-
         key = get_pending_key(item)
 
         if key is not None:
-
             if key in existing_keys:
                 continue
 
@@ -204,11 +165,9 @@ def select_pending_items(
 
     selected = []
     counts = {}
-
     remaining = []
 
     for item in pending_items:
-
         source = item.get(
             "source",
             "Unknown",
@@ -220,13 +179,9 @@ def select_pending_items(
         )
 
         if count < MAX_ITEMS_PER_SOURCE:
-
             selected.append(item)
-
             counts[source] = count + 1
-
         else:
-
             remaining.append(item)
 
     return (
@@ -236,34 +191,19 @@ def select_pending_items(
 
 
 def main():
-
     pending_seen = []
     all_items = []
-
-    # ======================================
-    # Global seen
-    # ======================================
 
     global_seen = load_seen_file(
         GLOBAL_SEEN_FILE
     )
 
-    # ======================================
-    # Pending
-    # ======================================
-
     pending_items = load_pending_items(
         PENDING_ITEMS_FILE
     )
 
-    # ======================================
-    # Source collection
-    # ======================================
-
     for source in SOURCES:
-
         try:
-
             seen = load_seen_file(
                 source.SEEN_FILE
             )
@@ -272,9 +212,7 @@ def main():
                 seen
             )
 
-            all_items.extend(
-                items
-            )
+            all_items.extend(items)
 
             pending_seen.append(
                 (
@@ -284,17 +222,11 @@ def main():
             )
 
         except Exception as e:
-
             print(
                 f"[{source.__name__}] Error: {e}"
             )
 
-    # ======================================
-    # Language detection
-    # ======================================
-
     for item in all_items:
-
         language = detect_language(
             title=item.get("title", ""),
             description=item.get(
@@ -308,12 +240,7 @@ def main():
         )
 
         if language is not None:
-
             item["language"] = language
-
-    # ======================================
-    # Cross-source duplicate filtering
-    # ======================================
 
     all_items, new_global_seen = filter_global_seen(
         all_items,
@@ -329,12 +256,8 @@ def main():
 
     print(
         "[DEBUG] Items after global seen:",
-        len(all_items)
+        len(all_items),
     )
-
-    # ======================================
-    # Asset metadata
-    # ======================================
 
     all_items = enrich_items(
         all_items
@@ -342,20 +265,12 @@ def main():
 
     print(
         "[DEBUG] Items after enrich:",
-        len(all_items)
+        len(all_items),
     )
-
-    # ======================================
-    # Archive
-    # ======================================
 
     save_archive(
         all_items
     )
-
-    # ======================================
-    # Add new items to pending
-    # ======================================
 
     pending_items = add_to_pending(
         pending_items,
@@ -364,12 +279,8 @@ def main():
 
     print(
         "[Pending] Before selection:",
-        len(pending_items)
+        len(pending_items),
     )
-
-    # ======================================
-    # Select items for this report
-    # ======================================
 
     report_items, remaining_pending = (
         select_pending_items(
@@ -379,20 +290,15 @@ def main():
 
     print(
         "[Pending] Selected:",
-        len(report_items)
+        len(report_items),
     )
 
     print(
         "[Pending] Remaining:",
-        len(remaining_pending)
+        len(remaining_pending),
     )
 
-    # ======================================
-    # Debug
-    # ======================================
-
     for item in report_items:
-
         print(
             "[DEBUG] Item:",
             item.get("source"),
@@ -407,12 +313,8 @@ def main():
         [
             item.get("category")
             for item in report_items
-        ]
+        ],
     )
-
-    # ======================================
-    # Report
-    # ======================================
 
     report = build_report(
         report_items
@@ -427,13 +329,7 @@ def main():
     )
 
     if slack_success:
-
-        # ======================================
-        # Save seen
-        # ======================================
-
         for source, new_seen in pending_seen:
-
             save_seen_file(
                 source.SEEN_FILE,
                 new_seen,
@@ -443,25 +339,6 @@ def main():
             GLOBAL_SEEN_FILE,
             new_global_seen,
         )
-
-        # ======================================
-        # Forum Archive Progress
-        # ======================================
-
-        if hasattr(
-            community_forum,
-            "finalize",
-        ):
-
-            community_forum.finalize()
-
-        # ======================================
-        # Save pending
-        # ======================================
-        #
-        # Slack送信成功時のみ、
-        # 今回掲載したItemをpendingから削除する。
-        #
 
         save_pending_items(
             PENDING_ITEMS_FILE,
@@ -473,7 +350,6 @@ def main():
         )
 
     else:
-
         print(
             "[Pending] Slack送信失敗のため、"
             "seen/pendingを更新しません。"
