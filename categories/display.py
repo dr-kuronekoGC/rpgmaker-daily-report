@@ -143,6 +143,7 @@ _add(
 
 _add(
     (
+        "ForumTips",
         "RedditTips",
     ),
     "Tips",
