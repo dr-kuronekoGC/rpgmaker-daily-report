@@ -35,17 +35,6 @@ GUILD_URL = "https://guild.rpgmakerofficial.com/c/14-category/14"
 GUILD_PLUGIN_URL = "https://guild.rpgmakerofficial.com/c/14-category/17-category/17"
 
 # ----------------------------
-# RPG Maker Web Forum Archive
-# ----------------------------
-
-FORUM_ARCHIVE_PROGRESS_FILE = (
-    "forum_archive_progress.json"
-)
-
-# 1回のActionで遡るForumページ数
-FORUM_BACKFILL_PAGES_PER_RUN = 3
-
-# ----------------------------
 # seen files
 # ----------------------------
 
