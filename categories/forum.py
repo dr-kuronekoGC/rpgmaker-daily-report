@@ -106,14 +106,14 @@ def classify_forum(
         return None
 
     if "support" in forum_name:
-        return "Forum質問"
+        return None
 
     if "resources" in forum_name:
         if _contains(
             title,
             QUESTION_KEYWORDS,
         ):
-            return "Forum質問"
+            return None
 
         if _contains(
             title,
@@ -175,13 +175,13 @@ def classify_forum(
         title,
         QUESTION_KEYWORDS,
     ):
-        return "Forum質問"
+        return None
 
     if _contains(
         title,
         GAME_KEYWORDS
         + FORUM_GAME_EXTRA_KEYWORDS,
     ):
-        return "Forum作品"
+        return None
 
     return None
