@@ -12,12 +12,10 @@ from .keywords import (
 
 
 FORUM_IMPORTANT_KEYWORDS = (
-    "forum",
     "closure",
     "migration",
     "archive",
     "faq",
-    "announcement",
     "shutdown",
 )
 
@@ -37,11 +35,6 @@ FORUM_IGNORE_KEYWORDS = (
     "the end",
     "best friend",
     "memories",
-
-    # ----------------------------
-    # 雑談・アンケート
-    # ----------------------------
-
     "poll",
     "polls",
     "just curious",
@@ -52,6 +45,20 @@ FORUM_IGNORE_KEYWORDS = (
     "general discussion",
     "your favorite",
     "what do you think",
+)
+
+
+FORUM_TIPS_KEYWORDS = (
+    "tutorial",
+    "guide",
+    "tips",
+    "tricks",
+    "best practices",
+    "optimization",
+    "optimizing",
+    "performance",
+    "workflow",
+    "workflow tips",
 )
 
 
@@ -73,7 +80,6 @@ FORUM_GAME_EXTRA_KEYWORDS = (
 
 
 def _contains(title, keywords):
-
     return any(
         word in title
         for word in keywords
@@ -84,13 +90,8 @@ def classify_forum(
     title,
     forum_name="",
 ):
-
     title = title.lower().strip()
     forum_name = forum_name.lower().strip()
-
-    # --------------------------------
-    # 重要事項
-    # --------------------------------
 
     if _contains(
         title,
@@ -98,25 +99,16 @@ def classify_forum(
     ):
         return "Forum重要事項"
 
-    # --------------------------------
-    # 明らかな雑談・対象外
-    # --------------------------------
-
     if _contains(
         title,
         FORUM_IGNORE_KEYWORDS,
     ):
         return None
 
-    # --------------------------------
-    # Forum名による明確な分類
-    # --------------------------------
-
     if "support" in forum_name:
         return "Forum質問"
 
     if "resources" in forum_name:
-        # Resourcesでも質問形式なら質問を優先
         if _contains(
             title,
             QUESTION_KEYWORDS,
@@ -125,11 +117,24 @@ def classify_forum(
 
         if _contains(
             title,
+            PLUGIN_KEYWORDS,
+        ):
+            return "Forumプラグイン"
+
+        if _contains(
+            title,
             SOUND_KEYWORDS,
         ):
             return "Forumサウンド素材"
 
-        return "Forum素材"
+        if _contains(
+            title,
+            GRAPHIC_KEYWORDS
+            + FORUM_MATERIAL_EXTRA_KEYWORDS,
+        ):
+            return "Forumグラフィック素材"
+
+        return None
 
     if "useful development tools" in forum_name:
         return "Forumプラグイン"
@@ -140,20 +145,6 @@ def classify_forum(
     ):
         return "Forum作品"
 
-    # --------------------------------
-    # 質問
-    # --------------------------------
-
-    if _contains(
-        title,
-        QUESTION_KEYWORDS,
-    ):
-        return "Forum質問"
-
-    # --------------------------------
-    # プラグイン
-    # --------------------------------
-
     if _contains(
         title,
         PLUGIN_KEYWORDS
@@ -161,19 +152,11 @@ def classify_forum(
     ):
         return "Forumプラグイン"
 
-    # --------------------------------
-    # サウンド素材
-    # --------------------------------
-
     if _contains(
         title,
         SOUND_KEYWORDS,
     ):
         return "Forumサウンド素材"
-
-    # --------------------------------
-    # グラフィック素材
-    # --------------------------------
 
     if _contains(
         title,
@@ -182,9 +165,17 @@ def classify_forum(
     ):
         return "Forumグラフィック素材"
 
-    # --------------------------------
-    # ゲーム
-    # --------------------------------
+    if _contains(
+        title,
+        FORUM_TIPS_KEYWORDS,
+    ):
+        return "ForumTips"
+
+    if _contains(
+        title,
+        QUESTION_KEYWORDS,
+    ):
+        return "Forum質問"
 
     if _contains(
         title,
