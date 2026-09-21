@@ -26,7 +26,7 @@ OFFICIAL_STEAM_SEEN_FILE = (
 )
 
 # ----------------------------
-# Future Sources
+# Community / Forums
 # ----------------------------
 
 FORUM_URL = "https://forums.rpgmakerweb.com/index.php?whats-new/posts/"
@@ -60,6 +60,15 @@ RPGMAKERFORUM_DE_RSS = (
     "https://rpgmakerforum.de/forum/board-feed/"
 )
 RPGMAKERFORUM_DE_SEEN_FILE = "seen_rpgmakerforum_de.json"
+
+# ----------------------------
+# Chaos Project
+# ----------------------------
+
+CHAOS_PROJECT_RESOURCE_URL = (
+    "https://forum.chaos-project.com/index.php?board=17.0"
+)
+CHAOS_PROJECT_SEEN_FILE = "seen_chaos_project.json"
 
 # ----------------------------
 # ツクマテ
