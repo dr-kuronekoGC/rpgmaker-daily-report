@@ -3,6 +3,7 @@
 # ==========================================
 
 from categories.assets import classify_asset
+from classification_scoring import classify_sound_with_evidence
 
 
 # ==========================================
@@ -980,8 +981,29 @@ def build_asset_metadata(
     )
 
     if asset_type == ASSET_TYPE_SOUND:
-        item["sound_type"] = detect_sound_type(item)
-        classification_confidence = detect_sound_classification_confidence(item)
+        sound_result = classify_sound_with_evidence(item)
+
+        item["sound_type"] = sound_result["sound_type"]
+        item["classification_confidence"] = sound_result[
+            "classification_confidence"
+        ]
+        item["classification_status"] = sound_result[
+            "classification_status"
+        ]
+        item["classification_margin"] = sound_result[
+            "classification_margin"
+        ]
+        item["classification_scores"] = sound_result[
+            "classification_scores"
+        ]
+        item["classification_evidence"] = sound_result[
+            "classification_evidence"
+        ]
+
+        classification_confidence = sound_result[
+            "classification_confidence"
+        ]
+
     elif asset_type == ASSET_TYPE_PLUGIN:
         classification_confidence = (
             CONFIDENCE_HIGH
@@ -999,10 +1021,19 @@ def build_asset_metadata(
     else:
         classification_confidence = CONFIDENCE_UNKNOWN
 
-    item["classification_confidence"] = classification_confidence
-    item["classification_status"] = detect_classification_status(
-        classification_confidence
+    item.setdefault(
+        "classification_confidence",
+        classification_confidence,
     )
+    item.setdefault(
+        "classification_status",
+        detect_classification_status(
+            classification_confidence
+        ),
+    )
+    item.setdefault("classification_margin", None)
+    item.setdefault("classification_scores", None)
+    item.setdefault("classification_evidence", [])
     item.setdefault("classification_note", None)
     item.setdefault("classification_reviewed_at", None)
 
