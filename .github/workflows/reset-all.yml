@@ -2,6 +2,15 @@ name: Reset All
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "SITE reset mode: archive keeps a backup; complete removes all SITE data"
+        required: true
+        default: "archive"
+        type: choice
+        options:
+          - archive
+          - complete
 
 jobs:
   reset-archive:
@@ -10,3 +19,9 @@ jobs:
   reset-seen:
     needs: reset-archive
     uses: ./.github/workflows/reset-seen.yml
+
+  reset-sites:
+    needs: reset-seen
+    uses: ./.github/workflows/reset-sites.yml
+    with:
+      mode: ${{ inputs.mode }}
