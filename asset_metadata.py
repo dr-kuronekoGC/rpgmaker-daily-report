@@ -862,6 +862,54 @@ def preserve_source_metadata(
 
 
 # ==========================================
+# Classification guards
+# ==========================================
+
+def _is_non_asset_category(category):
+    text = _normalize_text(category)
+
+    non_asset_keywords = (
+        "質問",
+        "相談",
+        "tips",
+        "tip",
+        "help",
+        "question",
+        "questions",
+        "discussion",
+        "news",
+        "情報",
+        "公式情報",
+        "サイト更新",
+        "site update",
+        "sourcecheck",
+    )
+
+    return any(
+        keyword in text
+        for keyword in non_asset_keywords
+    )
+
+
+def _is_explicit_plugin_category(category):
+    text = _normalize_text(category)
+
+    return (
+        text in ("plugin", "plugins", "プラグイン")
+        or "プラグイン" in text
+    )
+
+
+def _is_explicit_game_category(category):
+    text = _normalize_text(category)
+
+    return (
+        text in ("game", "games", "ゲーム")
+        or "ゲーム" in text
+    )
+
+
+# ==========================================
 # Asset Metadata
 # ==========================================
 
@@ -895,18 +943,26 @@ def build_asset_metadata(
         [],
     )
 
-    detected_category, asset_tags = (
-        classify_asset(
+    detected_category = None
+    asset_tags = []
+
+    # 質問・相談・ニュース等は、タイトル中の
+    # "music" や "sound" だけで素材化しない。
+    if not _is_non_asset_category(category):
+        detected_category, asset_tags = classify_asset(
             title,
             url,
             source_tags=source_tags,
         )
-    )
 
-    if detected_category:
-        category_for_type = (
-            detected_category
-        )
+    # collector側が明示した「プラグイン」「ゲーム」は
+    # キーワード推定より優先する。
+    if _is_explicit_plugin_category(category):
+        category_for_type = "プラグイン"
+    elif _is_explicit_game_category(category):
+        category_for_type = "ゲーム"
+    elif detected_category:
+        category_for_type = detected_category
     else:
         category_for_type = category
 
