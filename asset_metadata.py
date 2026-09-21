@@ -96,6 +96,105 @@ def _contains_any(text, keywords):
 
 
 # ==========================================
+# Detailed taxonomy
+# ==========================================
+
+GRAPHIC_SUBCATEGORY_KEYWORDS = {
+    "character": ("character", "characters", "charset", "character sheet", "character base"),
+    "sv_character": ("sv character", "sv battler", "side-view character", "side view character"),
+    "enemy_battler": ("enemy battler", "battler", "monster sprite"),
+    "face": ("faceset", "face set", "face graphic", "face graphics"),
+    "bust": ("bust", "bustup", "bust up"),
+    "full_art": ("illustration", "full art", "key art", "concept art"),
+    "tileset": ("tileset", "tile set", "tilemap", "tilesheet"),
+    "battle_background": ("battleback", "battle background"),
+    "parallax": ("parallax",),
+    "animation": ("animation", "effect animation", "effekseer"),
+    "icon": ("icon", "icons", "icon set", "icon pack"),
+    "ui_system": ("ui", "user interface", "window skin", "windowskin"),
+    "title": ("title screen", "title graphic", "title logo"),
+}
+
+PLUGIN_CATEGORY_KEYWORDS = {
+    "system_core": ("core", "system", "engine", "utility"),
+    "battle": ("battle", "combat", "action battle", "atb", "ctb"),
+    "skills_states": ("skill", "skills", "state", "states", "buff", "debuff"),
+    "menu_ui": ("menu", "hud", "ui", "window", "status menu"),
+    "items_equipment": ("item", "items", "equipment", "equip"),
+    "shop": ("shop", "merchant"),
+    "character_party": ("party", "actor", "actors", "character", "formation"),
+    "quest": ("quest", "journal", "mission"),
+    "map_events": ("map", "event", "events", "movement"),
+    "save_load": ("save", "load", "autosave"),
+    "messages_dialogue": ("message", "messages", "dialogue", "dialog", "text"),
+    "audio": ("audio", "sound", "bgm", "bgs", "me", "se"),
+    "graphics": ("graphic", "graphics", "sprite", "picture", "animation"),
+    "database": ("database", "db", "notetag"),
+    "development_debug": ("debug", "developer", "development", "test", "console"),
+    "network_external": ("network", "api", "http", "web", "discord", "integration", "external"),
+}
+
+def _contains_keyword(text, keywords):
+    return any(keyword in text for keyword in keywords)
+
+def detect_detailed_subcategory(item, asset_type, asset_tags):
+    title = _normalize_text(item.get("title", ""))
+    description = _normalize_text(item.get("description", ""))
+    source_tags = item.get("source_tags", [])
+    source_text = " ".join(_normalize_text(x) for x in source_tags if isinstance(x, str))
+    text = " ".join((title, description, source_text, " ".join(asset_tags or [])))
+    result = []
+
+    if asset_type == ASSET_TYPE_GRAPHIC:
+        for name, keywords in GRAPHIC_SUBCATEGORY_KEYWORDS.items():
+            if _contains_keyword(text, keywords) and name not in result:
+                result.append(name)
+        if not result:
+            result.append("other")
+
+    elif asset_type == ASSET_TYPE_SOUND:
+        if _contains_keyword(text, ("bgm", "music", "soundtrack", "ost")):
+            result.append("music")
+        elif _contains_keyword(text, ("bgs", "background sound")):
+            result.append("ambient")
+        elif _contains_keyword(text, ("me", "music effect", "jingle", "fanfar")):
+            result.append("music_effect")
+        elif _contains_keyword(text, ("se", "sfx", "sound effect", "sound effects")):
+            result.append("sound_effect")
+        else:
+            result.append("other")
+
+    elif asset_type == ASSET_TYPE_PLUGIN:
+        for name, keywords in PLUGIN_CATEGORY_KEYWORDS.items():
+            if _contains_keyword(text, keywords) and name not in result:
+                result.append(name)
+        if not result:
+            result.append("other")
+
+    return result
+
+def detect_sound_type(item):
+    text = " ".join(
+        (
+            _normalize_text(item.get("title", "")),
+            _normalize_text(item.get("description", "")),
+            " ".join(_normalize_text(x) for x in item.get("source_tags", []) if isinstance(x, str)),
+            " ".join(_normalize_text(x) for x in item.get("asset_tags", []) if isinstance(x, str)),
+        )
+    )
+    if _contains_keyword(text, ("bgm", "background music")):
+        return "BGM"
+    if _contains_keyword(text, ("bgs", "background sound")):
+        return "BGS"
+    if _contains_keyword(text, ("me", "music effect", "jingle", "fanfar")):
+        return "ME"
+    if _contains_keyword(text, ("se", "sfx", "sound effect", "sound effects")):
+        return "SE"
+    if _contains_keyword(text, ("music", "soundtrack", "ost")):
+        return "BGM"
+    return None
+
+# ==========================================
 # Engine Detection
 # ==========================================
 
@@ -795,6 +894,25 @@ def build_asset_metadata(
     item["asset_tags"] = (
         asset_tags
     )
+
+    # 公開DB向けの詳細分類。source_tagsは上書きしない。
+    item["subcategory"] = detect_detailed_subcategory(
+        item,
+        asset_type,
+        asset_tags,
+    )
+
+    if asset_type == ASSET_TYPE_SOUND:
+        item["sound_type"] = detect_sound_type(item)
+    elif not item.get("sound_type"):
+        item["sound_type"] = None
+
+    if asset_type == ASSET_TYPE_PLUGIN:
+        item["plugin_category"] = detect_detailed_subcategory(
+            item,
+            asset_type,
+            asset_tags,
+        )
 
     # --------------------------------------
     # Price
