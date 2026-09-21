@@ -398,10 +398,6 @@ def main():
             remaining_pending,
         )
 
-        save_review_queue(
-            review_queue
-        )
-
         print(
             "[Pending] Saved after successful Slack delivery."
         )
