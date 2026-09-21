@@ -35,7 +35,6 @@ from sources import (
     official_source_check,
 )
 
-from asset_metadata import enrich_items
 from item_model import normalize_items
 from language import detect_language
 from archive import save_archive
@@ -286,9 +285,6 @@ def main():
         len(all_items),
     )
 
-    all_items = enrich_items(
-        all_items
-    )
 
     print(
         "[DEBUG] Items after enrich:",
