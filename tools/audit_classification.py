@@ -3,6 +3,7 @@ from pathlib import Path
 from collections import Counter
 
 from classification_scoring import classify_sound_with_evidence
+from asset_metadata import build_asset_metadata
 
 
 ARCHIVE_DIR = Path("data/archive")
@@ -32,11 +33,16 @@ def main():
         print("[Audit] No archive files found.")
         return
 
-    sound_items = [
-        item
+    enriched_items = [
+        build_asset_metadata(item)
         for item in items
         if isinstance(item, dict)
-        and item.get("asset_type") == "sound"
+    ]
+
+    sound_items = [
+        item
+        for item in enriched_items
+        if item.get("asset_type") == "sound"
     ]
 
     status_counts = Counter()
