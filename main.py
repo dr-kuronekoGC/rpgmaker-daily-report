@@ -39,6 +39,11 @@ from item_model import normalize_items
 from asset_metadata import enrich_items
 from language import detect_language
 from archive import save_archive
+from review_queue import (
+    load_review_queue,
+    save_review_queue,
+    prepare_classification_reviews,
+)
 
 from config import (
     PENDING_ITEMS_FILE,
@@ -222,6 +227,8 @@ def main():
         PENDING_ITEMS_FILE
     )
 
+    review_queue = load_review_queue()
+
     for source in SOURCES:
         try:
             seen = load_seen_file(
@@ -297,9 +304,14 @@ def main():
         if language and language not in languages:
             item["languages"] = [*languages, language]
 
+    review_items = prepare_classification_reviews(
+        all_items,
+        review_queue,
+    )
+
     print(
-        "[DEBUG] Items after enrich:",
-        len(all_items),
+        "[Classification review] New:",
+        len(review_items),
     )
 
     save_archive(
@@ -351,7 +363,8 @@ def main():
     )
 
     report = build_report(
-        report_items
+        report_items,
+        review_items,
     )
 
     print()
@@ -377,6 +390,10 @@ def main():
         save_pending_items(
             PENDING_ITEMS_FILE,
             remaining_pending,
+        )
+
+        save_review_queue(
+            review_queue
         )
 
         print(
