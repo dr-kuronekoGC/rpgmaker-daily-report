@@ -53,21 +53,42 @@ def normalize_url(url):
     parsed = urlparse(url)
 
     # sidなどのセッション情報は除去する。
-    query = {
-        key: values
-        for key, values in parse_qs(parsed.query).items()
-        if key == "f"
-    }
+    params = parse_qs(parsed.query)
 
-    if query:
-        forum_id = query.get("f", [None])[0]
-        if forum_id:
-            return (
-                f"{parsed.scheme}://{parsed.netloc}"
-                f"{parsed.path}?f={forum_id}"
+    if "viewtopic.php" in parsed.path:
+        allowed = {
+            key: values
+            for key, values in params.items()
+            if key in {"t", "f", "start"}
+        }
+    elif "viewforum.php" in parsed.path:
+        allowed = {
+            key: values
+            for key, values in params.items()
+            if key in {"f", "start"}
+        }
+    else:
+        allowed = params
+
+    query_parts = []
+    for key, values in allowed.items():
+        for value in values:
+            query_parts.append(
+                f"{key}={value}"
             )
 
-    return url.split("#", 1)[0]
+    query = "&".join(query_parts)
+
+    if query:
+        return (
+            f"{parsed.scheme}://{parsed.netloc}"
+            f"{parsed.path}?{query}"
+        )
+
+    return (
+        f"{parsed.scheme}://{parsed.netloc}"
+        f"{parsed.path}"
+    )
 
 
 def get_mz_forums():
