@@ -59,17 +59,16 @@ def classify_reddit(title, url=""):
         return "Reddit重要事項"
 
     # --------------------------------
-    # 質問
+    # 質問・相談は収集対象外
     # --------------------------------
-    # 「質問・相談」であることを最優先する。
-    # ただし、明確な作品公開・アップデート告知は
-    # 重要事項・ゲーム判定を優先する。
+    # Daily Reportでは質問をSlack通知しない。
+    # mark_unclassified_seen=Trueにより、既取得扱いにする。
 
     if _contains(
         title,
         QUESTION_KEYWORDS,
     ):
-        return "Reddit質問"
+        return None
 
     if (
         "?" in title
@@ -79,7 +78,7 @@ def classify_reddit(title, url=""):
         or title.startswith("can someone")
         or title.startswith("anyone else")
     ):
-        return "Reddit質問"
+        return None
         
     # --------------------------------
     # プラグイン
