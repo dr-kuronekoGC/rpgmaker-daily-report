@@ -13,6 +13,7 @@ from report import (
 from sources import (
     community_reddit,
     community_forum,
+    community_tsukumate,
     community_guild,
     official_site,
     official_steam,
@@ -20,6 +21,7 @@ from sources import (
     official_kenney,
     official_craftpix,
     official_gamedevmarket,
+    official_tsukupura,
     official_visustella,
     official_deviantart,
     asset_itchio,
