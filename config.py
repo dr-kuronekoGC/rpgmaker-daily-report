@@ -53,6 +53,15 @@ SAVE_POINT_RSS = (
 SAVE_POINT_SEEN_FILE = "seen_save_point.json"
 
 # ----------------------------
+# RPG Maker Forum DE
+# ----------------------------
+
+RPGMAKERFORUM_DE_RSS = (
+    "https://rpgmakerforum.de/forum/board-feed/"
+)
+RPGMAKERFORUM_DE_SEEN_FILE = "seen_rpgmakerforum_de.json"
+
+# ----------------------------
 # ツクマテ
 # ----------------------------
 
@@ -92,6 +101,14 @@ SOURCE_CHECK_SITES = [
     {
         "name": "DK Plugins",
         "url": "https://dk-plugins.ru/mz/dktools/",
+    },
+    {
+        "name": "Hakuen Studio",
+        "url": "https://hakuenstudio.itch.io/",
+    },
+    {
+        "name": "Sang Hendrix",
+        "url": "https://sanghendrix.itch.io/",
     },
 ]
 
