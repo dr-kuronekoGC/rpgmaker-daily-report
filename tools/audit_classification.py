@@ -2,7 +2,10 @@ import json
 from pathlib import Path
 from collections import Counter
 
-from classification_scoring import classify_sound_with_evidence
+from classification_scoring import (
+    classify_sound_with_evidence,
+    classify_taxonomy_with_evidence,
+)
 from asset_metadata import build_asset_metadata
 
 
@@ -44,6 +47,30 @@ def main():
         for item in enriched_items
         if item.get("asset_type") == "sound"
     ]
+
+    taxonomy_counts = {}
+    taxonomy_review = {}
+    for taxonomy in ("graphic", "plugin"):
+        counts = Counter()
+        reviews = []
+        for item in enriched_items:
+            if item.get("asset_type") != taxonomy:
+                continue
+
+            result = classify_taxonomy_with_evidence(item, taxonomy)
+            counts[result["classification_status"]] += 1
+
+            if result["classification_status"] == "needs_review":
+                reviews.append({
+                    "title": item.get("title", ""),
+                    "url": item.get("url", ""),
+                    "categories": result["categories"],
+                    "confidence": result["classification_confidence"],
+                    "scores": result["classification_scores"],
+                })
+
+        taxonomy_counts[taxonomy] = dict(counts)
+        taxonomy_review[taxonomy] = reviews
 
     status_counts = Counter()
     confidence_counts = Counter()
@@ -88,6 +115,24 @@ def main():
     print(f"[Audit] Confidence: {dict(confidence_counts)}")
     print(f"[Audit] New classification: {dict(result_counts)}")
     print(f"[Audit] Changed from stored sound_type: {len(changed)}")
+
+    for taxonomy in ("graphic", "plugin"):
+        print(
+            f"[Audit] {taxonomy} status: "
+            f"{taxonomy_counts[taxonomy]}"
+        )
+        print(
+            f"[Audit] {taxonomy} review candidates: "
+            f"{len(taxonomy_review[taxonomy])}"
+        )
+
+        for candidate in taxonomy_review[taxonomy][:10]:
+            print(
+                f"  - {candidate['title']} | "
+                f"categories={candidate['categories']} | "
+                f"confidence={candidate['confidence']} | "
+                f"scores={candidate['scores']}"
+            )
 
     if changed:
         print()
