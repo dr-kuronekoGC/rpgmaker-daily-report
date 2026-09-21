@@ -314,6 +314,12 @@ def main():
         len(review_items),
     )
 
+    # 分類確認キューはSlack送信失敗時にも失わないよう、
+    # Archive保存と同じくこの時点で永続化する。
+    save_review_queue(
+        review_queue
+    )
+
     save_archive(
         all_items
     )
