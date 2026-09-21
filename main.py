@@ -36,6 +36,7 @@ from sources import (
 )
 
 from asset_metadata import enrich_items
+from item_model import normalize_items
 from language import detect_language
 from archive import save_archive
 
@@ -229,6 +230,13 @@ def main():
 
             items, new_seen = source.get_items(
                 seen
+            )
+
+            collector_name = source.__name__.split(".")[-1]
+
+            items = normalize_items(
+                items,
+                collector_name,
             )
 
             all_items.extend(items)
