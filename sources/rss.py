@@ -7,6 +7,7 @@ def collect_rss(
     seen,
     classify,
     source_name,
+    mark_unclassified_seen=False,
 ):
     """
     RSS共通取得処理
@@ -99,6 +100,8 @@ def collect_rss(
             tags = []
 
         if category is None:
+            if mark_unclassified_seen:
+                new_seen.append(item_url)
             continue
 
         # --------------------
