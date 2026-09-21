@@ -12,3 +12,6 @@ from . import asset_itchio
 from . import official_makerdevs
 from . import official_caspergaming
 from . import official_triacontane
+
+from . import community_tsukumate
+from . import official_tsukupura
