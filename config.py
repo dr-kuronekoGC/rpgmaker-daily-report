@@ -35,6 +35,24 @@ GUILD_URL = "https://guild.rpgmakerofficial.com/c/14-category/14"
 GUILD_PLUGIN_URL = "https://guild.rpgmakerofficial.com/c/14-category/17-category/17"
 
 # ----------------------------
+# ツクールフォーラム
+# ----------------------------
+
+TKOOL_FORUM_RSS = (
+    "https://forum.tkool.jp/index.php?forums/-/index.rss"
+)
+TKOOL_FORUM_SEEN_FILE = "seen_tkool_forum.json"
+
+# ----------------------------
+# Save-Point
+# ----------------------------
+
+SAVE_POINT_RSS = (
+    "https://www.save-point.org/syndication.php?limit=50"
+)
+SAVE_POINT_SEEN_FILE = "seen_save_point.json"
+
+# ----------------------------
 # ツクマテ
 # ----------------------------
 
@@ -47,6 +65,35 @@ TSUKUMATE_SEEN_FILE = "seen_tsukumate.json"
 
 TSUKUPURA_URL = "https://plugin-mz.fungamemake.com/"
 TSUKUPURA_SEEN_FILE = "seen_tsukupura.json"
+
+# ----------------------------
+# 個人サイト / Source Check
+# ----------------------------
+
+SOURCE_CHECK_SEEN_FILE = "seen_source_check.json"
+
+SOURCE_CHECK_SITES = [
+    {
+        "name": "Galv's Plugins",
+        "url": "https://galvs-scripts.com/",
+    },
+    {
+        "name": "Atelier RGSS / Moghunter",
+        "url": "https://moonglesoft.wordpress.com/",
+    },
+    {
+        "name": "KageDesu Workshop",
+        "url": "https://kdworkshop.net/",
+    },
+    {
+        "name": "Blue Coral Games",
+        "url": "https://bluecoralgames.com/plugins.php",
+    },
+    {
+        "name": "DK Plugins",
+        "url": "https://dk-plugins.ru/mz/dktools/",
+    },
+]
 
 # ----------------------------
 # seen files
