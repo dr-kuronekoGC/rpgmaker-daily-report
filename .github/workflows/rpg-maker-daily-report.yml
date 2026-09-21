@@ -13,6 +13,11 @@ on:
 permissions:
   contents: write
 
+# PRE-ID allocation and review queue updates must not run concurrently.
+concurrency:
+  group: rpg-maker-daily-report-main
+  cancel-in-progress: false
+
 jobs:
   report:
     runs-on: ubuntu-latest
@@ -56,6 +61,7 @@ jobs:
           git add seen_source_check.json
           git add pending_items.json
           git add data/archive
+          git add data/review
 
           git diff --cached --quiet || git commit -m "Update report data"
 
