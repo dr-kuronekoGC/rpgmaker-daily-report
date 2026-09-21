@@ -1110,18 +1110,28 @@ def build_asset_metadata(
             "classification_confidence"
         ]
     else:
+        # ゲーム・記事・Source Checkなど、
+        # graphic / sound / plugin の詳細分類が適用されないItemは
+        # 「分類不能」ではなく「対象外」とする。
         classification_confidence = CONFIDENCE_UNKNOWN
 
     item.setdefault(
         "classification_confidence",
         classification_confidence,
     )
-    item.setdefault(
-        "classification_status",
-        detect_classification_status(
-            classification_confidence
-        ),
-    )
+
+    if asset_type in (
+        ASSET_TYPE_GAME,
+        ASSET_TYPE_OTHER,
+    ):
+        item["classification_status"] = "not_applicable"
+    else:
+        item.setdefault(
+            "classification_status",
+            detect_classification_status(
+                classification_confidence
+            ),
+        )
     item.setdefault("classification_margin", None)
     item.setdefault("classification_scores", None)
     item.setdefault("classification_evidence", [])
