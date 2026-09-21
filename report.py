@@ -361,7 +361,77 @@ def format_deviantart_detail(
 # Report
 # ==========================================
 
-def build_report(items):
+
+def format_classification_review(item):
+    """
+    分類確認対象をSlack向けに短く表示する。
+    """
+    lines = []
+
+    pre_id = item.get("pre_id", "PRE-?????")
+    title = item.get("title", "タイトルなし")
+    url = item.get("url", "")
+
+    link = f"<{url}|{title}>" if url else title
+    lines.append(f"・{pre_id} {link}")
+
+    scores = item.get("classification_scores", {})
+    if isinstance(scores, dict):
+        ranked = sorted(
+            scores.items(),
+            key=lambda pair: pair[1],
+            reverse=True,
+        )
+        ranked = [
+            (name, score)
+            for name, score in ranked
+            if isinstance(score, (int, float)) and score > 0
+        ][:3]
+
+        if ranked:
+            score_text = " / ".join(
+                f"{name} {score}"
+                for name, score in ranked
+            )
+            lines.append(f"  候補：{score_text}")
+
+    confidence = item.get("classification_confidence")
+    if confidence:
+        lines.append(f"  信頼度：{confidence}")
+
+    evidence = item.get("classification_evidence", [])
+    evidence_labels = []
+
+    if isinstance(evidence, list):
+        for evidence_item in evidence:
+            if not isinstance(evidence_item, dict):
+                continue
+
+            label = evidence_item.get("evidence")
+            if not label:
+                keyword = evidence_item.get("keyword")
+                field = evidence_item.get("field")
+                if keyword:
+                    label = f"{field}:{keyword}"
+                else:
+                    label = str(evidence_item)
+
+            if label not in evidence_labels:
+                evidence_labels.append(label)
+
+    if evidence_labels:
+        display_evidence = evidence_labels[:5]
+        evidence_text = ", ".join(display_evidence)
+
+        if len(evidence_labels) > 5:
+            evidence_text += " ..."
+
+        lines.append(f"  根拠：{evidence_text}")
+
+    return lines
+
+
+def build_report(items, review_items=None):
 
     now = now_jst()
 
@@ -371,7 +441,9 @@ def build_report(items):
 
     period = get_period()
 
-    if not items:
+    review_items = review_items or []
+
+    if not items and not review_items:
 
         return (
             f"📬 RPG Maker Daily Report\n"
@@ -419,9 +491,18 @@ def build_report(items):
 
     # --------------------------------------
     # カテゴリ整理
+    #
+    # 分類確認中のItemは通常の掲載欄には出さず、
+    # 下部の「分類確認」にまとめる。
     # --------------------------------------
 
-    for item in items:
+    normal_items = [
+        item
+        for item in items
+        if item.get("classification_status") != "needs_review"
+    ]
+
+    for item in normal_items:
 
         item = item.copy()
 
@@ -666,6 +747,33 @@ def build_report(items):
                     report.append(
                         detail_line
                     )
+
+        report.append("")
+
+    # --------------------------------------
+    # Classification Review
+    # --------------------------------------
+
+    if review_items:
+        report.append(
+            "────────────────────"
+        )
+        report.append("")
+        report.append(
+            f"【🔎 分類確認】（{len(review_items)}件）"
+        )
+        report.append(
+            "自動分類に確信がないため、確認待ちです。"
+        )
+        report.append(
+            "回答例：PRE-00152 BGM / PRE-00153 SE / PRE-00154 除外"
+        )
+        report.append("")
+
+        for item in review_items:
+            report.extend(
+                format_classification_review(item)
+            )
 
         report.append("")
 
