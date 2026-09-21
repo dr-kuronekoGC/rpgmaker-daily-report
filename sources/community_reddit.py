@@ -18,4 +18,5 @@ def get_items(seen):
         seen=seen,
         classify=classify_reddit,
         source_name="Reddit",
+        mark_unclassified_seen=True,
     )
