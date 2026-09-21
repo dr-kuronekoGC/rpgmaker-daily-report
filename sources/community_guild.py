@@ -575,17 +575,28 @@ def classify_guild_category(
         actual_category or ""
     ).strip()
 
+    # 質問・相談・バグ報告は、どのカテゴリに投稿されても
+    # Daily Reportの収集対象にはしない。
+    content_category = classify_material_content(
+        title,
+        tags,
+    )
+
+    if content_category == "質問":
+        return None
+
+    if content_category == "ゲーム":
+        return None
+
     if category in {
         "質問",
         "バグ報告",
-    }:
-        return "質問"
-
-    if category in {
         "完成ゲーム",
         "制作中ゲーム",
+        "雑談",
+        "お知らせ",
     }:
-        return "ゲーム"
+        return None
 
     if category in {
         "プラグイン",
@@ -595,17 +606,8 @@ def classify_guild_category(
         return "プラグイン"
 
     if category == "素材":
-
-        content_category = (
-            classify_material_content(
-                title,
-                tags,
-            )
-        )
-
-        if content_category is not None:
-            return content_category
-
+        # 素材カテゴリではタイトルから質問・ゲームを除外したうえで、
+        # サウンド／グラフィックを判定する。
         return classify_material(
             title,
             tags,
