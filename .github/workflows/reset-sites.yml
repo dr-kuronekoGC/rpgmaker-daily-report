@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Reset mode: archive keeps a backup; complete permanently deletes the current SITE master"
+        description: "Reset mode: archive keeps a backup; complete removes all SITE data"
         required: true
         default: "archive"
         type: choice
@@ -23,24 +23,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Reset SITE master
+      - name: Reset SITE data
         env:
           RESET_MODE: ${{ inputs.mode }}
         run: |
-          mkdir -p data/sites/reset_archive
-
           if [ "$RESET_MODE" = "complete" ]; then
-            echo "COMPLETE RESET: deleting current SITE master without backup."
-            rm -f data/sites/sites.json
-            printf '[]\n' > data/sites/sites.json
+            echo "COMPLETE RESET: removing all SITE data."
+            rm -rf data/sites
+            mkdir -p data/sites
           else
             echo "ARCHIVE RESET: backing up current SITE master before reset."
+            mkdir -p data/sites/reset_archive
             if [ -f data/sites/sites.json ]; then
               stamp=$(date -u +%Y-%m-%dT%H-%M-%SZ)
               cp data/sites/sites.json "data/sites/reset_archive/sites-$stamp.json"
             fi
-            printf '[]\n' > data/sites/sites.json
           fi
+
+          printf '[]\n' > data/sites/sites.json
 
       - name: Commit reset
         run: |
@@ -50,6 +50,6 @@ jobs:
           git add data/sites
 
           git diff --cached --quiet || \
-            git commit -m "Reset SITE master"
+            git commit -m "Reset SITE data"
 
           git push
