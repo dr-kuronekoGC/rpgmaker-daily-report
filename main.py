@@ -75,6 +75,11 @@ def get_global_key(item):
     複数サイトをまたいだ重複判定用キー。
     """
 
+    # Source Checkは同じURLを繰り返し使うため、
+    # global seenでは重複扱いにしない。
+    if item.get("category") == "SourceCheck":
+        return None
+
     url = item.get("url")
 
     if isinstance(url, str):
