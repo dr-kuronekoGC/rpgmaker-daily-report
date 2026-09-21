@@ -182,3 +182,156 @@ def classify_sound_with_evidence(item):
         },
         "classification_evidence": scores[best]["evidence"],
     }
+
+
+# ==========================================
+# Graphic / Plugin detailed classification
+# ==========================================
+
+GRAPHIC_PATTERNS = {
+    "character": (("character", 5), ("charset", 5), ("character sheet", 6), ("キャラクター", 5)),
+    "sv_character": (("sv character", 6), ("sv battler", 6), ("side-view character", 6), ("sv戦闘", 6), ("svキャラ", 6)),
+    "enemy_battler": (("enemy battler", 6), ("enemy sprite", 5), ("monster sprite", 5), ("enemy", 5), ("敵キャラ", 5), ("敵キャラクター", 5)),
+    "face": (("faceset", 6), ("face set", 6), ("face graphic", 6), ("face graphics", 6), ("顔グラフィック", 6)),
+    "bust": (("bust", 5), ("bustup", 6), ("bust up", 6), ("バストアップ", 6)),
+    "full_art": (("full art", 6), ("key art", 6), ("illustration", 4), ("concept art", 4), ("全身", 5)),
+    "tileset": (("tileset", 6), ("tile set", 6), ("tilemap", 5), ("tilesheet", 6), ("タイルセット", 6), ("マップチップ", 6)),
+    "battle_background": (("battleback", 6), ("battle background", 6), ("戦闘背景", 6)),
+    "parallax": (("parallax", 6), ("遠景", 6), ("パララックス", 6)),
+    "animation": (("animation", 5), ("effekseer", 6), ("アニメーション", 6)),
+    "icon": (("icon", 5), ("icons", 5), ("icon set", 6), ("icon pack", 6), ("アイコン", 5)),
+    "ui_system": (("ui", 5), ("user interface", 6), ("window skin", 6), ("windowskin", 6), ("system graphic", 6), ("システム", 4), ("ui素材", 6)),
+    "title": (("title screen", 6), ("title graphic", 6), ("title logo", 6), ("タイトル", 4)),
+}
+
+PLUGIN_PATTERNS = {
+    "system_core": (("core", 5), ("system", 4), ("utility", 3), ("engine", 3), ("コア", 5), ("システム", 4)),
+    "battle": (("battle", 5), ("combat", 5), ("action battle", 6), ("atb", 6), ("ctb", 6), ("戦闘", 5), ("バトル", 5)),
+    "skills_states": (("skill", 5), ("skills", 5), ("state", 5), ("states", 5), ("buff", 5), ("debuff", 5), ("スキル", 5), ("ステート", 5)),
+    "menu_ui": (("menu", 5), ("hud", 5), ("ui", 5), ("window", 4), ("status menu", 6), ("メニュー", 5), ("ウィンドウ", 4)),
+    "items_equipment": (("item", 5), ("items", 5), ("equipment", 5), ("equip", 5), ("アイテム", 5), ("装備", 5)),
+    "shop": (("shop", 6), ("merchant", 5), ("ショップ", 6), ("店", 4)),
+    "character_party": (("party", 5), ("actor", 5), ("actors", 5), ("formation", 5), ("パーティ", 5), ("アクター", 5), ("隊列", 5)),
+    "quest": (("quest", 6), ("journal", 5), ("mission", 5), ("クエスト", 6), ("ミッション", 5)),
+    "map_events": (("map", 4), ("event", 5), ("events", 5), ("movement", 4), ("マップ", 4), ("イベント", 5)),
+    "save_load": (("save", 5), ("load", 5), ("autosave", 6), ("セーブ", 5), ("ロード", 5)),
+    "messages_dialogue": (("message", 5), ("messages", 5), ("dialogue", 5), ("dialog", 5), ("text", 3), ("メッセージ", 5), ("会話", 5)),
+    "audio": (("audio", 5), ("sound", 5), ("bgm", 6), ("bgs", 6), ("se", 6), ("sfx", 6), ("音声", 5), ("音楽", 5)),
+    "graphics": (("graphic", 5), ("graphics", 5), ("sprite", 5), ("picture", 5), ("animation", 5), ("画像", 5), ("スプライト", 5)),
+    "database": (("database", 6), ("notetag", 6), ("db", 6), ("データベース", 6), ("メモタグ", 6)),
+    "development_debug": (("debug", 6), ("developer", 5), ("development", 5), ("test", 3), ("console", 5), ("デバッグ", 6), ("開発", 5)),
+    "network_external": (("network", 6), ("api", 6), ("http", 6), ("web", 5), ("discord", 5), ("integration", 5), ("external", 4), ("連携", 5)),
+}
+
+
+def _score_taxonomy(item, patterns):
+    fields = _field_values(item)
+    scores = {}
+    evidence = {}
+
+    for category, keywords in patterns.items():
+        score = 0
+        hits = []
+
+        for field, weight in FIELD_WEIGHTS.items():
+            value = fields[field]
+            if not value:
+                continue
+
+            for keyword, base_score in keywords:
+                if _contains_phrase(value, keyword):
+                    points = base_score + max(weight - 3, 0)
+                    score += points
+                    hits.append({
+                        "field": field,
+                        "keyword": keyword,
+                        "points": points,
+                    })
+
+        scores[category] = score
+        evidence[category] = hits
+
+    return scores, evidence
+
+
+def _contains_phrase(text, phrase):
+    import re
+
+    phrase = str(phrase or "").strip().lower()
+    if not phrase:
+        return False
+
+    # Japanese terms do not need word boundaries.
+    if re.search(r"[^a-z0-9]", phrase):
+        return phrase in text
+
+    pattern = r"(?<![a-z0-9])" + re.escape(phrase) + r"(?![a-z0-9])"
+    return re.search(pattern, text) is not None
+
+
+def classify_taxonomy_with_evidence(item, taxonomy):
+    if taxonomy == "graphic":
+        patterns = GRAPHIC_PATTERNS
+    elif taxonomy == "plugin":
+        patterns = PLUGIN_PATTERNS
+    else:
+        raise ValueError(f"Unsupported taxonomy: {taxonomy}")
+
+    scores, evidence = _score_taxonomy(item, patterns)
+
+    ranked = sorted(
+        scores,
+        key=lambda key: scores[key],
+        reverse=True,
+    )
+
+    if not ranked or scores[ranked[0]] == 0:
+        return {
+            "categories": ["other"],
+            "classification_confidence": CONFIDENCE_UNKNOWN,
+            "classification_status": "needs_review",
+            "classification_scores": scores,
+            "classification_evidence": [],
+            "classification_margin": 0,
+        }
+
+    best = ranked[0]
+    second_score = scores[ranked[1]] if len(ranked) > 1 else 0
+    best_score = scores[best]
+    margin = best_score - second_score
+
+    if best_score >= 10 and margin >= 4:
+        confidence = CONFIDENCE_HIGH
+        status = "auto"
+    elif best_score >= 6 and margin >= 2:
+        confidence = CONFIDENCE_MEDIUM
+        status = "needs_review"
+    else:
+        confidence = CONFIDENCE_LOW
+        status = "needs_review"
+
+    # Graphics can legitimately have multiple simultaneous subcategories
+    # (e.g. character + full art). Plugins can also affect several areas,
+    # but only retain strong, near-top candidates to avoid tag explosion.
+    categories = [
+        name
+        for name in ranked
+        if scores[name] >= 6
+        and scores[name] >= best_score - 3
+    ]
+
+    if not categories:
+        categories = [best]
+
+    selected_evidence = []
+    for name in categories:
+        selected_evidence.extend(evidence[name])
+
+    return {
+        "categories": categories,
+        "classification_confidence": confidence,
+        "classification_status": status,
+        "classification_scores": scores,
+        "classification_evidence": selected_evidence,
+        "classification_margin": margin,
+    }
