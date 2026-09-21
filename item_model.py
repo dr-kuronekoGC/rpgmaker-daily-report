@@ -1,6 +1,7 @@
 import hashlib
-from datetime import datetime, timezone
 from pathlib import Path
+from datetime import datetime
+
 import json
 
 from common import now_jst
@@ -44,7 +45,7 @@ def _content_type(item):
         return "game"
     if item.get("source_site_type") == "official" or category in {"公式情報", "公式", "SourceCheck"}:
         return "official"
-    if category == "サイト更新":
+    if category in {"サイト更新", "sourcecheck"}:
         return "site_update"
     if asset_type in {"graphic", "sound"}:
         return "asset"
@@ -65,7 +66,10 @@ def normalize_item(item, collector_name):
     item = dict(item)
     sites = _load_sites()
 
-    source_site_id = item.get("source_site_id") or sites.get(collector_name) or "SITE-UNREGISTERED"
+    source_site_id = item.get("source_site_id") or sites.get(collector_name)
+    if not source_site_id:
+        source_site_id = "SITE-UNREGISTERED"
+
     url = str(item.get("url", "")).strip()
     source_item_id = item.get("source_item_id") or url
     internal_id = item.get("internal_id") or _stable_id(
@@ -93,18 +97,25 @@ def normalize_item(item, collector_name):
     item["source_site_id"] = source_site_id
     item["collector"] = collector_name
     item["source_item_id"] = str(source_item_id)
+    item["source"] = item.get("source") or collector_name
+    item["url"] = url
+    item["title"] = str(item.get("title", "")).strip()
+
     item["subcategory"] = subcategory
     item["tags"] = tags
     item["languages"] = languages
     item.setdefault("sound_type", None)
     item["plugin_category"] = plugin_category
+
     item.setdefault("commercial_use", None)
     item.setdefault("credit_required", None)
     item.setdefault("redistribution_allowed", None)
+
     item.setdefault("source_published_at", item.get("published_at"))
     item.setdefault("source_updated_at", item.get("updated_at"))
     item.setdefault("first_seen_at", now)
-    # registered_at is intentionally NOT set here.
+    item.setdefault("collected_at", now)
+
     item.setdefault("registered_at", None)
     item.setdefault("thumbnail_url", None)
     item.setdefault("editorial_status", "new")
