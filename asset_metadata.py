@@ -1003,6 +1003,8 @@ def build_asset_metadata(
     item["classification_status"] = detect_classification_status(
         classification_confidence
     )
+    item.setdefault("classification_note", None)
+    item.setdefault("classification_reviewed_at", None)
 
     if not item.get("sound_type"):
         item["sound_type"] = None
