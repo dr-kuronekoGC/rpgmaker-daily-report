@@ -35,6 +35,20 @@ GUILD_URL = "https://guild.rpgmakerofficial.com/c/14-category/14"
 GUILD_PLUGIN_URL = "https://guild.rpgmakerofficial.com/c/14-category/17-category/17"
 
 # ----------------------------
+# ツクマテ
+# ----------------------------
+
+TSUKUMATE_URL = "https://tm.yumineko.com/index.php?f=97"
+TSUKUMATE_SEEN_FILE = "seen_tsukumate.json"
+
+# ----------------------------
+# ツクプラMZ
+# ----------------------------
+
+TSUKUPURA_URL = "https://plugin-mz.fungamemake.com/"
+TSUKUPURA_SEEN_FILE = "seen_tsukupura.json"
+
+# ----------------------------
 # seen files
 # ----------------------------
 
