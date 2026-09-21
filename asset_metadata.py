@@ -3,7 +3,10 @@
 # ==========================================
 
 from categories.assets import classify_asset
-from classification_scoring import classify_sound_with_evidence
+from classification_scoring import (
+    classify_sound_with_evidence,
+    classify_taxonomy_with_evidence,
+)
 
 
 # ==========================================
@@ -154,40 +157,31 @@ def _contains_keyword(text, keywords):
     return False
 
 def detect_detailed_subcategory(item, asset_type, asset_tags):
-    title = _normalize_text(item.get("title", ""))
-    description = _normalize_text(item.get("description", ""))
-    source_tags = item.get("source_tags", [])
-    source_text = " ".join(_normalize_text(x) for x in source_tags if isinstance(x, str))
-    text = " ".join((title, description, source_text, " ".join(asset_tags or [])))
-    result = []
+    """
+    Evidence-based detailed taxonomy.
+
+    The source-native metadata is preserved and weighted more heavily
+    than free-form description text. Multiple strong categories are allowed
+    when an item genuinely belongs to more than one subcategory.
+    """
 
     if asset_type == ASSET_TYPE_GRAPHIC:
-        for name, keywords in GRAPHIC_SUBCATEGORY_KEYWORDS.items():
-            if _contains_keyword(text, keywords) and name not in result:
-                result.append(name)
-        if not result:
-            result.append("other")
+        result = classify_taxonomy_with_evidence(item, "graphic")
+        return result["categories"]
 
-    elif asset_type == ASSET_TYPE_SOUND:
-        if _contains_keyword(text, ("bgm", "music", "soundtrack", "ost")):
-            result.append("music")
-        elif _contains_keyword(text, ("bgs", "background sound")):
-            result.append("ambient")
-        elif _contains_keyword(text, ("me", "music effect", "jingle", "fanfar")):
-            result.append("music_effect")
-        elif _contains_keyword(text, ("se", "sfx", "sound effect", "sound effects")):
-            result.append("sound_effect")
-        else:
-            result.append("other")
+    if asset_type == ASSET_TYPE_PLUGIN:
+        result = classify_taxonomy_with_evidence(item, "plugin")
+        return result["categories"]
 
-    elif asset_type == ASSET_TYPE_PLUGIN:
-        for name, keywords in PLUGIN_CATEGORY_KEYWORDS.items():
-            if _contains_keyword(text, keywords) and name not in result:
-                result.append(name)
-        if not result:
-            result.append("other")
+    if asset_type == ASSET_TYPE_SOUND:
+        result = classify_sound_with_evidence(item)
+        return [
+            result["sound_type"].lower()
+            if result["sound_type"]
+            else "other"
+        ]
 
-    return result
+    return []
 
 def detect_sound_type(item):
     """
@@ -1076,44 +1070,45 @@ def build_asset_metadata(
         asset_tags,
     )
 
-    if asset_type == ASSET_TYPE_SOUND:
-        sound_result = classify_sound_with_evidence(item)
+    if asset_type in (ASSET_TYPE_SOUND, ASSET_TYPE_PLUGIN, ASSET_TYPE_GRAPHIC):
+        taxonomy = (
+            "sound"
+            if asset_type == ASSET_TYPE_SOUND
+            else "plugin"
+            if asset_type == ASSET_TYPE_PLUGIN
+            else "graphic"
+        )
 
-        item["sound_type"] = sound_result["sound_type"]
-        item["classification_confidence"] = sound_result[
+        if taxonomy == "sound":
+            classification_result = classify_sound_with_evidence(item)
+        else:
+            classification_result = classify_taxonomy_with_evidence(
+                item,
+                taxonomy,
+            )
+
+        if taxonomy == "sound":
+            item["sound_type"] = classification_result["sound_type"]
+
+        item["classification_confidence"] = classification_result[
             "classification_confidence"
         ]
-        item["classification_status"] = sound_result[
+        item["classification_status"] = classification_result[
             "classification_status"
         ]
-        item["classification_margin"] = sound_result[
+        item["classification_margin"] = classification_result[
             "classification_margin"
         ]
-        item["classification_scores"] = sound_result[
+        item["classification_scores"] = classification_result[
             "classification_scores"
         ]
-        item["classification_evidence"] = sound_result[
+        item["classification_evidence"] = classification_result[
             "classification_evidence"
         ]
 
-        classification_confidence = sound_result[
+        classification_confidence = classification_result[
             "classification_confidence"
         ]
-
-    elif asset_type == ASSET_TYPE_PLUGIN:
-        classification_confidence = (
-            CONFIDENCE_HIGH
-            if item.get("subcategory")
-            and item.get("subcategory") != ["other"]
-            else CONFIDENCE_LOW
-        )
-    elif asset_type == ASSET_TYPE_GRAPHIC:
-        classification_confidence = (
-            CONFIDENCE_HIGH
-            if item.get("subcategory")
-            and item.get("subcategory") != ["other"]
-            else CONFIDENCE_LOW
-        )
     else:
         classification_confidence = CONFIDENCE_UNKNOWN
 
