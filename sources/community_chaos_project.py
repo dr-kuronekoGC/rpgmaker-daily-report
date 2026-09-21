@@ -91,7 +91,7 @@ def normalize_url(url):
     url = url.split("#", 1)[0]
 
     # SMF may use either topic=123.0 or topic,123.0.html.
-    match = re.search(r"topic[=,](\\d+)", url)
+    match = re.search(r"topic[=,](\d+)", url)
     if match:
         return urljoin(
             BASE_URL,
