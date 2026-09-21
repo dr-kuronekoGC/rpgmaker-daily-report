@@ -55,8 +55,13 @@
 - asset_type
 - languages[]
 - tags[]
+- classification_confidence
+- classification_status
 
 ### 人間の判断でのみ設定する情報
+- classification_status = confirmed
+- classification_note
+- classification_reviewed_at
 - pre_id
 - public_id
 - editorial_status
@@ -75,4 +80,6 @@
 5. ライセンス・商用利用可否などは、明記がない場合に推測しない。
 6. 元サイトの素材そのものは保存せず、原則としてURLとメタデータを保存する。
 7. Collectorごとの取得能力に差があるため、全Collectorに全フィールド取得を要求しない。
+8. 詳細分類は自動判定を基本とするが、確信度が低いものは needs_review として人間確認に回す。
+9. BGM/BGS/ME/SEのような短い分類語は、単純な部分一致を避け、明示表記を優先する。
 8. WordPress移行時は、source_site_id を情報源ページとのリレーションに利用し、SITE番号自体を公開URLには使用しない。
