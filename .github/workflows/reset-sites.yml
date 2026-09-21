@@ -1,0 +1,55 @@
+name: Reset Sites
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Reset mode: archive keeps a backup; complete permanently deletes the current SITE master"
+        required: true
+        default: "archive"
+        type: choice
+        options:
+          - archive
+          - complete
+
+jobs:
+  reset-sites:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Reset SITE master
+        env:
+          RESET_MODE: ${{ inputs.mode }}
+        run: |
+          mkdir -p data/sites/reset_archive
+
+          if [ "$RESET_MODE" = "complete" ]; then
+            echo "COMPLETE RESET: deleting current SITE master without backup."
+            rm -f data/sites/sites.json
+            printf '[]\n' > data/sites/sites.json
+          else
+            echo "ARCHIVE RESET: backing up current SITE master before reset."
+            if [ -f data/sites/sites.json ]; then
+              stamp=$(date -u +%Y-%m-%dT%H-%M-%SZ)
+              cp data/sites/sites.json "data/sites/reset_archive/sites-$stamp.json"
+            fi
+            printf '[]\n' > data/sites/sites.json
+          fi
+
+      - name: Commit reset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/sites
+
+          git diff --cached --quiet || \
+            git commit -m "Reset SITE master"
+
+          git push
