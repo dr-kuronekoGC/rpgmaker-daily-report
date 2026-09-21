@@ -1,60 +1,279 @@
 {
-  "version": 2,
+  "version": 4,
   "description": "RPG Maker information database common Item schema. Stable contract between collectors, archive, review, Slack and future WordPress.",
   "fields": {
-    "internal_id": {"type": "string", "required": true, "description": "Stable internal identifier. Not displayed publicly."},
-    "pre_id": {"type": "string|null", "required": false},
-    "public_id": {"type": "string|null", "required": false},
-    "content_type": {"type": "string", "required": true, "enum": ["asset", "plugin", "game", "official", "site_update", "other"]},
-    "source_site_id": {"type": "string", "required": true, "description": "Stable SITE master ID; never use as public URL."},
-    "collector": {"type": "string", "required": true},
-    "source_item_id": {"type": "string", "required": true, "description": "Stable source identifier when available; URL fallback allowed."},
-    "source": {"type": "string", "required": true},
-    "url": {"type": "string", "required": true},
-    "title": {"type": "string", "required": true},
-    "description": {"type": "string|null", "required": false},
-    "author": {"type": "string|null", "required": false},
-    "category": {"type": "string|null", "required": false, "description": "Legacy/report category only during migration."},
-    "subcategory": {"type": "array", "required": true, "items": "string"},
-    "tags": {"type": "array", "required": true, "items": "string"},
-    "source_tags": {"type": "array", "required": false, "items": "string", "description": "Tags/categories preserved from the source before public taxonomy."},
-    "asset_type": {"type": "string|null", "required": false},
-    "asset_tags": {"type": "array", "required": false, "items": "string"},
-    "engine": {"type": "array", "required": true, "items": "string"},
-    "language": {"type": "string|null", "required": false},
-    "languages": {"type": "array", "required": true, "items": "string"},
-    "sound_type": {"type": "string|null", "required": false, "enum": ["BGM", "BGS", "ME", "SE", null]},
-    "plugin_category": {"type": "array", "required": true, "items": "string"},
-    "classification_confidence": {"type": "string", "required": false, "enum": ["high", "medium", "low", "unknown"]},
-    "classification_status": {"type": "string", "required": false, "enum": ["auto", "needs_review", "confirmed"]},
-    "classification_note": {"type": "string|null", "required": false},
-    "classification_reviewed_at": {"type": "string|null", "required": false},
-    "price_status": {"type": "string|null", "required": false},
-    "license_status": {"type": "string|null", "required": false},
-    "license": {"type": "string|null", "required": false},
-    "commercial_use": {"type": "boolean|null", "required": false},
-    "credit_required": {"type": "boolean|null", "required": false},
-    "redistribution_allowed": {"type": "boolean|null", "required": false},
-    "copyright_status": {"type": "string|null", "required": false},
-    "copyright_confidence": {"type": "string|null", "required": false},
-    "metadata_confidence": {"type": "string|null", "required": false},
-    "is_free": {"type": "boolean|null", "required": false},
-    "is_paid": {"type": "boolean|null", "required": false},
-    "is_fanwork": {"type": "boolean|null", "required": false},
-    "is_official_edit": {"type": "boolean|null", "required": false},
-    "is_official": {"type": "boolean|null", "required": false},
-    "large_pack": {"type": "boolean|null", "required": false},
-    "source_published_at": {"type": "string|null", "required": false},
-    "source_updated_at": {"type": "string|null", "required": false},
-    "first_seen_at": {"type": "string|null", "required": false},
-    "collected_at": {"type": "string|null", "required": false},
-    "registered_at": {"type": "string|null", "required": false},
-    "thumbnail_url": {"type": "string|null", "required": false},
-    "editorial_status": {"type": "string", "required": true, "enum": ["new", "review", "approved", "excluded"]},
-    "excluded_reason": {"type": "string|null", "required": false},
-    "review_note": {"type": "string|null", "required": false},
-    "reviewed_at": {"type": "string|null", "required": false},
-    "featured": {"type": "boolean", "required": true}
+    "internal_id": {
+      "type": "string",
+      "required": true,
+      "description": "Stable internal identifier. Not displayed publicly."
+    },
+    "pre_id": {
+      "type": "string|null",
+      "required": false
+    },
+    "public_id": {
+      "type": "string|null",
+      "required": false
+    },
+    "content_type": {
+      "type": "string",
+      "required": true,
+      "enum": [
+        "asset",
+        "plugin",
+        "game",
+        "official",
+        "site_update",
+        "other"
+      ]
+    },
+    "source_site_id": {
+      "type": "string",
+      "required": true,
+      "description": "Stable SITE master ID; never use as public URL."
+    },
+    "collector": {
+      "type": "string",
+      "required": true
+    },
+    "source_item_id": {
+      "type": "string",
+      "required": true,
+      "description": "Stable source identifier when available; URL fallback allowed."
+    },
+    "source": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string|null",
+      "required": false
+    },
+    "author": {
+      "type": "string|null",
+      "required": false
+    },
+    "category": {
+      "type": "string|null",
+      "required": false,
+      "description": "Legacy/report category only during migration."
+    },
+    "subcategory": {
+      "type": "array",
+      "required": true,
+      "items": "string"
+    },
+    "tags": {
+      "type": "array",
+      "required": true,
+      "items": "string"
+    },
+    "source_tags": {
+      "type": "array",
+      "required": false,
+      "items": "string",
+      "description": "Tags/categories preserved from the source before public taxonomy."
+    },
+    "asset_type": {
+      "type": "string|null",
+      "required": false
+    },
+    "asset_tags": {
+      "type": "array",
+      "required": false,
+      "items": "string"
+    },
+    "engine": {
+      "type": "array",
+      "required": true,
+      "items": "string"
+    },
+    "language": {
+      "type": "string|null",
+      "required": false
+    },
+    "languages": {
+      "type": "array",
+      "required": true,
+      "items": "string"
+    },
+    "sound_type": {
+      "type": "string|null",
+      "required": false,
+      "enum": [
+        "BGM",
+        "BGS",
+        "ME",
+        "SE",
+        null
+      ]
+    },
+    "plugin_category": {
+      "type": "array",
+      "required": true,
+      "items": "string"
+    },
+    "classification_confidence": {
+      "type": "string",
+      "required": false,
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ]
+    },
+    "classification_status": {
+      "type": "string",
+      "required": false,
+      "enum": [
+        "auto",
+        "needs_review",
+        "confirmed"
+      ]
+    },
+    "classification_note": {
+      "type": "string|null",
+      "required": false
+    },
+    "classification_reviewed_at": {
+      "type": "string|null",
+      "required": false
+    },
+    "price_status": {
+      "type": "string|null",
+      "required": false
+    },
+    "license_status": {
+      "type": "string|null",
+      "required": false
+    },
+    "license": {
+      "type": "string|null",
+      "required": false
+    },
+    "commercial_use": {
+      "type": "boolean|null",
+      "required": false
+    },
+    "credit_required": {
+      "type": "boolean|null",
+      "required": false
+    },
+    "redistribution_allowed": {
+      "type": "boolean|null",
+      "required": false
+    },
+    "copyright_status": {
+      "type": "string|null",
+      "required": false
+    },
+    "copyright_confidence": {
+      "type": "string|null",
+      "required": false
+    },
+    "metadata_confidence": {
+      "type": "string|null",
+      "required": false
+    },
+    "is_free": {
+      "type": "boolean|null",
+      "required": false
+    },
+    "is_paid": {
+      "type": "boolean|null",
+      "required": false
+    },
+    "is_fanwork": {
+      "type": "boolean|null",
+      "required": false
+    },
+    "is_official_edit": {
+      "type": "boolean|null",
+      "required": false
+    },
+    "is_official": {
+      "type": "boolean|null",
+      "required": false
+    },
+    "large_pack": {
+      "type": "boolean|null",
+      "required": false
+    },
+    "source_published_at": {
+      "type": "string|null",
+      "required": false
+    },
+    "source_updated_at": {
+      "type": "string|null",
+      "required": false
+    },
+    "first_seen_at": {
+      "type": "string|null",
+      "required": false
+    },
+    "collected_at": {
+      "type": "string|null",
+      "required": false
+    },
+    "registered_at": {
+      "type": "string|null",
+      "required": false
+    },
+    "thumbnail_url": {
+      "type": "string|null",
+      "required": false
+    },
+    "editorial_status": {
+      "type": "string",
+      "required": true,
+      "enum": [
+        "new",
+        "review",
+        "approved",
+        "excluded"
+      ]
+    },
+    "excluded_reason": {
+      "type": "string|null",
+      "required": false
+    },
+    "review_note": {
+      "type": "string|null",
+      "required": false
+    },
+    "reviewed_at": {
+      "type": "string|null",
+      "required": false
+    },
+    "featured": {
+      "type": "boolean",
+      "required": true
+    },
+    "classification_margin": {
+      "type": "integer",
+      "required": false,
+      "description": "Score gap between the best and second-best detailed sound classification."
+    },
+    "classification_scores": {
+      "type": "object|null",
+      "required": false,
+      "description": "Evidence scores by candidate detailed sound type. Primarily used for audit/debugging."
+    },
+    "classification_evidence": {
+      "type": "array",
+      "required": false,
+      "items": "object",
+      "description": "Evidence supporting the selected detailed classification."
+    }
   },
   "design_rules": [
     "Collectors collect source data; they do not define the public database taxonomy.",
@@ -66,6 +285,7 @@
     "Do not copy or store source assets merely for cataloguing; store links and metadata.",
     "Do not infer missing legal/licensing information as fact.",
     "Automatic detailed classification may remain unconfirmed; low-confidence classifications must be reviewable by a human.",
-    "Keep human classification confirmation separate from automatic confidence so future re-enrichment does not silently turn uncertain classifications into facts."
+    "Keep human classification confirmation separate from automatic confidence so future re-enrichment does not silently turn uncertain classifications into facts.",
+    "Evidence scoring is used for ambiguous detailed sound classification; weak or conflicting cases remain needs_review rather than being forced into a category."
   ]
 }
