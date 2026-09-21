@@ -189,6 +189,13 @@ def detect_detailed_subcategory(item, asset_type, asset_tags):
     return result
 
 def detect_sound_type(item):
+    """
+    サウンド素材の詳細分類。
+
+    明示的なBGM/BGS/ME/SE表記を優先する。
+    「music」「soundtrack」のような一般的な表現だけの場合は
+    BGM候補として扱うが、確定とはせず確認対象にする。
+    """
     text = " ".join(
         (
             _normalize_text(item.get("title", "")),
@@ -197,17 +204,72 @@ def detect_sound_type(item):
             " ".join(_normalize_text(x) for x in item.get("asset_tags", []) if isinstance(x, str)),
         )
     )
+
     if _contains_keyword(text, ("bgm", "background music")):
         return "BGM"
+
     if _contains_keyword(text, ("bgs", "background sound")):
         return "BGS"
+
     if _contains_keyword(text, ("me", "music effect", "jingle", "fanfar")):
         return "ME"
+
     if _contains_keyword(text, ("se", "sfx", "sound effect", "sound effects")):
         return "SE"
+
     if _contains_keyword(text, ("music", "soundtrack", "ost")):
         return "BGM"
+
     return None
+
+
+def detect_sound_classification_confidence(item):
+    """
+    sound_typeの判定根拠を確認する。
+
+    high:
+        BGM/BGS/ME/SEなどの分類語が明示されている。
+    medium:
+        music / soundtrack / OSTなどからBGM候補と推定した。
+    low:
+        サウンド素材だが詳細種別を判断できない。
+    """
+    text = " ".join(
+        (
+            _normalize_text(item.get("title", "")),
+            _normalize_text(item.get("description", "")),
+            " ".join(_normalize_text(x) for x in item.get("source_tags", []) if isinstance(x, str)),
+            " ".join(_normalize_text(x) for x in item.get("asset_tags", []) if isinstance(x, str)),
+        )
+    )
+
+    if _contains_keyword(
+        text,
+        ("bgm", "background music", "bgs", "background sound",
+         "me", "music effect", "jingle", "fanfar",
+         "se", "sfx", "sound effect", "sound effects"),
+    ):
+        return CONFIDENCE_HIGH
+
+    if _contains_keyword(text, ("music", "soundtrack", "ost")):
+        return CONFIDENCE_MEDIUM
+
+    return CONFIDENCE_LOW
+
+
+def detect_classification_status(confidence):
+    """
+    自動分類の信頼度から、確認が必要かを決める。
+
+    high:
+        自動分類をそのまま採用。
+    medium / low / unknown:
+        人間確認待ち。
+    """
+    if confidence == CONFIDENCE_HIGH:
+        return "auto"
+
+    return "needs_review"
 
 # ==========================================
 # Engine Detection
@@ -919,7 +981,30 @@ def build_asset_metadata(
 
     if asset_type == ASSET_TYPE_SOUND:
         item["sound_type"] = detect_sound_type(item)
-    elif not item.get("sound_type"):
+        classification_confidence = detect_sound_classification_confidence(item)
+    elif asset_type == ASSET_TYPE_PLUGIN:
+        classification_confidence = (
+            CONFIDENCE_HIGH
+            if item.get("subcategory")
+            and item.get("subcategory") != ["other"]
+            else CONFIDENCE_LOW
+        )
+    elif asset_type == ASSET_TYPE_GRAPHIC:
+        classification_confidence = (
+            CONFIDENCE_HIGH
+            if item.get("subcategory")
+            and item.get("subcategory") != ["other"]
+            else CONFIDENCE_LOW
+        )
+    else:
+        classification_confidence = CONFIDENCE_UNKNOWN
+
+    item["classification_confidence"] = classification_confidence
+    item["classification_status"] = detect_classification_status(
+        classification_confidence
+    )
+
+    if not item.get("sound_type"):
         item["sound_type"] = None
 
     if asset_type == ASSET_TYPE_PLUGIN:
