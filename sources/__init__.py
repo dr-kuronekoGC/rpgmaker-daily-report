@@ -3,6 +3,7 @@ from . import community_forum
 from . import community_tsukumate
 from . import community_tkool_forum
 from . import community_save_point
+from . import community_rpgmakerforum_de
 from . import official_site
 from . import official_steam
 from . import official_opengameart
