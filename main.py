@@ -14,7 +14,8 @@ from sources import (
     community_reddit,
     community_forum,
     community_tsukumate,
-    community_guild,
+    community_tkool_forum,
+    community_save_point,
     official_site,
     official_steam,
     official_opengameart,
@@ -25,9 +26,11 @@ from sources import (
     official_visustella,
     official_deviantart,
     asset_itchio,
+    community_guild,
     official_makerdevs,
     official_caspergaming,
     official_triacontane,
+    official_source_check,
 )
 
 from asset_metadata import enrich_items
@@ -44,6 +47,8 @@ SOURCES = [
     community_reddit,
     community_forum,
     community_tsukumate,
+    community_tkool_forum,
+    community_save_point,
     official_site,
     official_steam,
     official_opengameart,
@@ -58,6 +63,7 @@ SOURCES = [
     official_makerdevs,
     official_caspergaming,
     official_triacontane,
+    official_source_check,
 ]
 
 
