@@ -85,6 +85,69 @@ def get_html(session, url):
 # Category Map
 # ==========================================
 
+
+def get_category_topics_json(session, category_url, page):
+    """DiscourseのカテゴリJSONからトピック一覧を取得する。"""
+    json_url = category_url.rstrip("/") + ".json"
+    return get_json(
+        session,
+        json_url + "?page=" + str(page),
+    )
+
+
+def extract_topics_json(data, guild_category):
+    """カテゴリJSONのtopic_listからトピックを抽出する。"""
+    if not isinstance(data, dict):
+        return []
+
+    topic_list = data.get("topic_list")
+    if not isinstance(topic_list, dict):
+        return []
+
+    raw_topics = topic_list.get("topics", [])
+    if not isinstance(raw_topics, list):
+        return []
+
+    topics = []
+
+    for topic in raw_topics:
+        if not isinstance(topic, dict):
+            continue
+
+        topic_id = topic.get("id")
+        title = str(topic.get("title") or "").strip()
+        slug = str(topic.get("slug") or "topic").strip()
+
+        if topic_id is None or not title:
+            continue
+
+        try:
+            topic_id = int(topic_id)
+        except (TypeError, ValueError):
+            continue
+
+        url = urljoin(
+            GUILD_URL,
+            f"/t/{slug}/{topic_id}",
+        )
+
+        tags = topic.get("tags", [])
+        if not isinstance(tags, list):
+            tags = []
+
+        topics.append({
+            "title": title,
+            "url": url,
+            "guild_category": guild_category,
+            "tags": [
+                str(tag).strip()
+                for tag in tags
+                if str(tag).strip()
+            ],
+        })
+
+    return topics
+
 def extract_categories_from_json(data):
     """
     Discourseのcategories.jsonから、
@@ -860,56 +923,42 @@ def get_items(seen):
             )
 
             for page in range(
-                1,
-                MAX_PAGES + 1,
+                0,
+                MAX_PAGES,
             ):
 
                 try:
-
-                    html = get_page(
+                    data = get_category_topics_json(
                         session,
                         category_url,
                         page,
                     )
 
-                    topics = extract_topics(
-                        html,
+                    topics = extract_topics_json(
+                        data,
                         guild_category,
                     )
 
-                except (
-                    requests.RequestException
-                ) as e:
-
+                except requests.RequestException as e:
                     print(
                         "[Guild] Listing error: "
-                        f"{guild_category} "
-                        f"page={page}: {e}"
+                        f"{guild_category} page={page}: {e}"
                     )
-
                     continue
 
                 if not topics:
+                    if page == 0:
+                        print(
+                            "[Guild] No topics: "
+                            f"{guild_category}"
+                        )
                     continue
 
                 for topic in topics:
 
-                    title = topic[
-                        "title"
-                    ]
-
-                    url = topic[
-                        "url"
-                    ]
-
-                    tags = topic.get(
-                        "tags",
-                        [],
-                    )
-
-                    # ----------------------------------
-                    # Duplicate protection
-                    # ----------------------------------
+                    title = topic["title"]
+                    url = topic["url"]
+                    tags = topic.get("tags", [])
 
                     if url in processed_urls:
                         continue
@@ -919,103 +968,42 @@ def get_items(seen):
                     if url in seen:
                         continue
 
-                    # ----------------------------------
-                    # Topic detail
-                    # ----------------------------------
+                    actual_category = guild_category
 
-                    try:
-
-                        debug = (
-                            debug_topic_count
-                            < DEBUG_TOPIC_LIMIT
-                        )
-
-                        (
-                            actual_category,
-                            detail_tags,
-                        ) = get_topic_detail(
-                            session,
-                            url,
-                            category_map,
-                            debug=debug,
-                        )
-
-                        if debug:
-                            debug_topic_count += 1
-
-                    except (
-                        requests.RequestException
-                    ) as e:
-
-                        print(
-                            "[Guild] Detail error: "
-                            f"{title}: {e}"
-                        )
-
-                        continue
-
-                    if detail_tags:
-                        tags = detail_tags
-
-                    print(
-                        "[Guild] Detail: "
-                        f"{title} => "
-                        f"{actual_category or '(unknown)'}"
-                    )
-
-                    # ----------------------------------
-                    # Classification
-                    # ----------------------------------
-
-                    category = (
-                        classify_guild_category(
-                            guild_category,
-                            actual_category,
-                            title,
-                            tags,
-                        )
+                    category = classify_guild_category(
+                        guild_category,
+                        actual_category,
+                        title,
+                        tags,
                     )
 
                     if category is None:
-
                         print(
                             "[Guild] Skip: "
                             f"{title} "
                             "(category not adopted)"
                         )
-
                         continue
 
-                    # ----------------------------------
-                    # Adopt
-                    # ----------------------------------
-
-                    adopted_items.append(
-                        {
-                            "title": title,
-                            "url": url,
-                            "category": category,
-                            "source": (
-                                "RPG Maker Guild"
-                            ),
-                        }
-                    )
+                    adopted_items.append({
+                        "title": title,
+                        "url": url,
+                        "category": category,
+                        "source": "RPG Maker Guild",
+                    })
 
                     new_seen.append(url)
 
                     print(
                         "[Guild] Adopt: "
-                        f"[{category}] "
-                        f"{title}"
-                    )
-
-                    time.sleep(
-                        TOPIC_REQUEST_INTERVAL
+                        f"[{category}] {title}"
                     )
 
                 time.sleep(
                     CATEGORY_REQUEST_INTERVAL
                 )
+
+
 
         print(
             "[Guild] New: "
