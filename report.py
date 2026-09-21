@@ -134,6 +134,9 @@ def get_report_group(category):
     ):
         return "今日の注目"
 
+    if display_category == "SourceCheck":
+        return "Source Check"
+
     return None
 
 
@@ -462,6 +465,7 @@ def build_report(items):
         "プラグイン・素材": [],
         "開発情報・Tips": [],
         "質問・相談": [],
+        "Source Check": [],
     }
 
     for category, category_items in categories.items():
@@ -482,6 +486,7 @@ def build_report(items):
         "プラグイン・素材": "★★★☆☆ プラグイン・素材",
         "開発情報・Tips": "★★☆☆☆ 開発情報・Tips",
         "質問・相談": "★☆☆☆☆ 質問・相談",
+        "Source Check": "📡 Source Check",
     }
 
     for group, group_items in summary_groups.items():
@@ -667,6 +672,33 @@ def build_report(items):
     # --------------------------------------
     # Source Check
     # --------------------------------------
+
+    if "SourceCheck" in categories:
+        report.append(
+            "【SOURCE CHECK】"
+        )
+
+        for item in categories["SourceCheck"]:
+            title = item.get(
+                "title",
+                "更新あり",
+            )
+            url = item.get(
+                "url",
+                "",
+            )
+
+            if url:
+                report.append(
+                    f"・<{url}|{title}>"
+                )
+            else:
+                report.append(
+                    f"・{title}"
+                )
+
+        report.append("")
+
 
     report.append(
         "────────────────────"
