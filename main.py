@@ -36,6 +36,7 @@ from sources import (
 )
 
 from item_model import normalize_items
+from asset_metadata import enrich_items
 from language import detect_language
 from archive import save_archive
 
@@ -285,6 +286,16 @@ def main():
         len(all_items),
     )
 
+
+    # 共通分類・メタデータ付与は、global seenの後に一度だけ実行する。
+    all_items = enrich_items(all_items)
+
+    # 言語は互換用の language と、DB用の languages[] の両方に保持する。
+    for item in all_items:
+        language = item.get("language")
+        languages = item.get("languages", [])
+        if language and language not in languages:
+            item["languages"] = [*languages, language]
 
     print(
         "[DEBUG] Items after enrich:",
