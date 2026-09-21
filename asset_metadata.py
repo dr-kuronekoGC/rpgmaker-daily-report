@@ -891,6 +891,41 @@ def _is_non_asset_category(category):
     )
 
 
+def _is_non_asset_title(title):
+    text = _normalize_text(title)
+
+    # 質問・解説・作品紹介を素材として誤登録しないための保護。
+    # これらは「音楽」「sound」等の単語を含んでも、
+    # 素材そのものとは限らない。
+    non_asset_keywords = (
+        "question",
+        "questions",
+        "need help",
+        "help",
+        "how do",
+        "study",
+        "audiobook",
+        "showcase",
+        "showcasing",
+        "project",
+        "compatibility",
+        "compatible",
+        "engine",
+        "video",
+        "trailer",
+        "ゲーム",
+        "プロジェクト",
+        "互換",
+        "について手伝",
+        "手伝って",
+    )
+
+    return any(
+        keyword in text
+        for keyword in non_asset_keywords
+    )
+
+
 def _is_explicit_plugin_category(category):
     text = _normalize_text(category)
 
@@ -948,7 +983,10 @@ def build_asset_metadata(
 
     # 質問・相談・ニュース等は、タイトル中の
     # "music" や "sound" だけで素材化しない。
-    if not _is_non_asset_category(category):
+    if (
+        not _is_non_asset_category(category)
+        and not _is_non_asset_title(title)
+    ):
         detected_category, asset_tags = classify_asset(
             title,
             url,
