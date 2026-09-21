@@ -135,7 +135,22 @@ PLUGIN_CATEGORY_KEYWORDS = {
 }
 
 def _contains_keyword(text, keywords):
-    return any(keyword in text for keyword in keywords)
+    """
+    キーワードを単純な部分一致ではなく、単語境界を考慮して判定する。
+    特に ME / SE / UI / DB / API のような短い語が、
+    game / use / build など別の単語に誤反応するのを防ぐ。
+    """
+    import re
+
+    normalized = str(text or "").lower()
+    for keyword in keywords:
+        k = str(keyword or "").strip().lower()
+        if not k:
+            continue
+        pattern = r"(?<![a-z0-9])" + re.escape(k) + r"(?![a-z0-9])"
+        if re.search(pattern, normalized):
+            return True
+    return False
 
 def detect_detailed_subcategory(item, asset_type, asset_tags):
     title = _normalize_text(item.get("title", ""))
