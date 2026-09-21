@@ -915,6 +915,7 @@ def _is_non_asset_title(title):
         "video",
         "trailer",
         "ゲーム",
+        "エンジン",
         "プロジェクト",
         "互換",
         "について手伝",
