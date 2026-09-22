@@ -358,9 +358,8 @@ def format_deviantart_detail(
 
 
 # ==========================================
-# Report
+# Classification Review
 # ==========================================
-
 
 def format_classification_review(item):
     """
@@ -427,6 +426,71 @@ def format_classification_review(item):
             evidence_text += " ..."
 
         lines.append(f"  根拠：{evidence_text}")
+
+    return lines
+
+
+def get_review_summary(review_items):
+    """
+    今回の分類確認対象を、
+    ユーザーが最初に把握しやすい大分類へ集計する。
+
+    0件の分類は表示しない。
+    """
+
+    summary = {
+        "グラフィック": 0,
+        "プラグイン": 0,
+        "サウンド": 0,
+    }
+
+    for item in review_items:
+        asset_type = item.get("asset_type")
+
+        if asset_type == "graphic":
+            summary["グラフィック"] += 1
+
+        elif asset_type == "plugin":
+            summary["プラグイン"] += 1
+
+        elif asset_type == "sound":
+            summary["サウンド"] += 1
+
+    return summary
+
+
+def format_review_summary(review_items):
+    """
+    Slack冒頭に表示する分類確認の件数サマリー。
+    """
+
+    if not review_items:
+        return []
+
+    summary = get_review_summary(
+        review_items
+    )
+
+    lines = [
+        "【🔎 要確認】",
+        f"今回、人間による確認が必要なもの：{len(review_items)}件",
+    ]
+
+    for label in (
+        "グラフィック",
+        "プラグイン",
+        "サウンド",
+    ):
+        count = summary[label]
+
+        if count:
+            lines.append(
+                f"・{label}分類：{count}件"
+            )
+
+    lines.append(
+        "詳細は下記「分類確認」を確認してください。"
+    )
 
     return lines
 
@@ -535,6 +599,19 @@ def build_report(items, review_items=None):
     )
 
     report.append("")
+
+    # --------------------------------------
+    # Classification Review Summary
+    # --------------------------------------
+
+    report.extend(
+        format_review_summary(
+            review_items
+        )
+    )
+
+    if review_items:
+        report.append("")
 
     # --------------------------------------
     # Summary
