@@ -459,33 +459,121 @@ def get_review_summary(review_items):
     return summary
 
 
-def format_review_summary(review_items):
+def get_oldest_review_label(review_items):
     """
-    Slack冒頭に表示する分類確認の件数サマリー。
+    確認待ちItemの最古の発生時点をSlack向けに表示する。
     """
+    from datetime import datetime, timedelta
 
-    if not review_items:
+    candidates = []
+
+    for item in review_items or []:
+        date_text = item.get("created_report_date")
+        period = item.get("created_report_period")
+
+        if date_text:
+            try:
+                dt = datetime.strptime(date_text, "%Y-%m-%d")
+                candidates.append((
+                    dt,
+                    f"{dt.month}/{dt.day} {period or ''}".strip(),
+                ))
+                continue
+            except ValueError:
+                pass
+
+        created_at = item.get("created_at")
+        if not created_at:
+            continue
+
+        try:
+            dt = datetime.fromisoformat(created_at)
+            if dt.tzinfo is not None:
+                dt = dt + timedelta(hours=9)
+
+            hour = dt.hour
+            if 5 <= hour < 10:
+                inferred_period = "朝"
+            elif 10 <= hour < 15:
+                inferred_period = "昼"
+            elif 15 <= hour < 18:
+                inferred_period = "夕"
+            else:
+                inferred_period = "夜"
+
+            candidates.append((
+                dt.replace(tzinfo=None),
+                f"{dt.month}/{dt.day} {inferred_period}",
+            ))
+        except (TypeError, ValueError):
+            continue
+
+    if not candidates:
+        return None
+
+    candidates.sort(key=lambda pair: pair[0])
+    return candidates[0][1]
+
+
+def format_review_summary(
+    review_items,
+    carryover_items=None,
+):
+    """
+    Slack冒頭に表示する分類確認のサマリー。
+
+    今回の新規確認対象と、前回までの持ち越しを分ける。
+    """
+    review_items = review_items or []
+    carryover_items = carryover_items or []
+
+    if not review_items and not carryover_items:
         return []
-
-    summary = get_review_summary(
-        review_items
-    )
 
     lines = [
         "【🔎 要確認】",
-        f"今回、人間による確認が必要なもの：{len(review_items)}件",
     ]
 
-    for label in (
-        "グラフィック",
-        "プラグイン",
-        "サウンド",
-    ):
-        count = summary[label]
+    if review_items:
+        summary = get_review_summary(review_items)
 
-        if count:
+        lines.append(
+            f"今回：{len(review_items)}件"
+        )
+
+        for label in (
+            "グラフィック",
+            "プラグイン",
+            "サウンド",
+        ):
+            count = summary[label]
+            if count:
+                lines.append(
+                    f"・{label}分類：{count}件"
+                )
+
+    if carryover_items:
+        lines.append("")
+        lines.append("【⏳ 前回までの持ち越し】")
+        lines.append(f"{len(carryover_items)}件")
+
+        pre_ids = [
+            item.get("pre_id")
+            for item in carryover_items
+            if item.get("pre_id")
+        ]
+
+        if pre_ids:
             lines.append(
-                f"・{label}分類：{count}件"
+                "・" + "、".join(pre_ids)
+            )
+
+        oldest = get_oldest_review_label(
+            carryover_items
+        )
+        if oldest:
+            lines.append(
+                f"最古：{oldest}"
             )
 
     lines.append(
@@ -495,7 +583,7 @@ def format_review_summary(review_items):
     return lines
 
 
-def build_report(items, review_items=None):
+def build_report(items, review_items=None, carryover_items=None):
 
     now = now_jst()
 
@@ -506,8 +594,9 @@ def build_report(items, review_items=None):
     period = get_period()
 
     review_items = review_items or []
+    carryover_items = carryover_items or []
 
-    if not items and not review_items:
+    if not items and not review_items and not carryover_items:
 
         return (
             f"📬 RPG Maker Daily Report\n"
@@ -606,11 +695,12 @@ def build_report(items, review_items=None):
 
     report.extend(
         format_review_summary(
-            review_items
+            review_items,
+            carryover_items,
         )
     )
 
-    if review_items:
+    if review_items or carryover_items:
         report.append("")
 
     # --------------------------------------
@@ -831,13 +921,13 @@ def build_report(items, review_items=None):
     # Classification Review
     # --------------------------------------
 
-    if review_items:
+    if review_items or carryover_items:
         report.append(
             "────────────────────"
         )
         report.append("")
         report.append(
-            f"【🔎 分類確認】（{len(review_items)}件）"
+            f"【🔎 分類確認】（今回：{len(review_items)}件 / 持ち越し：{len(carryover_items)}件）"
         )
         report.append(
             "自動分類に確信がないため、確認待ちです。"
@@ -847,12 +937,21 @@ def build_report(items, review_items=None):
         )
         report.append("")
 
-        for item in review_items:
-            report.extend(
-                format_classification_review(item)
-            )
+        if carryover_items:
+            report.append("【⏳ 持ち越し】")
+            for item in carryover_items:
+                report.extend(
+                    format_classification_review(item)
+                )
+            report.append("")
 
-        report.append("")
+        if review_items:
+            report.append("【🆕 今回追加】")
+            for item in review_items:
+                report.extend(
+                    format_classification_review(item)
+                )
+            report.append("")
 
     # --------------------------------------
     # Source Check
