@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from common import now_jst
+from common import now_jst, get_period
 
 
 REVIEW_DIR = Path("data/review")
@@ -122,6 +122,8 @@ def prepare_classification_reviews(items, queue):
                 [],
             ),
             "created_at": now_jst().isoformat(),
+            "created_report_date": now_jst().strftime("%Y-%m-%d"),
+            "created_report_period": get_period(),
             "status": "open",
             "decision": None,
             "resolved_at": None,
@@ -141,4 +143,23 @@ def get_open_review_items(queue):
         item
         for item in queue.get("items", [])
         if item.get("status") == "open"
+    ]
+
+
+def get_carryover_review_items(queue, current_review_items):
+    """
+    今回のレポートで新たに確認対象となったItemを除き、
+    前回までから持ち越されている未解決Itemを返す。
+    """
+    current_pre_ids = {
+        item.get("pre_id")
+        for item in current_review_items
+        if item.get("pre_id")
+    }
+
+    return [
+        item
+        for item in queue.get("items", [])
+        if item.get("status") == "open"
+        and item.get("pre_id") not in current_pre_ids
     ]
