@@ -252,7 +252,7 @@ PENDING_ITEMS_FILE = "pending_items.json"
 
 # 1回のSlackレポートに掲載する
 # 1サイトあたりの最大件数
-MAX_ITEMS_PER_SOURCE = 20
+MAX_ITEMS_PER_SOURCE = 10
 
 # ==========================================
 # triacontane
