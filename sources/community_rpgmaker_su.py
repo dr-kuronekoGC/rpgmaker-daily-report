@@ -1,4 +1,5 @@
 import re
+
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
@@ -12,13 +13,13 @@ from sources.base import get_html
 
 
 SEEN_FILE = RPGMAKER_SU_SEEN_FILE
-SOURCE_NAME = "RPG Maker SU"
+SOURCE_NAME = "Нейтральная полоса"
 
 BASE_URL = "https://rpgmaker.su"
 
 RESOURCE_URLS = (
-    RPGMAKER_SU_RESOURCE_URL,
-    RPGMAKER_SU_PLUGIN_URL,
+    (RPGMAKER_SU_RESOURCE_URL, "resource"),
+    (RPGMAKER_SU_PLUGIN_URL, "plugin"),
 )
 
 MAX_PAGES_PER_SECTION = 3
@@ -30,10 +31,31 @@ QUESTION_KEYWORDS = (
     "нужна",
     "нужно",
     "нужны",
+    "поиск",
     "помощь",
     "вопрос",
     "просьба",
     "запрос",
+    "как ",
+    "подскаж",
+)
+
+IGNORE_KEYWORDS = (
+    "руссификац",
+    "перевод",
+    "программа для перевода",
+)
+
+SOUND_KEYWORDS = (
+    "музык",
+    "музыка",
+    "звук",
+    "звуки",
+    "аудио",
+    "bgm",
+    "bgs",
+    "sfx",
+    "se ",
 )
 
 GRAPHIC_KEYWORDS = (
@@ -47,32 +69,21 @@ GRAPHIC_KEYWORDS = (
     "икон",
     "анимац",
     "картин",
+    "ресурс",
+    "ресурсы",
+    "dlc",
 )
 
-SOUND_KEYWORDS = (
-    "музык",
-    "звук",
-    "аудио",
-    "bgm",
-    "bgs",
-    "sfx",
-    "se ",
-)
-
-PLUGIN_KEYWORDS = (
-    "плагин",
-    "плагины",
-    "plugin",
-    "plugins",
-    "скрипт",
-    "скрипты",
-    "rgss",
+THREAD_PATTERN = re.compile(
+    r"/f(?:70|109)/[^/?]+-d+/?$",
+    re.IGNORECASE,
 )
 
 
 def normalize_text(value):
     if not isinstance(value, str):
         return ""
+
     return " ".join(value.lower().split())
 
 
@@ -92,57 +103,78 @@ def is_thread_url(url):
     if not url:
         return False
 
-    lowered = url.lower()
-
-    return (
-        "showthread.php" in lowered
-        or "/threads/" in lowered
-        or re.search(r"/t\d+", lowered) is not None
-    )
+    return THREAD_PATTERN.search(url) is not None
 
 
-def classify(title, section_url):
+def classify(title, section_type):
     text = normalize_text(title)
-    section = normalize_text(section_url)
 
-    if any(keyword in text for keyword in QUESTION_KEYWORDS):
+    if any(
+        keyword in text
+        for keyword in QUESTION_KEYWORDS
+    ):
         return None
 
-    if "f120" in section:
+    if any(
+        keyword in text
+        for keyword in IGNORE_KEYWORDS
+    ):
+        return None
+
+    if section_type == "plugin":
         return "プラグイン"
 
-    if any(keyword in text for keyword in PLUGIN_KEYWORDS):
-        return "プラグイン"
-
-    if any(keyword in text for keyword in SOUND_KEYWORDS):
+    if any(
+        keyword in text
+        for keyword in SOUND_KEYWORDS
+    ):
         return "サウンド素材"
 
-    if any(keyword in text for keyword in GRAPHIC_KEYWORDS):
+    if any(
+        keyword in text
+        for keyword in GRAPHIC_KEYWORDS
+    ):
         return "グラフィック素材"
 
-    # Resource section is specifically for graphics/music/sounds.
-    if "f70" in section:
+    # Resource section is explicitly for graphics/music/sounds.
+    # Default to graphics when the title is not otherwise identifiable.
+    if section_type == "resource":
         return "グラフィック素材"
 
     return None
 
 
-def extract_items(html, section_url):
-    soup = BeautifulSoup(html, "html.parser")
+def extract_items(html, section_type):
+    soup = BeautifulSoup(
+        html,
+        "html.parser",
+    )
+
     items = []
     local_seen = set()
 
     for link in soup.select("a[href]"):
-        title = link.get_text(" ", strip=True)
-        url = normalize_url(link.get("href"))
+        title = link.get_text(
+            " ",
+            strip=True,
+        )
+        url = normalize_url(
+            link.get("href")
+        )
 
-        if not title or not url or not is_thread_url(url):
+        if not title or not url:
+            continue
+
+        if not is_thread_url(url):
             continue
 
         if url in local_seen:
             continue
 
-        category = classify(title, section_url)
+        category = classify(
+            title,
+            section_type,
+        )
 
         if category is None:
             continue
@@ -155,32 +187,19 @@ def extract_items(html, section_url):
                 "source": SOURCE_NAME,
             }
         )
+
         local_seen.add(url)
 
     return items
 
 
-def get_next_page_url(html, current_url):
-    soup = BeautifulSoup(html, "html.parser")
+def get_page_url(section_url, page_number):
+    if page_number <= 1:
+        return section_url
 
-    for link in soup.select("a[href]"):
-        href = link.get("href")
-        text = normalize_text(link.get_text(" ", strip=True))
-        title = normalize_text(link.get("title"))
-
-        if not href:
-            continue
-
-        if (
-            text in {"next", "следующая", "вперед", "далее", "2", "3"}
-            or "next" in title
-            or "след" in title
-        ):
-            candidate = normalize_url(href)
-            if candidate and candidate != current_url:
-                return candidate
-
-    return None
+    return section_url.rstrip("/") + (
+        f"/index{page_number}"
+    )
 
 
 def get_items(seen):
@@ -188,12 +207,20 @@ def get_items(seen):
     seen_set = set(seen)
     adopted_items = []
 
-    for section_url in RESOURCE_URLS:
-        current_url = section_url
+    for section_url, section_type in RESOURCE_URLS:
+        for page_number in range(
+            1,
+            MAX_PAGES_PER_SECTION + 1,
+        ):
+            current_url = get_page_url(
+                section_url,
+                page_number,
+            )
 
-        for page_number in range(1, MAX_PAGES_PER_SECTION + 1):
             try:
-                html = get_html(current_url)
+                html = get_html(
+                    current_url
+                )
             except Exception as e:
                 print(
                     f"[{SOURCE_NAME}] "
@@ -201,11 +228,15 @@ def get_items(seen):
                 )
                 break
 
-            page_items = extract_items(html, section_url)
+            page_items = extract_items(
+                html,
+                section_type,
+            )
 
             print(
                 f"[{SOURCE_NAME}] "
-                f"{section_url} page {page_number}: "
+                f"{section_type} "
+                f"page {page_number}: "
                 f"{len(page_items)} candidate threads"
             )
 
@@ -224,16 +255,6 @@ def get_items(seen):
                     f"[{item['category']}] "
                     f"{item['title']}"
                 )
-
-            next_url = get_next_page_url(
-                html,
-                current_url,
-            )
-
-            if not next_url or next_url == current_url:
-                break
-
-            current_url = next_url
 
     if not seen:
         print(
