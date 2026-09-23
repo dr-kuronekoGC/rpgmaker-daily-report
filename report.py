@@ -938,11 +938,12 @@ def build_report(items, review_items=None, carryover_items=None):
         report.append("")
 
         if carryover_items:
-            report.append("【⏳ 持ち越し】")
-            for item in carryover_items:
-                report.extend(
-                    format_classification_review(item)
-                )
+            report.append(
+                "持ち越しの詳細は、冒頭のPRE番号から過去レポートを確認してください。"
+            )
+            report.append(
+                "台帳：<https://github.com/dr-kuronekoGC/rpgmaker-daily-report/blob/main/data/review/classification_review.json|classification_review.json>"
+            )
             report.append("")
 
         if review_items:
