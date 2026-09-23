@@ -43,6 +43,7 @@ from review_queue import (
     load_review_queue,
     save_review_queue,
     prepare_classification_reviews,
+    get_carryover_review_items,
 )
 
 from config import (
@@ -309,9 +310,19 @@ def main():
         review_queue,
     )
 
+    carryover_review_items = get_carryover_review_items(
+        review_queue,
+        review_items,
+    )
+
     print(
         "[Classification review] New:",
         len(review_items),
+    )
+
+    print(
+        "[Classification review] Carryover:",
+        len(carryover_review_items),
     )
 
     # 分類確認キューはSlack送信失敗時にも失わないよう、
@@ -371,6 +382,7 @@ def main():
     report = build_report(
         report_items,
         review_items,
+        carryover_review_items,
     )
 
     print()
