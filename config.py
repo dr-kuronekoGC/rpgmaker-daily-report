@@ -85,6 +85,22 @@ TSUKUPURA_URL = "https://plugin-mz.fungamemake.com/"
 TSUKUPURA_SEEN_FILE = "seen_tsukupura.json"
 
 # ----------------------------
+# RPG Maker SU / Нейтральная полоса
+# ----------------------------
+
+RPGMAKER_SU_RESOURCE_URL = (
+    "https://rpgmaker.su/f70/"
+)
+
+RPGMAKER_SU_PLUGIN_URL = (
+    "https://rpgmaker.su/f109/"
+)
+
+RPGMAKER_SU_SEEN_FILE = (
+    "seen_rpgmaker_su.json"
+)
+
+# ----------------------------
 # 個人サイト / Source Check
 # ----------------------------
 
