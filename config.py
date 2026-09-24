@@ -101,6 +101,22 @@ RPGMAKER_SU_SEEN_FILE = (
 )
 
 # ----------------------------
+# RPG Maker Union
+# ----------------------------
+
+RPGMAKER_UNION_RESOURCE_URL = (
+    "https://rpgmakerunion.ru/forum/resursy.16"
+)
+
+RPGMAKER_UNION_PLUGIN_URL = (
+    "https://rpgmakerunion.ru/forum/plaginy-i-skripty.15"
+)
+
+RPGMAKER_UNION_SEEN_FILE = (
+    "seen_rpgmaker_union.json"
+)
+
+# ----------------------------
 # 個人サイト / Source Check
 # ----------------------------
 
