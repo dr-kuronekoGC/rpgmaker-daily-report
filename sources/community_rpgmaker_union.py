@@ -121,9 +121,11 @@ def classify(title, section_type):
 
 
 THREAD_URL_IN_HTML_PATTERN = re.compile(
-    r"(?:https?:)?//rpgmakerunion\\.ru/threads?/[^"\\'\\s<>]+?\\.\\d+(?:/page-\\d+)?(?:[?#][^"\\'\\s<>]*)?",
+    r'''(?:https?:)?//rpgmakerunion\\.ru/threads?/[^"'\\s<>]+?\\.\\d+(?:/page-\\d+)?(?:[?#][^"'\\s<>]*)?''',
     re.IGNORECASE,
 )
+
+
 def extract_raw_thread_urls(html):
     urls = []
 
