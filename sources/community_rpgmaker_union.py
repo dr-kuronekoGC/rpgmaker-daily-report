@@ -1,6 +1,6 @@
 import re
 
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
@@ -23,8 +23,8 @@ SECTION_URLS = (
 
 MAX_PAGES_PER_SECTION = 3
 
-THREAD_PATTERN = re.compile(
-    r"/threads?/[^/?]+\.\d+(?:/page-\d+)?/?$",
+THREAD_PATH_PATTERN = re.compile(
+    r"^/threads?/[^/]+\.\d+(?:/page-\d+)?/?$",
     re.IGNORECASE,
 )
 
@@ -94,7 +94,8 @@ def is_thread_url(url):
     if not url:
         return False
 
-    return THREAD_PATTERN.search(url) is not None
+    path = urlparse(url).path
+    return THREAD_PATH_PATTERN.match(path) is not None
 
 
 def classify(title, section_type):
@@ -125,22 +126,9 @@ def extract_items(html, section_type):
     items = []
     local_seen = set()
 
-    candidate_links = []
-
-    # XenForoの通常のスレッド一覧。
-    candidate_links.extend(
-        soup.select(
-            "div.structItem--thread .structItem-title a[href]"
-        )
-    )
-
-    # テーマやHTML構造が変わった場合のフォールバック。
-    if not candidate_links:
-        candidate_links.extend(
-            soup.select("a[href*='/thread/'], a[href*='/threads/']")
-        )
-
-    for link in candidate_links:
+    # XenForoのHTML構造には依存せず、ページ内の全リンクから
+    # /thread/slug.ID または /threads/slug.ID を拾う。
+    for link in soup.select("a[href]"):
         title = link.get_text(" ", strip=True)
         url = normalize_url(link.get("href"))
 
@@ -168,7 +156,6 @@ def extract_items(html, section_type):
         local_seen.add(url)
 
     return items
-
 
 def get_page_url(section_url, page_number):
     if page_number <= 1:
