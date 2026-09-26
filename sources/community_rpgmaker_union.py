@@ -120,14 +120,39 @@ def classify(title, section_type):
     return None
 
 
+THREAD_URL_IN_HTML_PATTERN = re.compile(
+    r"(?:https?:\\?/\\?/rpgmakerunion\\.ru)?"
+    r"\\?/thread(?:s)?\\?/[^"\\'\\s<>]+?\\.\\d+"
+    r"(?:\\?/page-\\d+)?"
+    r"(?:[?#][^"\\'\\s<>]*)?",
+    re.IGNORECASE,
+)
+
+
+def extract_raw_thread_urls(html):
+    urls = []
+
+    for match in THREAD_URL_IN_HTML_PATTERN.finditer(html):
+        raw_url = match.group(0).replace("\\/","/")
+
+        if not raw_url.startswith("http"):
+            raw_url = urljoin(BASE_URL, raw_url)
+
+        url = normalize_url(raw_url)
+
+        if url and is_thread_url(url) and url not in urls:
+            urls.append(url)
+
+    return urls
+
+
 def extract_items(html, section_type):
     soup = BeautifulSoup(html, "html.parser")
 
     items = []
     local_seen = set()
 
-    # XenForoのHTML構造には依存せず、ページ内の全リンクから
-    # /thread/slug.ID または /threads/slug.ID を拾う。
+    # 通常のHTMLリンクをまず取得する。
     for link in soup.select("a[href]"):
         title = link.get_text(" ", strip=True)
         url = normalize_url(link.get("href"))
@@ -148,6 +173,26 @@ def extract_items(html, section_type):
         items.append(
             {
                 "title": title,
+                "url": url,
+                "category": category,
+                "source": SOURCE_NAME,
+            }
+        )
+        local_seen.add(url)
+
+    # Unionでは、Actionsから取得したHTML内に通常の<a href>が
+    # 現れないケースがあるため、HTML本文に埋め込まれた
+    # /thread/...ID もフォールバックとして拾う。
+    for url in extract_raw_thread_urls(html):
+        if url in local_seen:
+            continue
+
+        # URLしか取得できない場合は、詳細分類を後段に任せる。
+        category = "プラグイン" if section_type == "plugin" else "グラフィック素材"
+
+        items.append(
+            {
+                "title": url.rsplit("/", 1)[-1],
                 "url": url,
                 "category": category,
                 "source": SOURCE_NAME,
@@ -190,16 +235,23 @@ def get_items(seen):
                 for link in all_links
                 if "/thread" in (link.get("href", "") or "").lower()
             ]
+            raw_thread_urls = extract_raw_thread_urls(html)
             print(
                 f"[{SOURCE_NAME}][DEBUG] {section_type} page {page_number}: "
                 f"html={len(html)} chars, links={len(all_links)}, "
                 f"thread_like_links={len(thread_links)}, "
+                f"raw_thread_urls={len(raw_thread_urls)}, "
                 f"title={soup.title.get_text(' ', strip=True) if soup.title else ''}"
             )
             if thread_links:
                 print(
                     f"[{SOURCE_NAME}][DEBUG] thread-like samples: "
                     f"{thread_links[:5]}"
+                )
+            if raw_thread_urls:
+                print(
+                    f"[{SOURCE_NAME}][DEBUG] raw thread samples: "
+                    f"{raw_thread_urls[:5]}"
                 )
 
             page_items = extract_items(html, section_type)
