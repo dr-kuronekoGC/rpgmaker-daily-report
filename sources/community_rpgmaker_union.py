@@ -181,6 +181,27 @@ def get_items(seen):
                 )
                 break
 
+            # 一時診断：GitHub Actionsから見えているHTMLの状態を確認する。
+            # Unionだけ候補0件が続いているため、HTML構造/リダイレクト/bot対策を切り分ける。
+            soup = BeautifulSoup(html, "html.parser")
+            all_links = soup.select("a[href]")
+            thread_links = [
+                link.get("href", "")
+                for link in all_links
+                if "/thread" in (link.get("href", "") or "").lower()
+            ]
+            print(
+                f"[{SOURCE_NAME}][DEBUG] {section_type} page {page_number}: "
+                f"html={len(html)} chars, links={len(all_links)}, "
+                f"thread_like_links={len(thread_links)}, "
+                f"title={soup.title.get_text(' ', strip=True) if soup.title else ''}"
+            )
+            if thread_links:
+                print(
+                    f"[{SOURCE_NAME}][DEBUG] thread-like samples: "
+                    f"{thread_links[:5]}"
+                )
+
             page_items = extract_items(html, section_type)
 
             print(
