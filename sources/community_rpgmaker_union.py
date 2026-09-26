@@ -121,19 +121,18 @@ def classify(title, section_type):
 
 
 THREAD_URL_IN_HTML_PATTERN = re.compile(
-    r"(?:https?:\\?/\\?/rpgmakerunion\\.ru)?"
-    r"\\?/thread(?:s)?\\?/[^"\\'\\s<>]+?\\.\\d+"
-    r"(?:\\?/page-\\d+)?"
-    r"(?:[?#][^"\\'\\s<>]*)?",
+    r'(?:https?:)?//rpgmakerunion\\.ru/threads?/[^"\\'\\s<>]+?\\.\\d+(?:/page-\\d+)?(?:[?#][^"\\'\\s<>]*)?',
     re.IGNORECASE,
 )
-
 
 def extract_raw_thread_urls(html):
     urls = []
 
-    for match in THREAD_URL_IN_HTML_PATTERN.finditer(html):
-        raw_url = match.group(0).replace("\\/","/")
+    # HTML/JavaScript内で \/ のようにエスケープされている場合に備える。
+    normalized_html = html.replace("\\/", "/")
+
+    for match in THREAD_URL_IN_HTML_PATTERN.finditer(normalized_html):
+        raw_url = match.group(0)
 
         if not raw_url.startswith("http"):
             raw_url = urljoin(BASE_URL, raw_url)
