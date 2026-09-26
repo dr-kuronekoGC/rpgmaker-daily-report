@@ -24,7 +24,7 @@ SECTION_URLS = (
 MAX_PAGES_PER_SECTION = 3
 
 THREAD_PATTERN = re.compile(
-    r"/thread/[^/?]+\.\d+(?:/page-\d+)?/?$"
+    r"/thread/[^/?]+\.\d+(?:/page-\d+)?/?$",
     re.IGNORECASE,
 )
 
