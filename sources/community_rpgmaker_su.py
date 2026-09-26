@@ -75,7 +75,7 @@ GRAPHIC_KEYWORDS = (
 )
 
 THREAD_PATTERN = re.compile(
-    r"/f(?:70|109)/[^/?]+-d+/?$",
+    r"/f(?:70|109)/[^/?]+-\d+/?$"
     re.IGNORECASE,
 )
 
@@ -96,7 +96,11 @@ def normalize_url(url):
     if not url:
         return None
 
-    return urljoin(BASE_URL, url).split("#", 1)[0]
+    url = urljoin(BASE_URL, url)
+    url = url.split("#", 1)[0]
+    url = url.split("?", 1)[0]
+
+    return url
 
 
 def is_thread_url(url):
