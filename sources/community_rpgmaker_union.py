@@ -24,7 +24,7 @@ SECTION_URLS = (
 MAX_PAGES_PER_SECTION = 3
 
 THREAD_PATTERN = re.compile(
-    r"/thread/[^/?]+\\.\\d+(?:/page-\\d+)?/?$",
+    r"/thread/[^/?]+\.\d+(?:/page-\d+)?/?$"
     re.IGNORECASE,
 )
 
@@ -83,7 +83,11 @@ def normalize_url(url):
     if not url:
         return None
 
-    return urljoin(BASE_URL, url).split("#", 1)[0]
+    url = urljoin(BASE_URL, url)
+    url = url.split("#", 1)[0]
+    url = url.split("?", 1)[0]
+
+    return url
 
 
 def is_thread_url(url):
