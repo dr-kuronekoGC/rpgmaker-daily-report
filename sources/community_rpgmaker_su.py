@@ -75,7 +75,7 @@ GRAPHIC_KEYWORDS = (
 )
 
 THREAD_PATTERN = re.compile(
-    r"/f(?:70|109)/[^/?]+-\d+/?$"
+    r"/f(?:70|109)/[^/?]+-\d+/?$",
     re.IGNORECASE,
 )
 
