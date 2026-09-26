@@ -21,6 +21,24 @@ SEEN_FILE = VISUSTELLA_SEEN_FILE
 # Plugin判定
 # ==========================================
 
+def normalize_visustella_url(url):
+    """VisuStellaのURL表記を正規化する。"""
+
+    if not isinstance(url, str):
+        return None
+
+    url = url.strip()
+
+    if not url:
+        return None
+
+    url = url.split("#", 1)[0]
+    url = url.split("?", 1)[0]
+    url = url.rstrip("/")
+
+    return url
+
+
 def classify_visustella(title, url=""):
 
     normalized = title.lower().strip()
@@ -86,6 +104,10 @@ def get_items(seen):
                 VISUSTELLA_URL,
                 href,
             )
+            href = normalize_visustella_url(href)
+
+            if not href:
+                continue
 
             # VisuStella以外へのリンクを除外
             if "visustellamz.itch.io/" not in href:
@@ -93,7 +115,7 @@ def get_items(seen):
 
             # トップページ自身を除外
             if (
-                href.rstrip("/")
+                href
                 == VISUSTELLA_URL.rstrip("/")
             ):
                 continue
