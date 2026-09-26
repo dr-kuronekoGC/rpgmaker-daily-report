@@ -24,7 +24,7 @@ SECTION_URLS = (
 MAX_PAGES_PER_SECTION = 3
 
 THREAD_PATTERN = re.compile(
-    r"/thread/[^/?]+\.\d+(?:/page-\d+)?/?$",
+    r"/threads?/[^/?]+\.\d+(?:/page-\d+)?/?$",
     re.IGNORECASE,
 )
 
@@ -125,7 +125,22 @@ def extract_items(html, section_type):
     items = []
     local_seen = set()
 
-    for link in soup.select("a[href]"):
+    candidate_links = []
+
+    # XenForoの通常のスレッド一覧。
+    candidate_links.extend(
+        soup.select(
+            "div.structItem--thread .structItem-title a[href]"
+        )
+    )
+
+    # テーマやHTML構造が変わった場合のフォールバック。
+    if not candidate_links:
+        candidate_links.extend(
+            soup.select("a[href*='/thread/'], a[href*='/threads/']")
+        )
+
+    for link in candidate_links:
         title = link.get_text(" ", strip=True)
         url = normalize_url(link.get("href"))
 
