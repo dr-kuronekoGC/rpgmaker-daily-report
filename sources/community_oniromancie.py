@@ -194,6 +194,51 @@ def find_engine(text):
     return None
 
 
+def find_explicit_engine(text):
+    """
+    Oniromancieの個別ページには、
+    「Script pour RPG Maker XP」
+    「Logiciel : RPG Maker XP」
+    のような明示的なエンジン情報がある。
+
+    ページ全体を検索すると共通ナビゲーションの
+    RPG Maker XP/VX/MV/MZまで拾ってしまうため、
+    ラベル付きの記述を優先して解析する。
+    """
+    if not isinstance(text, str):
+        return None
+
+    normalized = " ".join(text.split())
+
+    label_pattern = re.compile(
+        r"(?:script\s+pour|logiciel\s*:?)\s*"
+        r"rpg\s*maker\s*"
+        r"(xp|vx\s*ace|vx|mv|mz)",
+        re.IGNORECASE,
+    )
+
+    match = label_pattern.search(normalized)
+
+    if not match:
+        return None
+
+    version = re.sub(
+        r"\s+",
+        " ",
+        match.group(1).strip().lower(),
+    )
+
+    version_map = {
+        "xp": "RPG Maker XP",
+        "vx": "RPG Maker VX",
+        "vx ace": "RPG Maker VX Ace",
+        "mv": "RPG Maker MV",
+        "mz": "RPG Maker MZ",
+    }
+
+    return version_map.get(version)
+
+
 def find_category(text):
     normalized = normalize_text(text)
 
@@ -222,6 +267,116 @@ def extract_category_from_page(html):
             return category
 
     return None
+
+
+def _is_engine_metadata(text):
+    normalized = normalize_text(text)
+
+    return bool(
+        re.search(
+            r"(?:script\s+pour|logiciel\s*:?)\s*"
+            r"rpg\s*maker",
+            normalized,
+            re.IGNORECASE,
+        )
+    )
+
+
+def _is_metadata_or_ui_text(text):
+    normalized = normalize_text(text)
+
+    if not normalized:
+        return True
+
+    excluded_prefixes = (
+        "ecrit par ",
+        "écrit par ",
+        "publié par ",
+        "publie par ",
+        "signaler un script",
+        "auteur :",
+        "logiciel :",
+        "script pour ",
+    )
+
+    if normalized.startswith(excluded_prefixes):
+        return True
+
+    return False
+
+
+def extract_detail_content(soup, title):
+    """
+    個別ページの「タイトル直後〜エンジン情報」の領域から
+    説明文だけを抽出する。
+
+    Oniromancieはページ共通ナビゲーションにも多数の<p>相当の
+    テキストを持つため、ページ全体から最初の<p>を拾わない。
+    """
+    heading = None
+
+    normalized_title = normalize_text(title)
+
+    for tag in soup.find_all(["h1", "h2", "h3", "h4"]):
+        text = tag.get_text(" ", strip=True)
+
+        if not text:
+            continue
+
+        normalized = normalize_text(text)
+
+        if (
+            normalized == normalized_title
+            or (
+                normalized_title
+                and normalized_title in normalized
+            )
+        ):
+            heading = tag
+            break
+
+    if heading is None:
+        return [], ""
+
+    description_parts = []
+    seen_text = set()
+
+    for element in heading.find_all_next(["p", "div"]):
+        text = element.get_text(" ", strip=True)
+
+        if not text:
+            continue
+
+        normalized = normalize_text(text)
+
+        if normalized in seen_text:
+            continue
+
+        # ページ本文の「Script pour / Logiciel」到達で
+        # 説明領域を終了する。
+        if _is_engine_metadata(text):
+            break
+
+        # 作者・投稿者等のメタデータは説明文に含めない。
+        if _is_metadata_or_ui_text(text):
+            continue
+
+        # 大きなdivを拾うと、その内部のpの内容を丸ごと
+        # 二重に取得する可能性があるため、pを優先する。
+        if element.name != "p":
+            continue
+
+        # 共通ナビやフッターらしい短いUIテキストを除外。
+        if len(text) < 20:
+            continue
+
+        description_parts.append(text)
+        seen_text.add(normalized)
+
+        if len(description_parts) >= 3:
+            break
+
+    return description_parts, " ".join(description_parts)[:3000]
 
 
 def extract_detail(
@@ -275,7 +430,25 @@ def extract_detail(
         "source_tags": [],
     }
 
-    engine = find_engine(page_text)
+    # ページ全体ではなく、明示された
+    # 「Script pour / Logiciel」情報を最優先する。
+    engine = find_explicit_engine(page_text)
+
+    if not engine:
+        # 明示ラベルがない場合のみ、ページ本文領域を補助的に検索。
+        description_parts, description = extract_detail_content(
+            soup,
+            title,
+        )
+        content_text = " ".join(description_parts)
+
+        engine = find_engine(content_text)
+
+    else:
+        _, description = extract_detail_content(
+            soup,
+            title,
+        )
 
     if engine:
         item["engine"] = engine
@@ -307,20 +480,8 @@ def extract_detail(
     if date_match:
         item["source_published_at"] = date_match.group(1)
 
-    paragraphs = [
-        p.get_text(" ", strip=True)
-        for p in soup.find_all("p")
-    ]
-
-    paragraphs = [
-        p for p in paragraphs
-        if len(p) >= 20
-    ]
-
-    if paragraphs:
-        item["description"] = " ".join(
-            paragraphs[:3]
-        )[:3000]
+    if description:
+        item["description"] = description
 
     return item
 
