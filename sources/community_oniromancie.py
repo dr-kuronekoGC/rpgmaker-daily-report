@@ -524,6 +524,7 @@ def get_items(seen):
 
     if (
         not detail_import_complete
+        and len(discovered) >= catalog_seen_count
         and detail_completed_after >= len(discovered)
     ):
         new_seen.append(DETAIL_COMPLETE_KEY)
