@@ -1,4 +1,5 @@
 import html
+import json
 import re
 
 from config import (
@@ -13,13 +14,13 @@ SEEN_FILE = RPGMAKER_UNION_SEEN_FILE
 SOURCE_NAME = "RPG Maker Union"
 
 
-SECTION_FEEDS = (
+SECTION_PAGES = (
     (
-        RPGMAKER_UNION_RESOURCE_URL.rstrip("/") + "/index.rss",
+        RPGMAKER_UNION_RESOURCE_URL,
         "resource",
     ),
     (
-        RPGMAKER_UNION_PLUGIN_URL.rstrip("/") + "/index.rss",
+        RPGMAKER_UNION_PLUGIN_URL,
         "plugin",
     ),
 )
@@ -68,152 +69,61 @@ def clean_text(value):
     return " ".join(value.split()).strip()
 
 
-def extract_tag_value(block, tag_name):
-    pattern = (
-        r"<"
-        + re.escape(tag_name)
-        + r"\b[^>]*>(.*?)</"
-        + re.escape(tag_name)
-        + r">"
-    )
+def extract_forum_threads(raw):
+    marker = "window.data = "
+    marker_pos = raw.find(marker)
 
-    match = re.search(
-        pattern,
-        block,
-        re.IGNORECASE | re.DOTALL,
-    )
+    if marker_pos < 0:
+        return []
 
-    if not match:
-        return ""
+    json_start = marker_pos + len(marker)
 
-    return clean_text(match.group(1))
+    try:
+        data, _ = json.JSONDecoder().raw_decode(
+            raw[json_start:]
+        )
+    except json.JSONDecodeError:
+        return []
 
+    threads = data.get("forumThreads", [])
 
-def extract_link(block):
-    match = re.search(
-        r"<link\b[^>]*href=[\"']([^\"']+)",
-        block,
-        re.IGNORECASE,
-    )
+    if not isinstance(threads, list):
+        return []
 
-    if match:
-        return html.unescape(match.group(1)).strip()
-
-    match = re.search(
-        r"<link\b[^>]*>(.*?)</link>",
-        block,
-        re.IGNORECASE | re.DOTALL,
-    )
-
-    if match:
-        return clean_text(match.group(1))
-
-    return ""
-
-
-def extract_entries(raw):
-    start_pattern = re.compile(
-        r"<(?:item|entry)\b[^>]*>",
-        re.IGNORECASE,
-    )
-
-    starts = list(start_pattern.finditer(raw))
     entries = []
 
-    for index, match in enumerate(starts):
-        start = match.start()
+    for thread in threads:
+        if not isinstance(thread, dict):
+            continue
 
-        if index + 1 < len(starts):
-            end = starts[index + 1].start()
-        else:
-            end = len(raw)
-
-        block = raw[start:end]
-
-        title = extract_tag_value(
-            block,
-            "title",
-        )
-        url = extract_link(block)
+        title = clean_text(thread.get("title", ""))
+        url = thread.get("viewUrl", "")
+        thread_id = thread.get("id")
 
         if not title or not url:
             continue
 
+        if not url.startswith("/thread/"):
+            continue
+
+        full_url = (
+            "https://rpgmakerunion.ru"
+            + url
+        )
+
         entries.append(
             {
                 "title": title,
-                "url": url,
+                "url": full_url,
+                "source_item_id": (
+                    str(thread_id)
+                    if thread_id is not None
+                    else url
+                ),
             }
         )
 
     return entries
-
-
-def print_rss_diagnostics(section_type, raw):
-    counts = {
-        "<item": len(re.findall(r"<item\b", raw, re.IGNORECASE)),
-        "</item": len(re.findall(r"</item\s*>", raw, re.IGNORECASE)),
-        "<entry": len(re.findall(r"<entry\b", raw, re.IGNORECASE)),
-        "</entry": len(re.findall(r"</entry\s*>", raw, re.IGNORECASE)),
-        "<link": len(re.findall(r"<link\b", raw, re.IGNORECASE)),
-        "<title": len(re.findall(r"<title\b", raw, re.IGNORECASE)),
-        "/thread/": len(re.findall(r"/thread/", raw, re.IGNORECASE)),
-    }
-
-    print(
-        f"[{SOURCE_NAME}][DEBUG] {section_type} RSS diagnostics: "
-        f"length={len(raw)}, "
-        f"item_start={counts['<item']}, "
-        f"item_end={counts['</item']}, "
-        f"entry_start={counts['<entry']}, "
-        f"entry_end={counts['</entry']}, "
-        f"link={counts['<link']}, "
-        f"title={counts['<title']}, "
-        f"thread={counts['/thread/']}"
-    )
-
-    if not raw.strip():
-        print(
-            f"[{SOURCE_NAME}][DEBUG] "
-            f"{section_type} RSS is empty"
-        )
-        return
-
-    preview = " ".join(raw[:500].split())
-    print(
-        f"[{SOURCE_NAME}][DEBUG] "
-        f"{section_type} RSS preview: {preview}"
-    )
-
-    thread_matches = re.findall(
-        r'''/thread/[^"'<>\s]+''',
-        raw,
-        re.IGNORECASE,
-    )
-
-    if thread_matches:
-        first_thread = html.unescape(thread_matches[0])
-        print(
-            f"[{SOURCE_NAME}][DEBUG] "
-            f"{section_type} first thread URL: "
-            f"{first_thread}"
-        )
-
-        thread_pos = raw.find(thread_matches[0])
-        if thread_pos >= 0:
-            context_start = max(0, thread_pos - 1200)
-            context_end = min(
-                len(raw),
-                thread_pos + len(thread_matches[0]) + 1800,
-            )
-            context = " ".join(
-                raw[context_start:context_end].split()
-            )
-            print(
-                f"[{SOURCE_NAME}][DEBUG] "
-                f"{section_type} first thread context: "
-                f"{context}"
-            )
 
 
 def classify(title, section_type):
@@ -242,28 +152,29 @@ def get_items(seen):
     seen_set = set(seen)
     adopted_items = []
 
-    for feed_url, section_type in SECTION_FEEDS:
+    for page_url, section_type in SECTION_PAGES:
         try:
-            raw = get_html(feed_url)
+            raw = get_html(page_url)
         except Exception as e:
             print(
                 f"[{SOURCE_NAME}] "
-                f"{section_type} RSS error: {e}"
+                f"{section_type} page error: {e}"
             )
             continue
 
-        entries = extract_entries(raw)
+        entries = extract_forum_threads(raw)
 
         print(
             f"[{SOURCE_NAME}] "
-            f"{section_type} RSS: "
-            f"{len(entries)} items"
+            f"{section_type} page: "
+            f"{len(entries)} threads"
         )
 
         if not entries:
-            print_rss_diagnostics(
-                section_type,
-                raw,
+            print(
+                f"[{SOURCE_NAME}] "
+                f"{section_type} page: "
+                f"no structured thread data"
             )
 
         for entry in entries:
@@ -290,6 +201,9 @@ def get_items(seen):
                     "url": url,
                     "category": category,
                     "source": SOURCE_NAME,
+                    "source_item_id": entry[
+                        "source_item_id"
+                    ],
                 }
             )
 
