@@ -335,7 +335,7 @@ def extract_detail_content(soup, title):
     の順序を利用して切り出す。
     """
     lines = [
-        re.sub(r"\\s+", " ", line).strip()
+        re.sub(r"\s+", " ", line).strip()
         for line in soup.get_text("\n", strip=True).splitlines()
     ]
     lines = [line for line in lines if line]
@@ -385,7 +385,7 @@ def extract_detail_content(soup, title):
 
         # 説明文はタイトル直後の通常テキスト。
         # 行番号・コード・大量の記号を説明文として拾わない。
-        if re.fullmatch(r"[\\d\\s]+", text):
+        if re.fullmatch(r"[\d\s]+", text):
             continue
 
         if len(text) < 10:
