@@ -157,6 +157,7 @@ def print_rss_diagnostics(section_type, raw):
         "</entry": len(re.findall(r"</entry\s*>", raw, re.IGNORECASE)),
         "<link": len(re.findall(r"<link\b", raw, re.IGNORECASE)),
         "<title": len(re.findall(r"<title\b", raw, re.IGNORECASE)),
+        "/thread/": len(re.findall(r"/thread/", raw, re.IGNORECASE)),
     }
 
     print(
@@ -167,7 +168,8 @@ def print_rss_diagnostics(section_type, raw):
         f"entry_start={counts['<entry']}, "
         f"entry_end={counts['</entry']}, "
         f"link={counts['<link']}, "
-        f"title={counts['<title']}"
+        f"title={counts['<title']}, "
+        f"thread={counts['/thread/']}"
     )
 
     if not raw.strip():
@@ -182,6 +184,19 @@ def print_rss_diagnostics(section_type, raw):
         f"[{SOURCE_NAME}][DEBUG] "
         f"{section_type} RSS preview: {preview}"
     )
+
+    thread_matches = re.findall(
+        r"/thread/[^"'<>s]+",
+        raw,
+        re.IGNORECASE,
+    )
+
+    if thread_matches:
+        print(
+            f"[{SOURCE_NAME}][DEBUG] "
+            f"{section_type} first thread URL: "
+            f"{html.unescape(thread_matches[0])}"
+        )
 
 
 def classify(title, section_type):
