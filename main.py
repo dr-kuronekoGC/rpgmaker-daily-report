@@ -287,6 +287,12 @@ def main():
             len(archive_update_items),
         )
 
+        # パーサー更新で再取得した既存Itemも、通常の新着Itemと同じ
+        # 共通メタデータ処理を通してからArchiveへ戻す。
+        archive_update_items = enrich_items(
+            archive_update_items
+        )
+
     for item in all_items:
         language = detect_language(
             title=item.get("title", ""),
