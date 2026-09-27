@@ -121,7 +121,7 @@ RPGMAKER_UNION_SEEN_FILE = (
 # ----------------------------
 
 ONIROMANCIE_SCRIPTS_URL = (
-    "https://www.rpg-maker.fr/index.php?forum=6&page=forum"
+    "https://www.rpg-maker.fr/index.php?page=scripts"
 )
 
 ONIROMANCIE_SEEN_FILE = (
