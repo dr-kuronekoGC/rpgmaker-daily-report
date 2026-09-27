@@ -330,6 +330,47 @@ def detect_engine(
 
     engines = []
 
+    # collectorがページから明示的に取得したエンジン情報は、
+    # キーワード再判定より優先して保持する。
+    explicit_engine = item.get("engine")
+
+    explicit_engine_map = {
+        "RPG Maker MZ": ENGINE_MZ,
+        "RPG Maker MV": ENGINE_MV,
+        "RPG Maker VX Ace": ENGINE_VX_ACE,
+        "RPG Maker VX": ENGINE_VX,
+        "RPG Maker XP": ENGINE_XP,
+        "RPG Maker 2003": ENGINE_2003,
+        "RPG Maker 2000": ENGINE_2000,
+        "RPG Maker 95": ENGINE_95,
+        "MZ": ENGINE_MZ,
+        "MV": ENGINE_MV,
+        "VX Ace": ENGINE_VX_ACE,
+        "VX": ENGINE_VX,
+        "XP": ENGINE_XP,
+        "2003": ENGINE_2003,
+        "2000": ENGINE_2000,
+        "95": ENGINE_95,
+    }
+
+    if isinstance(explicit_engine, str):
+        mapped_engine = explicit_engine_map.get(
+            explicit_engine.strip()
+        )
+        if mapped_engine:
+            engines.append(mapped_engine)
+
+    elif isinstance(explicit_engine, list):
+        for value in explicit_engine:
+            if not isinstance(value, str):
+                continue
+
+            mapped_engine = explicit_engine_map.get(
+                value.strip()
+            )
+            if mapped_engine and mapped_engine not in engines:
+                engines.append(mapped_engine)
+
     # --------------------------------------
     # RPG Maker U2U
     # --------------------------------------
