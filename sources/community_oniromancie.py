@@ -17,7 +17,7 @@ BASE_URL = "https://www.rpg-maker.fr"
 
 MAX_DISCOVERY_PAGES = 50
 MAX_DETAIL_FETCHES = 20
-DETAIL_PARSER_VERSION = 3
+DETAIL_PARSER_VERSION = 4
 
 ENGINE_PATTERNS = (
     ("RPG Maker XP", ("rpg maker xp", "rmxp")),
@@ -322,107 +322,86 @@ def _is_metadata_or_ui_text(text):
 
 def extract_detail_content(soup, title):
     """
-    個別ページの「タイトル直後〜エンジン情報」の領域から
-    説明文だけを抽出する。
+    個別ページのタイトル直後から、最初の明示的なエンジン情報までを
+    説明文として抽出する。
 
-    Oniromancieはページ共通ナビゲーションにも多数の<p>相当の
-    テキストを持つため、ページ全体から最初の<p>を拾わない。
+    Oniromancieでは、タイトル・説明・エンジン情報が本文上では
+    順番に並んでいる一方、スクリプト本体には大量の行番号やコードが
+    含まれる。そのためDOMの親要素を横断して<p>/<div>を拾う方法では
+    コード本体を誤って説明文にしてしまう。
+
+    ページ全体の改行を保持したテキストから
+      タイトル -> 説明 -> Script pour / Logiciel
+    の順序を利用して切り出す。
     """
-    title_node = None
+    lines = [
+        re.sub(r"\\s+", " ", line).strip()
+        for line in soup.get_text("\n", strip=True).splitlines()
+    ]
+    lines = [line for line in lines if line]
+
     normalized_title = normalize_text(title)
+    title_index = None
 
-    # タイトルはh1/h2等とは限らないため、
-    # ページ内のテキストノードから実タイトルを探す。
-    for node in soup.find_all(string=True):
-        text = node.strip()
+    for index, line in enumerate(lines):
+        normalized_line = normalize_text(line)
+
+        if normalized_line == normalized_title:
+            title_index = index
+            break
+
+    if title_index is None:
+        return [], ""
+
+    engine_index = None
+
+    for index in range(title_index + 1, len(lines)):
+        if _is_engine_metadata(lines[index]):
+            engine_index = index
+            break
+
+    if engine_index is None:
+        return [], ""
+
+    candidates = []
+
+    for line in lines[title_index + 1:engine_index]:
+        text = line.strip()
 
         if not text:
             continue
 
         normalized = normalize_text(text)
 
-        if (
-            normalized == normalized_title
-            or (
-                normalized_title
-                and normalized_title in normalized
-                and len(normalized) <= len(normalized_title) + 30
-            )
-        ):
-            title_node = node
-            break
-
-    if title_node is None:
-        return [], ""
-
-    description_parts = []
-    seen_text = set()
-
-    # タイトルの直後から本文をたどる。
-    # Oniromancieでは説明文がpでない場合もあるため、
-    # まずpを優先し、見つからなければ適切なdiv/textを補助的に使う。
-    title_parent = title_node.parent
-
-    if title_parent is None:
-        return [], ""
-
-    for element in title_parent.find_all_next(["p", "div", "li"]):
-        text = element.get_text(" ", strip=True)
-
-        if not text:
+        if normalized in {
+            "installation",
+            "portion de code : tout sélectionner",
+            "portion de code : tout selectionner",
+        }:
             continue
-
-        normalized = normalize_text(text)
-
-        if normalized in seen_text:
-            continue
-
-        if _is_engine_metadata(text):
-            break
 
         if _is_metadata_or_ui_text(text):
             continue
 
-        # サイドバー・ナビゲーション等の短いUI文を除外。
-        if len(text) < 20:
+        # 説明文はタイトル直後の通常テキスト。
+        # 行番号・コード・大量の記号を説明文として拾わない。
+        if re.fullmatch(r"[\\d\\s]+", text):
             continue
 
-        # div/liは同じ本文を内包した大きなコンテナを拾うことがある。
-        # まずpを採用する。
-        if element.name == "p":
-            description_parts.append(text)
-            seen_text.add(normalized)
+        if len(text) < 10:
+            continue
 
-        if len(description_parts) >= 3:
-            break
+        candidates.append(text)
 
-    # pが存在しないページでは、タイトル直後の要素から
-    # 最初の本文らしいテキストを1件だけ補完する。
-    if not description_parts:
-        for element in title_parent.find_all_next(["div", "li"]):
-            text = element.get_text(" ", strip=True)
+    if not candidates:
+        return [], ""
 
-            if not text:
-                continue
+    description = " ".join(candidates)
 
-            normalized = normalize_text(text)
+    # 念のため、ナビゲーション等が混入した場合は長大な本文を避ける。
+    description = description[:3000].strip()
 
-            if normalized in seen_text:
-                continue
-
-            if _is_engine_metadata(text):
-                break
-
-            if _is_metadata_or_ui_text(text):
-                continue
-
-            if len(text) < 20:
-                continue
-
-            description_parts.append(text)
-            break
-
-    return description_parts, " ".join(description_parts)[:3000]
+    return candidates[:3], description
 
 
 def extract_detail(
