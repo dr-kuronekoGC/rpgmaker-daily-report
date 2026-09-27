@@ -133,8 +133,45 @@ def save_archive(items):
     archive_index = load_archive_index()
 
     added = 0
+    updated = 0
 
-    for item in items:
+    # パーサー更新等による既存データの修正を、
+    # URLをキーとして既存Archiveへ反映する。
+    update_items = [
+        item
+        for item in items
+        if item.get("_update_existing")
+    ]
+
+    normal_items = [
+        item
+        for item in items
+        if not item.get("_update_existing")
+    ]
+
+    for item in update_items:
+        key = get_archive_key(item)
+
+        if key is None:
+            continue
+
+        clean_item = dict(item)
+        clean_item.pop("_update_existing", None)
+        clean_item.pop("_suppress_report", None)
+
+        for archive_index_pos, existing in enumerate(archive):
+            if get_archive_key(existing) != key:
+                continue
+
+            collected_at = existing.get("collected_at")
+            if collected_at:
+                clean_item["collected_at"] = collected_at
+
+            archive[archive_index_pos] = clean_item
+            updated += 1
+            break
+
+    for item in normal_items:
 
         key = get_archive_key(item)
 
@@ -144,6 +181,8 @@ def save_archive(items):
                 continue
 
         archived_item = dict(item)
+        archived_item.pop("_update_existing", None)
+        archived_item.pop("_suppress_report", None)
 
         if "collected_at" not in archived_item:
             archived_item["collected_at"] = (
@@ -159,9 +198,9 @@ def save_archive(items):
 
         added += 1
 
-    if added == 0:
+    if added == 0 and updated == 0:
         print(
-            "[Archive] Added: 0"
+            "[Archive] Added: 0 / Updated: 0"
         )
         return
 
@@ -177,6 +216,11 @@ def save_archive(items):
     print(
         "[Archive] Added:",
         added,
+    )
+
+    print(
+        "[Archive] Updated:",
+        updated,
     )
 
     print(
