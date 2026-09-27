@@ -119,6 +119,13 @@ def is_item_url(url):
     )
 
 
+def get_detail_seen_key(url):
+    return f"detail:{url}"
+
+
+DETAIL_COMPLETE_KEY = "detail:COMPLETE"
+
+
 def discover_category_links(html):
     soup = BeautifulSoup(html, "html.parser")
     links = []
@@ -446,10 +453,28 @@ def get_items(seen):
     new_items = []
     new_seen = list(seen)
 
+    detail_import_complete = (
+        DETAIL_COMPLETE_KEY in seen_set
+    )
+
+    detail_completed_before = sum(
+        1
+        for item in discovered
+        if get_detail_seen_key(item["url"]) in seen_set
+    )
+
+    if not detail_import_complete:
+        print(
+            f"[{SOURCE_NAME}] "
+            f"Detail import progress: "
+            f"{detail_completed_before}/{len(discovered)}"
+        )
+
     for item in discovered:
         url = item["url"]
+        detail_seen_key = get_detail_seen_key(url)
 
-        if url in seen_set:
+        if detail_seen_key in seen_set:
             continue
 
         detail = extract_detail(
@@ -463,9 +488,19 @@ def get_items(seen):
         if detail is None:
             continue
 
+        # 初期取り込み中はArchiveには保存するが、
+        # 通常のSlack新着には出さない。
+        if not detail_import_complete:
+            detail["_suppress_report"] = True
+
         new_items.append(detail)
-        new_seen.append(url)
-        seen_set.add(url)
+
+        if url not in seen_set:
+            new_seen.append(url)
+            seen_set.add(url)
+
+        new_seen.append(detail_seen_key)
+        seen_set.add(detail_seen_key)
 
         print(
             f"[{SOURCE_NAME}]"
@@ -480,6 +515,28 @@ def get_items(seen):
                 f"{MAX_DETAIL_FETCHES}"
             )
             break
+
+    detail_completed_after = sum(
+        1
+        for item in discovered
+        if get_detail_seen_key(item["url"]) in seen_set
+    )
+
+    if (
+        not detail_import_complete
+        and detail_completed_after >= len(discovered)
+    ):
+        new_seen.append(DETAIL_COMPLETE_KEY)
+        print(
+            f"[{SOURCE_NAME}] "
+            "Detail import complete."
+        )
+    elif not detail_import_complete:
+        print(
+            f"[{SOURCE_NAME}] "
+            f"Detail import progress: "
+            f"{detail_completed_after}/{len(discovered)}"
+        )
 
     print(
         f"[{SOURCE_NAME}] "
