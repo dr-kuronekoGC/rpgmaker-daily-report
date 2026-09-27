@@ -17,6 +17,7 @@ BASE_URL = "https://www.rpg-maker.fr"
 
 MAX_DISCOVERY_PAGES = 50
 MAX_DETAIL_FETCHES = 20
+DETAIL_PARSER_VERSION = 3
 
 ENGINE_PATTERNS = (
     ("RPG Maker XP", ("rpg maker xp", "rmxp")),
@@ -120,10 +121,24 @@ def is_item_url(url):
 
 
 def get_detail_seen_key(url):
-    return f"detail:{url}"
+    return f"detail:v{DETAIL_PARSER_VERSION}:{url}"
 
 
-DETAIL_COMPLETE_KEY = "detail:COMPLETE"
+def has_previous_detail_seen(seen_set, url):
+    prefix = "detail:"
+    current_key = get_detail_seen_key(url)
+
+    return any(
+        key != current_key
+        and key.startswith(prefix)
+        and key.endswith(url)
+        for key in seen_set
+    )
+
+
+DETAIL_COMPLETE_KEY = (
+    f"detail:COMPLETE:v{DETAIL_PARSER_VERSION}"
+)
 
 
 def discover_category_links(html):
@@ -313,12 +328,13 @@ def extract_detail_content(soup, title):
     Oniromancieはページ共通ナビゲーションにも多数の<p>相当の
     テキストを持つため、ページ全体から最初の<p>を拾わない。
     """
-    heading = None
-
+    title_node = None
     normalized_title = normalize_text(title)
 
-    for tag in soup.find_all(["h1", "h2", "h3", "h4"]):
-        text = tag.get_text(" ", strip=True)
+    # タイトルはh1/h2等とは限らないため、
+    # ページ内のテキストノードから実タイトルを探す。
+    for node in soup.find_all(string=True):
+        text = node.strip()
 
         if not text:
             continue
@@ -330,18 +346,27 @@ def extract_detail_content(soup, title):
             or (
                 normalized_title
                 and normalized_title in normalized
+                and len(normalized) <= len(normalized_title) + 30
             )
         ):
-            heading = tag
+            title_node = node
             break
 
-    if heading is None:
+    if title_node is None:
         return [], ""
 
     description_parts = []
     seen_text = set()
 
-    for element in heading.find_all_next(["p", "div"]):
+    # タイトルの直後から本文をたどる。
+    # Oniromancieでは説明文がpでない場合もあるため、
+    # まずpを優先し、見つからなければ適切なdiv/textを補助的に使う。
+    title_parent = title_node.parent
+
+    if title_parent is None:
+        return [], ""
+
+    for element in title_parent.find_all_next(["p", "div", "li"]):
         text = element.get_text(" ", strip=True)
 
         if not text:
@@ -352,28 +377,49 @@ def extract_detail_content(soup, title):
         if normalized in seen_text:
             continue
 
-        # ページ本文の「Script pour / Logiciel」到達で
-        # 説明領域を終了する。
         if _is_engine_metadata(text):
             break
 
-        # 作者・投稿者等のメタデータは説明文に含めない。
         if _is_metadata_or_ui_text(text):
             continue
 
-        # 大きなdivを拾うと、その内部のpの内容を丸ごと
-        # 二重に取得する可能性があるため、pを優先する。
-        if element.name != "p":
-            continue
-
-        # 共通ナビやフッターらしい短いUIテキストを除外。
+        # サイドバー・ナビゲーション等の短いUI文を除外。
         if len(text) < 20:
             continue
 
-        description_parts.append(text)
-        seen_text.add(normalized)
+        # div/liは同じ本文を内包した大きなコンテナを拾うことがある。
+        # まずpを採用する。
+        if element.name == "p":
+            description_parts.append(text)
+            seen_text.add(normalized)
 
         if len(description_parts) >= 3:
+            break
+
+    # pが存在しないページでは、タイトル直後の要素から
+    # 最初の本文らしいテキストを1件だけ補完する。
+    if not description_parts:
+        for element in title_parent.find_all_next(["div", "li"]):
+            text = element.get_text(" ", strip=True)
+
+            if not text:
+                continue
+
+            normalized = normalize_text(text)
+
+            if normalized in seen_text:
+                continue
+
+            if _is_engine_metadata(text):
+                break
+
+            if _is_metadata_or_ui_text(text):
+                continue
+
+            if len(text) < 20:
+                continue
+
+            description_parts.append(text)
             break
 
     return description_parts, " ".join(description_parts)[:3000]
@@ -649,10 +695,22 @@ def get_items(seen):
         if detail is None:
             continue
 
-        # 初期取り込み中はArchiveには保存するが、
-        # 通常のSlack新着には出さない。
-        if not detail_import_complete:
+        # 初期取り込み中、およびパーサー更新による
+        # 既存データの再取得は通常のSlack新着に出さない。
+        if (
+            not detail_import_complete
+            or has_previous_detail_seen(
+                seen_set,
+                url,
+            )
+        ):
             detail["_suppress_report"] = True
+
+        if has_previous_detail_seen(
+            seen_set,
+            url,
+        ):
+            detail["_update_existing"] = True
 
         new_items.append(detail)
 
