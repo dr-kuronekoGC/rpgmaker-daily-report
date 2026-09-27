@@ -79,24 +79,14 @@ def is_category_url(url):
     path = parsed.path.lower()
     query = parse_qs(parsed.query)
 
-    if "page=forum" in parsed.query.lower():
-        return False
-
-    if "id" in query:
-        return False
-
-    if "scripts" not in path and "scripts" not in parsed.query.lower():
-        return False
-
-    if path.endswith(".html"):
-        return True
-
+    # OniromancieのScripts/Pluginsカテゴリ一覧は
+    # /scripts-pour-*.html という形式。
+    # 個別登録は /scripts-*.html なので明確に分離する。
     return (
-        parsed.path.endswith("/index.php")
-        and query.get("page") == ["scripts"]
-        and "id" not in query
+        path.startswith("/scripts-pour-")
+        and path.endswith(".html")
+        and not query.get("id")
     )
-
 
 def get_item_id(url):
     try:
@@ -127,17 +117,21 @@ def is_item_url(url):
 def discover_category_links(html):
     soup = BeautifulSoup(html, "html.parser")
     links = []
+    local_seen = set()
 
     for link in soup.select("a[href]"):
         url = normalize_url(link.get("href"))
 
-        if not url or not is_category_url(url):
+        if not url or url in local_seen:
+            continue
+
+        if not is_category_url(url):
             continue
 
         links.append(url)
+        local_seen.add(url)
 
     return links
-
 
 def extract_item_links(html):
     soup = BeautifulSoup(html, "html.parser")
