@@ -1,5 +1,5 @@
 import re
-from urllib.parse import parse_qs, urljoin, urlparse
+from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
@@ -77,25 +77,29 @@ def is_category_url(url):
 
     parsed = urlparse(url)
     path = parsed.path.lower()
-    query = parse_qs(parsed.query)
+    query = parsed.query
 
-    # OniromancieのScripts/Pluginsカテゴリ一覧は
-    # /scripts-pour-*.html という形式。
-    # 個別登録は /scripts-*.html なので明確に分離する。
     return (
         path.startswith("/scripts-pour-")
         and path.endswith(".html")
-        and not query.get("id")
+        and "id=" not in query
     )
 
+
 def get_item_id(url):
-    try:
-        query = parse_qs(urlparse(url).query)
-        values = query.get("id", [])
-        if values:
-            return values[0]
-    except Exception:
-        pass
+    if not isinstance(url, str):
+        return None
+
+    path = urlparse(url).path
+
+    match = re.search(
+        r"/scripts-(\d+)-[^/]+\.html$",
+        path,
+        re.IGNORECASE,
+    )
+
+    if match:
+        return match.group(1)
 
     return None
 
@@ -104,13 +108,14 @@ def is_item_url(url):
     if not is_same_site(url):
         return False
 
-    parsed = urlparse(url)
-    query = parse_qs(parsed.query)
+    path = urlparse(url).path
 
-    return (
-        parsed.path.endswith("/index.php")
-        and query.get("page") == ["scripts"]
-        and bool(query.get("id"))
+    return bool(
+        re.fullmatch(
+            r"/scripts-\d+-[^/]+\.html",
+            path,
+            re.IGNORECASE,
+        )
     )
 
 
@@ -133,7 +138,8 @@ def discover_category_links(html):
 
     return links
 
-def extract_item_links(html):
+
+def extract_item_links(html, fallback_category=None):
     soup = BeautifulSoup(html, "html.parser")
     items = []
     local_seen = set()
@@ -156,13 +162,16 @@ def extract_item_links(html):
         if not item_id:
             continue
 
-        items.append(
-            {
-                "title": title,
-                "url": url,
-                "source_item_id": item_id,
-            }
-        )
+        item = {
+            "title": title,
+            "url": url,
+            "source_item_id": item_id,
+        }
+
+        if fallback_category:
+            item["source_category"] = fallback_category
+
+        items.append(item)
         local_seen.add(url)
 
     return items
@@ -208,7 +217,11 @@ def extract_category_from_page(html):
     return None
 
 
-def extract_detail(url, fallback_title="", fallback_category=None):
+def extract_detail(
+    url,
+    fallback_title="",
+    fallback_category=None,
+):
     try:
         html = get_html(url)
     except Exception as e:
@@ -287,16 +300,6 @@ def extract_detail(url, fallback_title="", fallback_category=None):
     if date_match:
         item["source_published_at"] = date_match.group(1)
 
-    description = ""
-
-    for marker in (
-        "Image",
-        "Description",
-        "Présentation",
-    ):
-        if marker.lower() in normalize_text(page_text):
-            break
-
     paragraphs = [
         p.get_text(" ", strip=True)
         for p in soup.find_all("p")
@@ -308,10 +311,9 @@ def extract_detail(url, fallback_title="", fallback_category=None):
     ]
 
     if paragraphs:
-        description = " ".join(paragraphs[:3])
-
-    if description:
-        item["description"] = description[:3000]
+        item["description"] = " ".join(
+            paragraphs[:3]
+        )[:3000]
 
     return item
 
@@ -320,17 +322,16 @@ def discover_catalog():
     """
     Scripts/Plugins DBのカテゴリページを自動発見する。
 
-    Oniromancieのトップページからscripts関連の一覧ページを辿り、
-    個別登録ページへのリンクを収集する。
+    Oniromancieのトップページからカテゴリ一覧を辿り、
+    各カテゴリページに掲載された個別スクリプトを収集する。
     """
 
+    root_url = normalize_url(ONIROMANCIE_SCRIPTS_URL)
+
     queue = [
-        (
-            normalize_url(ONIROMANCIE_SCRIPTS_URL),
-            0,
-        )
+        (root_url, 0)
     ]
-    queued = {queue[0][0]}
+    queued = {root_url}
     visited = set()
     category_pages = []
     item_links = {}
@@ -352,12 +353,33 @@ def discover_catalog():
             )
             continue
 
-        page_items = extract_item_links(html)
+        category = None
+
+        if is_category_url(url):
+            category = extract_category_from_page(html)
+
+        page_items = extract_item_links(
+            html,
+            fallback_category=category,
+        )
 
         for item in page_items:
-            item_links[item["url"]] = item
+            existing = item_links.get(item["url"])
 
-        category_pages.append(url)
+            if existing is None:
+                item_links[item["url"]] = item
+                continue
+
+            if (
+                not existing.get("source_category")
+                and item.get("source_category")
+            ):
+                existing["source_category"] = (
+                    item["source_category"]
+                )
+
+        if is_category_url(url):
+            category_pages.append(url)
 
         if depth >= 2:
             continue
@@ -396,8 +418,6 @@ def get_items(seen):
         for item in discovered
     }
 
-    # 以前の「forum=6&page=forum」collectorで保存されたseenを
-    # 新しいScripts/Plugins DBへ引き継ぐための初回移行。
     catalog_seen_count = sum(
         1
         for url in seen
@@ -432,13 +452,12 @@ def get_items(seen):
         if url in seen_set:
             continue
 
-        category = None
-
-        # 新規Itemだけ個別ページを取得する。
         detail = extract_detail(
             url,
             fallback_title=item["title"],
-            fallback_category=category,
+            fallback_category=item.get(
+                "source_category"
+            ),
         )
 
         if detail is None:
