@@ -189,7 +189,7 @@ def select_pending_items(
     pending_items,
 ):
     """
-    サイトごとに最大20件を選択する。
+    サイトごとに最大件数を選択する。
 
     pending_itemsの先頭から順番に処理するため、
     古い掲載待ちから先に掲載される。
@@ -311,8 +311,16 @@ def main():
         if language and language not in languages:
             item["languages"] = [*languages, language]
 
+    # 初期データ取り込み中のItemはArchiveには保存するが、
+    # Slackの通常レポート・分類確認には出さない。
+    reportable_items = [
+        item
+        for item in all_items
+        if not item.get("_suppress_report")
+    ]
+
     review_items = prepare_classification_reviews(
-        all_items,
+        reportable_items,
         review_queue,
     )
 
@@ -343,7 +351,7 @@ def main():
 
     pending_items = add_to_pending(
         pending_items,
-        all_items,
+        reportable_items,
     )
 
     print(
