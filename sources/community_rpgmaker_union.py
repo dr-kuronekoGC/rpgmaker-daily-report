@@ -112,15 +112,24 @@ def extract_link(block):
 
 
 def extract_entries(raw):
-    blocks = re.findall(
-        r"<(?:item|entry)\b[^>]*>.*?</(?:item|entry)>",
-        raw,
-        re.IGNORECASE | re.DOTALL,
+    start_pattern = re.compile(
+        r"<(?:item|entry)\b[^>]*>",
+        re.IGNORECASE,
     )
 
+    starts = list(start_pattern.finditer(raw))
     entries = []
 
-    for block in blocks:
+    for index, match in enumerate(starts):
+        start = match.start()
+
+        if index + 1 < len(starts):
+            end = starts[index + 1].start()
+        else:
+            end = len(raw)
+
+        block = raw[start:end]
+
         title = extract_tag_value(
             block,
             "title",
