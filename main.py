@@ -267,6 +267,26 @@ def main():
                 f"[{source.__name__}] Error: {e}"
             )
 
+    # パーサー更新による既存Archiveの修正項目は、
+    # 新着・分類確認・Pendingには流さず、Archiveだけ更新する。
+    archive_update_items = [
+        item
+        for item in all_items
+        if item.get("_update_existing")
+    ]
+
+    all_items = [
+        item
+        for item in all_items
+        if not item.get("_update_existing")
+    ]
+
+    if archive_update_items:
+        print(
+            "[Archive Update] Items:",
+            len(archive_update_items),
+        )
+
     for item in all_items:
         language = detect_language(
             title=item.get("title", ""),
@@ -346,7 +366,7 @@ def main():
     )
 
     save_archive(
-        all_items
+        archive_update_items + all_items
     )
 
     pending_items = add_to_pending(
