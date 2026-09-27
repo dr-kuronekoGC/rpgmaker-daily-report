@@ -117,6 +117,18 @@ RPGMAKER_UNION_SEEN_FILE = (
 )
 
 # ----------------------------
+# Oniromancie / RPG-MAKER.FR
+# ----------------------------
+
+ONIROMANCIE_SCRIPTS_URL = (
+    "https://www.rpg-maker.fr/index.php?forum=6&page=forum"
+)
+
+ONIROMANCIE_SEEN_FILE = (
+    "seen_oniromancie.json"
+)
+
+# ----------------------------
 # 個人サイト / Source Check
 # ----------------------------
 
