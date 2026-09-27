@@ -192,11 +192,28 @@ def print_rss_diagnostics(section_type, raw):
     )
 
     if thread_matches:
+        first_thread = html.unescape(thread_matches[0])
         print(
             f"[{SOURCE_NAME}][DEBUG] "
             f"{section_type} first thread URL: "
-            f"{html.unescape(thread_matches[0])}"
+            f"{first_thread}"
         )
+
+        thread_pos = raw.find(thread_matches[0])
+        if thread_pos >= 0:
+            context_start = max(0, thread_pos - 1200)
+            context_end = min(
+                len(raw),
+                thread_pos + len(thread_matches[0]) + 1800,
+            )
+            context = " ".join(
+                raw[context_start:context_end].split()
+            )
+            print(
+                f"[{SOURCE_NAME}][DEBUG] "
+                f"{section_type} first thread context: "
+                f"{context}"
+            )
 
 
 def classify(title, section_type):
