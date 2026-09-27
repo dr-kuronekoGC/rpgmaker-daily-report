@@ -149,6 +149,41 @@ def extract_entries(raw):
     return entries
 
 
+def print_rss_diagnostics(section_type, raw):
+    counts = {
+        "<item": len(re.findall(r"<item\b", raw, re.IGNORECASE)),
+        "</item": len(re.findall(r"</item\s*>", raw, re.IGNORECASE)),
+        "<entry": len(re.findall(r"<entry\b", raw, re.IGNORECASE)),
+        "</entry": len(re.findall(r"</entry\s*>", raw, re.IGNORECASE)),
+        "<link": len(re.findall(r"<link\b", raw, re.IGNORECASE)),
+        "<title": len(re.findall(r"<title\b", raw, re.IGNORECASE)),
+    }
+
+    print(
+        f"[{SOURCE_NAME}][DEBUG] {section_type} RSS diagnostics: "
+        f"length={len(raw)}, "
+        f"item_start={counts['<item']}, "
+        f"item_end={counts['</item']}, "
+        f"entry_start={counts['<entry']}, "
+        f"entry_end={counts['</entry']}, "
+        f"link={counts['<link']}, "
+        f"title={counts['<title']}"
+    )
+
+    if not raw.strip():
+        print(
+            f"[{SOURCE_NAME}][DEBUG] "
+            f"{section_type} RSS is empty"
+        )
+        return
+
+    preview = " ".join(raw[:500].split())
+    print(
+        f"[{SOURCE_NAME}][DEBUG] "
+        f"{section_type} RSS preview: {preview}"
+    )
+
+
 def classify(title, section_type):
     text = normalize_text(title)
 
@@ -192,6 +227,12 @@ def get_items(seen):
             f"{section_type} RSS: "
             f"{len(entries)} items"
         )
+
+        if not entries:
+            print_rss_diagnostics(
+                section_type,
+                raw,
+            )
 
         for entry in entries:
             url = entry["url"]
