@@ -398,10 +398,16 @@ def get_items(seen):
 
     # 以前の「forum=6&page=forum」collectorで保存されたseenを
     # 新しいScripts/Plugins DBへ引き継ぐための初回移行。
-    has_catalog_seen = any(
-        is_item_url(url)
+    catalog_seen_count = sum(
+        1
         for url in seen
+        if is_item_url(url)
     )
+
+    # 直前のcollectorは探索条件の不具合により
+    # 13件だけをbaseline登録してしまった。
+    # その不完全なbaselineを今回の正しい全件baselineへ移行する。
+    has_catalog_seen = catalog_seen_count >= 100
 
     if not has_catalog_seen:
         new_seen = list(seen)
