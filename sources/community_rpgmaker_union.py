@@ -186,7 +186,7 @@ def print_rss_diagnostics(section_type, raw):
     )
 
     thread_matches = re.findall(
-        r"/thread/[^"'<>s]+",
+        r'''/thread/[^"'<>\s]+''',
         raw,
         re.IGNORECASE,
     )
