@@ -69,14 +69,15 @@ SOUND_PATTERNS = {
         (r"ME", 5, "ja:ME"),
     ),
     "SE": (
-        (r"\bse\b", 5, "explicit:SE"),
-        (r"\bsfx\b", 5, "SFX"),
+        # SEはRPG Makerの略語として大文字表記された場合だけ明示認識する。
+        # フランス語の「se」と区別するため、ここだけ大文字小文字を区別する。
+        (r"(?<![A-Za-z0-9])SE(?![A-Za-z0-9])", 5, "explicit:SE"),
+        (r"\\bsfx\\b", 5, "SFX"),
         (r"sound effect", 5, "sound effect"),
         (r"sound effects", 5, "sound effects"),
         (r"foley", 4, "foley"),
         (r"sound fx", 4, "sound fx"),
         (r"効果音", 5, "ja:効果音"),
-        (r"SE", 5, "ja:SE"),
     ),
 }
 
@@ -100,6 +101,18 @@ def _field_values(item):
     }
 
 
+def _field_raw_text(item, field):
+    value = item.get(field)
+
+    if isinstance(value, list):
+        return " ".join(str(x) for x in value if x is not None)
+
+    if value is None:
+        return ""
+
+    return str(value)
+
+
 def _score_sound_type(item, sound_type):
     fields = _field_values(item)
     score = 0
@@ -111,7 +124,16 @@ def _score_sound_type(item, sound_type):
             continue
 
         for pattern, base_score, label in SOUND_PATTERNS[sound_type]:
-            if re.search(pattern, text, flags=re.IGNORECASE):
+            # SEの明示表記だけは大文字小文字を区別する。
+            # それ以外の音関連語は従来どおり大文字小文字を区別しない。
+            if sound_type == "SE" and label == "explicit:SE":
+                search_text = _field_raw_text(item, field)
+                flags = 0
+            else:
+                search_text = text
+                flags = re.IGNORECASE
+
+            if re.search(pattern, search_text, flags=flags):
                 points = base_score + max(weight - 3, 0)
                 score += points
                 evidence.append({
