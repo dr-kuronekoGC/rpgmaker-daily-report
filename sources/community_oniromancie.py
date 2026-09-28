@@ -17,7 +17,7 @@ BASE_URL = "https://www.rpg-maker.fr"
 
 MAX_DISCOVERY_PAGES = 50
 MAX_DETAIL_FETCHES = 20
-DETAIL_PARSER_VERSION = 4
+DETAIL_PARSER_VERSION = 5
 
 ENGINE_PATTERNS = (
     ("RPG Maker XP", ("rpg maker xp", "rmxp")),
