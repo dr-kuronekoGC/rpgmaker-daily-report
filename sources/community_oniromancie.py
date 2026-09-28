@@ -161,6 +161,70 @@ def discover_category_links(html):
     return links
 
 
+def extract_catalog_description(link, title):
+    """
+    一覧ページにも
+      タイトル - Posté par 作者 説明文
+    の形で説明が掲載されている。
+
+    詳細ページ側で説明文を取得できない古いページがあるため、
+    最寄りの小さなコンテナから説明候補を拾ってフォールバックに使う。
+    """
+    candidates = []
+    node = link
+
+    for _ in range(6):
+        node = getattr(node, "parent", None)
+
+        if node is None:
+            break
+
+        text = node.get_text(" ", strip=True)
+
+        if not text or title not in text:
+            continue
+
+        if len(text) <= len(title) + 8:
+            continue
+
+        if len(text) > 1200:
+            continue
+
+        candidates.append(text)
+
+    if not candidates:
+        return ""
+
+    text = min(candidates, key=len)
+
+    text = re.sub(
+        re.escape(title),
+        " ",
+        text,
+        count=1,
+        flags=re.IGNORECASE,
+    )
+
+    text = re.sub(
+        r"\s+",
+        " ",
+        text,
+    ).strip(" -–—:|")
+
+    if not text:
+        return ""
+
+    # 一覧側の補助情報を除き、説明として使える部分だけ残す。
+    text = re.sub(
+        r"^(?:Posté par|Poste par|Écrit par|Ecrit par)\s+",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    return text[:3000].strip()
+
+
 def extract_item_links(html, fallback_category=None):
     soup = BeautifulSoup(html, "html.parser")
     items = []
@@ -189,6 +253,14 @@ def extract_item_links(html, fallback_category=None):
             "url": url,
             "source_item_id": item_id,
         }
+
+        catalog_description = extract_catalog_description(
+            link,
+            title,
+        )
+
+        if catalog_description:
+            item["catalog_description"] = catalog_description
 
         if fallback_category:
             item["source_category"] = fallback_category
@@ -278,6 +350,29 @@ def extract_category_from_page(html):
 
     for text in heading_texts:
         category = find_category(text)
+        if category:
+            return category
+
+    # 古い一覧ページではカテゴリ名が見出しタグではなく
+    # 本文中の独立した行として存在することがある。
+    exact_categories = {
+        "personnages et classes": "人物・クラス",
+        "combat": "戦闘",
+        "mouvement et véhicules": "移動・乗り物",
+        "mouvement et vehicules": "移動・乗り物",
+        "son et musique": "音楽・サウンド",
+        "maps": "マップ",
+        "menu/ecran titre/game over": "メニュー・タイトル・Game Over",
+        "messages": "メッセージ",
+        "compétences / equipement": "スキル・装備",
+        "competences / equipement": "スキル・装備",
+        "divers": "その他",
+    }
+
+    for line in soup.get_text("\n", strip=True).splitlines():
+        normalized = normalize_text(line)
+        category = exact_categories.get(normalized)
+
         if category:
             return category
 
@@ -408,6 +503,7 @@ def extract_detail(
     url,
     fallback_title="",
     fallback_category=None,
+    fallback_description="",
 ):
     try:
         html = get_html(url)
@@ -504,6 +600,18 @@ def extract_detail(
 
     if date_match:
         item["source_published_at"] = date_match.group(1)
+
+    if not description and fallback_description:
+        description = fallback_description
+
+        if author:
+            description = re.sub(
+                rf"(?:Posté par|Poste par|Écrit par|Ecrit par)\\s*"
+                rf"{re.escape(author)}\\s*",
+                "",
+                description,
+                flags=re.IGNORECASE,
+            ).strip(" -–—:|")
 
     if description:
         item["description"] = description
@@ -668,6 +776,10 @@ def get_items(seen):
             fallback_title=item["title"],
             fallback_category=item.get(
                 "source_category"
+            ),
+            fallback_description=item.get(
+                "catalog_description",
+                "",
             ),
         )
 
