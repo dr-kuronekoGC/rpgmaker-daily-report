@@ -209,8 +209,41 @@ def detect_sound_type(item):
     if _contains_keyword(text, ("me", "music effect", "jingle", "fanfar")):
         return "ME"
 
-    if _contains_keyword(text, ("se", "sfx", "sound effect", "sound effects")):
+    if _contains_keyword(text, ("sfx", "sound effect", "sound effects")):
         return "SE"
+
+    # フランス語の文章中の代名詞「se」と、RPG Makerの「SE」を区別する。
+    # SEは通常大文字で明示されるため、ここでは原文の大文字表記だけを
+    # 明示的なSE判定として扱う。
+    raw_text = " ".join(
+        str(item.get(key, "") or "")
+        for key in ("title", "description")
+    )
+    raw_tags = " ".join(
+        str(x)
+        for x in item.get("source_tags", [])
+        if isinstance(x, str)
+    )
+    if re.search(
+        r"(?<![A-Za-z0-9])SE(?![A-Za-z0-9])",
+        raw_text + " " + raw_tags,
+    ):
+        return "SE"
+
+    raw_text = " ".join(
+        str(item.get(key, "") or "")
+        for key in ("title", "description")
+    )
+    raw_tags = " ".join(
+        str(x)
+        for x in item.get("source_tags", [])
+        if isinstance(x, str)
+    )
+    if re.search(
+        r"(?<![A-Za-z0-9])SE(?![A-Za-z0-9])",
+        raw_text + " " + raw_tags,
+    ):
+        return CONFIDENCE_HIGH
 
     if _contains_keyword(text, ("music", "soundtrack", "ost")):
         return "BGM"
@@ -242,7 +275,7 @@ def detect_sound_classification_confidence(item):
         text,
         ("bgm", "background music", "bgs", "background sound",
          "me", "music effect", "jingle", "fanfar",
-         "se", "sfx", "sound effect", "sound effects"),
+         "sfx", "sound effect", "sound effects"),
     ):
         return CONFIDENCE_HIGH
 
