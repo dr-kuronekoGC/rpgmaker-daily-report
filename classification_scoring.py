@@ -260,8 +260,7 @@ PLUGIN_PATTERNS = {
     ),
     "audio": (
         ("audio", 5), ("sound", 5), ("bgm", 6), ("bgs", 6),
-        ("se", 6), ("sfx", 6), ("musique", 5), ("son", 5),
-        ("sons", 5), ("音声", 5), ("音楽", 5),
+        ("sfx", 6), ("musique", 5), ("音声", 5), ("音楽", 5),
     ),
     "graphics": (
         ("graphic", 5), ("graphics", 5), ("sprite", 5),
