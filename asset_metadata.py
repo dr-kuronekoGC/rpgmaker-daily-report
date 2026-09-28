@@ -3,6 +3,7 @@
 # ==========================================
 
 from categories.assets import classify_asset
+import re
 from classification_scoring import (
     classify_sound_with_evidence,
     classify_taxonomy_with_evidence,
