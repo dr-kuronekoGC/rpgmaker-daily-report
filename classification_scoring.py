@@ -24,6 +24,21 @@ CONFIDENCE_UNKNOWN = "unknown"
 SOUND_TYPES = ("BGM", "BGS", "ME", "SE")
 
 
+# RPG Makerの短い略語は、多言語文章中の普通の単語と区別する。
+# 大文字表記を前提とし、英字・数字の単語内部にはマッチさせない。
+SHORT_ABBREVIATIONS = ("BGM", "BGS", "ME", "SE")
+
+
+def _contains_short_abbreviation(text, abbreviation):
+    """大文字のRPG Maker略語として現れているかを判定する。"""
+    if abbreviation not in SHORT_ABBREVIATIONS:
+        return False
+
+    raw = str(text or "")
+    pattern = r"(?<![A-Za-z0-9])" + re.escape(abbreviation) + r"(?![A-Za-z0-9])"
+    return re.search(pattern, raw) is not None
+
+
 # Strong evidence is weighted by where it appears.
 # Source-native tags are usually more reliable than free-form descriptions.
 FIELD_WEIGHTS = {
@@ -126,14 +141,19 @@ def _score_sound_type(item, sound_type):
         for pattern, base_score, label in SOUND_PATTERNS[sound_type]:
             # SEの明示表記だけは大文字小文字を区別する。
             # それ以外の音関連語は従来どおり大文字小文字を区別しない。
-            if sound_type == "SE" and label == "explicit:SE":
+            if label == f"explicit:{sound_type}":
                 search_text = _field_raw_text(item, field)
-                flags = 0
-            else:
-                search_text = text
-                flags = re.IGNORECASE
+                if _contains_short_abbreviation(search_text, sound_type):
+                    points = base_score + max(weight - 3, 0)
+                    score += points
+                    evidence.append({
+                        "field": field,
+                        "points": points,
+                        "evidence": label,
+                    })
+                continue
 
-            if re.search(pattern, search_text, flags=flags):
+            if re.search(pattern, text, flags=re.IGNORECASE):
                 points = base_score + max(weight - 3, 0)
                 score += points
                 evidence.append({
