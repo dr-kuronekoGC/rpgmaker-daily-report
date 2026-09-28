@@ -606,8 +606,8 @@ def extract_detail(
 
         if author:
             description = re.sub(
-                rf"(?:Posté par|Poste par|Écrit par|Ecrit par)\\s*"
-                rf"{re.escape(author)}\\s*",
+                rf"(?:Posté par|Poste par|Écrit par|Ecrit par)\s*"
+                rf"{re.escape(author)}\s*",
                 "",
                 description,
                 flags=re.IGNORECASE,
