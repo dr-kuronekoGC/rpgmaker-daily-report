@@ -206,21 +206,88 @@ GRAPHIC_PATTERNS = {
 
 PLUGIN_PATTERNS = {
     "system_core": (("core", 5), ("system", 4), ("utility", 3), ("engine", 3), ("コア", 5), ("システム", 4)),
-    "battle": (("battle", 5), ("combat", 5), ("action battle", 6), ("atb", 6), ("ctb", 6), ("戦闘", 5), ("バトル", 5)),
-    "skills_states": (("skill", 5), ("skills", 5), ("state", 5), ("states", 5), ("buff", 5), ("debuff", 5), ("スキル", 5), ("ステート", 5)),
-    "menu_ui": (("menu", 5), ("hud", 5), ("ui", 5), ("window", 4), ("status menu", 6), ("メニュー", 5), ("ウィンドウ", 4)),
-    "items_equipment": (("item", 5), ("items", 5), ("equipment", 5), ("equip", 5), ("アイテム", 5), ("装備", 5)),
+    "battle": (
+        ("battle", 5), ("combat", 5), ("action battle", 6),
+        ("atb", 6), ("ctb", 6), ("bataille", 5),
+        ("戦闘", 5), ("バトル", 5),
+    ),
+    "skills_states": (
+        ("skill", 5), ("skills", 5), ("state", 5), ("states", 5),
+        ("buff", 5), ("debuff", 5), ("compétence", 5),
+        ("compétences", 5), ("état", 5),
+        ("スキル", 5), ("ステート", 5),
+    ),
+    "menu_ui": (
+        ("menu", 5), ("menus", 5), ("hud", 5), ("ui", 5),
+        ("window", 4), ("status menu", 6),
+        ("écran titre", 5), ("fenêtre", 4),
+        ("メニュー", 5), ("ウィンドウ", 4),
+    ),
+    "items_equipment": (
+        ("item", 5), ("items", 5), ("equipment", 5), ("equip", 5),
+        ("équipement", 5), ("équipements", 5),
+        ("objet", 5), ("objets", 5),
+        ("アイテム", 5), ("装備", 5),
+    ),
     "shop": (("shop", 6), ("merchant", 5), ("ショップ", 6), ("店", 4)),
-    "character_party": (("party", 5), ("actor", 5), ("actors", 5), ("formation", 5), ("パーティ", 5), ("アクター", 5), ("隊列", 5)),
-    "quest": (("quest", 6), ("journal", 5), ("mission", 5), ("クエスト", 6), ("ミッション", 5)),
-    "map_events": (("map", 4), ("event", 5), ("events", 5), ("movement", 4), ("マップ", 4), ("イベント", 5)),
-    "save_load": (("save", 5), ("load", 5), ("autosave", 6), ("セーブ", 5), ("ロード", 5)),
-    "messages_dialogue": (("message", 5), ("messages", 5), ("dialogue", 5), ("dialog", 5), ("text", 3), ("メッセージ", 5), ("会話", 5)),
-    "audio": (("audio", 5), ("sound", 5), ("bgm", 6), ("bgs", 6), ("se", 6), ("sfx", 6), ("音声", 5), ("音楽", 5)),
-    "graphics": (("graphic", 5), ("graphics", 5), ("sprite", 5), ("picture", 5), ("animation", 5), ("画像", 5), ("スプライト", 5)),
-    "database": (("database", 6), ("notetag", 6), ("db", 6), ("データベース", 6), ("メモタグ", 6)),
-    "development_debug": (("debug", 6), ("developer", 5), ("development", 5), ("test", 3), ("console", 5), ("デバッグ", 6), ("開発", 5)),
-    "network_external": (("network", 6), ("api", 6), ("http", 6), ("web", 5), ("discord", 5), ("integration", 5), ("external", 4), ("連携", 5)),
+    "character_party": (
+        ("party", 5), ("actor", 5), ("actors", 5), ("formation", 5),
+        ("équipe", 5), ("personnage jouable", 5),
+        ("パーティ", 5), ("アクター", 5), ("隊列", 5),
+    ),
+    "quest": (
+        ("quest", 6), ("journal", 5), ("mission", 5),
+        ("quête", 6), ("quêtes", 6),
+        ("クエスト", 6), ("ミッション", 5),
+    ),
+    "map_events": (
+        ("map", 4), ("maps", 4), ("event", 5), ("events", 5),
+        ("carte", 4), ("événement", 5), ("événements", 5),
+        ("mouvement", 4), ("déplacement", 4),
+        ("panorama", 4), ("fog", 4),
+        ("マップ", 4), ("イベント", 5),
+    ),
+    "save_load": (
+        ("save", 5), ("load", 5), ("autosave", 6),
+        ("sauvegarde", 5), ("charger", 5),
+        ("セーブ", 5), ("ロード", 5),
+    ),
+    "messages_dialogue": (
+        ("message", 5), ("messages", 5), ("dialogue", 5),
+        ("dialog", 5), ("text", 3),
+        ("dialogues", 5), ("texte", 3),
+        ("メッセージ", 5), ("会話", 5),
+    ),
+    "audio": (
+        ("audio", 5), ("sound", 5), ("bgm", 6), ("bgs", 6),
+        ("se", 6), ("sfx", 6), ("musique", 5), ("son", 5),
+        ("sons", 5), ("音声", 5), ("音楽", 5),
+    ),
+    "graphics": (
+        ("graphic", 5), ("graphics", 5), ("sprite", 5),
+        ("picture", 5), ("animation", 5),
+        ("graphisme", 5), ("graphismes", 5), ("image", 5),
+        ("images", 5), ("アニメーション", 5),
+        ("画像", 5), ("スプライト", 5),
+    ),
+    "database": (
+        ("database", 6), ("notetag", 6), ("db", 6),
+        ("base de données", 6),
+        ("データベース", 6), ("メモタグ", 6),
+    ),
+    "development_debug": (
+        ("debug", 6), ("developer", 5), ("development", 5),
+        ("développeur", 5), ("développement", 5),
+        ("débogage", 6), ("console", 5), ("test", 3),
+        ("outil d'aide au développeur", 6),
+        ("デバッグ", 6), ("開発", 5),
+    ),
+    "network_external": (
+        ("network", 6), ("api", 6), ("http", 6), ("web", 5),
+        ("discord", 5), ("integration", 5), ("external", 4),
+        ("réseau", 6), ("intégration", 5),
+        ("連携", 5),
+    ),
 }
 
 
@@ -269,6 +336,50 @@ def _contains_phrase(text, phrase):
     return re.search(pattern, text) is not None
 
 
+def _apply_source_category_hint(scores, evidence, item, taxonomy):
+    """
+    Oniromancieのカテゴリはサイト側の分類なので、本文キーワードより
+    強い補助証拠として扱う。ただし完全固定にはせず、他の明確な証拠を
+    上書きしない。
+    """
+    tags = item.get("source_tags", [])
+
+    if not isinstance(tags, list):
+        return
+
+    source_text = " ".join(str(tag).lower() for tag in tags)
+
+    aliases = {
+        "戦闘": "battle",
+        "combat": "battle",
+        "メッセージ": "messages_dialogue",
+        "messages": "messages_dialogue",
+        "マップ": "map_events",
+        "maps": "map_events",
+        "menu": "menu_ui",
+        "メニュー": "menu_ui",
+        "son et musique": "audio",
+        "音楽・サウンド": "audio",
+        "musique": "audio",
+    }
+
+    target = None
+    for alias, category in aliases.items():
+        if alias in source_text:
+            target = category
+            break
+
+    if not target or target not in scores:
+        return
+
+    scores[target] += 6
+    evidence[target].append({
+        "field": "source_tags",
+        "keyword": "source_category",
+        "points": 6,
+    })
+
+
 def classify_taxonomy_with_evidence(item, taxonomy):
     if taxonomy == "graphic":
         patterns = GRAPHIC_PATTERNS
@@ -278,6 +389,13 @@ def classify_taxonomy_with_evidence(item, taxonomy):
         raise ValueError(f"Unsupported taxonomy: {taxonomy}")
 
     scores, evidence = _score_taxonomy(item, patterns)
+
+    _apply_source_category_hint(
+        scores,
+        evidence,
+        item,
+        taxonomy,
+    )
 
     ranked = sorted(
         scores,
