@@ -3,7 +3,6 @@
 # ==========================================
 
 from categories.assets import classify_asset
-import re
 from classification_scoring import (
     classify_sound_with_evidence,
     classify_taxonomy_with_evidence,
@@ -183,108 +182,6 @@ def detect_detailed_subcategory(item, asset_type, asset_tags):
         ]
 
     return []
-
-def detect_sound_type(item):
-    """
-    サウンド素材の詳細分類。
-
-    明示的なBGM/BGS/ME/SE表記を優先する。
-    「music」「soundtrack」のような一般的な表現だけの場合は
-    BGM候補として扱うが、確定とはせず確認対象にする。
-    """
-    text = " ".join(
-        (
-            _normalize_text(item.get("title", "")),
-            _normalize_text(item.get("description", "")),
-            " ".join(_normalize_text(x) for x in item.get("source_tags", []) if isinstance(x, str)),
-            " ".join(_normalize_text(x) for x in item.get("asset_tags", []) if isinstance(x, str)),
-        )
-    )
-
-    if _contains_keyword(text, ("bgm", "background music")):
-        return "BGM"
-
-    if _contains_keyword(text, ("bgs", "background sound")):
-        return "BGS"
-
-    if _contains_keyword(text, ("me", "music effect", "jingle", "fanfar")):
-        return "ME"
-
-    if _contains_keyword(text, ("sfx", "sound effect", "sound effects")):
-        return "SE"
-
-    # フランス語の文章中の代名詞「se」と、RPG Makerの「SE」を区別する。
-    # SEは通常大文字で明示されるため、ここでは原文の大文字表記だけを
-    # 明示的なSE判定として扱う。
-    raw_text = " ".join(
-        str(item.get(key, "") or "")
-        for key in ("title", "description")
-    )
-    raw_tags = " ".join(
-        str(x)
-        for x in item.get("source_tags", [])
-        if isinstance(x, str)
-    )
-    if re.search(
-        r"(?<![A-Za-z0-9])SE(?![A-Za-z0-9])",
-        raw_text + " " + raw_tags,
-    ):
-        return "SE"
-
-    raw_text = " ".join(
-        str(item.get(key, "") or "")
-        for key in ("title", "description")
-    )
-    raw_tags = " ".join(
-        str(x)
-        for x in item.get("source_tags", [])
-        if isinstance(x, str)
-    )
-    if re.search(
-        r"(?<![A-Za-z0-9])SE(?![A-Za-z0-9])",
-        raw_text + " " + raw_tags,
-    ):
-        return CONFIDENCE_HIGH
-
-    if _contains_keyword(text, ("music", "soundtrack", "ost")):
-        return "BGM"
-
-    return None
-
-
-def detect_sound_classification_confidence(item):
-    """
-    sound_typeの判定根拠を確認する。
-
-    high:
-        BGM/BGS/ME/SEなどの分類語が明示されている。
-    medium:
-        music / soundtrack / OSTなどからBGM候補と推定した。
-    low:
-        サウンド素材だが詳細種別を判断できない。
-    """
-    text = " ".join(
-        (
-            _normalize_text(item.get("title", "")),
-            _normalize_text(item.get("description", "")),
-            " ".join(_normalize_text(x) for x in item.get("source_tags", []) if isinstance(x, str)),
-            " ".join(_normalize_text(x) for x in item.get("asset_tags", []) if isinstance(x, str)),
-        )
-    )
-
-    if _contains_keyword(
-        text,
-        ("bgm", "background music", "bgs", "background sound",
-         "me", "music effect", "jingle", "fanfar",
-         "sfx", "sound effect", "sound effects"),
-    ):
-        return CONFIDENCE_HIGH
-
-    if _contains_keyword(text, ("music", "soundtrack", "ost")):
-        return CONFIDENCE_MEDIUM
-
-    return CONFIDENCE_LOW
-
 
 def detect_classification_status(confidence):
     """
