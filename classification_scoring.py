@@ -72,7 +72,7 @@ SOUND_PATTERNS = {
         # SEはRPG Makerの略語として大文字表記された場合だけ明示認識する。
         # フランス語の「se」と区別するため、ここだけ大文字小文字を区別する。
         (r"(?<![A-Za-z0-9])SE(?![A-Za-z0-9])", 5, "explicit:SE"),
-        (r"\\bsfx\\b", 5, "SFX"),
+        (r"\bsfx\b", 5, "SFX"),
         (r"sound effect", 5, "sound effect"),
         (r"sound effects", 5, "sound effects"),
         (r"foley", 4, "foley"),
