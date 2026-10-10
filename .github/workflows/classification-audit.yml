@@ -16,5 +16,31 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Run classification audit
+      - name: Test review corpus normalizer
+        run: python -m unittest discover -s tools -p 'test_*.py' -v
+
+      - name: Normalize human review corpus (audit only)
+        run: |
+          python tools/normalize_review_corpus.py > normalized_review_corpus.json
+          python - <<'PY'
+          import json
+          from collections import Counter
+          with open("normalized_review_corpus.json", encoding="utf-8") as f:
+              data = json.load(f)
+          print(f"[Normalize] Items: {data['item_count']}")
+          print(f"[Normalize] Recommendations: {data['recommendation_counts']}")
+          print("[Normalize] This output is audit-only; runtime behavior is unchanged.")
+          for item in data["items"]:
+              if item["audit_recommendation"] == "reassess_paid_policy":
+                  print(f"[Paid-policy review] {item['pre_id']} | {item['title']}")
+          PY
+
+      - name: Upload normalized review corpus
+        uses: actions/upload-artifact@v4
+        with:
+          name: normalized-review-corpus
+          path: normalized_review_corpus.json
+          if-no-files-found: error
+
+      - name: Run existing classification audit
         run: python tools/audit_classification.py
