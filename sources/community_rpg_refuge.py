@@ -103,13 +103,24 @@ def parse_feed(xml_text, category):
                 flags=re.IGNORECASE | re.DOTALL,
             )
             for block in item_blocks:
-                node = BeautifulSoup(block, "html.parser")
-                title_node = node.find("title")
-                link_node = node.find("link")
-                title = title_node.get_text(" ", strip=True) if title_node else ""
-                link = link_node.get_text(" ", strip=True) if link_node else ""
-                title = unescape(title)
-                link = unescape(link)
+                title_match = re.search(
+                    r"<title\\b[^>]*>(.*?)</title\\s*>",
+                    block,
+                    flags=re.IGNORECASE | re.DOTALL,
+                )
+                link_match = re.search(
+                    r"<link\\b[^>]*>(.*?)</link\\s*>",
+                    block,
+                    flags=re.IGNORECASE | re.DOTALL,
+                )
+                if not title_match or not link_match:
+                    continue
+
+                title = BeautifulSoup(
+                    title_match.group(1), "html.parser"
+                ).get_text(" ", strip=True)
+                link = re.sub(r"<!\\[CDATA\\[(.*?)\\]\\]>", r"\\1", link_match.group(1))
+                link = unescape(re.sub(r"<[^>]+>", "", link).strip())
                 if title and link:
                     recovered_entries.append({
                         "title": title,
