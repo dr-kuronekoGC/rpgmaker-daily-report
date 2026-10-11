@@ -23,3 +23,6 @@ from . import official_rpgmakerweb_blog
 from . import community_rpgmaker_es
 from . import community_rpgmaker_fr
 from . import community_rpgmaker_cn
+from . import community_rpgmaker_ru
+from . import community_rpgmaker_ptbr
+from . import community_rpgmaker_it

@@ -10,37 +10,7 @@ from report import (
     send_to_slack,
 )
 
-from sources import (
-    community_reddit,
-    community_forum,
-    community_tsukumate,
-    community_tkool_forum,
-    community_save_point,
-    community_rpgmakerforum_de,
-    community_chaos_project,
-    community_rpgmaker_su,
-    community_rpgmaker_union,
-    community_oniromancie,
-    official_site,
-    official_steam,
-    official_opengameart,
-    official_kenney,
-    official_craftpix,
-    official_gamedevmarket,
-    official_tsukupura,
-    official_visustella,
-    official_deviantart,
-    asset_itchio,
-    community_guild,
-    official_makerdevs,
-    official_caspergaming,
-    official_triacontane,
-    official_rpgmakerweb_blog,
-    community_rpgmaker_es,
-    community_rpgmaker_fr,
-    community_rpgmaker_cn,
-    official_source_check,
-)
+from sources.registry import SOURCES
 
 from item_model import normalize_items
 from asset_metadata import enrich_items
@@ -57,36 +27,6 @@ from config import (
     PENDING_ITEMS_FILE,
     MAX_ITEMS_PER_SOURCE,
 )
-
-
-SOURCES = [
-    community_reddit,
-    community_forum,
-    community_tsukumate,
-    community_tkool_forum,
-    community_save_point,
-    community_rpgmakerforum_de,
-    community_chaos_project,
-    community_rpgmaker_su,
-    community_rpgmaker_union,
-    community_oniromancie,
-    official_site,
-    official_steam,
-    official_opengameart,
-    official_kenney,
-    official_craftpix,
-    official_gamedevmarket,
-    official_tsukupura,
-    official_visustella,
-    official_deviantart,
-    asset_itchio,
-    community_guild,
-    official_makerdevs,
-    official_caspergaming,
-    official_triacontane,
-    official_rpgmakerweb_blog,
-    official_source_check,
-]
 
 
 GLOBAL_SEEN_FILE = "seen_global.json"

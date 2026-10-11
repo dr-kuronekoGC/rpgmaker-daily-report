@@ -243,3 +243,18 @@ _add(
     "海外コミュニティ",
     4,
 )
+
+
+_add(
+    (
+        "RPG Maker RUプラグイン",
+        "RPG Maker RUグラフィック素材",
+        "RPG Maker RUサウンド素材",
+        "RPG Maker RU Tips",
+        "Condado PT-BRツール",
+        "Condado PT-BRプラグイン",
+        "Rpg2S ITプラグイン",
+    ),
+    "海外コミュニティ",
+    4,
+)
