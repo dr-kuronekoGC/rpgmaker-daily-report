@@ -67,6 +67,23 @@ def extract_products(html, seen_urls=None):
         if not title:
             continue
 
+        # Raizen's creator page also contains unrelated games. Keep entries
+        # with explicit RPG Maker/plugin metadata, or recognisable plugin
+        # naming used in this catalogue, rather than treating every game as
+        # a plugin.
+        card_text = " ".join(cell.get_text(" ", strip=True).split()).lower()
+        has_plugin_context = (
+            "plugin" in card_text
+            or "rpg maker" in card_text
+            or bool(__import__("re").search(
+                r"\\bplugin\\b|\\bMZ\\b|\\bMV\\b|^(Akea|Ignis)\\b|pixel movement|special scene transitions",
+                title,
+                flags=__import__("re").IGNORECASE,
+            ))
+        )
+        if not has_plugin_context:
+            continue
+
         found_urls.add(url)
         items.append({
             "title": title,
