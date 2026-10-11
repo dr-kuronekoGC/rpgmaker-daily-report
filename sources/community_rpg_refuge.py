@@ -104,12 +104,12 @@ def parse_feed(xml_text, category):
             )
             for block in item_blocks:
                 title_match = re.search(
-                    r"<title\\b[^>]*>(.*?)</title\\s*>",
+                    r"<title\b[^>]*>(.*?)</title\s*>",
                     block,
                     flags=re.IGNORECASE | re.DOTALL,
                 )
                 link_match = re.search(
-                    r"<link\\b[^>]*>(.*?)</link\\s*>",
+                    r"<link\b[^>]*>(.*?)</link\s*>",
                     block,
                     flags=re.IGNORECASE | re.DOTALL,
                 )
@@ -119,7 +119,7 @@ def parse_feed(xml_text, category):
                 title = BeautifulSoup(
                     title_match.group(1), "html.parser"
                 ).get_text(" ", strip=True)
-                link = re.sub(r"<!\\[CDATA\\[(.*?)\\]\\]>", r"\\1", link_match.group(1))
+                link = re.sub(r"<!\[CDATA\[(.*?)\]\]>", r"\1", link_match.group(1))
                 link = unescape(re.sub(r"<[^>]+>", "", link).strip())
                 if title and link:
                     recovered_entries.append({
