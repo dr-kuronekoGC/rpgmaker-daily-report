@@ -18,7 +18,7 @@ QUESTION_MARKERS = (
 )
 RPG_MAKER_MARKERS = (
     "rpg maker", "rpgmaker", "rmmz", "rmmv", "rm2k", "rm2k3",
-    "vx ace", "tileset", "plugin",
+    "vx ace", "tileset",
 )
 TOOL_MARKERS = (
     "conversor", "converter", "utilitário", "utilitario", "editor",
