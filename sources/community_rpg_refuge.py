@@ -9,6 +9,7 @@ excluded.
 from urllib.parse import urljoin, urlparse
 
 import feedparser
+from bs4 import BeautifulSoup
 
 from config import RPG_REFUGE_SEEN_FILE
 from sources.base import get_html
@@ -84,17 +85,42 @@ def parse_feed(xml_text, category):
     feed = feedparser.parse(xml_text)
 
     if getattr(feed, "bozo", False):
-        # feedparser can recover usable entries from imperfect XML. Keep those
-        # entries, but fail with a useful diagnostic when nothing was parsed.
+        detail = getattr(feed, "bozo_exception", None)
+
         if not feed.entries:
-            detail = getattr(feed, "bozo_exception", None)
-            raise ValueError(
-                f"Invalid RSS feed for {category}: {detail or 'no entries parsed'}"
+            # Some forums put malformed HTML inside RSS descriptions. If the
+            # strict RSS parser rejects the whole document, try a tolerant
+            # HTML parser before declaring the feed unusable.
+            soup = BeautifulSoup(xml_text, "html.parser")
+            recovered_entries = []
+
+            for node in soup.find_all("item"):
+                title_node = node.find("title")
+                link_node = node.find("link")
+                title = title_node.get_text(" ", strip=True) if title_node else ""
+                link = link_node.get_text(" ", strip=True) if link_node else ""
+                if title and link:
+                    recovered_entries.append({
+                        "title": title,
+                        "link": link,
+                    })
+
+            if recovered_entries:
+                print(
+                    f"[{SOURCE_NAME}] Recovered {len(recovered_entries)} "
+                    f"entries from malformed RSS for {category}"
+                )
+                feed.entries = recovered_entries
+            else:
+                raise ValueError(
+                    f"Invalid RSS feed for {category}: "
+                    f"{detail or 'no entries parsed'}"
+                )
+        else:
+            print(
+                f"[{SOURCE_NAME}] RSS warning for {category}: "
+                f"{detail or 'malformed feed'}"
             )
-        print(
-            f"[{SOURCE_NAME}] RSS warning for {category}: "
-            f"{getattr(feed, 'bozo_exception', 'malformed feed')}"
-        )
 
     items = []
     local_seen = set()
