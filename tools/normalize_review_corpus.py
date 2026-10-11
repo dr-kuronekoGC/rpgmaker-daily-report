@@ -22,7 +22,27 @@ DUPLICATE_RE = re.compile(r"重複|既出|リマインド|同じ内容|統合|du
 PERSONAL_RE = re.compile(r"個人的な好み|個人的な判断|編集方針|ユーザー判断|ユーザー確認", re.I)
 COPYRIGHT_RE = re.compile(r"著作権|版権|copyright|dragon ball|lego", re.I)
 DISCUSSION_RE = re.compile(r"質問|相談|雑談|議論|話題・議論|情報共有", re.I)
-SHOWCASE_RE = re.compile(r"自作ゲーム|ゲームの紹介|ゲームシステムの紹介|システムの紹介|自作ゲームの画面|スクリーンショット|制作過程|進捗紹介|制作状況|紹介動画|プラグイン紹介のムービー|ムービー|playthru|showcase", re.I)
+POSITIVE_DELIVERABLE_RE = re.compile(
+    r"素材として採用(?!しない|されない|ではない)|"
+    r"素材を公開(?!していない|されていない|しない)|"
+    r"素材を配布(?!していない|されていない|しない|ではない)|"
+    r"素材配布あり|素材配布へのリンク|"
+    r"プラグインとして採用(?!しない|されない|ではない)|"
+    r"プラグインを公開(?!していない|されていない|しない)|"
+    r"プラグインを配布(?!していない|されていない|しない|ではない)|"
+    r"制作支援ツールとして採用|ツールとして採用",
+    re.I,
+)
+REUSABLE_SOURCE_DATA_RE = re.compile(
+    r"生のデータファイル|再利用価値|再利用可能なデータ|raw data|source files?",
+    re.I,
+)
+NO_DELIVERABLE_RE = re.compile(
+    r"素材配布ではなく|素材配布そのものではない|実際の素材配布.*ない|"
+    r"配布物が確認されていない|配布されていない",
+    re.I,
+)
+SHOWCASE_RE = re.compile(r"自作ゲーム|自作作品の紹介|ゲームの紹介|ゲームシステムの紹介|システムの紹介|自作ゲームの画面|スクリーンショット|制作過程|進捗紹介|制作状況|紹介動画|プラグイン紹介のムービー|ムービー|show my process|process for making|development process|workflow video|playthru|showcase", re.I)
 PREVIEW_RE = re.compile(r"サンプル表示|サンプル画面|サンプル|プレビュー|素材そのものではない", re.I)
 OFFICIAL_RE = re.compile(r"公式情報|公式.*更新|official", re.I)
 TOOL_RE = re.compile(r"制作支援ツール|ツールとして採用|dev tools|save files|save-file|logic builder|tool", re.I)
@@ -67,15 +87,24 @@ def normalize(item: dict[str, Any]) -> dict[str, Any]:
         recommendation = "needs_review"
         rationale = "言語などの理由で内容を確認できないことは、対象外である根拠にはならないため、個別確認を要する。"
         flags.append("language_review")
-    elif DISCUSSION_RE.search(text) and not re.search(r"素材.*採用|プラグイン.*採用|素材.*公開対象|素材.*配布", note):
+    elif DISCUSSION_RE.search(text) and not POSITIVE_DELIVERABLE_RE.search(note):
         purpose.append("question_discussion_or_chat")
         recommendation = "exclude_discussion"
         rationale = "質問・相談・雑談が中心で、再利用可能な成果物の配布情報とは記録されていない。"
-    elif SHOWCASE_RE.search(text) and not re.search(r"素材.*採用|素材.*公開対象|素材.*配布|プラグイン.*採用|制作支援ツール", note):
+    elif SHOWCASE_RE.search(text) and not POSITIVE_DELIVERABLE_RE.search(note):
         purpose.append("game_showcase_or_process")
         recommendation = "exclude_showcase"
         rationale = "ゲーム紹介・画面・制作過程が中心で、汎用的な配布物の記録がない。"
-    elif PREVIEW_RE.search(note) and not re.search(r"主として素材|素材として採用|素材.*公開対象|素材配布|素材へのリンク|制作支援ツール|ツールとして採用", note):
+    elif REUSABLE_SOURCE_DATA_RE.search(note):
+        purpose.append("reusable_source_data_boundary")
+        recommendation = "needs_review"
+        rationale = "再利用可能な生データの提供が記録されている。素材そのものではないという表現だけで除外せず、用途・利用条件を個別確認する。"
+        flags.append("reusable_deliverable_review")
+    elif NO_DELIVERABLE_RE.search(note):
+        purpose.append("announcement_or_preview_without_deliverable")
+        recommendation = "exclude_preview"
+        rationale = "素材配布そのものではない、または配布物が確認されていないと明記されている。"
+    elif PREVIEW_RE.search(note) and not POSITIVE_DELIVERABLE_RE.search(note):
         purpose.append("sample_or_preview_without_deliverable")
         recommendation = "exclude_preview"
         rationale = "サンプル・プレビューのみと記録され、実際の配布物が確認されていない。"
