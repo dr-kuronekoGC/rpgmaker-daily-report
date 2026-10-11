@@ -84,7 +84,17 @@ def parse_feed(xml_text, category):
     feed = feedparser.parse(xml_text)
 
     if getattr(feed, "bozo", False):
-        raise ValueError(f"Invalid RSS feed for {category}")
+        # feedparser can recover usable entries from imperfect XML. Keep those
+        # entries, but fail with a useful diagnostic when nothing was parsed.
+        if not feed.entries:
+            detail = getattr(feed, "bozo_exception", None)
+            raise ValueError(
+                f"Invalid RSS feed for {category}: {detail or 'no entries parsed'}"
+            )
+        print(
+            f"[{SOURCE_NAME}] RSS warning for {category}: "
+            f"{getattr(feed, 'bozo_exception', 'malformed feed')}"
+        )
 
     items = []
     local_seen = set()

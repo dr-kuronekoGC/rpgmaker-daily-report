@@ -1,4 +1,5 @@
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from sources import community_rpg_refuge as source
@@ -83,6 +84,38 @@ class RPGRefugeCollectorTests(unittest.TestCase):
             new_seen,
             ["https://rpg-refuge.com/threads/useful-plugin.456"],
         )
+
+
+    def test_keeps_entries_recovered_from_malformed_feed(self):
+        parsed_entry = {
+            "title": "Recovered tileset",
+            "link": "https://rpg-refuge.com/threads/recovered-tileset.789/",
+        }
+        fake_feed = SimpleNamespace(
+            bozo=True,
+            bozo_exception="recoverable XML warning",
+            entries=[parsed_entry],
+        )
+        with patch.object(source.feedparser, "parse", return_value=fake_feed):
+            items = source.parse_feed(
+                "<rss>imperfect</rss>",
+                "RPG Refugeグラフィック素材",
+            )
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["title"], "Recovered tileset")
+
+    def test_invalid_feed_error_includes_parser_diagnostic(self):
+        fake_feed = SimpleNamespace(
+            bozo=True,
+            bozo_exception="not well-formed",
+            entries=[],
+        )
+        with patch.object(source.feedparser, "parse", return_value=fake_feed):
+            with self.assertRaisesRegex(ValueError, "not well-formed"):
+                source.parse_feed(
+                    "<html>not RSS</html>",
+                    "RPG Refugeグラフィック素材",
+                )
 
     def test_feed_fetch_failure_is_not_swallowed(self):
         with patch.object(source, "get_html", side_effect=OSError("network down")):
