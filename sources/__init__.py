@@ -19,3 +19,4 @@ from . import official_makerdevs
 from . import official_caspergaming
 from . import official_triacontane
 from . import official_source_check
+from . import official_rpgmakerweb_blog
