@@ -36,6 +36,7 @@ from . import (
     community_rpgmaker_ru,
     community_rpgmaker_ptbr,
     community_rpgmaker_it,
+    community_rpg_refuge,
     official_source_check,
 )
 
@@ -72,5 +73,6 @@ SOURCES = [
     community_rpgmaker_ru,
     community_rpgmaker_ptbr,
     community_rpgmaker_it,
+    community_rpg_refuge,
     official_source_check,
 ]
