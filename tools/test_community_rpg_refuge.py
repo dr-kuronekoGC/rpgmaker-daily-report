@@ -125,6 +125,26 @@ class RPGRefugeCollectorTests(unittest.TestCase):
         self.assertEqual(len(items), 1)
         self.assertEqual(items[0]["title"], "Recovered tileset")
 
+    def test_recovers_record_without_closing_item_tag(self):
+        malformed_xml = """<?xml version="1.0"?>
+        <rss><channel>
+          <item><title>Recovered without close</title>
+            <link>https://rpg-refuge.com/threads/recovered-no-close.790/</link>
+            <description><p>Broken markup continues
+        </channel></rss>"""
+        fake_feed = SimpleNamespace(
+            bozo=True,
+            bozo_exception="mismatched tag",
+            entries=[],
+        )
+        with patch.object(source.feedparser, "parse", return_value=fake_feed):
+            items = source.parse_feed(
+                malformed_xml,
+                "RPG Refugeグラフィック素材",
+            )
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["title"], "Recovered without close")
+
     def test_invalid_feed_error_includes_parser_diagnostic(self):
         fake_feed = SimpleNamespace(
             bozo=True,

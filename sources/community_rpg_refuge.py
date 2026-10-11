@@ -95,14 +95,22 @@ def parse_feed(xml_text, category):
             # HTML parser before declaring the feed unusable.
             recovered_entries = []
 
-            # Isolate each item before parsing its fields. This avoids a
-            # malformed tag inside one description swallowing later RSS tags.
-            item_blocks = re.findall(
-                r"<item\b[^>]*>(.*?)</item\s*>",
+            # Recover records from RSS <item> or Atom <entry> blocks.
+            # Split at each record start rather than requiring a closing tag:
+            # malformed markup in a description can break the closing XML tag.
+            record_starts = list(re.finditer(
+                r"<(?:item|entry)\b[^>]*>",
                 xml_text,
-                flags=re.IGNORECASE | re.DOTALL,
-            )
-            for block in item_blocks:
+                flags=re.IGNORECASE,
+            ))
+            for index, record_match in enumerate(record_starts):
+                block_start = record_match.end()
+                block_end = (
+                    record_starts[index + 1].start()
+                    if index + 1 < len(record_starts)
+                    else len(xml_text)
+                )
+                block = xml_text[block_start:block_end]
                 title_match = re.search(
                     r"<title\b[^>]*>(.*?)</title\s*>",
                     block,
@@ -119,7 +127,12 @@ def parse_feed(xml_text, category):
                 title = BeautifulSoup(
                     title_match.group(1), "html.parser"
                 ).get_text(" ", strip=True)
-                link = re.sub(r"<!\[CDATA\[(.*?)\]\]>", r"\1", link_match.group(1))
+                link = re.sub(
+                    r"<!\[CDATA\[(.*?)\]\]>",
+                    r"\1",
+                    link_match.group(1),
+                    flags=re.DOTALL,
+                )
                 link = unescape(re.sub(r"<[^>]+>", "", link).strip())
                 if title and link:
                     recovered_entries.append({
