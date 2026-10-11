@@ -1,6 +1,6 @@
 import unittest
 
-from official_rpgmakerweb_blog import extract_blog_items, normalize_article_url
+from sources.official_rpgmakerweb_blog import extract_blog_items, normalize_article_url
 
 
 class OfficialRPGMakerWebBlogTests(unittest.TestCase):
