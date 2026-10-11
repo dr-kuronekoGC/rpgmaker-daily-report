@@ -113,5 +113,15 @@ class NormalizeReviewCorpusTests(unittest.TestCase):
         self.assertIn("language_review", result["flags"])
 
 
+    def test_confirmed_developer_tool_is_not_excluded_by_generic_preview_wording(self):
+        result = normalize(item(
+            "[Tool] Browser-based .rmmzsave editor",
+            "セーブデータを調整・編集できる無料ツール。素材そのものではないが、制作支援ツールとして採用。",
+            decision="confirmed",
+        ))
+        self.assertEqual(result["audit_recommendation"], "include_candidate")
+        self.assertIn("developer_tool", result["purpose_labels"])
+
+
 if __name__ == "__main__":
     unittest.main()
