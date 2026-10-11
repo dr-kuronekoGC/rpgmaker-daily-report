@@ -36,10 +36,11 @@ def classify(title):
     text = " ".join(str(title or "").lower().split())
     if not text or any(marker in text for marker in QUESTION_MARKERS):
         return None
-    # The configured page is a dedicated MZ plugin/resource section.
-    # Avoid pulling generic help posts just because they mention a plugin.
-    if any(marker in text for marker in ("плагин", "плагины", "plugin", "скрипт", "скрипты")):
-        return "RPG Maker RUプラグイン"
+    # The configured page is a dedicated MZ plugin section.
+    # Topic titles do not always contain the word "plugin".
+    if any(marker in text for marker in ("правила", "регламент")):
+        return None
+    return "RPG Maker RUプラグイン"
     if any(marker in text for marker in ("музык", "звук", "саунд", "bgm", "bgs", "se")):
         return "RPG Maker RUサウンド素材"
     if any(marker in text for marker in ("график", "ресурс", "тайлсет", "спрайт", "иконк")):
