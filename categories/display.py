@@ -207,8 +207,28 @@ _add(
 
 _add(
     (
-        "Raizenプラグイン",
     ),
     "プラグイン",
     5,
+)
+
+_add(
+    (
+        "Comunidad RPG Maker ESプラグイン",
+        "Comunidad RPG Maker ESグラフィック素材",
+        "Comunidad RPG Maker ESサウンド素材",
+        "Comunidad RPG Maker ESTips",
+    ),
+    "海外コミュニティ",
+    4,
+)
+
+_add(
+    (
+        "RPG Maker FRプラグイン",
+        "RPG Maker FRグラフィック素材",
+        "RPG Maker FRサウンド素材",
+    ),
+    "海外コミュニティ",
+    4,
 )
