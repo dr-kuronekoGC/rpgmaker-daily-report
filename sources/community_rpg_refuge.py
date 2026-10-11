@@ -147,9 +147,20 @@ def parse_feed(xml_text, category):
                 )
                 feed.entries = recovered_entries
             else:
+                record_count = len(record_starts)
+                title_count = len(re.findall(
+                    r"<title\b", xml_text, flags=re.IGNORECASE
+                ))
+                link_count = len(re.findall(
+                    r"<link\b", xml_text, flags=re.IGNORECASE
+                ))
+                sample = " ".join(xml_text[:240].split())
                 raise ValueError(
                     f"Invalid RSS feed for {category}: "
-                    f"{detail or 'no entries parsed'}"
+                    f"{detail or 'no entries parsed'}; "
+                    f"chars={len(xml_text)}, records={record_count}, "
+                    f"title_tags={title_count}, link_tags={link_count}, "
+                    f"start={sample!r}"
                 )
         else:
             print(
