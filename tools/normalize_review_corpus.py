@@ -58,6 +58,10 @@ def normalize(item: dict[str, Any]) -> dict[str, Any]:
         purpose.append("source_check_or_out_of_scope")
         recommendation = "exclude_out_of_scope"
         rationale = "詳細な素材分類の対象外として記録されている。"
+    elif re.search(r"修正の報告|素材配布ではなく、お知らせ|お知らせ・告知と判断", note, re.I):
+        purpose.append("announcement_or_revision_without_deliverable")
+        recommendation = "exclude_out_of_scope"
+        rationale = "修正報告または告知のみで、再利用可能な成果物の配布情報ではないとレビュー記録に明記されている。"
     elif DISCUSSION_RE.search(text) and not re.search(r"素材.*採用|プラグイン.*採用|素材.*公開対象|素材.*配布", note):
         purpose.append("question_discussion_or_chat")
         recommendation = "exclude_discussion"
