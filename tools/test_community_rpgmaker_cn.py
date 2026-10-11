@@ -27,6 +27,18 @@ class ChineseProject1Tests(unittest.TestCase):
         )
         self.assertIsNone(classify("请问有没有好用的插件"))
 
+    def test_english_abbreviations_must_be_whole_words(self):
+        self.assertIsNone(classify("A guide to these settings"))
+        self.assertIsNone(classify("Building a custom scene"))
+        self.assertEqual(
+            classify("A pack of SE sound effects"),
+            "Project1中文サウンド素材",
+        )
+        self.assertEqual(
+            classify("Custom UI plugin"),
+            "Project1中文プラグイン",
+        )
+
     def test_extracts_resource_threads_and_skips_questions(self):
         html = """
         <a href="/thread-496517-1-1.html">自定义主菜单插件</a>
