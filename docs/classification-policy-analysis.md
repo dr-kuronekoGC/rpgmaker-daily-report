@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Use the 105 human-reviewed PRE entries as a regression corpus to improve classification without turning individual preferences or one-off circumstances into global rules.
+Use the 106 human-reviewed PRE entries as a regression corpus to improve classification without turning individual preferences or one-off circumstances into global rules.
 
 This document records findings and policy clarifications. It does not itself change runtime classification behavior.
 
