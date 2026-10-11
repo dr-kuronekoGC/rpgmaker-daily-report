@@ -318,3 +318,10 @@ TRIACONTANE_SEEN_FILE = (
 
 RPGMAKERWEB_BLOG_URL = "https://www.rpgmakerweb.com/category/resources"
 RPGMAKERWEB_BLOG_SEEN_FILE = "seen_rpgmakerweb_blog.json"
+
+# ==========================================
+# Raizen's RPG Maker Plugins
+# ==========================================
+
+RAIZEN_PLUGINS_URL = "https://raizen884.itch.io/"
+RAIZEN_PLUGINS_SEEN_FILE = "seen_raizen_plugins.json"
