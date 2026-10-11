@@ -62,6 +62,11 @@ def normalize(item: dict[str, Any]) -> dict[str, Any]:
         purpose.append("announcement_or_revision_without_deliverable")
         recommendation = "exclude_out_of_scope"
         rationale = "修正報告または告知のみで、再利用可能な成果物の配布情報ではないとレビュー記録に明記されている。"
+    elif re.search(r"ロシア語で内容を判読できない|言語.*判読できない|内容を理解できない", note, re.I):
+        purpose.append("language_or_content_unclear")
+        recommendation = "needs_review"
+        rationale = "言語などの理由で内容を確認できないことは、対象外である根拠にはならないため、個別確認を要する。"
+        flags.append("language_review")
     elif DISCUSSION_RE.search(text) and not re.search(r"素材.*採用|プラグイン.*採用|素材.*公開対象|素材.*配布", note):
         purpose.append("question_discussion_or_chat")
         recommendation = "exclude_discussion"
