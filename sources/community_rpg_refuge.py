@@ -99,7 +99,7 @@ def parse_feed(xml_text, category):
             # Split at each record start rather than requiring a closing tag:
             # malformed markup in a description can break the closing XML tag.
             record_starts = list(re.finditer(
-                r"<(?:item|entry)\\b[^>]*>",
+                r"<(?:item|entry)\b[^>]*>",
                 xml_text,
                 flags=re.IGNORECASE,
             ))
@@ -112,12 +112,12 @@ def parse_feed(xml_text, category):
                 )
                 block = xml_text[block_start:block_end]
                 title_match = re.search(
-                    r"<title\\b[^>]*>(.*?)</title\\s*>",
+                    r"<title\b[^>]*>(.*?)</title\s*>",
                     block,
                     flags=re.IGNORECASE | re.DOTALL,
                 )
                 link_match = re.search(
-                    r"<link\\b[^>]*>(.*?)</link\\s*>",
+                    r"<link\b[^>]*>(.*?)</link\s*>",
                     block,
                     flags=re.IGNORECASE | re.DOTALL,
                 )
@@ -128,8 +128,8 @@ def parse_feed(xml_text, category):
                     title_match.group(1), "html.parser"
                 ).get_text(" ", strip=True)
                 link = re.sub(
-                    r"<!\\[CDATA\\[(.*?)\\]\\]>",
-                    r"\\1",
+                    r"<!\[CDATA\[(.*?)\]\]>",
+                    r"\1",
                     link_match.group(1),
                     flags=re.DOTALL,
                 )
