@@ -10,14 +10,14 @@ SOURCE_NAME = "Comunidad RPG Maker ES"
 
 PLUGIN_KEYWORDS = (
     "plugin", "plugins", "complemento", "complementos",
-    "script", "scripts", "mz", "mv", "200x",
+    "script", "scripts",
 )
 SOUND_KEYWORDS = (
     "audio", "sonido", "sonidos", "música", "musica",
     "bgm", "bgs", "sfx", "efecto de sonido",
 )
 GRAPHIC_KEYWORDS = (
-    "recurso", "recursos", "gráfico", "graficos", "gráficos",
+    "gráfico", "graficos", "gráficos",
     "sprite", "sprites", "tileset", "tilesets", "char",
     "personaje", "personajes", "icono", "iconos", "faceset",
 )
