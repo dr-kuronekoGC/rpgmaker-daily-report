@@ -98,7 +98,7 @@ def parse_feed(xml_text, category):
             # Isolate each item before parsing its fields. This avoids a
             # malformed tag inside one description swallowing later RSS tags.
             item_blocks = re.findall(
-                r"<item\\b[^>]*>(.*?)</item\\s*>",
+                r"<item\b[^>]*>(.*?)</item\s*>",
                 xml_text,
                 flags=re.IGNORECASE | re.DOTALL,
             )
