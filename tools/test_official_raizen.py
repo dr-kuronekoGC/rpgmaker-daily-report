@@ -26,6 +26,14 @@ class OfficialRaizenTests(unittest.TestCase):
           <div class="game_cell">
             <a href="https://example.com/external"><span class="game_title">External</span></a>
           </div>
+          <div class="game_cell">
+            <a href="/kamigami"><span class="game_title">Kamigami: Clash of the Gods Demo</span></a>
+            <div>Mythological Strategic Card Game</div>
+          </div>
+          <div class="game_cell">
+            <a href="/turingy"><span class="game_title">Turingy</span></a>
+            <div>Card Game</div>
+          </div>
         </body></html>
         """
         items = extract_products(html)

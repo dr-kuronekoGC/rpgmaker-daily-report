@@ -2,6 +2,7 @@
 # Raizen's RPG Maker Plugins
 # ==========================================
 
+import re
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
 from bs4 import BeautifulSoup
@@ -65,6 +66,23 @@ def extract_products(html, seen_urls=None):
         title = " ".join(title.split()).strip()
 
         if not title:
+            continue
+
+        # Raizen's creator page also contains unrelated games. Keep entries
+        # with explicit RPG Maker/plugin metadata, or recognisable plugin
+        # naming used in this catalogue, rather than treating every game as
+        # a plugin.
+        card_text = " ".join(cell.get_text(" ", strip=True).split()).lower()
+        has_plugin_context = (
+            "plugin" in card_text
+            or "rpg maker" in card_text
+            or bool(re.search(
+                r"\bplugin\b|\bMZ\b|\bMV\b|^(Akea|Ignis)\b|pixel movement|special scene transitions",
+                title,
+                flags=re.IGNORECASE,
+            ))
+        )
+        if not has_plugin_context:
             continue
 
         found_urls.add(url)
