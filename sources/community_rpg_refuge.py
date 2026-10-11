@@ -149,10 +149,10 @@ def parse_feed(xml_text, category):
             else:
                 record_count = len(record_starts)
                 title_count = len(re.findall(
-                    r"<title\\b", xml_text, flags=re.IGNORECASE
+                    r"<title\b", xml_text, flags=re.IGNORECASE
                 ))
                 link_count = len(re.findall(
-                    r"<link\\b", xml_text, flags=re.IGNORECASE
+                    r"<link\b", xml_text, flags=re.IGNORECASE
                 ))
                 sample = " ".join(xml_text[:240].split())
                 raise ValueError(
