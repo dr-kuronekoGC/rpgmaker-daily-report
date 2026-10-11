@@ -311,3 +311,10 @@ TRIACONTANE_BRANCH = "mz_master"
 TRIACONTANE_SEEN_FILE = (
     "seen_triacontane.json"
 )
+
+# ==========================================
+# RPG Maker Web - International Resources Blog
+# ==========================================
+
+RPGMAKERWEB_BLOG_URL = "https://www.rpgmakerweb.com/category/resources"
+RPGMAKERWEB_BLOG_SEEN_FILE = "seen_rpgmakerweb_blog.json"
