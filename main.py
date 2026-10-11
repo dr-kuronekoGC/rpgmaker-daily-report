@@ -38,6 +38,7 @@ from sources import (
     official_rpgmakerweb_blog,
     community_rpgmaker_es,
     community_rpgmaker_fr,
+    community_rpgmaker_cn,
     official_source_check,
 )
 
