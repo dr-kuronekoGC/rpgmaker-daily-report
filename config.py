@@ -340,3 +340,10 @@ RPGMAKER_ES_SEEN_FILE = "seen_rpgmaker_es.json"
 
 RPGMAKER_FR_RESOURCE_URL = "https://forum.rpgmakervx-fr.com/f118-ressources"
 RPGMAKER_FR_SEEN_FILE = "seen_rpgmaker_fr.json"
+
+# ----------------------------
+# Project1 / Chinese RPG Maker community
+# ----------------------------
+
+RPGMAKER_CN_MZ_URL = "https://rpg.blue/forum-627-1.html"
+RPGMAKER_CN_SEEN_FILE = "seen_rpgmaker_cn.json"
