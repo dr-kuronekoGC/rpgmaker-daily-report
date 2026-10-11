@@ -368,3 +368,10 @@ RPGMAKER_PTBR_SEEN_FILE = "seen_rpgmaker_ptbr.json"
 
 RPGMAKER_IT_MZ_PLUGIN_URL = "https://www.rpg2s.it/forum/index.php?/forum/140-plugin-e-j097v097script-per-mz/"
 RPGMAKER_IT_SEEN_FILE = "seen_rpgmaker_it.json"
+
+
+# ----------------------------
+# RPG Refuge community forum
+# ----------------------------
+
+RPG_REFUGE_SEEN_FILE = "seen_rpg_refuge.json"
