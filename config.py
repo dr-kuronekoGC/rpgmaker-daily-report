@@ -163,6 +163,10 @@ SOURCE_CHECK_SITES = [
         "name": "Sang Hendrix",
         "url": "https://sanghendrix.itch.io/",
     },
+    {
+        "name": "Raizen Plugins",
+        "url": "https://raizen884.itch.io/",
+    },
 ]
 
 # ----------------------------
@@ -325,3 +329,14 @@ RPGMAKERWEB_BLOG_SEEN_FILE = "seen_rpgmakerweb_blog.json"
 
 RAIZEN_PLUGINS_URL = "https://raizen884.itch.io/"
 RAIZEN_PLUGINS_SEEN_FILE = "seen_raizen_plugins.json"
+
+
+# ----------------------------
+# International community forums
+# ----------------------------
+
+RPGMAKER_ES_RSS = "https://comunidad.rpgmaker.es/latest.rss"
+RPGMAKER_ES_SEEN_FILE = "seen_rpgmaker_es.json"
+
+RPGMAKER_FR_RESOURCE_URL = "https://forum.rpgmakervx-fr.com/f118-ressources"
+RPGMAKER_FR_SEEN_FILE = "seen_rpgmaker_fr.json"
