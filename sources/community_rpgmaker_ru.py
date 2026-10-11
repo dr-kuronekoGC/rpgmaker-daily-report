@@ -12,7 +12,6 @@ from sources.base import get_html
 SEEN_FILE = RPGMAKER_RU_SEEN_FILE
 SOURCE_NAME = "RPG Maker RU"
 BASE_URL = "https://rpgmaker.ru"
-MAX_PAGES = 1
 
 QUESTION_MARKERS = (
     "ищу", "помогите", "помощь", "вопрос", "как сделать",
@@ -27,7 +26,7 @@ def normalize_url(url):
     parts = urlparse(absolute)
     if parts.netloc.lower() not in {"rpgmaker.ru", "www.rpgmaker.ru"}:
         return None
-    if not re.search(r"/forum/[^/]*\d{4,}[^/]*(?:/|$)", parts.path):
+    if not re.search(r"/forum/(?:[^/]+/)*[^/]*\d{4,}[^/]*(?:/|$)", parts.path):
         return None
     return f"{BASE_URL}{parts.path}".rstrip("/")
 
@@ -36,18 +35,12 @@ def classify(title):
     text = " ".join(str(title or "").lower().split())
     if not text or any(marker in text for marker in QUESTION_MARKERS):
         return None
-    # The configured page is a dedicated MZ plugin section.
-    # Topic titles do not always contain the word "plugin".
     if any(marker in text for marker in ("правила", "регламент")):
         return None
+
+    # The configured URL is a dedicated plugin release section.
+    # Titles often describe the feature without using the word "plugin".
     return "RPG Maker RUプラグイン"
-    if any(marker in text for marker in ("музык", "звук", "саунд", "bgm", "bgs", "se")):
-        return "RPG Maker RUサウンド素材"
-    if any(marker in text for marker in ("график", "ресурс", "тайлсет", "спрайт", "иконк")):
-        return "RPG Maker RUグラフィック素材"
-    if any(marker in text for marker in ("урок", "гайд", "инструкц", "совет")):
-        return "RPG Maker RU Tips"
-    return None
 
 
 def extract_items(html):
