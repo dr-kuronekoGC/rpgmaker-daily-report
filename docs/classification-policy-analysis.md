@@ -91,3 +91,22 @@ Other cases that must remain exceptions rather than broad rules:
 - Do not turn individual taste, one-off copyright concerns, or unavailable pages into broad keyword rules.
 - Do not exclude an item solely because it is paid, hosted on a creator's own website, or sold through a third-party store.
 - Do not rewrite the existing detailed asset taxonomy until the purpose-stage audit shows that it is necessary.
+
+
+## Findings from the first normalized-corpus audit
+
+A row-by-row review of the 106 normalized cases found several deterministic edge cases worth fixing before any runtime integration:
+
+- Negative wording such as “not a concrete asset distribution” must not count as positive evidence that a resource was distributed. The previous broad pattern could leave discussion-only posts in manual review instead of excluding them.
+- English development-process videos need explicit signals (for example, “show my process”) so they are not mislabeled as potential assets solely because the note mentions sprites or characters.
+- A post that provides raw, reusable source data should not be excluded only because the reviewer says it is “not an asset itself.” Keep this boundary case in manual review until use rights and practical reuse are clear.
+- These fixes affect only the audit normalizer and its regression tests. They do not change the production collection or Slack report behavior.
+
+## International source additions under test
+
+Two English-language sources are being added on a separate branch:
+
+- **RPG Maker Web — Resources blog** (https://www.rpgmakerweb.com/category/resources): official English resource-release and product-update posts.
+- **Raizen's Plugins** (https://raizen884.itch.io/): creator's itch.io catalogue for RPG Maker plugins.
+
+Both collectors establish a baseline on their first successful run, preventing the existing catalogue from flooding Slack as if it were new. Subsequent runs only emit newly discovered URLs. The sources are being tested in a pull request before merging into the daily workflow.
