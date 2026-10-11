@@ -271,7 +271,9 @@ def get_items(seen):
                 f"[{SOURCE_NAME}] "
                 "対象フォーラムを取得できませんでした。"
             )
-            return [], seen
+            raise RuntimeError(
+                f"[{SOURCE_NAME}] 対象フォーラムを検出できません。"
+            )
 
         # 初回は現在状態をベースライン化。
         if not seen:
@@ -376,5 +378,4 @@ def get_items(seen):
         print(
             f"[{SOURCE_NAME}] Error: {e}"
         )
-
-        return [], seen
+        raise
