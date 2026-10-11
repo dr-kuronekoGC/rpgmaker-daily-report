@@ -11,7 +11,7 @@ This document records findings and policy clarifications. It does not itself cha
 - Reviewed entries: 106
 - Open entries: 0
 - `decision=confirmed`: 43
-- `decision=not_applicable`: 61
+- `decision=not_applicable`: 62
 - `decision=reviewed`: 1
 
 These decision values are not simple include/exclude labels. `confirmed` can mean the asset type was confirmed even when the note says publication is inappropriate. Do not use the field alone as a training target; normalize purpose, inclusion, evidence, and rationale.
@@ -77,7 +77,7 @@ Other cases that must remain exceptions rather than broad rules:
 
 ## Implementation plan
 
-1. Normalize the 105 cases into explicit purpose labels, inclusion decision, evidence availability, and rationale. Do not use the existing `decision` field as the sole target.
+1. Normalize the 106 cases into explicit purpose labels, inclusion decision, evidence availability, and rationale. Do not use the existing `decision` field as the sole target.
 2. Add a deterministic page-purpose classifier using existing title/body/tags/category fields; emit purpose, confidence, evidence, and review status. Initially run in audit/shadow mode only; do not suppress report items automatically.
 3. Add regression tests from the normalized review corpus, especially boundary cases and historical conflicts.
 4. Compare current behavior against the human-reviewed cases. Fix only repeatable, generalizable errors.
