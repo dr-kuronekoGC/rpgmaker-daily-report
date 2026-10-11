@@ -72,6 +72,14 @@ class NormalizeReviewCorpusTests(unittest.TestCase):
         self.assertEqual(result["audit_recommendation"], "needs_review")
         self.assertIn("still_open", result["flags"])
 
+    def test_premiere_discussion_about_sprite_sizes_is_excluded(self):
+        result = normalize(item(
+            "Sprite sizes for a SNES style game",
+            "素材・プラグイン・制作支援ツールの紹介ではなく、ファミコン／スーパーファミコン版『ファイナルファンタジー』のドットサイズについての雑談・質問。収集対象外。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "exclude_discussion")
+        self.assertIn("question_discussion_or_chat", result["purpose_labels"])
+
 
 if __name__ == "__main__":
     unittest.main()
