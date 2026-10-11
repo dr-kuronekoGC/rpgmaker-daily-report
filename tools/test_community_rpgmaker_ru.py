@@ -12,7 +12,10 @@ class RussianCommunityTests(unittest.TestCase):
         self.assertIsNone(normalize_url("https://example.com/forum/example-12345/"))
 
     def test_classifies_plugin_and_skips_questions(self):
-        self.assertEqual(classify("[MZ] FS Layer management lite"), None)
+        self.assertEqual(
+            classify("[MZ] FS Layer management lite"),
+            "RPG Maker RUプラグイン",
+        )
         self.assertIsNone(classify("Ищу плагин для отражений в MZ"))
 
 
