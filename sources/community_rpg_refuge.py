@@ -6,6 +6,8 @@ are monitored; support/request and game-showcase sections are intentionally
 excluded.
 """
 
+from html import unescape
+import re
 from urllib.parse import urljoin, urlparse
 
 import feedparser
@@ -91,14 +93,23 @@ def parse_feed(xml_text, category):
             # Some forums put malformed HTML inside RSS descriptions. If the
             # strict RSS parser rejects the whole document, try a tolerant
             # HTML parser before declaring the feed unusable.
-            soup = BeautifulSoup(xml_text, "html.parser")
             recovered_entries = []
 
-            for node in soup.find_all("item"):
+            # Isolate each item before parsing its fields. This avoids a
+            # malformed tag inside one description swallowing later RSS tags.
+            item_blocks = re.findall(
+                r"<item\\b[^>]*>(.*?)</item\\s*>",
+                xml_text,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            for block in item_blocks:
+                node = BeautifulSoup(block, "html.parser")
                 title_node = node.find("title")
                 link_node = node.find("link")
                 title = title_node.get_text(" ", strip=True) if title_node else ""
                 link = link_node.get_text(" ", strip=True) if link_node else ""
+                title = unescape(title)
+                link = unescape(link)
                 if title and link:
                     recovered_entries.append({
                         "title": title,
