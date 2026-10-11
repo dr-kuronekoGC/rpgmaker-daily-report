@@ -22,3 +22,4 @@ from . import official_source_check
 from . import official_rpgmakerweb_blog
 from . import community_rpgmaker_es
 from . import community_rpgmaker_fr
+from . import community_rpgmaker_cn
