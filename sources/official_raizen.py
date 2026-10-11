@@ -2,6 +2,7 @@
 # Raizen's RPG Maker Plugins
 # ==========================================
 
+import re
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
 from bs4 import BeautifulSoup
@@ -75,10 +76,10 @@ def extract_products(html, seen_urls=None):
         has_plugin_context = (
             "plugin" in card_text
             or "rpg maker" in card_text
-            or bool(__import__("re").search(
-                r"\\bplugin\\b|\\bMZ\\b|\\bMV\\b|^(Akea|Ignis)\\b|pixel movement|special scene transitions",
+            or bool(re.search(
+                r"\bplugin\b|\bMZ\b|\bMV\b|^(Akea|Ignis)\b|pixel movement|special scene transitions",
                 title,
-                flags=__import__("re").IGNORECASE,
+                flags=re.IGNORECASE,
             ))
         )
         if not has_plugin_context:
