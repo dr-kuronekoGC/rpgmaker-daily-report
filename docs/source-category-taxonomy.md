@@ -37,7 +37,7 @@ These are community/user-post sources. Collection should prioritize reusable res
 | Rpg2S | Italian | MZ plugin/script forum |
 | RPG Refuge | English | Asset, audio, plugin, and development-tool forum sections |
 
-## 3. Official/independent developer and plugin-release sites
+## 3. Independent developer and plugin-release sites (non-official)
 
 These are creator/publisher release channels rather than community forums or official RPG Maker announcements. Some offer free items and some offer paid items; the current collector may monitor a specific resource page rather than the entire site.
 
@@ -75,7 +75,6 @@ Free/paid status must be determined from the **actual item or monitored page**, 
 | GameDevMarket | English | 2D marketplace | Commercial marketplace; treat as paid unless an item is explicitly marked free |
 | itch.io RPG Maker assets | English / multilingual | RPG Maker asset listings | Mixed: free, pay-what-you-want, and paid |
 | DeviantArt | English / multilingual | RPG Maker-related searches | Mixed creator platform; downloads may be free, paid, or unavailable |
-| RPG Refuge | English | Community forum sections | Not an asset marketplace; listed here only for reference would be misleading, so its canonical category remains “Community forums” above |
 
 ## 5. How to apply this classification
 
