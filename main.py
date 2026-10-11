@@ -36,6 +36,7 @@ from sources import (
     official_caspergaming,
     official_triacontane,
     official_rpgmakerweb_blog,
+    official_raizen,
     official_source_check,
 )
 
