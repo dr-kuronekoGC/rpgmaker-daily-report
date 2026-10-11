@@ -153,7 +153,7 @@ def get_items(seen):
             f"[Maker Devs] SSL Error: {e}"
         )
 
-        return [], seen
+        raise
 
     except requests.exceptions.RequestException as e:
 
@@ -161,7 +161,7 @@ def get_items(seen):
             f"[Maker Devs] Request Error: {e}"
         )
 
-        return [], seen
+        raise
 
     except Exception as e:
 
@@ -169,4 +169,4 @@ def get_items(seen):
             f"[Maker Devs] Error: {e}"
         )
 
-        return [], seen
+        raise
