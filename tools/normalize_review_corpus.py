@@ -75,7 +75,7 @@ def normalize(item: dict[str, Any]) -> dict[str, Any]:
         purpose.append("game_showcase_or_process")
         recommendation = "exclude_showcase"
         rationale = "ゲーム紹介・画面・制作過程が中心で、汎用的な配布物の記録がない。"
-    elif PREVIEW_RE.search(note) and not re.search(r"主として素材|素材として採用|素材.*公開対象|素材配布|素材へのリンク", note):
+    elif PREVIEW_RE.search(note) and not re.search(r"主として素材|素材として採用|素材.*公開対象|素材配布|素材へのリンク|制作支援ツール|ツールとして採用", note):
         purpose.append("sample_or_preview_without_deliverable")
         recommendation = "exclude_preview"
         rationale = "サンプル・プレビューのみと記録され、実際の配布物が確認されていない。"
