@@ -120,6 +120,13 @@ class NormalizeReviewCorpusTests(unittest.TestCase):
         ))
         self.assertEqual(result["audit_recommendation"], "exclude_discussion")
 
+    def test_explicitly_negative_distribution_is_not_positive_evidence(self):
+        result = normalize(item(
+            "Musiche originali",
+            "雑談。素材を配布していないため、素材配布・有用な制作支援情報ではない。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "exclude_discussion")
+
     def test_original_material_distribution_negative_is_excluded(self):
         result = normalize(item(
             "Some sprites & tiles I made for a game I'm working on.",
