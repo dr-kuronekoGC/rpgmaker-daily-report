@@ -99,10 +99,21 @@ def extract_items(html):
     return items
 
 
-def get_page_url(page):
-    if page <= 1:
-        return RPGMAKER_FR_RESOURCE_URL
-    return f"{RPGMAKER_FR_RESOURCE_URL}?p={page}"
+def get_next_page_url(html, current_url):
+    soup = BeautifulSoup(html, "html.parser")
+    for selector in (
+        "a[rel='next']",
+        "a.pagination_next",
+        "a[href*='start=']",
+        "a[href*='-p']",
+    ):
+        for link in soup.select(selector):
+            href = link.get("href")
+            if href:
+                candidate = urljoin(current_url, href)
+                if candidate != current_url:
+                    return candidate
+    return None
 
 
 def get_items(seen):
@@ -111,10 +122,16 @@ def get_items(seen):
     new_seen = list(seen)
     seen_set = set(seen)
     adopted = []
+    current_url = RPGMAKER_FR_RESOURCE_URL
+    visited_pages = set()
 
     for page in range(1, MAX_PAGES + 1):
+        if current_url in visited_pages:
+            break
+        visited_pages.add(current_url)
+
         try:
-            html = get_html(get_page_url(page))
+            html = get_html(current_url)
         except Exception as e:
             print(f"[{SOURCE_NAME}] Page {page} error: {e}")
             break
@@ -127,6 +144,11 @@ def get_items(seen):
             new_seen.append(url)
             seen_set.add(url)
             adopted.append(item)
+
+        next_url = get_next_page_url(html, current_url)
+        if not next_url:
+            break
+        current_url = next_url
 
     if not seen:
         print(f"[{SOURCE_NAME}] Baseline: {len(new_seen)} items")
