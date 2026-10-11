@@ -43,20 +43,33 @@ def normalize_url(url):
     return f"https://rpg.blue{parts.path}"
 
 
+def _has_marker(text, markers):
+    """Match Chinese phrases as substrings, but English abbreviations as words."""
+    for marker in markers:
+        if re.search(r"[A-Za-z0-9]", marker):
+            pattern = r"(?<![A-Za-z0-9])" + re.escape(marker) + r"(?![A-Za-z0-9])"
+            if re.search(pattern, text, flags=re.IGNORECASE):
+                return True
+        elif marker in text:
+            return True
+    return False
+
+
 def classify(title):
     text = " ".join(title.lower().split())
-    if any(marker in text for marker in QUESTION_MARKERS):
+    if _has_marker(text, QUESTION_MARKERS):
         return None
 
     # This is a general MZ board, not every post is a resource.
-    # Require clear resource/plugin/tutorial signals and skip showcase-only posts.
-    if any(marker in text for marker in SOUND_MARKERS):
+    # English abbreviations such as "SE" and "UI" must be whole words;
+    # substring matching would misclassify words like "these" or "building".
+    if _has_marker(text, SOUND_MARKERS):
         return "Project1中文サウンド素材"
-    if any(marker in text for marker in GRAPHIC_MARKERS):
+    if _has_marker(text, GRAPHIC_MARKERS):
         return "Project1中文グラフィック素材"
-    if any(marker in text for marker in PLUGIN_MARKERS):
+    if _has_marker(text, PLUGIN_MARKERS):
         return "Project1中文プラグイン"
-    if any(marker in text for marker in TUTORIAL_MARKERS):
+    if _has_marker(text, TUTORIAL_MARKERS):
         return "Project1中文Tips"
     return None
 
