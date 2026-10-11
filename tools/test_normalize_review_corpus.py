@@ -113,6 +113,36 @@ class NormalizeReviewCorpusTests(unittest.TestCase):
         self.assertIn("language_review", result["flags"])
 
 
+    def test_negative_material_distribution_phrase_does_not_override_discussion_exclusion(self):
+        result = normalize(item(
+            "Quick Asset information & Finding Resources | Tips For New Devs",
+            "素材についての雑談・議論であり、具体的な素材配布情報ではないため除外。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "exclude_discussion")
+
+    def test_original_material_distribution_negative_is_excluded(self):
+        result = normalize(item(
+            "Some sprites & tiles I made for a game I'm working on.",
+            "自作素材のサンプル画面紹介で、素材配布そのものではないため除外。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "exclude_preview")
+
+    def test_reusable_source_data_boundary_stays_in_review(self):
+        result = normalize(item(
+            "This 2.5D tool is crazy!",
+            "2.5Dの画面を作成し、生のデータファイルを提供。素材そのものではないが、参考・再利用価値のある境界例。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "needs_review")
+        self.assertIn("reusable_source_data_boundary", result["purpose_labels"])
+        self.assertIn("reusable_deliverable_review", result["flags"])
+
+    def test_character_creation_process_video_is_showcase(self):
+        result = normalize(item(
+            "Guys i swear im locked in i wanted to show my process for making characters its pencil and paper lol",
+            "制作過程を紹介する動画であり、再利用可能な素材の配布ではないため除外。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "exclude_showcase")
+
     def test_confirmed_developer_tool_is_not_excluded_by_generic_preview_wording(self):
         result = normalize(item(
             "[Tool] Browser-based .rmmzsave editor",
