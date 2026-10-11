@@ -1,4 +1,4 @@
-# Classification Policy Analysis (105 reviewed PRE items)
+# Classification Policy Analysis (106 reviewed PRE items)
 
 ## Purpose
 
@@ -8,7 +8,7 @@ This document records findings and policy clarifications. It does not itself cha
 
 ## Current corpus snapshot
 
-- Reviewed entries: 105
+- Reviewed entries: 106
 - Open entries: 0
 - `decision=confirmed`: 43
 - `decision=not_applicable`: 61
