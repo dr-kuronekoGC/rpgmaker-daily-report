@@ -81,5 +81,37 @@ class NormalizeReviewCorpusTests(unittest.TestCase):
         self.assertIn("question_discussion_or_chat", result["purpose_labels"])
 
 
+    def test_game_system_showcase_is_not_treated_as_a_developer_tool(self):
+        result = normalize(item(
+            "Hoverable Tool Tips!!!",
+            "ゲームシステムの紹介であり、素材ではない。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "exclude_showcase")
+        self.assertIn("game_showcase_or_process", result["purpose_labels"])
+
+    def test_plugin_intro_movie_is_a_showcase_not_a_released_plugin(self):
+        result = normalize(item(
+            "RPG Maker MZ - 3D Plugin",
+            "プラグイン紹介のムービー。今回は除外。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "exclude_showcase")
+
+    def test_announcement_without_distribution_is_out_of_scope(self):
+        result = normalize(item(
+            "Sprite Replacement",
+            "素材配布ではなく、お知らせ・告知と判断したため除外。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "exclude_out_of_scope")
+        self.assertIn("announcement_or_revision_without_deliverable", result["purpose_labels"])
+
+    def test_unreadable_language_stays_in_manual_review(self):
+        result = normalize(item(
+            "Что, где, куда и как?",
+            "素材なし。ロシア語で内容を判読できないため除外。",
+        ))
+        self.assertEqual(result["audit_recommendation"], "needs_review")
+        self.assertIn("language_review", result["flags"])
+
+
 if __name__ == "__main__":
     unittest.main()
