@@ -6,9 +6,12 @@ are monitored; support/request and game-showcase sections are intentionally
 excluded.
 """
 
+from html import unescape
+import re
 from urllib.parse import urljoin, urlparse
 
 import feedparser
+from bs4 import BeautifulSoup
 
 from config import RPG_REFUGE_SEEN_FILE
 from sources.base import get_html
@@ -84,17 +87,62 @@ def parse_feed(xml_text, category):
     feed = feedparser.parse(xml_text)
 
     if getattr(feed, "bozo", False):
-        # feedparser can recover usable entries from imperfect XML. Keep those
-        # entries, but fail with a useful diagnostic when nothing was parsed.
+        detail = getattr(feed, "bozo_exception", None)
+
         if not feed.entries:
-            detail = getattr(feed, "bozo_exception", None)
-            raise ValueError(
-                f"Invalid RSS feed for {category}: {detail or 'no entries parsed'}"
+            # Some forums put malformed HTML inside RSS descriptions. If the
+            # strict RSS parser rejects the whole document, try a tolerant
+            # HTML parser before declaring the feed unusable.
+            recovered_entries = []
+
+            # Isolate each item before parsing its fields. This avoids a
+            # malformed tag inside one description swallowing later RSS tags.
+            item_blocks = re.findall(
+                r"<item\b[^>]*>(.*?)</item\s*>",
+                xml_text,
+                flags=re.IGNORECASE | re.DOTALL,
             )
-        print(
-            f"[{SOURCE_NAME}] RSS warning for {category}: "
-            f"{getattr(feed, 'bozo_exception', 'malformed feed')}"
-        )
+            for block in item_blocks:
+                title_match = re.search(
+                    r"<title\b[^>]*>(.*?)</title\s*>",
+                    block,
+                    flags=re.IGNORECASE | re.DOTALL,
+                )
+                link_match = re.search(
+                    r"<link\b[^>]*>(.*?)</link\s*>",
+                    block,
+                    flags=re.IGNORECASE | re.DOTALL,
+                )
+                if not title_match or not link_match:
+                    continue
+
+                title = BeautifulSoup(
+                    title_match.group(1), "html.parser"
+                ).get_text(" ", strip=True)
+                link = re.sub(r"<!\[CDATA\[(.*?)\]\]>", r"\1", link_match.group(1))
+                link = unescape(re.sub(r"<[^>]+>", "", link).strip())
+                if title and link:
+                    recovered_entries.append({
+                        "title": title,
+                        "link": link,
+                    })
+
+            if recovered_entries:
+                print(
+                    f"[{SOURCE_NAME}] Recovered {len(recovered_entries)} "
+                    f"entries from malformed RSS for {category}"
+                )
+                feed.entries = recovered_entries
+            else:
+                raise ValueError(
+                    f"Invalid RSS feed for {category}: "
+                    f"{detail or 'no entries parsed'}"
+                )
+        else:
+            print(
+                f"[{SOURCE_NAME}] RSS warning for {category}: "
+                f"{detail or 'malformed feed'}"
+            )
 
     items = []
     local_seen = set()

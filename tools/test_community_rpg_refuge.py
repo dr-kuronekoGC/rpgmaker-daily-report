@@ -104,6 +104,27 @@ class RPGRefugeCollectorTests(unittest.TestCase):
         self.assertEqual(len(items), 1)
         self.assertEqual(items[0]["title"], "Recovered tileset")
 
+    def test_recovers_entries_when_rss_xml_has_mismatched_tag(self):
+        malformed_xml = """<?xml version="1.0"?>
+        <rss><channel>
+          <item><title>Recovered tileset</title>
+            <link>https://rpg-refuge.com/threads/recovered-tileset.789/</link>
+            <description><p>Badly nested markup</description>
+          </item>
+        </channel></rss>"""
+        fake_feed = SimpleNamespace(
+            bozo=True,
+            bozo_exception="mismatched tag",
+            entries=[],
+        )
+        with patch.object(source.feedparser, "parse", return_value=fake_feed):
+            items = source.parse_feed(
+                malformed_xml,
+                "RPG Refugeグラフィック素材",
+            )
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["title"], "Recovered tileset")
+
     def test_invalid_feed_error_includes_parser_diagnostic(self):
         fake_feed = SimpleNamespace(
             bozo=True,
