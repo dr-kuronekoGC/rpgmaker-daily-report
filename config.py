@@ -347,3 +347,24 @@ RPGMAKER_FR_SEEN_FILE = "seen_rpgmaker_fr.json"
 
 RPGMAKER_CN_MZ_URL = "https://rpg.blue/forum-627-1.html"
 RPGMAKER_CN_SEEN_FILE = "seen_rpgmaker_cn.json"
+
+# ----------------------------
+# Russian RPG Maker community
+# ----------------------------
+
+RPGMAKER_RU_PLUGIN_URL = "https://rpgmaker.ru/forum/u-mz"
+RPGMAKER_RU_SEEN_FILE = "seen_rpgmaker_ru.json"
+
+# ----------------------------
+# Brazilian Portuguese game-dev community
+# ----------------------------
+
+RPGMAKER_PTBR_TOOLS_URL = "https://condadobraveheart.com/forums/programas-utilitarios.184/"
+RPGMAKER_PTBR_SEEN_FILE = "seen_rpgmaker_ptbr.json"
+
+# ----------------------------
+# Italian RPG Maker community
+# ----------------------------
+
+RPGMAKER_IT_MZ_PLUGIN_URL = "https://www.rpg2s.it/forum/index.php?/forum/140-plugin-e-j097v097script-per-mz/"
+RPGMAKER_IT_SEEN_FILE = "seen_rpgmaker_it.json"
