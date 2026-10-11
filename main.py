@@ -170,6 +170,7 @@ def select_pending_items(
 def main():
     pending_seen = []
     all_items = []
+    source_results = []
 
     global_seen = load_seen_file(
         GLOBAL_SEEN_FILE
@@ -182,16 +183,18 @@ def main():
     review_queue = load_review_queue()
 
     for source in SOURCES:
+        collector_name = source.__name__.split(".")[-1]
+        seen_before = None
+
         try:
             seen = load_seen_file(
                 source.SEEN_FILE
             )
+            seen_before = len(seen)
 
             items, new_seen = source.get_items(
                 seen
             )
-
-            collector_name = source.__name__.split(".")[-1]
 
             items = normalize_items(
                 items,
@@ -206,10 +209,50 @@ def main():
                     new_seen,
                 )
             )
+            source_results.append({
+                "name": collector_name,
+                "status": "OK",
+                "new_items": len(items),
+                "seen_before": seen_before,
+                "seen_after": len(new_seen),
+            })
 
         except Exception as e:
             print(
                 f"[{source.__name__}] Error: {e}"
+            )
+            source_results.append({
+                "name": collector_name,
+                "status": "ERROR",
+                "error_type": type(e).__name__,
+                "seen_before": seen_before,
+            })
+
+    successful_sources = sum(
+        result["status"] == "OK"
+        for result in source_results
+    )
+    failed_sources = len(source_results) - successful_sources
+
+    print(
+        "[Source Health] "
+        f"OK: {successful_sources}/{len(source_results)} / "
+        f"ERROR: {failed_sources}"
+    )
+    for result in source_results:
+        if result["status"] == "OK":
+            print(
+                "[Source Health] "
+                f"{result['name']}: OK / "
+                f"new={result['new_items']} / "
+                f"seen={result['seen_before']}->{result['seen_after']}"
+            )
+        else:
+            print(
+                "[Source Health] "
+                f"{result['name']}: ERROR / "
+                f"type={result['error_type']} / "
+                f"seen_before={result['seen_before']}"
             )
 
     # パーサー更新による既存Archiveの修正項目は、
