@@ -49,7 +49,7 @@ class TestSourceCheckPartialFailures(unittest.TestCase):
             new_seen["Working Site"]["signature"],
             old_signature,
         )
-        self.assertIn("Working Site：更新あり", [item["title"] for item in items])
+        self.assertIn("Working Site：ページ変化あり（要確認）", [item["title"] for item in items])
         self.assertIn("Baseline Site", new_seen)
 
     def test_all_successful_sites_are_reported_as_complete(self):
