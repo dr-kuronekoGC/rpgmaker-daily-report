@@ -24,7 +24,16 @@ GRAPHIC_KEYWORDS = (
     "graphic", "sprite", "charset", "faceset", "tileset", "battler",
     "icon", "pixel", "animation", "map", "character", "background",
 )
-QUESTION_KEYWORDS = ("request", "looking for", "need help", "question", "help me")
+QUESTION_KEYWORDS = (
+    "request", "looking for", "need help", "question", "help me",
+    "anyone have", "can anyone", "could someone", "does anyone",
+    "we still need", "make this into", "sprites needed", "want to help",
+    "how to make", "how do i", "how can i", "anyone know",
+)
+DISCUSSION_KEYWORDS = (
+    "stance on", "terms of use", "navigational guide",
+    "see here for more information", "help with", "looking for any",
+)
 
 
 def normalize_url(url):
@@ -42,7 +51,13 @@ def normalize_url(url):
 
 def classify(title):
     text = " ".join(str(title or "").lower().split())
-    if not text or any(word in text for word in QUESTION_KEYWORDS):
+    if (
+        not text
+        or text.startswith(("re:", "re :"))
+        or "?" in text
+        or any(word in text for word in QUESTION_KEYWORDS)
+        or any(word in text for word in DISCUSSION_KEYWORDS)
+    ):
         return None
     if any(word in text for word in PLUGIN_KEYWORDS):
         return "RMRKプラグイン・スクリプト"
