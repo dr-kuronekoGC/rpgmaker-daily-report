@@ -14,9 +14,15 @@ class TestSourceErrorVisibility(unittest.TestCase):
         with patch(
             "sources.official_makerdevs.requests.get",
             side_effect=error,
-        ):
+        ), patch(
+            "sources.official_makerdevs.log_tls_diagnostics",
+        ) as diagnostics:
             with self.assertRaises(requests.exceptions.SSLError):
                 official_makerdevs.get_items([])
+
+        diagnostics.assert_called_once_with(
+            official_makerdevs.MAKER_DEVS_URL
+        )
 
     def test_tsukumate_connection_error_propagates(self):
         error = requests.exceptions.ConnectTimeout("connection timed out")
