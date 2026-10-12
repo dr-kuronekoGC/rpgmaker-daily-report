@@ -1,5 +1,6 @@
 import hashlib
 import re
+import time
 import requests
 from bs4 import BeautifulSoup
 
@@ -35,6 +36,29 @@ HEADER_CHECK_FALLBACK_SITES = {
 class AccessChallengeError(ValueError):
     """The server returned an access challenge instead of the requested page."""
 
+
+# Retry one time for connection-level failures (e.g. TLS handshake errors).
+# HTTP errors such as 403 and read timeouts are not retried.
+TRANSIENT_CONNECTION_RETRIES = 1
+
+
+def request_with_retry(method, url, **kwargs):
+    request_function = getattr(requests, method)
+
+    for attempt in range(TRANSIENT_CONNECTION_RETRIES + 1):
+        try:
+            return request_function(url, **kwargs)
+        except requests.exceptions.ConnectionError as error:
+            if attempt >= TRANSIENT_CONNECTION_RETRIES:
+                raise
+
+            print(
+                f"[{SOURCE_NAME}] Transient connection error "
+                f"({type(error).__name__}); retrying once: {url}"
+            )
+            time.sleep(1)
+
+
 def normalize_url(url):
     if not isinstance(url, str):
         return None
@@ -48,7 +72,8 @@ def normalize_url(url):
 
 
 def get_page(url):
-    response = requests.get(
+    response = request_with_retry(
+        "get",
         url,
         headers=HEADERS,
         timeout=REQUEST_TIMEOUT,
@@ -79,7 +104,8 @@ def get_rss_signature(url, base_url):
     This is an alternate public endpoint, not an attempt to bypass a challenge
     page. Challenge responses are rejected just as they are for normal pages.
     """
-    response = requests.get(
+    response = request_with_retry(
+        "get",
         url,
         headers=HEADERS,
         timeout=REQUEST_TIMEOUT,
@@ -111,7 +137,8 @@ def get_header_signature(url):
     Requires ETag or Last-Modified. Content-Length alone is not reliable
     enough to claim that a page's contents have or have not changed.
     """
-    response = requests.head(
+    response = request_with_retry(
+        "head",
         url,
         headers=HEADERS,
         timeout=REQUEST_TIMEOUT,
