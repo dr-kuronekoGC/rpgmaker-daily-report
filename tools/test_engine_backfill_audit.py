@@ -40,6 +40,15 @@ class EngineBackfillAuditTests(unittest.TestCase):
         self.assertEqual(summary.get("candidate_records", 0), 0)
         self.assertEqual(candidates, [])
 
+    def test_audit_counts_malformed_records_separately(self):
+        summary, _ = audit_records([
+            {"title": "A resource", "engine": ["不明"]},
+            None,
+            "not a record",
+        ])
+        self.assertEqual(summary["records"], 1)
+        self.assertEqual(summary["invalid_records"], 2)
+
     def test_preserves_multiple_supported_engines(self):
         _, candidates = audit_records([
             {
