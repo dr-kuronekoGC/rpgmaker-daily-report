@@ -73,6 +73,38 @@ def get_page(url):
     return html
 
 
+def get_rss_signature(url, base_url):
+    """Build a signature from a publicly exposed RSS/Atom feed.
+
+    This is an alternate public endpoint, not an attempt to bypass a challenge
+    page. Challenge responses are rejected just as they are for normal pages.
+    """
+    response = requests.get(
+        url,
+        headers=HEADERS,
+        timeout=REQUEST_TIMEOUT,
+    )
+    response.raise_for_status()
+    content = response.text
+    lowered = content[:20000].lower()
+
+    challenge_markers = (
+        "checking your browser",
+        "/.stile/challenge",
+        "cf-chl-",
+        "verify you are human",
+    )
+    if any(marker in lowered for marker in challenge_markers):
+        raise AccessChallengeError(
+            "Access challenge page returned instead of RSS content"
+        )
+
+    if not any(marker in lowered for marker in ("<rss", "<feed", "<rdf:rdf")):
+        raise ValueError("Alternate endpoint did not return RSS/Atom XML")
+
+    return build_signature(content, base_url)
+
+
 def get_header_signature(url):
     """Build a change signature from standard HTTP metadata only.
 
@@ -227,26 +259,71 @@ def get_items(seen):
 
         try:
             method = "page"
-
             try:
                 html = get_page(url)
                 signature = build_signature(
                     html,
                     url,
                 )
-            except AccessChallengeError:
-                # Never treat challenge-page metadata as target-page metadata.
-                raise
-            except Exception:
-                if name not in HEADER_CHECK_FALLBACK_SITES:
-                    raise
+            except Exception as page_error:
+                alternate_feed_url = site.get("alternate_feed_url")
 
-                signature = get_header_signature(url)
-                method = "headers"
-                print(
-                    f"[{SOURCE_NAME}] "
-                    f"Header-only check: {name}"
-                )
+                if alternate_feed_url:
+                    try:
+                        signature = get_rss_signature(
+                            alternate_feed_url,
+                            url,
+                        )
+                        method = "rss"
+                        print(
+                            f"[{SOURCE_NAME}] "
+                            f"RSS fallback OK: {name}"
+                        )
+                    except Exception as rss_error:
+                        # Do not use header metadata after an access challenge.
+                        if isinstance(page_error, AccessChallengeError):
+                            raise ValueError(
+                                f"Page check failed ({page_error}); "
+                                f"RSS fallback failed ({rss_error})"
+                            ) from rss_error
+
+                        if name not in HEADER_CHECK_FALLBACK_SITES:
+                            raise ValueError(
+                                f"Page check failed ({page_error}); "
+                                f"RSS fallback failed ({rss_error})"
+                            ) from rss_error
+
+                        try:
+                            signature = get_header_signature(url)
+                            method = "headers"
+                            print(
+                                f"[{SOURCE_NAME}] "
+                                f"Header-only fallback OK: {name}"
+                            )
+                        except Exception as header_error:
+                            raise ValueError(
+                                f"Page check failed ({page_error}); "
+                                f"RSS fallback failed ({rss_error}); "
+                                f"header fallback failed ({header_error})"
+                            ) from header_error
+                elif isinstance(page_error, AccessChallengeError):
+                    # Never treat challenge-page metadata as target-page metadata.
+                    raise
+                elif name in HEADER_CHECK_FALLBACK_SITES:
+                    try:
+                        signature = get_header_signature(url)
+                        method = "headers"
+                        print(
+                            f"[{SOURCE_NAME}] "
+                            f"Header-only fallback OK: {name}"
+                        )
+                    except Exception as header_error:
+                        raise ValueError(
+                            f"Page check failed ({page_error}); "
+                            f"header fallback failed ({header_error})"
+                        ) from header_error
+                else:
+                    raise
 
             summary["checked"] += 1
             previous = seen.get(name)
