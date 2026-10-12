@@ -130,6 +130,9 @@ class ResourceIntentTests(unittest.TestCase):
             ("[RMMZ] Plugin", "MZ"),
             ("[RM2K3] Sound pack", "2003"),
             ("[RM2K] Tileset", "2000"),
+            ("[XP/VX/VXA] Resource pack", "XP"),
+            ("[XP/VX/VXA] Resource pack", "VX"),
+            ("[XP/VX/VXA] Resource pack", "VX Ace"),
         ]
         for title, expected in cases:
             with self.subTest(title=title):
