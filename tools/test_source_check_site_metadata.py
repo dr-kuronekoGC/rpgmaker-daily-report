@@ -50,7 +50,7 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
         lines = format_reference_sites()
         output = "\n".join(lines)
 
-        self.assertIn("【📚 参考サイト（個別素材の自動収集対象外）】", output)
+        self.assertIn("【📚 素材・プラグイン関連サイト一覧】", output)
         self.assertIn("対象：", output)
         self.assertIn("主な言語：", output)
         self.assertIn("サイト種別：", output)
