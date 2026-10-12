@@ -43,6 +43,15 @@ def _contains_short_abbreviation(text, abbreviation):
 def _field_text(item, field):
     value = item.get(field)
 
+    # Collectorごとの本文フィールド名の差を吸収する。
+    # 同じ本文が複数フィールドに入っても二重加点しないよう、最初の値だけを使う。
+    if field == "body_text":
+        for alias in ("body_text", "post_body", "body", "content_text", "content", "text"):
+            candidate = item.get(alias)
+            if candidate:
+                value = candidate
+                break
+
     if isinstance(value, list):
         return " ".join(str(x) for x in value if x is not None).lower()
 
@@ -61,6 +70,13 @@ def _field_values(item):
 
 def _field_raw_text(item, field):
     value = item.get(field)
+
+    if field == "body_text":
+        for alias in ("body_text", "post_body", "body", "content_text", "content", "text"):
+            candidate = item.get(alias)
+            if candidate:
+                value = candidate
+                break
 
     if isinstance(value, list):
         return " ".join(str(x) for x in value if x is not None)
