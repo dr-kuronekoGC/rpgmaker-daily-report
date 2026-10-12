@@ -50,6 +50,15 @@ class ResourceIntentTests(unittest.TestCase):
         self.assertEqual(item["resource_intent"], "resource_candidate")
         self.assertEqual(item["asset_type"], ASSET_TYPE_GRAPHIC)
 
+    def test_release_evidence_in_body_is_not_blocked_by_question_title(self):
+        item = build_asset_metadata({
+            "title": "How do I use this plugin?",
+            "category": "discussion",
+            "body_text": "The plugin is released; download here.",
+            "url": "https://example.com/plugin",
+        })
+        self.assertEqual(item["resource_intent"], "resource_candidate")
+
     def test_insufficient_evidence_stays_uncertain(self):
         intent, confidence, evidence = classify_resource_intent({
             "title": "Interesting post",
