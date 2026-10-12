@@ -60,6 +60,55 @@ class TestSourceCheckHeaderFallback(unittest.TestCase):
         self.assertEqual(new_seen["GameDevMarket"]["method"], "headers")
         self.assertEqual(new_seen["GameDevMarket"]["signature"], "new-signature")
 
+    def test_rss_fallback_accepts_valid_feed(self):
+        site = {
+            "name": "RPG Refuge（2D素材フォーラム）",
+            "url": "https://example.test/forums/assets/",
+            "alternate_feed_url": "https://example.test/forums/assets/index.rss",
+            "resource_types": ["グラフィック素材"],
+        }
+        previous = {
+            site["name"]: {
+                "url": site["url"],
+                "signature": "old-signature",
+                "method": "rss",
+            }
+        }
+
+        with patch.object(source_check, "SOURCE_CHECK_SITES", [site]), patch.object(
+            source_check, "get_page",
+            side_effect=source_check.AccessChallengeError("challenge"),
+        ), patch.object(
+            source_check, "get_rss_signature", return_value="new-signature"
+        ) as rss_signature:
+            items, new_seen = source_check.get_items(previous)
+
+        rss_signature.assert_called_once_with(
+            site["alternate_feed_url"], site["url"]
+        )
+        self.assertEqual(len(items), 1)
+        self.assertEqual(new_seen[site["name"]]["method"], "rss")
+
+    def test_rss_fallback_failure_does_not_use_headers_after_challenge(self):
+        site = {
+            "name": "RPG Refuge（2D素材フォーラム）",
+            "url": "https://example.test/forums/assets/",
+            "alternate_feed_url": "https://example.test/forums/assets/index.rss",
+        }
+
+        with patch.object(source_check, "SOURCE_CHECK_SITES", [site]), patch.object(
+            source_check, "get_page",
+            side_effect=source_check.AccessChallengeError("challenge"),
+        ), patch.object(
+            source_check, "get_rss_signature",
+            side_effect=ValueError("not a feed"),
+        ), patch.object(source_check, "get_header_signature") as header_signature:
+            items, new_seen = source_check.get_items({})
+
+        header_signature.assert_not_called()
+        self.assertEqual(items, [])
+        self.assertEqual(source_check.LAST_RUN_SUMMARY["failed"], 1)
+
     def test_access_challenge_does_not_trigger_header_fallback(self):
         site = {
             "name": "RPG Refuge（2D素材フォーラム）",
