@@ -210,7 +210,7 @@ SOURCE_CHECK_SITES = [
     {
         "name": "RPG Refuge（2D素材フォーラム）",
         "url": "https://rpg-refuge.com/forums/2d-assets.57/",
-        "alternate_feed_url": "https://rpg-refuge.com/forums/2d-assets.57/index.rss",
+        "alternate_feed_url": "https://rpg-refuge.com/forums/2d-assets.57/-/index.rss",
         "resource_types": ["グラフィック素材"],
         "language": "英語中心（投稿者により多言語）",
         "site_type": "掲示板・コミュニティ",
