@@ -52,6 +52,38 @@ class TestSourceCheckPartialFailures(unittest.TestCase):
         self.assertIn("Working Site：ページ変化あり（要確認）", [item["title"] for item in items])
         self.assertIn("Baseline Site", new_seen)
 
+    def test_access_challenge_page_is_counted_as_failure_and_not_saved(self):
+        site = {
+            "name": "Challenge Site",
+            "url": "https://example.test/challenge",
+        }
+        old_signature = "known-good-signature"
+        seen = {
+            "Challenge Site": {
+                "url": site["url"],
+                "signature": old_signature,
+            },
+        }
+
+        with patch.object(
+            official_source_check, "SOURCE_CHECK_SITES", [site]
+        ), patch.object(
+            official_source_check,
+            "get_page",
+            side_effect=ValueError(
+                "Access challenge page returned instead of monitored content"
+            ),
+        ):
+            items, new_seen = official_source_check.get_items(seen)
+
+        self.assertEqual(official_source_check.LAST_RUN_SUMMARY["checked"], 0)
+        self.assertEqual(official_source_check.LAST_RUN_SUMMARY["failed"], 1)
+        self.assertEqual(items, [])
+        self.assertEqual(
+            new_seen["Challenge Site"]["signature"],
+            old_signature,
+        )
+
     def test_all_successful_sites_are_reported_as_complete(self):
         with patch.object(official_source_check, "SOURCE_CHECK_SITES", self.sites[:1]), patch.object(
             official_source_check,
