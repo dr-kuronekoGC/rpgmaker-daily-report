@@ -13,6 +13,16 @@ from sources.base import HEADERS
 SEEN_FILE = SOURCE_CHECK_SEEN_FILE
 SOURCE_NAME = "Source Check"
 
+# main.py reads this after get_items() to distinguish a complete scan
+# from a scan where one or more monitored sites could not be checked.
+LAST_RUN_SUMMARY = {
+    "checked": 0,
+    "updated": 0,
+    "baseline": 0,
+    "failed": 0,
+    "unchanged": 0,
+}
+
 def normalize_url(url):
     if not isinstance(url, str):
         return None
@@ -134,11 +144,20 @@ def build_signature(html, base_url):
 
 
 def get_items(seen):
+    global LAST_RUN_SUMMARY
+
     if not isinstance(seen, dict):
         seen = {}
 
     new_seen = dict(seen)
     adopted_items = []
+    summary = {
+        "checked": 0,
+        "updated": 0,
+        "baseline": 0,
+        "failed": 0,
+        "unchanged": 0,
+    }
 
     for site in SOURCE_CHECK_SITES:
         name = site["name"]
@@ -150,6 +169,7 @@ def get_items(seen):
                 html,
                 url,
             )
+            summary["checked"] += 1
 
             previous = seen.get(name)
 
@@ -158,6 +178,7 @@ def get_items(seen):
                     "url": url,
                     "signature": signature,
                 }
+                summary["baseline"] += 1
                 print(
                     f"[{SOURCE_NAME}] "
                     f"Baseline: {name}"
@@ -165,12 +186,14 @@ def get_items(seen):
                 continue
 
             if previous.get("signature") == signature:
+                summary["unchanged"] += 1
                 continue
 
             new_seen[name] = {
                 "url": url,
                 "signature": signature,
             }
+            summary["updated"] += 1
 
             adopted_items.append(
                 {
@@ -187,9 +210,21 @@ def get_items(seen):
             )
 
         except Exception as e:
+            # Failed sites do not update their stored signatures.
+            summary["failed"] += 1
             print(
                 f"[{SOURCE_NAME}] "
                 f"Skip: {name}: {e}"
             )
+
+    LAST_RUN_SUMMARY = summary
+    print(
+        f"[{SOURCE_NAME}] Summary: "
+        f"checked={summary['checked']}/{len(SOURCE_CHECK_SITES)} / "
+        f"updated={summary['updated']} / "
+        f"baseline={summary['baseline']} / "
+        f"unchanged={summary['unchanged']} / "
+        f"failed={summary['failed']}"
+    )
 
     return adopted_items, new_seen
