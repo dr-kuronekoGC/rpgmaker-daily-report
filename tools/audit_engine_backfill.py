@@ -85,8 +85,10 @@ def main():
     candidates = []
     files_read = 0
     files_skipped = []
+    per_file_summary = {}
 
-    for path in sorted(ARCHIVE_DIR.glob("*.json")):
+    # Only monthly archive files are data records; exclude indexes or other JSON metadata.
+    for path in sorted(ARCHIVE_DIR.glob("????-??.json")):
         try:
             with path.open("r", encoding="utf-8") as handle:
                 data = json.load(handle)
@@ -108,6 +110,7 @@ def main():
 
         files_read += 1
         summary, file_candidates = audit_records(records, source_file=str(path))
+        per_file_summary[str(path)] = summary
         totals.update(summary)
         candidates.extend(file_candidates)
 
@@ -116,6 +119,7 @@ def main():
         "files_read": files_read,
         "files_skipped": files_skipped,
         "summary": dict(totals),
+        "per_file_summary": per_file_summary,
         "candidate_count": len(candidates),
         "candidates": candidates,
         "note": "Suggestions only. No archive, review ledger, or seen-state file was modified.",
