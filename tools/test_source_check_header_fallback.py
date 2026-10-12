@@ -60,6 +60,13 @@ class TestSourceCheckHeaderFallback(unittest.TestCase):
         self.assertEqual(new_seen["GameDevMarket"]["method"], "headers")
         self.assertEqual(new_seen["GameDevMarket"]["signature"], "new-signature")
 
+    def test_source_check_uses_separate_connect_and_read_timeouts(self):
+        response = Mock()
+        with patch.object(source_check.requests, "get", return_value=response) as get:
+            source_check.get_page("https://example.test/page")
+
+        self.assertEqual(get.call_args.kwargs["timeout"], (10, 20))
+
     def test_connection_error_is_retried_once(self):
         response = Mock()
         with patch.object(
