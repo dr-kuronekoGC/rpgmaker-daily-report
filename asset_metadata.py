@@ -1076,9 +1076,17 @@ def build_asset_metadata(
     ]
     description_for_classification = " ".join(body_parts)
 
+    preliminary_intent, _, _ = classify_resource_intent(item)
+
+    # A clear question/showcase is not promoted by generic asset keywords.
+    # If the body explicitly contains distribution/release evidence, however,
+    # let the asset classifier inspect it before making the final intent decision.
     if (
-        not _is_non_asset_category(category)
-        and not _is_non_asset_title(title)
+        (
+            not _is_non_asset_category(category)
+            and not _is_non_asset_title(title)
+        )
+        or preliminary_intent == "resource_candidate"
     ):
         detected_category, asset_tags = classify_asset(
             title,
