@@ -9,6 +9,7 @@ from common import (
 from config import (
     REQUEST_TIMEOUT,
     SLACK_WEBHOOK_ENV,
+    SOURCE_CHECK_SITES,
 )
 
 from categories import DISPLAY_CATEGORY
@@ -584,6 +585,68 @@ def format_review_summary(
 
 
 
+def format_source_check_metadata(item):
+    """Source Checkのサイト属性を短い表示用文字列にする。"""
+    details = []
+
+    resource_types = item.get("resource_types", [])
+    if isinstance(resource_types, str):
+        resource_types = [resource_types]
+    if isinstance(resource_types, list):
+        clean_types = [
+            value.strip()
+            for value in resource_types
+            if isinstance(value, str) and value.strip()
+        ]
+        if clean_types:
+            details.append("対象：" + "・".join(dict.fromkeys(clean_types)))
+
+    language = item.get("language")
+    if isinstance(language, str) and language.strip():
+        details.append("言語：" + language.strip())
+
+    site_type = item.get("site_type")
+    if isinstance(site_type, str) and site_type.strip():
+        details.append("形式：" + site_type.strip())
+
+    return " / ".join(details)
+
+
+def format_manual_check_sites(sites=None):
+    """
+    個別素材を自動抽出できないサイトを、手動確認用リンクとして表示する。
+    """
+    if sites is None:
+        sites = SOURCE_CHECK_SITES
+
+    manual_sites = [
+        site for site in sites
+        if isinstance(site, dict) and site.get("manual_review")
+    ]
+    if not manual_sites:
+        return []
+
+    lines = [
+        "────────────────────",
+        "【🔎 要チェックサイト】",
+        "個別の素材情報は自動取得せず、リンク先で確認してください。",
+    ]
+
+    for site in manual_sites:
+        name = site.get("name", "名称不明")
+        url = site.get("url", "")
+        if url:
+            lines.append(f"・<{url}|{name}>")
+        else:
+            lines.append(f"・{name}")
+
+        metadata = format_source_check_metadata(site)
+        if metadata:
+            lines.append(f"  {metadata}")
+
+    return lines
+
+
 def format_source_health_warnings(source_results=None):
     """
     Show only partial or failed collectors in the Slack report.
@@ -647,13 +710,7 @@ def build_report(items, review_items=None, carryover_items=None, source_results=
         if source_health_lines:
             report_lines.extend([""] + source_health_lines)
 
-        report_lines.extend([
-            "",
-            "────────────────────",
-            "【SOURCE CHECK】",
-            "・<https://www.gamedevmarket.net/|GameDevMarket>"
-            " ▶ 素材のセルフチェック",
-        ])
+        report_lines.extend([""] + format_manual_check_sites())
         return "\n".join(report_lines)
 
     categories = {}
@@ -1032,20 +1089,15 @@ def build_report(items, review_items=None, carryover_items=None, source_results=
                     f"・{title}"
                 )
 
+            metadata = format_source_check_metadata(item)
+            if metadata:
+                report.append(f"  {metadata}")
+
         report.append("")
 
 
-    report.append(
-        "────────────────────"
-    )
-
-    report.append(
-        "【SOURCE CHECK】"
-    )
-
-    report.append(
-        "・<https://www.gamedevmarket.net/|GameDevMarket>"
-        " ▶ 素材のセルフチェック"
+    report.extend(
+        format_manual_check_sites()
     )
 
     return "\n".join(report)
