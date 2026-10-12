@@ -18,6 +18,22 @@ class RMRKCollectorTests(unittest.TestCase):
         self.assertEqual(source.classify("RGSS Script Collection"), "RMRKプラグイン・スクリプト")
         self.assertIsNone(source.classify("[Request] Need a tileset"))
 
+    def test_skips_discussions_replies_and_requests(self):
+        for title in (
+            "Re: RPG Maker Music Pack",
+            "Anyone have a Record Player / Turntable Sprite?",
+            "We Still Need More Variety in Tilesets",
+            "RMRK's stance on Ripped Resources",
+            "Terms of Use for Resources",
+        ):
+            with self.subTest(title=title):
+                self.assertIsNone(source.classify(title))
+
+    def test_keeps_direct_resource_topics(self):
+        self.assertEqual(source.classify("Post-Apocalyptic Tilesets"), "RMRKグラフィック素材")
+        self.assertEqual(source.classify("15-Song Music Pack"), "RMRKサウンド素材")
+        self.assertEqual(source.classify("Sprite Creator (Finished)"), "RMRKグラフィック素材")
+
     def test_backfill_cursor_metadata_is_separate_from_topic_urls(self):
         section = "https://rmrk.net/index.php?board=114.0"
         next_page = "https://rmrk.net/index.php?board=114.40"
