@@ -583,7 +583,43 @@ def format_review_summary(
     return lines
 
 
-def build_report(items, review_items=None, carryover_items=None):
+
+def format_source_health_warnings(source_results=None):
+    """
+    Show only partial or failed collectors in the Slack report.
+    Successful collectors are omitted to keep routine reports concise.
+    """
+    lines = []
+
+    for result in source_results or []:
+        if not isinstance(result, dict):
+            continue
+
+        name = result.get("name", "unknown")
+        status = result.get("status")
+
+        if status == "PARTIAL":
+            summary = result.get("summary") or {}
+            checked = summary.get("checked", 0)
+            failed = summary.get("failed", 0)
+            total = checked + failed
+            lines.append(
+                f"・{name}：一部失敗 "
+                f"（確認 {checked}/{total}、失敗 {failed}件）"
+            )
+        elif status == "ERROR":
+            error_type = result.get("error_type", "unknown")
+            lines.append(
+                f"・{name}：取得失敗（{error_type}）"
+            )
+
+    if not lines:
+        return []
+
+    return ["【⚠️ 収集元の取得状況】"] + lines
+
+
+def build_report(items, review_items=None, carryover_items=None, source_results=None):
 
     now = now_jst()
 
@@ -596,19 +632,29 @@ def build_report(items, review_items=None, carryover_items=None):
     review_items = review_items or []
     carryover_items = carryover_items or []
 
-    if not items and not review_items and not carryover_items:
+    source_health_lines = format_source_health_warnings(
+        source_results
+    )
 
-        return (
-            f"📬 RPG Maker Daily Report\n"
-            f"{date_str} {period}\n"
-            "\n"
-            "新着ニュースはありません。\n"
-            "\n"
-            "────────────────────\n"
-            "【SOURCE CHECK】\n"
+    if not items and not review_items and not carryover_items:
+        report_lines = [
+            "📬 RPG Maker Daily Report",
+            f"{date_str} {period}",
+            "",
+            "新着ニュースはありません。",
+        ]
+
+        if source_health_lines:
+            report_lines.extend([""] + source_health_lines)
+
+        report_lines.extend([
+            "",
+            "────────────────────",
+            "【SOURCE CHECK】",
             "・<https://www.gamedevmarket.net/|GameDevMarket>"
-            " ▶ 素材のセルフチェック"
-        )
+            " ▶ 素材のセルフチェック",
+        ])
+        return "\n".join(report_lines)
 
     categories = {}
 
@@ -688,6 +734,10 @@ def build_report(items, review_items=None, carryover_items=None):
     )
 
     report.append("")
+
+    if source_health_lines:
+        report.extend(source_health_lines)
+        report.append("")
 
     # --------------------------------------
     # Classification Review Summary
