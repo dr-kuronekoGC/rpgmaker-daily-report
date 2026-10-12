@@ -23,6 +23,18 @@ LAST_RUN_SUMMARY = {
     "unchanged": 0,
 }
 
+# Standard HTTP metadata fallback for sites whose page body may be inaccessible.
+# This does not bypass access controls; it only uses ordinary HEAD responses.
+HEADER_CHECK_FALLBACK_SITES = {
+    "GameDevMarket",
+    "Maker Devs",
+    "RPG Refuge（2D素材フォーラム）",
+}
+
+
+class AccessChallengeError(ValueError):
+    """The server returned an access challenge instead of the requested page."""
+
 def normalize_url(url):
     if not isinstance(url, str):
         return None
@@ -54,11 +66,45 @@ def get_page(url):
         "verify you are human",
     )
     if any(marker in lowered for marker in challenge_markers):
-        raise ValueError(
+        raise AccessChallengeError(
             "Access challenge page returned instead of monitored content"
         )
 
     return html
+
+
+def get_header_signature(url):
+    """Build a change signature from standard HTTP metadata only.
+
+    Requires ETag or Last-Modified. Content-Length alone is not reliable
+    enough to claim that a page's contents have or have not changed.
+    """
+    response = requests.head(
+        url,
+        headers=HEADERS,
+        timeout=REQUEST_TIMEOUT,
+        allow_redirects=True,
+    )
+    response.raise_for_status()
+
+    etag = response.headers.get("ETag")
+    last_modified = response.headers.get("Last-Modified")
+
+    if not etag and not last_modified:
+        raise ValueError(
+            "HEAD response has no ETag or Last-Modified header"
+        )
+
+    metadata = "\n".join([
+        response.url,
+        etag or "",
+        last_modified or "",
+        response.headers.get("Content-Length", ""),
+    ])
+
+    return hashlib.sha256(
+        metadata.encode("utf-8")
+    ).hexdigest()
 
 
 def build_signature(html, base_url):
@@ -180,24 +226,43 @@ def get_items(seen):
         url = site["url"]
 
         try:
-            html = get_page(url)
-            signature = build_signature(
-                html,
-                url,
-            )
-            summary["checked"] += 1
+            method = "page"
 
+            try:
+                html = get_page(url)
+                signature = build_signature(
+                    html,
+                    url,
+                )
+            except AccessChallengeError:
+                # Never treat challenge-page metadata as target-page metadata.
+                raise
+            except Exception:
+                if name not in HEADER_CHECK_FALLBACK_SITES:
+                    raise
+
+                signature = get_header_signature(url)
+                method = "headers"
+                print(
+                    f"[{SOURCE_NAME}] "
+                    f"Header-only check: {name}"
+                )
+
+            summary["checked"] += 1
             previous = seen.get(name)
 
-            if previous is None:
+            # Page-body and header-only signatures are not comparable.
+            previous_method = previous.get("method", "page") if previous else None
+            if previous is None or previous_method != method:
                 new_seen[name] = {
                     "url": url,
                     "signature": signature,
+                    "method": method,
                 }
                 summary["baseline"] += 1
                 print(
                     f"[{SOURCE_NAME}] "
-                    f"Baseline: {name}"
+                    f"Baseline: {name} ({method})"
                 )
                 continue
 
@@ -208,6 +273,7 @@ def get_items(seen):
             new_seen[name] = {
                 "url": url,
                 "signature": signature,
+                "method": method,
             }
             summary["updated"] += 1
 
