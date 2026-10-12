@@ -7,16 +7,11 @@ from config import (
     REQUEST_TIMEOUT,
     SOURCE_CHECK_SEEN_FILE,
     SOURCE_CHECK_SITES,
-    USER_AGENT,
 )
+from sources.base import HEADERS
 
 SEEN_FILE = SOURCE_CHECK_SEEN_FILE
 SOURCE_NAME = "Source Check"
-
-HEADERS = {
-    "User-Agent": USER_AGENT,
-}
-
 
 def normalize_url(url):
     if not isinstance(url, str):
