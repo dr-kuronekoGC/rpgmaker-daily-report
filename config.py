@@ -170,14 +170,26 @@ SOURCE_CHECK_SITES = [
     {
         "name": "GameDevMarket",
         "url": "https://www.gamedevmarket.net/category/2d",
+        "resource_types": ["グラフィック素材"],
+        "language": "英語",
+        "site_type": "マーケットプレイス",
+        "manual_review": True,
     },
     {
         "name": "Maker Devs",
         "url": "https://makerdevs.com/mz/master-list",
+        "resource_types": ["プラグイン"],
+        "language": "英語",
+        "site_type": "プラグイン一覧",
+        "manual_review": True,
     },
     {
         "name": "RPG Refuge（2D素材フォーラム）",
         "url": "https://rpg-refuge.com/forums/2d-assets.57/",
+        "resource_types": ["グラフィック素材"],
+        "language": "英語",
+        "site_type": "掲示板・コミュニティ",
+        "manual_review": True,
     },
 ]
 
