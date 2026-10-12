@@ -1,6 +1,7 @@
 import unittest
 
 from report import (
+    build_report,
     format_manual_check_sites,
     format_source_check_metadata,
 )
@@ -45,6 +46,25 @@ class TestManualCheckSitesReport(unittest.TestCase):
             text,
             "対象：プラグイン / 言語：英語 / 形式：プラグイン一覧",
         )
+
+    def test_source_check_does_not_infer_language_from_generated_title(self):
+        report = build_report(
+            [
+                {
+                    "title": "Example Site：ページ変化あり（要確認）",
+                    "url": "https://example.test/",
+                    "category": "SourceCheck",
+                    "source": "Source Check",
+                    "resource_types": ["プラグイン"],
+                    "site_type": "プラグイン配布サイト",
+                }
+            ],
+            source_results=[],
+        )
+
+        self.assertIn("対象：プラグイン", report)
+        self.assertIn("形式：プラグイン配布サイト", report)
+        self.assertNotIn("言語：日本語", report)
 
     def test_no_manual_sites_produces_no_section(self):
         self.assertEqual(format_manual_check_sites([]), [])

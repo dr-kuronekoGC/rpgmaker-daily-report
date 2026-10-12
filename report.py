@@ -724,6 +724,14 @@ def build_report(items, review_items=None, carryover_items=None, source_results=
         if item.get("language"):
             continue
 
+        # Source Check titles are generated Japanese status labels,
+        # not titles from the monitored site. Do not infer language from them.
+        if (
+            item.get("source") == "Source Check"
+            or item.get("category") == "SourceCheck"
+        ):
+            continue
+
         language = detect_language(
             title=item.get(
                 "title",
