@@ -24,22 +24,15 @@ def is_gamedevmarket_item(url):
 
 def get_items(seen):
 
-    try:
-
-        return collect_html(
-            url=GAMEDEVMARKET_URL,
-            seen=seen,
-            classify=classify_asset,
-            selector="a[href]",
-            source_name="GameDevMarket",
-            href_filter=is_gamedevmarket_item,
-            diagnostics=True,
-        )
-
-    except Exception as e:
-
-        print(
-            f"[GameDevMarket] Skip: {e}"
-        )
-
-        return [], seen
+    # HTTPエラーを空の成功結果として扱うと、
+    # Source Healthで接続失敗を検知できなくなるため、
+    # 例外はmain.py側へ伝播させる。
+    return collect_html(
+        url=GAMEDEVMARKET_URL,
+        seen=seen,
+        classify=classify_asset,
+        selector="a[href]",
+        source_name="GameDevMarket",
+        href_filter=is_gamedevmarket_item,
+        diagnostics=True,
+    )
