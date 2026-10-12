@@ -13,6 +13,7 @@ def collect_html(
     selector,
     source_name,
     href_filter=None,
+    diagnostics=False,
 ):
 
     html = get_html(url)
@@ -27,8 +28,17 @@ def collect_html(
     new_seen = seen.copy()
 
     seen_urls = set()
+    selected_count = 0
+    href_found_count = 0
+    filter_passed_count = 0
+    unseen_candidate_count = 0
+    classified_count = 0
+    rejected_by_classifier_count = 0
 
-    for tag in soup.select(selector):
+    selected_tags = soup.select(selector)
+    selected_count = len(selected_tags)
+
+    for tag in selected_tags:
 
         href = None
 
@@ -50,6 +60,8 @@ def collect_html(
         if not href:
             continue
 
+        href_found_count += 1
+
         href = urljoin(
             url,
             href,
@@ -64,6 +76,8 @@ def collect_html(
             if not href_filter(href):
                 continue
 
+        filter_passed_count += 1
+
         # ----------------------------
         # 重複URL除外
         # ----------------------------
@@ -75,6 +89,8 @@ def collect_html(
 
         if href in seen:
             continue
+
+        unseen_candidate_count += 1
 
         # ----------------------------
         # タイトル取得
@@ -128,7 +144,10 @@ def collect_html(
             tags = []
 
         if category is None:
+            rejected_by_classifier_count += 1
             continue
+
+        classified_count += 1
 
         # ----------------------------
         # 採用
@@ -155,5 +174,16 @@ def collect_html(
     print(
         f"[{source_name}] New: {len(adopted_items)}"
     )
+
+    if diagnostics:
+        print(
+            f"[{source_name}] Diagnostic: "
+            f"selected_links={selected_count}, "
+            f"href_found={href_found_count}, "
+            f"filter_passed={filter_passed_count}, "
+            f"unseen_candidates={unseen_candidate_count}, "
+            f"classified={classified_count}, "
+            f"rejected_by_classifier={rejected_by_classifier_count}"
+        )
 
     return adopted_items, new_seen

@@ -33,6 +33,7 @@ def get_items(seen):
             selector="a[href]",
             source_name="GameDevMarket",
             href_filter=is_gamedevmarket_item,
+            diagnostics=True,
         )
 
     except Exception as e:
