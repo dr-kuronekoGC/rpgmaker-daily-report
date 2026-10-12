@@ -614,7 +614,7 @@ def format_source_check_metadata(item):
 
 def format_reference_sites(sites=None):
     """
-    個別素材を自動抽出できないサイトを、手動確認用リンクとして表示する。
+    個別素材の新着取得を行わない参考サイトを、属性付きリンクとして表示する。
     """
     if sites is None:
         sites = SOURCE_CHECK_SITES
