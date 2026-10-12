@@ -48,20 +48,23 @@ These are creator/publisher release channels rather than community forums or off
 | Maker Devs | English | MZ plugin master list | Access/connection reliability has been inconsistent; don't treat an empty run as proof of no updates |
 | Casper Gaming | English | Plugins, sound, and map resources | Free and paid offerings may coexist |
 | Triacontane (GitHub) | Japanese / code comments may vary | RPG Maker MV/MZ plugin repository | Public source repository |
-| Source Check | Mixed | Detects changes on selected creator sites; does not collect individual resource items | Update-only signal; it watches the eight sites listed below |
+| Source Check | See each site's language below | Detects page changes on selected resource and community sites; does not collect individual resource items | A page-change signal is not proof of a new resource; three reference-only sites are also listed in the report |
 
 ### Source Check targets
 
-- Galv's Plugins — English
-- Atelier RGSS / Moghunter — Portuguese/Spanish and other languages may appear
-- KageDesu Workshop — English
-- Blue Coral Games — English
-- DK Plugins — Russian
-- Hakuen Studio (itch.io) — English
-- Sang Hendrix (itch.io) — English
-- Raizen Plugins (itch.io) — English
+- Galv's Plugins — mainly English
+- Atelier RGSS / Moghunter — mainly Portuguese; English and Spanish may also appear
+- KageDesu Workshop — English and Russian
+- Blue Coral Games — mainly English
+- DK Plugins — English and Russian
+- Hakuen Studio (itch.io) — mainly English
+- Sang Hendrix (itch.io) — mainly English; some plugins support Japanese
+- Raizen Plugins (itch.io) — mainly English; comments may be multilingual
+- GameDevMarket — English; 2D graphics marketplace; individual products are not collected
+- Maker Devs — mainly English; MZ plugin directory; individual entries are not collected
+- RPG Refuge (2D assets forum) — mainly English; posts may be multilingual; individual threads are not collected
 
-Source Check currently detects page changes and sends an “update” signal. It does not establish whether a specific item is free, paid, or newly released.
+Source Check detects changes to monitored page signatures and sends a review signal. A change does not establish that a new resource was published or whether an item is free or paid. GameDevMarket, Maker Devs, and RPG Refuge also appear in the report's **素材・プラグイン関連サイト一覧** with resource type and primary-language metadata; individual items from those pages are not automatically collected.
 
 ## 4. Asset libraries and marketplaces
 
