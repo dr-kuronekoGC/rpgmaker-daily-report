@@ -22,6 +22,7 @@ FIELD_WEIGHTS = {
     "source_tags": 4,
     "category": 3,
     "description": 3,
+    "body_text": 4,
     "url": 2,
     "asset_tags": 2,
 }
@@ -73,13 +74,13 @@ SOUND_PATTERNS = {
 }
 
 GRAPHIC_PATTERNS = {
-    "character": (("character", 5), ("charset", 5), ("character sheet", 6), ("キャラクター", 5)),
+    "character": (("character", 5), ("charset", 5), ("character sheet", 6), ("sprite", 4), ("sprites", 4), ("キャラクター", 5), ("キャラセット", 6)),
     "sv_character": (("sv character", 6), ("sv battler", 6), ("side-view character", 6), ("sv戦闘", 6), ("svキャラ", 6)),
     "enemy_battler": (("enemy battler", 6), ("enemy sprite", 5), ("monster sprite", 5), ("enemy", 5), ("敵キャラ", 5), ("敵キャラクター", 5)),
     "face": (("faceset", 6), ("face set", 6), ("face graphic", 6), ("face graphics", 6), ("顔グラフィック", 6)),
     "bust": (("bust", 5), ("bustup", 6), ("bust up", 6), ("バストアップ", 6)),
     "full_art": (("full art", 6), ("key art", 6), ("illustration", 4), ("concept art", 4), ("全身", 5)),
-    "tileset": (("tileset", 6), ("tile set", 6), ("tilemap", 5), ("tilesheet", 6), ("タイルセット", 6), ("マップチップ", 6)),
+    "tileset": (("tileset", 6), ("tile set", 6), ("tilemap", 5), ("tilesheet", 6), ("tile sheet", 6), ("tiles", 3), ("タイルセット", 6), ("マップチップ", 6)),
     "battle_background": (("battleback", 6), ("battle background", 6), ("戦闘背景", 6)),
     "parallax": (("parallax", 6), ("遠景", 6), ("パララックス", 6)),
     "animation": (("animation", 5), ("effekseer", 6), ("アニメーション", 6)),
