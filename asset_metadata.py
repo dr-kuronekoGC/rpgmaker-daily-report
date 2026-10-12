@@ -2,6 +2,8 @@
 # Asset Metadata
 # ==========================================
 
+import re
+
 from categories.assets import classify_asset
 from classification_scoring import (
     classify_sound_with_evidence,
@@ -317,15 +319,17 @@ def detect_engine(
     # RPG Maker U2U
     # --------------------------------------
 
-    if _contains_any(
-        text,
-        (
-            "rpg maker u2u",
-            "rpgmaker u2u",
-            "rpg maker unite 2",
-            "rpgmaker unite 2",
-            "u2u",
-        ),
+    if (
+        _contains_any(
+            text,
+            (
+                "rpg maker u2u",
+                "rpgmaker u2u",
+                "rpg maker unite 2",
+                "rpgmaker unite 2",
+            ),
+        )
+        or re.search(r"(?<![a-z0-9])u2u(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_U2U
@@ -335,14 +339,17 @@ def detect_engine(
     # RPG Maker MZ
     # --------------------------------------
 
-    if _contains_any(
-        text,
-        (
-            "rpg maker mz",
-            "rpgmaker mz",
-            "rpgツクールmz",
-            "rpgツクールmz用",
-        ),
+    if (
+        _contains_any(
+            text,
+            (
+                "rpg maker mz",
+                "rpgmaker mz",
+                "rpgツクールmz",
+                "rpgツクールmz用",
+            ),
+        )
+        or re.search(r"(?<![a-z0-9])(?:rmmz|\[mz\]|\[rmmz\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_MZ
@@ -352,14 +359,17 @@ def detect_engine(
     # RPG Maker MV
     # --------------------------------------
 
-    if _contains_any(
-        text,
-        (
-            "rpg maker mv",
-            "rpgmaker mv",
-            "rpgツクールmv",
-            "rpgツクールmv用",
-        ),
+    if (
+        _contains_any(
+            text,
+            (
+                "rpg maker mv",
+                "rpgmaker mv",
+                "rpgツクールmv",
+                "rpgツクールmv用",
+            ),
+        )
+        or re.search(r"(?<![a-z0-9])(?:rmmv|\[mv\]|\[rmmv\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_MV
@@ -390,16 +400,19 @@ def detect_engine(
     # RPG Maker VX Ace
     # --------------------------------------
 
-    if _contains_any(
-        text,
-        (
-            "rpg maker vx ace",
-            "rpgmaker vx ace",
-            "rpgツクールvx ace",
-            "rpgツクールvxace",
-            "vx ace",
-            "vxace",
-        ),
+    if (
+        _contains_any(
+            text,
+            (
+                "rpg maker vx ace",
+                "rpgmaker vx ace",
+                "rpgツクールvx ace",
+                "rpgツクールvxace",
+                "vx ace",
+                "vxace",
+            ),
+        )
+        or re.search(r"(?<![a-z0-9])(?:rmvxa|vxa|\[vxa\]|\[rmvxa\]|\[vx ace\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_VX_ACE
@@ -411,13 +424,16 @@ def detect_engine(
 
     if (
         ENGINE_VX_ACE not in engines
-        and _contains_any(
-            text,
-            (
-                "rpg maker vx",
-                "rpgmaker vx",
-                "rpgツクールvx",
-            ),
+        and (
+            _contains_any(
+                text,
+                (
+                    "rpg maker vx",
+                    "rpgmaker vx",
+                    "rpgツクールvx",
+                ),
+            )
+            or re.search(r"(?<![a-z0-9])(?:rmvx|\[vx\]|\[rmvx\])(?![a-z0-9])", text)
         )
     ):
         engines.append(
@@ -428,13 +444,16 @@ def detect_engine(
     # RPG Maker XP
     # --------------------------------------
 
-    if _contains_any(
-        text,
-        (
-            "rpg maker xp",
-            "rpgmaker xp",
-            "rpgツクールxp",
-        ),
+    if (
+        _contains_any(
+            text,
+            (
+                "rpg maker xp",
+                "rpgmaker xp",
+                "rpgツクールxp",
+            ),
+        )
+        or re.search(r"(?<![a-z0-9])(?:rmxp|\[xp\]|\[rmxp\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_XP
@@ -444,13 +463,16 @@ def detect_engine(
     # RPG Maker 2003
     # --------------------------------------
 
-    if _contains_any(
-        text,
-        (
-            "rpg maker 2003",
-            "rpgmaker 2003",
-            "rpgツクール2003",
-        ),
+    if (
+        _contains_any(
+            text,
+            (
+                "rpg maker 2003",
+                "rpgmaker 2003",
+                "rpgツクール2003",
+            ),
+        )
+        or re.search(r"(?<![a-z0-9])(?:rm?2k3|2k3|\[2k3\]|\[rm2k3\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_2003
@@ -460,13 +482,16 @@ def detect_engine(
     # RPG Maker 2000
     # --------------------------------------
 
-    if _contains_any(
-        text,
-        (
-            "rpg maker 2000",
-            "rpgmaker 2000",
-            "rpgツクール2000",
-        ),
+    if (
+        _contains_any(
+            text,
+            (
+                "rpg maker 2000",
+                "rpgmaker 2000",
+                "rpgツクール2000",
+            ),
+        )
+        or re.search(r"(?<![a-z0-9])(?:rm?2k|2k|\[2k\]|\[rm2k\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_2000
@@ -493,15 +518,17 @@ def detect_engine(
     # RPG Maker UNITE
     # --------------------------------------
 
-    if _contains_any(
-        text,
-        (
-            "rpg maker unite",
-            "rpgmaker unite",
-            "rpgツクールunite",
-            "rpgツクール unite",
-            "unite",
-        ),
+    if (
+        _contains_any(
+            text,
+            (
+                "rpg maker unite",
+                "rpgmaker unite",
+                "rpgツクールunite",
+                "rpgツクール unite",
+            ),
+        )
+        or re.search(r"(?<![a-z0-9])(?:rm?unite|\[unite\]|\[rmunite\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_UNITE
