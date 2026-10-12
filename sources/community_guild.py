@@ -472,93 +472,75 @@ def classify_material(title, tags):
 # Material Content Sieve
 # ==========================================
 
-def classify_material_content(title, tags):
+def classify_material_content(title, tags, description=""):
+    """
+    素材カテゴリ内に紛れた質問・ゲーム紹介を検出する。
 
-    text = " ".join(
-        [title] + list(tags)
-    ).strip()
+    RPG Maker Guildの素材カテゴリには、本文に「game」「itch.io」などを
+    含む正規のプラグイン配布もあるため、単語だけではゲーム扱いしない。
+    本文は「質問の意図」や「ゲームそのものの紹介」が明確な場合だけ使う。
+    """
+    title_text = str(title or "").strip()
+    body_text = str(description or "").strip()
+    text = " ".join([title_text, *list(tags or [])]).strip()
 
     normalized_tags = {
         str(tag).strip().lower()
-        for tag in tags
+        for tag in (tags or [])
         if str(tag).strip()
     }
-
-    question_tags = {
-        "質問",
-        "question",
-        "questions",
-        "help",
-        "support",
-    }
-
-    if normalized_tags & {
-        tag.lower()
-        for tag in question_tags
-    }:
+    if normalized_tags & {"質問", "question", "questions", "help", "support"}:
         return "質問"
 
     question_patterns = [
         r"[？?]$",
-        r"どうすれば",
-        r"どうしたら",
-        r"できますか",
-        r"できますでしょうか",
-        r"でしょうか",
-        r"教えて",
-        r"教えてください",
-        r"わからない",
-        r"分からない",
-        r"できない",
-        r"うまくいかない",
-        r"やり方",
-        r"方法を教えて",
-        r"方法はありますか",
-        r"方法がわから",
-        r"修正方法",
-        r"直す方法",
-        r"解決方法",
-        r"対処方法",
-        r"how\s+to\b",
-        r"\bhow\s+do\s+i\b",
-        r"\bhelp\b",
-        r"\bquestion\b",
+        r"どうすれば", r"どうしたら", r"できますか", r"でしょうか",
+        r"教えて", r"わからない", r"分からない", r"できない",
+        r"うまくいかない", r"やり方", r"方法を教えて",
+        r"方法はありますか", r"修正方法", r"解決方法", r"対処方法",
+        r"\bhow\s+do\s+i\b", r"\bhow\s+can\s+i\b",
+        r"\bdoes anyone know\b", r"\bany suggestions\b",
+        r"\blooking for (?:help|advice|recommendations)\b",
+        r"\bcan someone help\b", r"\bneed help\b",
+        r"\bwhat(?:'s| is) the best\b",
     ]
-
     for pattern in question_patterns:
-
-        if re.search(
-            pattern,
-            text,
-            flags=re.IGNORECASE,
-        ):
+        if re.search(pattern, text, flags=re.IGNORECASE):
             return "質問"
 
-    game_patterns = [
-        r"完成ゲーム",
-        r"制作中ゲーム",
-        r"ゲーム公開",
-        r"ゲーム紹介",
-        r"ゲーム作品",
-        r"ホラーゲーム",
-        r"無料ゲーム",
-        r"\bgame\b",
-        r"\bdlc\b",
-        r"\bsteam\b",
-        r"\bitch\.io\b",
+    # 「質問があればどうぞ」のような定型文は誤検出しないよう、相談意図を示す表現だけ見る。
+    body_question_patterns = [
+        r"\b(?:i am|i'm|we are|we're) looking for (?:help|advice|recommendations)\b",
+        r"\bdoes anyone know (?:how|where|if)\b",
+        r"\bcan someone help me\b",
+        r"\bhow can i (?:fix|make|get|use)\b",
+        r"素材を探して(?:います|いる)",
+        r"方法が分からず(?:困って|悩んで)",
     ]
+    if any(re.search(pattern, body_text, flags=re.IGNORECASE) for pattern in body_question_patterns):
+        return "質問"
 
-    for pattern in game_patterns:
-
-        if re.search(
-            pattern,
-            text,
-            flags=re.IGNORECASE,
-        ):
+    # 「game」「itch.io」はプラグイン紹介にも頻出するので、明示的な作品紹介だけ除外。
+    game_showcase_patterns = [
+        r"完成ゲーム", r"制作中ゲーム", r"ゲーム公開", r"ゲーム紹介",
+        r"自作ゲーム", r"ゲームプレイ動画", r"ゲームのスクリーンショット",
+        r"\bgameplay video\b", r"\bmy game is (?:out|released|available)\b",
+        r"\bdevlog\b", r"\bwork in progress\b",
+        r"\bshowcase of my game\b", r"\bplay my game\b",
+    ]
+    combined = " ".join([title_text, body_text[:1800]])
+    if any(re.search(pattern, combined, flags=re.IGNORECASE) for pattern in game_showcase_patterns):
+        # 配布ファイルや配布先を示す本文がある場合は、ゲーム紹介だけと断定しない。
+        distribution_patterns = [
+            r"\bdownload(?: it| here| the files)?\b",
+            r"\bfree plugin\b", r"\bplugin command\b",
+            r"\bresource pack\b", r"\btileset\b",
+            r"\bsprite sheet\b", r"\bsound effects?\b",
+        ]
+        if not any(re.search(pattern, body_text, flags=re.IGNORECASE) for pattern in distribution_patterns):
             return "ゲーム"
 
     return None
-
 
 # ==========================================
 # Actual Guild Category Classification
@@ -569,17 +551,34 @@ def classify_guild_category(
     actual_category,
     title,
     tags,
+    description="",
 ):
 
+    accepted_categories = {
+        "プラグイン",
+        "RPG Makerプラグイン",
+        "RGSSx",
+        "素材",
+        "質問",
+        "バグ報告",
+        "完成ゲーム",
+        "制作中ゲーム",
+        "雑談",
+        "お知らせ",
+    }
     category = (
-        actual_category or ""
-    ).strip()
+        actual_category
+        if actual_category in accepted_categories
+        else guild_category
+    )
+    category = (category or "").strip()
 
     # 質問・相談・バグ報告は、どのカテゴリに投稿されても
     # Daily Reportの収集対象にはしない。
     content_category = classify_material_content(
         title,
         tags,
+        description,
     )
 
     if content_category == "質問":
@@ -864,9 +863,21 @@ def get_topic_detail(
             if str(tag).strip()
         ]
 
+    # Discourseの最初の投稿本文を抽出し、詳細分類に使う。
+    description = ""
+    post_stream = data.get("post_stream", {})
+    posts = post_stream.get("posts", []) if isinstance(post_stream, dict) else []
+    if isinstance(posts, list) and posts:
+        first_post = posts[0]
+        cooked = first_post.get("cooked", "") if isinstance(first_post, dict) else ""
+        if cooked:
+            description = BeautifulSoup(cooked, "html.parser").get_text(" ", strip=True)
+            description = re.sub(r"\s+", " ", description)[:6000]
+
     return (
         actual_category,
         tags,
+        description,
     )
 
 
@@ -971,12 +982,38 @@ def get_items(seen):
                         continue
 
                     actual_category = guild_category
+                    description = ""
+
+                    # タイトルだけでは「配布」「質問」「作品紹介」を区別しにくい。
+                    # 詳細JSONが取得できない場合も、一覧情報で従来どおり判定を続ける。
+                    try:
+                        (
+                            detail_category,
+                            detail_tags,
+                            description,
+                        ) = get_topic_detail(
+                            session,
+                            url,
+                            category_map,
+                        )
+                        if detail_category:
+                            actual_category = detail_category
+                        if detail_tags:
+                            tags = list(dict.fromkeys([*tags, *detail_tags]))
+                    except Exception as e:
+                        print(
+                            "[Guild] Topic detail error: "
+                            f"{title}: {e}"
+                        )
+                    finally:
+                        time.sleep(TOPIC_REQUEST_INTERVAL)
 
                     category = classify_guild_category(
                         guild_category,
                         actual_category,
                         title,
                         tags,
+                        description,
                     )
 
                     if category is None:
@@ -992,6 +1029,9 @@ def get_items(seen):
                         "url": url,
                         "category": category,
                         "source": "RPG Maker Guild",
+                        "description": description,
+                        "source_tags": tags,
+                        "tags": tags,
                     })
 
                     new_seen.append(url)

@@ -106,6 +106,13 @@ def prepare_classification_reviews(items, queue):
             "collector": item.get("collector"),
             "url": item.get("url"),
             "title": item.get("title"),
+            # 次回以降の判断根拠を残し、URLだけを見直す作業を減らす。
+            "description": str(item.get("description") or item.get("body_text") or item.get("body") or "")[:1600],
+            "source_tags": item.get("source_tags", [])[:30] if isinstance(item.get("source_tags"), list) else [],
+            "tags": item.get("tags", [])[:30] if isinstance(item.get("tags"), list) else [],
+            "category": item.get("category"),
+            "asset_type": item.get("asset_type"),
+            "content_type": item.get("content_type"),
             "classification_confidence": item.get(
                 "classification_confidence"
             ),
