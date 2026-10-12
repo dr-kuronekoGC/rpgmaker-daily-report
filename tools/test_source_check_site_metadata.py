@@ -2,7 +2,7 @@ import unittest
 
 from config import SOURCE_CHECK_SITES
 from main import assign_language_if_missing
-from report import format_manual_check_sites
+from report import format_reference_sites
 
 
 class TestSourceCheckSiteMetadata(unittest.TestCase):
@@ -47,12 +47,12 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
         self.assertIn("日本語", site["language"])
 
     def test_manual_links_use_clear_heading_and_show_metadata(self):
-        lines = format_manual_check_sites()
+        lines = format_reference_sites()
         output = "\n".join(lines)
 
-        self.assertIn("【📌 手動確認リンク】", output)
+        self.assertIn("【📚 参考サイト（個別素材の自動収集対象外）】", output)
         self.assertIn("対象：", output)
-        self.assertIn("言語：", output)
+        self.assertIn("主な言語：", output)
         self.assertIn("サイト種別：", output)
         self.assertIn("GameDevMarket", output)
         self.assertIn("Maker Devs", output)
