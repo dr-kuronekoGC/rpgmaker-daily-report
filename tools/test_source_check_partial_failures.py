@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import requests
 
@@ -53,7 +53,7 @@ class TestSourceCheckPartialFailures(unittest.TestCase):
         self.assertIn("Baseline Site", new_seen)
 
     def test_http_200_challenge_page_is_rejected(self):
-        response = unittest.mock.Mock()
+        response = Mock()
         response.text = "<html><title>Checking your browser</title></html>"
         response.raise_for_status.return_value = None
 
