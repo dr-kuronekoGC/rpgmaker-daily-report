@@ -8,7 +8,7 @@ from report import (
 
 
 class TestManualCheckSitesReport(unittest.TestCase):
-    def test_manual_site_listing_includes_type_language_and_format(self):
+    def test_reference_site_listing_includes_type_language_and_format(self):
         sites = [
             {
                 "name": "Example Forum",
@@ -34,6 +34,7 @@ class TestManualCheckSitesReport(unittest.TestCase):
         self.assertIn("主な言語：英語", text)
         self.assertIn("サイト種別：掲示板・コミュニティ", text)
         self.assertNotIn("Not Listed", text)
+        self.assertIn("ページ変化を検知できたサイト", text)
 
     def test_page_change_metadata_can_be_formatted(self):
         text = format_source_check_metadata({
@@ -66,7 +67,7 @@ class TestManualCheckSitesReport(unittest.TestCase):
         self.assertIn("サイト種別：プラグイン配布サイト", report)
         self.assertNotIn("主な言語：日本語", report)
 
-    def test_no_manual_sites_produces_no_section(self):
+    def test_no_reference_sites_produces_no_section(self):
         self.assertEqual(format_reference_sites([]), [])
 
 
