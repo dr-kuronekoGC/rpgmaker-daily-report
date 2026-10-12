@@ -1,0 +1,47 @@
+name: Historical Review Body Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-bodies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install project dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Fetch bodies for resolved historical reviews
+        run: python tools/fetch_historical_review_bodies.py
+
+      - name: Summarize retrieval results
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("historical_review_bodies.json").read_text(encoding="utf-8"))
+          print(f"[Body audit] Requested: {data['requested_item_count']}")
+          print(f"[Body audit] Retrieval counts: {data['retrieval_counts']}")
+          for item in data["items"]:
+              if item["retrieval_status"] != "body_found":
+                  print(f"[Body audit] {item['pre_id']} | {item['retrieval_status']} | {item.get('http_status')} | {item['title']}")
+          PY
+
+      - name: Upload historical body audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: historical-review-bodies
+          path: historical_review_bodies.json
+          if-no-files-found: error
+          retention-days: 30
