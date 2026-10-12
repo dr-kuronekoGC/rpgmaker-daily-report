@@ -16,7 +16,7 @@ class RPGMakerNetworkTests(unittest.TestCase):
         <html><body>
           <div><a href="/resources/123/">Fantasy Tileset Pack</a></div>
           <div><a href="/resources/124/">Help looking for a tileset</a></div>
-          <div><a href="/games/125/">A game with no asset context</a></div>
+          <div><a href="/games/125/">A game showcase</a></div>
         </body></html>
         """
         items = source.extract_items(html)
