@@ -62,6 +62,7 @@ class TestSourceCheckHeaderFallback(unittest.TestCase):
 
     def test_source_check_uses_separate_connect_and_read_timeouts(self):
         response = Mock()
+        response.text = "<html><body>sample content</body></html>"
         with patch.object(source_check.requests, "get", return_value=response) as get:
             source_check.get_page("https://example.test/page")
 
