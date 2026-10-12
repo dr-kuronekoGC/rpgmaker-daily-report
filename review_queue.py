@@ -85,8 +85,8 @@ def prepare_classification_reviews(items, queue):
         # New hierarchical triage:
         # - clear non-resources do not enter the resource classification queue;
         # - clear resource candidates continue with automatic detailed taxonomy;
-        # - only uncertain items with explicit resource-related evidence enter
-        #   the human queue at the broad-intent stage.
+        # - all uncertain items enter human review; missing evidence is not
+        #   proof that an item is not a resource.
         # Historical items without resource_intent keep the previous behavior.
         if resource_intent == "not_resource":
             continue
@@ -94,10 +94,7 @@ def prepare_classification_reviews(items, queue):
         if resource_intent == "resource_candidate":
             continue
 
-        if resource_intent == "uncertain":
-            if not item.get("resource_intent_evidence"):
-                continue
-        elif item.get("classification_status") != "needs_review":
+        if resource_intent != "uncertain" and item.get("classification_status") != "needs_review":
             continue
 
         internal_id = item.get("internal_id")
