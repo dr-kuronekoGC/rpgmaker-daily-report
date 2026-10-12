@@ -349,7 +349,7 @@ def detect_engine(
                 "rpgツクールmz用",
             ),
         )
-        or re.search(r"(?<![a-z0-9])(?:rmmz|\[mz\]|\[rmmz\])(?![a-z0-9])", text)
+        or re.search(r"(?<![a-z0-9])(?:rmmz|rpgmakermz|\[mz\]|\[rmmz\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_MZ
@@ -369,7 +369,7 @@ def detect_engine(
                 "rpgツクールmv用",
             ),
         )
-        or re.search(r"(?<![a-z0-9])(?:rmmv|\[mv\]|\[rmmv\])(?![a-z0-9])", text)
+        or re.search(r"(?<![a-z0-9])(?:rmmv|rpgmakermv|\[mv\]|\[rmmv\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_MV
@@ -384,6 +384,7 @@ def detect_engine(
         (
             "mv trinity",
             "rpg maker mv trinity",
+            "rpgmakermvtrinity",
             "rpgツクールmv trinity",
         ),
     ):
@@ -412,7 +413,7 @@ def detect_engine(
                 "vxace",
             ),
         )
-        or re.search(r"(?<![a-z0-9])(?:rmvxa|vxa|\[vxa\]|\[rmvxa\]|\[vx ace\])(?![a-z0-9])", text)
+        or re.search(r"(?<![a-z0-9])(?:rmvxa|rpgmakervxa|rpgmakervxace|vxa|\[vxa\]|\[rmvxa\]|\[vx ace\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_VX_ACE
@@ -423,7 +424,7 @@ def detect_engine(
     # --------------------------------------
 
     explicit_vx_alias = re.search(
-        r"(?<![a-z0-9])(?:rmvx|\[vx\]|\[rmvx\]|vx(?=[/\]]))(?![a-z0-9])",
+        r"(?<![a-z0-9])(?:rmvx|rpgmakervx|\[vx\]|\[rmvx\]|vx(?=[/\]]))(?![a-z0-9])",
         text,
     )
 
@@ -455,7 +456,7 @@ def detect_engine(
                 "rpgツクールxp",
             ),
         )
-        or re.search(r"(?<![a-z0-9])(?:rmxp|\[xp\]|\[rmxp\]|xp(?=[/\]]))(?![a-z0-9])", text)
+        or re.search(r"(?<![a-z0-9])(?:rmxp|rpgmakerxp|\[xp\]|\[rmxp\]|xp(?=[/\]]))(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_XP
@@ -474,7 +475,7 @@ def detect_engine(
                 "rpgツクール2003",
             ),
         )
-        or re.search(r"(?<![a-z0-9])(?:rm?2k3|2k3|\[2k3\]|\[rm2k3\])(?![a-z0-9])", text)
+        or re.search(r"(?<![a-z0-9])(?:rm?2k3|rpgmaker2003|2k3|\[2k3\]|\[rm2k3\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_2003
@@ -493,7 +494,7 @@ def detect_engine(
                 "rpgツクール2000",
             ),
         )
-        or re.search(r"(?<![a-z0-9])(?:rm?2k|2k|\[2k\]|\[rm2k\])(?![a-z0-9])", text)
+        or re.search(r"(?<![a-z0-9])(?:rm?2k|rpgmaker2000|2k|\[2k\]|\[rm2k\])(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_2000
@@ -508,6 +509,7 @@ def detect_engine(
         (
             "rpg maker 95",
             "rpgmaker 95",
+            "rpgmaker95",
             "rpgツクール95",
             "rpgツクール95用",
         ),
