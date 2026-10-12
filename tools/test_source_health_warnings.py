@@ -28,11 +28,11 @@ class TestSourceHealthWarnings(unittest.TestCase):
 
         self.assertEqual(lines[0], "【⚠️ 収集元の取得状況】")
         self.assertIn(
-            "official_source_check：一部失敗 （確認 6/8、失敗 2件）",
+            "・official_source_check：一部失敗 （確認 6/8、失敗 2件）",
             lines,
         )
         self.assertIn(
-            "official_gamedevmarket：取得失敗（HTTPError）",
+            "・official_gamedevmarket：取得失敗（HTTPError）",
             lines,
         )
 
