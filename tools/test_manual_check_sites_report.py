@@ -28,7 +28,7 @@ class TestManualCheckSitesReport(unittest.TestCase):
         lines = format_reference_sites(sites)
         text = "\n".join(lines)
 
-        self.assertIn("【📚 参考サイト（個別素材の自動収集対象外）】", text)
+        self.assertIn("【📚 素材・プラグイン関連サイト一覧】", text)
         self.assertIn("<https://example.test/forum|Example Forum>", text)
         self.assertIn("対象：グラフィック素材・サウンド素材", text)
         self.assertIn("主な言語：英語", text)
