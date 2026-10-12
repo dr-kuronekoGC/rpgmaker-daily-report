@@ -97,6 +97,20 @@ class ResourceIntentTests(unittest.TestCase):
         self.assertEqual(len(reviews), 1)
         self.assertEqual(queue["items"][0]["status"], "open")
 
+    def test_uncertain_item_without_evidence_still_enters_human_queue(self):
+        queue = {"version": 1, "next_pre_number": 1, "items": []}
+        item = {
+            "internal_id": "ITEM-uncertain-empty",
+            "title": "Unknown item",
+            "url": "https://example.com/unknown",
+            "resource_intent": "uncertain",
+            "resource_intent_evidence": [],
+            "classification_status": "not_applicable",
+        }
+        reviews = prepare_classification_reviews([item], queue)
+        self.assertEqual(len(reviews), 1)
+        self.assertEqual(queue["items"][0]["status"], "open")
+
     def test_legacy_items_keep_existing_review_behavior(self):
         queue = {"version": 1, "next_pre_number": 1, "items": []}
         item = {
