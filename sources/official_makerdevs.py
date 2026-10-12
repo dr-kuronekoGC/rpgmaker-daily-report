@@ -3,6 +3,8 @@
 # ==========================================
 
 import requests
+import socket
+import ssl
 
 from urllib.parse import urljoin
 
@@ -15,6 +17,77 @@ from config import (
 from sources.base import get_html
 
 SEEN_FILE = MAKER_DEVS_SEEN_FILE
+
+
+def log_tls_diagnostics(url):
+    """
+    Log DNS and verified TLS-handshake details after an HTTPS SSL error.
+    This is diagnostic only: it never disables certificate verification
+    and never changes the collector's success/failure result.
+    """
+    from urllib.parse import urlparse
+
+    parsed = urlparse(url)
+    hostname = parsed.hostname
+    port = parsed.port or 443
+
+    if not hostname:
+        print("[Maker Devs Diagnostics] URL has no hostname.")
+        return
+
+    try:
+        addresses = socket.getaddrinfo(
+            hostname,
+            port,
+            type=socket.SOCK_STREAM,
+        )
+    except Exception as e:
+        print(
+            "[Maker Devs Diagnostics] DNS failed: "
+            f"{type(e).__name__}: {e}"
+        )
+        return
+
+    unique_addresses = []
+    seen_addresses = set()
+    for family, socktype, proto, _, sockaddr in addresses:
+        address = sockaddr[0]
+        key = (family, address)
+        if key not in seen_addresses:
+            seen_addresses.add(key)
+            unique_addresses.append(
+                (family, socktype, proto, sockaddr)
+            )
+
+    print(
+        "[Maker Devs Diagnostics] DNS: "
+        + ", ".join(address[3][0] for address in unique_addresses)
+    )
+
+    context = ssl.create_default_context()
+    for family, socktype, proto, sockaddr in unique_addresses[:2]:
+        address = sockaddr[0]
+        stage = "TCP connect"
+        try:
+            with socket.socket(family, socktype, proto) as raw_socket:
+                raw_socket.settimeout(5)
+                raw_socket.connect(sockaddr)
+                stage = "TLS handshake"
+                with context.wrap_socket(
+                    raw_socket,
+                    server_hostname=hostname,
+                ) as tls_socket:
+                    print(
+                        "[Maker Devs Diagnostics] TLS OK: "
+                        f"ip={address} / "
+                        f"version={tls_socket.version()}"
+                    )
+        except Exception as e:
+            print(
+                "[Maker Devs Diagnostics] "
+                f"{stage} failed for {address}: "
+                f"{type(e).__name__}: {e}"
+            )
 
 
 # ==========================================
@@ -140,6 +213,7 @@ def get_items(seen):
         print(
             f"[Maker Devs] SSL Error: {e}"
         )
+        log_tls_diagnostics(MAKER_DEVS_URL)
 
         raise
 
