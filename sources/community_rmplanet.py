@@ -52,7 +52,12 @@ def get_items(seen):
     try:
         feed = feedparser.parse(RMPLANET_RSS)
         if getattr(feed, "bozo", False) and not feed.entries:
-            raise ValueError("RSS feed could not be parsed")
+            status = getattr(feed, "status", None)
+            exception = getattr(feed, "bozo_exception", None)
+            raise ValueError(
+                f"RSS feed could not be parsed (HTTP status={status}, "
+                f"parser error={exception})"
+            )
     except Exception as exc:
         print(f"[{SOURCE_NAME}] RSS error: {exc}")
         return [], seen
