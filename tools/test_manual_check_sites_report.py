@@ -28,11 +28,11 @@ class TestManualCheckSitesReport(unittest.TestCase):
         lines = format_manual_check_sites(sites)
         text = "\n".join(lines)
 
-        self.assertIn("【🔎 要チェックサイト】", text)
+        self.assertIn("【📌 手動確認リンク】", text)
         self.assertIn("<https://example.test/forum|Example Forum>", text)
         self.assertIn("対象：グラフィック素材・サウンド素材", text)
         self.assertIn("言語：英語", text)
-        self.assertIn("形式：掲示板・コミュニティ", text)
+        self.assertIn("サイト種別：掲示板・コミュニティ", text)
         self.assertNotIn("Not Listed", text)
 
     def test_page_change_metadata_can_be_formatted(self):
@@ -44,7 +44,7 @@ class TestManualCheckSitesReport(unittest.TestCase):
 
         self.assertEqual(
             text,
-            "対象：プラグイン / 言語：英語 / 形式：プラグイン一覧",
+            "対象：プラグイン / 言語：英語 / サイト種別：プラグイン一覧",
         )
 
     def test_source_check_does_not_infer_language_from_generated_title(self):
@@ -63,7 +63,7 @@ class TestManualCheckSitesReport(unittest.TestCase):
         )
 
         self.assertIn("対象：プラグイン", report)
-        self.assertIn("形式：プラグイン配布サイト", report)
+        self.assertIn("サイト種別：プラグイン配布サイト", report)
         self.assertNotIn("言語：日本語", report)
 
     def test_no_manual_sites_produces_no_section(self):
