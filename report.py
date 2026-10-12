@@ -607,7 +607,7 @@ def format_source_check_metadata(item):
 
     site_type = item.get("site_type")
     if isinstance(site_type, str) and site_type.strip():
-        details.append("形式：" + site_type.strip())
+        details.append("サイト種別：" + site_type.strip())
 
     return " / ".join(details)
 
