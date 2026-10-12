@@ -2,7 +2,7 @@ import unittest
 
 from report import (
     build_report,
-    format_manual_check_sites,
+    format_reference_sites,
     format_source_check_metadata,
 )
 
@@ -16,22 +16,22 @@ class TestManualCheckSitesReport(unittest.TestCase):
                 "resource_types": ["グラフィック素材", "サウンド素材"],
                 "language": "英語",
                 "site_type": "掲示板・コミュニティ",
-                "manual_review": True,
+                "reference_only": True,
             },
             {
                 "name": "Not Listed",
                 "url": "https://example.test/auto",
-                "manual_review": False,
+                "reference_only": False,
             },
         ]
 
-        lines = format_manual_check_sites(sites)
+        lines = format_reference_sites(sites)
         text = "\n".join(lines)
 
-        self.assertIn("【📌 手動確認リンク】", text)
+        self.assertIn("【📚 参考サイト（個別素材の自動収集対象外）】", text)
         self.assertIn("<https://example.test/forum|Example Forum>", text)
         self.assertIn("対象：グラフィック素材・サウンド素材", text)
-        self.assertIn("言語：英語", text)
+        self.assertIn("主な言語：英語", text)
         self.assertIn("サイト種別：掲示板・コミュニティ", text)
         self.assertNotIn("Not Listed", text)
 
@@ -44,7 +44,7 @@ class TestManualCheckSitesReport(unittest.TestCase):
 
         self.assertEqual(
             text,
-            "対象：プラグイン / 言語：英語 / サイト種別：プラグイン一覧",
+            "対象：プラグイン / 主な言語：英語 / サイト種別：プラグイン一覧",
         )
 
     def test_source_check_does_not_infer_language_from_generated_title(self):
@@ -64,10 +64,10 @@ class TestManualCheckSitesReport(unittest.TestCase):
 
         self.assertIn("対象：プラグイン", report)
         self.assertIn("サイト種別：プラグイン配布サイト", report)
-        self.assertNotIn("言語：日本語", report)
+        self.assertNotIn("主な言語：日本語", report)
 
     def test_no_manual_sites_produces_no_section(self):
-        self.assertEqual(format_manual_check_sites([]), [])
+        self.assertEqual(format_reference_sites([]), [])
 
 
 if __name__ == "__main__":
