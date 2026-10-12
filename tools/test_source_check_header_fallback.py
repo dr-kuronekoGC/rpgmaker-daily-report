@@ -60,6 +60,28 @@ class TestSourceCheckHeaderFallback(unittest.TestCase):
         self.assertEqual(new_seen["GameDevMarket"]["method"], "headers")
         self.assertEqual(new_seen["GameDevMarket"]["signature"], "new-signature")
 
+    def test_connection_error_is_retried_once(self):
+        response = Mock()
+        with patch.object(
+            source_check.requests,
+            "get",
+            side_effect=[requests.exceptions.SSLError("temporary TLS error"), response],
+        ) as get:
+            with patch.object(source_check.time, "sleep") as sleep:
+                result = source_check.request_with_retry("get", "https://example.test", timeout=1)
+
+        self.assertIs(result, response)
+        self.assertEqual(get.call_count, 2)
+        sleep.assert_called_once_with(1)
+
+    def test_http_status_errors_are_not_retried(self):
+        error = requests.HTTPError("403 Forbidden")
+        with patch.object(source_check.requests, "get", side_effect=error) as get:
+            with self.assertRaises(requests.HTTPError):
+                source_check.request_with_retry("get", "https://example.test", timeout=1)
+
+        get.assert_called_once()
+
     def test_rss_fallback_accepts_valid_feed(self):
         site = {
             "name": "RPG Refuge（2D素材フォーラム）",
