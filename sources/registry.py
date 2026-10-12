@@ -37,7 +37,6 @@ from . import (
     community_rmplanet,
     community_makerando,
     community_rmrk,
-    community_rpg_refuge,
     community_rpgmaker_net,
     official_source_check,
 )
