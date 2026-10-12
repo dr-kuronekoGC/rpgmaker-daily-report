@@ -11,14 +11,14 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
             "source": "Source Check",
             "category": "SourceCheck",
             "title": "Sang Hendrix：ページ変化あり（要確認）",
-            "language": "英語・日本語（一部プラグイン対応)",
+            "language": "英語・日本語（一部プラグイン対応）",
         }
 
         assign_language_if_missing(item)
 
         self.assertEqual(
             item["language"],
-            "英語・日本語（一部プラグイン対応)",
+            "英語・日本語（一部プラグイン対応）",
         )
 
     def test_missing_language_can_still_be_inferred(self):
