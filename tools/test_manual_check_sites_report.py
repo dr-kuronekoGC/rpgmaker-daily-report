@@ -4,6 +4,7 @@ from report import (
     build_report,
     format_reference_sites,
     format_source_check_metadata,
+    format_source_health_warnings,
 )
 
 
@@ -66,6 +67,28 @@ class TestManualCheckSitesReport(unittest.TestCase):
         self.assertIn("対象：プラグイン", report)
         self.assertIn("サイト種別：プラグイン配布サイト", report)
         self.assertNotIn("主な言語：日本語", report)
+
+    def test_source_check_partial_warning_uses_friendly_name(self):
+        lines = format_source_health_warnings(
+            [
+                {
+                    "name": "official_source_check",
+                    "status": "PARTIAL",
+                    "summary": {
+                        "checked": 8,
+                        "failed": 3,
+                    },
+                }
+            ]
+        )
+
+        self.assertEqual(
+            lines,
+            [
+                "【⚠️ 収集元の取得状況】",
+                "・Source Check：一部失敗 （確認 8/11、失敗 3件）",
+            ],
+        )
 
     def test_no_reference_sites_produces_no_section(self):
         self.assertEqual(format_reference_sites([]), [])
