@@ -4,7 +4,7 @@ RMRK has announced that it may close after 2026, so this collector includes
 older resource topics rather than suppressing the first scan as a baseline.
 """
 import re
-from urllib.parse import urljoin, urlparse
+from urllib.parse import parse_qs, urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
@@ -89,13 +89,36 @@ def extract_items(html):
 
 def get_next_page_url(html, current_url):
     soup = BeautifulSoup(html, "html.parser")
+    current_parts = urlparse(current_url)
+    current_query = parse_qs(current_parts.query)
+    current_board = current_query.get("board", [None])[0]
+    board_match = re.fullmatch(r"(\\d+)\\.(\\d+)", current_board or "")
+    if board_match:
+        board_id = board_match.group(1)
+        current_offset = int(board_match.group(2))
+        candidates = []
+        for link in soup.select("a[href]"):
+            href = link.get("href")
+            if not href:
+                continue
+            candidate = urljoin(current_url, href)
+            query = parse_qs(urlparse(candidate).query)
+            board_value = query.get("board", [None])[0]
+            match = re.fullmatch(r"(\\d+)\\.(\\d+)", board_value or "")
+            if match and match.group(1) == board_id:
+                offset = int(match.group(2))
+                if offset > current_offset:
+                    candidates.append((offset, candidate))
+        if candidates:
+            return min(candidates, key=lambda pair: pair[0])[1]
+
     for link in soup.select("a[href]"):
         label = " ".join(" ".join((
             link.get_text(" ", strip=True),
             link.get("title", ""),
             link.get("aria-label", ""),
         )).lower().split())
-        if label in {"next", "next page", "go down", "›", "»"} or "next page" in label:
+        if label in {"next", "next page", "›", "»"} or "next page" in label:
             href = link.get("href")
             if href:
                 candidate = urljoin(current_url, href)
