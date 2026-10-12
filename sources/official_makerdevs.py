@@ -12,16 +12,9 @@ from config import (
     MAKER_DEVS_URL,
     MAKER_DEVS_SEEN_FILE,
 )
+from sources.base import get_html
 
 SEEN_FILE = MAKER_DEVS_SEEN_FILE
-
-
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 "
-        "(compatible; RPGMakerDailyReport/1.0)"
-    )
-}
 
 
 # ==========================================
@@ -46,15 +39,10 @@ def get_items(seen):
 
     try:
 
-        response = requests.get(
-            MAKER_DEVS_URL,
-            headers=HEADERS,
-            timeout=20,
-        )
-
-        response.raise_for_status()
-
-        html = response.text
+        # 他のHTML収集元と同じ共通HTTP設定を使う。
+        # 個別User-Agentとtimeoutの違いがTLSエラーに
+        # 影響しているかを切り分けるための低リスクな検証。
+        html = get_html(MAKER_DEVS_URL)
 
         soup = BeautifulSoup(
             html,
