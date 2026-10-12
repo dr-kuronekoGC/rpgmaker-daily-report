@@ -11,14 +11,14 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
             "source": "Source Check",
             "category": "SourceCheck",
             "title": "Sang Hendrix：ページ変化あり（要確認）",
-            "language": "英語・日本語（一部プラグイン対応）",
+            "language": "英語中心（日本語対応プラグインあり）",
         }
 
         assign_language_if_missing(item)
 
         self.assertEqual(
             item["language"],
-            "英語・日本語（一部プラグイン対応）",
+            "英語中心（日本語対応プラグインあり）",
         )
 
     def test_missing_language_can_still_be_inferred(self):
@@ -46,7 +46,7 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
         )
         self.assertIn("日本語", site["language"])
 
-    def test_manual_links_use_clear_heading_and_show_metadata(self):
+    def test_reference_links_use_clear_heading_and_show_metadata(self):
         lines = format_reference_sites()
         output = "\n".join(lines)
 
@@ -57,6 +57,7 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
         self.assertIn("GameDevMarket", output)
         self.assertIn("Maker Devs", output)
         self.assertIn("RPG Refuge", output)
+        self.assertIn("ページ変化を検知できたサイト", output)
 
 
 if __name__ == "__main__":
