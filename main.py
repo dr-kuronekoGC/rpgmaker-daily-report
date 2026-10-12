@@ -440,6 +440,7 @@ def main():
         report_items,
         review_items,
         carryover_review_items,
+        source_results=source_results,
     )
 
     print()
