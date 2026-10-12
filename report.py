@@ -655,11 +655,16 @@ def format_source_health_warnings(source_results=None):
     """
     lines = []
 
+    display_names = {
+        "official_source_check": "Source Check",
+    }
+
     for result in source_results or []:
         if not isinstance(result, dict):
             continue
 
         name = result.get("name", "unknown")
+        display_name = display_names.get(name, name)
         status = result.get("status")
 
         if status == "PARTIAL":
@@ -668,13 +673,13 @@ def format_source_health_warnings(source_results=None):
             failed = summary.get("failed", 0)
             total = checked + failed
             lines.append(
-                f"・{name}：一部失敗 "
+                f"・{display_name}：一部失敗 "
                 f"（確認 {checked}/{total}、失敗 {failed}件）"
             )
         elif status == "ERROR":
             error_type = result.get("error_type", "unknown")
             lines.append(
-                f"・{name}：取得失敗（{error_type}）"
+                f"・{display_name}：取得失敗（{error_type}）"
             )
 
     if not lines:
