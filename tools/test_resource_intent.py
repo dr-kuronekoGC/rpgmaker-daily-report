@@ -8,6 +8,7 @@ from asset_metadata import (
     classify_resource_intent,
     detect_engine,
 )
+from review_queue import prepare_classification_reviews
 
 
 class ResourceIntentTests(unittest.TestCase):
@@ -67,6 +68,45 @@ class ResourceIntentTests(unittest.TestCase):
         self.assertEqual(intent, "uncertain")
         self.assertEqual(confidence, "unknown")
         self.assertEqual(evidence, [])
+
+    def test_clear_resource_candidate_does_not_enter_human_queue(self):
+        queue = {"version": 1, "next_pre_number": 1, "items": []}
+        item = {
+            "internal_id": "ITEM-candidate",
+            "title": "Tileset pack",
+            "url": "https://example.com/tileset",
+            "resource_intent": "resource_candidate",
+            "classification_status": "needs_review",
+        }
+        self.assertEqual(prepare_classification_reviews([item], queue), [])
+        self.assertEqual(queue["items"], [])
+
+    def test_uncertain_item_with_resource_evidence_enters_human_queue(self):
+        queue = {"version": 1, "next_pre_number": 1, "items": []}
+        item = {
+            "internal_id": "ITEM-uncertain",
+            "title": "Something",
+            "url": "https://example.com/post",
+            "resource_intent": "uncertain",
+            "resource_intent_evidence": [
+                {"field": "source_tags_or_tags", "signal": "plugin"}
+            ],
+            "classification_status": "not_applicable",
+        }
+        reviews = prepare_classification_reviews([item], queue)
+        self.assertEqual(len(reviews), 1)
+        self.assertEqual(queue["items"][0]["status"], "open")
+
+    def test_legacy_items_keep_existing_review_behavior(self):
+        queue = {"version": 1, "next_pre_number": 1, "items": []}
+        item = {
+            "internal_id": "ITEM-legacy",
+            "title": "Legacy item",
+            "url": "https://example.com/legacy",
+            "classification_status": "needs_review",
+        }
+        reviews = prepare_classification_reviews([item], queue)
+        self.assertEqual(len(reviews), 1)
 
     def test_engine_is_detected_from_body_text(self):
         engines = detect_engine({
