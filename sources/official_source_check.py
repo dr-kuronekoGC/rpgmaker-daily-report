@@ -217,6 +217,9 @@ def get_items(seen):
                     "url": url,
                     "category": "SourceCheck",
                     "source": SOURCE_NAME,
+                    "resource_types": site.get("resource_types", []),
+                    "language": site.get("language"),
+                    "site_type": site.get("site_type"),
                 }
             )
 
