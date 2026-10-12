@@ -603,7 +603,7 @@ def format_source_check_metadata(item):
 
     language = item.get("language")
     if isinstance(language, str) and language.strip():
-        details.append("言語：" + language.strip())
+        details.append("主な言語：" + language.strip())
 
     site_type = item.get("site_type")
     if isinstance(site_type, str) and site_type.strip():
@@ -612,7 +612,7 @@ def format_source_check_metadata(item):
     return " / ".join(details)
 
 
-def format_manual_check_sites(sites=None):
+def format_reference_sites(sites=None):
     """
     個別素材を自動抽出できないサイトを、手動確認用リンクとして表示する。
     """
@@ -621,15 +621,16 @@ def format_manual_check_sites(sites=None):
 
     manual_sites = [
         site for site in sites
-        if isinstance(site, dict) and site.get("manual_review")
+        if isinstance(site, dict) and site.get("reference_only")
     ]
     if not manual_sites:
         return []
 
     lines = [
         "────────────────────",
-        "【📌 手動確認リンク】",
-        "個別素材の自動収集は行わないサイトです。対象分野・言語を参考に、リンク先で確認してください。",
+        "【📚 参考サイト（個別素材の自動収集対象外）】",
+        "個別素材の新着情報は掲載せず、サイト単位の参考リンクをまとめています。対象分野・主な言語を参考にしてください。",
+        "ページ変化を検知できたサイトは、上の「SOURCE CHECK：ページ変化」にも掲載します。",
     ]
 
     for site in manual_sites:
@@ -710,7 +711,7 @@ def build_report(items, review_items=None, carryover_items=None, source_results=
         if source_health_lines:
             report_lines.extend([""] + source_health_lines)
 
-        report_lines.extend([""] + format_manual_check_sites())
+        report_lines.extend([""] + format_reference_sites())
         return "\n".join(report_lines)
 
     categories = {}
@@ -1105,7 +1106,7 @@ def build_report(items, review_items=None, carryover_items=None, source_results=
 
 
     report.extend(
-        format_manual_check_sites()
+        format_reference_sites()
     )
 
     return "\n".join(report)
