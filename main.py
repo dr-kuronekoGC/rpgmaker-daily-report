@@ -167,6 +167,30 @@ def select_pending_items(
     )
 
 
+def assign_language_if_missing(item):
+    """
+    サイト側が明示した言語情報を優先する。
+    Source Checkのタイトルは日本語で生成されるため、
+    タイトルから再判定するとサイト言語を誤って上書きする。
+    """
+    if not isinstance(item, dict):
+        return None
+
+    if item.get("language"):
+        return item["language"]
+
+    language = detect_language(
+        title=item.get("title", ""),
+        description=item.get("description", ""),
+        tags=item.get("tags", []),
+    )
+
+    if language is not None:
+        item["language"] = language
+
+    return item.get("language")
+
+
 def main():
     pending_seen = []
     all_items = []
@@ -311,20 +335,7 @@ def main():
         )
 
     for item in all_items:
-        language = detect_language(
-            title=item.get("title", ""),
-            description=item.get(
-                "description",
-                "",
-            ),
-            tags=item.get(
-                "tags",
-                [],
-            ),
-        )
-
-        if language is not None:
-            item["language"] = language
+        assign_language_if_missing(item)
 
     all_items, new_global_seen = filter_global_seen(
         all_items,

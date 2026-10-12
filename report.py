@@ -607,7 +607,7 @@ def format_source_check_metadata(item):
 
     site_type = item.get("site_type")
     if isinstance(site_type, str) and site_type.strip():
-        details.append("形式：" + site_type.strip())
+        details.append("サイト種別：" + site_type.strip())
 
     return " / ".join(details)
 
@@ -628,8 +628,8 @@ def format_manual_check_sites(sites=None):
 
     lines = [
         "────────────────────",
-        "【🔎 要チェックサイト】",
-        "個別の素材情報は自動取得せず、リンク先で確認してください。",
+        "【📌 手動確認リンク】",
+        "個別素材の自動収集は行わないサイトです。対象分野・言語を参考に、リンク先で確認してください。",
     ]
 
     for site in manual_sites:
@@ -1075,7 +1075,7 @@ def build_report(items, review_items=None, carryover_items=None, source_results=
 
     if "SourceCheck" in categories:
         report.append(
-            "【SOURCE CHECK】"
+            "【SOURCE CHECK：ページ変化】"
         )
 
         for item in categories["SourceCheck"]:

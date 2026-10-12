@@ -181,7 +181,7 @@ SOURCE_CHECK_SITES = [
         "name": "Sang Hendrix",
         "url": "https://sanghendrix.itch.io/",
         "resource_types": ["プラグイン"],
-        "language": "英語",
+        "language": "英語・日本語（一部プラグイン対応）",
         "site_type": "プラグイン配布サイト",
     },
     {
