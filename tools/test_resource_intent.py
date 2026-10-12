@@ -122,6 +122,23 @@ class ResourceIntentTests(unittest.TestCase):
         reviews = prepare_classification_reviews([item], queue)
         self.assertEqual(len(reviews), 1)
 
+    def test_engine_aliases_in_titles_are_detected(self):
+        cases = [
+            ("[RMXP] Fantasy tileset", "XP"),
+            ("[VXA] Battle system", "VX Ace"),
+            ("[RMMV] Character pack", "MV"),
+            ("[RMMZ] Plugin", "MZ"),
+            ("[RM2K3] Sound pack", "2003"),
+            ("[RM2K] Tileset", "2000"),
+        ]
+        for title, expected in cases:
+            with self.subTest(title=title):
+                self.assertIn(expected, detect_engine({"title": title}))
+
+    def test_engine_aliases_do_not_match_unrelated_words(self):
+        self.assertEqual(detect_engine({"title": "United Kingdom concept art"}), ["汎用"])
+        self.assertEqual(detect_engine({"title": "A simple project for XP users"}), ["不明"])
+
     def test_engine_is_detected_from_body_text(self):
         engines = detect_engine({
             "title": "Tileset pack",
