@@ -877,8 +877,13 @@ def _is_non_asset_title(title):
         "project showcase",
         "compatibility",
         "compatible",
-        "engine",
-        "video",
+        # "engine" alone is common in actual plugin/resource titles
+        # (e.g. "ABS Engine Pro"), so it must not be a blanket exclusion.
+        # Likewise, "video" alone can refer to a plugin demo/release page.
+        # Keep only explicit gameplay/process media signals.
+        "gameplay video",
+        "making-of video",
+        "process video",
         "trailer",
         "ゲーム",
         "エンジン",
