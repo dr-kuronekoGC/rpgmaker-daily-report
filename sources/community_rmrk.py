@@ -92,7 +92,7 @@ def get_next_page_url(html, current_url):
     current_parts = urlparse(current_url)
     current_query = parse_qs(current_parts.query)
     current_board = current_query.get("board", [None])[0]
-    board_match = re.fullmatch(r"(\\d+)\\.(\\d+)", current_board or "")
+    board_match = re.fullmatch(r"(\d+)\.(\d+)", current_board or "")
     if board_match:
         board_id = board_match.group(1)
         current_offset = int(board_match.group(2))
@@ -104,7 +104,7 @@ def get_next_page_url(html, current_url):
             candidate = urljoin(current_url, href)
             query = parse_qs(urlparse(candidate).query)
             board_value = query.get("board", [None])[0]
-            match = re.fullmatch(r"(\\d+)\\.(\\d+)", board_value or "")
+            match = re.fullmatch(r"(\d+)\.(\d+)", board_value or "")
             if match and match.group(1) == board_id:
                 offset = int(match.group(2))
                 if offset > current_offset:
