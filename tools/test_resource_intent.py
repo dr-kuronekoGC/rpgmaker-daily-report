@@ -138,6 +138,20 @@ class ResourceIntentTests(unittest.TestCase):
             with self.subTest(title=title):
                 self.assertIn(expected, detect_engine({"title": title}))
 
+    def test_compact_engine_names_in_source_tags_are_detected(self):
+        cases = [
+            ("rpgmakerxp", "XP"),
+            ("rpgmakervxa", "VX Ace"),
+            ("rpgmakervxace", "VX Ace"),
+            ("rpgmakermv", "MV"),
+            ("rpgmakermz", "MZ"),
+            ("rpgmaker2000", "2000"),
+            ("rpgmaker2003", "2003"),
+        ]
+        for tag, expected in cases:
+            with self.subTest(tag=tag):
+                self.assertIn(expected, detect_engine({"title": "Resource pack", "source_tags": [tag]}))
+
     def test_engine_aliases_do_not_match_unrelated_words(self):
         self.assertEqual(detect_engine({"title": "United Kingdom concept art"}), ["汎用"])
         self.assertEqual(detect_engine({"title": "A simple project for XP users"}), ["不明"])
