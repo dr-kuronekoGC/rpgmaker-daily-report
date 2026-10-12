@@ -2,7 +2,7 @@ import unittest
 
 from config import SOURCE_CHECK_SITES
 from main import assign_language_if_missing
-from report import format_manual_check_sites, format_source_check_metadata
+from report import format_manual_check_sites
 
 
 class TestSourceCheckSiteMetadata(unittest.TestCase):
