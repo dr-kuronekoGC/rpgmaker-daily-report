@@ -209,12 +209,21 @@ def main():
                     new_seen,
                 )
             )
+
+            # Some collectors (currently Source Check) can finish a partial
+            # scan while safely preserving state for sites that failed.
+            summary = getattr(source, "LAST_RUN_SUMMARY", None)
+            is_partial = (
+                isinstance(summary, dict)
+                and summary.get("failed", 0) > 0
+            )
             source_results.append({
                 "name": collector_name,
-                "status": "OK",
+                "status": "PARTIAL" if is_partial else "OK",
                 "new_items": len(items),
                 "seen_before": seen_before,
                 "seen_after": len(new_seen),
+                "summary": summary,
             })
 
         except Exception as e:
@@ -232,21 +241,41 @@ def main():
         result["status"] == "OK"
         for result in source_results
     )
-    failed_sources = len(source_results) - successful_sources
+    partial_sources = sum(
+        result["status"] == "PARTIAL"
+        for result in source_results
+    )
+    failed_sources = sum(
+        result["status"] == "ERROR"
+        for result in source_results
+    )
 
     print(
         "[Source Health] "
         f"OK: {successful_sources}/{len(source_results)} / "
+        f"PARTIAL: {partial_sources} / "
         f"ERROR: {failed_sources}"
     )
     for result in source_results:
-        if result["status"] == "OK":
+        status = result["status"]
+        if status in ("OK", "PARTIAL"):
             print(
                 "[Source Health] "
-                f"{result['name']}: OK / "
+                f"{result['name']}: {status} / "
                 f"new={result['new_items']} / "
                 f"seen={result['seen_before']}->{result['seen_after']}"
             )
+            summary = result.get("summary")
+            if status == "PARTIAL" and isinstance(summary, dict):
+                print(
+                    "[Source Health] "
+                    f"{result['name']} details: "
+                    f"checked={summary.get('checked', 0)} / "
+                    f"updated={summary.get('updated', 0)} / "
+                    f"baseline={summary.get('baseline', 0)} / "
+                    f"unchanged={summary.get('unchanged', 0)} / "
+                    f"failed={summary.get('failed', 0)}"
+                )
         else:
             print(
                 "[Source Health] "
