@@ -80,7 +80,21 @@ def prepare_classification_reviews(items, queue):
     review_items = []
 
     for item in items:
-        if item.get("classification_status") != "needs_review":
+        resource_intent = item.get("resource_intent")
+
+        # New hierarchical triage:
+        # - clear non-resources do not enter the resource classification queue;
+        # - clear resource candidates continue with automatic detailed taxonomy;
+        # - all uncertain items enter human review; missing evidence is not
+        #   proof that an item is not a resource.
+        # Historical items without resource_intent keep the previous behavior.
+        if resource_intent == "not_resource":
+            continue
+
+        if resource_intent == "resource_candidate":
+            continue
+
+        if resource_intent != "uncertain" and item.get("classification_status") != "needs_review":
             continue
 
         internal_id = item.get("internal_id")
