@@ -167,6 +167,18 @@ SOURCE_CHECK_SITES = [
         "name": "Raizen Plugins",
         "url": "https://raizen884.itch.io/",
     },
+    {
+        "name": "GameDevMarket",
+        "url": "https://www.gamedevmarket.net/category/2d",
+    },
+    {
+        "name": "Maker Devs",
+        "url": "https://makerdevs.com/mz/master-list",
+    },
+    {
+        "name": "RPG Refuge（2D素材フォーラム）",
+        "url": "https://rpg-refuge.com/forums/2d-assets.57/",
+    },
 ]
 
 # ----------------------------
