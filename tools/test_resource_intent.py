@@ -138,6 +138,22 @@ class ResourceIntentTests(unittest.TestCase):
             with self.subTest(title=title):
                 self.assertIn(expected, detect_engine({"title": title}))
 
+    def test_github_mz_branch_overrides_mv_repository_name(self):
+        engines = detect_engine({
+            "title": "AccumulateState",
+            "url": "https://github.com/triacontane/RPGMakerMV/blob/mz_master/AccumulateState.js",
+        })
+        self.assertIn("MZ", engines)
+        self.assertNotIn("MV", engines)
+
+    def test_github_mv_branch_is_detected(self):
+        engines = detect_engine({
+            "title": "AccumulateState",
+            "url": "https://github.com/triacontane/RPGMakerMV/blob/mv_master/AccumulateState.js",
+        })
+        self.assertIn("MV", engines)
+        self.assertNotIn("MZ", engines)
+
     def test_compact_engine_names_in_source_tags_are_detected(self):
         cases = [
             ("rpgmakerxp", "XP"),

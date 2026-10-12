@@ -538,6 +538,19 @@ def detect_engine(
             ENGINE_UNITE
         )
 
+    # GitHub branch names can be more specific than the repository name.
+    # For example, Triacontane's RPGMakerMV repository uses mz_master for
+    # RPG Maker MZ variants; the repository name alone must not misclassify
+    # those files as MV.
+    if re.search(r"/(?:blob|tree)/mz_master(?:/|$)", url):
+        engines = [engine for engine in engines if engine != ENGINE_MV]
+        if ENGINE_MZ not in engines:
+            engines.append(ENGINE_MZ)
+    elif re.search(r"/(?:blob|tree)/mv_master(?:/|$)", url):
+        engines = [engine for engine in engines if engine != ENGINE_MZ]
+        if ENGINE_MV not in engines:
+            engines.append(ENGINE_MV)
+
     # --------------------------------------
     # その他ツクール
     # --------------------------------------
