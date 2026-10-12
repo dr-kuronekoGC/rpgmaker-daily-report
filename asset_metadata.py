@@ -422,18 +422,20 @@ def detect_engine(
     # RPG Maker VX
     # --------------------------------------
 
-    if (
+    explicit_vx_alias = re.search(
+        r"(?<![a-z0-9])(?:rmvx|\[vx\]|\[rmvx\]|vx(?=[/\]]))(?![a-z0-9])",
+        text,
+    )
+
+    if explicit_vx_alias or (
         ENGINE_VX_ACE not in engines
-        and (
-            _contains_any(
-                text,
-                (
-                    "rpg maker vx",
-                    "rpgmaker vx",
-                    "rpgツクールvx",
-                ),
-            )
-            or re.search(r"(?<![a-z0-9])(?:rmvx|\[vx\]|\[rmvx\])(?![a-z0-9])", text)
+        and _contains_any(
+            text,
+            (
+                "rpg maker vx",
+                "rpgmaker vx",
+                "rpgツクールvx",
+            ),
         )
     ):
         engines.append(
@@ -453,7 +455,7 @@ def detect_engine(
                 "rpgツクールxp",
             ),
         )
-        or re.search(r"(?<![a-z0-9])(?:rmxp|\[xp\]|\[rmxp\])(?![a-z0-9])", text)
+        or re.search(r"(?<![a-z0-9])(?:rmxp|\[xp\]|\[rmxp\]|xp(?=[/\]]))(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_XP
