@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "description": "RPG Maker information database common Item schema. Stable contract between collectors, archive, review, Slack and future WordPress.",
   "fields": {
     "internal_id": {
@@ -26,6 +26,33 @@
         "site_update",
         "other"
       ]
+    },
+    "resource_intent": {
+      "type": "string",
+      "required": false,
+      "enum": [
+        "resource_candidate",
+        "not_resource",
+        "uncertain"
+      ],
+      "description": "Broad first-stage resource/non-resource/uncertain triage; independent of detailed asset taxonomy."
+    },
+    "resource_intent_confidence": {
+      "type": "string|null",
+      "required": false,
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown",
+        null
+      ]
+    },
+    "resource_intent_evidence": {
+      "type": "array",
+      "required": false,
+      "items": "object",
+      "description": "Small, explainable evidence list for broad resource-intent triage."
     },
     "source_site_id": {
       "type": "string",
@@ -291,6 +318,8 @@
     "Keep human classification confirmation separate from automatic confidence so future re-enrichment does not silently turn uncertain classifications into facts.",
     "Evidence scoring is used for ambiguous detailed sound classification; weak or conflicting cases remain needs_review rather than being forced into a category.",
     "Detailed graphic and plugin categories use evidence scoring across source-native tags, title, category, description, URL, and asset tags. Multiple categories are retained only when they are strong and close to the leading evidence.",
-    "The classification pipeline is hierarchical: content/asset type first, detailed taxonomy second, confidence/review status third. A weak detailed classification remains needs_review rather than being forced."
+    "The classification pipeline is hierarchical: content/asset type first, detailed taxonomy second, confidence/review status third. A weak detailed classification remains needs_review rather than being forced.",
+    "Broad resource intent is recorded separately as resource_candidate, not_resource, or uncertain. Question/showcase context is a negative signal only when no concrete release/distribution evidence is present; paid price and external storefronts are not exclusion signals.",
+    "The resource-intent evidence is advisory and does not rewrite historical human review decisions."
   ]
 }
