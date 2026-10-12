@@ -1,0 +1,40 @@
+name: Engine Backfill Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "tools/audit_engine_backfill.py"
+      - "tools/test_engine_backfill_audit.py"
+      - ".github/workflows/engine-backfill-audit.yml"
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install project dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Test engine backfill audit
+        run: python -m unittest tools.test_engine_backfill_audit -v
+
+      - name: Audit historical archives without modifying them
+        env:
+          PYTHONPATH: .
+        run: python tools/audit_engine_backfill.py
+
+      - name: Upload engine backfill audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-backfill-audit
+          path: engine_backfill_audit.json
+          if-no-files-found: error
