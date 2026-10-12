@@ -554,9 +554,24 @@ def classify_guild_category(
     description="",
 ):
 
+    accepted_categories = {
+        "プラグイン",
+        "RPG Makerプラグイン",
+        "RGSSx",
+        "素材",
+        "質問",
+        "バグ報告",
+        "完成ゲーム",
+        "制作中ゲーム",
+        "雑談",
+        "お知らせ",
+    }
     category = (
-        actual_category or ""
-    ).strip()
+        actual_category
+        if actual_category in accepted_categories
+        else guild_category
+    )
+    category = (category or "").strip()
 
     # 質問・相談・バグ報告は、どのカテゴリに投稿されても
     # Daily Reportの収集対象にはしない。
