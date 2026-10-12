@@ -415,6 +415,7 @@ RPGMAKER_PTBR_SEEN_FILE = "seen_rpgmaker_ptbr.json"
 # Italian RPG Maker community
 # ----------------------------
 
+RPGMAKER_IT_FORUM_HOME = "https://www.rpg2s.it/forum/"
 RPGMAKER_IT_MZ_PLUGIN_URL = "https://www.rpg2s.it/forum/index.php?/forum/140-plugin-e-j097v097script-per-mz/"
 RPGMAKER_IT_SEEN_FILE = "seen_rpgmaker_it.json"
 
