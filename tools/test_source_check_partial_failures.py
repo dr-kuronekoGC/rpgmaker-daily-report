@@ -52,6 +52,15 @@ class TestSourceCheckPartialFailures(unittest.TestCase):
         self.assertIn("Working Site：ページ変化あり（要確認）", [item["title"] for item in items])
         self.assertIn("Baseline Site", new_seen)
 
+    def test_http_200_challenge_page_is_rejected(self):
+        response = unittest.mock.Mock()
+        response.text = "<html><title>Checking your browser</title></html>"
+        response.raise_for_status.return_value = None
+
+        with patch("sources.official_source_check.requests.get", return_value=response):
+            with self.assertRaisesRegex(ValueError, "Access challenge page"):
+                official_source_check.get_page("https://example.test/challenge")
+
     def test_access_challenge_page_is_counted_as_failure_and_not_saved(self):
         site = {
             "name": "Challenge Site",
