@@ -433,7 +433,7 @@ def detect_engine(
                     "rpgツクールvx",
                 ),
             )
-            or re.search(r"(?<![a-z0-9])(?:rmvx|\[vx\]|\[rmvx\])(?![a-z0-9])", text)
+            or re.search(r"(?<![a-z0-9])(?:rmvx|\[vx\]|\[rmvx\]|vx(?=[/\]]))(?![a-z0-9])", text)
         )
     ):
         engines.append(
@@ -453,7 +453,7 @@ def detect_engine(
                 "rpgツクールxp",
             ),
         )
-        or re.search(r"(?<![a-z0-9])(?:rmxp|\[xp\]|\[rmxp\])(?![a-z0-9])", text)
+        or re.search(r"(?<![a-z0-9])(?:rmxp|\[xp\]|\[rmxp\]|xp(?=[/\]]))(?![a-z0-9])", text)
     ):
         engines.append(
             ENGINE_XP
