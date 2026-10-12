@@ -197,7 +197,7 @@ def get_items(seen):
 
             adopted_items.append(
                 {
-                    "title": f"{name}：更新あり",
+                    "title": f"{name}：ページ変化あり（要確認）",
                     "url": url,
                     "category": "SourceCheck",
                     "source": SOURCE_NAME,
