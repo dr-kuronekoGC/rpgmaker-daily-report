@@ -42,7 +42,23 @@ def get_page(url):
         timeout=REQUEST_TIMEOUT,
     )
     response.raise_for_status()
-    return response.text
+    html = response.text
+
+    # Some hosts return an HTTP 200 challenge page instead of the requested
+    # content. Never store such a page as a valid baseline or page change.
+    lowered = html[:20000].lower()
+    challenge_markers = (
+        "checking your browser",
+        "/.stile/challenge",
+        "cf-chl-",
+        "verify you are human",
+    )
+    if any(marker in lowered for marker in challenge_markers):
+        raise ValueError(
+            "Access challenge page returned instead of monitored content"
+        )
+
+    return html
 
 
 def build_signature(html, base_url):
