@@ -437,3 +437,15 @@ MAKERANDO_SEEN_FILE = "seen_makerando.json"
 # ----------------------------
 
 RPG_REFUGE_SEEN_FILE = "seen_rpg_refuge.json"
+
+# ----------------------------
+# Additional resource forums
+# ----------------------------
+
+# RMRK: historical resource database; prioritize archival collection.
+RMRK_RESOURCE_URL = "https://rmrk.net/index.php?board=114.0"
+RMRK_SEEN_FILE = "seen_rmrk.json"
+
+# RPG Maker Network (RMN)
+RPGMAKER_NET_RESOURCES_URL = "https://rpgmaker.net/resources/"
+RPGMAKER_NET_SEEN_FILE = "seen_rpgmaker_net.json"
