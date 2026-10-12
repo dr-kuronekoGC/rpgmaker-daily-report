@@ -5,7 +5,6 @@ import requests
 from bs4 import BeautifulSoup
 
 from config import (
-    REQUEST_TIMEOUT,
     SOURCE_CHECK_SEEN_FILE,
     SOURCE_CHECK_SITES,
 )
