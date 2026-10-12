@@ -18,6 +18,24 @@ class RMRKCollectorTests(unittest.TestCase):
         self.assertEqual(source.classify("RGSS Script Collection"), "RMRKプラグイン・スクリプト")
         self.assertIsNone(source.classify("[Request] Need a tileset"))
 
+    def test_backfill_cursor_metadata_is_separate_from_topic_urls(self):
+        section = "https://rmrk.net/index.php?board=114.0"
+        next_page = "https://rmrk.net/index.php?board=114.40"
+        state = [
+            "https://rmrk.net/index.php?topic=123.0",
+            f"{source.CURSOR_PREFIX}{section}|{next_page}",
+            f"{source.DONE_PREFIX}https://rmrk.net/index.php?board=115.0",
+        ]
+
+        topic_urls, cursors, done_sections = source._read_backfill_state(state)
+        self.assertEqual(topic_urls, {"https://rmrk.net/index.php?topic=123.0"})
+        self.assertEqual(cursors[section], next_page)
+        self.assertIn("https://rmrk.net/index.php?board=115.0", done_sections)
+
+        stored = source._store_backfill_state(state, topic_urls, cursors, done_sections)
+        self.assertIn(f"{source.CURSOR_PREFIX}{section}|{next_page}", stored)
+        self.assertTrue(all(not entry.startswith("RMRK_CURSOR") for entry in topic_urls))
+
     def test_extracts_resource_topic_links(self):
         html = """
         <table><tr><td class="subject">
