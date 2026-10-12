@@ -418,6 +418,18 @@ RPGMAKER_PTBR_SEEN_FILE = "seen_rpgmaker_ptbr.json"
 RPGMAKER_IT_MZ_PLUGIN_URL = "https://www.rpg2s.it/forum/index.php?/forum/140-plugin-e-j097v097script-per-mz/"
 RPGMAKER_IT_SEEN_FILE = "seen_rpgmaker_it.json"
 
+# ----------------------------
+# Additional international resource forums
+# ----------------------------
+
+# RM Planet (XenForo public RSS feed)
+RMPLANET_RSS = "https://forum.rmplanet.com/forums/-/index.rss"
+RMPLANET_SEEN_FILE = "seen_rmplanet.json"
+
+# Makerando (Italian RPG Maker forum)
+MAKERANDO_FORUM_URL = "https://www.makerando.com/forum/"
+MAKERANDO_SEEN_FILE = "seen_makerando.json"
+
 
 # ----------------------------
 # RPG Refuge community forum
