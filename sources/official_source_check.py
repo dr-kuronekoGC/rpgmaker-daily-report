@@ -37,6 +37,11 @@ class AccessChallengeError(ValueError):
     """The server returned an access challenge instead of the requested page."""
 
 
+# Source Check runs several independent sites, so a stalled connection should
+# not hold the whole scheduled report for too long. Requests accepts a
+# (connect timeout, read timeout) tuple; keep read timeouts more generous.
+SOURCE_CHECK_TIMEOUT = (10, 20)
+
 # Retry one time for connection-level failures (e.g. TLS handshake errors).
 # HTTP errors such as 403 and read timeouts are not retried.
 TRANSIENT_CONNECTION_RETRIES = 1
@@ -76,7 +81,7 @@ def get_page(url):
         "get",
         url,
         headers=HEADERS,
-        timeout=REQUEST_TIMEOUT,
+        timeout=SOURCE_CHECK_TIMEOUT,
     )
     response.raise_for_status()
     html = response.text
@@ -108,7 +113,7 @@ def get_rss_signature(url, base_url):
         "get",
         url,
         headers=HEADERS,
-        timeout=REQUEST_TIMEOUT,
+        timeout=SOURCE_CHECK_TIMEOUT,
     )
     response.raise_for_status()
     content = response.text
@@ -141,7 +146,7 @@ def get_header_signature(url):
         "head",
         url,
         headers=HEADERS,
-        timeout=REQUEST_TIMEOUT,
+        timeout=SOURCE_CHECK_TIMEOUT,
         allow_redirects=True,
     )
     response.raise_for_status()
