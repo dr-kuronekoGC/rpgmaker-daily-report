@@ -45,7 +45,7 @@ class EngineBackfillAuditTests(unittest.TestCase):
     def test_explicit_multi_engine_signal_is_a_candidate(self):
         summary, candidates, conflicts = audit_records([{
             "internal_id": "ITEM-MULTI",
-            "title": "RPG Maker MV/MZ resource pack", "engine": ["MV"],
+            "title": "[RMMV/RMMZ] resource pack", "engine": ["MV"],
         }])
         self.assertEqual(summary["candidate_records"], 1)
         self.assertEqual(candidates[0]["new_specific_engines"], ["MZ"])
