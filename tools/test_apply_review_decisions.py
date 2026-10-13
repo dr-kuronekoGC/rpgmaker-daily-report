@@ -64,7 +64,7 @@ class ReviewDecisionImportTests(unittest.TestCase):
             {"pre_id": "PRE-00001", "decision": "material"},
         ]}
         with self.assertRaisesRegex(ValueError, "Duplicate decision"):
-            validate_decisions(make_queue(), payload)
+            validate_decisions(payload, make_queue())
 
     def test_empty_decision_batch_is_valid_noop(self):
         updated, summary = apply_decisions(make_queue(), {"decisions": []})
