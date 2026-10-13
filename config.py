@@ -449,3 +449,9 @@ RMRK_SEEN_FILE = "seen_rmrk.json"
 # RPG Maker Network (RMN)
 RPGMAKER_NET_RESOURCES_URL = "https://rpgmaker.net/resources/"
 RPGMAKER_NET_SEEN_FILE = "seen_rpgmaker_net.json"
+
+# ----------------------------
+# GameBanana RPG Maker resource communities (public RSS API)
+# ----------------------------
+GAMEBANANA_RSS = "https://api.gamebanana.com/Rss/New?gameid=5758,13221"
+GAMEBANANA_SEEN_FILE = "seen_gamebanana.json"

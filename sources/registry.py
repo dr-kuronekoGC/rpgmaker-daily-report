@@ -38,6 +38,7 @@ from . import (
     community_makerando,
     community_rmrk,
     community_rpgmaker_net,
+    community_gamebanana,
     official_source_check,
 )
 
@@ -76,5 +77,6 @@ SOURCES = [
     community_makerando,
     community_rmrk,
     community_rpgmaker_net,
+    community_gamebanana,
     official_source_check,
 ]
