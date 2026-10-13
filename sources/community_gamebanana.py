@@ -4,7 +4,8 @@ import feedparser
 import requests
 
 from config import GAMEBANANA_RSS, GAMEBANANA_SEEN_FILE
-from sources.base import HEADERS, REQUEST_TIMEOUT
+from config import REQUEST_TIMEOUT
+from sources.base import HEADERS
 
 
 SEEN_FILE = GAMEBANANA_SEEN_FILE
