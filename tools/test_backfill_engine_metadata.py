@@ -8,8 +8,12 @@ class EngineBackfillPreviewTests(unittest.TestCase):
         self.assertEqual(propose_engine_update(item), ["XP"])
         self.assertEqual(item["engine"], ["不明"])
 
-    def test_explicit_multi_engine_title_adds_engine(self):
+    def test_explicit_multi_engine_title_does_not_change_existing_specific_engine(self):
         item = {"title": "[XP/VX/VXA] Resource pack", "engine": ["XP"]}
+        self.assertIsNone(propose_engine_update(item))
+
+    def test_placeholder_with_explicit_multi_engine_title_adds_engines(self):
+        item = {"title": "[XP/VX/VXA] Resource pack", "engine": ["不明"]}
         self.assertEqual(set(propose_engine_update(item)), {"XP", "VX", "VX Ace"})
 
     def test_no_evidence_is_noop(self):

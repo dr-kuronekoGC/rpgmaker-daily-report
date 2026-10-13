@@ -37,10 +37,10 @@ def propose_engine_update(item):
     if not concrete:
         return None
     old_concrete = [name for name in old if name in SPECIFIC_ENGINES]
-    additions = [name for name in concrete if name not in old_concrete]
-    if not additions:
-        return None
-    if old_concrete and not set(old_concrete).intersection(concrete):
+    # Existing specific engine metadata is intentionally left untouched.
+    # Detector matches may come from broad tags or compatibility references,
+    # so only placeholder-only records are eligible for this bulk backfill.
+    if old_concrete:
         return None
     result = [name for name in old if name not in PLACEHOLDER_ENGINES]
     for name in concrete:
