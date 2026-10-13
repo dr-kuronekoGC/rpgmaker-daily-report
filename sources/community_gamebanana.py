@@ -1,7 +1,8 @@
 """Collect reusable RPG Maker resources listed on GameBanana's public RSS API."""
 
+import xml.etree.ElementTree as ET
+
 import requests
-from bs4 import BeautifulSoup
 
 from config import GAMEBANANA_RSS, GAMEBANANA_SEEN_FILE, REQUEST_TIMEOUT
 from sources.base import HEADERS
@@ -63,18 +64,16 @@ def classify(title, tags=""):
 
 
 def extract_feed_entries(xml_text):
-    """Parse GameBanana's public RSS response, including its nonstandard <items> wrapper."""
-    soup = BeautifulSoup(xml_text, "html.parser")
+    """Parse GameBanana's public RSS response, including its <items> wrapper."""
+    root = ET.fromstring(xml_text)
+    root_name = root.tag.rsplit("}", 1)[-1].lower()
+    if root_name != "rss":
+        raise ValueError("Response did not contain an RSS document")
+
     entries = []
-
-    for item in soup.find_all("item"):
-        title_tag = item.find("title")
-        link_tag = item.find("link")
-        if title_tag is None or link_tag is None:
-            continue
-
-        title = title_tag.get_text(" ", strip=True)
-        url = link_tag.get_text(" ", strip=True)
+    for item in root.findall(".//item"):
+        title = (item.findtext("title") or "").strip()
+        url = (item.findtext("link") or "").strip()
         if not title or not url:
             continue
 
@@ -89,7 +88,6 @@ def extract_feed_entries(xml_text):
 
     return entries
 
-
 def get_items(seen):
     if not isinstance(seen, list):
         seen = []
@@ -101,13 +99,8 @@ def get_items(seen):
             timeout=REQUEST_TIMEOUT,
         )
         response.raise_for_status()
+        # An empty feed is valid; malformed or blocked responses are not.
         entries = extract_feed_entries(response.content)
-        if not entries:
-            # An empty feed may be legitimate, so do not fail just because
-            # no currently listed item matched the supported URL types.
-            soup = BeautifulSoup(response.content, "html.parser")
-            if soup.find("rss") is None:
-                raise ValueError("Response did not contain an RSS document")
     except Exception as exc:
         print(f"[{SOURCE_NAME}] RSS error: {exc}")
         return [], seen
