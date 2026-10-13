@@ -1,6 +1,8 @@
 import unittest
+from unittest.mock import Mock, patch
 
-from sources.community_gamebanana import classify, extract_feed_entries
+from sources.community_gamebanana import classify, extract_feed_entries, get_items
+from config import GAMEBANANA_RSS_URLS
 
 
 class GameBananaCollectorTests(unittest.TestCase):
@@ -51,6 +53,27 @@ class GameBananaCollectorTests(unittest.TestCase):
                 {"title": "Sound pack", "link": "https://gamebanana.com/sounds/104"},
             ],
         )
+
+    def test_fetches_mv_and_mz_feeds_separately(self):
+        xml = """<?xml version="1.0"?>
+        <rss version="2.0"><items>
+          <item><title>Fantasy Tileset Pack</title><link>https://gamebanana.com/mods/100</link></item>
+        </items></rss>"""
+        responses = []
+        for _ in GAMEBANANA_RSS_URLS:
+            response = Mock()
+            response.content = xml.encode("utf-8")
+            response.raise_for_status.return_value = None
+            responses.append(response)
+
+        with patch("sources.community_gamebanana.requests.get", side_effect=responses) as get:
+            items, seen = get_items([])
+
+        self.assertEqual(get.call_count, 2)
+        self.assertEqual([call.args[0] for call in get.call_args_list], list(GAMEBANANA_RSS_URLS))
+        # Initial collection establishes a baseline rather than flooding Slack.
+        self.assertEqual(items, [])
+        self.assertEqual(seen, ["https://gamebanana.com/mods/100"])
 
     def test_non_rss_response_is_rejected(self):
         with self.assertRaises(ValueError):
