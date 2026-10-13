@@ -11,6 +11,9 @@ on:
       - "tools/backfill_engine_metadata.py"
       - "tools/test_engine_backfill_audit.py"
       - "tools/test_backfill_engine_metadata.py"
+      - "tools/prepare_engine_backfill_pr.py"
+      - "tools/test_prepare_engine_backfill_pr.py"
+      - ".github/workflows/prepare-engine-backfill-pr.yml"
       - ".github/workflows/engine-backfill-audit.yml"
   push:
     branches: [main]
@@ -42,6 +45,7 @@ jobs:
         run: |
           python -m unittest tools.test_engine_backfill_audit -v
           python -m unittest tools.test_backfill_engine_metadata -v
+          python -m unittest tools.test_prepare_engine_backfill_pr -v
 
       - name: Audit historical archives without modifying them
         env:
