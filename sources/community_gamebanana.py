@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 import requests
 
-from config import GAMEBANANA_RSS, GAMEBANANA_SEEN_FILE, REQUEST_TIMEOUT
+from config import GAMEBANANA_RSS_URLS, GAMEBANANA_SEEN_FILE, REQUEST_TIMEOUT
 from sources.base import HEADERS
 
 
@@ -92,18 +92,31 @@ def get_items(seen):
     if not isinstance(seen, list):
         seen = []
 
-    try:
-        response = requests.get(
-            GAMEBANANA_RSS,
-            headers=HEADERS,
-            timeout=REQUEST_TIMEOUT,
-        )
-        response.raise_for_status()
-        # An empty feed is valid; malformed or blocked responses are not.
-        entries = extract_feed_entries(response.content)
-    except Exception as exc:
-        print(f"[{SOURCE_NAME}] RSS error: {exc}")
+    entries_by_url = {}
+    successful_feeds = 0
+
+    for feed_url in GAMEBANANA_RSS_URLS:
+        try:
+            response = requests.get(
+                feed_url,
+                headers=HEADERS,
+                timeout=REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+            # An empty feed is valid; malformed or blocked responses are not.
+            feed_entries = extract_feed_entries(response.content)
+            successful_feeds += 1
+            for entry in feed_entries:
+                entries_by_url[entry["link"]] = entry
+        except Exception as exc:
+            print(f"[{SOURCE_NAME}] RSS error ({feed_url}): {exc}")
+
+    # Preserve state if every endpoint failed; do not mistake a blocked response
+    # for an empty feed and advance the baseline.
+    if successful_feeds == 0:
         return [], seen
+
+    entries = list(entries_by_url.values())
 
     new_seen = list(seen)
     seen_set = set(seen)
