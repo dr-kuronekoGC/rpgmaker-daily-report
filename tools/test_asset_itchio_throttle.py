@@ -4,13 +4,13 @@ from datetime import datetime, timedelta, timezone
 from sources.asset_itchio import (
     LAST_FETCH_PREFIX,
     MIN_FETCH_INTERVAL,
-    _get_last_successful_fetch,
+    _get_last_attempt,
     _should_skip_fetch,
 )
 
 
 class ItchIoThrottleTests(unittest.TestCase):
-    def test_skips_when_last_successful_check_was_less_than_24_hours_ago(self):
+    def test_skips_when_last_attempt_was_less_than_24_hours_ago(self):
         now = datetime(2026, 10, 14, 12, 0, tzinfo=timezone.utc)
         last_check = now - timedelta(hours=23)
         seen = [LAST_FETCH_PREFIX + last_check.isoformat()]
