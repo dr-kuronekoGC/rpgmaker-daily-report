@@ -75,7 +75,7 @@ def get_items(seen):
 
     if _should_skip_fetch(seen):
         print(
-            "[itch.io a] Skipped: last successful check was less than "
+            "[itch.io a] Skipped: last request attempt was less than "
             f"{MIN_FETCH_INTERVAL.total_seconds() / 3600:g} hours ago."
         )
         return [], seen
