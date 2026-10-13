@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from config import (
     RPGMAKER_IT_FORUM_HOME,
     RPGMAKER_IT_MZ_PLUGIN_URL,
+    RPGMAKER_IT_MV_PLUGIN_URL,
     RPGMAKER_IT_SEEN_FILE,
 )
 from sources.base import get_html
@@ -16,7 +17,7 @@ from sources.base import get_html
 SEEN_FILE = RPGMAKER_IT_SEEN_FILE
 SOURCE_NAME = "Rpg2S IT"
 BASE_URL = "https://www.rpg2s.it"
-MAX_SECTION_PAGES = 3
+MAX_SECTION_PAGES = 2
 
 QUESTION_MARKERS = (
     "richiesta", "richieste", "aiuto", "supporto", "come fare",
@@ -59,7 +60,7 @@ def find_section_urls(html):
             continue
 
         section_type = None
-        if label == "grafica":
+        if label.startswith("donazione risorse grafiche ") and label.rsplit(" ", 1)[-1] in {"mz", "mv"}:
             section_type = "graphics"
         elif label == "donazione risorse sonore":
             section_type = "sound"
@@ -166,7 +167,10 @@ def get_items(seen):
         print(f"[{SOURCE_NAME}] Homepage error: {exc}")
         homepage = ""
 
-    pages = [(RPGMAKER_IT_MZ_PLUGIN_URL, "plugin")]
+    pages = [
+        (RPGMAKER_IT_MZ_PLUGIN_URL, "plugin"),
+        (RPGMAKER_IT_MV_PLUGIN_URL, "plugin"),
+    ]
     if homepage:
         pages.extend(find_section_urls(homepage).items())
 
