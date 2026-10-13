@@ -111,7 +111,7 @@ def get_rss_signature(url, base_url):
         "get",
         url,
         headers=HEADERS,
-        timeout=REQUEST_TIMEOUT,
+        timeout=SOURCE_CHECK_TIMEOUT,
     )
     response.raise_for_status()
     content = response.text
@@ -144,7 +144,7 @@ def get_header_signature(url):
         "head",
         url,
         headers=HEADERS,
-        timeout=REQUEST_TIMEOUT,
+        timeout=SOURCE_CHECK_TIMEOUT,
         allow_redirects=True,
     )
     response.raise_for_status()
