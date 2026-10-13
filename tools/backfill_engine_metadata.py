@@ -26,7 +26,8 @@ def _as_engine_list(value):
 
 
 def _specific_engines(item):
-    return [name for name in detect_engine(item) if name in SPECIFIC_ENGINES]
+    metadata_only = {key: value for key, value in item.items() if key != "engine"}
+    return [name for name in detect_engine(metadata_only) if name in SPECIFIC_ENGINES]
 
 
 def propose_engine_update(item):
