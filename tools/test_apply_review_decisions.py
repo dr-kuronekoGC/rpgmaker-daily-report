@@ -46,8 +46,8 @@ class ReviewDecisionImportTests(unittest.TestCase):
     def test_conflicting_decision_for_resolved_item_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "already resolved"):
             validate_decisions(
-                make_queue(),
                 {"decisions": [{"pre_id": "PRE-00002", "decision": "not_applicable", "note": "different"}]},
+                make_queue(),
             )
 
     def test_identical_already_applied_decision_is_idempotent(self):
