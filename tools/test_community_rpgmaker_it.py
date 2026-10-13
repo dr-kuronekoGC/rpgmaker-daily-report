@@ -37,16 +37,20 @@ class ItalianCommunityTests(unittest.TestCase):
             classify("Richiesta risorse sonore", section_type="sound")
         )
 
-    def test_discovers_graphics_and_sound_sections(self):
+    def test_discovers_dedicated_mz_mv_graphics_and_sound_sections(self):
         html = """
         <a href="/forum/index.php?/forum/11-grafica/">Grafica</a>
+        <a href="/forum/index.php?/forum/148-donazione-risorse-grafiche-mz/">Donazione risorse grafiche MZ</a>
+        <a href="/forum/index.php?/forum/149-donazione-risorse-grafiche-mv/">Donazione risorse grafiche MV</a>
         <a href="/forum/index.php?/forum/22-donazione-risorse-sonore/">Donazione Risorse Sonore</a>
+        <a href="/forum/index.php?/forum/150-richiesta-risorse-grafiche-mz/">Richiesta risorse grafiche MZ</a>
         <a href="/forum/index.php?/topic/12345-sample/">Sample topic</a>
         """
         self.assertEqual(
             find_section_urls(html),
             {
-                "https://www.rpg2s.it/forum/index.php?/forum/11-grafica/": "graphics",
+                "https://www.rpg2s.it/forum/index.php?/forum/148-donazione-risorse-grafiche-mz/": "graphics",
+                "https://www.rpg2s.it/forum/index.php?/forum/149-donazione-risorse-grafiche-mv/": "graphics",
                 "https://www.rpg2s.it/forum/index.php?/forum/22-donazione-risorse-sonore/": "sound",
             },
         )
