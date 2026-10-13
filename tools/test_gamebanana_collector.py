@@ -1,4 +1,5 @@
 import unittest
+import xml.etree.ElementTree as ET
 
 from sources.community_gamebanana import classify, extract_feed_entries
 
@@ -52,8 +53,9 @@ class GameBananaCollectorTests(unittest.TestCase):
             ],
         )
 
-    def test_non_rss_response_has_no_entries(self):
-        self.assertEqual(extract_feed_entries("<html>blocked</html>"), [])
+    def test_non_rss_response_is_rejected(self):
+        with self.assertRaises(ET.ParseError):
+            extract_feed_entries("<html>blocked</html>")
 
 
 if __name__ == "__main__":
