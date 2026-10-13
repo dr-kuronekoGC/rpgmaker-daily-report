@@ -1,1 +1,1 @@
-Regenerate preview with conservative engine backfill rules.
+Regenerate preview from main archive inputs using conservative rules.
