@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only audit of engine metadata candidates and conflicting detections."""
+"""Read-only audit of engine metadata candidates and records needing review."""
 import json
 from collections import Counter
 from pathlib import Path
@@ -32,6 +32,7 @@ def _evidence_fields(item):
 def audit_records(records, source_file=""):
     summary = Counter()
     candidates = []
+    review_records = []
     conflicts = []
     for item in records:
         if not isinstance(item, dict):
@@ -56,20 +57,32 @@ def audit_records(records, source_file=""):
             "old_engine": old, "proposed_engine": detected,
             "new_specific_engines": additions, "evidence": _evidence_fields(item),
         }
-        if old_concrete and not set(old_concrete).intersection(concrete):
-            summary["engine_conflict_records"] += 1
-            conflicts.append(record)
+        if old_concrete:
+            # Any extra detection on a record with an already-specific engine
+            # requires human review. Even overlapping detections can be caused
+            # by broad tags or compatibility references and are not bulk-safe.
+            if not set(old_concrete).intersection(concrete):
+                summary["engine_conflict_records"] += 1
+                conflicts.append(record)
+            else:
+                summary["existing_engine_addition_review_records"] += 1
+                review_records.append(record)
             continue
+
+        # Only records without a specific engine are safe bulk-backfill
+        # candidates. Existing specific values are never auto-expanded.
         summary["candidate_records"] += 1
         for engine in additions:
             summary["candidate_engine_" + engine.replace(" ", "_")] += 1
         candidates.append(record)
-    return dict(summary), candidates, conflicts
+
+    summary["existing_engine_addition_review_records"] += 0
+    return dict(summary), candidates, review_records, conflicts
 
 
 def main():
     totals = Counter()
-    candidates, conflicts = [], []
+    candidates, review_records, conflicts = [], [], []
     files_read, files_skipped, per_file = 0, [], {}
     for path in sorted(ARCHIVE_DIR.glob("????-??.json")):
         try:
@@ -89,24 +102,32 @@ def main():
             files_skipped.append({"file": str(path), "reason": "records are not a list"})
             continue
         files_read += 1
-        summary, file_candidates, file_conflicts = audit_records(records, str(path))
+        summary, file_candidates, file_review_records, file_conflicts = audit_records(records, str(path))
         per_file[str(path)] = summary
         totals.update(summary)
         candidates.extend(file_candidates)
+        review_records.extend(file_review_records)
         conflicts.extend(file_conflicts)
     report = {
         "mode": "read_only_audit", "files_read": files_read,
         "files_skipped": files_skipped, "summary": dict(totals),
         "per_file_summary": per_file, "candidate_count": len(candidates),
-        "candidates": candidates, "conflict_count": len(conflicts),
-        "conflicts": conflicts,
-        "note": "Suggestions only. No archive, review ledger, or seen-state file was modified.",
+        "candidates": candidates,
+        "existing_engine_addition_review_count": len(review_records),
+        "existing_engine_addition_review_records": review_records,
+        "conflict_count": len(conflicts), "conflicts": conflicts,
+        "note": (
+            "Suggestions only. No archive, review ledger, or seen-state file was modified. "
+            "Candidates have no existing specific engine; records with an existing specific "
+            "engine and additional detections are separated for human review."
+        ),
     }
     OUTPUT_FILE.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[Engine audit] Files read: {files_read}")
     print(f"[Engine audit] Files skipped: {len(files_skipped)}")
     print(f"[Engine audit] Records scanned: {totals['records']}")
     print(f"[Engine audit] Safe candidate records: {len(candidates)}")
+    print(f"[Engine audit] Existing-engine additions needing review: {len(review_records)}")
     print(f"[Engine audit] Conflicting engine records: {len(conflicts)}")
     print(f"[Engine audit] Report: {OUTPUT_FILE}")
 
