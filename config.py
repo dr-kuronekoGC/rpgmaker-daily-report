@@ -454,5 +454,10 @@ RPGMAKER_NET_SEEN_FILE = "seen_rpgmaker_net.json"
 # ----------------------------
 # GameBanana RPG Maker resource communities (public RSS API)
 # ----------------------------
-GAMEBANANA_RSS = "https://api.gamebanana.com/Rss/New?gameid=5758,13221"
+# The RSS endpoint accepts one gameid per request (unlike Core/List/New).
+# Query MV and MZ separately; request the maximum documented RSS page size.
+GAMEBANANA_RSS_URLS = (
+    "https://api.gamebanana.com/Rss/New?gameid=5758&perpage=50",
+    "https://api.gamebanana.com/Rss/New?gameid=13221&perpage=50",
+)
 GAMEBANANA_SEEN_FILE = "seen_gamebanana.json"
