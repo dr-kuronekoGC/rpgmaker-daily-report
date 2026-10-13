@@ -527,7 +527,7 @@ def format_carryover_pre_ids(carryover_items, max_ranges=5):
         if isinstance(item, dict)
         for pre_id in [item.get("pre_id")]
         if isinstance(pre_id, str)
-        for match in [re.fullmatch(r"PRE-(\\d{5})", pre_id)]
+        for match in [re.fullmatch(r"PRE-(\d{5})", pre_id)]
         if match
     })
 
