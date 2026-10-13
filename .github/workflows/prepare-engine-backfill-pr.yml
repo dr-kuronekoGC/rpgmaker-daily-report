@@ -1,0 +1,88 @@
+name: Prepare Historical Engine Backfill PR
+
+on:
+  push:
+    branches:
+      - backfill/engine-metadata-preview
+    paths:
+      - ".backfill-engine-metadata-preview.trigger"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout backfill branch
+        uses: actions/checkout@v4
+        with:
+          ref: backfill/engine-metadata-preview
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install project dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Test engine backfill tools
+        run: |
+          python -m unittest tools.test_engine_backfill_audit -v
+          python -m unittest tools.test_backfill_engine_metadata -v
+          python -m unittest tools.test_prepare_engine_backfill_pr -v
+
+      - name: Generate read-only engine backfill preview
+        env:
+          PYTHONPATH: .
+        run: |
+          python tools/audit_engine_backfill.py
+          python tools/backfill_engine_metadata.py
+
+      - name: Validate and stage only engine metadata changes
+        env:
+          PYTHONPATH: .
+        run: |
+          python tools/prepare_engine_backfill_pr.py
+          rm .backfill-engine-metadata-preview.trigger
+          git add -u data/archive .backfill-engine-metadata-preview.trigger
+          git diff --cached --check
+          git diff --cached --name-only > /tmp/staged-files.txt
+          if grep -Ev '^(data/archive/[0-9]{4}-[0-9]{2}\.json|\.backfill-engine-metadata-preview\.trigger)$' /tmp/staged-files.txt; then
+            echo "Unexpected file staged; aborting."
+            exit 1
+          fi
+          if ! grep -q '^data/archive/' /tmp/staged-files.txt; then
+            echo "No archive metadata changes were generated."
+            exit 1
+          fi
+
+      - name: Commit validated archive metadata
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Backfill historical RPG Maker engine metadata"
+          git push origin HEAD:backfill/engine-metadata-preview
+
+      - name: Open reviewable pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr create \
+            --base main \
+            --head backfill/engine-metadata-preview \
+            --title "Backfill historical RPG Maker engine metadata" \
+            --body "## Summary
+          - Backfill engine metadata for historical archive entries using the current engine detector.
+          - Change only the `engine` field; archive order, item IDs, classifications, descriptions, review decisions, and state files are preserved.
+          - Keep records with conflicting specific-engine evidence unchanged for manual review.
+
+          ## Validation
+          - The backfill preview tests and audit tests run before commit.
+          - A structural validator confirms that no non-engine fields changed.
+          - Only monthly `data/archive/YYYY-MM.json` files are included in this PR.
+
+          The archive files were generated from a preview and are ready for diff review; they are not applied to main automatically."
