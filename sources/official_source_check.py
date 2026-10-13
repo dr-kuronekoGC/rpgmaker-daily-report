@@ -5,7 +5,6 @@ import requests
 from bs4 import BeautifulSoup
 
 from config import (
-    REQUEST_TIMEOUT,
     SOURCE_CHECK_SEEN_FILE,
     SOURCE_CHECK_SITES,
 )
@@ -36,6 +35,10 @@ HEADER_CHECK_FALLBACK_SITES = {
 class AccessChallengeError(ValueError):
     """The server returned an access challenge instead of the requested page."""
 
+
+# Source Check visits several independent sites. Use separate connect/read
+# timeouts so unreachable hosts cannot hold the scheduled report too long.
+SOURCE_CHECK_TIMEOUT = (10, 20)
 
 # Retry one time for connection-level failures (e.g. TLS handshake errors).
 # HTTP errors such as 403 and read timeouts are not retried.
@@ -76,7 +79,7 @@ def get_page(url):
         "get",
         url,
         headers=HEADERS,
-        timeout=REQUEST_TIMEOUT,
+        timeout=SOURCE_CHECK_TIMEOUT,
     )
     response.raise_for_status()
     html = response.text
