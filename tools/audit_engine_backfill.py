@@ -43,7 +43,7 @@ def audit_records(records, source_file=""):
             summary["records_with_unknown_engine"] += 1
         if "その他RPG Maker" in old:
             summary["records_with_generic_rpg_maker"] += 1
-        detected = detect_engine(item)
+        detected = detect_engine({key: value for key, value in item.items() if key != "engine"})
         concrete = [engine for engine in detected if engine in SPECIFIC_ENGINES]
         old_concrete = [engine for engine in old if engine in SPECIFIC_ENGINES]
         additions = [engine for engine in concrete if engine not in old_concrete]
