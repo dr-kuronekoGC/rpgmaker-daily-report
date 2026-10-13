@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Create a reviewable preview of historical RPG Maker engine metadata backfill.
+"""Create a preview of historical RPG Maker engine metadata changes.
 
-Default mode writes transformed copies and a JSON report under
-engine_backfill_preview/. It never edits data/archive. Use --apply only when
-intentionally ready to modify the source archive files.
+This tool is deliberately read-only with respect to data/archive. It writes
+transformed copies and a change/conflict report under engine_backfill_preview/.
 """
 import argparse
 import json
@@ -40,7 +39,6 @@ def propose_engine_update(item):
     additions = [name for name in concrete if name not in old_concrete]
     if not additions:
         return None
-    # Disjoint old/new engine sets indicate a conflict, not compatibility.
     if old_concrete and not set(old_concrete).intersection(concrete):
         return None
     result = [name for name in old if name not in PLACEHOLDER_ENGINES]
@@ -88,12 +86,10 @@ def transform_archive_data(data, source_file=""):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--apply", action="store_true", help="Modify archive files in place (default is preview-only).")
     parser.add_argument("--output-dir", default=str(PREVIEW_DIR), help="Directory for preview copies and report.")
     args = parser.parse_args()
     output_dir = Path(args.output_dir)
-    if not args.apply:
-        output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     all_changes, all_conflicts = [], []
     files_read, files_skipped, per_file = 0, [], {}
@@ -115,24 +111,18 @@ def main():
                 if engine not in change["old_engine"]
             )),
         }
-        if args.apply:
-            path.write_text(json.dumps(transformed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        else:
-            (output_dir / path.name).write_text(
-                json.dumps(transformed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-            )
+        (output_dir / path.name).write_text(
+            json.dumps(transformed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
 
     report = {
-        "mode": "apply" if args.apply else "preview_only",
-        "files_read": files_read, "files_skipped": files_skipped,
+        "mode": "preview_only", "files_read": files_read, "files_skipped": files_skipped,
         "records_changed": len(all_changes), "conflict_count": len(all_conflicts),
         "per_file": per_file, "changes": all_changes, "conflicts": all_conflicts,
-        "note": "Archive files were modified in place." if args.apply
-                else "Preview copies only; source archive files were not modified.",
+        "note": "Preview copies only; source archive files were not modified.",
     }
-    report_path = (output_dir / REPORT_NAME) if not args.apply else Path(REPORT_NAME)
+    report_path = output_dir / REPORT_NAME
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"[Engine backfill] Mode: {report['mode']}")
     print(f"[Engine backfill] Files read: {files_read}")
     print(f"[Engine backfill] Files skipped: {len(files_skipped)}")
     print(f"[Engine backfill] Records changed: {len(all_changes)}")
