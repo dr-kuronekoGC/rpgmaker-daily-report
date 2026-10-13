@@ -15,7 +15,7 @@ from pathlib import Path
 
 DEFAULT_LEDGER = Path("data/review/classification_review.json")
 DEFAULT_DECISIONS = Path("data/review/review_decisions.json")
-PRE_ID_PATTERN = re.compile(r"^PRE-\\d{5}$")
+PRE_ID_PATTERN = re.compile(r"^PRE-\d{5}$")
 JST = timezone(timedelta(hours=9))
 
 
