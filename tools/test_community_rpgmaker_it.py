@@ -50,7 +50,7 @@ class ItalianCommunityTests(unittest.TestCase):
             find_section_urls(html),
             {
                 "https://www.rpg2s.it/forum/index.php?/forum/148-donazione-risorse-grafiche-mz/": "graphics",
-                "https://www.rpg2s.it/forum/index.php?/forum/149-donazione-risorse-grafiche-mv/": "graphics",
+                "https://www.rpg2s.it/forum/index.php?/forum/128-donazione-risorse-grafiche-mv/": "graphics",
                 "https://www.rpg2s.it/forum/index.php?/forum/18-donazione-risorse-sonore/": "sound",
             },
         )
