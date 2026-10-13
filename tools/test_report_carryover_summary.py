@@ -36,7 +36,7 @@ class ReviewCarryoverSummaryTests(unittest.TestCase):
         items = [{"pre_id": f"PRE-{number:05d}", "created_report_date": "2026-09-22"} for number in range(107, 226)]
         result = format_review_summary([], items)
         self.assertIn("119件", result)
-        self.assertIn("PRE-00107〜PRE-00225", result[3])
+        self.assertIn("PRE-00107〜PRE-00225", result[4])
         self.assertLess(len(result[3]), 60)
         self.assertNotIn("PRE-00108", result[3])
 
