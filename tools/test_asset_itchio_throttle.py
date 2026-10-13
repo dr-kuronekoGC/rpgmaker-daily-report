@@ -34,7 +34,7 @@ class ItchIoThrottleTests(unittest.TestCase):
             LAST_FETCH_PREFIX + expected.isoformat(),
         ]
 
-        self.assertEqual(_get_last_successful_fetch(seen), expected)
+        self.assertEqual(_get_last_attempt(seen), expected)
 
 
 if __name__ == "__main__":
