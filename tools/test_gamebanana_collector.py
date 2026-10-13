@@ -40,6 +40,7 @@ class GameBananaCollectorTests(unittest.TestCase):
           <item><title>Editor error</title><link>https://gamebanana.com/questions/101</link></item>
           <item><title>My game demo</title><link>https://gamebanana.com/wips/102</link></item>
           <item><title>Plugin helper</title><link>https://gamebanana.com/tools/103</link></item>
+          <item><title>Sound pack</title><link>https://gamebanana.com/sounds/104</link></item>
         </items></rss>"""
         entries = extract_feed_entries(xml)
         self.assertEqual(
@@ -47,10 +48,11 @@ class GameBananaCollectorTests(unittest.TestCase):
             [
                 {"title": "Fantasy Tileset Pack", "link": "https://gamebanana.com/mods/100"},
                 {"title": "Plugin helper", "link": "https://gamebanana.com/tools/103"},
+                {"title": "Sound pack", "link": "https://gamebanana.com/sounds/104"},
             ],
         )
 
-    def test_empty_non_rss_response_is_rejected_by_parser(self):
+    def test_non_rss_response_has_no_entries(self):
         self.assertEqual(extract_feed_entries("<html>blocked</html>"), [])
 
 
