@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 
 from common import (
@@ -516,6 +517,50 @@ def get_oldest_review_label(review_items):
     return candidates[0][1]
 
 
+def format_carryover_pre_ids(carryover_items, max_ranges=5):
+    """
+    Carryover PRE IDsを連続範囲にまとめ、Slackの冒頭を短く保つ。
+    """
+    numbers = sorted({
+        int(match.group(1))
+        for item in (carryover_items or [])
+        if isinstance(item, dict)
+        for pre_id in [item.get("pre_id")]
+        if isinstance(pre_id, str)
+        for match in [re.fullmatch(r"PRE-(\d{5})", pre_id)]
+        if match
+    })
+
+    if not numbers:
+        return None
+
+    ranges = []
+    start = previous = numbers[0]
+    for number in numbers[1:]:
+        if number == previous + 1:
+            previous = number
+            continue
+        ranges.append((start, previous))
+        start = previous = number
+    ranges.append((start, previous))
+
+    def format_range(start_number, end_number):
+        first = f"PRE-{start_number:05d}"
+        if start_number == end_number:
+            return first
+        return f"{first}〜PRE-{end_number:05d}"
+
+    if len(ranges) <= max_ranges:
+        label = "、".join(format_range(start, end) for start, end in ranges)
+    else:
+        shown_ranges = ranges[:max_ranges]
+        shown_count = sum(end - start + 1 for start, end in shown_ranges)
+        shown = "、".join(format_range(start, end) for start, end in shown_ranges)
+        label = f"{shown}、ほか{len(numbers) - shown_count}件"
+
+    return f"対象ID：{label}"
+
+
 def format_review_summary(
     review_items,
     carryover_items=None,
@@ -558,16 +603,9 @@ def format_review_summary(
         lines.append("【⏳ 前回までの持ち越し】")
         lines.append(f"{len(carryover_items)}件")
 
-        pre_ids = [
-            item.get("pre_id")
-            for item in carryover_items
-            if item.get("pre_id")
-        ]
-
-        if pre_ids:
-            lines.append(
-                "・" + "、".join(pre_ids)
-            )
+        pre_id_summary = format_carryover_pre_ids(carryover_items)
+        if pre_id_summary:
+            lines.append(f"・{pre_id_summary}")
 
         oldest = get_oldest_review_label(
             carryover_items
