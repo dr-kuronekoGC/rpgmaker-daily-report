@@ -1,10 +1,9 @@
 """Collect reusable RPG Maker resources listed on GameBanana's public RSS API."""
 
-import feedparser
 import requests
+from bs4 import BeautifulSoup
 
-from config import GAMEBANANA_RSS, GAMEBANANA_SEEN_FILE
-from config import REQUEST_TIMEOUT
+from config import GAMEBANANA_RSS, GAMEBANANA_SEEN_FILE, REQUEST_TIMEOUT
 from sources.base import HEADERS
 
 
@@ -40,17 +39,6 @@ def _normalize(value):
     return " ".join(str(value or "").lower().split())
 
 
-def get_tags(entry):
-    tags = []
-    for tag in entry.get("tags", []):
-        if isinstance(tag, dict) and tag.get("term"):
-            tags.append(str(tag["term"]))
-    for category in entry.get("categories", []):
-        if isinstance(category, str):
-            tags.append(category)
-    return " ".join(tags)
-
-
 def classify(title, tags=""):
     title_text = _normalize(title)
     combined = _normalize(f"{title_text} {tags}")
@@ -73,6 +61,32 @@ def classify(title, tags=""):
     return None
 
 
+def extract_feed_entries(xml_text):
+    """Parse GameBanana's public RSS response, including its nonstandard <items> wrapper."""
+    soup = BeautifulSoup(xml_text, "html.parser")
+    entries = []
+
+    for item in soup.find_all("item"):
+        title_tag = item.find("title")
+        link_tag = item.find("link")
+        if title_tag is None or link_tag is None:
+            continue
+
+        title = title_tag.get_text(" ", strip=True)
+        url = link_tag.get_text(" ", strip=True)
+        if not title or not url:
+            continue
+
+        # Only submissions and tools can be reusable resources. Questions and
+        # works-in-progress are deliberately excluded before classification.
+        if not any(part in url for part in ("/mods/", "/tools/")):
+            continue
+
+        entries.append({"title": title, "link": url})
+
+    return entries
+
+
 def get_items(seen):
     if not isinstance(seen, list):
         seen = []
@@ -84,11 +98,13 @@ def get_items(seen):
             timeout=REQUEST_TIMEOUT,
         )
         response.raise_for_status()
-        feed = feedparser.parse(response.content)
-        if getattr(feed, "bozo", False) and not feed.entries:
-            raise ValueError(
-                f"RSS could not be parsed (parser error={feed.bozo_exception})"
-            )
+        entries = extract_feed_entries(response.content)
+        if not entries:
+            # An empty feed may be legitimate, so do not fail just because
+            # no currently listed item matched the supported URL types.
+            soup = BeautifulSoup(response.content, "html.parser")
+            if soup.find("rss") is None:
+                raise ValueError("Response did not contain an RSS document")
     except Exception as exc:
         print(f"[{SOURCE_NAME}] RSS error: {exc}")
         return [], seen
@@ -97,16 +113,16 @@ def get_items(seen):
     seen_set = set(seen)
     adopted = []
 
-    for entry in feed.entries:
-        url = str(entry.get("link", "")).strip()
-        title = str(entry.get("title", "")).strip()
-        if not url or not title or url in seen_set:
+    for entry in entries:
+        url = entry["link"]
+        title = entry["title"]
+        if url in seen_set:
             continue
 
         seen_set.add(url)
         new_seen.append(url)
 
-        category = classify(title, get_tags(entry))
+        category = classify(title)
         if category is None:
             continue
 
