@@ -41,8 +41,8 @@ class ItalianCommunityTests(unittest.TestCase):
         html = """
         <a href="/forum/index.php?/forum/11-grafica/">Grafica</a>
         <a href="/forum/index.php?/forum/148-donazione-risorse-grafiche-mz/">Donazione risorse grafiche MZ</a>
-        <a href="/forum/index.php?/forum/149-donazione-risorse-grafiche-mv/">Donazione risorse grafiche MV</a>
-        <a href="/forum/index.php?/forum/22-donazione-risorse-sonore/">Donazione Risorse Sonore</a>
+        <a href="/forum/index.php?/forum/128-donazione-risorse-grafiche-mv/">Donazione risorse grafiche MV</a>
+        <a href="/forum/index.php?/forum/18-donazione-risorse-sonore/">Donazione Risorse Sonore</a>
         <a href="/forum/index.php?/forum/150-richiesta-risorse-grafiche-mz/">Richiesta risorse grafiche MZ</a>
         <a href="/forum/index.php?/topic/12345-sample/">Sample topic</a>
         """
@@ -51,7 +51,7 @@ class ItalianCommunityTests(unittest.TestCase):
             {
                 "https://www.rpg2s.it/forum/index.php?/forum/148-donazione-risorse-grafiche-mz/": "graphics",
                 "https://www.rpg2s.it/forum/index.php?/forum/149-donazione-risorse-grafiche-mv/": "graphics",
-                "https://www.rpg2s.it/forum/index.php?/forum/22-donazione-risorse-sonore/": "sound",
+                "https://www.rpg2s.it/forum/index.php?/forum/18-donazione-risorse-sonore/": "sound",
             },
         )
 
