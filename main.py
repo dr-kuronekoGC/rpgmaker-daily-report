@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from common import (
     load_seen_file,
     save_seen_file,
@@ -16,6 +19,8 @@ from item_model import normalize_items
 from asset_metadata import enrich_items
 from language import detect_language
 from archive import save_archive
+from tools.apply_review_decisions import apply_decisions
+
 from review_queue import (
     load_review_queue,
     save_review_queue,
@@ -30,6 +35,7 @@ from config import (
 
 
 GLOBAL_SEEN_FILE = "seen_global.json"
+REVIEW_DECISIONS_FILE = Path("data/review/review_decisions.json")
 
 
 def get_global_key(item):
@@ -205,6 +211,25 @@ def main():
     )
 
     review_queue = load_review_queue()
+
+    # Human decisions are committed as an explicit input file. Import them
+    # before collection so resolved PRE items stop appearing in carryover.
+    if REVIEW_DECISIONS_FILE.exists():
+        with REVIEW_DECISIONS_FILE.open("r", encoding="utf-8") as handle:
+            decision_payload = json.load(handle)
+        updated_review_queue, decision_summary = apply_decisions(
+            review_queue,
+            decision_payload,
+        )
+        if decision_summary["applied"]:
+            save_review_queue(updated_review_queue)
+            review_queue = updated_review_queue
+        print(
+            "[Classification review decisions] "
+            f"Requested: {decision_summary['requested']} / "
+            f"Applied: {decision_summary['applied']} / "
+            f"Already applied: {decision_summary['already_applied']}"
+        )
 
     for source in SOURCES:
         collector_name = source.__name__.split(".")[-1]
