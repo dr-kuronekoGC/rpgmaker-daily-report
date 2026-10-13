@@ -30,11 +30,14 @@ def _as_engine_list(value):
     return []
 
 
+def _specific_engines(item):
+    return [name for name in detect_engine(item) if name in SPECIFIC_ENGINES]
+
+
 def propose_engine_update(item):
     """Return a new engine list, or None when no safe metadata change applies."""
     old = _as_engine_list(item.get("engine"))
-    detected = detect_engine(item)
-    concrete = [name for name in detected if name in SPECIFIC_ENGINES]
+    concrete = _specific_engines(item)
     if not concrete:
         return None
 
@@ -43,8 +46,11 @@ def propose_engine_update(item):
     if not additions:
         return None
 
-    # Preserve known concrete engines and their order. Replace generic/unknown
-    # placeholders only when concrete evidence exists; retain unrelated values.
+    # An existing specific engine that is completely absent from new detection
+    # is a conflict, not proof of compatibility. Preserve it for manual review.
+    if old_concrete and not set(old_concrete).intersection(concrete):
+        return None
+
     result = [name for name in old if name not in PLACEHOLDER_ENGINES]
     for name in concrete:
         if name not in result:
@@ -53,28 +59,42 @@ def propose_engine_update(item):
 
 
 def transform_archive_data(data, source_file=""):
-    """Return transformed copy and a record-level change report."""
+    """Return transformed copy, safe changes, and conflicting records."""
     if isinstance(data, list):
-        records = data
         container_key = None
     elif isinstance(data, dict) and isinstance(data.get("items"), list):
-        records = data["items"]
         container_key = "items"
     else:
         raise ValueError(f"{source_file or 'archive'}: expected a list or an object with an items list")
 
-    # JSON round-trip guarantees the original object is not mutated by this helper.
     cloned = json.loads(json.dumps(data, ensure_ascii=False))
     cloned_records = cloned if container_key is None else cloned[container_key]
     changes = []
+    conflicts = []
 
     for index, item in enumerate(cloned_records):
         if not isinstance(item, dict):
             continue
+
+        old = _as_engine_list(item.get("engine"))
+        concrete = _specific_engines(item)
+        old_concrete = [name for name in old if name in SPECIFIC_ENGINES]
+        if old_concrete and concrete and not set(old_concrete).intersection(concrete):
+            conflicts.append({
+                "source_file": source_file,
+                "record_index": index,
+                "internal_id": item.get("internal_id"),
+                "title": item.get("title"),
+                "url": item.get("url"),
+                "old_engine": old,
+                "detected_engine": concrete,
+            })
+            continue
+
         proposed = propose_engine_update(item)
         if proposed is None:
             continue
-        old = _as_engine_list(item.get("engine"))
+
         item["engine"] = proposed
         changes.append({
             "source_file": source_file,
@@ -85,7 +105,7 @@ def transform_archive_data(data, source_file=""):
             "old_engine": old,
             "new_engine": proposed,
         })
-    return cloned, changes
+    return cloned, changes, conflicts
 
 
 def main():
@@ -107,6 +127,7 @@ def main():
         output_dir.mkdir(parents=True, exist_ok=True)
 
     all_changes = []
+    all_conflicts = []
     files_read = 0
     files_skipped = []
     per_file = {}
@@ -115,15 +136,17 @@ def main():
         try:
             with path.open("r", encoding="utf-8") as handle:
                 data = json.load(handle)
-            transformed, changes = transform_archive_data(data, str(path))
+            transformed, changes, conflicts = transform_archive_data(data, str(path))
         except (OSError, json.JSONDecodeError, ValueError) as exc:
             files_skipped.append({"file": str(path), "reason": str(exc)})
             continue
 
         files_read += 1
         all_changes.extend(changes)
+        all_conflicts.extend(conflicts)
         per_file[str(path)] = {
             "records_changed": len(changes),
+            "conflicts": len(conflicts),
             "engine_additions": dict(Counter(
                 engine
                 for change in changes
@@ -145,8 +168,10 @@ def main():
         "files_read": files_read,
         "files_skipped": files_skipped,
         "records_changed": len(all_changes),
+        "conflict_count": len(all_conflicts),
         "per_file": per_file,
         "changes": all_changes,
+        "conflicts": all_conflicts,
         "note": (
             "Archive files were modified in place."
             if args.apply
@@ -160,6 +185,7 @@ def main():
     print(f"[Engine backfill] Files read: {files_read}")
     print(f"[Engine backfill] Files skipped: {len(files_skipped)}")
     print(f"[Engine backfill] Records changed: {len(all_changes)}")
+    print(f"[Engine backfill] Conflicting records held for review: {len(all_conflicts)}")
     print(f"[Engine backfill] Report: {report_path}")
 
 
