@@ -77,7 +77,7 @@ def extract_feed_entries(xml_text):
         if not title or not url:
             continue
 
-        # Only submissions and tools can be reusable resources. Questions and
+        # Only resource-capable item types are considered. Questions and
         # works-in-progress are deliberately excluded before classification.
         if not url.startswith("https://gamebanana.com/"):
             continue
