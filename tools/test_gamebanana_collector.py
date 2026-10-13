@@ -1,6 +1,6 @@
 import unittest
 
-from sources.community_gamebanana import classify, get_tags
+from sources.community_gamebanana import classify, extract_feed_entries
 
 
 class GameBananaCollectorTests(unittest.TestCase):
@@ -32,12 +32,26 @@ class GameBananaCollectorTests(unittest.TestCase):
     def test_ignores_unclassified_posts(self):
         self.assertIsNone(classify("RPG Maker MV update discussion"))
 
-    def test_reads_feed_tags(self):
-        entry = {
-            "tags": [{"term": "tileset"}, {"term": "RPG Maker"}],
-            "categories": ["graphics"],
-        }
-        self.assertEqual(get_tags(entry), "tileset RPG Maker graphics")
+    def test_extracts_mods_and_tools_but_not_questions_or_wips(self):
+        xml = """<?xml version="1.0"?>
+        <rss version="2.0"><items>
+          <title>GameBanana API RSS Feed</title>
+          <item><title>Fantasy Tileset Pack</title><link>https://gamebanana.com/mods/100</link></item>
+          <item><title>Editor error</title><link>https://gamebanana.com/questions/101</link></item>
+          <item><title>My game demo</title><link>https://gamebanana.com/wips/102</link></item>
+          <item><title>Plugin helper</title><link>https://gamebanana.com/tools/103</link></item>
+        </items></rss>"""
+        entries = extract_feed_entries(xml)
+        self.assertEqual(
+            entries,
+            [
+                {"title": "Fantasy Tileset Pack", "link": "https://gamebanana.com/mods/100"},
+                {"title": "Plugin helper", "link": "https://gamebanana.com/tools/103"},
+            ],
+        )
+
+    def test_empty_non_rss_response_is_rejected_by_parser(self):
+        self.assertEqual(extract_feed_entries("<html>blocked</html>"), [])
 
 
 if __name__ == "__main__":
