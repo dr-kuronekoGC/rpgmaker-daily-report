@@ -33,6 +33,7 @@ GRAPHIC_MARKERS = (
     "animation", "animations", "portrait", "font", "texture", "ui pack",
 )
 TUTORIAL_MARKERS = ("tutorial", "guide", "how-to", "how to use")
+ALLOWED_ITEM_PATHS = ("/mods/", "/tools/", "/sounds/", "/textures/", "/sprites/", "/skins/", "/fonts/", "/tutorials/")
 
 
 def _normalize(value):
@@ -79,7 +80,9 @@ def extract_feed_entries(xml_text):
 
         # Only submissions and tools can be reusable resources. Questions and
         # works-in-progress are deliberately excluded before classification.
-        if not any(part in url for part in ("/mods/", "/tools/")):
+        if not url.startswith("https://gamebanana.com/"):
+            continue
+        if not any(part in url for part in ALLOWED_ITEM_PATHS):
             continue
 
         entries.append({"title": title, "link": url})
