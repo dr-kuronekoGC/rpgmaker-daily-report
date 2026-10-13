@@ -2,6 +2,8 @@
 # itch.io Assets
 # ==========================================
 
+from datetime import datetime, timedelta, timezone
+
 import requests
 
 from bs4 import BeautifulSoup
@@ -19,6 +21,12 @@ from categories.assets import classify_asset
 
 SEEN_FILE = ITCHIO_SEEN_FILE
 
+# itch.io has been returning HTTP 429 to automated requests.
+# This collector only needs to discover new assets, so check it at most once
+# every 24 hours rather than on every scheduled bot run.
+MIN_FETCH_INTERVAL = timedelta(hours=24)
+LAST_FETCH_PREFIX = "__itchio_last_successful_fetch_utc__="
+
 
 ITCHIO_IGNORE_TITLES = (
     "assets",
@@ -27,7 +35,50 @@ ITCHIO_IGNORE_TITLES = (
 )
 
 
+def _get_last_successful_fetch(seen):
+    """Return the persisted UTC timestamp, or None if no valid marker exists."""
+    for value in seen:
+        if not isinstance(value, str) or not value.startswith(LAST_FETCH_PREFIX):
+            continue
+
+        raw_timestamp = value[len(LAST_FETCH_PREFIX):]
+        try:
+            parsed = datetime.fromisoformat(raw_timestamp)
+        except ValueError:
+            return None
+
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+
+        return parsed.astimezone(timezone.utc)
+
+    return None
+
+
+def _should_skip_fetch(seen, now=None):
+    """Avoid repeated requests to itch.io within the configured interval."""
+    last_fetch = _get_last_successful_fetch(seen)
+    if last_fetch is None:
+        return False
+
+    if now is None:
+        now = datetime.now(timezone.utc)
+    elif now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    else:
+        now = now.astimezone(timezone.utc)
+
+    return now - last_fetch < MIN_FETCH_INTERVAL
+
+
 def get_items(seen):
+
+    if _should_skip_fetch(seen):
+        print(
+            "[itch.io a] Skipped: last successful check was less than "
+            f"{MIN_FETCH_INTERVAL.total_seconds() / 3600:g} hours ago."
+        )
+        return [], seen
 
     response = requests.get(
         ITCHIO_ASSET_RSS,
@@ -49,7 +100,15 @@ def get_items(seen):
 
     adopted_items = []
 
-    new_seen = seen.copy()
+    # Keep the timestamp marker out of URL deduplication.
+    new_seen = [
+        value
+        for value in seen
+        if not (
+            isinstance(value, str)
+            and value.startswith(LAST_FETCH_PREFIX)
+        )
+    ]
 
     seen_urls = set()
 
@@ -102,7 +161,7 @@ def get_items(seen):
 
         seen_urls.add(href)
 
-        if href in seen:
+        if href in new_seen:
             continue
 
         result = classify_asset(
@@ -144,6 +203,13 @@ def get_items(seen):
         print(
             f"[itch.io a][{category}] {title}"
         )
+
+    # The marker is only returned after a successful HTTP response and parse.
+    # main.py persists it only when the Slack report is delivered successfully.
+    new_seen.append(
+        LAST_FETCH_PREFIX
+        + datetime.now(timezone.utc).isoformat()
+    )
 
     print(
         f"[itch.io a] New: "
