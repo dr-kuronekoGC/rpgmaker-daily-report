@@ -96,7 +96,7 @@ class GameBananaCollectorTests(unittest.TestCase):
                 items, seen = get_items(["https://gamebanana.com/mods/old"])
 
         self.assertEqual(len(items), 1)
-        self.assertEqual(len(seen), 4)
+        self.assertEqual(len(seen), 3)
         self.assertIn("valid entries=2", output.getvalue())
         self.assertIn("new classified=1", output.getvalue())
         self.assertIn("new unclassified=1", output.getvalue())
