@@ -88,6 +88,7 @@ def extract_feed_entries(xml_text):
 
     return entries
 
+
 def get_items(seen):
     if not isinstance(seen, list):
         seen = []
@@ -95,7 +96,7 @@ def get_items(seen):
     entries_by_url = {}
     successful_feeds = 0
 
-    for feed_url in GAMEBANANA_RSS_URLS:
+    for feed_number, feed_url in enumerate(GAMEBANANA_RSS_URLS, start=1):
         try:
             response = requests.get(
                 feed_url,
@@ -106,26 +107,33 @@ def get_items(seen):
             # An empty feed is valid; malformed or blocked responses are not.
             feed_entries = extract_feed_entries(response.content)
             successful_feeds += 1
+            print(
+                f"[{SOURCE_NAME}] RSS feed {feed_number}/"
+                f"{len(GAMEBANANA_RSS_URLS)}: valid entries={len(feed_entries)}"
+            )
             for entry in feed_entries:
                 entries_by_url[entry["link"]] = entry
         except Exception as exc:
-            print(f"[{SOURCE_NAME}] RSS error ({feed_url}): {exc}")
+            print(f"[{SOURCE_NAME}] RSS feed {feed_number} error: {exc}")
 
     # Preserve state if every endpoint failed; do not mistake a blocked response
     # for an empty feed and advance the baseline.
     if successful_feeds == 0:
+        print(f"[{SOURCE_NAME}] No successful RSS feeds; seen state preserved.")
         return [], seen
 
     entries = list(entries_by_url.values())
-
     new_seen = list(seen)
     seen_set = set(seen)
     adopted = []
+    unclassified_new = 0
+    already_seen = 0
 
     for entry in entries:
         url = entry["link"]
         title = entry["title"]
         if url in seen_set:
+            already_seen += 1
             continue
 
         seen_set.add(url)
@@ -133,6 +141,7 @@ def get_items(seen):
 
         category = classify(title)
         if category is None:
+            unclassified_new += 1
             continue
 
         adopted.append({
@@ -142,6 +151,13 @@ def get_items(seen):
             "source": SOURCE_NAME,
             "language": "en",
         })
+
+    print(
+        f"[{SOURCE_NAME}] Feed total={len(entries)} / "
+        f"already seen={already_seen} / "
+        f"new classified={len(adopted)} / "
+        f"new unclassified={unclassified_new}"
+    )
 
     if not seen:
         print(f"[{SOURCE_NAME}] Baseline: {len(new_seen)} feed items")
