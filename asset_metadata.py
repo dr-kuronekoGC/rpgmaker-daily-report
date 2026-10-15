@@ -5,6 +5,44 @@
 import re
 
 from categories.assets import classify_asset
+
+from asset_metadata_fields import (
+    ASSET_TYPE_GRAPHIC,
+    ASSET_TYPE_SOUND,
+    ASSET_TYPE_PLUGIN,
+    ASSET_TYPE_GAME,
+    ASSET_TYPE_OTHER,
+    LICENSE_FREE,
+    LICENSE_PERMISSION,
+    LICENSE_RESTRICTED,
+    LICENSE_UNKNOWN,
+    PRICE_FREE,
+    PRICE_PAID,
+    PRICE_UNKNOWN,
+    COPYRIGHT_ORIGINAL,
+    COPYRIGHT_OFFICIAL,
+    COPYRIGHT_FANWORK,
+    COPYRIGHT_POSSIBLE_FANWORK,
+    COPYRIGHT_UNKNOWN,
+    CONFIDENCE_HIGH,
+    CONFIDENCE_MEDIUM,
+    CONFIDENCE_LOW,
+    CONFIDENCE_UNKNOWN,
+    detect_classification_status,
+    detect_asset_type,
+    detect_copyright_status,
+    detect_price_and_license,
+    preserve_source_metadata,
+)
+
+from asset_metadata_intent import (
+    _is_non_asset_category,
+    _is_non_asset_title,
+    _is_explicit_plugin_category,
+    _is_explicit_game_category,
+    classify_resource_intent,
+)
+
 from classification_scoring import (
     classify_sound_with_evidence,
     classify_taxonomy_with_evidence,
@@ -31,61 +69,6 @@ from asset_metadata_engine import (
     detect_engine,
 )
 
-
-# ==========================================
-# Asset Type
-# ==========================================
-
-ASSET_TYPE_GRAPHIC = "graphic"
-ASSET_TYPE_SOUND = "sound"
-ASSET_TYPE_PLUGIN = "plugin"
-ASSET_TYPE_GAME = "game"
-ASSET_TYPE_OTHER = "other"
-
-
-# ==========================================
-# License Status
-# ==========================================
-
-LICENSE_FREE = "free"
-LICENSE_PERMISSION = "permission"
-LICENSE_RESTRICTED = "restricted"
-LICENSE_UNKNOWN = "unknown"
-
-
-# ==========================================
-# Price Status
-# ==========================================
-
-PRICE_FREE = "free"
-PRICE_PAID = "paid"
-PRICE_UNKNOWN = "unknown"
-
-
-# ==========================================
-# Copyright Status
-# ==========================================
-
-COPYRIGHT_ORIGINAL = "original"
-COPYRIGHT_OFFICIAL = "official"
-COPYRIGHT_FANWORK = "fanwork"
-COPYRIGHT_POSSIBLE_FANWORK = "possible_fanwork"
-COPYRIGHT_UNKNOWN = "unknown"
-
-
-# ==========================================
-# Confidence
-# ==========================================
-
-CONFIDENCE_HIGH = "high"
-CONFIDENCE_MEDIUM = "medium"
-CONFIDENCE_LOW = "low"
-CONFIDENCE_UNKNOWN = "unknown"
-
-
-# ==========================================
-# Helpers
-# ==========================================
 
 # ==========================================
 # Detailed taxonomy
@@ -184,447 +167,6 @@ def detect_detailed_subcategory(
         ]
 
     return []
-
-def detect_classification_status(confidence):
-    """
-    自動分類の信頼度から、確認が必要かを決める。
-
-    high:
-        自動分類をそのまま採用。
-    medium / low / unknown:
-        人間確認待ち。
-    """
-    if confidence == CONFIDENCE_HIGH:
-        return "auto"
-
-    return "needs_review"
-
-# ==========================================
-# Asset Type
-# ==========================================
-
-def detect_asset_type(
-    category,
-    title,
-):
-
-    title = _normalize_text(
-        title
-    )
-
-    if category in (
-        "グラフィック素材",
-        "グラフィック",
-    ):
-        return ASSET_TYPE_GRAPHIC
-
-    if category in (
-        "サウンド素材",
-        "サウンド",
-    ):
-        return ASSET_TYPE_SOUND
-
-    if category in (
-        "プラグイン",
-        "plugin",
-    ):
-        return ASSET_TYPE_PLUGIN
-
-    if category in (
-        "ゲーム",
-        "game",
-    ):
-        return ASSET_TYPE_GAME
-
-    if _contains_any(
-        title,
-        (
-            "tileset",
-            "sprite",
-            "icon",
-            "faceset",
-            "character",
-            "pixel art",
-        ),
-    ):
-        return ASSET_TYPE_GRAPHIC
-
-    if _contains_any(
-        title,
-        (
-            "bgm",
-            "music",
-            "sound effect",
-            "sfx",
-        ),
-    ):
-        return ASSET_TYPE_SOUND
-
-    return ASSET_TYPE_OTHER
-
-
-# ==========================================
-# Copyright / Fanwork
-# ==========================================
-
-def detect_copyright_status(
-    asset_tags,
-    title,
-):
-
-    title = _normalize_text(
-        title
-    )
-
-    if "fanwork" in asset_tags:
-        return (
-            COPYRIGHT_FANWORK,
-            CONFIDENCE_MEDIUM,
-        )
-
-    possible_keywords = (
-        "fanart",
-        "fan art",
-        "fan game",
-        "fangame",
-        "crossover",
-        "tribute",
-    )
-
-    if _contains_any(
-        title,
-        possible_keywords,
-    ):
-        return (
-            COPYRIGHT_POSSIBLE_FANWORK,
-            CONFIDENCE_MEDIUM,
-        )
-
-    return (
-        COPYRIGHT_UNKNOWN,
-        CONFIDENCE_UNKNOWN,
-    )
-
-
-# ==========================================
-# Price / License
-# ==========================================
-
-def detect_price_and_license(
-    item,
-):
-
-    price_status = PRICE_UNKNOWN
-    license_status = LICENSE_UNKNOWN
-
-    if item.get("price_status") in (
-        PRICE_FREE,
-        PRICE_PAID,
-    ):
-        price_status = item[
-            "price_status"
-        ]
-
-    if item.get("license_status") in (
-        LICENSE_FREE,
-        LICENSE_PERMISSION,
-        LICENSE_RESTRICTED,
-    ):
-        license_status = item[
-            "license_status"
-        ]
-
-    return (
-        price_status,
-        license_status,
-    )
-
-
-# ==========================================
-# Source Metadata
-# ==========================================
-
-def preserve_source_metadata(
-    item,
-):
-
-    source_tags = item.get(
-        "source_tags"
-    )
-
-    if isinstance(
-        source_tags,
-        list,
-    ):
-        item["source_tags"] = [
-            tag
-            for tag in source_tags
-            if isinstance(
-                tag,
-                str,
-            )
-        ]
-
-    description = item.get(
-        "description"
-    )
-
-    if not isinstance(
-        description,
-        str,
-    ):
-        item.pop(
-            "description",
-            None,
-        )
-
-    elif not description.strip():
-        item.pop(
-            "description",
-            None,
-        )
-
-    else:
-        item["description"] = (
-            description.strip()
-        )
-
-    license_name = item.get(
-        "license"
-    )
-
-    if isinstance(
-        license_name,
-        str,
-    ):
-
-        license_name = (
-            license_name.strip()
-        )
-
-        if license_name:
-            item["license"] = (
-                license_name
-            )
-        else:
-            item.pop(
-                "license",
-                None,
-            )
-
-    author = item.get(
-        "author"
-    )
-
-    if isinstance(
-        author,
-        str,
-    ):
-
-        author = author.strip()
-
-        if author:
-            item["author"] = author
-        else:
-            item.pop(
-                "author",
-                None,
-            )
-
-    return item
-
-
-# ==========================================
-# Classification guards
-# ==========================================
-
-def _is_non_asset_category(category):
-    text = _normalize_text(category)
-
-    non_asset_keywords = (
-        "質問",
-        "相談",
-        "tips",
-        "tip",
-        "help",
-        "question",
-        "questions",
-        "discussion",
-        "news",
-        "情報",
-        "公式情報",
-        "サイト更新",
-        "site update",
-        "sourcecheck",
-    )
-
-    return any(
-        keyword in text
-        for keyword in non_asset_keywords
-    )
-
-
-def _is_non_asset_title(title):
-    text = _normalize_text(title)
-
-    # 質問・解説・作品紹介を素材として誤登録しないための保護。
-    # これらは「音楽」「sound」等の単語を含んでも、
-    # 素材そのものとは限らない。
-    non_asset_keywords = (
-        "question",
-        "questions",
-        "need help",
-        "help",
-        "how do",
-        "study",
-        "audiobook",
-        "showcase",
-        "showcasing",
-        "my project",
-        "project showcase",
-        "compatibility",
-        "compatible",
-        # "engine" alone is common in actual plugin/resource titles
-        # (e.g. "ABS Engine Pro"), so it must not be a blanket exclusion.
-        # Likewise, "video" alone can refer to a plugin demo/release page.
-        # Keep only explicit gameplay/process media signals.
-        "gameplay video",
-        "making-of video",
-        "process video",
-        "trailer",
-        "ゲーム",
-        "エンジン",
-        "プロジェクト",
-        "互換",
-        "について手伝",
-        "手伝って",
-    )
-
-    return any(
-        keyword in text
-        for keyword in non_asset_keywords
-    )
-
-
-def _is_explicit_plugin_category(category):
-    text = _normalize_text(category)
-
-    return (
-        text in ("plugin", "plugins", "プラグイン")
-        or "プラグイン" in text
-    )
-
-
-def _is_explicit_game_category(category):
-    text = _normalize_text(category)
-
-    return (
-        text in ("game", "games", "ゲーム")
-        or "ゲーム" in text
-    )
-
-
-def classify_resource_intent(item, detected_category=None):
-    """
-    Resource-intent triage, deliberately separate from detailed taxonomy.
-
-    Returns (intent, confidence, evidence), where intent is:
-      - resource_candidate: concrete release/distribution or a clear asset signal
-      - not_resource: clear question/showcase/news context without a deliverable
-      - uncertain: insufficient evidence to decide safely
-
-    Price, paid status, or an external storefront are never negative signals.
-    """
-    title = str(item.get("title") or "")
-    category = str(item.get("category") or "")
-    source_tags = item.get("source_tags", [])
-    tags = item.get("tags", [])
-    if not isinstance(source_tags, list):
-        source_tags = []
-    if not isinstance(tags, list):
-        tags = []
-
-    body_parts = []
-    for field in ("description", "body_text", "post_body", "body", "content_text", "content", "text"):
-        value = item.get(field)
-        if isinstance(value, str) and value.strip():
-            body_parts.append(value.strip())
-
-    combined = " ".join(
-        [title, category, str(item.get("url") or "")]
-        + [str(x) for x in source_tags + tags]
-        + body_parts
-    ).lower()
-
-    # Only concrete distribution/release wording is a strong positive signal.
-    distribution_signals = (
-        "download here",
-        "download link",
-        "available for download",
-        "download the plugin",
-        "download the resource",
-        "downloadable resource",
-        "downloadable asset",
-        "free to use",
-        "asset pack",
-        "resource pack",
-        "plugin release",
-        "released",
-        "release available",
-        "get it here",
-        "配布中",
-        "ダウンロードはこちら",
-        "ダウンロードリンク",
-        "素材配布",
-        "公開しました",
-        "配布ページ",
-    )
-    distribution_hits = [word for word in distribution_signals if word in combined]
-
-    # Explicitly identified games, official notices and source-update entries
-    # are not resource records by themselves; a linked release can still qualify.
-    category_text = category.lower()
-    is_game = _is_explicit_game_category(category)
-    is_site_notice = _is_non_asset_category(category)
-
-    title_guard = _is_non_asset_title(title)
-    category_guard = is_site_notice
-    guarded_context = title_guard or category_guard
-
-    if distribution_hits:
-        return (
-            "resource_candidate",
-            "medium",
-            [{"field": "body_or_metadata", "signal": signal} for signal in distribution_hits[:5]],
-        )
-
-    if is_game:
-        return ("not_resource", "high", [{"field": "category", "signal": "explicit_game"}])
-
-    # Question/showcase/discussion terms are negative only when no concrete
-    # distribution evidence was found. This does not exclude paid resources.
-    if guarded_context:
-        signal = "question_or_showcase_title" if title_guard else "non_resource_category"
-        return ("not_resource", "medium", [{"field": "title" if title_guard else "category", "signal": signal}])
-
-    if detected_category:
-        return (
-            "resource_candidate",
-            "medium",
-            [{"field": "title_url_or_tags", "signal": "asset_classifier_match", "category": detected_category}],
-        )
-
-    resource_tags = ("asset", "assets", "resource", "resources", "plugin", "plugins", "素材", "プラグイン")
-    tag_hits = [str(tag) for tag in source_tags + tags if any(word in str(tag).lower() for word in resource_tags)]
-    if tag_hits:
-        return (
-            "uncertain",
-            "low",
-            [{"field": "source_tags_or_tags", "signal": tag} for tag in tag_hits[:5]],
-        )
-
-    return ("uncertain", "unknown", [])
-
 
 # ==========================================
 # Asset Metadata
