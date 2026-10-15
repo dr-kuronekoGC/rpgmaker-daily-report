@@ -23,6 +23,7 @@ from asset_metadata_engine import (
     ENGINE_U2U,
     ENGINE_UNITE,
     ENGINE_OTHER_RPG_MAKER,
+    ENGINE_OTHER_TKool,
     ENGINE_GENERIC,
     ENGINE_UNKNOWN,
     _normalize_text,
