@@ -28,38 +28,28 @@ HEADERS = {
 }
 
 
-def get_html(url):
-    """Fetch a page and record transport/HTTP failures for source health."""
+def tracked_get(url, **kwargs):
+    """Perform a GET request and record success/failure for the current collector."""
+    kwargs.setdefault("headers", HEADERS)
+    kwargs.setdefault("timeout", REQUEST_TIMEOUT)
     try:
-        response = requests.get(
-            url,
-            headers=HEADERS,
-            timeout=REQUEST_TIMEOUT,
-        )
+        response = requests.get(url, **kwargs)
         response.raise_for_status()
     except Exception:
         _REQUEST_STATS["failed"] += 1
         raise
-
     _REQUEST_STATS["succeeded"] += 1
-    return response.text
+    return response
+
+
+def get_html(url):
+    """Fetch a page and record transport/HTTP failures for source health."""
+    return tracked_get(url).text
 
 
 def get_feed(url):
-    """Fetch and parse a feed while exposing basic request health."""
+    """Fetch a feed through the shared request layer, then parse its body."""
     import feedparser
 
-    try:
-        feed = feedparser.parse(url)
-    except Exception:
-        _REQUEST_STATS["failed"] += 1
-        raise
-
-    status = getattr(feed, "status", None)
-    bozo = bool(getattr(feed, "bozo", False))
-    entries = getattr(feed, "entries", [])
-    if (isinstance(status, int) and status >= 400) or (bozo and not entries):
-        _REQUEST_STATS["failed"] += 1
-    else:
-        _REQUEST_STATS["succeeded"] += 1
-    return feed
+    response = tracked_get(url)
+    return feedparser.parse(response.content)
