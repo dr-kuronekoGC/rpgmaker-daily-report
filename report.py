@@ -2,6 +2,7 @@ from common import (
     now_jst,
     get_period,
 )
+from language import detect_language
 
 from report_formatters import (
     CATEGORY_GROUPS,
