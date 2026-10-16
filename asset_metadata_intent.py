@@ -71,10 +71,29 @@ def _is_non_asset_title(title):
         "手伝って",
     )
 
-    return any(
-        keyword in text
-        for keyword in non_asset_keywords
+    if any(keyword in text for keyword in non_asset_keywords):
+        return True
+
+    # Forum backfills often have no body text. Explicit request/question
+    # phrasing in the title is useful negative evidence in that case.
+    # This is evaluated only after classify_resource_intent has a chance to
+    # detect concrete release/download wording, so an actual release is kept.
+    import re
+
+    request_patterns = (
+        r"^\\s*(?:plugin\\s+)?request(?:\\s*[:\\-]|$)",
+        r"\\b(?:need|needs|looking for|seeking|wanted|request(?:ed)?|"
+        r"help me|can someone|could someone|anyone have|anyone know|"
+        r"how do i|how can i|how to|where can i find|"
+        r"not working|does not work|doesn't work)\\b",
+        r"\\b(?:cerco|cercasi|richiesta|richieste|mi serve|mi servono|"
+        r"aiuto|non funziona|come posso|come fare)\\b",
+        r"\\b(?:suche|ich brauche|hilfe|funktioniert nicht)\\b",
+        r"\\b(?:je cherche|recherche|besoin de|aidez-moi)\\b",
+        r"(?:探しています|探してます|求む|作り方|動かない|できません|質問です)",
     )
+
+    return any(re.search(pattern, text) for pattern in request_patterns)
 
 
 def _is_explicit_plugin_category(category):
