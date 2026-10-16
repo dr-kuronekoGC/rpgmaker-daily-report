@@ -24,6 +24,16 @@ jobs:
       - name: Test review corpus normalizer
         run: python -m unittest discover -s tools -p 'test_*.py' -v
 
+      - name: Re-check open review queue (audit only)
+        run: python tools/audit_open_review_queue.py
+
+      - name: Upload open review audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: open-review-queue-audit
+          path: open_review_audit.json
+          if-no-files-found: error
+
       - name: Normalize human review corpus (audit only)
         run: |
           python tools/normalize_review_corpus.py > normalized_review_corpus.json
