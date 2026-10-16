@@ -1,5 +1,4 @@
-import feedparser
-
+from sources.base import get_feed
 from config import (
     TKOOL_FORUM_RSS,
     TKOOL_FORUM_SEEN_FILE,
@@ -199,9 +198,7 @@ def classify(title, forum_name):
 
 def get_items(seen):
     try:
-        feed = feedparser.parse(
-            TKOOL_FORUM_RSS
-        )
+        feed = get_feed(TKOOL_FORUM_RSS)
 
         new_seen = list(seen)
         seen_set = set(seen)
