@@ -1,0 +1,46 @@
+# Operations guide
+
+This document describes the purpose of the GitHub Actions workflows and the first checks to make when something looks wrong. It does not authorize resets or bulk edits to collection state.
+
+## Scheduled collection
+
+Workflow: `.github/workflows/rpg-maker-daily-report.yml`
+
+- Runs twice daily (scheduled times are offset from the hour) and can also be started with **Run workflow**.
+- Collectors run sequentially. Each collector's seen file is committed only through the normal workflow.
+- Slack delivery must succeed before pending items are saved as delivered.
+- Do not delete `seen_*.json`, `seen_global.json`, `pending_items.json`, `data/archive/`, or `data/review/` to troubleshoot an ordinary run.
+
+### Source-health status
+
+- **OK**: no tracked request failures and no collector-reported failures.
+- **PARTIAL**: at least one tracked request or monitored page failed, while some part of the scan may have succeeded.
+- **ERROR**: every tracked request for the collector failed, or the collector raised an uncaught error.
+
+Some legacy collectors use their own HTTP calls rather than the shared request wrapper. Their request-level status may therefore be incomplete until they are migrated. Source Check has its own checked/failed summary. An HTTP 403/429, timeout, TLS error, or malformed feed should be treated as an acquisition problem, not as proof that the source has no new posts. Do not bypass access controls; reduce frequency or use a supported feed when appropriate.
+
+## Classification audit
+
+Workflow: `.github/workflows/classification-audit.yml`
+
+- Runs unit tests and audit-only scripts.
+- Uploads `open-review-queue-audit` and `normalized-review-corpus` artifacts.
+- Audit recommendations do **not** resolve items and do not modify the human decision ledger.
+- Only explicit decisions in `data/review/review_decisions.json` are imported by the normal collection workflow.
+
+## What to check after a run
+
+1. Confirm the workflow conclusion is **success**.
+2. Read the **Source Health** lines. Check PARTIAL/ERROR sources before concluding there were no new posts.
+3. Confirm the Slack status is HTTP 200 and the pending state was saved after successful delivery.
+4. Watch the pending and classification-carryover counts over several runs; a single increase can be caused by backfill.
+5. For malformed titles, open the source URL and determine whether the collector selected metadata (for example a date label) instead of the actual topic title.
+6. For repeated items, compare normalized URL, source item ID, and title before considering any deduplication change.
+
+## Recovery principles
+
+- Prefer a small fix with tests and a pull request.
+- Do not bulk-delete archives, seen state, pending items, or review records.
+- Do not mark an inaccessible source healthy by suppressing errors.
+- If a collector fails after a partial scan, preserve its seen state unless the collector can prove which entries were successfully processed.
+- Keep the source registry in `data/sites/sites.json` aligned with active collectors. Site IDs are stable internal identifiers and should not be renumbered.
