@@ -14,7 +14,7 @@ from config import (
     REQUEST_TIMEOUT,
 )
 
-from sources.base import HEADERS
+from sources.base import HEADERS, tracked_get
 
 from categories.assets import classify_asset
 
@@ -80,7 +80,7 @@ def get_items(seen):
         )
         return [], seen
 
-    response = requests.get(
+    response = tracked_get(
         ITCHIO_ASSET_RSS,
         headers=HEADERS,
         timeout=REQUEST_TIMEOUT,
