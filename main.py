@@ -14,6 +14,7 @@ from report import (
 )
 
 from sources.registry import SOURCES
+from sources.base import reset_request_stats, get_request_stats
 
 from item_model import normalize_items
 from asset_metadata import enrich_items
@@ -235,6 +236,7 @@ def main():
         collector_name = source.__name__.split(".")[-1]
         seen_before = None
 
+        reset_request_stats()
         try:
             seen = load_seen_file(
                 source.SEEN_FILE
@@ -259,20 +261,30 @@ def main():
                 )
             )
 
-            # Some collectors (currently Source Check) can finish a partial
-            # scan while safely preserving state for sites that failed.
+            # A collector may catch an individual page error and return normally.
+            # Combine its own summary with shared HTTP diagnostics so that a
+            # caught 403/429/timeout is not automatically reported as healthy.
             summary = getattr(source, "LAST_RUN_SUMMARY", None)
-            is_partial = (
+            request_stats = get_request_stats()
+            summary_failed = (
                 isinstance(summary, dict)
                 and summary.get("failed", 0) > 0
             )
+            request_failed = request_stats["failed"] > 0
+            if request_failed and request_stats["succeeded"] == 0:
+                status = "ERROR"
+            elif request_failed or summary_failed:
+                status = "PARTIAL"
+            else:
+                status = "OK"
             source_results.append({
                 "name": collector_name,
-                "status": "PARTIAL" if is_partial else "OK",
+                "status": status,
                 "new_items": len(items),
                 "seen_before": seen_before,
                 "seen_after": len(new_seen),
                 "summary": summary,
+                "request_stats": request_stats,
             })
 
         except Exception as e:
@@ -284,6 +296,7 @@ def main():
                 "status": "ERROR",
                 "error_type": type(e).__name__,
                 "seen_before": seen_before,
+                "request_stats": get_request_stats(),
             })
 
     successful_sources = sum(
@@ -315,6 +328,14 @@ def main():
                 f"seen={result['seen_before']}->{result['seen_after']}"
             )
             summary = result.get("summary")
+            request_stats = result.get("request_stats", {})
+            if request_stats.get("failed", 0) or status == "PARTIAL":
+                print(
+                    "[Source Health] "
+                    f"{result['name']} requests: "
+                    f"success={request_stats.get('succeeded', 0)} / "
+                    f"failed={request_stats.get('failed', 0)}"
+                )
             if status == "PARTIAL" and isinstance(summary, dict):
                 print(
                     "[Source Health] "
