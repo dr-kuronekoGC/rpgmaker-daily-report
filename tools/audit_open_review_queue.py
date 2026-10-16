@@ -27,8 +27,18 @@ def audit_item(item: dict) -> dict:
         evidence = enriched.get("resource_intent_evidence", [])
         if intent == "not_resource":
             suggestion = "candidate_exclude"
-        elif intent == "resource_candidate":
+        elif intent == "resource_candidate" and any(
+            evidence_item.get("field") == "body_or_metadata"
+            for evidence_item in evidence
+            if isinstance(evidence_item, dict)
+        ):
+            # Concrete release/distribution wording is stronger than a
+            # generic asset keyword, but this remains a candidate only.
             suggestion = "candidate_resource"
+        elif intent == "resource_candidate":
+            # A title like "Battle Sprites" may describe a showcase or a
+            # request. Do not treat taxonomy keywords alone as confirmation.
+            suggestion = "needs_body_review"
         else:
             suggestion = "keep_manual_review"
         error = None
@@ -108,11 +118,20 @@ def main() -> int:
     print(f"[Open review audit] Open items: {len(open_items)}")
     print(f"[Open review audit] Suggestions: {dict(sorted(counts.items()))}")
     for row in audited:
-        if row["suggestion"] != "keep_manual_review":
+        if row["suggestion"] in {"candidate_exclude", "candidate_resource"}:
             print(
                 f"[Open review candidate] {row['pre_id']} | {row['suggestion']} | "
                 f"{row['source']} | {row['title']} | {row['url']}"
             )
+    body_review = [
+        row for row in audited if row["suggestion"] == "needs_body_review"
+    ]
+    print(f"[Open review audit] Need body check despite asset keywords: {len(body_review)}")
+    for row in body_review[:15]:
+        print(
+            f"[Open review body-check] {row['pre_id']} | {row['source']} | "
+            f"{row['title']} | {row['url']}"
+        )
     print("[Open review audit] Audit only; review ledger unchanged.")
     return 0
 
