@@ -15,6 +15,7 @@ from report import (
 
 from sources.registry import SOURCES
 from sources.base import reset_request_stats, get_request_stats
+from sources.health import determine_source_status
 
 from item_model import normalize_items
 from asset_metadata import enrich_items
@@ -266,17 +267,7 @@ def main():
             # caught 403/429/timeout is not automatically reported as healthy.
             summary = getattr(source, "LAST_RUN_SUMMARY", None)
             request_stats = get_request_stats()
-            summary_failed = (
-                isinstance(summary, dict)
-                and summary.get("failed", 0) > 0
-            )
-            request_failed = request_stats["failed"] > 0
-            if request_failed and request_stats["succeeded"] == 0:
-                status = "ERROR"
-            elif request_failed or summary_failed:
-                status = "PARTIAL"
-            else:
-                status = "OK"
+            status = determine_source_status(request_stats, summary)
             source_results.append({
                 "name": collector_name,
                 "status": status,
@@ -347,10 +338,13 @@ def main():
                     f"failed={summary.get('failed', 0)}"
                 )
         else:
+            request_stats = result.get("request_stats", {})
             print(
                 "[Source Health] "
                 f"{result['name']}: ERROR / "
-                f"type={result['error_type']} / "
+                f"type={result.get('error_type', 'caught_request_failure')} / "
+                f"requests={request_stats.get('succeeded', 0)} succeeded,"
+                f"{request_stats.get('failed', 0)} failed / "
                 f"seen_before={result['seen_before']}"
             )
 
