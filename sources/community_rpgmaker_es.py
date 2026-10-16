@@ -1,5 +1,4 @@
-import feedparser
-
+from sources.base import get_feed
 from config import (
     RPGMAKER_ES_RSS,
     RPGMAKER_ES_SEEN_FILE,
@@ -76,7 +75,7 @@ def get_items(seen):
         seen = []
 
     try:
-        feed = feedparser.parse(RPGMAKER_ES_RSS)
+        feed = get_feed(RPGMAKER_ES_RSS)
         new_seen = list(seen)
         seen_set = set(seen)
         candidates = []

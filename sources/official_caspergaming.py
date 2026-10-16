@@ -19,6 +19,8 @@ from config import (
 
 import requests
 
+from sources.base import tracked_get
+
 
 SEEN_FILE = CASPER_SEEN_FILE
 
@@ -194,7 +196,7 @@ def clean_title(text):
 # ==========================================
 
 def get_html(url):
-    response = requests.get(
+    response = tracked_get(
         url,
         headers=HEADERS,
         timeout=REQUEST_TIMEOUT,

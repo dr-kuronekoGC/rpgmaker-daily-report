@@ -8,6 +8,8 @@ import re
 
 import requests
 
+from sources.base import tracked_get
+
 from config import (
     DEVIANTART_SEARCHES,
     DEVIANTART_SEEN_FILE,
@@ -106,7 +108,7 @@ def browse_tag(
     limit=50,
 ):
 
-    response = requests.get(
+    response = tracked_get(
         DEVIANTART_TAG_URL,
         params={
             "tag": tag,
@@ -178,7 +180,7 @@ def get_deviation_metadata(
             )
         )
 
-    response = requests.get(
+    response = tracked_get(
         DEVIANTART_METADATA_URL,
         params=params,
         headers={

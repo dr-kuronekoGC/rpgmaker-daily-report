@@ -1,7 +1,6 @@
 """Collect resource-oriented posts from the RM Planet community forum."""
 
-import feedparser
-
+from sources.base import get_feed
 from config import RMPLANET_RSS, RMPLANET_SEEN_FILE
 
 SEEN_FILE = RMPLANET_SEEN_FILE
@@ -50,7 +49,7 @@ def get_items(seen):
     adopted = []
 
     try:
-        feed = feedparser.parse(RMPLANET_RSS)
+        feed = get_feed(RMPLANET_RSS)
         if getattr(feed, "bozo", False) and not feed.entries:
             status = getattr(feed, "status", None)
             exception = getattr(feed, "bozo_exception", None)

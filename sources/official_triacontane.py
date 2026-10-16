@@ -6,6 +6,8 @@ import os
 import re
 import requests
 
+from sources.base import tracked_get
+
 from config import (
     TRIACONTANE_REPO_URL,
     TRIACONTANE_BRANCH,
@@ -39,7 +41,7 @@ IGNORE_FILES = {
 
 
 def get_json(url):
-    response = requests.get(
+    response = tracked_get(
         url,
         headers=HEADERS,
         params={

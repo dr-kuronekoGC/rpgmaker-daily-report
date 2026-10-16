@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import requests
 
 from config import GAMEBANANA_RSS_URLS, GAMEBANANA_SEEN_FILE, REQUEST_TIMEOUT
-from sources.base import HEADERS
+from sources.base import HEADERS, tracked_get
 
 
 SEEN_FILE = GAMEBANANA_SEEN_FILE
@@ -98,7 +98,7 @@ def get_items(seen):
 
     for feed_number, feed_url in enumerate(GAMEBANANA_RSS_URLS, start=1):
         try:
-            response = requests.get(
+            response = tracked_get(
                 feed_url,
                 headers=HEADERS,
                 timeout=REQUEST_TIMEOUT,

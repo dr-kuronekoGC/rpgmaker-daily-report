@@ -1,5 +1,4 @@
-import feedparser
-
+from sources.base import get_feed
 from config import (
     RPGMAKERFORUM_DE_RSS,
     RPGMAKERFORUM_DE_SEEN_FILE,
@@ -233,9 +232,7 @@ def classify(title, forum_name):
 
 def get_items(seen):
     try:
-        feed = feedparser.parse(
-            RPGMAKERFORUM_DE_RSS
-        )
+        feed = get_feed(RPGMAKERFORUM_DE_RSS)
 
         new_seen = list(seen)
         seen_set = set(seen)

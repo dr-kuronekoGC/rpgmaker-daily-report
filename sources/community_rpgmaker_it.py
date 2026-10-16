@@ -101,6 +101,19 @@ def classify(title, section_type=None):
     return None
 
 
+def _is_date_only_title(title):
+    """Reject list metadata accidentally linked to a topic instead of its title."""
+    text = " ".join(str(title or "").split()).strip()
+    if not text:
+        return True
+    patterns = (
+        r"\d{1,2}\s+[A-Za-z]+\s+\d{4}",
+        r"[A-Za-z]+\s+\d{1,2},?\s+\d{4}",
+        r"\d{4}[-/.]\d{1,2}[-/.]\d{1,2}",
+    )
+    return any(re.fullmatch(pattern, text) for pattern in patterns)
+
+
 def extract_items(html, section_type=None):
     soup = BeautifulSoup(html, "html.parser")
     items = []
@@ -109,7 +122,7 @@ def extract_items(html, section_type=None):
     for link in soup.select("a[href]"):
         title = link.get_text(" ", strip=True)
         url = normalize_url(link.get("href"))
-        if not title or not url or url in local_seen:
+        if not title or _is_date_only_title(title) or not url or url in local_seen:
             continue
 
         category = classify(title, section_type=section_type)

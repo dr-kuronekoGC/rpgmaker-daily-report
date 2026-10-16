@@ -8,6 +8,9 @@ LANGUAGE_GERMAN = "ドイツ語"
 LANGUAGE_SPANISH = "スペイン語"
 LANGUAGE_KOREAN = "韓国語"
 LANGUAGE_CHINESE = "中国語"
+LANGUAGE_ITALIAN = "イタリア語"
+LANGUAGE_PORTUGUESE = "ポルトガル語"
+LANGUAGE_RUSSIAN = "ロシア語"
 
 
 def detect_language(
@@ -77,7 +80,7 @@ def detect_language(
     # 中国語特有の文字を一定数含む場合を中心に判定する。
 
     chinese_specific_chars = re.search(
-        r"[们国这为与从个来对发会时现过说还没样东华开关门书画乐龙马车]",
+        r"[们国这为与从个来对发会时现过说还没样东华开关门书画乐龙马车體國學會來發時後這個為與無們點開關免費遊戲素材角色圖像聲音下載製作]",
         text,
     )
 
@@ -85,10 +88,37 @@ def detect_language(
         return LANGUAGE_CHINESE
 
     # ======================================
-    # ラテン系言語
+    # ラテン系言語・ロシア語
     # ======================================
 
     lower_text = f" {text.lower()} "
+
+    # Italian: check before English because RPG Maker posts often mix
+    # Italian text with English product terms such as "plugin" and "tileset".
+    italian_markers = [
+        " il ", " lo ", " gli ", " della ", " delle ", " degli ",
+        " con ", " per ", " sono ", " questo ", " questa ", " gratis ",
+        " risorse ", " risorsa ", " musica ", " grafica ", " scarica ",
+        " scaricare ", " italiano", " italiana",
+    ]
+    if sum(1 for marker in italian_markers if marker in lower_text) >= 2:
+        return LANGUAGE_ITALIAN
+
+    portuguese_markers = [
+        " o ", " os ", " as ", " uma ", " um ", " para ", " com ",
+        " não ", " você ", " vocês ", " são ", " grátis ", " gratuito ",
+        " recursos ", " música ", " efeitos sonoros ", " baixar ",
+        " download gratuito ", " português", " brasileira", " brasileiro",
+    ]
+    if sum(1 for marker in portuguese_markers if marker in lower_text) >= 2:
+        return LANGUAGE_PORTUGUESE
+
+    # Russian/Cyrillic text should not be labelled English just because
+    # it contains a few English technical words.
+    cyrillic_count = len(re.findall(r"[\u0400-\u04ff]", text))
+    latin_count = len(re.findall(r"[A-Za-z]", text))
+    if cyrillic_count >= 4 and cyrillic_count >= latin_count:
+        return LANGUAGE_RUSSIAN
 
     # --------------------------------------
     # フランス語

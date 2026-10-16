@@ -1,5 +1,4 @@
-import feedparser
-
+from sources.base import get_feed
 from config import (
     SAVE_POINT_RSS,
     SAVE_POINT_SEEN_FILE,
@@ -131,9 +130,7 @@ def classify(title, forum_name):
 
 def get_items(seen):
     try:
-        feed = feedparser.parse(
-            SAVE_POINT_RSS
-        )
+        feed = get_feed(SAVE_POINT_RSS)
 
         new_seen = list(seen)
         seen_set = set(seen)
