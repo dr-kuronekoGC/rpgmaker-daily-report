@@ -84,6 +84,7 @@ def get_items(seen):
         ITCHIO_ASSET_RSS,
         headers=HEADERS,
         timeout=REQUEST_TIMEOUT,
+        allow_status_codes=(429,),
     )
 
     if response.status_code == 429:
