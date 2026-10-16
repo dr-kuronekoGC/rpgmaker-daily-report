@@ -12,6 +12,7 @@ SITES_FILE = Path("data/sites/sites.json")
 
 
 def _load_sites():
+    """Return site metadata keyed by collector, preserving the registry as source of truth."""
     if not SITES_FILE.exists():
         return {}
     try:
@@ -22,11 +23,11 @@ def _load_sites():
     if not isinstance(data, list):
         return {}
     return {
-        item.get("collector"): item.get("source_site_id")
-        for item in data
-        if isinstance(item, dict)
-        and item.get("collector")
-        and item.get("source_site_id")
+        record.get("collector"): record
+        for record in data
+        if isinstance(record, dict)
+        and record.get("collector")
+        and record.get("source_site_id")
     }
 
 
@@ -66,7 +67,8 @@ def normalize_item(item, collector_name):
     item = dict(item)
     sites = _load_sites()
 
-    source_site_id = item.get("source_site_id") or sites.get(collector_name)
+    site_record = sites.get(collector_name, {})
+    source_site_id = item.get("source_site_id") or site_record.get("source_site_id")
     if not source_site_id:
         source_site_id = "SITE-UNREGISTERED"
 
@@ -95,6 +97,10 @@ def normalize_item(item, collector_name):
     item.setdefault("public_id", None)
     item["content_type"] = item.get("content_type") or _content_type(item)
     item["source_site_id"] = source_site_id
+    item.setdefault("source_site_name", site_record.get("source_site_name"))
+    item.setdefault("source_site_type", site_record.get("source_site_type"))
+    item.setdefault("source_site_language", site_record.get("source_site_language", []))
+    item.setdefault("source_site_status", site_record.get("source_site_status"))
     item["collector"] = collector_name
     item["source_item_id"] = str(source_item_id)
     item["source"] = item.get("source") or collector_name
