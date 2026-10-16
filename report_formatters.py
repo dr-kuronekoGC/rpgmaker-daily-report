@@ -707,18 +707,29 @@ def format_source_health_warnings(source_results=None):
 
         if status == "PARTIAL":
             summary = result.get("summary") or {}
-            checked = summary.get("checked", 0)
-            failed = summary.get("failed", 0)
-            total = checked + failed
-            lines.append(
-                f"・{display_name}：一部失敗 "
-                f"（確認 {checked}/{total}、失敗 {failed}件）"
-            )
+            request_stats = result.get("request_stats") or {}
+            if summary.get("checked") or summary.get("failed"):
+                checked = summary.get("checked", 0)
+                failed = summary.get("failed", 0)
+                total = checked + failed
+                detail = f"確認 {checked}/{total}、失敗 {failed}件"
+            else:
+                detail = (
+                    f"HTTP成功 {request_stats.get('succeeded', 0)}件、"
+                    f"失敗 {request_stats.get('failed', 0)}件"
+                )
+            lines.append(f"・{display_name}：一部失敗（{detail}）")
         elif status == "ERROR":
-            error_type = result.get("error_type", "unknown")
-            lines.append(
-                f"・{display_name}：取得失敗（{error_type}）"
-            )
+            error_type = result.get("error_type")
+            request_stats = result.get("request_stats") or {}
+            if error_type:
+                detail = error_type
+            else:
+                detail = (
+                    f"HTTP成功 {request_stats.get('succeeded', 0)}件、"
+                    f"失敗 {request_stats.get('failed', 0)}件"
+                )
+            lines.append(f"・{display_name}：取得失敗（{detail}）")
 
     if not lines:
         return []
