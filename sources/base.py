@@ -30,10 +30,14 @@ HEADERS = {
 
 def tracked_get(url, **kwargs):
     """Perform a GET request and record success/failure for the current collector."""
+    allow_status_codes = set(kwargs.pop("allow_status_codes", ()))
     kwargs.setdefault("headers", HEADERS)
     kwargs.setdefault("timeout", REQUEST_TIMEOUT)
     try:
         response = requests.get(url, **kwargs)
+        if response.status_code in allow_status_codes:
+            _REQUEST_STATS["failed"] += 1
+            return response
         response.raise_for_status()
     except Exception:
         _REQUEST_STATS["failed"] += 1
@@ -52,4 +56,11 @@ def get_feed(url):
     import feedparser
 
     response = tracked_get(url)
-    return feedparser.parse(response.content)
+    feed = feedparser.parse(response.content)
+    if getattr(feed, "bozo", False):
+        # A parse error with no entries means the request did not produce
+        # usable feed data; count it as a failed collection attempt.
+        if not getattr(feed, "entries", []):
+            _REQUEST_STATS["succeeded"] = max(0, _REQUEST_STATS["succeeded"] - 1)
+        _REQUEST_STATS["failed"] += 1
+    return feed
