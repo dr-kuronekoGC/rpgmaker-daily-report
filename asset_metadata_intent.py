@@ -29,10 +29,59 @@ def _is_non_asset_category(category):
         "sourcecheck",
     )
 
-    return any(
-        keyword in text
-        for keyword in non_asset_keywords
+    if any(keyword in text for keyword in non_asset_keywords):
+        return True
+
+    # Forum backfills often have no body text. Explicit request/question
+    # phrasing in the title is useful negative evidence in that case.
+    # classify_resource_intent checks concrete release/download evidence
+    # before calling this guard, so explicit releases are not discarded.
+    request_phrases = (
+        "plugin request",
+        "request:",
+        "request -",
+        "need ",
+        "looking for",
+        "seeking ",
+        "wanted:",
+        "help me",
+        "can someone",
+        "could someone",
+        "anyone have",
+        "anyone know",
+        "how do i",
+        "how can i",
+        "how to ",
+        "where can i find",
+        "not working",
+        "does not work",
+        "doesn't work",
+        "cerco ",
+        "cercasi",
+        "richiesta",
+        "mi serve",
+        "mi servono",
+        "aiuto",
+        "non funziona",
+        "come posso",
+        "come fare",
+        "suche ",
+        "ich brauche",
+        "hilfe",
+        "funktioniert nicht",
+        "je cherche",
+        "recherche",
+        "besoin de",
+        "aidez-moi",
+        "探しています",
+        "探してます",
+        "求む",
+        "作り方",
+        "動かない",
+        "できません",
+        "質問です",
     )
+    return any(phrase in text for phrase in request_phrases)
 
 
 def _is_non_asset_title(title):
