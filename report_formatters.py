@@ -718,7 +718,7 @@ def format_source_health_warnings(source_results=None):
                     f"HTTP成功 {request_stats.get('succeeded', 0)}件、"
                     f"失敗 {request_stats.get('failed', 0)}件"
                 )
-            lines.append(f"・{display_name}：一部失敗（{detail}）")
+            lines.append(f"・{display_name}：一部失敗 （{detail}）")
         elif status == "ERROR":
             error_type = result.get("error_type")
             request_stats = result.get("request_stats") or {}
