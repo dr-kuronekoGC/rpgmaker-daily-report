@@ -54,6 +54,7 @@ Workflow: `.github/workflows/classification-audit.yml`
 
 ## Additional source coverage
 
-- **Steam Workshop for RPG Maker MZ** is collected separately from Steam news. The collector checks resource-oriented workshop filters for plugins, tilesets, music, sound effects, and packs. The first successful run establishes a baseline rather than reporting old items as new.
-- **New RPG Project** is monitored by Source Check for page changes. It is not scraped as a separate item feed in this change.
+- **Steam Workshop for RPG Maker MZ** is collected separately from Steam news. The collector checks resource-oriented workshop filters for plugins, tilesets, music, sound effects, and packs. The first successful run establishes a baseline rather than reporting old items as new. If all category pages parse as zero items, the collector raises an error and preserves the previous seen state instead of accepting an empty baseline.
+- **New RPG Project** is monitored by Source Check for page changes. If the main page is inaccessible, Source Check may use its public Seesaa RSS endpoint (`index.rdf`) as a fallback. RSS access is not assumed successful until a run confirms it.
+- **Comunidad RPG Maker ES** uses the forum's public Flarum discussion API rather than the old `/latest.rss` URL, which returned HTTP 404 in run #176. An empty or malformed API response is treated as an acquisition error, not as proof that the forum has no discussions.
 - **RPG Maker RU** collection now checks the existing plugin section plus the graphics and music sections. Questions and help requests are excluded using conservative title markers; the forum's historical entries are retained.
