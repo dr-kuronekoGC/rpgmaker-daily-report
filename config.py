@@ -16,11 +16,11 @@ OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 
 STEAM_WORKSHOP_SEEN_FILE = "seen_steam_workshop.json"
 STEAM_WORKSHOP_QUERIES = (
-    ("プラグイン", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Plugins"),
-    ("グラフィック素材", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Tilesets"),
-    ("音楽素材", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Music"),
-    ("効果音素材", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Sound%20Effects"),
-    ("素材パック", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Pack"),
+    ("プラグイン", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B%5D=Plugins"),
+    ("グラフィック素材", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B%5D=Tilesets"),
+    ("音楽素材", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B%5D=Music"),
+    ("効果音素材", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B%5D=Sound%20Effects"),
+    ("素材パック", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B%5D=Pack"),
 )
 
 # ----------------------------
@@ -232,6 +232,7 @@ SOURCE_CHECK_SITES = [
     {
         "name": "New RPG Project",
         "url": "https://newrpg.seesaa.net/",
+        "alternate_feed_url": "https://newrpg.seesaa.net/index.rdf",
         "resource_types": ["プラグイン", "開発ツール"],
         "language": "日本語",
         "site_type": "個人サイト・プラグイン配布",
@@ -405,7 +406,7 @@ RAIZEN_PLUGINS_SEEN_FILE = "seen_raizen_plugins.json"
 # International community forums
 # ----------------------------
 
-RPGMAKER_ES_RSS = "https://comunidad.rpgmaker.es/latest.rss"
+RPGMAKER_ES_API_URL = "https://comunidad.rpgmaker.es/api/discussions?include=tags&page%5Blimit%5D=50&sort=-lastPostedAt"
 RPGMAKER_ES_SEEN_FILE = "seen_rpgmaker_es.json"
 
 RPGMAKER_FR_RESOURCE_URL = "https://forum.rpgmakervx-fr.com/f118-ressources"

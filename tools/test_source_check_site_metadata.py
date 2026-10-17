@@ -39,6 +39,16 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
                 self.assertTrue(site.get("language"))
                 self.assertTrue(site.get("site_type"))
 
+    def test_new_rpg_project_has_public_feed_fallback(self):
+        site = next(
+            site for site in SOURCE_CHECK_SITES
+            if site.get("name") == "New RPG Project"
+        )
+        self.assertEqual(
+            site.get("alternate_feed_url"),
+            "https://newrpg.seesaa.net/index.rdf",
+        )
+
     def test_hendrix_metadata_includes_japanese_plugin_support(self):
         site = next(
             site for site in SOURCE_CHECK_SITES
