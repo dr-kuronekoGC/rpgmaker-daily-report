@@ -38,6 +38,7 @@ from . import (
     community_makerando,
     community_rpgmaker_net,
     community_gamebanana,
+    community_steam_workshop,
     official_source_check,
 )
 
