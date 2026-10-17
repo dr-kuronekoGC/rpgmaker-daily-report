@@ -33,6 +33,27 @@ class SourceSiteRegistryTests(unittest.TestCase):
             f"Active collectors missing from data/sites/sites.json: {missing}",
         )
 
+    def test_disabled_collection_sites_are_not_active_collectors(self):
+        with SITES_FILE.open("r", encoding="utf-8") as file:
+            sites = json.load(file)
+
+        disabled_collectors = {
+            site["collector"]
+            for site in sites
+            if isinstance(site, dict)
+            and site.get("collector")
+            and site.get("collection") is False
+        }
+        active_collectors = {
+            source.__name__.split(".")[-1]
+            for source in SOURCES
+        }
+        self.assertEqual(
+            disabled_collectors & active_collectors,
+            set(),
+            "Collectors disabled in data/sites/sites.json must not run periodically",
+        )
+
     def test_site_ids_are_unique(self):
         with SITES_FILE.open("r", encoding="utf-8") as file:
             sites = json.load(file)
