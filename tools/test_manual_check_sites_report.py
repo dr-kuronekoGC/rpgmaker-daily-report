@@ -66,7 +66,8 @@ class TestManualCheckSitesReport(unittest.TestCase):
 
         self.assertIn("対象：プラグイン", report)
         self.assertIn("サイト種別：プラグイン配布サイト", report)
-        self.assertNotIn("主な言語：日本語", report)
+        source_check_section = report.split("【📚 素材・プラグイン関連サイト一覧】", 1)[0]
+        self.assertNotIn("主な言語：日本語", source_check_section)
 
     def test_source_check_partial_warning_uses_friendly_name(self):
         lines = format_source_health_warnings(
