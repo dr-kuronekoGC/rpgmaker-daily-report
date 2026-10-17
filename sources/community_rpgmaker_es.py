@@ -1,11 +1,15 @@
-from sources.base import get_feed
-from config import (
-    RPGMAKER_ES_RSS,
-    RPGMAKER_ES_SEEN_FILE,
-)
+"""Collect resource-related discussions from the Spanish RPG Maker Flarum forum."""
+
+import json
+
+from config import RPGMAKER_ES_API_URL, RPGMAKER_ES_SEEN_FILE
+from sources.base import get_html
+
 
 SEEN_FILE = RPGMAKER_ES_SEEN_FILE
 SOURCE_NAME = "Comunidad RPG Maker ES"
+BASE_URL = "https://comunidad.rpgmaker.es"
+MAX_PAGES = 2
 
 PLUGIN_KEYWORDS = (
     "plugin", "plugins", "complemento", "complementos",
@@ -36,17 +40,6 @@ def normalize_text(value):
     return " ".join(value.lower().split())
 
 
-def get_tags(entry):
-    tags = []
-    for tag in entry.get("tags", []):
-        if isinstance(tag, dict) and tag.get("term"):
-            tags.append(str(tag["term"]))
-    for category in entry.get("categories", []):
-        if isinstance(category, str):
-            tags.append(category)
-    return " ".join(tags)
-
-
 def classify(title, tags=""):
     text = normalize_text(title)
     tag_text = normalize_text(tags)
@@ -70,45 +63,113 @@ def classify(title, tags=""):
     return None
 
 
+def parse_discussions(payload):
+    """Return discussion records and the next public API page URL."""
+    try:
+        document = json.loads(payload)
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise ValueError("Flarum API returned invalid JSON") from exc
+
+    data = document.get("data")
+    if not isinstance(data, list):
+        raise ValueError("Flarum API response has no discussion list")
+
+    included = document.get("included", [])
+    tag_names = {
+        str(entry.get("id")): str(entry.get("attributes", {}).get("name", ""))
+        for entry in included
+        if isinstance(entry, dict)
+        and entry.get("type") == "tags"
+        and entry.get("attributes", {}).get("name")
+    }
+
+    discussions = []
+    for entry in data:
+        if not isinstance(entry, dict):
+            continue
+        attributes = entry.get("attributes") or {}
+        title = str(attributes.get("title") or "").strip()
+        discussion_id = str(entry.get("id") or "").strip()
+        slug = str(attributes.get("slug") or "").strip()
+        if not title or not discussion_id:
+            continue
+
+        if not slug:
+            slug = discussion_id
+        url = f"{BASE_URL}/d/{slug}"
+
+        relationships = entry.get("relationships") or {}
+        tags_relationship = relationships.get("tags") or {}
+        tags_data = tags_relationship.get("data") or []
+        tags = " ".join(
+            tag_names.get(str(tag.get("id")), "")
+            for tag in tags_data
+            if isinstance(tag, dict)
+        ).strip()
+
+        discussions.append({
+            "title": title,
+            "url": url,
+            "tags": tags,
+        })
+
+    links = document.get("links") or {}
+    next_url = links.get("next")
+    return discussions, next_url if isinstance(next_url, str) and next_url else None
+
+
 def get_items(seen):
     if not isinstance(seen, list):
         seen = []
 
-    try:
-        feed = get_feed(RPGMAKER_ES_RSS)
-        new_seen = list(seen)
-        seen_set = set(seen)
-        candidates = []
+    new_seen = list(seen)
+    seen_set = set(seen)
+    candidates = []
+    current_url = RPGMAKER_ES_API_URL
+    visited = set()
+    pages_fetched = 0
 
-        for entry in feed.entries:
-            url = entry.get("link")
-            title = entry.get("title", "").strip()
-            if not url or not title or url in seen_set:
+    while current_url and current_url not in visited and pages_fetched < MAX_PAGES:
+        visited.add(current_url)
+        payload = get_html(current_url)
+        discussions, next_url = parse_discussions(payload)
+        pages_fetched += 1
+
+        for discussion in discussions:
+            url = discussion["url"]
+            if url in seen_set:
                 continue
 
-            tags = get_tags(entry)
-            category = classify(title, tags)
-            new_seen.append(url)
             seen_set.add(url)
-
+            new_seen.append(url)
+            category = classify(discussion["title"], discussion["tags"])
             if category is None:
                 continue
 
             candidates.append({
-                "title": title,
+                "title": discussion["title"],
                 "url": url,
                 "category": category,
                 "source": SOURCE_NAME,
                 "language": "es",
             })
 
-        if not seen:
-            print(f"[{SOURCE_NAME}] Baseline: {len(new_seen)} items")
-            return [], new_seen
+        current_url = next_url
 
-        print(f"[{SOURCE_NAME}] New: {len(candidates)}")
-        return candidates, new_seen
+    if pages_fetched == 0:
+        raise ValueError("Flarum API returned no pages")
+    if not new_seen and not discussions:
+        raise ValueError("Flarum API returned no discussions; refusing an empty baseline")
 
-    except Exception as e:
-        print(f"[{SOURCE_NAME}] Error: {e}")
-        return [], seen
+    if not seen:
+        print(
+            f"[{SOURCE_NAME}] Baseline: {len(new_seen)} discussions "
+            f"from {pages_fetched} API page(s)"
+        )
+        return [], new_seen
+
+    print(
+        f"[{SOURCE_NAME}] New: {len(candidates)} resource posts "
+        f"from {pages_fetched} API page(s)"
+    )
+    return candidates, new_seen
