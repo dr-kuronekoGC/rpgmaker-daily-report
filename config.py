@@ -235,6 +235,7 @@ SOURCE_CHECK_SITES = [
         "resource_types": ["プラグイン", "開発ツール"],
         "language": "日本語",
         "site_type": "個人サイト・プラグイン配布",
+        "reference_only": True,
     },
 ]
 
