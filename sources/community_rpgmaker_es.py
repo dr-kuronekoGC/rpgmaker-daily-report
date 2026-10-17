@@ -128,12 +128,14 @@ def get_items(seen):
     current_url = RPGMAKER_ES_API_URL
     visited = set()
     pages_fetched = 0
+    total_discussions = 0
 
     while current_url and current_url not in visited and pages_fetched < MAX_PAGES:
         visited.add(current_url)
         payload = get_html(current_url)
         discussions, next_url = parse_discussions(payload)
         pages_fetched += 1
+        total_discussions += len(discussions)
 
         for discussion in discussions:
             url = discussion["url"]
@@ -158,8 +160,8 @@ def get_items(seen):
 
     if pages_fetched == 0:
         raise ValueError("Flarum API returned no pages")
-    if not new_seen and not discussions:
-        raise ValueError("Flarum API returned no discussions; refusing an empty baseline")
+    if total_discussions == 0:
+        raise ValueError("Flarum API returned no discussions; refusing an empty scan")
 
     if not seen:
         print(
