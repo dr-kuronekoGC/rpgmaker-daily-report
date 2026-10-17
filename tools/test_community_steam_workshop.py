@@ -32,6 +32,18 @@ class SteamWorkshopTests(unittest.TestCase):
         self.assertEqual(items[0]["category"], "プラグイン")
         self.assertEqual(items[0]["language"], "多言語")
 
+    def test_falls_back_to_link_text_when_title_class_is_missing(self):
+        html = """
+        <div class="workshopItem">
+          <a href="/sharedfiles/filedetails/?id=98765" title="Tileset Bundle">
+            Tileset Bundle
+          </a>
+        </div>
+        """
+        items = extract_items(html, "グラフィック素材")
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["title"], "Tileset Bundle")
+
     @patch("sources.community_steam_workshop.get_html")
     def test_baseline_does_not_emit_existing_workshop_items(self, mock_get_html):
         mock_get_html.return_value = (
@@ -55,6 +67,12 @@ class SteamWorkshopTests(unittest.TestCase):
         items, seen = get_items(["already-seen"])
         self.assertEqual(len(items), 5)
         self.assertEqual(len(seen), 6)
+
+    @patch("sources.community_steam_workshop.get_html", return_value="<html><body>No items parsed</body></html>")
+    def test_empty_parse_raises_instead_of_saving_an_empty_baseline(self, mock_get_html):
+        with self.assertRaisesRegex(ValueError, "refusing to treat this as an empty baseline"):
+            get_items([])
+        self.assertEqual(mock_get_html.call_count, 5)
 
 
 if __name__ == "__main__":
