@@ -57,7 +57,8 @@ def _extract_title(link):
                 return value
 
     value = _clean_title(
-        link.get("title", "")
+        link.get("data-tooltip-text", "")
+        or link.get("title", "")
         or link.get("aria-label", "")
         or link.get_text(" ", strip=True)
     )
