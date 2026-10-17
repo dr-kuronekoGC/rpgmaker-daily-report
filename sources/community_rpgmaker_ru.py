@@ -1,11 +1,17 @@
-"""Conservative collector for the Russian RPG Maker plugin section."""
+"""Resource-focused collector for the Russian RPG Maker community."""
 
 import re
+import time
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
-from config import RPGMAKER_RU_PLUGIN_URL, RPGMAKER_RU_SEEN_FILE
+from config import (
+    RPGMAKER_RU_GRAPHICS_URL,
+    RPGMAKER_RU_MUSIC_URL,
+    RPGMAKER_RU_PLUGIN_URL,
+    RPGMAKER_RU_SEEN_FILE,
+)
 from sources.base import get_html
 
 
@@ -15,7 +21,8 @@ BASE_URL = "https://rpgmaker.ru"
 
 QUESTION_MARKERS = (
     "ищу", "помогите", "помощь", "вопрос", "как сделать",
-    "как создать", "подскажите", "нужен плагин",
+    "как создать", "подскажите", "нужен плагин", "нужна графика",
+    "нужен ресурс", "где найти", "посоветуйте", "проблема",
 )
 
 
@@ -31,19 +38,16 @@ def normalize_url(url):
     return f"{BASE_URL}{parts.path}".rstrip("/")
 
 
-def classify(title):
+def classify(title, category="プラグイン"):
     text = " ".join(str(title or "").lower().split())
     if not text or any(marker in text for marker in QUESTION_MARKERS):
         return None
     if any(marker in text for marker in ("правила", "регламент")):
         return None
-
-    # The configured URL is a dedicated plugin release section.
-    # Titles often describe the feature without using the word "plugin".
-    return "RPG Maker RUプラグイン"
+    return category
 
 
-def extract_items(html):
+def extract_items(html, category="プラグイン"):
     soup = BeautifulSoup(html, "html.parser")
     items = []
     local_seen = set()
@@ -52,13 +56,13 @@ def extract_items(html):
         url = normalize_url(link.get("href"))
         if not title or not url or url in local_seen:
             continue
-        category = classify(title)
-        if category is None:
+        item_category = classify(title, category)
+        if item_category is None:
             continue
         items.append({
             "title": title,
             "url": url,
-            "category": category,
+            "category": item_category,
             "source": SOURCE_NAME,
             "language": "ru",
         })
@@ -72,22 +76,33 @@ def get_items(seen):
     new_seen = list(seen)
     seen_set = set(seen)
     adopted = []
-    try:
-        html = get_html(RPGMAKER_RU_PLUGIN_URL)
-    except Exception as exc:
-        print(f"[{SOURCE_NAME}] Error: {exc}")
-        return [], seen
+    category_pages = (
+        (RPGMAKER_RU_PLUGIN_URL, "プラグイン"),
+        (RPGMAKER_RU_GRAPHICS_URL, "グラフィック素材"),
+        (RPGMAKER_RU_MUSIC_URL, "音楽素材"),
+    )
 
-    for item in extract_items(html):
-        url = item["url"]
-        if url in seen_set:
+    for index, (page_url, category) in enumerate(category_pages):
+        try:
+            html = get_html(page_url)
+        except Exception as exc:
+            print(f"[{SOURCE_NAME}] Error ({category}): {exc}")
             continue
-        seen_set.add(url)
-        new_seen.append(url)
-        adopted.append(item)
+
+        for item in extract_items(html, category):
+            url = item["url"]
+            if url in seen_set:
+                continue
+            seen_set.add(url)
+            new_seen.append(url)
+            adopted.append(item)
+
+        if index < len(category_pages) - 1:
+            time.sleep(0.5)
 
     if not seen:
         print(f"[{SOURCE_NAME}] Baseline: {len(new_seen)} items")
         return [], new_seen
+
     print(f"[{SOURCE_NAME}] New: {len(adopted)}")
     return adopted, new_seen
