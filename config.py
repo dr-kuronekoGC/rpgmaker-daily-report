@@ -11,6 +11,19 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 
 # ----------------------------
+# Steam Workshop resources (separate from Steam news)
+# ----------------------------
+
+STEAM_WORKSHOP_SEEN_FILE = "seen_steam_workshop.json"
+STEAM_WORKSHOP_QUERIES = (
+    ("プラグイン", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Plugins"),
+    ("グラフィック素材", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Tilesets"),
+    ("音楽素材", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Music"),
+    ("効果音素材", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Sound%20Effects"),
+    ("素材パック", "https://steamcommunity.com/workshop/browse/?appid=1096900&browsesort=mostrecent&section=readytouseitems&requiredtags%5B0%5D=Pack"),
+)
+
+# ----------------------------
 # Official Steam
 # ----------------------------
 
@@ -216,6 +229,13 @@ SOURCE_CHECK_SITES = [
         "site_type": "掲示板・コミュニティ",
         "reference_only": True,
     },
+    {
+        "name": "New RPG Project",
+        "url": "https://newrpg.seesaa.net/",
+        "resource_types": ["プラグイン", "開発ツール"],
+        "language": "日本語",
+        "site_type": "個人サイト・プラグイン配布",
+    },
 ]
 
 # ----------------------------
@@ -402,6 +422,8 @@ RPGMAKER_CN_SEEN_FILE = "seen_rpgmaker_cn.json"
 # ----------------------------
 
 RPGMAKER_RU_PLUGIN_URL = "https://rpgmaker.ru/forum/u-mz"
+RPGMAKER_RU_GRAPHICS_URL = "https://rpgmaker.ru/forum/grafika/"
+RPGMAKER_RU_MUSIC_URL = "https://rpgmaker.ru/forum/muzyka/"
 RPGMAKER_RU_SEEN_FILE = "seen_rpgmaker_ru.json"
 
 # ----------------------------
