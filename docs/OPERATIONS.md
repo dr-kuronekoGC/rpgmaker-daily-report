@@ -44,3 +44,9 @@ Workflow: `.github/workflows/classification-audit.yml`
 - Do not mark an inaccessible source healthy by suppressing errors.
 - If a collector fails after a partial scan, preserve its seen state unless the collector can prove which entries were successfully processed.
 - Keep the source registry in `data/sites/sites.json` aligned with active collectors. Site IDs are stable internal identifiers and should not be renumbered.
+
+
+## Retired collectors
+
+- **RMRK** is no longer in the scheduled collector registry. Its existing seen_rmrk.json, archive entries, and classification-review records are intentionally retained. The site may still be useful as a historical reference, but it is not scanned for new items.
+- **Save-Point** remains an active collector and is the preferred ongoing forum source for resource-related posts. Its coverage is not a complete replacement for RMRK's historical database.
