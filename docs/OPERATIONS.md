@@ -50,3 +50,10 @@ Workflow: `.github/workflows/classification-audit.yml`
 
 - **RMRK** is no longer in the scheduled collector registry. Its existing seen_rmrk.json, archive entries, and classification-review records are intentionally retained. The site may still be useful as a historical reference, but it is not scanned for new items.
 - **Save-Point** remains an active collector and is the preferred ongoing forum source for resource-related posts. Its coverage is not a complete replacement for RMRK's historical database.
+
+
+## Additional source coverage
+
+- **Steam Workshop for RPG Maker MZ** is collected separately from Steam news. The collector checks resource-oriented workshop filters for plugins, tilesets, music, sound effects, and packs. The first successful run establishes a baseline rather than reporting old items as new.
+- **New RPG Project** is monitored by Source Check for page changes. It is not scraped as a separate item feed in this change.
+- **RPG Maker RU** collection now checks the existing plugin section plus the graphics and music sections. Questions and help requests are excluded using conservative title markers; the forum's historical entries are retained.
