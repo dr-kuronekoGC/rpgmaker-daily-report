@@ -57,6 +57,7 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
         self.assertIn("GameDevMarket", output)
         self.assertIn("Maker Devs", output)
         self.assertIn("RPG Refuge", output)
+        self.assertIn("New RPG Project", output)
         self.assertIn("ページ変化を検知できたサイト", output)
 
 
