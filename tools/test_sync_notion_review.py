@@ -60,6 +60,18 @@ class SyncStateTests(unittest.TestCase):
         self.assertNotIn("確認優先度", update)
         self.assertNotIn("確認状態", update)
 
+    def test_missing_resolved_item_is_created_as_done_for_history(self):
+        queue = {
+            "version": 1,
+            "next_pre_number": 2,
+            "items": [
+                {"pre_id": "PRE-00001", "status": "resolved", "decision": "plugin", "url": "https://example.com/1"},
+            ],
+        }
+        _, _, creates, summary = sync_state(queue, [])
+        self.assertEqual(creates[0]["properties"]["確認状態"]["select"]["name"], REVIEWED)
+        self.assertEqual(summary["marked_done_in_notion"], ["PRE-00001"])
+
     def test_duplicate_notion_pre_ids_fail_closed(self):
         pages = [
             notion_page("PRE-00001", "https://example.com/1"),
