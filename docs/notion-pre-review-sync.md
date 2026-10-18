@@ -5,7 +5,7 @@
 - `data/review/classification_review.json` をPREの永続的な記録として維持します。
 - Notionの「確認状態」を「済」にすると、次回同期でGitHub側のPREも `status: "resolved"` になります。決定内容は `reviewed_in_notion` として記録され、Slackの未確認持ち越し対象から外れます。
 - GitHub側で既に決定済みのPREは、Notionでも「済」に更新します。既存の `decision` と `review_note` は上書きしません。
-- GitHub側の未解決PREでNotionに行がなければ、新規作成します。URLが変わった場合はNotionのURLも更新します。
+- GitHub側のPREでNotionに行がなければ新規作成します。既に解決済みのPREは「済」で登録し、過去の確認結果も台帳に残します。URLが変わった場合はNotionのURLも更新します。
 - Notionの「済」行は削除しません。Notionの「未確認一覧」ビューからのみ非表示になります。
 - Notionの優先度はGitHub台帳に同等の項目がないため、Notion内で管理します。新規行の優先度は「通常」です。
 - 2時間ごとに同期し、Actions画面から手動実行もできます。
