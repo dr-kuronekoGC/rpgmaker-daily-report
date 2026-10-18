@@ -1,0 +1,40 @@
+name: Notion PRE Review Sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Notionの確認状態を2時間ごとに同期する（毎時ちょうどを避ける）。
+    - cron: '17 */2 * * *'
+
+permissions:
+  contents: write
+
+# Daily report also changes the review ledger; serialize both workflows.
+concurrency:
+  group: rpg-maker-daily-report-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Synchronize Notion and review ledger
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python tools/sync_notion_review.py
+
+      - name: Commit synchronized review ledger
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/review/classification_review.json
+          git diff --cached --quiet || git commit -m "Sync Notion PRE review status"
+          git push
