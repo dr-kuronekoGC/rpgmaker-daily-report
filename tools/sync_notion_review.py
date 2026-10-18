@@ -156,10 +156,12 @@ def sync_state(queue: dict, notion_pages: list[dict], now: str | None = None) ->
             continue
 
         if notion_page is None:
-            if item.get("status") == OPEN:
-                properties = page_properties(pre_id, item.get("url", ""), DEFAULT_PRIORITY, NOT_REVIEWED)
-                pages_to_create.append({"properties": properties})
-                created_ids.append(pre_id)
+            initial_status = REVIEWED if item.get("status") == RESOLVED else NOT_REVIEWED
+            properties = page_properties(pre_id, item.get("url", ""), DEFAULT_PRIORITY, initial_status)
+            pages_to_create.append({"properties": properties})
+            created_ids.append(pre_id)
+            if initial_status == REVIEWED:
+                marked_done_in_notion.append(pre_id)
             continue
 
         props = notion_page.get("properties", {})
