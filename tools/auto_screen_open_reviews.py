@@ -20,6 +20,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import fetch_historical_review_bodies as fetcher
+from asset_metadata import build_asset_metadata
 
 LEDGER_PATH = Path("data/review/classification_review.json")
 LOG_PATH = Path("data/review/auto_screen_log.json")
@@ -142,6 +143,36 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     ))
     if non_asset_context and explicit_no_release and not positive_release:
         return ("not_applicable", "質問・議論・作品紹介のみで、本文にも配布物がないことが明示されている")
+
+    # Reuse the project's established resource-intent classifier against
+    # the freshly fetched page text. Only act on explicit high-confidence
+    # non-resource results, or medium-confidence question/request/showcase
+    # signals; positive distribution evidence always keeps the item open.
+    candidate = dict(item)
+    candidate["body_text"] = body
+    candidate["description"] = clean(page.get("page_description"))
+    try:
+        triage = build_asset_metadata(candidate)
+        intent = triage.get("resource_intent")
+        confidence = triage.get("resource_intent_confidence")
+        evidence = triage.get("resource_intent_evidence") or []
+        signals = {
+            entry.get("signal")
+            for entry in evidence
+            if isinstance(entry, dict)
+        }
+        if intent == "not_resource" and not positive_release:
+            if confidence == "high":
+                return ("not_applicable", "既存の素材意図分類器が高確度で素材・配布物ではないと判定")
+            if confidence == "medium" and signals.intersection({
+                "question_or_showcase_title",
+                "request_or_question_slug",
+                "non_resource_category",
+            }):
+                return ("not_applicable", "既存の素材意図分類器が質問・依頼・作品紹介を検出し、本文にも配布根拠がない")
+    except Exception:
+        # A classifier error is not evidence that an item should be excluded.
+        pass
 
     # Copyrighted franchise names without an explicit piracy indicator are
     # intentionally not auto-excluded.
