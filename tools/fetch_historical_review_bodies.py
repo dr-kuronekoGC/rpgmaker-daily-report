@@ -52,6 +52,27 @@ def is_public_http_url(url: str) -> bool:
         return False
 
 
+def extract_links(node, base_url: str) -> list[dict[str, str]]:
+    """Extract a bounded list of links from the main post body, not site navigation."""
+    links = []
+    seen = set()
+    if node is None:
+        return links
+    for anchor in node.select("a[href]"):
+        href = urljoin(base_url, str(anchor.get("href") or "").strip())
+        parsed = urlparse(href)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+            continue
+        seen.add(href)
+        links.append({
+            "text": clean_text(anchor.get_text(" ", strip=True))[:160],
+            "url": href[:2000],
+        })
+        if len(links) >= 100:
+            break
+    return links
+
+
 def parse_reddit_json(session: requests.Session, url: str) -> dict:
     endpoint = url.rstrip("/") + ".json"
     response = session.get(
@@ -63,11 +84,20 @@ def parse_reddit_json(session: requests.Session, url: str) -> dict:
     response.raise_for_status()
     data = response.json()
     post = data[0]["data"]["children"][0]["data"]
+    selftext = str(post.get("selftext", "") or "")
+    markdown_links = [
+        {"text": clean_text(label), "url": target}
+        for label, target in re.findall(r"\[([^\]]+)\]\((https?://[^)]+)\)", selftext)
+    ]
+    destination = clean_text(post.get("url_overridden_by_dest") or "")
+    if destination.startswith(("http://", "https://")):
+        markdown_links.append({"text": "post destination", "url": destination})
     return {
         "retrieval_method": "reddit_json",
         "page_title": clean_text(post.get("title", "")),
-        "page_description": clean_text(post.get("selftext", ""))[:MAX_BODY_CHARS],
-        "body_text": clean_text(post.get("selftext", ""))[:MAX_BODY_CHARS],
+        "page_description": clean_text(selftext)[:MAX_BODY_CHARS],
+        "body_text": clean_text(selftext)[:MAX_BODY_CHARS],
+        "outbound_links": markdown_links[:100],
         "source_tags": [
             clean_text(post.get("subreddit", "")),
             clean_text(post.get("link_flair_text", "")),
@@ -100,12 +130,15 @@ def parse_discourse_json(session: requests.Session, url: str) -> dict | None:
     posts = stream.get("posts", []) if isinstance(stream, dict) else []
     first = posts[0] if posts and isinstance(posts[0], dict) else {}
     cooked = first.get("cooked", "")
-    body = clean_text(BeautifulSoup(cooked, "html.parser").get_text(" ", strip=True))
+    cooked_soup = BeautifulSoup(cooked, "html.parser")
+    body = clean_text(cooked_soup.get_text(" ", strip=True))
+    outbound_links = extract_links(cooked_soup, url)
     return {
         "retrieval_method": "discourse_json",
         "page_title": clean_text(data.get("title", "")),
         "page_description": clean_text(data.get("excerpt", "")),
         "body_text": body[:MAX_BODY_CHARS],
+        "outbound_links": outbound_links,
         "source_tags": [clean_text(str(tag)) for tag in data.get("tags", []) if clean_text(str(tag))],
         "http_status": response.status_code,
     }
@@ -160,6 +193,7 @@ def parse_html(session: requests.Session, url: str) -> dict:
         body_node = None
 
     body = clean_text(body_node.get_text(" ", strip=True)) if body_node else ""
+    outbound_links = extract_links(body_node, response.url)
     if not body:
         body = description
 
@@ -170,6 +204,7 @@ def parse_html(session: requests.Session, url: str) -> dict:
         "page_title": page_title,
         "page_description": description[:1600],
         "body_text": body[:MAX_BODY_CHARS],
+        "outbound_links": outbound_links,
         "source_tags": [part.strip() for part in keywords.split(",") if part.strip()][:30],
     }
 
@@ -188,6 +223,7 @@ def fetch_item(session: requests.Session, item: dict) -> dict:
         "page_title": "",
         "page_description": "",
         "body_text": "",
+        "outbound_links": [],
         "source_tags": [],
         "http_status": None,
         "retrieval_error": "",
