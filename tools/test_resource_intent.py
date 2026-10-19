@@ -60,6 +60,24 @@ class ResourceIntentTests(unittest.TestCase):
         })
         self.assertEqual(item["resource_intent"], "resource_candidate")
 
+    def test_last_comment_metadata_url_is_not_a_separate_resource(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "October 7, 2024",
+            "url": "https://example.com/topic/123?do=getLastComment",
+        })
+        self.assertEqual(intent, "not_resource")
+        self.assertEqual(confidence, "high")
+        self.assertEqual(evidence[0]["signal"], "last_comment_metadata")
+
+    def test_russian_request_in_url_slug_is_not_a_resource(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "Последнее",
+            "url": "https://example.com/forum/grafika/123-ishchu-tajlsety",
+        })
+        self.assertEqual(intent, "not_resource")
+        self.assertEqual(confidence, "medium")
+        self.assertEqual(evidence[0]["signal"], "request_or_question_slug")
+
     def test_insufficient_evidence_stays_uncertain(self):
         intent, confidence, evidence = classify_resource_intent({
             "title": "Interesting post",
