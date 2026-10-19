@@ -169,6 +169,26 @@ def main() -> int:
 
     for index, item in enumerate(open_items, start=1):
         page = fetcher.fetch_item(session, item)
+        # Discourse's JSON endpoint can fail while the ordinary topic page
+        # still works. Verify the original URL before treating JSON 404/410
+        # as a dead link.
+        if page.get("retrieval_method") == "discourse_json" and page.get("http_status") in {404, 410}:
+            try:
+                html_page = fetcher.parse_html(session, clean(item.get("url")))
+                page.update(html_page)
+                if page.get("body_text") or page.get("page_description"):
+                    page["retrieval_status"] = "body_found"
+                elif page.get("http_status") == 200:
+                    page["retrieval_status"] = "page_loaded_no_body"
+            except fetcher.requests.HTTPError as exc:
+                actual_status = exc.response.status_code if exc.response is not None else None
+                if actual_status not in {404, 410}:
+                    page["http_status"] = actual_status
+                    page["retrieval_status"] = "unavailable"
+            except fetcher.requests.RequestException:
+                # An unverified HTML retry is not proof that the link is dead.
+                page["http_status"] = None
+                page["retrieval_status"] = "unavailable"
         outcome = classify_page(item, page)
         print(
             f"[Auto screen] {index}/{len(open_items)} {item.get('pre_id')} "
