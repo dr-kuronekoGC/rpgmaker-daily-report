@@ -87,6 +87,15 @@ class ResourceIntentTests(unittest.TestCase):
         self.assertEqual(confidence, "medium")
         self.assertEqual(evidence[0]["signal"], "request_or_question_slug")
 
+    def test_russian_request_for_music_software_is_not_a_resource(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "Программу для создания музыки",
+            "url": "https://example.com/forum/muzyka/62291-programmu-dlya-sozdaniya-muzyki",
+        })
+        self.assertEqual(intent, "not_resource")
+        self.assertEqual(confidence, "medium")
+        self.assertTrue(evidence)
+
     def test_insufficient_evidence_stays_uncertain(self):
         intent, confidence, evidence = classify_resource_intent({
             "title": "Interesting post",
