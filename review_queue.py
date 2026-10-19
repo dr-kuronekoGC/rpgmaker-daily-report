@@ -1,7 +1,6 @@
 import json
 import re
 from pathlib import Path
-from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -18,9 +17,6 @@ REMOVED_PAGE_PATTERNS = (
     r"the requested topic does not exist",
     r"this page (?:has been|was) removed",
     r"this content is no longer available",
-    r"topic not found",
-    r"page not found",
-    r"this post has been removed",
     r"投稿が削除されました",
     r"ページが見つかりません",
     r"記事が存在しません",
@@ -128,7 +124,15 @@ def audit_open_review_items(queue, max_items=30):
             try:
                 from datetime import datetime, timedelta
                 previous = datetime.fromisoformat(checked_at)
-                if now - previous < timedelta(days=14):
+                prior_result = audit.get("result")
+                # Retry access/network failures sooner; successful or conclusive
+                # checks need not be repeated every day.
+                retry_days = 1 if prior_result in (
+                    "network_error_not_proven_dead",
+                    "inaccessible_not_proven_dead",
+                    "uncertain",
+                ) else 14
+                if now - previous < timedelta(days=retry_days):
                     skipped_recent += 1
                     continue
             except (TypeError, ValueError):
