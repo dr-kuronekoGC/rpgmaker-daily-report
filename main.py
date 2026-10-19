@@ -40,6 +40,14 @@ GLOBAL_SEEN_FILE = "seen_global.json"
 REVIEW_DECISIONS_FILE = Path("data/review/review_decisions.json")
 
 
+def is_forum_user_profile(item):
+    """
+    フォーラムのユーザープロフィールは素材配布ページではないため除外する。
+    """
+    url = str(item.get("url") or "").lower()
+    return "/forum/user/" in url
+
+
 def get_global_key(item):
     """
     複数サイトをまたいだ重複判定用キー。
@@ -252,6 +260,13 @@ def main():
                 items,
                 collector_name,
             )
+
+            # User-profile pages are metadata about authors, not resources.
+            # Drop them before they enter archive, Slack, pending, or review.
+            profile_count = sum(1 for item in items if is_forum_user_profile(item))
+            if profile_count:
+                print(f"[Resource filter] {collector_name}: excluded {profile_count} forum user-profile pages")
+            items = [item for item in items if not is_forum_user_profile(item)]
 
             all_items.extend(items)
 
