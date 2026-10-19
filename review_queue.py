@@ -43,6 +43,20 @@ REQUEST_ONLY_PATTERNS = (
     r"素材募集",
     r"素材をください",
     r"作ってください",
+    # Discussion/question-only posts are excluded only when no resource evidence exists.
+    r"\bdiscussion\b",
+    r"\bwhat do you think\b",
+    r"\bany thoughts\b",
+    r"\bfeedback (?:please|wanted|needed)\b",
+    r"\bquestion about\b",
+    r"\bhow do i\b",
+    r"\bdiscussione\b",
+    r"\bopinioni\b",
+    r"обсуждение",
+    r"вопрос о",
+    r"意見を聞かせて",
+    r"質問です",
+    r"相談です",
 )
 
 RESOURCE_LINK_PATTERN = re.compile(
@@ -211,7 +225,7 @@ def audit_open_review_items(queue, max_items=30):
             if audit_result["result"] == "dead_page":
                 item["review_note"] = f"自動事前確認：配布元ページを確認できず（{audit_result['reason']}）。素材確認キューから除外。"
             else:
-                item["review_note"] = f"自動事前確認：素材募集・依頼の投稿で、ページ内に配布物を確認できず（{audit_result['reason']}）。素材確認キューから除外。"
+                item["review_note"] = f"自動事前確認：質問・議論・素材募集などの投稿で、ページ内に配布物を確認できず（{audit_result['reason']}）。素材確認キューから除外。"
             resolved.append(item.get("pre_id"))
 
     return {
