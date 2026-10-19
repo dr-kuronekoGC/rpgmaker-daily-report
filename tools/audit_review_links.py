@@ -7,8 +7,10 @@ cannot accidentally cause a resource to be excluded.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -16,6 +18,7 @@ import requests
 from bs4 import BeautifulSoup
 
 LEDGER_PATH = Path("data/review/classification_review.json")
+DECISIONS_PATH = Path("data/review/review_decisions.json")
 OUTPUT_PATH = Path("review_link_audit.json")
 USER_AGENT = "RPGMakerDailyReport-LinkAudit/1.0 (manual review utility)"
 TIMEOUT = (5, 12)
@@ -97,6 +100,14 @@ def audit_url(item: dict) -> dict:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Audit open review links; optionally resolve confirmed dead links.")
+    parser.add_argument(
+        "--apply-dead-links",
+        action="store_true",
+        help="Resolve only confirmed HTTP 404/410 links and record not_applicable decisions.",
+    )
+    args = parser.parse_args()
+
     try:
         ledger = json.loads(LEDGER_PATH.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -140,12 +151,56 @@ def main() -> int:
     }
     OUTPUT_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
+    if args.apply_dead_links:
+        try:
+            decisions_data = json.loads(DECISIONS_PATH.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"[Link audit] Cannot read decision ledger: {exc}")
+            return 2
+        decisions = decisions_data.get("decisions")
+        if not isinstance(decisions, list):
+            print("[Link audit] Invalid decision ledger")
+            return 2
+
+        by_id = {row.get("pre_id"): row for row in results}
+        known_decisions = {row.get("pre_id") for row in decisions if isinstance(row, dict)}
+        now = datetime.now(timezone.utc).isoformat()
+        applied = 0
+        for item in items:
+            if not isinstance(item, dict) or item.get("status") != "open":
+                continue
+            audit = by_id.get(item.get("pre_id"))
+            if not audit or audit.get("link_status") != "dead_link_candidate":
+                continue
+            note = (
+                f"自動リンク確認でHTTP {audit.get('status_code')}を確認。"
+                "404/410の明確なリンク切れのため、利用可能な配布元を確認できず対象外。"
+            )
+            item["status"] = "resolved"
+            item["decision"] = "not_applicable"
+            item["resolved_at"] = now
+            item["review_note"] = note
+            if item.get("pre_id") not in known_decisions:
+                decisions.append({
+                    "pre_id": item.get("pre_id"),
+                    "decision": "not_applicable",
+                    "note": note,
+                })
+                known_decisions.add(item.get("pre_id"))
+            applied += 1
+
+        LEDGER_PATH.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        DECISIONS_PATH.write_text(json.dumps(decisions_data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"[Link audit] Applied confirmed dead-link exclusions: {applied}")
+        print("[Link audit] 403/429, 5xx, timeouts and ambiguous not-found page text remain open.")
+
     print(f"[Link audit] Checked open review URLs: {len(results)}")
     print(f"[Link audit] Status counts: {dict(sorted(counts.items()))}")
     for row in results:
         if row["link_status"] in {"dead_link_candidate", "page_may_be_deleted", "connection_error_unconfirmed"}:
             print(f"[Link audit candidate] {row['pre_id']} | {row['link_status']} | HTTP {row['status_code']} | {row['title']} | {row['url']}")
-    print("[Link audit] Audit only; no review decisions or data were changed.")
+    if not args.apply_dead_links:
+        print("[Link audit] Audit only; no review decisions or data were changed.")
     return 0
 
 
