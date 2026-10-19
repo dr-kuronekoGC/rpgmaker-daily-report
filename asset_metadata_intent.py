@@ -160,7 +160,7 @@ def classify_resource_intent(item, detected_category=None):
     url = str(item.get("url") or "").lower()
 
     # Forum user-profile pages are author metadata, not downloadable resources.
-    if "/forum/user/" in url and any(part.isdigit() for part in url.split("/")):
+    if "/forum/user/" in url:
         return ("not_resource", "high", [{"field": "url", "signal": "user_profile_page"}])
     source_tags = item.get("source_tags", [])
     tags = item.get("tags", [])
