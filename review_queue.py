@@ -1,5 +1,10 @@
 import json
+import re
 from pathlib import Path
+from urllib.parse import urlparse
+
+import requests
+from bs4 import BeautifulSoup
 
 from common import now_jst, get_period
 
@@ -7,6 +12,210 @@ from common import now_jst, get_period
 REVIEW_DIR = Path("data/review")
 REVIEW_FILE = REVIEW_DIR / "classification_review.json"
 
+# Explicitly removed/deleted-page messages. Do not treat 403/429/timeouts as dead links.
+REMOVED_PAGE_PATTERNS = (
+    r"this topic does not exist",
+    r"the requested topic does not exist",
+    r"this page (?:has been|was) removed",
+    r"this content is no longer available",
+    r"topic not found",
+    r"page not found",
+    r"this post has been removed",
+    r"投稿が削除されました",
+    r"ページが見つかりません",
+    r"記事が存在しません",
+)
+
+# Strong request-only language. These phrases are only sufficient when the page
+# contains no plausible downloadable asset, attachment, resource link, or code.
+REQUEST_ONLY_PATTERNS = (
+    r"\blooking for\b",
+    r"\bcan anyone (?:make|share|provide|give)\b",
+    r"\bdoes anyone have\b",
+    r"\bneed help finding\b",
+    r"\brequest(?:ing)? (?:a|an|some|for)\b",
+    r"\bhelp me find\b",
+    r"\bcerco\b",
+    r"\brichiesta\b",
+    r"\bqualcuno (?:ha|può|potrebbe)\b",
+    r"\bmi serve\b",
+    r"ищу",
+    r"помогите найти",
+    r"запрос на",
+    r"素材を探しています",
+    r"素材を探している",
+    r"素材募集",
+    r"素材をください",
+    r"作ってください",
+)
+
+RESOURCE_LINK_PATTERN = re.compile(
+    r"(download|attachment|\.zip(?:$|[?#])|\.rar(?:$|[?#])|\.7z(?:$|[?#])|"
+    r"\.js(?:$|[?#])|\.rb(?:$|[?#])|\.ogg(?:$|[?#])|\.mp3(?:$|[?#])|"
+    r"\.wav(?:$|[?#])|\.png(?:$|[?#])|\.jpg(?:$|[?#])|\.webp(?:$|[?#])|"
+    r"mediafire|mega\.nz|drive\.google|dropbox|itch\.io|opengameart|"
+    r"ダウンロード|配布|素材|scarica|скачать)",
+    re.IGNORECASE,
+)
+
+
+
+def _content_nodes(soup):
+    """Return likely post-content blocks, avoiding most forum navigation chrome."""
+    selectors = (
+        ".ipsComment_content",
+        ".cPost_contentWrap",
+        ".postarea",
+        ".post_body",
+        ".post-body",
+        ".messageContent",
+        ".message-content",
+        ".post-content",
+        "article",
+    )
+    for selector in selectors:
+        nodes = soup.select(selector)
+        if nodes:
+            return nodes
+    return [soup.body or soup]
+
+
+def _page_has_resource_evidence(nodes):
+    for node in nodes:
+        if node.select_one("pre, code, .attachment, .file, .download, a[download]"):
+            code = " ".join(part.get_text(" ", strip=True) for part in node.select("pre, code"))
+            if len(code) >= 180 or node.select_one(".attachment, .file, .download, a[download]"):
+                return True
+        for anchor in node.select("a[href]"):
+            href = str(anchor.get("href") or "")
+            label = anchor.get_text(" ", strip=True)
+            if RESOURCE_LINK_PATTERN.search(href) or RESOURCE_LINK_PATTERN.search(label):
+                return True
+        for image in node.select("img[src]"):
+            src = str(image.get("src") or "")
+            alt = str(image.get("alt") or "")
+            # Ignore typical avatars and interface icons; retain likely shared artwork.
+            if not re.search(r"(avatar|profile|emoji|smil|icon|logo)", src + " " + alt, re.I):
+                return True
+    return False
+
+
+def audit_open_review_items(queue, max_items=30):
+    """
+    Conservatively pre-screen open review entries.
+
+    Automatically resolves only:
+    - a target page returning HTTP 404/410;
+    - a page clearly displaying a removed/nonexistent-page message;
+    - an explicit resource request with no plausible asset/download/code evidence.
+
+    Access-denied, rate-limit, network, and ambiguous results remain open.
+    A bounded batch prevents a single scheduled run from hammering old forums.
+    """
+    items = queue.get("items", [])
+    now = now_jst()
+    checked = 0
+    resolved = []
+    skipped_recent = 0
+
+    for item in items:
+        if item.get("status") != "open" or not item.get("url"):
+            continue
+
+        audit = item.get("link_audit") or {}
+        checked_at = audit.get("checked_at")
+        if checked_at:
+            try:
+                from datetime import datetime, timedelta
+                previous = datetime.fromisoformat(checked_at)
+                if now - previous < timedelta(days=14):
+                    skipped_recent += 1
+                    continue
+            except (TypeError, ValueError):
+                pass
+
+        if checked >= max_items:
+            break
+
+        url = str(item["url"]).strip()
+        if not url.startswith(("http://", "https://")):
+            continue
+
+        checked += 1
+        audit_result = {
+            "checked_at": now.isoformat(timespec="seconds"),
+            "status_code": None,
+            "final_url": url,
+            "result": "uncertain",
+            "reason": None,
+        }
+
+        try:
+            response = requests.get(
+                url,
+                timeout=6,
+                allow_redirects=True,
+                headers={"User-Agent": "RPGMakerDailyReport/1.0 (resource-link audit)"},
+            )
+            audit_result["status_code"] = response.status_code
+            audit_result["final_url"] = response.url
+
+            if response.status_code in (404, 410):
+                audit_result.update(result="dead_page", reason=f"HTTP {response.status_code}")
+            elif response.status_code >= 400:
+                audit_result.update(result="inaccessible_not_proven_dead", reason=f"HTTP {response.status_code}; retained")
+            elif "text/html" in response.headers.get("Content-Type", "").lower():
+                soup = BeautifulSoup(response.text, "html.parser")
+                nodes = _content_nodes(soup)
+                content_text = " ".join(node.get_text(" ", strip=True) for node in nodes)
+                content_lower = content_text.lower()
+
+                removed_match = next(
+                    (pattern for pattern in REMOVED_PAGE_PATTERNS if re.search(pattern, content_lower, re.I)),
+                    None,
+                )
+                if removed_match:
+                    audit_result.update(result="dead_page", reason=f"Removed-page marker: {removed_match}")
+                else:
+                    title = str(item.get("title") or "")
+                    request_text = (title + " " + content_text[:6000]).lower()
+                    request_match = next(
+                        (pattern for pattern in REQUEST_ONLY_PATTERNS if re.search(pattern, request_text, re.I)),
+                        None,
+                    )
+                    if request_match and not _page_has_resource_evidence(nodes):
+                        audit_result.update(
+                            result="request_without_resource",
+                            reason=f"Explicit request language with no detected asset/download/code: {request_match}",
+                        )
+                    else:
+                        audit_result.update(result="page_accessible", reason="No conclusive exclusion evidence")
+            else:
+                audit_result.update(result="page_accessible", reason="Page responded successfully; content type not HTML")
+        except requests.RequestException as exc:
+            audit_result.update(
+                result="network_error_not_proven_dead",
+                reason=f"{type(exc).__name__}; retained",
+            )
+
+        item["link_audit"] = audit_result
+
+        if audit_result["result"] in ("dead_page", "request_without_resource"):
+            item["status"] = "resolved"
+            item["decision"] = "not_applicable"
+            item["resolved_at"] = now.isoformat(timespec="seconds")
+            if audit_result["result"] == "dead_page":
+                item["review_note"] = f"自動事前確認：配布元ページを確認できず（{audit_result['reason']}）。素材確認キューから除外。"
+            else:
+                item["review_note"] = f"自動事前確認：素材募集・依頼の投稿で、ページ内に配布物を確認できず（{audit_result['reason']}）。素材確認キューから除外。"
+            resolved.append(item.get("pre_id"))
+
+    return {
+        "checked": checked,
+        "resolved": len(resolved),
+        "resolved_pre_ids": resolved,
+        "skipped_recent": skipped_recent,
+    }
 
 def load_review_queue():
     """
