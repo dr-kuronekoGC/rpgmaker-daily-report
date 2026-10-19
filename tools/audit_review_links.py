@@ -137,15 +137,15 @@ def main() -> int:
 
     payload = {
         "schema_version": 1,
-        "audit_only": True,
+        "audit_only": not args.apply_dead_links,
         "source_ledger": str(LEDGER_PATH),
         "checked_count": len(results),
         "status_counts": dict(sorted(counts.items())),
         "important_note": (
-            "This audit does not change the review queue. Only HTTP 404/410 are "
-            "dead-link candidates. 403/429, server errors, timeouts, and pages "
-            "that merely look like not-found pages are not automatic exclusions. "
-            "A reachable page does not prove that a usable asset is available."
+            "Only HTTP 404/410 responses are eligible for automatic exclusion when "
+            "--apply-dead-links is supplied. 403/429, server errors, timeouts, and "
+            "ambiguous not-found page text are never auto-excluded. A reachable "
+            "page does not prove that a usable asset is available."
         ),
         "items": results,
     }
