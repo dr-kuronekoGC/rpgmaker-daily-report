@@ -55,11 +55,11 @@ NO_DELIVERABLE_RE = re.compile(
     re.I,
 )
 POSITIVE_RELEASE_RE = re.compile(
-    r"\b(?:download(?:able)?|download link|released?|release page|"
-    r"resource pack|asset pack|free to use|available for use|"
-    r"get it here|mediafire|mega\.nz|dropbox|google drive|"
-    r"itch\.io|github\.com|\.zip\b|\.rar\b|\.7z\b|"
-    r"\.ogg\b|\.mp3\b|\.wav\b|\.js\b)",
+    r"\b(?:downloadable|download link|download here|release page|"
+    r"release available|resource pack|asset pack|free to use|"
+    r"available for use|get it here|mediafire|mega\.nz|dropbox|"
+    r"google drive|itch\.io|github\.com|\.zip\b|\.rar\b|"
+    r"\.7z\b|\.ogg\b|\.mp3\b|\.wav\b|\.js\b)",
     re.I,
 )
 ASSET_WORD_RE = re.compile(
