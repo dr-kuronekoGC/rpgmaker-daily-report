@@ -159,6 +159,10 @@ def classify_resource_intent(item, detected_category=None):
     category = str(item.get("category") or "")
     url = str(item.get("url") or "").lower()
 
+    # Forum last-comment URLs are collector metadata, not independent resources.
+    if "do=getlastcomment" in url:
+        return ("not_resource", "high", [{"field": "url", "signal": "last_comment_metadata"}])
+
     # Forum user-profile pages are author metadata, not downloadable resources.
     if "/forum/user/" in url:
         return ("not_resource", "high", [{"field": "url", "signal": "user_profile_page"}])
@@ -213,8 +217,11 @@ def classify_resource_intent(item, detected_category=None):
     is_site_notice = _is_non_asset_category(category)
 
     title_guard = _is_non_asset_title(title)
+    # Some forums expose a generic title (e.g. "Последнее") while the URL slug
+    # contains the actual request. Use the slug as supporting negative evidence.
+    url_guard = _is_non_asset_title(url)
     category_guard = is_site_notice
-    guarded_context = title_guard or category_guard
+    guarded_context = title_guard or url_guard or category_guard
 
     if distribution_hits:
         return (
@@ -229,8 +236,13 @@ def classify_resource_intent(item, detected_category=None):
     # Question/showcase/discussion terms are negative only when no concrete
     # distribution evidence was found. This does not exclude paid resources.
     if guarded_context:
-        signal = "question_or_showcase_title" if title_guard else "non_resource_category"
-        return ("not_resource", "medium", [{"field": "title" if title_guard else "category", "signal": signal}])
+        if title_guard:
+            field, signal = "title", "question_or_showcase_title"
+        elif url_guard:
+            field, signal = "url", "request_or_question_slug"
+        else:
+            field, signal = "category", "non_resource_category"
+        return ("not_resource", "medium", [{"field": field, "signal": signal}])
 
     if detected_category:
         return (
