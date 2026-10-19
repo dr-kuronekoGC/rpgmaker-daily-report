@@ -349,7 +349,7 @@ def main() -> int:
         "note": "Latest pass over items that were open at scan start. HTTP 403/429/5xx, timeouts, and ambiguous resource links are not treated as dead links.",
         "items": audit_rows,
     }
-    AUDIT_PATH.write_text(json.dumps(audit_payload, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    AUDIT_PATH.write_text(json.dumps(audit_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     if not resolved:
         print(f"[Auto screen] No high-confidence exclusions. {len(open_items)} items remain open.")
