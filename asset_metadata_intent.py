@@ -134,6 +134,14 @@ def _is_non_asset_title(title):
         "gde-najti",
         "kak-sdelat",
         "vopros",
+        # Russian-language requests for music software/resources, including
+        # common transliteration used in forum URL slugs.
+        "ищу программу",
+        "нужна программа",
+        "программу для создания музыки",
+        "ishchu programmu",
+        "nuzhna programma",
+        "programmu dlya sozdaniya muzyki",
         "je cherche",
         "recherche",
         "besoin de",
