@@ -24,6 +24,7 @@ from asset_metadata import build_asset_metadata
 
 LEDGER_PATH = Path("data/review/classification_review.json")
 LOG_PATH = Path("data/review/auto_screen_log.json")
+AUDIT_PATH = Path("data/review/auto_screen_audit.json")
 JST = timezone(timedelta(hours=9))
 
 # Avoid long hangs on sites that are currently blocking or timing out.
@@ -68,6 +69,82 @@ ASSET_WORD_RE = re.compile(
     r"animation sheet|sound pack|tool)\b",
     re.I,
 )
+RESOURCE_LINK_RE = re.compile(
+    r"download|mediafire|mega\.nz|dropbox|drive\.google|google drive|"
+    r"\.zip(?:$|[?#])|\.rar(?:$|[?#])|\.7z(?:$|[?#])|"
+    r"\.ogg(?:$|[?#])|\.mp3(?:$|[?#])|\.wav(?:$|[?#])|"
+    r"\.png(?:$|[?#])|\.jpe?g(?:$|[?#])|\.gif(?:$|[?#])|"
+    r"\.js(?:$|[?#])|/downloads?(?:/|$)|/art/|itch\.io|"
+    r"github\.com/.*/releases",
+    re.I,
+)
+MAX_RESOURCE_LINKS = 2
+LINK_TIMEOUT = 3
+
+
+def check_resource_links(session, page: dict, source_url: str) -> dict:
+    """Check obvious resource links only; ambiguous results never exclude."""
+    candidates = []
+    seen = set()
+    for link in page.get("outbound_links") or []:
+        if not isinstance(link, dict):
+            continue
+        target = clean(link.get("url"))
+        label = clean(link.get("text"))
+        if not target.startswith(("http://", "https://")) or target in seen:
+            continue
+        if not RESOURCE_LINK_RE.search(target) and not RESOURCE_LINK_RE.search(label):
+            continue
+        seen.add(target)
+        candidates.append({"text": label[:160], "url": target})
+    if not candidates:
+        return {"candidate_count": 0, "checked_count": 0, "all_checked_dead": False, "results": []}
+
+    checked = []
+    for candidate in candidates[:MAX_RESOURCE_LINKS]:
+        status = None
+        method = "HEAD"
+        error = None
+        try:
+            response = session.head(
+                candidate["url"], allow_redirects=True, timeout=LINK_TIMEOUT,
+                headers={"User-Agent": fetcher.USER_AGENT},
+            )
+            status = response.status_code
+            response.close()
+            if status in {403, 405, 501}:
+                method = "GET"
+                response = session.get(
+                    candidate["url"], allow_redirects=True, timeout=LINK_TIMEOUT,
+                    headers={"User-Agent": fetcher.USER_AGENT}, stream=True,
+                )
+                status = response.status_code
+                response.close()
+        except fetcher.requests.RequestException as exc:
+            error = type(exc).__name__
+        checked.append({
+            **candidate,
+            "http_status": status,
+            "method": method,
+            "error": error,
+            "dead": status in {404, 410},
+            "reachable": status is not None and 200 <= status < 400,
+        })
+
+    all_dead = (
+        len(candidates) <= MAX_RESOURCE_LINKS
+        and len(checked) == len(candidates)
+        and bool(checked)
+        and all(result["dead"] for result in checked)
+    )
+    return {
+        "candidate_count": len(candidates),
+        "checked_count": len(checked),
+        "all_checked_dead": all_dead,
+        "results": checked,
+    }
+
+
 COPYRIGHT_WARNING_RE = re.compile(
     r"\b(?:pirate|ripped from|ripped music|dragon ball|pokemon|pokémon|naruto|star ocean)\b",
     re.I,
@@ -100,11 +177,14 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     combined = f"{title}\n{body}"
     status = page.get("http_status")
     retrieval = page.get("retrieval_status")
+    link_check = page.get("resource_link_check") or {}
 
     if status in {404, 410}:
         return ("not_applicable", f"保存されたURLがHTTP {status}を返し、現在ページを取得できない")
     if is_direct_profile(url):
         return ("not_applicable", "個別の素材・配布物ではなく、ユーザープロフィールへの直リンク")
+    if link_check.get("all_checked_dead"):
+        return ("not_applicable", "投稿内で特定できたダウンロード／素材リンクがすべてHTTP 404/410で、配布先を確認できない")
     if retrieval != "body_found" or not body:
         # A blank/blocked response is not evidence of absence.
         return None
@@ -197,6 +277,7 @@ def main() -> int:
     now = datetime.now(JST).isoformat(timespec="seconds")
     log = []
     resolved = []
+    audit_rows = []
 
     for index, item in enumerate(open_items, start=1):
         page = fetcher.fetch_item(session, item)
@@ -220,7 +301,20 @@ def main() -> int:
                 # An unverified HTML retry is not proof that the link is dead.
                 page["http_status"] = None
                 page["retrieval_status"] = "unavailable"
+        page["resource_link_check"] = check_resource_links(session, page, clean(item.get("url")))
         outcome = classify_page(item, page)
+        audit_rows.append({
+            "pre_id": item.get("pre_id"),
+            "source": item.get("source"),
+            "title": clean(item.get("title"))[:300],
+            "url": clean(item.get("url")),
+            "http_status": page.get("http_status"),
+            "retrieval_status": page.get("retrieval_status"),
+            "retrieval_method": page.get("retrieval_method"),
+            "resource_link_check": page.get("resource_link_check"),
+            "suggestion": outcome[0] if outcome else "keep_open",
+            "reason": outcome[1] if outcome else "",
+        })
         print(
             f"[Auto screen] {index}/{len(open_items)} {item.get('pre_id')} "
             f"http={page.get('http_status')} retrieval={page.get('retrieval_status')} "
@@ -235,6 +329,7 @@ def main() -> int:
                 "retrieval_status": page.get("retrieval_status"),
                 "page_title": clean(page.get("page_title"))[:300],
                 "reason": reason,
+                "resource_link_check": page.get("resource_link_check"),
             }
             item["status"] = "resolved"
             item["decision"] = decision
@@ -246,8 +341,19 @@ def main() -> int:
             log.append({"pre_id": item.get("pre_id"), "url": item.get("url"), **evidence, "decision": decision})
         time.sleep(fetcher.PAUSE_SECONDS)
 
+    audit_payload = {
+        "schema_version": 1,
+        "checked_at": now,
+        "scanned_item_count": len(audit_rows),
+        "auto_resolved_count": len(resolved),
+        "note": "Latest pass over items that were open at scan start. HTTP 403/429/5xx, timeouts, and ambiguous resource links are not treated as dead links.",
+        "items": audit_rows,
+    }
+    AUDIT_PATH.write_text(json.dumps(audit_payload, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+
     if not resolved:
         print(f"[Auto screen] No high-confidence exclusions. {len(open_items)} items remain open.")
+        print(f"[Auto screen] Wrote link/retrieval audit for {len(audit_rows)} items.")
         return 0
 
     LEDGER_PATH.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
