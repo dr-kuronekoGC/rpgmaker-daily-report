@@ -58,7 +58,7 @@ POSITIVE_RELEASE_RE = re.compile(
     r"resource pack|asset pack|free to use|available for use|"
     r"get it here|mediafire|mega\.nz|dropbox|google drive|"
     r"itch\.io|github\.com|\.zip\b|\.rar\b|\.7z\b|"
-    r"\.ogg\b|\.mp3\b|\.wav\b|\.js\b)\b?",
+    r"\.ogg\b|\.mp3\b|\.wav\b|\.js\b)",
     re.I,
 )
 ASSET_WORD_RE = re.compile(
