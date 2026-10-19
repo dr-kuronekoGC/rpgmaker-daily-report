@@ -186,6 +186,14 @@ def classify_resource_intent(item, detected_category=None):
     if "do=getlastcomment" in url:
         return ("not_resource", "high", [{"field": "url", "signal": "last_comment_metadata"}])
 
+    # Paginated forum URLs whose extracted title is only the page number are
+    # duplicate collector records, not independent resource posts.
+    if "/page/" in url:
+        page_suffix = url.split("/page/", 1)[1].strip("/")
+        page_number = page_suffix.split("/", 1)[0]
+        if page_number.isdigit() and title.strip() == page_number:
+            return ("not_resource", "high", [{"field": "url", "signal": "pagination_metadata"}])
+
     # Forum user-profile pages are author metadata, not downloadable resources.
     if "/forum/user/" in url:
         return ("not_resource", "high", [{"field": "url", "signal": "user_profile_page"}])
