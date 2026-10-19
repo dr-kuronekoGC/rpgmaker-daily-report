@@ -28,6 +28,7 @@ from review_queue import (
     save_review_queue,
     prepare_classification_reviews,
     get_carryover_review_items,
+    audit_open_review_items,
 )
 
 from config import (
@@ -240,6 +241,18 @@ def main():
             f"Applied: {decision_summary['applied']} / "
             f"Already applied: {decision_summary['already_applied']}"
         )
+
+    # Conservative pre-audit: dead review pages and clear request-only posts
+    # are resolved before building the next Slack carryover list.
+    audit_summary = audit_open_review_items(review_queue, max_items=30)
+    if audit_summary["checked"] or audit_summary["resolved"]:
+        save_review_queue(review_queue)
+    print(
+        "[Review pre-audit] "
+        f"Checked: {audit_summary['checked']} / "
+        f"Auto-excluded: {audit_summary['resolved']} / "
+        f"Recently checked: {audit_summary['skipped_recent']}"
+    )
 
     for source in SOURCES:
         collector_name = source.__name__.split(".")[-1]
