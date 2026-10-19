@@ -69,6 +69,15 @@ class ResourceIntentTests(unittest.TestCase):
         self.assertEqual(confidence, "high")
         self.assertEqual(evidence[0]["signal"], "last_comment_metadata")
 
+    def test_page_number_title_for_forum_pagination_is_not_a_resource(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "2",
+            "url": "https://example.com/topic/example/page/2/",
+        })
+        self.assertEqual(intent, "not_resource")
+        self.assertEqual(confidence, "high")
+        self.assertEqual(evidence[0]["signal"], "pagination_metadata")
+
     def test_russian_request_in_url_slug_is_not_a_resource(self):
         intent, confidence, evidence = classify_resource_intent({
             "title": "Последнее",
