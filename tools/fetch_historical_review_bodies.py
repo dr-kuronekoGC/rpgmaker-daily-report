@@ -218,9 +218,12 @@ def parse_html(session: requests.Session, url: str) -> dict:
     # post body for classification, but collect links from the wider thread.
     primary_body_selectors = (
         '[itemprop="articleBody"]',
-        ".ipsType_richText",
-        ".cPost_contentWrap",
+        # Invision pages can contain recommended-post snippets before the real
+        # topic. Prefer the actual comment container over generic rich-text
+        # snippets so classification sees the original post's wording.
         ".ipsComment_content",
+        ".cPost_contentWrap",
+        ".ipsType_richText",
         ".postbody",
         ".post_body",
         ".messageContent",
