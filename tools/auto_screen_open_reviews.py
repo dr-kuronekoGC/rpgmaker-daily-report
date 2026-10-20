@@ -69,11 +69,15 @@ DISCUSSION_RE = re.compile(
 SHOWCASE_RE = re.compile(
     r"\b(?:showcase|my game|my project|my works|work in progress|\bwip\b|"
     r"development process|making of|screenshots?|gameplay video|mapping showcase|"
+    r"battlers?\s+(?:i've drawn|i drew)|my (?:new|first) battlers?|"
+    r"my (?:new|first) sprites?|my drawings?|my pixel art|my art|"
     r"miei lavori|le mie creazioni|il mio progetto|mon projet|mes créations|"
-    r"mein projekt|meine arbeiten|мои работы|мой проект|мой арт)\b"
+    r"mein projekt|meine arbeiten|мои работы|мой проект|мой арт)"
     r"|(?:作品紹介|制作過程|スクリーンショット|ゲームプレイ動画)",
     re.I,
 )
+
+
 NO_DELIVERABLE_RE = re.compile(
     r"\b(?:not a resource|no download|not available for download|"
     r"not for download|just (?:a )?(?:screenshot|preview|showcase)|"
@@ -406,13 +410,31 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
         if kind == "audio":
             return False
         filename = Path(parsed.path).name
+        if re.search(
+            r"/(?:themes?/|avatars?/|ranks?/|medals?/|images/post/|smilies/|emoticons?/|users?/avatar)",
+            path,
+            re.I,
+        ):
+            return False
+        if PREVIEW_FILE_RE.search(path):
+            return False
+        if "/attachments/" in path and SEMANTIC_ATTACHMENT_FILENAME_RE.search(filename):
+            return True
+
+        # Older resource forums often host actual battler/sprite images on
+        # image-sharing sites instead of their own attachment directory.
+        image_hosts = (
+            "imageshack.us", "photobucket.com", "imgur.com", "postimg.cc",
+            "postimg.org", "ibb.co", "imagebam.com", "imgbox.com",
+        )
         if (
-            "/attachments/" in path
-            and not PREVIEW_FILE_RE.search(path)
-            and SEMANTIC_ATTACHMENT_FILENAME_RE.search(filename)
+            result.get("link_kind") in {"image_anchor", "embedded_image"}
+            and any(host == domain or host.endswith("." + domain) for domain in image_hosts)
+            and kind in {"graphics", "resource", "mixed"}
         ):
             return True
         return False
+
 
     # Known file-sharing destinations. Ignore Yandex image-view URLs (/i/).
     if host == "yadi.sk" and path.startswith("/d/"):
@@ -541,6 +563,21 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
 
     positive_release = bool(POSITIVE_RELEASE_RE.search(combined))
     resolved_marker = bool(RESOLVED_MARKER_RE.search(title))
+
+    # A personal-art/showcase topic with no usable asset link is not a resource
+    # listing. If embedded assets were detected, leave it open for review unless
+    # the resource-specific links were conclusively dead above.
+    delivery_summary = delivery_link_summary(title, body, link_check)
+    if (
+        SHOWCASE_RE.search(title)
+        and not positive_release
+        and not delivery_summary["candidate_count"]
+        and not (link_check.get("candidate_count") or 0)
+    ):
+        return (
+            "not_applicable",
+            "個人作品・制作過程の紹介と判断でき、再利用できる素材リンクや埋め込み素材を確認できない",
+        )
     copyright_warning = bool(COPYRIGHT_WARNING_RE.search(combined))
 
     # Exclude only explicit promotion/discount/contest announcements when the
