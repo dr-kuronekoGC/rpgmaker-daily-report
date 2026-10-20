@@ -368,9 +368,12 @@ def parse_html(session: requests.Session, url: str) -> dict:
             div_ids.append(value[:100])
             if len(div_ids) >= 20:
                 break
+    raw_html = response.text
+    lower_html = raw_html.lower()
     html_diagnostics = {
-        "html_chars": len(response.text),
+        "html_chars": len(raw_html),
         "body_text_chars": len(body),
+        "body_excerpt": body[:300],
         "body_node_found": body_node is not None,
         "body_source": body_selector_used or ("meta_description" if description else "empty"),
         "body_selector_used": body_selector_used,
@@ -381,6 +384,19 @@ def parse_html(session: requests.Session, url: str) -> dict:
         },
         "div_classes_sample": div_classes,
         "div_ids_sample": div_ids,
+        "raw_script_tag_count": lower_html.count("<script"),
+        "raw_has_article_body_key": "articlebody" in lower_html,
+        "raw_has_invision_post_classes": any(
+            marker in lower_html
+            for marker in (
+                "ipscomment_content",
+                "ipstype_richtext",
+                "cpost_contentwrap",
+                "bbwrapper",
+            )
+        ),
+        "raw_has_attachment_marker": "attachment" in lower_html,
+        "raw_has_download_marker": "download" in lower_html,
     }
 
     return {
