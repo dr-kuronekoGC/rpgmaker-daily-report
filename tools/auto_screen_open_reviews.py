@@ -106,13 +106,13 @@ RESOURCE_LINK_RE = re.compile(
     # file-hosting URLs are not silently skipped by the link audit.
     r"download|descargar|t[eé]l[eé]charger|herunterladen|scarica|scaricare|"
     r"скачать|загрузить|скачиван|downloaden|"
-    r"mediafire|mega\\.nz|dropbox|drive\\.google|google drive|"
-    r"yadi\\.sk|disk\\.yandex|yandex\\.(?:ru|com)|ya\\.ru|"
-    r"\\.zip(?:$|[?#])|\\.rar(?:$|[?#])|\\.7z(?:$|[?#])|"
-    r"\\.ogg(?:$|[?#])|\\.mp3(?:$|[?#])|\\.wav(?:$|[?#])|"
-    r"\\.png(?:$|[?#])|\\.jpe?g(?:$|[?#])|\\.gif(?:$|[?#])|"
-    r"\\.js(?:$|[?#])|/downloads?(?:/|$)|/art/|itch\\.io|"
-    r"github\\.com/.*/releases|"
+    r"mediafire|mega\.nz|dropbox|drive\.google|google drive|"
+    r"yadi\.sk|disk\.yandex|yandex\.(?:ru|com)|ya\.ru|"
+    r"\.zip(?:$|[?#])|\.rar(?:$|[?#])|\.7z(?:$|[?#])|"
+    r"\.ogg(?:$|[?#])|\.mp3(?:$|[?#])|\.wav(?:$|[?#])|"
+    r"\.png(?:$|[?#])|\.jpe?g(?:$|[?#])|\.gif(?:$|[?#])|"
+    r"\.js(?:$|[?#])|/downloads?(?:/|$)|/art/|itch\.io|"
+    r"github\.com/.*/releases|"
     r"архив|файл|файлы|музык|звуков|ресурс|плагин|спрайт|тайлсет|"
     r"анимац|иконк|материал|скачив|"
     r"download[- ]?link|freebie|asset pack|resource pack|sound pack|"
@@ -130,11 +130,11 @@ LINK_TIMEOUT = 3
 # discount, time-limited sale, coupon, or contest giveaway. A product/store
 # URL alone is not evidence that a usable downloadable file is included.
 PROMOTION_ONLY_RE = re.compile(
-    r"\\b(?:limited[- ]time (?:sale|offer|discount|deal)|flash sale|"
+    r"\b(?:limited[- ]time (?:sale|offer|discount|deal)|flash sale|"
     r"time[- ]limited (?:offer|discount|sale)|discount(?:ed)?|coupon|"
     r"promo code|sale ends|on sale|price drop|special offer|"
     r"giveaway contest|enter to win|raffle|"
-    r"limited offer|discount code|free for a limited time)\\b"
+    r"limited offer|discount code|free for a limited time)\b"
     r"|(?:期間限定(?:セール|割引|販売|配布)|タイムセール|割引クーポン|"
     r"セール終了|抽選プレゼント|抽選でプレゼント|期間限定の割引|"
     r"скидк|распродаж|розыгрыш|только сегодня|"
@@ -145,9 +145,9 @@ PROMOTION_ONLY_RE = re.compile(
 )
 DIRECT_DOWNLOAD_RE = re.compile(
     r"download|descargar|t[eé]l[eé]charger|herunterladen|scarica|scaricare|"
-    r"скачать|загрузить|mediafire|mega\\.nz|dropbox|drive\\.google|"
-    r"google drive|yadi\\.sk|disk\\.yandex|yandex\\.(?:ru|com)|ya\\.ru|"
-    r"\\.(?:zip|rar|7z|ogg|mp3|wav|js)(?:$|[?#])|/downloads?(?:/|$)",
+    r"скачать|загрузить|mediafire|mega\.nz|dropbox|drive\.google|"
+    r"google drive|yadi\.sk|disk\.yandex|yandex\.(?:ru|com)|ya\.ru|"
+    r"\.(?:zip|rar|7z|ogg|mp3|wav|js)(?:$|[?#])|/downloads?(?:/|$)",
     re.I,
 )
 
