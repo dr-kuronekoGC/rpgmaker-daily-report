@@ -67,6 +67,26 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         links.append({
             "text": clean_text(anchor.get_text(" ", strip=True))[:160],
             "url": href[:2000],
+            "link_kind": "anchor",
+        })
+        if len(links) >= 100:
+            return links
+
+    # Some older forum posts embed downloadable images directly in <img src>
+    # without wrapping them in a clickable anchor. Capture these URLs too;
+    # the downstream classifier only treats semantic attachment filenames as
+    # graphic deliverables, so random screenshots/previews remain non-deliverables.
+    for image_node in node.select("img[src]"):
+        href = urljoin(base_url, str(image_node.get("src") or "").strip())
+        parsed = urlparse(href)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+            continue
+        seen.add(href)
+        label = clean_text(image_node.get("alt") or image_node.get("title") or "")
+        links.append({
+            "text": (label or "embedded image/attachment")[:160],
+            "url": href[:2000],
+            "link_kind": "embedded_image",
         })
         if len(links) >= 100:
             break
