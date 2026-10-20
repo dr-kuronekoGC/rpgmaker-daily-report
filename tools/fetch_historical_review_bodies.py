@@ -67,6 +67,24 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         links.append({
             "text": clean_text(anchor.get_text(" ", strip=True))[:160],
             "url": href[:2000],
+            "link_kind": "anchor",
+        })
+        if len(links) >= 100:
+            return links
+
+    # Some older forum posts embed material images directly without a clickable
+    # anchor. Include their URLs so semantic asset filenames can be checked too.
+    for image_node in node.select("img[src]"):
+        href = urljoin(base_url, str(image_node.get("src") or "").strip())
+        parsed = urlparse(href)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+            continue
+        seen.add(href)
+        label = clean_text(image_node.get("alt") or image_node.get("title") or "")
+        links.append({
+            "text": (label or "embedded image/attachment")[:160],
+            "url": href[:2000],
+            "link_kind": "embedded_image",
         })
         if len(links) >= 100:
             break
@@ -175,57 +193,68 @@ def parse_html(session: requests.Session, url: str) -> dict:
     ):
         node.decompose()
 
-    # Forum engines use different post containers. Prefer actual post content
-    # over meta descriptions, which are often only short excerpts and omit
-    # attachment/download links. Choose the richest plausible content node after
-    # removing navigation, comments widgets, scripts, and page chrome.
-    body_selectors = (
+    # The first post carries the topic's intent. Using the entire thread as
+    # body text lets later replies' "looking for" or "ripped from" phrases
+    # incorrectly override an original resource post. Select the first plausible
+    # post body for classification, but collect links from the wider thread.
+    primary_body_selectors = (
         '[itemprop="articleBody"]',
         ".ipsType_richText",
         ".cPost_contentWrap",
         ".ipsComment_content",
         ".postbody",
         ".post_body",
-        ".postarea",
         ".messageContent",
         ".message-content",
         ".message-body",
         ".bbWrapper",
         ".post-content",
         ".post_content",
+        ".postarea",
         ".entry-content",
         ".article-content",
         ".deviation-full",
+        ".post",
         "article",
         "main",
         "#content",
         "#main",
-        ".post",
     )
-    candidates = []
-    seen_nodes = set()
-    for selector in body_selectors:
+    body_node = None
+    body = ""
+    for selector in primary_body_selectors:
         try:
             nodes = soup.select(selector)
         except Exception:
             continue
         for node in nodes:
-            identity = id(node)
-            if identity in seen_nodes:
-                continue
-            seen_nodes.add(identity)
             text_value = clean_text(node.get_text(" ", strip=True))
             if len(text_value) >= 80:
-                specificity = len(body_selectors) - body_selectors.index(selector)
-                candidates.append((len(text_value), specificity, node, text_value))
+                body_node = node
+                body = text_value
+                break
+        if body_node is not None:
+            break
 
-    if candidates:
-        _, _, body_node, body = max(candidates, key=lambda item: (item[0], item[1]))
-    else:
-        body_node = None
-        body = ""
-
-    outbound_links = extract_links(body_node, response.url)
+    # Search the broader thread for downloads and embedded images, but do not
+    # feed reply text into intent classification.
+    link_selectors = ("#content", "#main", "main", "article", ".postarea", ".post")
+    link_candidates = []
+    seen_nodes = set()
+    for selector in link_selectors:
+        try:
+            nodes = soup.select(selector)
+        except Exception:
+            continue
+        for node in nodes:
+            if id(node) in seen_nodes:
+                continue
+            seen_nodes.add(id(node))
+            text_value = clean_text(node.get_text(" ", strip=True))
+            if len(text_value) >= 80:
+                link_candidates.append((len(text_value), node))
+    link_node = max(link_candidates, key=lambda item: item[0])[1] if link_candidates else body_node
+    outbound_links = extract_links(link_node, response.url)
     if not body:
         body = description
 
