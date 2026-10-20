@@ -118,7 +118,8 @@ RESOURCE_LINK_RE = re.compile(
     r"download[- ]?link|freebie|asset pack|resource pack|sound pack|"
     r"scaricamento|download gratuit|t[eé]l[eé]chargement|"
     r"herunterladen|datei|ressourcen|materialien|"
-    r"descarga|archivo|recursos",
+    r"descarga|archivo|recursos|"
+    r"ダウンロード|配布|素材|添付|ファイル|音源|効果音|BGM|プラグイン",
     re.I,
 )
 # Check every detected resource link (the page parser caps extracted links at 100).
@@ -147,7 +148,8 @@ DIRECT_DOWNLOAD_RE = re.compile(
     r"download|descargar|t[eé]l[eé]charger|herunterladen|scarica|scaricare|"
     r"скачать|загрузить|mediafire|mega\.nz|dropbox|drive\.google|"
     r"google drive|yadi\.sk|disk\.yandex|yandex\.(?:ru|com)|ya\.ru|"
-    r"\.(?:zip|rar|7z|ogg|mp3|wav|js)(?:$|[?#])|/downloads?(?:/|$)",
+    r"\.(?:zip|rar|7z|ogg|mp3|wav|js)(?:$|[?#])|/downloads?(?:/|$)|"
+    r"ダウンロード|添付ファイル|ファイルをダウンロード",
     re.I,
 )
 
@@ -283,7 +285,8 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     # Exclude only explicit promotion/discount/contest announcements when the
     # post has no direct downloadable destination. Ordinary paid assets and
     # external storefront links are not excluded by themselves.
-    if PROMOTION_ONLY_RE.search(combined) and not has_direct_download_link(link_check):
+    promotion_context = f"{title}\n{body[:1800]}"
+    if PROMOTION_ONLY_RE.search(promotion_context) and not has_direct_download_link(link_check):
         return (
             "not_applicable",
             "過去の確認方針に基づき、割引・期間限定セール・抽選告知が主目的で、直接取得できる素材ファイルへのリンクを確認できないため除外",
