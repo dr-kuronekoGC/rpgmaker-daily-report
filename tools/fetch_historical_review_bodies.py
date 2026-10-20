@@ -414,7 +414,7 @@ def parse_html(session: requests.Session, url: str) -> dict:
 
 def invision_query_topic_url(url: str) -> str | None:
     """Build Invision's explicit topic-controller URL from a friendly topic URL."""
-    match = re.search(r"/topic/(\\d+)", url, re.I)
+    match = re.search(r"/topic/(\d+)", url, re.I)
     parsed = urlparse(url)
     if not match or parsed.scheme not in {"http", "https"} or not parsed.netloc:
         return None
