@@ -80,6 +80,24 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         if len(links) >= 100:
             return links
 
+    # Some music forums embed downloadable tracks in HTML5 <audio> elements
+    # rather than ordinary anchors. Capture only explicit audio src/source URLs;
+    # a later resource-link check still decides whether the URL is reachable.
+    for audio_node in node.select("audio[src], audio source[src]"):
+        href = urljoin(base_url, str(audio_node.get("src") or "").strip())
+        parsed = urlparse(href)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+            continue
+        seen.add(href)
+        label = clean_text(audio_node.get("title") or audio_node.get("type") or "")
+        links.append({
+            "text": (label or "embedded audio source")[:160],
+            "url": href[:2000],
+            "link_kind": "media_source",
+        })
+        if len(links) >= 100:
+            return links
+
     # Older forum posts sometimes embed asset images directly without anchors.
     # Capture them as evidence, while downstream checks still require semantic
     # attachment filenames to distinguish assets from random previews.
