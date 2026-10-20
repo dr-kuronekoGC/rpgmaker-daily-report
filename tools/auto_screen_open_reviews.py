@@ -637,7 +637,7 @@ def main() -> int:
         delivery_summary = delivery_link_summary(
             current_title, current_body, page.get("resource_link_check") or {}
         )
-        combined_text = f"{current_title}\\n{current_body[:1800]}"
+        combined_text = f"{current_title}\n{current_body[:1800]}"
         triage_signals = {
             "title_resource_signal": bool(RESOURCE_TITLE_RE.search(current_title)),
             "request_signal": bool(REQUEST_RE.search(current_title) or BODY_REQUEST_RE.search(current_body[:1800])),
