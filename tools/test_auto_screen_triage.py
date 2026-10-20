@@ -428,5 +428,46 @@ class ResourceEvidenceTests(unittest.TestCase):
         self.assertIsNone(result)
 
 
+    def test_invision_thread_collects_reply_downloads_but_ignores_profile_photos(self):
+        html = """
+        <html><head><title>Icone MZ - stile</title></head><body>
+          <div id="ipsLayout_mainArea">
+            <div class="cPost_contentWrap">
+              <div class="ipsComment_content">
+                <div class="ipsType_richText">
+                  Which style do you prefer? This is the first post asking for feedback
+                  about two icon styles; it does not include a direct download.
+                </div>
+                <img src="/uploads/profile/photo-thumb-19.jpg" alt="author profile">
+              </div>
+            </div>
+            <div class="cPost_contentWrap">
+              <div class="ipsComment_content">
+                <div class="ipsType_richText">
+                  Here is the reusable icon sheet download.
+                  <a href="https://example.com/IconsMZ.zip">Download IconsMZ.zip</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.com/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        page = parse_html(session, "https://example.com/topic")
+
+        self.assertIn("Which style do you prefer?", page["body_text"])
+        self.assertNotIn("reusable icon sheet", page["body_text"])
+        urls = {item["url"] for item in page["outbound_links"]}
+        self.assertIn("https://example.com/IconsMZ.zip", urls)
+        self.assertFalse(any("photo-thumb-19.jpg" in url for url in urls))
+
+
 if __name__ == "__main__":
     unittest.main()
