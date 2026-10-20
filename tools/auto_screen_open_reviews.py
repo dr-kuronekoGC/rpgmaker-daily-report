@@ -161,8 +161,30 @@ def has_direct_download_link(link_check: dict) -> bool:
     return False
 
 
+RESOURCE_FILE_SUFFIXES = {
+    ".zip", ".rar", ".7z", ".gz", ".tar", ".tgz", ".ogg", ".mp3", ".wav",
+    ".m4a", ".mid", ".midi", ".flac", ".js", ".mjs", ".rb", ".json",
+    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp",
+}
+RESOURCE_HOST_RE = re.compile(
+    r"(?:mediafire\\.com|mega\\.nz|dropbox\\.com|drive\\.google\\.com|"
+    r"yadi\\.sk|disk\\.yandex|yandex\\.(?:ru|com)|itch\\.io|"
+    r"raw\\.githubusercontent\\.com|github\\.com/.*/(?:releases|archive))",
+    re.I,
+)
+
+
+def is_resource_candidate_link(url: str, label: str) -> bool:
+    """Recognize file links even when the anchor text is generic or untranslated."""
+    parsed = urlparse(url)
+    suffix = Path(parsed.path).suffix.lower()
+    if suffix in RESOURCE_FILE_SUFFIXES or RESOURCE_HOST_RE.search(url):
+        return True
+    return bool(RESOURCE_LINK_RE.search(url) or RESOURCE_LINK_RE.search(label))
+
+
 def check_resource_links(session, page: dict, source_url: str) -> dict:
-    """Check obvious resource links only; ambiguous results never exclude."""
+    """Check likely resource links, including generic-labelled file hosts."""
     candidates = []
     seen = set()
     for link in page.get("outbound_links") or []:
@@ -172,7 +194,7 @@ def check_resource_links(session, page: dict, source_url: str) -> dict:
         label = clean(link.get("text"))
         if not target.startswith(("http://", "https://")) or target in seen:
             continue
-        if not RESOURCE_LINK_RE.search(target) and not RESOURCE_LINK_RE.search(label):
+        if not is_resource_candidate_link(target, label):
             continue
         seen.add(target)
         candidates.append({"text": label[:160], "url": target})
@@ -452,8 +474,9 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
         return ("not_applicable", f"保存されたURLがHTTP {status}を返し、現在ページを取得できない")
     if is_direct_profile(url):
         return ("not_applicable", "個別の素材・配布物ではなく、ユーザープロフィールへの直リンク")
-    if link_check.get("all_checked_dead"):
-        return ("not_applicable", "投稿内で特定できたダウンロード／素材リンクがすべてHTTP 404/410で、配布先を確認できない")
+    # Generic links alone cannot prove the resource is gone: a dead preview
+    # image is not evidence that the downloadable asset is unavailable.
+    # The resource-kind-aware all_delivery_links_dead check below is authoritative.
 
     if retrieval != "body_found" or not body:
         # A blank/blocked response is not evidence of absence.
@@ -607,6 +630,25 @@ def main() -> int:
                 page["retrieval_status"] = "unavailable"
         page["resource_link_check"] = check_resource_links(session, page, clean(item.get("url")))
         outcome = classify_page(item, page)
+        current_title = clean(page.get("page_title") or item.get("title"))
+        current_body = clean(page.get("body_text") or page.get("page_description"))
+        delivery_summary = delivery_link_summary(
+            current_title, current_body, page.get("resource_link_check") or {}
+        )
+        combined_text = f"{current_title}\\n{current_body[:1800]}"
+        triage_signals = {
+            "title_resource_signal": bool(RESOURCE_TITLE_RE.search(current_title)),
+            "request_signal": bool(REQUEST_RE.search(current_title) or BODY_REQUEST_RE.search(current_body[:1800])),
+            "discussion_or_showcase_signal": bool(DISCUSSION_RE.search(current_title) or SHOWCASE_RE.search(current_title)),
+            "explicit_no_deliverable": bool(NO_DELIVERABLE_RE.search(combined_text)),
+            "positive_release_signal": bool(POSITIVE_RELEASE_RE.search(combined_text)),
+            "resource_kind": resource_kind(current_title, current_body),
+            "delivery_links_live": delivery_summary["reachable_count"],
+            "delivery_links_dead": delivery_summary["dead_count"],
+            "delivery_links_errors": delivery_summary["error_count"],
+            "body_characters": len(current_body),
+            "source_tags": page.get("source_tags") or [],
+        }
         audit_rows.append({
             "pre_id": item.get("pre_id"),
             "source": item.get("source"),
@@ -616,11 +658,8 @@ def main() -> int:
             "retrieval_status": page.get("retrieval_status"),
             "retrieval_method": page.get("retrieval_method"),
             "resource_link_check": page.get("resource_link_check"),
-            "delivery_link_check": delivery_link_summary(
-                clean(page.get("page_title") or item.get("title")),
-                clean(page.get("body_text") or page.get("page_description")),
-                page.get("resource_link_check") or {},
-            ),
+            "delivery_link_check": delivery_summary,
+            "triage_signals": triage_signals,
             "suggestion": outcome[0] if outcome else "keep_open",
             "reason": outcome[1] if outcome else "",
         })
