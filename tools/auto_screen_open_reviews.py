@@ -249,7 +249,13 @@ def check_resource_links(session, page: dict, source_url: str) -> dict:
 
 
 COPYRIGHT_WARNING_RE = re.compile(
-    r"\b(?:pirate|ripped from|ripped music|dragon ball|pokemon|pokémon|naruto|star ocean)\b",
+    r"\\b(?:ripped from|ripped music|dragon ball|pokemon|pokémon|naruto|star ocean)\\b",
+    re.I,
+)
+EXPLICIT_PIRACY_RE = re.compile(
+    r"\\b(?:pirated|piracy|warez|ripped from|ripped music|ripped assets|"
+    r"ripped sprites|illegal rip|game rip|music rip)\\b"
+    r"|(?:海賊版|違法コピー|盗用素材|盗用音源|無断転載)",
     re.I,
 )
 
@@ -549,12 +555,16 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
             "過去の確認方針に基づき、割引・期間限定セール・抽選告知が主目的で、直接取得できる素材ファイルへのリンクを確認できないため除外",
         )
 
-    if copyright_warning and not positive_release:
-        # Avoid generic franchise-word filtering; only clear piracy/ripped wording
-        # is an exclusion. Franchise names alone are insufficient.
-        explicit_piracy = bool(re.search(r"\b(?:pirate|ripped from|ripped music)\b", combined, re.I))
-        if explicit_piracy:
-            return ("exclude", "海賊版・既存作品からのリッピングを明示する投稿で、公開対象の独自素材として扱えない")
+    # Do not treat the word "pirate" as evidence of piracy: it commonly
+    # appears as a character/theme label in battler and tileset collections.
+    # A specific [PIRATE] topic tag or explicit rip/piracy wording in the title
+    # or opening post is required. Later replies must not taint the topic.
+    explicit_piracy = bool(
+        re.search(r"^\\s*\\[PIRATE\\]", title, re.I)
+        or EXPLICIT_PIRACY_RE.search(f"{title}\\n{body[:900]}")
+    )
+    if (copyright_warning or explicit_piracy) and not positive_release and explicit_piracy:
+        return ("exclude", "海賊版・既存作品からのリッピングを明示する投稿で、公開対象の独自素材として扱えない")
 
     if NO_DELIVERABLE_RE.search(combined) and not positive_release:
         return ("not_applicable", "本文に素材配布ではない／ダウンロード不可／プレビューのみと明記されている")
