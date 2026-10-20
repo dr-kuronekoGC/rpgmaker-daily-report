@@ -268,16 +268,21 @@ def parse_html(session: requests.Session, url: str) -> dict:
     )
     body_node = None
     body = ""
+    body_selector_used = None
+    primary_selector_matches = {}
     for selector in primary_body_selectors:
         try:
             nodes = soup.select(selector)
+            primary_selector_matches[selector] = len(nodes)
         except Exception:
+            primary_selector_matches[selector] = -1
             continue
         for node in nodes:
             text_value = clean_text(node.get_text(" ", strip=True))
             if len(text_value) >= 80:
                 body_node = node
                 body = text_value
+                body_selector_used = selector
                 break
         if body_node is not None:
             break
@@ -341,8 +346,46 @@ def parse_html(session: requests.Session, url: str) -> dict:
     if not body:
         body = description
 
+    # Keep compact parser diagnostics so a short metadata fallback can be
+    # distinguished from a successfully extracted post body in later audits.
+    div_classes = []
+    seen_classes = set()
+    for div in soup.select("div[class]"):
+        for class_name in div.get("class") or []:
+            if class_name not in seen_classes:
+                seen_classes.add(class_name)
+                div_classes.append(str(class_name)[:80])
+                if len(div_classes) >= 30:
+                    break
+        if len(div_classes) >= 30:
+            break
+    div_ids = []
+    seen_ids = set()
+    for div in soup.select("div[id]"):
+        value = str(div.get("id") or "")
+        if value and value not in seen_ids:
+            seen_ids.add(value)
+            div_ids.append(value[:100])
+            if len(div_ids) >= 20:
+                break
+    html_diagnostics = {
+        "html_chars": len(response.text),
+        "body_text_chars": len(body),
+        "body_node_found": body_node is not None,
+        "body_source": body_selector_used or ("meta_description" if description else "empty"),
+        "body_selector_used": body_selector_used,
+        "matched_primary_selectors": {
+            selector: count
+            for selector, count in primary_selector_matches.items()
+            if count != 0
+        },
+        "div_classes_sample": div_classes,
+        "div_ids_sample": div_ids,
+    }
+
     return {
         "retrieval_method": "html",
+        "html_diagnostics": html_diagnostics,
         "http_status": response.status_code,
         "final_url": response.url,
         "page_title": page_title,

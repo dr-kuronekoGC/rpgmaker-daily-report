@@ -57,6 +57,9 @@ class HistoricalBodyAuditTests(unittest.TestCase):
         )
         self.assertIn("attached plugin", result["body_text"])
         self.assertNotEqual(result["body_text"], "Short metadata excerpt only.")
+        self.assertTrue(result["html_diagnostics"]["body_node_found"])
+        self.assertEqual(result["html_diagnostics"]["body_source"], "#ipsLayout_mainArea")
+        self.assertGreater(result["html_diagnostics"]["html_chars"], 100)
         self.assertTrue(
             any(link["url"] == "https://www.rpg2s.it/files/PluginCore.js"
                 for link in result["outbound_links"])

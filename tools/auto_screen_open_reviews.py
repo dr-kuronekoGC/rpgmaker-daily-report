@@ -835,6 +835,7 @@ def main() -> int:
             "retrieval_method": page.get("retrieval_method"),
             "resource_link_check": page.get("resource_link_check"),
             "delivery_link_check": delivery_summary,
+            "html_diagnostics": page.get("html_diagnostics"),
             "triage_signals": triage_signals,
             "suggestion": outcome[0] if outcome else "keep_open",
             "reason": outcome[1] if outcome else "",
@@ -852,6 +853,7 @@ def main() -> int:
                 "http_status": page.get("http_status"),
                 "retrieval_status": page.get("retrieval_status"),
                 "page_title": clean(page.get("page_title"))[:300],
+                "html_diagnostics": page.get("html_diagnostics"),
                 "reason": reason,
                 "resource_link_check": page.get("resource_link_check"),
                 "delivery_link_check": delivery_link_summary(
