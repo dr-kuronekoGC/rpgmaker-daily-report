@@ -24,25 +24,28 @@ def link(url, *, reachable=False, dead=False, error=None, text=""):
 
 
 class ForumBodyExtractionTests(unittest.TestCase):
-    def test_extracts_legacy_forum_post_body_and_download_links(self):
-        post_text = (
-            "This is the real resource post body with details about the charset, "
-            "supported RPG Maker versions, usage terms, and where the files are hosted. "
-            "The actual download link appears below."
-        )
-        html = f"""
-        <html><head><title>Example forum topic</title>
+    def test_first_post_sets_intent_but_all_thread_assets_are_checked(self):
+        html = """
+        <html><head><title>Post your Battlers here</title>
         <meta name="description" content="Short excerpt only."></head>
-        <body>
-          <nav>Navigation links should not be used.</nav>
-          <div id="content">
-            <div class="postarea">
-              <div class="message">{post_text}
-                <a href="https://example.com/charset.zip">Download charset</a>
-              </div>
+        <body><div id="content">
+          <div class="postarea">
+            <div class="postbody">
+              This is the original resource post. Community members can share battler images
+              they created themselves, and should credit the artist. The thread is intended
+              to collect reusable assets for the community.
             </div>
+            <a href="https://example.com/first.zip">First-post download</a>
           </div>
-        </body></html>
+          <div class="postarea">
+            <div class="postbody">
+              A later reply talks about a pirate character and mentions something ripped from
+              another game. Those words must not change the original post's classification.
+            </div>
+            <a href="https://example.com/reply.zip">Reply attachment</a>
+            <img src="/media/attachments/CharSet.png" alt="CharSet preview">
+          </div>
+        </div></body></html>
         """
         response = Mock()
         response.status_code = 200
@@ -54,14 +57,15 @@ class ForumBodyExtractionTests(unittest.TestCase):
 
         page = parse_html(session, "https://example.com/topic")
 
-        self.assertIn("real resource post body", page["body_text"])
-        self.assertNotEqual(page["body_text"], "Short excerpt only.")
-        self.assertTrue(
-            any(
-                link["url"] == "https://example.com/charset.zip"
-                for link in page["outbound_links"]
-            )
-        )
+        self.assertIn("original resource post", page["body_text"])
+        self.assertNotIn("ripped from", page["body_text"])
+        urls = {link["url"] for link in page["outbound_links"]}
+        self.assertIn("https://example.com/first.zip", urls)
+        self.assertIn("https://example.com/reply.zip", urls)
+        self.assertIn("https://example.com/media/attachments/CharSet.png", urls)
+        image = next(link for link in page["outbound_links"] if link["url"].endswith("CharSet.png"))
+        self.assertEqual(image["link_kind"], "embedded_image")
+
 
 
 class ResourceEvidenceTests(unittest.TestCase):
@@ -113,6 +117,44 @@ class ResourceEvidenceTests(unittest.TestCase):
         self.assertFalse(
             all_delivery_links_dead("Коллекция Саундтреков", "Музыка", checks)
         )
+
+    def test_pirate_theme_does_not_trigger_piracy_exclusion(self):
+        item = {
+            "pre_id": "PRE-00373",
+            "url": "https://example.com/topic",
+            "title": "Post your Battlers here.",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "Post your Battlers here.",
+            "body_text": (
+                "Community members can share battler images they made themselves. "
+                "Pirates and pirate captains are character themes; stock art is credited."
+            ),
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"results": []},
+        }
+        result = classify_page(item, page)
+        self.assertFalse(result and result[0] == "exclude")
+
+    def test_explicit_pirate_topic_tag_still_excludes_pirated_materials(self):
+        item = {
+            "pre_id": "PRE-00386",
+            "url": "https://example.com/topic",
+            "title": "[PIRATE] RMWEB - Общие ресурсы",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "[PIRATE] RMWEB - Общие ресурсы",
+            "body_text": "This collection consists of ripped assets from commercial games.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"results": []},
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "exclude")
 
     def test_human_reopen_note_overrides_dead_link_rules(self):
         item = {
