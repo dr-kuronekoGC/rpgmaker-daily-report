@@ -66,7 +66,7 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         # Ignore clickable forum chrome icons (avatars, ranks, medals, and theme
         # buttons); they are not material links even when they end in .png/.gif.
         if anchor.select_one("img[src]") and re.search(
-            r"/(?:themes?/|avatars?/|ranks?/|medals?/|images/post/|smilies/|emoticons?/|users?/avatar)",
+            r"/(?:themes?/|avatars?/|ranks?/|medals?/|images/post/|smilies/|emoticons?/|users?/avatar|uploads/profile/|profile/(?:photo|avatar))",
             parsed.path,
             re.I,
         ):
@@ -89,7 +89,7 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
             continue
         if re.search(
-            r"/(?:themes?/|avatars?/|ranks?/|medals?/|images/post/|smilies/|emoticons?/|users?/avatar)",
+            r"/(?:themes?/|avatars?/|ranks?/|medals?/|images/post/|smilies/|emoticons?/|users?/avatar|uploads/profile/|profile/(?:photo|avatar))",
             parsed.path,
             re.I,
         ):
@@ -255,10 +255,36 @@ def parse_html(session: requests.Session, url: str) -> dict:
         if body_node is not None:
             break
 
-    # Search the broader thread for downloads and embedded images, but do not
-    # feed reply text into intent classification.
-    link_selectors = ("#content", "#main", "main", "article", ".postarea", ".post")
-    link_candidates = []
+    # Search links across all recognized post containers. Many older forum
+    # engines (notably Invision Community) do not place posts under #content,
+    # #main, or .postarea. Selecting only the largest generic container can
+    # therefore miss downloads in replies. Aggregate links from specific post
+    # bodies first, then broader containers; deduplicate by URL. Classification
+    # still uses only the first post body above.
+    link_selectors = (
+        ".ipsType_richText",
+        ".cPost_contentWrap",
+        ".ipsComment_content",
+        ".postbody",
+        ".post_body",
+        ".messageContent",
+        ".message-content",
+        ".message-body",
+        ".bbWrapper",
+        ".post-content",
+        ".post_content",
+        ".postarea",
+        ".entry-content",
+        ".article-content",
+        ".deviation-full",
+        ".post",
+        "article",
+        "main",
+        "#content",
+        "#main",
+    )
+    outbound_links = []
+    seen_link_urls = set()
     seen_nodes = set()
     for selector in link_selectors:
         try:
@@ -269,11 +295,18 @@ def parse_html(session: requests.Session, url: str) -> dict:
             if id(node) in seen_nodes:
                 continue
             seen_nodes.add(id(node))
-            text_value = clean_text(node.get_text(" ", strip=True))
-            if len(text_value) >= 80:
-                link_candidates.append((len(text_value), node))
-    link_node = max(link_candidates, key=lambda item: item[0])[1] if link_candidates else body_node
-    outbound_links = extract_links(link_node, response.url)
+            for link in extract_links(node, response.url):
+                target = link.get("url")
+                if not target or target in seen_link_urls:
+                    continue
+                seen_link_urls.add(target)
+                outbound_links.append(link)
+                if len(outbound_links) >= 100:
+                    break
+            if len(outbound_links) >= 100:
+                break
+        if len(outbound_links) >= 100:
+            break
     if not body:
         body = description
 

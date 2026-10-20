@@ -298,5 +298,176 @@ class ResourceEvidenceTests(unittest.TestCase):
         )
 
 
+    def test_italian_personal_art_topic_ignores_profile_avatar_links(self):
+        item = {
+            "pre_id": "PRE-00126",
+            "url": "https://example.com/topic",
+            "title": "My Lavori Pixel Art",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "My Lavori Pixel Art",
+            "body_text": "A personal pixel-art portfolio and work log.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link(
+                        "https://example.com/uploads/profile/photo-thumb-9135.gif",
+                        reachable=True,
+                        text="Gladiatore79",
+                    )
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_moved_topic_without_resource_link_can_be_excluded(self):
+        item = {
+            "pre_id": "PRE-00331",
+            "url": "https://example.com/topic",
+            "title": "MOVED: life in the map",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "MOVED: life in the map",
+            "body_text": "This topic has moved.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 0,
+                "results": [],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_moved_resource_topic_with_live_asset_link_is_not_excluded(self):
+        item = {
+            "pre_id": "PRE-00331",
+            "url": "https://example.com/topic",
+            "title": "MOVED: Battlers pack",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "MOVED: Battlers pack",
+            "body_text": "Reusable battler sprites are available at the linked destination.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link(
+                        "https://example.com/battlers.zip",
+                        reachable=True,
+                        text="Battlers download",
+                    )
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "confirmed")
+
+
+    def test_italian_feedback_only_topic_without_download_is_excluded(self):
+        item = {
+            "pre_id": "PRE-00124",
+            "url": "https://example.com/topic",
+            "title": "Icone MZ - stile",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "Icone MZ - stile",
+            "body_text": "Quale è più carina secondo voi, la uno o la due? Quale preferite?",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link(
+                        "https://example.com/uploads/profile/photo-thumb-19.jpg",
+                        reachable=True,
+                        text="Lord Sesshoumaru",
+                    )
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_live_download_prevents_request_keyword_from_auto_excluding(self):
+        item = {
+            "pre_id": "PRE-00189",
+            "url": "https://example.com/topic",
+            "title": "Looking for sprites",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "Looking for sprites",
+            "body_text": "Can someone share sprites? I attached the files here.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link(
+                        "https://example.com/sprites.zip",
+                        reachable=True,
+                        text="sprites.zip",
+                    )
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNone(result)
+
+
+    def test_invision_thread_collects_reply_downloads_but_ignores_profile_photos(self):
+        html = """
+        <html><head><title>Icone MZ - stile</title></head><body>
+          <div id="ipsLayout_mainArea">
+            <div class="cPost_contentWrap">
+              <div class="ipsComment_content">
+                <div class="ipsType_richText">
+                  Which style do you prefer? This is the first post asking for feedback
+                  about two icon styles; it does not include a direct download.
+                </div>
+                <img src="/uploads/profile/photo-thumb-19.jpg" alt="author profile">
+              </div>
+            </div>
+            <div class="cPost_contentWrap">
+              <div class="ipsComment_content">
+                <div class="ipsType_richText">
+                  Here is the reusable icon sheet download.
+                  <a href="https://example.com/IconsMZ.zip">Download IconsMZ.zip</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.com/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        page = parse_html(session, "https://example.com/topic")
+
+        self.assertIn("Which style do you prefer?", page["body_text"])
+        self.assertNotIn("reusable icon sheet", page["body_text"])
+        urls = {item["url"] for item in page["outbound_links"]}
+        self.assertIn("https://example.com/IconsMZ.zip", urls)
+        self.assertFalse(any("photo-thumb-19.jpg" in url for url in urls))
+
+
 if __name__ == "__main__":
     unittest.main()
