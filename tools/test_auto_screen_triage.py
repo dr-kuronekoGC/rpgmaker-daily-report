@@ -128,7 +128,7 @@ class ResourceEvidenceTests(unittest.TestCase):
         }
         page = {
             "page_title": "battlers i've drawn",
-            "body_text": "I drew these battlers as a personal art showcase.",
+            "body_text": "I drew these battlers as a personal art showcase; they are free to use, but no asset or download link is present.",
             "http_status": 200,
             "retrieval_status": "body_found",
             "resource_link_check": {"candidate_count": 0, "results": []},
