@@ -67,13 +67,18 @@ DISCUSSION_RE = re.compile(
     re.I,
 )
 SHOWCASE_RE = re.compile(
-    r"\b(?:showcase|my game|my project|my works|work in progress|\bwip\b|"
-    r"development process|making of|screenshots?|gameplay video|mapping showcase|"
-    r"battlers?\s+(?:i've drawn|i drew)|my (?:new|first) battlers?|"
-    r"my (?:new|first) sprites?|my drawings?|my pixel art|my art|"
+    r"\b(?:showcase|my game|my project|my works|my lavori|my drawings?|my pixel art|my art|"
+    r"work in progress|\bwip\b|development process|making of|screenshots?|gameplay video|"
+    r"mapping showcase|battlers?\s+(?:i've drawn|i drew)|my (?:new|first) battlers?|"
+    r"my (?:new|first) sprites?|lavori pixel art|pixel art diary|art diary|"
     r"miei lavori|le mie creazioni|il mio progetto|mon projet|mes créations|"
     r"mein projekt|meine arbeiten|мои работы|мой проект|мой арт)"
     r"|(?:作品紹介|制作過程|スクリーンショット|ゲームプレイ動画)",
+    re.I,
+)
+MOVED_TOPIC_RE = re.compile(
+    r"^\s*(?:\[?moved\]?\s*[:\-]|moved\s+to\b|"
+    r"\[(?:deleted|removed)\]\s*)",
     re.I,
 )
 
@@ -571,17 +576,24 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     resolved_marker = bool(RESOLVED_MARKER_RE.search(title))
 
     # A personal-art/showcase topic with no usable asset link is not a resource
-    # listing. If embedded assets were detected, leave it open for review unless
-    # the resource-specific links were conclusively dead above.
+    # listing. The raw link audit may contain profile avatars, theme icons, or
+    # other forum chrome; those are not material links and must not keep a
+    # personal showcase in the review queue.
     delivery_summary = delivery_link_summary(title, body, link_check)
-    if (
-        SHOWCASE_RE.search(title)
-        and not delivery_summary["candidate_count"]
-        and not (link_check.get("candidate_count") or 0)
-    ):
+    has_usable_delivery = delivery_summary["candidate_count"] > 0
+    if SHOWCASE_RE.search(title) and not has_usable_delivery:
         return (
             "not_applicable",
-            "個人作品・制作過程の紹介と判断でき、再利用できる素材リンクや埋め込み素材を確認できない",
+            "個人作品・制作過程の紹介と判断でき、再利用できる素材配布先・埋め込み素材を確認できない（プロフィール画像等は除外）",
+        )
+
+    # A topic explicitly marked as moved/removed is not a useful catalog entry
+    # when no replacement resource link is available. If a usable resource link
+    # exists, leave it open/eligible even when the original forum topic moved.
+    if MOVED_TOPIC_RE.search(title) and not has_usable_delivery:
+        return (
+            "not_applicable",
+            "元投稿が移転・削除扱いで、素材として利用できる配布先リンクも確認できない",
         )
     copyright_warning = bool(COPYRIGHT_WARNING_RE.search(combined))
 
