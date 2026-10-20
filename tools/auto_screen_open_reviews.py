@@ -101,19 +101,62 @@ ASSET_WORD_RE = re.compile(
     re.I,
 )
 RESOURCE_LINK_RE = re.compile(
-    r"download|mediafire|mega\.nz|dropbox|drive\.google|google drive|"
-    r"yadi\.sk|disk\.yandex|yandex\.(?:ru|com)|ya\.ru|"
-    r"\.zip(?:$|[?#])|\.rar(?:$|[?#])|\.7z(?:$|[?#])|"
-    r"\.ogg(?:$|[?#])|\.mp3(?:$|[?#])|\.wav(?:$|[?#])|"
-    r"\.png(?:$|[?#])|\.jpe?g(?:$|[?#])|\.gif(?:$|[?#])|"
-    r"\.js(?:$|[?#])|/downloads?(?:/|$)|/art/|itch\.io|"
-    r"github\.com/.*/releases",
+    # Link URLs and anchor labels use different languages across the forums.
+    # Include common download/archive/resource terms so old posts with generic
+    # file-hosting URLs are not silently skipped by the link audit.
+    r"download|descargar|t[eé]l[eé]charger|herunterladen|scarica|scaricare|"
+    r"скачать|загрузить|скачиван|downloaden|"
+    r"mediafire|mega\\.nz|dropbox|drive\\.google|google drive|"
+    r"yadi\\.sk|disk\\.yandex|yandex\\.(?:ru|com)|ya\\.ru|"
+    r"\\.zip(?:$|[?#])|\\.rar(?:$|[?#])|\\.7z(?:$|[?#])|"
+    r"\\.ogg(?:$|[?#])|\\.mp3(?:$|[?#])|\\.wav(?:$|[?#])|"
+    r"\\.png(?:$|[?#])|\\.jpe?g(?:$|[?#])|\\.gif(?:$|[?#])|"
+    r"\\.js(?:$|[?#])|/downloads?(?:/|$)|/art/|itch\\.io|"
+    r"github\\.com/.*/releases|"
+    r"архив|файл|файлы|музык|звуков|ресурс|плагин|спрайт|тайлсет|"
+    r"анимац|иконк|материал|скачив|"
+    r"download[- ]?link|freebie|asset pack|resource pack|sound pack|"
+    r"scaricamento|download gratuit|t[eé]l[eé]chargement|"
+    r"herunterladen|datei|ressourcen|materialien|"
+    r"descarga|archivo|recursos",
     re.I,
 )
 # Check every detected resource link (the page parser caps extracted links at 100).
 # This avoids keeping a resource when only the first three of many download links were checked.
 MAX_RESOURCE_LINKS = 100
 LINK_TIMEOUT = 3
+
+# The user consistently excludes posts whose purpose is only to advertise a
+# discount, time-limited sale, coupon, or contest giveaway. A product/store
+# URL alone is not evidence that a usable downloadable file is included.
+PROMOTION_ONLY_RE = re.compile(
+    r"\\b(?:limited[- ]time (?:sale|offer|discount|deal)|flash sale|"
+    r"time[- ]limited (?:offer|discount|sale)|discount(?:ed)?|coupon|"
+    r"promo code|sale ends|on sale|price drop|special offer|"
+    r"giveaway contest|enter to win|raffle|"
+    r"limited offer|discount code|free for a limited time)\\b"
+    r"|(?:期間限定(?:セール|割引|販売|配布)|タイムセール|割引クーポン|"
+    r"セール終了|抽選プレゼント|抽選でプレゼント|期間限定の割引|"
+    r"скидк|распродаж|розыгрыш|только сегодня|"
+    r"offerta a tempo limitato|sconto|codice sconto|"
+    r"vente flash|offre limitée|réduction|code promo|"
+    r"zeitlich begrenz(?:t|te) (?:Angebot|Rabatt)|Rabattcode)",
+    re.I,
+)
+DIRECT_DOWNLOAD_RE = re.compile(
+    r"download|descargar|t[eé]l[eé]charger|herunterladen|scarica|scaricare|"
+    r"скачать|загрузить|mediafire|mega\\.nz|dropbox|drive\\.google|"
+    r"google drive|yadi\\.sk|disk\\.yandex|yandex\\.(?:ru|com)|ya\\.ru|"
+    r"\\.(?:zip|rar|7z|ogg|mp3|wav|js)(?:$|[?#])|/downloads?(?:/|$)",
+    re.I,
+)
+
+
+def has_direct_download_link(link_check: dict) -> bool:
+    for result in link_check.get("results") or []:
+        if DIRECT_DOWNLOAD_RE.search(clean(result.get("url"))) or DIRECT_DOWNLOAD_RE.search(clean(result.get("text"))):
+            return True
+    return False
 
 
 def check_resource_links(session, page: dict, source_url: str) -> dict:
@@ -213,21 +256,21 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     retrieval = page.get("retrieval_status")
     link_check = page.get("resource_link_check") or {}
 
-    if status in {404, 410}:
-        return ("not_applicable", f"保存されたURLがHTTP {status}を返し、現在ページを取得できない")
-    if is_direct_profile(url):
-        return ("not_applicable", "個別の素材・配布物ではなく、ユーザープロフィールへの直リンク")
-    if link_check.get("all_checked_dead"):
-        return ("not_applicable", "投稿内で特定できたダウンロード／素材リンクがすべてHTTP 404/410で、配布先を確認できない")
-
-    # Preserve explicit human corrections that restored an item to the queue.
-    # These notes mean prior automated exclusion was reviewed and rejected.
+    # Preserve explicit human corrections before applying any automatic rule,
+    # including link-death rules. Human review takes precedence over heuristics.
     human_reopen_note = clean(item.get("review_note"))
     if re.search(
         r"(?:自動判定を取り消し|自動除外を取り消し|除外判定を取り消し|未確認に戻す|再確認対象として残す)",
         human_reopen_note,
     ):
         return None
+
+    if status in {404, 410}:
+        return ("not_applicable", f"保存されたURLがHTTP {status}を返し、現在ページを取得できない")
+    if is_direct_profile(url):
+        return ("not_applicable", "個別の素材・配布物ではなく、ユーザープロフィールへの直リンク")
+    if link_check.get("all_checked_dead"):
+        return ("not_applicable", "投稿内で特定できたダウンロード／素材リンクがすべてHTTP 404/410で、配布先を確認できない")
 
     if retrieval != "body_found" or not body:
         # A blank/blocked response is not evidence of absence.
@@ -236,6 +279,15 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     positive_release = bool(POSITIVE_RELEASE_RE.search(combined))
     resolved_marker = bool(RESOLVED_MARKER_RE.search(title))
     copyright_warning = bool(COPYRIGHT_WARNING_RE.search(combined))
+
+    # Exclude only explicit promotion/discount/contest announcements when the
+    # post has no direct downloadable destination. Ordinary paid assets and
+    # external storefront links are not excluded by themselves.
+    if PROMOTION_ONLY_RE.search(combined) and not has_direct_download_link(link_check):
+        return (
+            "not_applicable",
+            "過去の確認方針に基づき、割引・期間限定セール・抽選告知が主目的で、直接取得できる素材ファイルへのリンクを確認できないため除外",
+        )
 
     if copyright_warning and not positive_release:
         # Avoid generic franchise-word filtering; only clear piracy/ripped wording
