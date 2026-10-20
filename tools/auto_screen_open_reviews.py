@@ -584,6 +584,10 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
 
     # A live, resource-specific delivery link is itself positive evidence.
     # This prevents a request/discussion keyword from overriding a real file.
+    # Distinguish usable resource links from profile photos, preview images,
+    # and generic forum chrome before using link status as classification evidence.
+    delivery_summary = delivery_link_summary(title, body, link_check)
+    has_usable_delivery = delivery_summary["candidate_count"] > 0
     positive_release = bool(
         POSITIVE_RELEASE_RE.search(combined)
         or delivery_summary["reachable_count"] > 0
@@ -594,8 +598,6 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     # listing. The raw link audit may contain profile avatars, theme icons, or
     # other forum chrome; those are not material links and must not keep a
     # personal showcase in the review queue.
-    delivery_summary = delivery_link_summary(title, body, link_check)
-    has_usable_delivery = delivery_summary["candidate_count"] > 0
     if SHOWCASE_RE.search(title) and not has_usable_delivery:
         return (
             "not_applicable",
