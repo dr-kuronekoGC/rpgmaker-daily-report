@@ -349,9 +349,9 @@ def resource_kind(title: str, body: str) -> str | None:
         return "plugin"
 
     graphics_specific = re.compile(
-        r"\\b(?:sprites?|spritesheets?|charset|charsets|tilesets?|tile sets?|"
+        r"\b(?:sprites?|spritesheets?|charset|charsets|tilesets?|tile sets?|"
         r"battlers?|icons?|icon pack|icon set|animation sheets?|graphics|"
-        r"doodads|character generator|butterflies?)\\b"
+        r"doodads|character generator|butterflies?)\b"
         r"|(?:спрайт|тайлсет|график|анимац|иконк|набор иконок|персонаж|бабочк|"
         r"素材|タイルセット|キャラセット|スプライト|アイコン|アニメーション)",
         re.I,
@@ -360,8 +360,8 @@ def resource_kind(title: str, body: str) -> str | None:
         return "graphics"
 
     if re.search(
-        r"\\b(?:resource staff releases pack|resources?|resource pack|asset pack|"
-        r"humble|gamedev resources?)\\b|(?:ресурс(?:ы|ов)?|объединённые ресурсы|"
+        r"\b(?:resource staff releases pack|resources?|resource pack|asset pack|"
+        r"humble|gamedev resources?)\b|(?:ресурс(?:ы|ов)?|объединённые ресурсы|"
         r"объединенные ресурсы)",
         title,
         re.I,
