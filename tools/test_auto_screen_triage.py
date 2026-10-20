@@ -268,6 +268,56 @@ class ResourceEvidenceTests(unittest.TestCase):
         )
         self.assertIsNone(result)
 
+    def test_legacy_photobucket_query_filename_is_a_graphics_delivery_link(self):
+        url = (
+            "http://s395.photobucket.com/albums/pp36/sell58/"
+            "?action=view&current=053-Undead03.png"
+        )
+        candidate = link(url, reachable=True, text=url)
+        candidate["link_kind"] = "anchor"
+        self.assertTrue(is_delivery_link(candidate, "graphics"))
+        # An image URL cannot prove that a music/audio download is available.
+        self.assertFalse(is_delivery_link(candidate, "audio"))
+
+    def test_resolved_charset_topic_with_live_photobucket_asset_can_be_confirmed(self):
+        url = (
+            "http://s395.photobucket.com/albums/pp36/sell58/"
+            "?action=view&current=053-Undead03.png"
+        )
+        candidate = link(url, reachable=True, text=url)
+        candidate["link_kind"] = "anchor"
+        checks = {"candidate_count": 1, "results": [candidate]}
+        result = confirmed_resource_decision(
+            "[RESOLVED] Charsets of necromancers and undead.",
+            "Reusable charset images are linked in the post.",
+            checks,
+        )
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "confirmed")
+
+    def test_resolved_marker_does_not_block_live_resource_confirmation(self):
+        url = (
+            "http://s395.photobucket.com/albums/pp36/sell58/"
+            "?action=view&current=053-Undead03.png"
+        )
+        candidate = link(url, reachable=True, text=url)
+        candidate["link_kind"] = "anchor"
+        item = {
+            "pre_id": "PRE-00364",
+            "url": "https://rmrk.net/index.php?topic=30971.0",
+            "title": "[RESOLVED] Charsets of necromancers and undead.",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "Reusable charset images are linked in the post.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"candidate_count": 1, "results": [candidate]},
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "confirmed")
+
     def test_semantic_attachment_can_be_asset_but_random_preview_cannot(self):
         self.assertTrue(
             is_delivery_link(
