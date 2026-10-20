@@ -19,7 +19,7 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 import fetch_historical_review_bodies as fetcher
 from asset_metadata import build_asset_metadata
@@ -429,6 +429,27 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
     path = parsed.path.lower()
     suffix = Path(parsed.path).suffix.lower()
 
+    # Legacy image hosts such as Photobucket store the actual image filename
+    # in a query parameter (for example ?action=view&current=charset.png),
+    # while the URL path itself has no image extension. Recognize only known
+    # image extensions in known filename-like parameters; never infer a file
+    # type from an arbitrary query string.
+    if suffix not in IMAGE_EXTENSIONS:
+        query = parse_qs(parsed.query)
+        for key in ("current", "file", "filename", "image", "photo"):
+            values = query.get(key, [])
+            found_suffix = next(
+                (
+                    Path(urlparse(unquote(value)).path).suffix.lower()
+                    for value in values
+                    if Path(urlparse(unquote(value)).path).suffix.lower() in IMAGE_EXTENSIONS
+                ),
+                None,
+            )
+            if found_suffix:
+                suffix = found_suffix
+                break
+
     if suffix in DELIVERABLE_EXTENSIONS:
         return True
 
@@ -507,7 +528,7 @@ def confirmed_resource_decision(title: str, body: str, link_check: dict) -> tupl
     # resources when an actual asset file is reachable.
     if NON_RESOURCE_TITLE_RE.search(title):
         return None
-    if RESOLVED_MARKER_RE.search(title) or DISCUSSION_RE.search(title):
+    if DISCUSSION_RE.search(title):
         return None
     summary = delivery_link_summary(title, body, link_check)
     live = [result for result in summary["results"] if result.get("reachable")]
@@ -659,7 +680,7 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
         return ("not_applicable", "本文に素材配布ではない／ダウンロード不可／プレビューのみと明記されている")
 
     # A solved/filled thread may contain a useful answer or an attached asset.
-    if resolved_marker:
+    if resolved_marker and not has_usable_delivery:
         return None
 
     # Requests for a resource are excluded only when the post itself contains
