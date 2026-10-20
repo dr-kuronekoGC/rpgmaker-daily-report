@@ -110,7 +110,9 @@ RESOURCE_LINK_RE = re.compile(
     r"github\.com/.*/releases",
     re.I,
 )
-MAX_RESOURCE_LINKS = 3
+# Check every detected resource link (the page parser caps extracted links at 100).
+# This avoids keeping a resource when only the first three of many download links were checked.
+MAX_RESOURCE_LINKS = 100
 LINK_TIMEOUT = 3
 
 
@@ -217,6 +219,16 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
         return ("not_applicable", "個別の素材・配布物ではなく、ユーザープロフィールへの直リンク")
     if link_check.get("all_checked_dead"):
         return ("not_applicable", "投稿内で特定できたダウンロード／素材リンクがすべてHTTP 404/410で、配布先を確認できない")
+
+    # Preserve explicit human corrections that restored an item to the queue.
+    # These notes mean prior automated exclusion was reviewed and rejected.
+    human_reopen_note = clean(item.get("review_note"))
+    if re.search(
+        r"(?:自動判定を取り消し|自動除外を取り消し|除外判定を取り消し|未確認に戻す|再確認対象として残す)",
+        human_reopen_note,
+    ):
+        return None
+
     if retrieval != "body_found" or not body:
         # A blank/blocked response is not evidence of absence.
         return None
