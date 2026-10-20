@@ -12,7 +12,7 @@ import re
 import sys
 import time
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urlencode, urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -412,6 +412,102 @@ def parse_html(session: requests.Session, url: str) -> dict:
     }
 
 
+def invision_query_topic_url(url: str) -> str | None:
+    """Build Invision's explicit topic-controller URL from a friendly topic URL."""
+    match = re.search(r"/topic/(\d+)", url, re.I)
+    parsed = urlparse(url)
+    if not match or parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return None
+    query = urlencode({
+        "app": "forums",
+        "module": "forums",
+        "controller": "topic",
+        "id": match.group(1),
+    })
+    return f"{parsed.scheme}://{parsed.netloc}{parsed.path}?{query}"
+
+
+def try_invision_query_fallback(
+    session: requests.Session,
+    original_url: str,
+    original_page: dict,
+) -> dict:
+    """Retry an Invision topic through its explicit controller route when the
+    friendly route returns only a short topic header and no post body.
+    """
+    host = (urlparse(original_url).hostname or "").lower()
+    diagnostics = original_page.get("html_diagnostics") or {}
+    body_source = diagnostics.get("body_source")
+    body_chars = len(str(original_page.get("body_text") or ""))
+    if (
+        not host.endswith("rpg2s.it")
+        or body_source not in {"#ipsLayout_mainArea", ".ipsLayout_mainArea", "meta_description", "empty"}
+        or body_chars > 300
+    ):
+        return original_page
+
+    alternate_url = invision_query_topic_url(original_url)
+    if not alternate_url or alternate_url == original_url:
+        return original_page
+
+    try:
+        alternate = parse_html(session, alternate_url)
+    except requests.RequestException as exc:
+        diagnostics.update({
+            "alternate_route_attempted": True,
+            "alternate_route_url": alternate_url,
+            "alternate_route_error": type(exc).__name__,
+            "alternate_route_used": False,
+        })
+        original_page["html_diagnostics"] = diagnostics
+        return original_page
+
+    alternate_diagnostics = alternate.get("html_diagnostics") or {}
+    alternate_body_chars = len(str(alternate.get("body_text") or ""))
+    original_link_count = len(original_page.get("outbound_links") or [])
+    alternate_link_count = len(alternate.get("outbound_links") or [])
+    alternate_source = alternate_diagnostics.get("body_source")
+    specific_post_body = (
+        alternate_source not in {
+            "#ipsLayout_mainArea", ".ipsLayout_mainArea", "meta_description", "empty", None
+        }
+        and alternate_body_chars >= 80
+    )
+    materially_better = (
+        alternate.get("http_status") == 200
+        and (
+            specific_post_body
+            or alternate_body_chars >= body_chars + 150
+            or alternate_link_count >= original_link_count + 3
+        )
+    )
+
+    diagnostics.update({
+        "alternate_route_attempted": True,
+        "alternate_route_url": alternate_url,
+        "alternate_route_http_status": alternate.get("http_status"),
+        "alternate_route_body_source": alternate_source,
+        "alternate_route_body_chars": alternate_body_chars,
+        "alternate_route_link_count": alternate_link_count,
+        "alternate_route_used": bool(materially_better),
+    })
+    if not materially_better:
+        original_page["html_diagnostics"] = diagnostics
+        return original_page
+
+    alternate_diagnostics["alternate_route_attempted"] = True
+    alternate_diagnostics["alternate_route_url"] = alternate_url
+    alternate_diagnostics["alternate_route_body_source"] = alternate_source
+    alternate_diagnostics["alternate_route_body_chars"] = alternate_body_chars
+    alternate_diagnostics["alternate_route_link_count"] = alternate_link_count
+    alternate_diagnostics["alternate_route_used"] = True
+    alternate_diagnostics["fallback_from_url"] = original_url
+    alternate["html_diagnostics"] = alternate_diagnostics
+    alternate["retrieval_method"] = "html_invision_query_fallback"
+    alternate["requested_url"] = original_url
+    return alternate
+
+
 def fetch_item(session: requests.Session, item: dict) -> dict:
     url = str(item.get("url") or "").strip()
     result = {
@@ -443,6 +539,7 @@ def fetch_item(session: requests.Session, item: dict) -> dict:
             page = parse_discourse_json(session, url)
             if page is None:
                 page = parse_html(session, url)
+                page = try_invision_query_fallback(session, url, page)
         result.update(page)
         if result.get("body_text") or result.get("page_description"):
             result["retrieval_status"] = "body_found"

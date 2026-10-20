@@ -20,6 +20,107 @@ class HistoricalBodyAuditTests(unittest.TestCase):
     def test_public_http_url_is_accepted(self):
         self.assertTrue(MODULE.is_public_http_url("https://www.reddit.com/r/RPGMaker/"))
 
+    def test_invision_query_topic_url_uses_explicit_controller_route(self):
+        self.assertEqual(
+            MODULE.invision_query_topic_url(
+                "https://www.rpg2s.it/forum/index.php?/topic/24040-icone-mz-stile/"
+            ),
+            "https://www.rpg2s.it/forum/index.php?app=forums&module=forums&controller=topic&id=24040",
+        )
+        self.assertIsNone(MODULE.invision_query_topic_url("https://example.com/forum/topic/no-id/"))
+
+    def test_invision_query_fallback_uses_better_post_body(self):
+        original_url = "https://www.rpg2s.it/forum/index.php?/topic/123-example/"
+        original = {
+            "http_status": 200,
+            "body_text": "Login warning Example topic By Author in Grafica",
+            "outbound_links": [],
+            "html_diagnostics": {
+                "body_source": "#ipsLayout_mainArea",
+                "body_text_chars": 48,
+            },
+        }
+        html = """
+        <html><head><title>Example topic</title></head>
+        <body><div id="ipsLayout_mainArea">
+          <div class="ipsComment_content">
+            <p>This is the original resource post with enough content to show the
+            actual post body instead of the short topic header. The plugin download
+            link is provided below for users to retrieve the file.</p>
+            <a href="/files/plugin.js">Download plugin</a>
+          </div>
+        </div></body></html>
+        """
+
+        class FakeResponse:
+            text = html
+            status_code = 200
+            url = (
+                "https://www.rpg2s.it/forum/index.php?"
+                "app=forums&module=forums&controller=topic&id=123"
+            )
+
+            def raise_for_status(self):
+                return None
+
+        class FakeSession:
+            def get(self, *args, **kwargs):
+                return FakeResponse()
+
+        result = MODULE.try_invision_query_fallback(
+            FakeSession(),
+            original_url,
+            original,
+        )
+        self.assertEqual(result["retrieval_method"], "html_invision_query_fallback")
+        self.assertEqual(result["requested_url"], original_url)
+        self.assertEqual(result["html_diagnostics"]["body_source"], ".ipsComment_content")
+        self.assertTrue(result["html_diagnostics"]["alternate_route_used"])
+        self.assertTrue(
+            any(link["url"] == "https://www.rpg2s.it/files/plugin.js"
+                for link in result["outbound_links"])
+        )
+
+    def test_invision_query_fallback_keeps_original_when_alternate_is_not_better(self):
+        original_url = "https://www.rpg2s.it/forum/index.php?/topic/123-example/"
+        original = {
+            "http_status": 200,
+            "body_text": "Login warning Example topic By Author in Grafica",
+            "outbound_links": [],
+            "html_diagnostics": {
+                "body_source": "#ipsLayout_mainArea",
+                "body_text_chars": 48,
+            },
+        }
+        html = """
+        <html><head><title>Example topic</title>
+        <meta name="description" content="Short topic description."></head>
+        <body><div id="ipsLayout_mainArea">Login warning Example topic By Author in Grafica</div></body></html>
+        """
+
+        class FakeResponse:
+            text = html
+            status_code = 200
+            url = (
+                "https://www.rpg2s.it/forum/index.php?"
+                "app=forums&module=forums&controller=topic&id=123"
+            )
+
+            def raise_for_status(self):
+                return None
+
+        class FakeSession:
+            def get(self, *args, **kwargs):
+                return FakeResponse()
+
+        result = MODULE.try_invision_query_fallback(
+            FakeSession(),
+            original_url,
+            original,
+        )
+        self.assertIs(result, original)
+        self.assertFalse(result["html_diagnostics"]["alternate_route_used"])
+
     def test_invision_main_area_fallback_extracts_post_text_and_download_links(self):
         html = """
         <html>
