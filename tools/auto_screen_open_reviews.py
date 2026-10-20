@@ -434,6 +434,7 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
     # while the URL path itself has no image extension. Recognize only known
     # image extensions in known filename-like parameters; never infer a file
     # type from an arbitrary query string.
+    query_image_filename = False
     if suffix not in IMAGE_EXTENSIONS:
         query = parse_qs(parsed.query)
         for key in ("current", "file", "filename", "image", "photo"):
@@ -448,6 +449,7 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
             )
             if found_suffix:
                 suffix = found_suffix
+                query_image_filename = True
                 break
 
     if suffix in DELIVERABLE_EXTENSIONS:
@@ -476,7 +478,7 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
             "postimg.org", "ibb.co", "imagebam.com", "imgbox.com",
         )
         if (
-            result.get("link_kind") in {"image_anchor", "embedded_image"}
+            (result.get("link_kind") in {"image_anchor", "embedded_image"} or query_image_filename)
             and any(host == domain or host.endswith("." + domain) for domain in image_hosts)
             and kind in {"graphics", "resource", "mixed"}
         ):
