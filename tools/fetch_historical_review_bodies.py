@@ -566,7 +566,7 @@ def try_wayback_fallback(
         and len(row) >= 4
         and row[2] == "200"
         and "html" in str(row[3]).lower()
-        and re.fullmatch(r"\\d{8,14}", str(row[0]))
+        and re.fullmatch(r"\d{8,14}", str(row[0]))
     ] if isinstance(records, list) and records else []
 
     if not snapshots:
