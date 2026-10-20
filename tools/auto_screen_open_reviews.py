@@ -307,7 +307,8 @@ AUDIO_RESOURCE_RE = re.compile(
     r"\b(?:music|musics|musica|musiche|audio|soundtrack|soundtracks|"
     r"sound pack|audio pack|bgm|bgs|sound effects|album|albums)\b"
     r"|(?:музык|саундтрек|звуков|аудио|альбом|треки|музыка|"
-    r"музыкальн|архив звуков|пак звуков)",
+    r"музыкальн|архив звуков|пак звуков|musica|musiche|suono|suoni|"
+    r"effetti sonori|colonna sonora|traccia sonora)",
     re.I,
 )
 PLUGIN_RESOURCE_RE = re.compile(
@@ -324,6 +325,7 @@ GRAPHICS_RESOURCE_RE = re.compile(
     r"|(?:ресурс|спрайт|тайлсет|график|анимац|иконк|набор иконок|"
     r"персонаж|бабочк|материал|графика|ресурсы|пакет ресурсов|"
     r"объединённые ресурсы|объединенные ресурсы|"
+    r"icone|icona|grafica|materiali|risorse|animazioni|personaggi|"
     r"素材|配布|タイルセット|キャラセット|スプライト|アイコン|アニメーション)",
     re.I,
 )
@@ -337,6 +339,8 @@ RESOURCE_TITLE_RE = re.compile(
     r"|(?:ресурс|спрайт|тайлсет|музык|саундтрек|звуков|аудио|альбом|"
     r"архив звуков|пак звуков|анимац|иконк|набор иконок|бабочк|"
     r"график|материал|ресурсы|объединённые ресурсы|объединенные ресурсы|"
+    r"musica|musiche|suoni|effetti sonori|colonna sonora|traccia sonora|"
+    r"icone|icona|grafica|materiali|risorse|animazioni|personaggi|"
     r"butterfl(?:y|ies)|free[-_]art[-_]material|art[-_]material|"
     r"resource[-_]pack|asset[-_]pack|sound[-_]pack|icon[-_]pack|"
     r"素材|配布|タイルセット|キャラセット|スプライト|アイコン|アニメーション|"
@@ -495,9 +499,13 @@ def delivery_link_summary(title: str, body: str, link_check: dict) -> dict:
 
 def confirmed_resource_decision(title: str, body: str, link_check: dict) -> tuple[str, str] | None:
     """Confirm only an unmistakable asset/plugin post with a live delivery link."""
-    if NON_RESOURCE_TITLE_RE.search(title) or NON_RESOURCE_TITLE_RE.search(body[:700]):
+    # Reject explicit request/discussion titles, but do not let incidental
+    # words in a resource description (e.g. "tutorial", "how to", "feedback")
+    # override a live downloadable asset. Showcase titles may still be reusable
+    # resources when an actual asset file is reachable.
+    if NON_RESOURCE_TITLE_RE.search(title):
         return None
-    if RESOLVED_MARKER_RE.search(title) or DISCUSSION_RE.search(title) or SHOWCASE_RE.search(title):
+    if RESOLVED_MARKER_RE.search(title) or DISCUSSION_RE.search(title):
         return None
     summary = delivery_link_summary(title, body, link_check)
     live = [result for result in summary["results"] if result.get("reachable")]
