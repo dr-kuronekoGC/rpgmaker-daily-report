@@ -20,6 +20,48 @@ class HistoricalBodyAuditTests(unittest.TestCase):
     def test_public_http_url_is_accepted(self):
         self.assertTrue(MODULE.is_public_http_url("https://www.reddit.com/r/RPGMaker/"))
 
+    def test_invision_main_area_fallback_extracts_post_text_and_download_links(self):
+        html = """
+        <html>
+          <head>
+            <title>Example Invision topic</title>
+            <meta name="description" content="Short metadata excerpt only.">
+          </head>
+          <body>
+            <div id="ipsLayout_mainArea">
+              <div class="ipsBox">
+                <p>This is a resource post with enough text to represent the original post.
+                The attached plugin is available from the download link below.</p>
+                <a href="/files/PluginCore.js">Download plugin</a>
+              </div>
+            </div>
+          </body>
+        </html>
+        """
+
+        class FakeResponse:
+            text = html
+            status_code = 200
+            url = "https://www.rpg2s.it/forum/index.php?/topic/123-example/"
+
+            def raise_for_status(self):
+                return None
+
+        class FakeSession:
+            def get(self, *args, **kwargs):
+                return FakeResponse()
+
+        result = MODULE.parse_html(
+            FakeSession(),
+            "https://www.rpg2s.it/forum/index.php?/topic/123-example/",
+        )
+        self.assertIn("attached plugin", result["body_text"])
+        self.assertNotEqual(result["body_text"], "Short metadata excerpt only.")
+        self.assertTrue(
+            any(link["url"] == "https://www.rpg2s.it/files/PluginCore.js"
+                for link in result["outbound_links"])
+        )
+
     def test_extract_links_includes_embedded_audio_sources(self):
         node = MODULE.BeautifulSoup(
             '<div><audio controls><source src="/media/music/forest.ogg" '

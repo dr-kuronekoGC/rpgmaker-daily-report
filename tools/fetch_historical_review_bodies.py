@@ -255,6 +255,12 @@ def parse_html(session: requests.Session, url: str) -> dict:
         ".article-content",
         ".deviation-full",
         ".post",
+        # Invision Community may render the topic under this container even when
+        # the individual post-body class names differ from known versions.
+        # Keep it as a fallback after specific post-body selectors so replies
+        # do not outrank a recognizable first-post body.
+        "#ipsLayout_mainArea",
+        ".ipsLayout_mainArea",
         "article",
         "main",
         "#content",
@@ -299,6 +305,10 @@ def parse_html(session: requests.Session, url: str) -> dict:
         ".article-content",
         ".deviation-full",
         ".post",
+        # Fallback for Invision pages whose posts are nested in the main layout
+        # area but do not expose a recognized individual post container.
+        "#ipsLayout_mainArea",
+        ".ipsLayout_mainArea",
         "article",
         "main",
         "#content",
