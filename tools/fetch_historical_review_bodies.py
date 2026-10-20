@@ -195,8 +195,13 @@ def parse_discourse_json(session: requests.Session, url: str) -> dict | None:
     }
 
 
-def parse_html(session: requests.Session, url: str) -> dict:
-    response = session.get(url, timeout=TIMEOUT, headers={"Accept": "text/html"})
+def parse_html(
+    session: requests.Session,
+    url: str,
+    base_url_override: str | None = None,
+    timeout: int = TIMEOUT,
+) -> dict:
+    response = session.get(url, timeout=timeout, headers={"Accept": "text/html"})
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -319,6 +324,7 @@ def parse_html(session: requests.Session, url: str) -> dict:
         "#content",
         "#main",
     )
+    base_url = base_url_override or response.url
     outbound_links = []
     seen_link_urls = set()
     seen_nodes = set()
@@ -331,7 +337,7 @@ def parse_html(session: requests.Session, url: str) -> dict:
             if id(node) in seen_nodes:
                 continue
             seen_nodes.add(id(node))
-            for link in extract_links(node, response.url):
+            for link in extract_links(node, base_url):
                 target = link.get("url")
                 if not target or target in seen_link_urls:
                     continue
@@ -508,6 +514,152 @@ def try_invision_query_fallback(
     return alternate
 
 
+def try_wayback_fallback(
+    session: requests.Session,
+    original_url: str,
+    original_page: dict,
+) -> dict:
+    """Use a Wayback snapshot only when an Rpg2S page exposes a short topic
+    header but no post body. Never treat an archive hit alone as a resource.
+    """
+    host = (urlparse(original_url).hostname or "").lower()
+    diagnostics = original_page.get("html_diagnostics") or {}
+    body_source = diagnostics.get("body_source")
+    body_chars = len(str(original_page.get("body_text") or ""))
+    if (
+        not host.endswith("rpg2s.it")
+        or body_source not in {"#ipsLayout_mainArea", ".ipsLayout_mainArea", "meta_description", "empty"}
+        or body_chars > 300
+    ):
+        return original_page
+
+    cdx_url = "https://web.archive.org/cdx/search/cdx"
+    params = [
+        ("url", original_url),
+        ("output", "json"),
+        ("fl", "timestamp,original,statuscode,mimetype"),
+        ("filter", "statuscode:200"),
+        ("filter", "mimetype:text/html"),
+        ("collapse", "digest"),
+    ]
+    try:
+        cdx_response = session.get(
+            cdx_url,
+            params=params,
+            timeout=6,
+            headers={"Accept": "application/json"},
+        )
+        cdx_response.raise_for_status()
+        records = json.loads(cdx_response.text)
+    except (requests.RequestException, ValueError, TypeError) as exc:
+        diagnostics.update({
+            "wayback_attempted": True,
+            "wayback_snapshot_found": False,
+            "wayback_error": type(exc).__name__,
+        })
+        original_page["html_diagnostics"] = diagnostics
+        return original_page
+
+    snapshots = [
+        row for row in records[1:]
+        if isinstance(row, list)
+        and len(row) >= 4
+        and row[2] == "200"
+        and "html" in str(row[3]).lower()
+        and re.fullmatch(r"\\d{8,14}", str(row[0]))
+    ] if isinstance(records, list) and records else []
+
+    if not snapshots:
+        diagnostics.update({
+            "wayback_attempted": True,
+            "wayback_snapshot_found": False,
+            "wayback_cdx_http_status": cdx_response.status_code,
+            "wayback_error": "no_matching_snapshot",
+        })
+        original_page["html_diagnostics"] = diagnostics
+        return original_page
+
+    timestamp, snapshot_original, status_code, mime_type = snapshots[-1][:4]
+    archive_url = f"https://web.archive.org/web/{timestamp}id_/{snapshot_original}"
+    try:
+        archived = parse_html(
+            session,
+            archive_url,
+            base_url_override=original_url,
+            timeout=6,
+        )
+    except requests.RequestException as exc:
+        diagnostics.update({
+            "wayback_attempted": True,
+            "wayback_snapshot_found": True,
+            "wayback_snapshot_timestamp": timestamp,
+            "wayback_archive_url": archive_url,
+            "wayback_error": type(exc).__name__,
+            "wayback_used": False,
+        })
+        original_page["html_diagnostics"] = diagnostics
+        return original_page
+
+    archived_diagnostics = archived.get("html_diagnostics") or {}
+    archived_body_chars = len(str(archived.get("body_text") or ""))
+    original_link_count = len(original_page.get("outbound_links") or [])
+    archived_link_count = len(archived.get("outbound_links") or [])
+    archived_source = archived_diagnostics.get("body_source")
+    specific_post_body = (
+        archived_source not in {
+            "#ipsLayout_mainArea", ".ipsLayout_mainArea", "meta_description", "empty", None
+        }
+        and archived_body_chars >= 80
+    )
+    materially_better = (
+        archived.get("http_status") == 200
+        and (
+            specific_post_body
+            or (
+                archived_body_chars >= body_chars + 150
+                and archived_link_count >= original_link_count + 1
+            )
+        )
+    )
+
+    diagnostics.update({
+        "wayback_attempted": True,
+        "wayback_snapshot_found": True,
+        "wayback_cdx_http_status": cdx_response.status_code,
+        "wayback_snapshot_timestamp": timestamp,
+        "wayback_snapshot_original": snapshot_original,
+        "wayback_archive_url": archive_url,
+        "wayback_archive_http_status": archived.get("http_status"),
+        "wayback_body_source": archived_source,
+        "wayback_body_chars": archived_body_chars,
+        "wayback_link_count": archived_link_count,
+        "wayback_used": bool(materially_better),
+    })
+    if not materially_better:
+        original_page["html_diagnostics"] = diagnostics
+        return original_page
+
+    archived_diagnostics.update({
+        "wayback_attempted": True,
+        "wayback_snapshot_found": True,
+        "wayback_cdx_http_status": cdx_response.status_code,
+        "wayback_snapshot_timestamp": timestamp,
+        "wayback_snapshot_original": snapshot_original,
+        "wayback_archive_url": archive_url,
+        "wayback_archive_http_status": archived.get("http_status"),
+        "wayback_body_source": archived_source,
+        "wayback_body_chars": archived_body_chars,
+        "wayback_link_count": archived_link_count,
+        "wayback_used": True,
+        "fallback_from_url": original_url,
+    })
+    archived["html_diagnostics"] = archived_diagnostics
+    archived["retrieval_method"] = "wayback_archive_fallback"
+    archived["requested_url"] = original_url
+    return archived
+
+
+
 def fetch_item(session: requests.Session, item: dict) -> dict:
     url = str(item.get("url") or "").strip()
     result = {
@@ -540,6 +692,7 @@ def fetch_item(session: requests.Session, item: dict) -> dict:
             if page is None:
                 page = parse_html(session, url)
                 page = try_invision_query_fallback(session, url, page)
+                page = try_wayback_fallback(session, url, page)
         result.update(page)
         if result.get("body_text") or result.get("page_description"):
             result["retrieval_status"] = "body_found"
