@@ -335,7 +335,12 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
     if suffix in IMAGE_EXTENSIONS:
         if kind == "audio":
             return False
-        if "/attachments/" in path and not PREVIEW_FILE_RE.search(path):
+        filename = Path(parsed.path).name
+        if (
+            "/attachments/" in path
+            and not PREVIEW_FILE_RE.search(path)
+            and RESOURCE_TITLE_RE.search(filename)
+        ):
             return True
         return False
 
@@ -354,7 +359,7 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
         return bool(re.search(r"(?:asset|art|sprite|tile|resource|music|sound|plugin|pack|material|graphics)", path, re.I))
     if host == "raw.githubusercontent.com":
         return True
-    if host == "github.com" and re.search(r"/(?:releases|archive)/|\\.(?:js|mjs|rb|zip)(?:$|/)", path, re.I):
+    if host == "github.com" and re.search(r"/(?:releases|archive)/|\.(?:js|mjs|rb|zip)(?:$|/)", path, re.I):
         return True
     return False
 
@@ -381,21 +386,21 @@ def confirmed_resource_decision(title: str, body: str, link_check: dict) -> tupl
         return None
     if RESOLVED_MARKER_RE.search(title) or DISCUSSION_RE.search(title) or SHOWCASE_RE.search(title):
         return None
-    kind = resource_kind(title, body)
-    if not kind:
-        return None
-
     summary = delivery_link_summary(title, body, link_check)
     live = [result for result in summary["results"] if result.get("reachable")]
     if not live:
         return None
 
-    # At least one link must itself describe a resource or point to a recognized
-    # delivery destination; generic forum topics and preview-only image links do not qualify.
+    # A creator/profile title may be generic while its linked product page clearly
+    # identifies the asset (for example, an itch.io "free-art-material" page).
     link_text = " ".join(
         f"{clean(result.get('text'))} {clean(result.get('url'))}"
         for result in live
     )
+    kind = resource_kind(title, body) or resource_kind(f"{title}\n{link_text}", body)
+    if not kind:
+        return None
+
     title_or_link_evidence = bool(
         RESOURCE_TITLE_RE.search(title)
         or RESOURCE_TITLE_RE.search(link_text)
