@@ -69,6 +69,74 @@ class ForumBodyExtractionTests(unittest.TestCase):
 
 
 class ResourceEvidenceTests(unittest.TestCase):
+    def test_external_sprite_images_are_material_links_but_theme_icons_are_not(self):
+        external = {
+            "url": "http://img369.imageshack.us/img369/4427/captainpirate1do4.png",
+            "text": "embedded image/attachment",
+            "link_kind": "image_anchor",
+            "http_status": 404,
+            "dead": True,
+            "reachable": False,
+            "error": None,
+        }
+        theme_icon = {
+            "url": "https://rmrk.net/Themes/PurpleHaze/images/post/xx.png",
+            "text": "embedded image/attachment",
+            "link_kind": "embedded_image",
+            "http_status": 200,
+            "dead": False,
+            "reachable": True,
+            "error": None,
+        }
+        self.assertTrue(is_delivery_link(external, "graphics"))
+        self.assertFalse(is_delivery_link(theme_icon, "graphics"))
+        self.assertFalse(is_delivery_link(external, "audio"))
+        self.assertTrue(
+            all_delivery_links_dead(
+                "Post your Battlers here.",
+                "Community battler collection",
+                {"results": [external, theme_icon]},
+            )
+        )
+
+    def test_personal_art_showcase_without_material_links_can_be_excluded(self):
+        item = {
+            "pre_id": "PRE-00343",
+            "url": "https://example.com/topic",
+            "title": "battlers i've drawn",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "battlers i've drawn",
+            "body_text": "I drew these battlers as a personal art showcase.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"candidate_count": 0, "results": []},
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_live_external_sprite_image_can_confirm_a_resource(self):
+        checks = {
+            "results": [
+                {
+                    "url": "https://i.imgur.com/sitting-sprite.png",
+                    "text": "Sitting sprite",
+                    "link_kind": "image_anchor",
+                    "http_status": 200,
+                    "dead": False,
+                    "reachable": True,
+                    "error": None,
+                }
+            ]
+        }
+        result = confirmed_resource_decision(
+            "Sitting sprites RMXP", "Reusable sitting character sprites.", checks
+        )
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "confirmed")
+
     def test_live_music_download_is_confirmable(self):
         checks = {
             "results": [
