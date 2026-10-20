@@ -38,7 +38,7 @@ REQUEST_RE = re.compile(
     r"need help finding|does anyone have|wanted|request for images|image request|"
     r"resource request|sound request|plugin request|please make|could you make|"
     r"can you make|suche|gesucht|kann mir jemand|hat jemand|bitte um|"
-    r"cerco|cercasi|richiesta|mi serve|je cherche|recherche|besoin de|aidez-moi)\\b"
+    r"cerco|cercasi|richiesta|mi serve|je cherche|recherche|besoin de|aidez-moi)\b"
     r"|(?:ищу|ищем|помогите найти|нужен|нужна|нужны|где найти|素材を探しています|"
     r"素材を探している|素材募集|素材をください|画像をください|画像ください|"
     r"素材ください|作ってください|探しています|探してます|求む|くれくれ)",
@@ -47,7 +47,7 @@ REQUEST_RE = re.compile(
 DISCUSSION_RE = re.compile(
     r"\b(?:discussion|discuss|what do you think|which is better|"
     r"how do i|how can i|why does|is there a way|question|help with|"
-    r"discussione|opinioni|diskussion|meinung|обсуждение|вопрос)\\b"
+    r"discussione|opinioni|diskussion|meinung|обсуждение|вопрос)\b"
     r"|(?:質問|相談|意見を聞かせて)",
     re.I,
 )
@@ -55,7 +55,7 @@ SHOWCASE_RE = re.compile(
     r"\b(?:showcase|my game|my project|my works|work in progress|\bwip\b|"
     r"development process|making of|screenshots?|gameplay video|mapping showcase|"
     r"miei lavori|le mie creazioni|il mio progetto|mon projet|mes créations|"
-    r"mein projekt|meine arbeiten|мои работы|мой проект|мой арт)\\b"
+    r"mein projekt|meine arbeiten|мои работы|мой проект|мой арт)\b"
     r"|(?:作品紹介|制作過程|スクリーンショット|ゲームプレイ動画)",
     re.I,
 )
@@ -65,7 +65,7 @@ NO_DELIVERABLE_RE = re.compile(
     r"only a preview|not sharing (?:this|these|it)|not a release|"
     r"no files? (?:attached|provided)|made only for my own game|"
     r"no download link|no files provided|not releasing|only screenshots|"
-    r"just showing my game|не для скачивания|без скачивания)\\b"
+    r"just showing my game|не для скачивания|без скачивания)\b"
     r"|(?:素材配布ではない|配布していません|ダウンロード不可|プレビューのみ|"
     r"スクリーンショットのみ|自分のゲーム専用)",
     re.I,
