@@ -26,6 +26,7 @@ class HistoricalBodyAuditTests(unittest.TestCase):
           <head>
             <title>Example Invision topic</title>
             <meta name="description" content="Short metadata excerpt only.">
+            <script>const legacyClass = "ipsType_richText";</script>
           </head>
           <body>
             <div id="ipsLayout_mainArea">
