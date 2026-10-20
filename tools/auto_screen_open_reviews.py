@@ -81,6 +81,16 @@ MOVED_TOPIC_RE = re.compile(
     r"\[(?:deleted|removed)\]\s*)",
     re.I,
 )
+FEEDBACK_ONLY_RE = re.compile(
+    r"\b(?:which (?:one|style) (?:is )?(?:better|prettier)|what do you think|"
+    r"which do you prefer|feedback only|opinions? please|"
+    r"quale (?:è|e')?\s*(?:più\s*)?(?:bella|carina|bello|meglio)|"
+    r"quale preferite|quale vi piace|secondo voi|cosa ne pensate|che ne pensate|"
+    r"opinioni|pareri|"
+    r"qu'en pensez-vous|vous préférez|was meint ihr|welche gefällt euch|"
+    r"что думаете|какой вариант лучше)\b",
+    re.I,
+)
 
 
 NO_DELIVERABLE_RE = re.compile(
@@ -572,7 +582,12 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
             "素材種別に対応する配布先リンクがすべてHTTP 404/410。画像プレビュー等の別種リンクは配布可能な素材として数えない",
         )
 
-    positive_release = bool(POSITIVE_RELEASE_RE.search(combined))
+    # A live, resource-specific delivery link is itself positive evidence.
+    # This prevents a request/discussion keyword from overriding a real file.
+    positive_release = bool(
+        POSITIVE_RELEASE_RE.search(combined)
+        or delivery_summary["reachable_count"] > 0
+    )
     resolved_marker = bool(RESOLVED_MARKER_RE.search(title))
 
     # A personal-art/showcase topic with no usable asset link is not a resource
@@ -585,6 +600,16 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
         return (
             "not_applicable",
             "個人作品・制作過程の紹介と判断でき、再利用できる素材配布先・埋め込み素材を確認できない（プロフィール画像等は除外）",
+        )
+
+    # A post that explicitly asks for opinions on which version looks better
+    # is discussion, not a reusable asset listing, when it has no usable material
+    # link. Any live resource-specific link or explicit release evidence protects it.
+    feedback_only = bool(FEEDBACK_ONLY_RE.search(body[:1200]) or FEEDBACK_ONLY_RE.search(title))
+    if feedback_only and not has_usable_delivery and not positive_release:
+        return (
+            "not_applicable",
+            "本文が見た目の比較・意見募集を主目的としており、取得可能な素材配布先を確認できない",
         )
 
     # A topic explicitly marked as moved/removed is not a useful catalog entry
