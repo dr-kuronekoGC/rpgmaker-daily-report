@@ -2,7 +2,7 @@
 
 最終確認日：2026-10-21（JST）
 対象ブランチ：`main`
-確認時点の先頭コミット：`a15c0ff03d6102086bff262b33daa12b21132d21`
+台帳作成前に確認した先頭コミット：`a15c0ff03d6102086bff262b33daa12b21132d21`。本台帳2ファイルはその後にmainへ追加した。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
@@ -54,7 +54,7 @@ Notion同期を使わない場合、この項目は保留のままでよい。
 
 PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/83)
 
-このPRは `data/review/review_decisions.json` のみを変更し、質問・相談、収集対象外、リンク切れ、修正依頼等の判定を記録する内容。確認時点ではopenであり、`main` に反映済みとは扱わない。
+タイトルはPRE-00163〜PRE-00174だが、実際の差分にはPRE-00177、PRE-00179、PRE-00180、PRE-00186、PRE-00190も含まれる。`data/review/review_decisions.json` のみを変更し、質問・相談、収集対象外、リンク切れ、修正依頼等の判定を記録する内容。確認時点ではopenであり、`main` に反映済みとは扱わない。
 
 **必要な作業**
 1. PRの差分と各PREの判断内容を確認する。
