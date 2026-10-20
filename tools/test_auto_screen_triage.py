@@ -469,5 +469,74 @@ class ResourceEvidenceTests(unittest.TestCase):
         self.assertFalse(any("photo-thumb-19.jpg" in url for url in urls))
 
 
+    def test_invision_original_post_beats_earlier_recommended_rich_text(self):
+        html = """
+        <html><head><title>Icone MZ - stile</title></head><body>
+          <div class="ipsType_richText">
+            Recommended topic: generic resource discussion, not the current post.
+          </div>
+          <div class="ipsComment_content">
+            <div class="ipsType_richText">
+              Quale è più carina secondo voi, la uno o la due? Which style do you prefer?
+            </div>
+          </div>
+        </body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.com/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        page = parse_html(session, "https://example.com/topic")
+
+        self.assertIn("Quale è più carina", page["body_text"])
+        self.assertNotIn("Recommended topic", page["body_text"])
+
+    def test_italian_resource_terms_are_recognized_by_type(self):
+        self.assertEqual(resource_kind("Icone MZ - stile", "Which style?"), "graphics")
+        self.assertEqual(resource_kind("MIE Musiche", ""), "audio")
+
+    def test_showcase_with_reachable_battler_asset_can_be_confirmed(self):
+        checks = {
+            "results": [
+                {
+                    "url": "https://i.imgur.com/battler-sheet.png",
+                    "text": "Battler sheet",
+                    "link_kind": "image_anchor",
+                    "http_status": 200,
+                    "dead": False,
+                    "reachable": True,
+                    "error": None,
+                }
+            ]
+        }
+        result = confirmed_resource_decision(
+            "My new Battler", "I made this battler; what do you think?", checks
+        )
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "confirmed")
+
+    def test_resource_post_with_tutorial_words_and_live_download_can_be_confirmed(self):
+        checks = {
+            "results": [
+                link(
+                    "https://example.com/GIF-to-Spritesheet.zip",
+                    reachable=True,
+                    text="Download source ZIP",
+                )
+            ]
+        }
+        result = confirmed_resource_decision(
+            "[C#] GIF to Spritesheet",
+            "A tutorial explaining how to use the converter. Download the source here.",
+            checks,
+        )
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "confirmed")
+
+
 if __name__ == "__main__":
     unittest.main()
