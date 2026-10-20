@@ -547,10 +547,20 @@ def confirmed_resource_decision(title: str, body: str, link_check: dict) -> tupl
     if not kind:
         return None
 
+    # Some older forum topics use creative titles without naming the asset type.
+    # When the first post clearly identifies one resource type and at least three
+    # independent, recognized delivery links are live, that combination is strong
+    # enough to confirm without a resource keyword in the title or URL labels.
+    body_kind = resource_kind("", body[:1800])
+    multiple_live_deliveries_with_body_evidence = (
+        body_kind in {"audio", "plugin", "graphics"}
+        and len(live) >= 3
+    )
     title_or_link_evidence = bool(
         RESOURCE_TITLE_RE.search(title)
         or RESOURCE_TITLE_RE.search(link_text)
         or re.search(r"(?:free-art-material|resource-pack|asset-pack|sound-pack|icon-pack)", link_text, re.I)
+        or multiple_live_deliveries_with_body_evidence
     )
     if not title_or_link_evidence:
         return None

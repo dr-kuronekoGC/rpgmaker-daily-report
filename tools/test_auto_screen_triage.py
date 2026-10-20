@@ -268,6 +268,36 @@ class ResourceEvidenceTests(unittest.TestCase):
         )
         self.assertIsNone(result)
 
+    def test_generic_title_with_multiple_live_audio_download_links_is_confirmed(self):
+        checks = {
+            "results": [
+                link("https://yadi.sk/d/audio1", reachable=True),
+                link("https://yadi.sk/d/audio2", reachable=True),
+                link("https://yadi.sk/d/audio3", reachable=True),
+            ]
+        }
+        result = confirmed_resource_decision(
+            "Стрепня от MaraMonstr'а",
+            "Музыка и авторские музыкальные композиции. Скачать треки можно по ссылкам.",
+            checks,
+        )
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "confirmed")
+
+    def test_generic_title_with_only_two_live_links_stays_uncertain(self):
+        checks = {
+            "results": [
+                link("https://yadi.sk/d/audio1", reachable=True),
+                link("https://yadi.sk/d/audio2", reachable=True),
+            ]
+        }
+        result = confirmed_resource_decision(
+            "Стрепня от MaraMonstr'а",
+            "Музыка и авторские музыкальные композиции.",
+            checks,
+        )
+        self.assertIsNone(result)
+
     def test_legacy_photobucket_query_filename_is_a_graphics_delivery_link(self):
         url = (
             "http://s395.photobucket.com/albums/pp36/sell58/"
