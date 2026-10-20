@@ -167,9 +167,9 @@ RESOURCE_FILE_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp",
 }
 RESOURCE_HOST_RE = re.compile(
-    r"(?:mediafire\\.com|mega\\.nz|dropbox\\.com|drive\\.google\\.com|"
-    r"yadi\\.sk|disk\\.yandex|yandex\\.(?:ru|com)|itch\\.io|"
-    r"raw\\.githubusercontent\\.com|github\\.com/.*/(?:releases|archive))",
+    r"(?:mediafire\.com|mega\.nz|dropbox\.com|drive\.google\.com|"
+    r"yadi\.sk|disk\.yandex|yandex\.(?:ru|com)|itch\.io|"
+    r"raw\.githubusercontent\.com|github\.com/.*/(?:releases|archive))",
     re.I,
 )
 
