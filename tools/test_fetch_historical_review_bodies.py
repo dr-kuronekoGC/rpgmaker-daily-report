@@ -26,6 +26,7 @@ class HistoricalBodyAuditTests(unittest.TestCase):
           <head>
             <title>Example Invision topic</title>
             <meta name="description" content="Short metadata excerpt only.">
+            <script>const legacyClass = "ipsType_richText";</script>
           </head>
           <body>
             <div id="ipsLayout_mainArea">
@@ -60,6 +61,8 @@ class HistoricalBodyAuditTests(unittest.TestCase):
         self.assertTrue(result["html_diagnostics"]["body_node_found"])
         self.assertEqual(result["html_diagnostics"]["body_source"], "#ipsLayout_mainArea")
         self.assertGreater(result["html_diagnostics"]["html_chars"], 100)
+        self.assertIn("attached plugin", result["html_diagnostics"]["body_excerpt"])
+        self.assertTrue(result["html_diagnostics"]["raw_has_invision_post_classes"])
         self.assertTrue(
             any(link["url"] == "https://www.rpg2s.it/files/PluginCore.js"
                 for link in result["outbound_links"])
