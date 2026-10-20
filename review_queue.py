@@ -26,8 +26,12 @@ REMOVED_PAGE_PATTERNS = (
 # contains no plausible downloadable asset, attachment, resource link, or code.
 REQUEST_ONLY_PATTERNS = (
     r"\blooking for\b",
-    r"\bcan anyone (?:make|share|provide|give)\b",
+    r"\bcan anyone (?:make|share|provide|give|draw|create|upload)\b",
+    r"\bcan someone (?:make|share|provide|give|draw|create|upload)\b",
     r"\bdoes anyone have\b",
+    r"\banyone (?:got|have|willing to share)\b",
+    r"\bgimme\b",
+    r"\bplease make\b",
     r"\bneed help finding\b",
     r"\brequest(?:ing)? (?:a|an|some|for)\b",
     r"\bhelp me find\b",
@@ -42,6 +46,10 @@ REQUEST_ONLY_PATTERNS = (
     r"素材を探している",
     r"素材募集",
     r"素材をください",
+    r"素材ください",
+    r"素材を作って",
+    r"配布してほしい",
+    r"くれくれ",
     r"作ってください",
     # Discussion/question-only posts are excluded only when no resource evidence exists.
     r"\bdiscussion\b",
