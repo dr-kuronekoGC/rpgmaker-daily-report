@@ -1,4 +1,7 @@
 import unittest
+from unittest.mock import Mock
+
+from fetch_historical_review_bodies import parse_html
 
 from auto_screen_open_reviews import (
     all_delivery_links_dead,
@@ -18,6 +21,44 @@ def link(url, *, reachable=False, dead=False, error=None, text=""):
         "error": error,
         "http_status": 200 if reachable else (404 if dead else None),
     }
+
+
+class ForumBodyExtractionTests(unittest.TestCase):
+    def test_classification_body_is_first_post_but_links_cover_whole_thread(self):
+        html = """
+        <html><head><title>Post your Battlers here</title></head>
+        <body><div id="content">
+          <div class="postarea">
+            <div class="postbody">
+              I made these original battlers for the community. Please credit the artist.
+              This first post contains the resource description and usage terms.
+            </div>
+            <a href="https://example.com/first.png">First battler</a>
+          </div>
+          <div class="postarea">
+            <div class="postbody">
+              A later reply mentions a pirate character and says this was ripped from
+              another game, which must not change the original topic classification.
+            </div>
+            <a href="https://example.com/reply.zip">Reply attachment</a>
+          </div>
+        </div></body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.com/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        page = parse_html(session, "https://example.com/topic")
+
+        self.assertIn("original battlers", page["body_text"])
+        self.assertNotIn("ripped from", page["body_text"])
+        self.assertTrue(
+            any(link["url"] == "https://example.com/reply.zip" for link in page["outbound_links"])
+        )
 
 
 class ResourceEvidenceTests(unittest.TestCase):
@@ -69,6 +110,45 @@ class ResourceEvidenceTests(unittest.TestCase):
         self.assertFalse(
             all_delivery_links_dead("Коллекция Саундтреков", "Музыка", checks)
         )
+
+    def test_pirate_theme_does_not_trigger_piracy_exclusion(self):
+        item = {
+            "pre_id": "PRE-00373",
+            "url": "https://example.com/topic",
+            "title": "Post your Battlers here.",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "Post your Battlers here.",
+            "body_text": (
+                "Community members can share their battler images. "
+                "Some categories are Pirates and some images are credited stock art. "
+                "Please post battlers you made yourself or include credits."
+            ),
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"results": []},
+        }
+        result = classify_page(item, page)
+        self.assertFalse(result and result[0] == "exclude")
+
+    def test_explicit_pirate_topic_tag_still_triggers_piracy_exclusion(self):
+        item = {
+            "pre_id": "PRE-00386",
+            "url": "https://example.com/topic",
+            "title": "[PIRATE] RMWEB - Общие ресурсы",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "[PIRATE] RMWEB - Общие ресурсы",
+            "body_text": "This thread explicitly collects pirated/ripped assets.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"results": []},
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "exclude")
 
     def test_human_reopen_note_overrides_dead_link_rules(self):
         item = {
