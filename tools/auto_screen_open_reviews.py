@@ -576,7 +576,6 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     delivery_summary = delivery_link_summary(title, body, link_check)
     if (
         SHOWCASE_RE.search(title)
-        and not positive_release
         and not delivery_summary["candidate_count"]
         and not (link_check.get("candidate_count") or 0)
     ):
