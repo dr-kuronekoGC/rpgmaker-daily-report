@@ -86,6 +86,39 @@ class ResourceEvidenceTests(unittest.TestCase):
             resource_kind("Озвучка текста", "A forum discussion about a text-to-speech bot, with unrelated footer links."),
         )
 
+    def test_pirate_theme_is_not_mistaken_for_piracy(self):
+        item = {
+            "pre_id": "PRE-00373",
+            "url": "https://rmrk.net/index.php?topic=28572.0",
+            "title": "Post your Battlers here.",
+        }
+        page = {
+            "page_title": "Post your Battlers here.",
+            "body_text": "Community members can share battler images. Pirates: a pirate captain and a female thief.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"results": []},
+        }
+        result = classify_page(item, page)
+        self.assertFalse(result and result[0] == "exclude")
+
+    def test_explicit_pirate_archive_tag_is_still_excluded(self):
+        item = {
+            "pre_id": "PRE-00386",
+            "url": "https://example.com/archive",
+            "title": "[PIRATE] RMWEB - Общие ресурсы",
+        }
+        page = {
+            "page_title": "[PIRATE] RMWEB - Общие ресурсы",
+            "body_text": "An explicitly pirated archive.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"results": []},
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "exclude")
+
     def test_dead_music_download_not_rescued_by_live_cover_art(self):
         checks = {
             "all_checked_dead": False,
