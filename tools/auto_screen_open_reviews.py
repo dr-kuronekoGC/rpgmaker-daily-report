@@ -266,7 +266,8 @@ GRAPHICS_RESOURCE_RE = re.compile(
     r"\b(?:sprites?|spritesheets?|charset|charsets|tilesets?|tile sets?|"
     r"battlers?|icons?|icon pack|icon set|animation sheets?|"
     r"graphics|art material|free art material|resource pack|asset pack|"
-    r"resources?|doodads|character generator)\b"
+    r"resources?|doodads|character generator|butterfly|butterflies)\b"
+    r"|(?:free[-_]art[-_]material|art[-_]material|resource[-_]pack|asset[-_]pack|sound[-_]pack|icon[-_]pack)"
     r"|(?:ресурс|спрайт|тайлсет|график|анимац|иконк|набор иконок|"
     r"персонаж|бабочк|материал|графика|ресурсы|пакет ресурсов|"
     r"объединённые ресурсы|объединенные ресурсы|"
@@ -282,7 +283,7 @@ RESOURCE_TITLE_RE = re.compile(
     r"bgm|bgs|plugins?|scripts?)\b"
     r"|(?:ресурс|спрайт|тайлсет|музык|саундтрек|звуков|аудио|альбом|"
     r"архив звуков|пак звуков|анимац|иконк|набор иконок|бабочк|"
-    r"график|материал|ресурсы|объединённые ресурсы|объединенные ресурсы|"
+    r"график|материал|ресурсы|объединённые ресурсы|объединенные ресурсы|butterfl(?:y|ies)|"
     r"素材|配布|タイルセット|キャラセット|スプライト|アイコン|アニメーション|"
     r"音源|効果音|プラグイン|BGM|BGS)",
     re.I,
