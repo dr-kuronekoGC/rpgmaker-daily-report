@@ -298,5 +298,81 @@ class ResourceEvidenceTests(unittest.TestCase):
         )
 
 
+    def test_italian_personal_art_topic_ignores_profile_avatar_links(self):
+        item = {
+            "pre_id": "PRE-00126",
+            "url": "https://example.com/topic",
+            "title": "My Lavori Pixel Art",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "My Lavori Pixel Art",
+            "body_text": "A personal pixel-art portfolio and work log.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link(
+                        "https://example.com/uploads/profile/photo-thumb-9135.gif",
+                        reachable=True,
+                        text="Gladiatore79",
+                    )
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_moved_topic_without_resource_link_can_be_excluded(self):
+        item = {
+            "pre_id": "PRE-00331",
+            "url": "https://example.com/topic",
+            "title": "MOVED: life in the map",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "MOVED: life in the map",
+            "body_text": "This topic has moved.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 0,
+                "results": [],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_moved_resource_topic_with_live_asset_link_is_not_excluded(self):
+        item = {
+            "pre_id": "PRE-00331",
+            "url": "https://example.com/topic",
+            "title": "MOVED: Battlers pack",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "MOVED: Battlers pack",
+            "body_text": "Reusable battler sprites are available at the linked destination.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link(
+                        "https://i.imgur.com/battlers.png",
+                        reachable=True,
+                        text="Battlers",
+                    )
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "confirmed")
+
+
 if __name__ == "__main__":
     unittest.main()
