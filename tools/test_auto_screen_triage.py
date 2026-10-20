@@ -478,6 +478,7 @@ class ResourceEvidenceTests(unittest.TestCase):
           <div class="ipsComment_content">
             <div class="ipsType_richText">
               Quale è più carina secondo voi, la uno o la due? Which style do you prefer?
+              This post asks for feedback on two icon versions and does not offer a download.
             </div>
           </div>
         </body></html>
