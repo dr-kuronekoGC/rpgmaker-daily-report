@@ -44,6 +44,19 @@ REQUEST_RE = re.compile(
     r"素材ください|作ってください|探しています|探してます|求む|くれくれ)",
     re.I,
 )
+
+BODY_REQUEST_RE = re.compile(
+    r"\b(?:looking for|searching for|request(?:ing)?\s+(?:a|an|some|for)|"
+    r"need help finding|can anyone (?:make|share|provide|create)|"
+    r"anyone have|does anyone have|help me find|where can i find|"
+    r"i am looking for|i'm looking for|seeking (?:a|an|some)|"
+    r"can someone (?:make|share|provide|create)|"
+    r"could someone (?:make|share|provide|create)|"
+    r"je cherche|cerco|cercasi|ищу|ищем|помогите найти|где найти)\b"
+    r"|(?:素材を探しています|素材を探している|素材募集|素材をください|"
+    r"画像をください|画像ください|素材ください|求む|くれくれ)",
+    re.I,
+)
 DISCUSSION_RE = re.compile(
     r"\b(?:discussion|discuss|what do you think|which is better|"
     r"how do i|how can i|why does|is there a way|question|help with|"
@@ -72,10 +85,13 @@ NO_DELIVERABLE_RE = re.compile(
 )
 POSITIVE_RELEASE_RE = re.compile(
     r"\b(?:downloadable|download link|download here|release page|"
-    r"release available|resource pack|asset pack|free to use|"
+    r"release available|resource pack|asset pack|sound pack|audio pack|"
+    r"pack of sounds|sound archive|archive of sounds|free to use|"
     r"available for use|get it here|mediafire|mega\.nz|dropbox|"
-    r"google drive|itch\.io|github\.com|\.zip\b|\.rar\b|"
-    r"\.7z\b|\.ogg\b|\.mp3\b|\.wav\b|\.js\b)",
+    r"google drive|yadi\.sk|disk\.yandex|yandex\.(?:ru|com)|ya\.ru|"
+    r"itch\.io|github\.com|\.zip\b|\.rar\b|\.7z\b|"
+    r"\.ogg\b|\.mp3\b|\.wav\b|\.js\b|архив звуков|пак звуков|"
+    r"звуковой архив|пак со звуками|ссылка на папку|скачать)",
     re.I,
 )
 ASSET_WORD_RE = re.compile(
@@ -86,6 +102,7 @@ ASSET_WORD_RE = re.compile(
 )
 RESOURCE_LINK_RE = re.compile(
     r"download|mediafire|mega\.nz|dropbox|drive\.google|google drive|"
+    r"yadi\.sk|disk\.yandex|yandex\.(?:ru|com)|ya\.ru|"
     r"\.zip(?:$|[?#])|\.rar(?:$|[?#])|\.7z(?:$|[?#])|"
     r"\.ogg(?:$|[?#])|\.mp3(?:$|[?#])|\.wav(?:$|[?#])|"
     r"\.png(?:$|[?#])|\.jpe?g(?:$|[?#])|\.gif(?:$|[?#])|"
@@ -93,7 +110,7 @@ RESOURCE_LINK_RE = re.compile(
     r"github\.com/.*/releases",
     re.I,
 )
-MAX_RESOURCE_LINKS = 2
+MAX_RESOURCE_LINKS = 3
 LINK_TIMEOUT = 3
 
 
@@ -224,7 +241,11 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
 
     # Requests for a resource are excluded only when the post itself contains
     # no release/download evidence. Ambiguous threads remain open.
-    request_signal = bool(REQUEST_RE.search(title) or REQUEST_RE.search(body[:1800]))
+    # Broad words such as "need" or "gimme" are safe in a title, but in
+    # a thread body they often appear in offers/replies on genuine resource
+    # posts (e.g. "if you need a piece, send me the sheet music"). Require
+    # explicit seeking/request phrasing in body text to avoid false exclusions.
+    request_signal = bool(REQUEST_RE.search(title) or BODY_REQUEST_RE.search(body[:1800]))
     if request_signal and not positive_release:
         return ("not_applicable", "素材・プラグイン等を求める依頼投稿で、取得可能な配布物の記載を確認できない")
 
