@@ -71,6 +71,7 @@ SHOWCASE_RE = re.compile(
     r"work in progress|\bwip\b|development process|making of|screenshots?|gameplay video|"
     r"mapping showcase|battlers?\s+(?:i've drawn|i drew)|my (?:new|first) battlers?|"
     r"my (?:new|first) sprites?|lavori pixel art|pixel art diary|art diary|"
+    r"imparando pixel art|cronache di .*pixel artist|diario di pixel art|"
     r"miei lavori|le mie creazioni|il mio progetto|mon projet|mes créations|"
     r"mein projekt|meine arbeiten|мои работы|мой проект|мой арт)"
     r"|(?:作品紹介|制作過程|スクリーンショット|ゲームプレイ動画)",
