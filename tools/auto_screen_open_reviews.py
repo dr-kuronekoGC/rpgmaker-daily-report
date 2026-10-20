@@ -249,6 +249,180 @@ def is_direct_profile(url: str) -> bool:
     return False
 
 
+
+AUDIO_RESOURCE_RE = re.compile(
+    r"\b(?:music|musics|musica|musiche|audio|soundtrack|soundtracks|"
+    r"sound pack|audio pack|bgm|bgs|sound effects|album|albums)\b"
+    r"|(?:музык|саундтрек|звуков|аудио|альбом|треки|музыка|"
+    r"музыкальн|архив звуков|пак звуков)",
+    re.I,
+)
+PLUGIN_RESOURCE_RE = re.compile(
+    r"\b(?:plugins?|scripts?|rgss|javascript|\.js)\b"
+    r"|(?:плагин|скрипт|плагины)",
+    re.I,
+)
+GRAPHICS_RESOURCE_RE = re.compile(
+    r"\b(?:sprites?|spritesheets?|charset|charsets|tilesets?|tile sets?|"
+    r"battlers?|icons?|icon pack|icon set|animation sheets?|"
+    r"graphics|art material|free art material|resource pack|asset pack|"
+    r"resources?|doodads|character generator)\b"
+    r"|(?:ресурс|спрайт|тайлсет|график|анимац|иконк|набор иконок|"
+    r"персонаж|бабочк|материал|графика|ресурсы|пакет ресурсов|"
+    r"объединённые ресурсы|объединенные ресурсы|"
+    r"素材|配布|タイルセット|キャラセット|スプライト|アイコン|アニメーション)",
+    re.I,
+)
+RESOURCE_TITLE_RE = re.compile(
+    r"\b(?:resource staff releases pack|sprites?|spritesheets?|charset|charsets|"
+    r"tilesets?|tile sets?|battlers?|icons?|icon pack|icon set|"
+    r"animation sheets?|graphics|art material|free art material|"
+    r"resource pack|asset pack|resources?|doodads|character generator|"
+    r"soundtracks?|music|musics|musica|musiche|audio|sound pack|audio pack|"
+    r"bgm|bgs|plugins?|scripts?)\b"
+    r"|(?:ресурс|спрайт|тайлсет|музык|саундтрек|звуков|аудио|альбом|"
+    r"архив звуков|пак звуков|анимац|иконк|набор иконок|бабочк|"
+    r"график|материал|ресурсы|объединённые ресурсы|объединенные ресурсы|"
+    r"素材|配布|タイルセット|キャラセット|スプライト|アイコン|アニメーション|"
+    r"音源|効果音|プラグイン|BGM|BGS)",
+    re.I,
+)
+NON_RESOURCE_TITLE_RE = re.compile(
+    r"\b(?:looking for|request|help me find|question|discussion|tutorial|"
+    r"how to|how do i|showcase|work in progress|wip|my game|gameplay|"
+    r"ideas and implementation|feedback please|for feedback only)\b"
+    r"|(?:ищу|помогите найти|вопрос|обсуждение|ищется|"
+    r"質問|相談|素材を探しています|素材をください)",
+    re.I,
+)
+PREVIEW_FILE_RE = re.compile(
+    r"(?:^|[/_. -])(?:screenshot|screen[-_ ]?shot|preview|thumb(?:nail)?|"
+    r"logo|avatar|cover|sample)(?:[/_. -]|$)",
+    re.I,
+)
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}
+DELIVERABLE_EXTENSIONS = {
+    ".zip", ".rar", ".7z", ".gz", ".tar", ".ogg", ".mp3", ".wav",
+    ".m4a", ".mid", ".midi", ".flac", ".js", ".mjs", ".rb", ".json",
+}
+
+
+def resource_kind(title: str, body: str) -> str | None:
+    text = f"{title}\n{body[:1000]}"
+    if AUDIO_RESOURCE_RE.search(text):
+        return "audio"
+    if PLUGIN_RESOURCE_RE.search(text):
+        return "plugin"
+    if GRAPHICS_RESOURCE_RE.search(text):
+        return "graphics"
+    return None
+
+
+def is_delivery_link(result: dict, kind: str | None) -> bool:
+    """Distinguish downloadable assets from preview images and ordinary links."""
+    url = clean(result.get("url"))
+    if not url.startswith(("http://", "https://")):
+        return False
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower()
+    path = parsed.path.lower()
+    suffix = Path(parsed.path).suffix.lower()
+
+    if suffix in DELIVERABLE_EXTENSIONS:
+        return True
+
+    # In an audio post, cover art and screenshots do not prove that audio files survive.
+    if suffix in IMAGE_EXTENSIONS:
+        if kind == "audio":
+            return False
+        if "/attachments/" in path and not PREVIEW_FILE_RE.search(path):
+            return True
+        return False
+
+    # Known file-sharing destinations. Ignore Yandex image-view URLs (/i/).
+    if host == "yadi.sk" and path.startswith("/d/"):
+        return True
+    if host.endswith("yandex.ru") and path.startswith("/d/"):
+        return True
+    if host == "drive.google.com" and (
+        path.startswith("/file/d/") or path == "/open" or path.startswith("/drive/folders")
+    ):
+        return True
+    if host.endswith(("mediafire.com", "mega.nz", "dropbox.com")):
+        return True
+    if host.endswith("itch.io"):
+        return bool(re.search(r"(?:asset|art|sprite|tile|resource|music|sound|plugin|pack|material|graphics)", path, re.I))
+    if host == "raw.githubusercontent.com":
+        return True
+    if host == "github.com" and re.search(r"/(?:releases|archive)/|\\.(?:js|mjs|rb|zip)(?:$|/)", path, re.I):
+        return True
+    return False
+
+
+def delivery_link_summary(title: str, body: str, link_check: dict) -> dict:
+    kind = resource_kind(title, body)
+    results = [
+        result for result in (link_check.get("results") or [])
+        if isinstance(result, dict) and is_delivery_link(result, kind)
+    ]
+    return {
+        "resource_kind": kind,
+        "candidate_count": len(results),
+        "reachable_count": sum(bool(result.get("reachable")) for result in results),
+        "dead_count": sum(bool(result.get("dead")) for result in results),
+        "error_count": sum(bool(result.get("error")) or result.get("http_status") is None for result in results),
+        "results": results,
+    }
+
+
+def confirmed_resource_decision(title: str, body: str, link_check: dict) -> tuple[str, str] | None:
+    """Confirm only an unmistakable asset/plugin post with a live delivery link."""
+    if NON_RESOURCE_TITLE_RE.search(title) or NON_RESOURCE_TITLE_RE.search(body[:700]):
+        return None
+    if RESOLVED_MARKER_RE.search(title) or DISCUSSION_RE.search(title) or SHOWCASE_RE.search(title):
+        return None
+    kind = resource_kind(title, body)
+    if not kind:
+        return None
+
+    summary = delivery_link_summary(title, body, link_check)
+    live = [result for result in summary["results"] if result.get("reachable")]
+    if not live:
+        return None
+
+    # At least one link must itself describe a resource or point to a recognized
+    # delivery destination; generic forum topics and preview-only image links do not qualify.
+    link_text = " ".join(
+        f"{clean(result.get('text'))} {clean(result.get('url'))}"
+        for result in live
+    )
+    title_or_link_evidence = bool(
+        RESOURCE_TITLE_RE.search(title)
+        or RESOURCE_TITLE_RE.search(link_text)
+        or re.search(r"(?:free-art-material|resource-pack|asset-pack|sound-pack|icon-pack)", link_text, re.I)
+    )
+    if not title_or_link_evidence:
+        return None
+
+    if kind == "plugin":
+        return ("plugin", "投稿のタイトル／配布先がプラグイン・スクリプトを示し、取得先リンクがHTTP到達可能")
+    if kind == "audio":
+        return ("confirmed", "投稿が音楽・音声素材を示し、音声／配布先リンクがHTTP到達可能")
+    return ("confirmed", "投稿がグラフィック等の素材を示し、素材ファイルまたは配布先リンクがHTTP到達可能")
+
+
+def all_delivery_links_dead(title: str, body: str, link_check: dict) -> bool:
+    """A dead audio download is not rescued by a live cover image."""
+    summary = delivery_link_summary(title, body, link_check)
+    results = summary["results"]
+    return bool(results) and all(
+        result.get("dead")
+        and not result.get("error")
+        and result.get("http_status") in {404, 410}
+        for result in results
+    )
+
+
 def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     url = clean(item.get("url"))
     title = clean(page.get("page_title") or item.get("title"))
@@ -277,6 +451,15 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     if retrieval != "body_found" or not body:
         # A blank/blocked response is not evidence of absence.
         return None
+
+    # For asset-specific posts, evaluate actual delivery links by resource type.
+    # A live cover image must not keep a music post open when every track/download
+    # link is conclusively dead; timeouts and blocked links still prevent exclusion.
+    if all_delivery_links_dead(title, body, link_check):
+        return (
+            "not_applicable",
+            "素材種別に対応する配布先リンクがすべてHTTP 404/410。画像プレビュー等の別種リンクは配布可能な素材として数えない",
+        )
 
     positive_release = bool(POSITIVE_RELEASE_RE.search(combined))
     resolved_marker = bool(RESOLVED_MARKER_RE.search(title))
@@ -326,6 +509,17 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     ))
     if non_asset_context and explicit_no_release and not positive_release:
         return ("not_applicable", "質問・議論・作品紹介のみで、本文にも配布物がないことが明示されている")
+
+    # Confirm obvious assets as well as excluding obvious non-resources.
+    # This is intentionally limited to a resource-specific title/body plus a
+    # live, recognizable download/attachment destination; requests, showcases,
+    # and unresolved threads remain for manual review.
+    confirmed = confirmed_resource_decision(title, body, link_check)
+    request_signal_for_confirmation = bool(
+        REQUEST_RE.search(title) or BODY_REQUEST_RE.search(body[:1800])
+    )
+    if confirmed and not request_signal_for_confirmation:
+        return confirmed
 
     # Reuse the project's established resource-intent classifier against
     # the freshly fetched page text. Only act on explicit high-confidence
@@ -415,6 +609,11 @@ def main() -> int:
             "retrieval_status": page.get("retrieval_status"),
             "retrieval_method": page.get("retrieval_method"),
             "resource_link_check": page.get("resource_link_check"),
+            "delivery_link_check": delivery_link_summary(
+                clean(page.get("page_title") or item.get("title")),
+                clean(page.get("body_text") or page.get("page_description")),
+                page.get("resource_link_check") or {},
+            ),
             "suggestion": outcome[0] if outcome else "keep_open",
             "reason": outcome[1] if outcome else "",
         })
@@ -433,6 +632,11 @@ def main() -> int:
                 "page_title": clean(page.get("page_title"))[:300],
                 "reason": reason,
                 "resource_link_check": page.get("resource_link_check"),
+                "delivery_link_check": delivery_link_summary(
+                    clean(page.get("page_title") or item.get("title")),
+                    clean(page.get("body_text") or page.get("page_description")),
+                    page.get("resource_link_check") or {},
+                ),
             }
             item["status"] = "resolved"
             item["decision"] = decision
