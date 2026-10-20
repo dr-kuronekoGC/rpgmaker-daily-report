@@ -374,5 +374,59 @@ class ResourceEvidenceTests(unittest.TestCase):
         self.assertEqual(result[0], "confirmed")
 
 
+    def test_italian_feedback_only_topic_without_download_is_excluded(self):
+        item = {
+            "pre_id": "PRE-00124",
+            "url": "https://example.com/topic",
+            "title": "Icone MZ - stile",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "Icone MZ - stile",
+            "body_text": "Quale è più carina secondo voi, la uno o la due? Quale preferite?",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link(
+                        "https://example.com/uploads/profile/photo-thumb-19.jpg",
+                        reachable=True,
+                        text="Lord Sesshoumaru",
+                    )
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_live_download_prevents_request_keyword_from_auto_excluding(self):
+        item = {
+            "pre_id": "PRE-00189",
+            "url": "https://example.com/topic",
+            "title": "Looking for sprites",
+            "review_note": "",
+        }
+        page = {
+            "page_title": "Looking for sprites",
+            "body_text": "Can someone share sprites? I attached the files here.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link(
+                        "https://example.com/sprites.zip",
+                        reachable=True,
+                        text="sprites.zip",
+                    )
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNone(result)
+
+
 if __name__ == "__main__":
     unittest.main()
