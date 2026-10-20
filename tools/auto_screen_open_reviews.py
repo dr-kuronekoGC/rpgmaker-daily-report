@@ -388,6 +388,7 @@ def resource_kind(title: str, body: str) -> str | None:
         r"battlers?|icons?|icon pack|icon set|animation sheets?|graphics|"
         r"doodads|character generator|butterflies?)\b"
         r"|(?:спрайт|тайлсет|график|анимац|иконк|набор иконок|персонаж|бабочк|"
+        r"icone|icona|grafica|materiali|risorse|animazioni|personaggi|"
         r"素材|タイルセット|キャラセット|スプライト|アイコン|アニメーション)",
         re.I,
     )
