@@ -1,4 +1,7 @@
 import unittest
+from unittest.mock import Mock
+
+from fetch_historical_review_bodies import parse_html
 
 from auto_screen_open_reviews import (
     all_delivery_links_dead,
@@ -18,6 +21,47 @@ def link(url, *, reachable=False, dead=False, error=None, text=""):
         "error": error,
         "http_status": 200 if reachable else (404 if dead else None),
     }
+
+
+class ForumBodyExtractionTests(unittest.TestCase):
+    def test_extracts_legacy_forum_post_body_and_download_links(self):
+        post_text = (
+            "This is the real resource post body with details about the charset, "
+            "supported RPG Maker versions, usage terms, and where the files are hosted. "
+            "The actual download link appears below."
+        )
+        html = f"""
+        <html><head><title>Example forum topic</title>
+        <meta name="description" content="Short excerpt only."></head>
+        <body>
+          <nav>Navigation links should not be used.</nav>
+          <div id="content">
+            <div class="postarea">
+              <div class="message">{post_text}
+                <a href="https://example.com/charset.zip">Download charset</a>
+              </div>
+            </div>
+          </div>
+        </body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.com/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        page = parse_html(session, "https://example.com/topic")
+
+        self.assertIn("real resource post body", page["body_text"])
+        self.assertNotEqual(page["body_text"], "Short excerpt only.")
+        self.assertTrue(
+            any(
+                link["url"] == "https://example.com/charset.zip"
+                for link in page["outbound_links"]
+            )
+        )
 
 
 class ResourceEvidenceTests(unittest.TestCase):
