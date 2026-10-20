@@ -339,14 +339,47 @@ DELIVERABLE_EXTENSIONS = {
 
 
 def resource_kind(title: str, body: str) -> str | None:
-    text = f"{title}\n{body[:1000]}"
-    if AUDIO_RESOURCE_RE.search(text):
+    """Infer type from the title first; noisy replies/footer text cannot override it."""
+    title = clean(title)
+    body = clean(body)
+
+    if AUDIO_RESOURCE_RE.search(title):
         return "audio"
-    if PLUGIN_RESOURCE_RE.search(text):
+    if PLUGIN_RESOURCE_RE.search(title):
         return "plugin"
-    if GRAPHICS_RESOURCE_RE.search(text):
+
+    graphics_specific = re.compile(
+        r"\b(?:sprites?|spritesheets?|charset|charsets|tilesets?|tile sets?|"
+        r"battlers?|icons?|icon pack|icon set|animation sheets?|graphics|"
+        r"doodads|character generator|butterflies?)\b"
+        r"|(?:спрайт|тайлсет|график|анимац|иконк|набор иконок|персонаж|бабочк|"
+        r"素材|タイルセット|キャラセット|スプライト|アイコン|アニメーション)",
+        re.I,
+    )
+    if graphics_specific.search(title):
         return "graphics"
-    return None
+
+    if re.search(
+        r"\b(?:resource staff releases pack|resources?|resource pack|asset pack|"
+        r"humble|gamedev resources?)\b|(?:ресурс(?:ы|ов)?|объединённые ресурсы|"
+        r"объединенные ресурсы)",
+        title,
+        re.I,
+    ):
+        return "resource"
+
+    # Only use the opening body section when the title has no resource type,
+    # and only if exactly one concrete type is present. Long forum threads
+    # often contain replies/signatures that mention unrelated resource types.
+    opening = body[:700]
+    kinds = []
+    if AUDIO_RESOURCE_RE.search(opening):
+        kinds.append("audio")
+    if PLUGIN_RESOURCE_RE.search(opening):
+        kinds.append("plugin")
+    if graphics_specific.search(opening):
+        kinds.append("graphics")
+    return kinds[0] if len(kinds) == 1 else None
 
 
 def is_delivery_link(result: dict, kind: str | None) -> bool:
@@ -448,9 +481,11 @@ def confirmed_resource_decision(title: str, body: str, link_check: dict) -> tupl
 
 
 def all_delivery_links_dead(title: str, body: str, link_check: dict) -> bool:
-    """A dead audio download is not rescued by a live cover image."""
+    """Only classify dead links when the post's resource type is supported by evidence."""
     summary = delivery_link_summary(title, body, link_check)
     results = summary["results"]
+    if not summary["resource_kind"]:
+        return False
     return bool(results) and all(
         result.get("dead")
         and not result.get("error")

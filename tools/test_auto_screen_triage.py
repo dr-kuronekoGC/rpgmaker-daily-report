@@ -5,6 +5,7 @@ from auto_screen_open_reviews import (
     classify_page,
     confirmed_resource_decision,
     is_delivery_link,
+    resource_kind,
 )
 
 
@@ -31,6 +32,15 @@ class ResourceEvidenceTests(unittest.TestCase):
         )
         self.assertIsNotNone(result)
         self.assertEqual(result[0], "confirmed")
+
+    def test_title_type_overrides_unrelated_terms_in_long_body(self):
+        self.assertEqual(
+            resource_kind("[MZ] CharSet 2003 в MZ (оригинальный размер)", "music, audio, and soundtracks"),
+            "graphics",
+        )
+        self.assertIsNone(
+            resource_kind("Озвучка текста", "A forum discussion about a text-to-speech bot, with unrelated footer links."),
+        )
 
     def test_dead_music_download_not_rescued_by_live_cover_art(self):
         checks = {
