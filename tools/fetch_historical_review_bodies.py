@@ -72,10 +72,9 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         if len(links) >= 100:
             return links
 
-    # Some older forum posts embed downloadable images directly in <img src>
-    # without wrapping them in a clickable anchor. Capture these URLs too;
-    # the downstream classifier only treats semantic attachment filenames as
-    # graphic deliverables, so random screenshots/previews remain non-deliverables.
+    # Some older forum posts embed resource images directly, without a
+    # clickable anchor. Capture these too; downstream logic still distinguishes
+    # semantic asset filenames from generic screenshots and previews.
     for image_node in node.select("img[src]"):
         href = urljoin(base_url, str(image_node.get("src") or "").strip())
         parsed = urlparse(href)
@@ -195,24 +194,56 @@ def parse_html(session: requests.Session, url: str) -> dict:
     ):
         node.decompose()
 
-    body_node = None
-    for selector in (
+    # Forum engines use different post containers. Prefer actual post content
+    # over meta descriptions, which are often only short excerpts and omit
+    # attachment/download links. Choose the richest plausible content node after
+    # removing navigation, comments widgets, scripts, and page chrome.
+    body_selectors = (
         '[itemprop="articleBody"]',
+        ".ipsType_richText",
+        ".cPost_contentWrap",
+        ".ipsComment_content",
+        ".postbody",
+        ".post_body",
+        ".postarea",
+        ".messageContent",
+        ".message-content",
+        ".message-body",
+        ".bbWrapper",
+        ".post-content",
+        ".post_content",
+        ".entry-content",
+        ".article-content",
+        ".deviation-full",
         "article",
         "main",
         "#content",
         "#main",
-        ".entry-content",
-        ".post-content",
-        ".article-content",
-        ".deviation-full",
-    ):
-        body_node = soup.select_one(selector)
-        if body_node and len(clean_text(body_node.get_text(" ", strip=True))) >= 80:
-            break
-        body_node = None
+        ".post",
+    )
+    candidates = []
+    seen_nodes = set()
+    for selector in body_selectors:
+        try:
+            nodes = soup.select(selector)
+        except Exception:
+            continue
+        for node in nodes:
+            identity = id(node)
+            if identity in seen_nodes:
+                continue
+            seen_nodes.add(identity)
+            text_value = clean_text(node.get_text(" ", strip=True))
+            if len(text_value) >= 80:
+                specificity = len(body_selectors) - body_selectors.index(selector)
+                candidates.append((len(text_value), specificity, node, text_value))
 
-    body = clean_text(body_node.get_text(" ", strip=True)) if body_node else ""
+    if candidates:
+        _, _, body_node, body = max(candidates, key=lambda item: (item[0], item[1]))
+    else:
+        body_node = None
+        body = ""
+
     outbound_links = extract_links(body_node, response.url)
     if not body:
         body = description
