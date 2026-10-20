@@ -362,9 +362,9 @@ class ResourceEvidenceTests(unittest.TestCase):
                 "candidate_count": 1,
                 "results": [
                     link(
-                        "https://i.imgur.com/battlers.png",
+                        "https://example.com/battlers.zip",
                         reachable=True,
-                        text="Battlers",
+                        text="Battlers download",
                     )
                 ],
             },
