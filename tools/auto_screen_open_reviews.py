@@ -203,7 +203,13 @@ def check_resource_links(session, page: dict, source_url: str) -> dict:
         if not is_resource_candidate_link(target, label):
             continue
         seen.add(target)
-        candidates.append({"text": label[:160], "url": target})
+        candidates.append({
+            "text": label[:160],
+            "url": target,
+            # Preserve how the parser found this URL. Image-host evidence is only
+            # trusted for images inside post content, never arbitrary links.
+            "link_kind": clean(link.get("link_kind")) or "anchor",
+        })
     if not candidates:
         return {"candidate_count": 0, "checked_count": 0, "all_checked_dead": False, "results": []}
 

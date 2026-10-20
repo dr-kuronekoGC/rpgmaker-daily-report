@@ -7,6 +7,7 @@ from auto_screen_open_reviews import (
     all_delivery_links_dead,
     classify_page,
     confirmed_resource_decision,
+    check_resource_links,
     is_delivery_link,
     resource_kind,
 )
@@ -69,6 +70,25 @@ class ForumBodyExtractionTests(unittest.TestCase):
 
 
 class ResourceEvidenceTests(unittest.TestCase):
+    def test_resource_link_audit_preserves_embedded_image_kind(self):
+        response = Mock()
+        response.status_code = 404
+        response.close = Mock()
+        session = Mock()
+        session.head.return_value = response
+        page = {
+            "outbound_links": [
+                {
+                    "text": "embedded image/attachment",
+                    "url": "https://img369.imageshack.us/img369/4427/captainpirate1do4.png",
+                    "link_kind": "image_anchor",
+                }
+            ]
+        }
+        result = check_resource_links(session, page, "https://example.com/topic")
+        self.assertEqual(result["candidate_count"], 1)
+        self.assertEqual(result["results"][0]["link_kind"], "image_anchor")
+
     def test_external_sprite_images_are_material_links_but_theme_icons_are_not(self):
         external = {
             "url": "http://img369.imageshack.us/img369/4427/captainpirate1do4.png",
