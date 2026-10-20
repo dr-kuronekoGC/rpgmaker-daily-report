@@ -2,6 +2,14 @@ name: Review Link Audit
 
 on:
   workflow_dispatch:
+  # Run the review audit when its rules or workflow change. The audit's own
+  # JSON/ledger commit does not match these paths, so this cannot loop.
+  push:
+    branches: [main]
+    paths:
+      - "tools/audit_review_links.py"
+      - "tools/audit_open_review_queue.py"
+      - ".github/workflows/review-link-audit.yml"
 
 permissions:
   contents: write
@@ -25,16 +33,20 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Audit links and resolve confirmed dead links
         run: python tools/audit_review_links.py --apply-dead-links
+      - name: Audit resource intent from stored evidence
+        run: python tools/audit_open_review_queue.py
       - name: Commit audit and exclusion results
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/review/classification_review.json data/review/review_decisions.json review_link_audit.json
-          git diff --cached --quiet || git commit -m "Audit review links and exclude confirmed dead links"
+          git add data/review/classification_review.json data/review/review_decisions.json review_link_audit.json open_review_audit.json
+          git diff --cached --quiet || git commit -m "Audit review links and resource intent"
           git push
-      - name: Upload review link audit
+      - name: Upload review audit reports
         uses: actions/upload-artifact@v4
         with:
-          name: review-link-audit
-          path: review_link_audit.json
+          name: review-audit-reports
+          path: |
+            review_link_audit.json
+            open_review_audit.json
           if-no-files-found: error
