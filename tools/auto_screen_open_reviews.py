@@ -249,7 +249,11 @@ def check_resource_links(session, page: dict, source_url: str) -> dict:
 
 
 COPYRIGHT_WARNING_RE = re.compile(
-    r"\b(?:pirate|ripped from|ripped music|dragon ball|pokemon|pokémon|naruto|star ocean)\b",
+    # "pirate" by itself often describes a character/theme, not piracy.
+    # Require explicit infringement language or a clear [PIRATE] archive tag.
+    r"(?:\[\s*pirate\s*\]|\b(?:pirated|piracy|ripped from|ripped music|"
+    r"stolen from|unauthorized rip)\b|"
+    r"\b(?:dragon ball|pokemon|pokémon|naruto|star ocean)\b)",
     re.I,
 )
 
@@ -552,7 +556,11 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     if copyright_warning and not positive_release:
         # Avoid generic franchise-word filtering; only clear piracy/ripped wording
         # is an exclusion. Franchise names alone are insufficient.
-        explicit_piracy = bool(re.search(r"\b(?:pirate|ripped from|ripped music)\b", combined, re.I))
+        explicit_piracy = bool(re.search(
+            r"(?:\[\s*pirate\s*\]|\b(?:pirated|piracy|ripped from|ripped music|stolen from|unauthorized rip)\b)",
+            combined,
+            re.I,
+        ))
         if explicit_piracy:
             return ("exclude", "海賊版・既存作品からのリッピングを明示する投稿で、公開対象の独自素材として扱えない")
 
