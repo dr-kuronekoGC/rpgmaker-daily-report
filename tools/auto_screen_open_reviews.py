@@ -327,6 +327,11 @@ PREVIEW_FILE_RE = re.compile(
     re.I,
 )
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}
+SEMANTIC_ATTACHMENT_FILENAME_RE = re.compile(
+    r"(?:charset|tileset|sprite|battler|icon|butterfl|animation|resource|asset|"
+    r"персонаж|бабочк|спрайт|тайлсет|иконк|анимац)",
+    re.I,
+)
 DELIVERABLE_EXTENSIONS = {
     ".zip", ".rar", ".7z", ".gz", ".tar", ".ogg", ".mp3", ".wav",
     ".m4a", ".mid", ".midi", ".flac", ".js", ".mjs", ".rb", ".json",
@@ -365,7 +370,7 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
         if (
             "/attachments/" in path
             and not PREVIEW_FILE_RE.search(path)
-            and RESOURCE_TITLE_RE.search(filename)
+            and SEMANTIC_ATTACHMENT_FILENAME_RE.search(filename)
         ):
             return True
         return False
