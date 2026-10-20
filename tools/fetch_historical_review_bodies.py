@@ -67,6 +67,25 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         links.append({
             "text": clean_text(anchor.get_text(" ", strip=True))[:160],
             "url": href[:2000],
+            "link_kind": "anchor",
+        })
+        if len(links) >= 100:
+            return links
+
+    # Older forum posts sometimes embed asset images directly without anchors.
+    # Capture them as evidence, while downstream checks still require semantic
+    # attachment filenames to distinguish assets from random previews.
+    for image_node in node.select("img[src]"):
+        href = urljoin(base_url, str(image_node.get("src") or "").strip())
+        parsed = urlparse(href)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+            continue
+        seen.add(href)
+        label = clean_text(image_node.get("alt") or image_node.get("title") or "")
+        links.append({
+            "text": (label or "embedded image/attachment")[:160],
+            "url": href[:2000],
+            "link_kind": "embedded_image",
         })
         if len(links) >= 100:
             break
