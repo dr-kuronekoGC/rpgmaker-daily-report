@@ -67,7 +67,7 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         links.append({
             "text": clean_text(anchor.get_text(" ", strip=True))[:160],
             "url": href[:2000],
-            "link_kind": "anchor",
+            "link_kind": "image_anchor" if anchor.select_one("img[src]") else "anchor",
         })
         if len(links) >= 100:
             return links
