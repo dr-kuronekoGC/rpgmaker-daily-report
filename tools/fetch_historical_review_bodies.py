@@ -63,11 +63,19 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         parsed = urlparse(href)
         if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
             continue
+        # Ignore clickable forum chrome icons (avatars, ranks, medals, and theme
+        # buttons); they are not material links even when they end in .png/.gif.
+        if anchor.select_one("img[src]") and re.search(
+            r"/(?:themes?/|avatars?/|ranks?/|medals?/|images/post/|smilies/|emoticons?/|users?/avatar)",
+            parsed.path,
+            re.I,
+        ):
+            continue
         seen.add(href)
         links.append({
             "text": clean_text(anchor.get_text(" ", strip=True))[:160],
             "url": href[:2000],
-            "link_kind": "anchor",
+            "link_kind": "image_anchor" if anchor.select_one("img[src]") else "anchor",
         })
         if len(links) >= 100:
             return links
@@ -79,6 +87,12 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         href = urljoin(base_url, str(image_node.get("src") or "").strip())
         parsed = urlparse(href)
         if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+            continue
+        if re.search(
+            r"/(?:themes?/|avatars?/|ranks?/|medals?/|images/post/|smilies/|emoticons?/|users?/avatar)",
+            parsed.path,
+            re.I,
+        ):
             continue
         seen.add(href)
         label = clean_text(image_node.get("alt") or image_node.get("title") or "")
