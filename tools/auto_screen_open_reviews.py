@@ -7,6 +7,8 @@ This script is intentionally stricter than a classifier:
 - Explicit requests/discussions/showcases are excluded only when the page has
   no strong release/download evidence.
 - 403/429/5xx/timeouts and parse failures are NEVER treated as dead links.
+- Resource type is inferred from title evidence before body/reply text.
+- Dead-link exclusion requires a recognized delivery link for a known resource type.
 Ambiguous records remain open for human review.
 """
 from __future__ import annotations
