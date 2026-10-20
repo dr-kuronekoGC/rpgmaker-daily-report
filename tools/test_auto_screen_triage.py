@@ -539,5 +539,36 @@ class ResourceEvidenceTests(unittest.TestCase):
         self.assertEqual(result[0], "confirmed")
 
 
+    def test_italian_pixel_art_diaries_without_material_links_are_excluded(self):
+        titles = (
+            "Imparando Pixel Art & Stuff",
+            "Cronache di un pessimo pixel artist",
+        )
+        for title in titles:
+            with self.subTest(title=title):
+                item = {
+                    "pre_id": "PRE-00125",
+                    "url": "https://example.com/topic",
+                    "title": title,
+                    "review_note": "",
+                }
+                page = {
+                    "page_title": title,
+                    "body_text": (
+                        "A personal learning diary about improving my own pixel art, "
+                        "with progress notes and no downloadable resources."
+                    ),
+                    "http_status": 200,
+                    "retrieval_status": "body_found",
+                    "resource_link_check": {
+                        "candidate_count": 0,
+                        "results": [],
+                    },
+                }
+                result = classify_page(item, page)
+                self.assertIsNotNone(result)
+                self.assertEqual(result[0], "not_applicable")
+
+
 if __name__ == "__main__":
     unittest.main()
