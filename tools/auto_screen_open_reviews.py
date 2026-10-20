@@ -302,15 +302,17 @@ RESOURCE_TITLE_RE = re.compile(
     r"animation sheets?|graphics|art material|free art material|"
     r"resource pack|asset pack|resources?|doodads|character generator|"
     r"soundtracks?|music|musics|musica|musiche|audio|sound pack|audio pack|"
-    r"bgm|bgs|plugins?|scripts?)\b"
+    r"bgm|bgs|plugins?|scripts?|butterfly|butterflies)\b"
     r"|(?:ресурс|спрайт|тайлсет|музык|саундтрек|звуков|аудио|альбом|"
     r"архив звуков|пак звуков|анимац|иконк|набор иконок|бабочк|"
-    r"график|материал|ресурсы|объединённые ресурсы|объединенные ресурсы|butterfl(?:y|ies)|"
-    r"|(?:free[-_]art[-_]material|art[-_]material|resource[-_]pack|asset[-_]pack|sound[-_]pack|icon[-_]pack)"
+    r"график|материал|ресурсы|объединённые ресурсы|объединенные ресурсы|"
+    r"butterfl(?:y|ies)|free[-_]art[-_]material|art[-_]material|"
+    r"resource[-_]pack|asset[-_]pack|sound[-_]pack|icon[-_]pack|"
     r"素材|配布|タイルセット|キャラセット|スプライト|アイコン|アニメーション|"
     r"音源|効果音|プラグイン|BGM|BGS)",
     re.I,
 )
+
 NON_RESOURCE_TITLE_RE = re.compile(
     r"\b(?:looking for|request|help me find|question|discussion|tutorial|"
     r"how to|how do i|showcase|work in progress|wip|my game|gameplay|"
