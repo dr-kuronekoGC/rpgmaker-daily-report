@@ -127,8 +127,8 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
     # checks still distinguish downloadable assets from previews and unrelated
     # links. URLs already found in anchors or media elements are deduplicated.
     visible_text = node.get_text(" ", strip=True)
-    for match in re.finditer(r"https?://[^\\s<>\\"']+", visible_text, re.I):
-        href = match.group(0).rstrip(".,;:!?)]}\\u00bb")
+    for match in re.finditer(r"""https?://[^\s<>"']+""", visible_text, re.I):
+        href = match.group(0).rstrip(".,;:!?)]}»")
         parsed = urlparse(href)
         if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
             continue
