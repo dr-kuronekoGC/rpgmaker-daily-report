@@ -122,13 +122,13 @@ class ForumBodyExtractionTests(unittest.TestCase):
         }
         self.assertFalse(has_reliable_post_body(page))
 
-    def test_specific_post_body_is_reliable_even_when_short(self):
+    def test_specific_post_body_is_reliable_when_body_text_meets_minimum_length(self):
         page = {
             "retrieval_method": "html",
-            "body_text": "Short but actual post content.",
+            "body_text": "Actual post content. " * 5,
             "html_diagnostics": {"body_source": ".postbody", "body_node_found": True},
         }
-        self.assertFalse(has_reliable_post_body(page))
+        self.assertTrue(has_reliable_post_body(page))
 
     def test_long_generic_container_can_be_reliable_when_no_specific_selector_exists(self):
         page = {
