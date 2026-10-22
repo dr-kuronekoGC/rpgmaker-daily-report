@@ -49,7 +49,7 @@ REQUEST_RE = re.compile(
 
 BODY_REQUEST_RE = re.compile(
     r"\b(?:please|pls)\s+up\s+(?:the\s+)?(?:[\w-]+\s+){0,5}(?:sheets?|sprites?|tilesets?|graphics|animations?|assets?|resources?|plugins?)\b|"
-    r"\b(?:looking for|searching for|request(?:ing)?\s+(?:a|an|some|for)|
+    r"\b(?:looking for|searching for|request(?:ing)?\s+(?:a|an|some|for)|"
     r"need help finding|can anyone (?:make|share|provide|create)|"
     r"anyone have|does anyone have|help me find|where can i find|"
     r"i am looking for|i'm looking for|seeking (?:a|an|some)|"
