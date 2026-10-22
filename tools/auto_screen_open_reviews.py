@@ -825,7 +825,7 @@ def main() -> int:
             try:
                 html_page = fetcher.parse_html(session, clean(item.get("url")))
                 page.update(html_page)
-                if page.get("body_text") or page.get("page_description"):
+                if fetcher.has_reliable_post_body(page):
                     page["retrieval_status"] = "body_found"
                 elif page.get("http_status") == 200:
                     page["retrieval_status"] = "page_loaded_no_body"
