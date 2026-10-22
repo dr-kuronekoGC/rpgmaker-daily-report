@@ -333,6 +333,50 @@ class ResourceEvidenceTests(unittest.TestCase):
         self.assertIsNotNone(result)
         self.assertEqual(result[0], "not_applicable")
 
+    def test_solved_recolor_request_without_delivery_link_is_excluded(self):
+        item = {
+            "pre_id": "PRE-00367",
+            "url": "https://rmrk.net/index.php?topic=30995.0",
+            "title": "[Resolved] Battler Hair Recolor",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": (
+                "You may recognize this character. I would very much appreciate it "
+                "if someone could recolor this character's hair to be brown. Thanks."
+            ),
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link("https://rmrk.net/Smileys/default/shocked.gif", dead=True, text=":o")
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_withdrawn_resource_request_without_delivery_link_is_excluded(self):
+        item = {
+            "pre_id": "PRE-00370",
+            "url": "https://rmrk.net/index.php?topic=30998.0",
+            "title": "[Resolved] Computer Charset for VX",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "Request withdrawn.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"candidate_count": 0, "results": []},
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
     def test_solved_rtp_upload_request_without_delivery_link_is_excluded(self):
         item = {
             "pre_id": "PRE-00226",
