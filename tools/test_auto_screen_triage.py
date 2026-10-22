@@ -1,7 +1,7 @@
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
-from fetch_historical_review_bodies import parse_html
+from fetch_historical_review_bodies import fetch_item, has_usable_post_body, parse_html
 
 from auto_screen_open_reviews import (
     all_delivery_links_dead,
@@ -25,6 +25,73 @@ def link(url, *, reachable=False, dead=False, error=None, text=""):
 
 
 class ForumBodyExtractionTests(unittest.TestCase):
+    def test_plain_text_resource_urls_are_extracted_and_deduplicated(self):
+        html = """
+        <html><head><title>Custom battler sheets</title></head><body>
+          <div class="postbody">
+            Reusable battler image: https://i.imgur.com/battler-sheet.png
+            The same file is also linked: <a href="https://i.imgur.com/battler-sheet.png">download</a>
+            Preview: https://i.imgur.com/preview-battler.png.
+          </div>
+        </body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.com/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        page = parse_html(session, "https://example.com/topic")
+        matches = [
+            item for item in page["outbound_links"]
+            if "i.imgur.com/" in item["url"]
+        ]
+        self.assertEqual(
+            {item["url"] for item in matches},
+            {
+                "https://i.imgur.com/battler-sheet.png",
+                "https://i.imgur.com/preview-battler.png",
+            },
+        )
+        self.assertEqual(
+            sum(item["url"].endswith("battler-sheet.png") for item in matches),
+            1,
+        )
+        preview = next(item for item in matches if "preview-battler" in item["url"])
+        self.assertEqual(preview["link_kind"], "text_url")
+
+    def test_metadata_only_layout_fallback_is_not_marked_as_post_body(self):
+        html = """
+        <html><head>
+          <title>Example topic</title>
+          <meta name="description" content="A short search-engine description only.">
+        </head><body>
+          <div id="ipsLayout_mainArea">
+            Topic: Example topic. Author: ExampleUser. Category: Resources.
+            Posted: yesterday. Tags: RPG Maker. This is page metadata, not the post body.
+          </div>
+        </body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.com/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        parsed = parse_html(session, "https://example.com/topic")
+        self.assertFalse(parsed["html_diagnostics"]["body_content_quality"])
+        self.assertFalse(has_usable_post_body(parsed))
+
+        with patch("fetch_historical_review_bodies.parse_discourse_json", return_value=None), patch(
+            "fetch_historical_review_bodies.parse_html", return_value=parsed
+        ):
+            fetched = fetch_item(Mock(), {"url": "https://example.com/topic"})
+        self.assertEqual(fetched["retrieval_status"], "page_loaded_no_body")
+
     def test_first_post_sets_intent_but_all_thread_assets_are_checked(self):
         html = """
         <html><head><title>Post your Battlers here</title>
@@ -340,6 +407,23 @@ class ResourceEvidenceTests(unittest.TestCase):
             checks,
         )
         self.assertIsNone(result)
+
+    def test_plain_text_image_url_can_be_asset_but_preview_cannot(self):
+        asset = link(
+            "https://i.imgur.com/battler-sheet.png",
+            reachable=True,
+            text="plain-text URL",
+        )
+        asset["link_kind"] = "text_url"
+        self.assertTrue(is_delivery_link(asset, "graphics"))
+
+        preview = link(
+            "https://i.imgur.com/preview-battler.png",
+            reachable=True,
+            text="plain-text URL",
+        )
+        preview["link_kind"] = "text_url"
+        self.assertFalse(is_delivery_link(preview, "graphics"))
 
     def test_legacy_photobucket_query_filename_is_a_graphics_delivery_link(self):
         url = (
