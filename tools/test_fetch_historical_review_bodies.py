@@ -1,3 +1,4 @@
+import json
 import importlib.util
 import unittest
 from pathlib import Path
@@ -28,6 +29,169 @@ class HistoricalBodyAuditTests(unittest.TestCase):
             "https://www.rpg2s.it/forum/index.php?app=forums&module=forums&controller=topic&id=24040",
         )
         self.assertIsNone(MODULE.invision_query_topic_url("https://example.com/forum/topic/no-id/"))
+
+    def test_rmrk_wayback_fallback_recovers_body_and_resolves_links_to_original_host(self):
+        original_url = "https://rmrk.net/index.php?topic=48165.0"
+        original = {
+            "http_status": 200,
+            "body_text": "",
+            "outbound_links": [],
+            "html_diagnostics": {
+                "body_source": "empty",
+                "html_chars": 998,
+                "body_text_chars": 0,
+            },
+        }
+        cdx = json.dumps([
+            ["timestamp", "original", "statuscode", "mimetype"],
+            ["20250101000000", original_url, "200", "text/html"],
+        ])
+        archived_html = """
+        <html><head><title>Actors 8D sprites? [SOLVED]</title></head>
+        <body><div id="forumposts"><div class="postarea">
+          <div class="message">
+            The original topic asks where to find reusable character sets for RPG Maker.
+            A later reply identifies the source and links to a downloadable sprite archive.
+          </div>
+          <a href="/files/actors.zip">Download actor sprites</a>
+        </div></div></body></html>
+        """
+
+        class FakeResponse:
+            def __init__(self, text, url):
+                self.text = text
+                self.status_code = 200
+                self.url = url
+
+            def raise_for_status(self):
+                return None
+
+        class FakeSession:
+            def get(self, url, *args, **kwargs):
+                if "web.archive.org/cdx/search/cdx" in url:
+                    return FakeResponse(cdx, url)
+                return FakeResponse(
+                    archived_html,
+                    "https://web.archive.org/web/20250101000000id_/" + original_url,
+                )
+
+        result = MODULE.try_wayback_fallback(FakeSession(), original_url, original)
+        self.assertEqual(result["retrieval_method"], "wayback_archive_fallback")
+        self.assertTrue(result["html_diagnostics"]["wayback_used"])
+        self.assertIn("reusable character sets", result["body_text"])
+        self.assertTrue(
+            any(link["url"] == "https://rmrk.net/files/actors.zip"
+                for link in result["outbound_links"])
+        )
+
+    def test_rmrk_wayback_fallback_keeps_original_when_no_snapshot_exists(self):
+        original_url = "https://rmrk.net/index.php?topic=48165.0"
+        original = {
+            "http_status": 200,
+            "body_text": "",
+            "outbound_links": [],
+            "html_diagnostics": {
+                "body_source": "empty",
+                "html_chars": 998,
+                "body_text_chars": 0,
+            },
+        }
+
+        class FakeResponse:
+            text = json.dumps([["timestamp", "original", "statuscode", "mimetype"]])
+            status_code = 200
+            url = "https://web.archive.org/cdx/search/cdx"
+
+            def raise_for_status(self):
+                return None
+
+        class FakeSession:
+            def get(self, *args, **kwargs):
+                return FakeResponse()
+
+        result = MODULE.try_wayback_fallback(FakeSession(), original_url, original)
+        self.assertIs(result, original)
+        self.assertFalse(result["html_diagnostics"]["wayback_snapshot_found"])
+
+    def test_rpg2s_wayback_fallback_recovers_body_and_original_link_base(self):
+        original_url = "https://www.rpg2s.it/forum/index.php?/topic/123-example/"
+        original = {
+            "http_status": 200,
+            "body_text": "Login warning Example topic By Author in Grafica",
+            "outbound_links": [],
+            "html_diagnostics": {
+                "body_source": "#ipsLayout_mainArea",
+                "html_chars": 3200,
+                "body_text_chars": 48,
+            },
+        }
+        cdx = json.dumps([
+            ["timestamp", "original", "statuscode", "mimetype"],
+            ["20250101000000", original_url, "200", "text/html"],
+        ])
+        archived_html = """
+        <html><head><title>Example topic</title></head>
+        <body><div class="ipsComment_content">
+          <p>This archived post contains the actual plugin details and a direct
+          download destination that is missing from the current forum response.</p>
+          <a href="/files/plugin.js">Download plugin</a>
+        </div></body></html>
+        """
+
+        class FakeResponse:
+            def __init__(self, text, url):
+                self.text = text
+                self.status_code = 200
+                self.url = url
+
+            def raise_for_status(self):
+                return None
+
+        class FakeSession:
+            def get(self, url, *args, **kwargs):
+                if "web.archive.org/cdx/search/cdx" in url:
+                    return FakeResponse(cdx, url)
+                return FakeResponse(
+                    archived_html,
+                    "https://web.archive.org/web/20250101000000id_/" + original_url,
+                )
+
+        result = MODULE.try_wayback_fallback(FakeSession(), original_url, original)
+        self.assertEqual(result["retrieval_method"], "wayback_archive_fallback")
+        self.assertTrue(result["html_diagnostics"]["wayback_used"])
+        self.assertTrue(
+            any(link["url"] == "https://www.rpg2s.it/files/plugin.js"
+                for link in result["outbound_links"])
+        )
+
+    def test_rpg2s_wayback_fallback_keeps_original_when_no_snapshot_exists(self):
+        original_url = "https://www.rpg2s.it/forum/index.php?/topic/123-example/"
+        original = {
+            "http_status": 200,
+            "body_text": "Login warning Example topic By Author in Grafica",
+            "outbound_links": [],
+            "html_diagnostics": {
+                "body_source": "#ipsLayout_mainArea",
+                "html_chars": 3200,
+                "body_text_chars": 48,
+            },
+        }
+
+        class FakeResponse:
+            text = json.dumps([["timestamp", "original", "statuscode", "mimetype"]])
+            status_code = 200
+            url = "https://web.archive.org/cdx/search/cdx"
+
+            def raise_for_status(self):
+                return None
+
+        class FakeSession:
+            def get(self, *args, **kwargs):
+                return FakeResponse()
+
+        result = MODULE.try_wayback_fallback(FakeSession(), original_url, original)
+        self.assertIs(result, original)
+        self.assertFalse(result["html_diagnostics"]["wayback_snapshot_found"])
 
     def test_invision_query_fallback_uses_better_post_body(self):
         original_url = "https://www.rpg2s.it/forum/index.php?/topic/123-example/"
