@@ -463,7 +463,7 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
     legacy_attachment = (
         host in {"rmrk.net", "www.rmrk.net"}
         and re.search(r"(?:[?;&])action=dlattach(?:[;&]|$)", url, re.I)
-        and re.search(r"(?:[?;&])attach=\\d+", url, re.I)
+        and re.search(r"(?:[?;&])attach=\d+", url, re.I)
     )
     label_suffix = Path(urlparse(clean(result.get("text"))).path).suffix.lower()
     label = clean(result.get("text"))
