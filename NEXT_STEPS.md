@@ -2,7 +2,7 @@
 
 最終確認日：2026-10-22（JST）
 対象ブランチ：`main`
-直近の確認済みコミット：`09d3e306c91762c126c7fe25594a0e7dce7d17c6`（PR #110 マージ後）。このコミットで起動した自動スクリーニングは確認時点で実行中。
+直近の確認済み main コミット：`3d7503ea17c4a54fc107bd629acf0ff33be295d0`（NEXT_STEPSの未確認件数表記を修正）。PR #110マージ後の自動スクリーニング Run `39750871482` は失敗終了。分類処理は完了したが、GitHubへのpushがnon-fast-forwardで拒否された。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
@@ -19,15 +19,18 @@
 - 解決済み：434件
 - これは2026-10-22の直近完了実行後の数。PR #110 マージ後の再実行結果は未確定。
 
-直近の完了済み自動スクリーニングは成功。93件を調査し、PRE-00340、PRE-00342、PRE-00351、PRE-00361の4件を自動解決、89件は保留を維持した。構文検証と安全性テストは成功している。PR #110「Recognize named legacy RMRK attachment downloads」は回帰テスト成功後にマージ済み。旧式RMRKの添付URLと表示ファイル名を組み合わせて素材リンクを判定する。マージ後の自動スクリーニングは現在の実行結果を確認中。
+直近の正常完了実行（Run `39749442398`）では93件を調査し、PRE-00340、PRE-00342、PRE-00351、PRE-00361の4件を自動解決、89件を保留した。PR #110「Recognize named legacy RMRK attachment downloads」は回帰テスト成功後にマージ済み。旧式RMRKの添付URLと表示ファイル名を組み合わせて素材リンクを判定する。
+
+その後のマージ後実行（Run `39750871482`）では、構文検証・安全性テスト・スクリーニング処理は成功し、ログ上はPRE-00171とPRE-00231の2件を自動解決した。しかし、コミット `6784258` のpushが `main` の先行更新によりnon-fast-forwardで拒否され、ワークフロー全体はfailure。したがって、その2件の解決は `main` の台帳へ反映されたとは確認できない。`main` 上の `classification_review.json` は523件中、未確認89件・解決済み434件のまま。失敗実行の監査ファイルはコミットされていないため、最新監査結果と現在のmainを混同しないこと。
 
 **次に行う具体的な手順**
-1. 最新の `data/review/auto_screen_audit.json` を確認し、未確認89件を「本文・配布リンクが確認できた」「本文は取得できたが素材証拠がない」「リンク切れと到達不能が混在」「リクエスト・相談・紹介・制作日記の可能性」「分類根拠が矛盾」等に分ける。
-2. `data/review/classification_review.json` の人手判定・注記と照合し、個人の好みや一回限りの事情を一般ルールにしない。
-3. ルールを変える前に、境界事例を `tools/test_auto_screen_triage.py` に追加する。特に、プレビュー画像だけ残っている音楽投稿、実際の素材画像、移転済み投稿、依頼投稿、複合素材、403/429・タイムアウトを区別する。
-4. 関連テストと構文検証を実行し、Pull Requestまたは該当Actionsの結果を確認する。
-5. 安全性を確認できたロジックを既存の未確認リストに適用する。自動解決したID・理由・リンク結果を監査記録に残し、処理前後の未確認件数を比較する。
-6. 新しい自動判定で誤りが見つかった場合は、ユーザーによる修正・再確認指示を優先し、その事例を回帰テストへ追加する。
+1. まずRun `39750871482` のpush拒否を安全に解消する。最新の `main` と失敗実行が作成したコミット／作業ツリーの関係を確認し、既存データを上書きせず、必要な監査・レビュー台帳の変更だけを再適用する。GitHub Actionsの同時実行・競合が再発しない方法を検討し、解決件数を二重適用しない。
+2. 最新の `data/review/auto_screen_audit.json` を確認し、未確認89件を「本文・配布リンクが確認できた」「本文は取得できたが素材証拠がない」「リンク切れと到達不能が混在」「リクエスト・相談・紹介・制作日記の可能性」「分類根拠が矛盾」等に分ける。
+3. `data/review/classification_review.json` の人手判定・注記と照合し、個人の好みや一回限りの事情を一般ルールにしない。
+4. ルールを変える前に、境界事例を `tools/test_auto_screen_triage.py` に追加する。特に、プレビュー画像だけ残っている音楽投稿、実際の素材画像、移転済み投稿、依頼投稿、複合素材、403/429・タイムアウトを区別する。
+5. 関連テストと構文検証を実行し、Pull Requestまたは該当Actionsの結果を確認する。
+6. 安全性を確認できたロジックを既存の未確認リストに適用する。自動解決したID・理由・リンク結果を監査記録に残し、処理前後の未確認件数を比較する。
+7. 新しい自動判定で誤りが見つかった場合は、ユーザーによる修正・再確認指示を優先し、その事例を回帰テストへ追加する。
 
 **完了条件**
 - 構文検証・関連テストが成功している。
@@ -65,13 +68,14 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 
 ## 2. 直近で確認できた作業結果
 
-- `main` の直近確認コミット：`09d3e306c91762c126c7fe25594a0e7dce7d17c6`（PR #110 マージ）。
+- `main` の直近確認コミット：`3d7503ea17c4a54fc107bd629acf0ff33be295d0`（NEXT_STEPSの件数表記を修正）。PR #110はその親コミット `09d3e306c91762c126c7fe25594a0e7dce7d17c6` でマージ済み。
 - `Auto-screen Open Review Items`：実行ID [39749442398](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39749442398)、結論success。
+- PR #110マージ後の実行ID [39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) はfailure。スクリーニングはログ上PRE-00171・PRE-00231の2件を解決したが、コミットpushが `main -> main (fetch first)` で拒否された。最新mainのレビュー台帳には反映されていないことを確認済み。
 - 同実行で構文検証、素材証拠・安全性テスト、自動スクリーニング、コミット工程が成功。
 - 同実行は93件を調査し、PRE-00340、PRE-00342、PRE-00351、PRE-00361を自動解決。残り89件は保留。
 - PR #110（[Recognize named legacy RMRK attachment downloads](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/110)）は回帰テスト成功後、コミット `09d3e306c91762c126c7fe25594a0e7dce7d17c6` としてマージ済み。マージ後の自動スクリーニング実行ID [39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は、この台帳更新時点で実行中。
 - `Notion PRE Review Sync`：実行ID [39483266341](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39483266341)、Actionsの結論はsuccessだが、Secrets未設定により同期はSkipped。
-- `PROJECT_STATUS.md` と `NEXT_STEPS.md` はこのコミット時点では存在しなかったため、今回新規作成する。
+- `PROJECT_STATUS.md` と `NEXT_STEPS.md` は既に `main` に存在する。今回の引き継ぎ時点では、既存ファイルを更新して継続運用する。
 
 ## 3. 承認・制約の整理
 
