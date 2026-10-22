@@ -455,6 +455,29 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
     if suffix in DELIVERABLE_EXTENSIONS:
         return True
 
+    # Legacy RMRK attachments use a PHP endpoint with an opaque numeric ID
+    # (for example, index.php?action=dlattach;topic=38714.0;attach=20424),
+    # so the URL extension does not reveal the file type. Use the visible
+    # attachment filename plus the known endpoint as evidence; never treat
+    # generic forum images or profile pictures as deliverable assets.
+    legacy_attachment = (
+        host in {"rmrk.net", "www.rmrk.net"}
+        and re.search(r"(?:[?;&])action=dlattach(?:[;&]|$)", url, re.I)
+        and re.search(r"(?:[?;&])attach=\\d+", url, re.I)
+    )
+    label_suffix = Path(urlparse(clean(result.get("text"))).path).suffix.lower()
+    label = clean(result.get("text"))
+    if legacy_attachment:
+        if label_suffix in DELIVERABLE_EXTENSIONS:
+            return True
+        if (
+            kind in {"graphics", "mixed", "resource"}
+            and label_suffix in IMAGE_EXTENSIONS
+            and not PREVIEW_FILE_RE.search(label)
+            and result.get("link_kind") in {"image_anchor", "anchor"}
+        ):
+            return True
+
     # In an audio post, cover art and screenshots do not prove that audio files survive.
     if suffix in IMAGE_EXTENSIONS:
         if kind == "audio":
