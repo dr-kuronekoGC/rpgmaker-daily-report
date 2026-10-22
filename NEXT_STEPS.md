@@ -21,18 +21,18 @@
 
 直近の正常完了実行（Run `39749442398`）では93件を調査し、PRE-00340、PRE-00342、PRE-00351、PRE-00361の4件を自動解決、89件を保留した。PR #110「Recognize named legacy RMRK attachment downloads」は回帰テスト成功後にマージ済み。旧式RMRKの添付URLと表示ファイル名を組み合わせて素材リンクを判定する。
 
-その後のマージ後実行（Run `39750871482`）では、構文検証・安全性テスト・スクリーニング処理は成功し、ログ上はPRE-00171とPRE-00231の2件を自動解決した。しかし、コミット `6784258` のpushが `main` の先行更新によりnon-fast-forwardで拒否され、ワークフロー全体はfailure。`main` 上ではこの2件は未解決のまま。今回、通常収集・Review Link Audit・Notion同期などが使っている共有concurrencyグループ `rpg-maker-daily-report-main` を当ワークフローにも設定した（`6cf1393`）。さらに、待機中にmainが先行更新されても古いイベントSHAから処理しないよう、checkout時に最新の `main` ブランチを指定した（`4ca1c07`）。修正後の成功・台帳反映は実行ログを見てから確定する。現在のレビュー台帳は523件中、未確認87件・解決済み436件。
+その後のマージ後実行（Run `39750871482`）では、構文検証・安全性テスト・スクリーニング処理は成功し、ログ上はPRE-00171とPRE-00231の2件を自動解決した。しかし、コミット `6784258` のpushが `main` の先行更新によりnon-fast-forwardで拒否され、ワークフロー全体はfailure。`main` 上ではこの2件は未解決のまま。今回、通常収集・Review Link Audit・Notion同期などが使っている共有concurrencyグループ `rpg-maker-daily-report-main` を当ワークフローにも設定した（`6cf1393`）。さらに、待機中にmainが先行更新されても古いイベントSHAから処理しないよう、checkout時に最新の `main` ブランチを指定した（`4ca1c07`）。その後の実行結果コミット `10d4b6d26e87d192094c7d474ad33ee4576f6b98` がmainへ反映されたことを確認済み。PRE-00171は除外、PRE-00231は素材として解決済み。現在のレビュー台帳は523件中、未確認87件・解決済み436件。
 
 監査データ（`auto_screen_audit.json`、2026-10-22 17:40 JSTの実行）の一次集計では、未確認89件の内訳は graphics 39、audio 13、plugin 35、種別不明6。配布リンク候補が見つからないものが87件で、配布リンクが1件以上到達可能なものは3件、明確な素材公開シグナルがあるものは10件だった。これらは自動除外の根拠ではなく、むしろ素材を誤除外しないため優先して精査すべき候補。現在の自動スクリーナーは高確度の「対象外」判定を主目的としているため、今後は既存の人手判定と照合し、素材候補を安全に確定できる別ルールを設計できるか検討する。
 
 **次に行う具体的な手順**
-1. concurrency修正後に起動した `Auto-screen Open Review Items` の実行を確認する。構文検証・47件の関連テスト・スクリーニング・pushが完了したか、PRE-00171とPRE-00231が根拠付きで台帳へ反映されたか、件数を確認する。失敗した場合は、そのログを基に安全に再調整する。
-2. 修正後の監査結果を確認したうえで、まず既存監査で抽出された素材公開シグナル10件・到達可能な配布リンクを持つ3件を人手判定と照合する。自動除外ではなく、素材候補を誤って除外しないための優先確認とする。その後、残りの未確認項目を本文・配布リンク・リンク状態・投稿目的ごとに整理する。
-3. `data/review/classification_review.json` の人手判定・注記と照合し、個人の好みや一回限りの事情を一般ルールにしない。
-4. ルールを変える前に、境界事例を `tools/test_auto_screen_triage.py` に追加する。特に、プレビュー画像だけ残っている音楽投稿、実際の素材画像、移転済み投稿、依頼投稿、複合素材、403/429・タイムアウトを区別する。
-5. 関連テストと構文検証を実行し、Pull Requestまたは該当Actionsの結果を確認する。
-6. 安全性を確認できたロジックを既存の未確認リストに適用する。自動解決したID・理由・リンク結果を監査記録に残し、処理前後の未確認件数を比較する。
-7. 新しい自動判定で誤りが見つかった場合は、ユーザーによる修正・再確認指示を優先し、その事例を回帰テストへ追加する。
+1. PR #111「Detect plain-text resource URLs and reject metadata-only post bodies」の自動テスト結果を確認する。本文中に直接記載されたHTTP(S) URLが抽出されること、アンカーとの重複が除去されること、プレビュー画像を実素材と誤認しないことを確認する。
+2. 本文取得診断を確認する。短いメタデータしか取れていない汎用レイアウト領域を `body_found` と扱わず、`page_loaded_no_body` として未確定のまま残す。これは自動除外ではなく診断改善である。
+3. CIが成功したらPR #111の差分全体を再確認する。既存の人手修正・再確認メモ、PRE状態、404/410以外のエラーの扱いに変更がないことを確認する。
+4. テスト成功と安全性を確認してからPR #111をマージする。CIが失敗した場合はログを確認して修正し、成功するまでマージしない。
+5. マージ後、Auto-screen triage testsと関連する本文監査／自動スクリーニングを確認する。新しい本文品質診断でRpg2S ITのようなメタデータのみのページが未確定として残ることを確認し、素材が誤って自動除外されていないことを確認する。
+6. その後、未確認87件を再走査するかは監査結果を見て判断する。まずRMRKの本文中URL候補と、取得できる本文に基づく質問・依頼・制作日記の判定を確認し、実データの変更件数と理由を記録する。
+7. PR #111をマージした後は、実際のActions結果を確認して本ファイルと `PROJECT_STATUS.md` を更新する。PRの作成やコードの存在だけで「完了」としない。
 
 **完了条件**
 - 構文検証・関連テストが成功している。
@@ -81,11 +81,11 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 ## 2. 直近で確認できた作業結果
 
 - 自動スクリーニングの競合対策として共有concurrencyグループと最新main checkoutを追加。その後の監査結果はコミット `10d4b6d26e87d192094c7d474ad33ee4576f6b98` としてmainに反映済み。PR #110はコミット `09d3e306c91762c126c7fe25594a0e7dce7d17c6` でマージ済み。
-- `Auto-screen Open Review Items`：実行ID [39749442398](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39749442398)、結論success。
+- `Auto-screen Open Review Items`：実行ID [39749442398](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39749442398)、結論success。後続の監査反映コミット `10d4b6d26e87d192094c7d474ad33ee4576f6b98` でPRE-00171・PRE-00231の処理と現在の523件（未確認87・解決済み436）を確認済み。
 - 失敗した実行ID [39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) ではPRE-00171・PRE-00231の解決判定後にpushが拒否された。競合対策を追加した後、監査結果がmainへ反映され、PRE-00171とPRE-00231が台帳上で解決済みになったことを確認。現在の未確認数は87。
 - 同実行で構文検証、素材証拠・安全性テスト、自動スクリーニング、コミット工程が成功。
 - 同実行は93件を調査し、PRE-00340、PRE-00342、PRE-00351、PRE-00361を自動解決。残り89件は保留。
-- PR #110（[Recognize named legacy RMRK attachment downloads](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/110)）は回帰テスト成功後、コミット `09d3e306c91762c126c7fe25594a0e7dce7d17c6` としてマージ済み。マージ後の自動スクリーニング実行ID [39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は、この台帳更新時点で実行中。
+- PR #110（[Recognize named legacy RMRK attachment downloads](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/110)）は回帰テスト成功後、コミット `09d3e306c91762c126c7fe25594a0e7dce7d17c6` としてマージ済み。PR #111では本文中の生URL抽出と本文取得品質の診断改善を追加し、自動テスト結果を確認中。
 - `Notion PRE Review Sync`：実行ID [39483266341](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39483266341)、Actionsの結論はsuccessだが、Secrets未設定により同期はSkipped。
 - `PROJECT_STATUS.md` と `NEXT_STEPS.md` は既に `main` に存在する。今回の引き継ぎ時点では、既存ファイルを更新して継続運用する。
 
@@ -94,7 +94,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 ### ユーザーから依頼済み
 - 自動分類の精度を高め、正確性を保ちながら未確認PREを減らす。
 - 改善ロジックを十分に検証できたら、既存の未確認リストにも適用する。
-- 今回はプロジェクト台帳を整備する。Bot本体のコード変更は行わない。
+- ユーザー承認に基づき、自動仕分けの安全性を維持した小規模なコード改善を進める。変更範囲は本文内URL抽出・本文取得品質診断・関連テストに限定する。
 - 秘密情報を記載しない。
 - 台帳のためだけに無関係なコードやワークフローを変更しない。
 

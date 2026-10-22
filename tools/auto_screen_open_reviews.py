@@ -501,7 +501,7 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
             "postimg.org", "ibb.co", "imagebam.com", "imgbox.com",
         )
         if (
-            (result.get("link_kind") in {"image_anchor", "embedded_image"} or query_image_filename)
+            (result.get("link_kind") in {"image_anchor", "embedded_image", "text_url"} or query_image_filename)
             and any(host == domain or host.endswith("." + domain) for domain in image_hosts)
             and kind in {"graphics", "resource", "mixed"}
         ):
@@ -825,7 +825,7 @@ def main() -> int:
             try:
                 html_page = fetcher.parse_html(session, clean(item.get("url")))
                 page.update(html_page)
-                if page.get("body_text") or page.get("page_description"):
+                if fetcher.has_usable_post_body(page):
                     page["retrieval_status"] = "body_found"
                 elif page.get("http_status") == 200:
                     page["retrieval_status"] = "page_loaded_no_body"

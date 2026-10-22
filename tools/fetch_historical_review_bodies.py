@@ -33,6 +33,17 @@ def clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", value or "").strip()
 
 
+def has_usable_post_body(page: dict) -> bool:
+    """True only when actual post text, rather than metadata, was extracted."""
+    body = clean_text(page.get("body_text"))
+    if len(body) < 80:
+        return False
+    diagnostics = page.get("html_diagnostics")
+    if isinstance(diagnostics, dict):
+        return diagnostics.get("body_content_quality") is True
+    return True
+
+
 def is_public_http_url(url: str) -> bool:
     try:
         parsed = urlparse(url)
@@ -97,6 +108,26 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         })
         if len(links) >= 100:
             return links
+
+    # Some older forums print direct URLs as plain text. Capture those URLs
+    # from body text nodes; downstream checks still distinguish assets from previews.
+    for text_node in node.find_all(string=True):
+        if text_node.find_parent("a"):
+            continue
+        raw_text = str(text_node)
+        for match in re.finditer(r"https?://\S+", raw_text, re.I):
+            href = match.group(0).rstrip(".,;:!?)]}")
+            parsed = urlparse(href)
+            if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+                continue
+            seen.add(href)
+            links.append({
+                "text": "plain-text URL",
+                "url": href[:2000],
+                "link_kind": "text_url",
+            })
+            if len(links) >= 100:
+                return links
 
     # Older forum posts sometimes embed asset images directly without anchors.
     # Capture them as evidence, while downstream checks still require semantic
@@ -375,11 +406,26 @@ def parse_html(
                 break
     raw_html = response.text
     lower_html = raw_html.lower()
+    # Generic page-layout containers are only fallbacks. Short text extracted
+    # from them can be title/author/category metadata, not the post itself.
+    generic_fallback_selectors = {
+        "#ipsLayout_mainArea", ".ipsLayout_mainArea", "article", "main",
+        "#content", "#main",
+    }
+    body_content_quality = bool(
+        body_node is not None
+        and len(body) >= 80
+        and (
+            body_selector_used not in generic_fallback_selectors
+            or len(body) >= 300
+        )
+    )
     html_diagnostics = {
         "html_chars": len(raw_html),
         "body_text_chars": len(body),
         "body_excerpt": body[:300],
         "body_node_found": body_node is not None,
+        "body_content_quality": body_content_quality,
         "body_source": body_selector_used or ("meta_description" if description else "empty"),
         "body_selector_used": body_selector_used,
         "matched_primary_selectors": {
@@ -721,7 +767,7 @@ def fetch_item(session: requests.Session, item: dict) -> dict:
                 page = try_invision_query_fallback(session, url, page)
                 page = try_wayback_fallback(session, url, page)
         result.update(page)
-        if result.get("body_text") or result.get("page_description"):
+        if has_usable_post_body(result):
             result["retrieval_status"] = "body_found"
         elif result.get("http_status") == 200:
             result["retrieval_status"] = "page_loaded_no_body"

@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 最終確認日：2026-10-22（JST）
-確認対象：GitHub `main` ブランチ。自動スクリーニングのpush競合対策をコミット `4ca1c0766d95e78966ce182176a292362e22052e` に反映（共有concurrencyグループと最新main checkout）。修正後の自動実行は起動対象だが、成功・台帳反映はActionsログで確認するまで未確定。
+確認対象：GitHub `main` ブランチ。自動スクリーニングのpush競合対策後、監査結果コミット `10d4b6d26e87d192094c7d474ad33ee4576f6b98` がmainへ反映されたことを確認。PRE-00171・PRE-00231の処理が台帳に反映され、現在523件中、未確認87件・解決済み436件。本文取得品質と本文中URLの検出改善はPR #111で検証中。
 この文書は長期的な目的・設計方針・実装状況を記録する。次の具体的な作業は `NEXT_STEPS.md` を参照する。
 
 ## 1. プロジェクトの目的
@@ -48,7 +48,7 @@ RPG Maker／RPGツクールに関連する素材、プラグイン、開発情�
 
 ### レビュー・監査
 - `review_queue.py`：PREレビューキューの生成、持ち越し、既存項目の監査。
-- `data/review/classification_review.json`：PRE項目の永続的なレビュー台帳。直近の完了済みスクリーニング後、523件（未確認89件、解決済み434件）。マージ後の再実行結果は未確定。
+- `data/review/classification_review.json`：PRE項目の永続的なレビュー台帳。2026-10-22の監査反映後、523件（未確認87件、解決済み436件）。PR #111で本文取得品質と本文中URLの検出を改善中。
 - `data/review/review_decisions.json`：明示的に記録された判定を日次処理に取り込むための入力。確認時点で290件の判定レコード。
 - `tools/apply_review_decisions.py`：判定記録の検証・取り込み。
 - `tools/auto_screen_open_reviews.py`：未確認PREの自動スクリーニング。本文・配布先・リンク状態等を使い、高確度の項目のみ自動処理する。
