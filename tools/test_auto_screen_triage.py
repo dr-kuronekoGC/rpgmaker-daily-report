@@ -257,6 +257,49 @@ class ResourceEvidenceTests(unittest.TestCase):
         }
         self.assertIsNone(classify_page(item, page))
 
+    def test_solved_resource_request_without_delivery_link_is_excluded(self):
+        item = {
+            "pre_id": "PRE-TEST-SOLVED-REQUEST",
+            "url": "https://example.com/topic",
+            "title": "Looking for actors sprites? [SOLVED]",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "I was looking for actors sprites, but the question is now solved.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 0,
+                "results": [],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_solved_resource_request_with_inconclusive_delivery_link_stays_open(self):
+        item = {
+            "pre_id": "PRE-TEST-SOLVED-REQUEST-LINK",
+            "url": "https://example.com/topic",
+            "title": "Looking for actors sprites? [SOLVED]",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "I was looking for actors sprites, but the question is now solved.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link("https://files.example.com/sprites.zip", error="ReadTimeout")
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNone(result)
+
     def test_request_post_is_not_auto_confirmed_even_with_live_link(self):
         checks = {
             "results": [

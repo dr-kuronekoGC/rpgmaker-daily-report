@@ -692,7 +692,18 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
         return ("not_applicable", "本文に素材配布ではない／ダウンロード不可／プレビューのみと明記されている")
 
     # A solved/filled thread may contain a useful answer or an attached asset.
+    # But when it began as a resource request, has no positive release evidence,
+    # and has no usable delivery link, it is safe to resolve as a non-resource.
+    # Non-request solved topics remain open because the solution may itself be useful.
     if resolved_marker and not has_usable_delivery:
+        resolved_request_signal = bool(
+            REQUEST_RE.search(title) or BODY_REQUEST_RE.search(body[:1800])
+        )
+        if resolved_request_signal and not positive_release:
+            return (
+                "not_applicable",
+                "解決済み・充足済みの素材依頼だが、配布根拠および利用可能な素材リンクを確認できない",
+            )
         return None
 
     # Requests for a resource are excluded only when the post itself contains
@@ -702,8 +713,8 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     # posts (e.g. "if you need a piece, send me the sheet music"). Require
     # explicit seeking/request phrasing in body text to avoid false exclusions.
     request_signal = bool(REQUEST_RE.search(title) or BODY_REQUEST_RE.search(body[:1800]))
-    if request_signal and not positive_release:
-        return ("not_applicable", "素材・プラグイン等を求める依頼投稿で、取得可能な配布物の記載を確認できない")
+    if request_signal and not positive_release and not has_usable_delivery:
+        return ("not_applicable", "素材・プラグイン等を求める依頼投稿で、配布根拠および素材ファイル／配布先リンクを確認できない")
 
     # Generic discussion/question/showcase language alone is too weak.
     # Require explicit non-deliverable context and no release evidence.
@@ -744,7 +755,7 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
             for entry in evidence
             if isinstance(entry, dict)
         }
-        if intent == "not_resource" and not positive_release:
+        if intent == "not_resource" and not positive_release and not has_usable_delivery:
             if confidence == "high":
                 return ("not_applicable", "既存の素材意図分類器が高確度で素材・配布物ではないと判定")
             if confidence == "medium" and signals.intersection({
