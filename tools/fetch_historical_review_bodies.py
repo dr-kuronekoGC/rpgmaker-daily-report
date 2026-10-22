@@ -109,6 +109,26 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         if len(links) >= 100:
             return links
 
+    # Some older forums print direct URLs as plain text. Capture those URLs
+    # from body text nodes; downstream checks still distinguish assets from previews.
+    for text_node in node.find_all(string=True):
+        if text_node.find_parent("a"):
+            continue
+        raw_text = str(text_node)
+        for match in re.finditer(r"https?://[^\\s<>\\\"'\\x60]+", raw_text, re.I):
+            href = match.group(0).rstrip(".,;:!?)]}")
+            parsed = urlparse(href)
+            if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+                continue
+            seen.add(href)
+            links.append({
+                "text": "plain-text URL",
+                "url": href[:2000],
+                "link_kind": "text_url",
+            })
+            if len(links) >= 100:
+                return links
+
     # Older forum posts sometimes embed asset images directly without anchors.
     # Capture them as evidence, while downstream checks still require semantic
     # attachment filenames to distinguish assets from random previews.
