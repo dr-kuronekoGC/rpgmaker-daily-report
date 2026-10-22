@@ -406,11 +406,26 @@ def parse_html(
                 break
     raw_html = response.text
     lower_html = raw_html.lower()
+    # Generic page-layout containers are only fallbacks. Short text extracted
+    # from them can be title/author/category metadata, not the post itself.
+    generic_fallback_selectors = {
+        "#ipsLayout_mainArea", ".ipsLayout_mainArea", "article", "main",
+        "#content", "#main",
+    }
+    body_content_quality = bool(
+        body_node is not None
+        and len(body) >= 80
+        and (
+            body_selector_used not in generic_fallback_selectors
+            or len(body) >= 300
+        )
+    )
     html_diagnostics = {
         "html_chars": len(raw_html),
         "body_text_chars": len(body),
         "body_excerpt": body[:300],
         "body_node_found": body_node is not None,
+        "body_content_quality": body_content_quality,
         "body_source": body_selector_used or ("meta_description" if description else "empty"),
         "body_selector_used": body_selector_used,
         "matched_primary_selectors": {
@@ -752,7 +767,7 @@ def fetch_item(session: requests.Session, item: dict) -> dict:
                 page = try_invision_query_fallback(session, url, page)
                 page = try_wayback_fallback(session, url, page)
         result.update(page)
-        if result.get("body_text") or result.get("page_description"):
+        if has_usable_post_body(result):
             result["retrieval_status"] = "body_found"
         elif result.get("http_status") == 200:
             result["retrieval_status"] = "page_loaded_no_body"
