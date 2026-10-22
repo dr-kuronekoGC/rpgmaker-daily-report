@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
 
-from fetch_historical_review_bodies import parse_html
+from fetch_historical_review_bodies import has_reliable_post_body, parse_html
 
 from auto_screen_open_reviews import (
     all_delivery_links_dead,
@@ -67,6 +67,76 @@ class ForumBodyExtractionTests(unittest.TestCase):
         image = next(link for link in page["outbound_links"] if link["url"].endswith("CharSet.png"))
         self.assertEqual(image["link_kind"], "embedded_image")
 
+    def test_plain_text_resource_url_is_extracted_and_trailing_punctuation_removed(self):
+        html = """
+        <html><head><title>Battler pack</title></head>
+        <body><div class="postbody">
+          These are reusable battler sprites shared for RPG Maker.
+          Download: https://files.example.org/battlers.zip.
+        </div></body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.org/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        page = parse_html(session, "https://example.org/topic")
+        raw = [entry for entry in page["outbound_links"] if entry["link_kind"] == "text_url"]
+        self.assertEqual(len(raw), 1)
+        self.assertEqual(raw[0]["url"], "https://files.example.org/battlers.zip")
+
+    def test_plain_text_url_and_anchor_duplicate_are_deduplicated(self):
+        html = """
+        <html><head><title>Resource</title></head>
+        <body><div class="postbody">
+          Download https://files.example.org/resource.zip
+          <a href="https://files.example.org/resource.zip">download</a>
+        </div></body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.org/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        page = parse_html(session, "https://example.org/topic")
+        matching = [entry for entry in page["outbound_links"] if entry["url"] == "https://files.example.org/resource.zip"]
+        self.assertEqual(len(matching), 1)
+        self.assertEqual(matching[0]["link_kind"], "anchor")
+
+    def test_metadata_only_description_is_not_a_retrieved_post_body(self):
+        page = {
+            "retrieval_method": "html",
+            "body_text": "Title Author Category short metadata excerpt",
+            "page_description": "Title Author Category short metadata excerpt",
+            "html_diagnostics": {
+                "body_source": "#ipsLayout_mainArea",
+                "body_node_found": True,
+                "body_text_chars": 44,
+            },
+        }
+        self.assertFalse(has_reliable_post_body(page))
+
+    def test_specific_post_body_is_reliable_even_when_short(self):
+        page = {
+            "retrieval_method": "html",
+            "body_text": "Short but actual post content.",
+            "html_diagnostics": {"body_source": ".postbody", "body_node_found": True},
+        }
+        self.assertFalse(has_reliable_post_body(page))
+
+    def test_long_generic_container_can_be_reliable_when_no_specific_selector_exists(self):
+        page = {
+            "retrieval_method": "html",
+            "body_text": "x" * 320,
+            "html_diagnostics": {"body_source": "#ipsLayout_mainArea", "body_node_found": True},
+        }
+        self.assertTrue(has_reliable_post_body(page))
 
 
 class ResourceEvidenceTests(unittest.TestCase):
@@ -88,6 +158,42 @@ class ResourceEvidenceTests(unittest.TestCase):
         result = check_resource_links(session, page, "https://example.com/topic")
         self.assertEqual(result["candidate_count"], 1)
         self.assertEqual(result["results"][0]["link_kind"], "image_anchor")
+
+    def test_plain_text_download_url_is_checked_as_a_resource_candidate(self):
+        response = Mock()
+        response.status_code = 200
+        response.close = Mock()
+        session = Mock()
+        session.head.return_value = response
+        page = {
+            "outbound_links": [{
+                "text": "URL written in post text",
+                "url": "https://files.example.org/battlers.zip",
+                "link_kind": "text_url",
+            }]
+        }
+        result = check_resource_links(session, page, "https://example.org/topic")
+        self.assertEqual(result["candidate_count"], 1)
+        self.assertEqual(result["results"][0]["link_kind"], "text_url")
+        self.assertTrue(result["results"][0]["reachable"])
+
+    def test_plain_text_screenshot_url_does_not_count_as_a_graphics_delivery(self):
+        candidate = link(
+            "https://example.org/Screenshot.png",
+            reachable=True,
+            text="URL written in post text",
+        )
+        candidate["link_kind"] = "text_url"
+        self.assertFalse(is_delivery_link(candidate, "graphics"))
+
+    def test_plain_text_semantic_attachment_image_can_count_as_a_graphics_delivery(self):
+        candidate = link(
+            "https://example.org/media/attachments/1/CharacterCharset.png",
+            reachable=True,
+            text="URL written in post text",
+        )
+        candidate["link_kind"] = "text_url"
+        self.assertTrue(is_delivery_link(candidate, "graphics"))
 
     def test_external_sprite_images_are_material_links_but_theme_icons_are_not(self):
         external = {
