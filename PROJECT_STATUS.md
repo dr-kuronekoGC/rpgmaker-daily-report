@@ -48,7 +48,7 @@ RPG Maker／RPGツクールに関連する素材、プラグイン、開発情�
 
 ### レビュー・監査
 - `review_queue.py`：PREレビューキューの生成、持ち越し、既存項目の監査。
-- `data/review/classification_review.json`：PRE項目の永続的なレビュー台帳。mainで確認した最新状態は523件（未確認86件、解決済み437件）。
+- `data/review/classification_review.json`：PRE項目の永続的なレビュー台帳。mainで確認した最新状態は523件（未確認84件、解決済み439件）。
 - `data/review/review_decisions.json`：明示的に記録された判定を日次処理に取り込むための入力。確認時点で290件の判定レコード。
 - `tools/apply_review_decisions.py`：判定記録の検証・取り込み。
 - `tools/auto_screen_open_reviews.py`：未確認PREの自動スクリーニング。本文・配布先・リンク状態等を使い、高確度の項目のみ自動処理する。
