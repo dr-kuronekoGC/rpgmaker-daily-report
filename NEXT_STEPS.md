@@ -2,7 +2,7 @@
 
 最終確認日：2026-10-23（JST）
 対象ブランチ：`main`
-直近の監査結果：PR #114のマージ後、2026-10-23 07:33 JSTに未確認87件を走査し、PRE-00226を対象外として1件解決。PRE台帳は523件中、未確認86件・解決済み437件。Rpg2S ITの41件はすべて `body_unverified` となり、本文未取得を理由に誤解決されていない。
+直近の監査結果：PR #115のマージ後、2026-10-23 07:40 JSTに未確認86件を走査し、PRE-00367・PRE-00370を対象外として2件解決。PRE台帳は523件中、未確認84件・解決済み439件。Rpg2S ITの41件はすべて `body_unverified` となり、本文未取得を理由に誤解決されていない。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
@@ -15,11 +15,11 @@
 
 **現在のmain上の実データ（2026-10-23確認）**
 - 全PRE：523件
-- 未確認：86件
-- 解決済み：437件
-- `data/review/auto_screen_audit.json` の最終監査時刻：2026-10-23 07:33 JST
-- 最新監査は87件を調査し、PRE-00226を対象外として1件解決。結果はmain上の `data/review/auto_screen_audit.json` と `classification_review.json` に反映済み。
-- その監査の開始時点ではRpg2S IT 41件が `body_unverified`、RMRK 28件とRPG Maker RU 18件は `body_found`。PRE-00226の解決後、未確認は86件。
+- 未確認：84件
+- 解決済み：439件
+- `data/review/auto_screen_audit.json` の最終監査時刻：2026-10-23 07:40 JST
+- 最新監査は86件を調査し、PRE-00367・PRE-00370を対象外として2件解決。結果はmain上の `data/review/auto_screen_audit.json` と `classification_review.json` に反映済み。
+- その前の監査ではPRE-00226を解決済み。Rpg2S ITの41件はすべて `body_unverified` で保護されている。
 - 以前の89件監査でPRE-00171・PRE-00231を解決した結果、およびpush競合対策後の保存もmain上に残っている。
 
 **実装・検証済み：PR #113**
@@ -36,20 +36,27 @@
 - PRのAuto-screen triage testsは39件すべて成功。Classification Auditも265件すべて成功。マージ後のAuto-screen Open Review Itemsも成功し、52件の関連安全テストが成功したログを確認。
 - 実データでPRE-00226を再確認し、配布可能な素材リンクがなく、本文が明確なアップロード依頼であることから `not_applicable` として解決。自動スクリーニング87件中1件解決、未確認86件・解決済み437件となった。
 
+**実装・検証済み：PR #115**
+[Recognize withdrawn and explicit recolor requests](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/115) はマージ済み（マージコミット `afe58fd4703f25e89d03d7e607d7dc65ef0253ae`）。
+- 「誰かにキャラクターの髪を茶色に塗り直してほしい」という明確な依頼文と、「Request withdrawn（依頼を取り下げ）」を検出する。
+- PRE-00367（バトラーの髪色変更依頼）とPRE-00370（VX用Charset依頼の取り下げ）を対象に回帰テストを追加。
+- Auto-screen triage testsは41件すべて成功し、Classification Auditも成功。マージ後の自動スクリーニングは86件を走査し、PRE-00367・PRE-00370を解決。関連安全テスト54件も成功したログを確認。
+- 人手の再確認注記、配布リンクのある項目を保護する既存ルールは維持。
+
 **根拠となった既存監査の所見**
 1. Rpg2S ITでは未確認41件の本文がすべて300文字未満で、配布リンク候補もゼロ。HTML自体は約14万文字ある例でも、取得本文はタイトル・作者・サイト案内の約170〜220文字だった。現状では素材がないとは判断できないため、本文取得を「成功」と扱わず、未確認のまま保護する。
 2. RMRKの本文内URL抽出は回帰テストで動作を確認済み。ただし最新監査では `plain_text_url` として記録された候補は0件。PRE-00343のImageshack URLは既に `anchor` として取得されており、同項目には人手の「未確認に戻す」注記があるため、自動解決しない。
 3. 本文が取得できた項目でも、質問・依頼・制作日記だけで自動除外せず、配布根拠を確認する。人手の再確認注記は常に優先する。PRE-00471・PRE-00507等の再確認指定は自動解決しない。
 
 **今回の再開時点で確認済みの結果**
-1. PR #113・#114はマージ済み。関連テストとClassification Auditは成功。
-2. PR #114後の自動スクリーニングは87件を走査し、PRE-00226を解決。台帳は523件中86件未確認／437件解決済み。
+1. PR #113・#114・#115はマージ済み。関連テストとClassification Auditは成功。
+2. PR #114後にPRE-00226、PR #115後にPRE-00367・PRE-00370を解決。台帳は523件中84件未確認／439件解決済み。
 3. Rpg2S ITの41件はすべて `body_unverified` となり、メタデータしか取得できないページを本文取得成功と誤認する問題を抑制できた。
 4. 最新監査で `plain_text_url` として記録されたリンクは0件。PRE-00343のImageshack URLは `anchor` として取得され、人手の再確認注記もあるため未確認のまま保持されている。
-5. PRE-00226は本文が「Please up the RTP Earth Animation sheets」という依頼で、使える配布リンクがないことを監査で確認し、自動解決された。
+5. PRE-00226はアップロード依頼、PRE-00367は再着色依頼、PRE-00370は依頼取り下げで、いずれも配布可能な素材リンクがないことを監査で確認し、自動解決された。
 
 **次に行う具体的な手順**
-1. 未確認86件を再スキャンする前に、PRE-00226と同様の明確な依頼パターンが他にもあるか、監査記録から候補を確認する。質問・制作依頼受付・制作日記をタイトルだけで一括除外しない。
+1. 未確認84件を対象に、明確な依頼・取り下げパターンが他にもあるか監査記録から候補を確認する。質問・制作依頼受付・制作日記をタイトルだけで一括除外しない。
 2. RMRKの本文内URL抽出はテスト済みだが、実データで新しい `plain_text_url` 候補が出たことは未確認。PRE-00343は人手注記を尊重して未確認のまま維持する。
 3. Rpg2S ITの本文取得は別問題として扱う。投稿本文を実際に取得できる経路が見つからない限り、該当項目は未確認のまま維持する。
 4. 次回の自動スクリーニング後も、自動解決ID・理由・リンク状態・人手注記を確認し、処理前後の件数を比較する。
@@ -101,10 +108,10 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 
 ## 2. 直近で確認できた作業結果
 
-- 現在のmain上のレビュー台帳は523件中、未確認86件・解決済み437件（2026-10-23にGitHubから直接確認）。
-- 以前の自動スクリーニング実行 [Run 39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は最初のpushが拒否されたが、競合対策後にPRE-00171・PRE-00231の結果がmainに反映された。PR #113後の [Run 39804761982](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39804761982) は成功。PR #114後の [Run 39865772273](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39865772273) も成功し、PRE-00226が解決済みとしてmainに反映された。
+- 現在のmain上のレビュー台帳は523件中、未確認84件・解決済み439件（2026-10-23にGitHubから直接確認）。
+- 以前の自動スクリーニング実行 [Run 39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は最初のpushが拒否されたが、競合対策後にPRE-00171・PRE-00231の結果がmainに反映された。PR #113後の [Run 39804761982](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39804761982)、PR #114後の [Run 39865772273](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39865772273)、PR #115後の [Run 39866632518](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39866632518) はすべて成功し、PRE-00226・PRE-00367・PRE-00370が解決済みとしてmainに反映された。
 - PR #110（[Recognize named legacy RMRK attachment downloads](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/110)）はコミット 09d3e306c91762c126c7fe25594a0e7dce7d17c6 でマージ済み。
-- PR #113（[Improve review body verification and plain-text URL detection](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/113)）とPR #114（[Recognize solved requests to upload resources](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/114)）はマージ済み。関連テスト・Classification Audit・各マージ後の自動スクリーニングはいずれも成功。本文取得品質の改善は実データで確認できたが、生URL抽出が追加候補を生んだかは未確認。PR #114後にPRE-00226を解決。
+- PR #113（[Improve review body verification and plain-text URL detection](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/113)）、PR #114（[Recognize solved requests to upload resources](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/114)）、PR #115（[Recognize withdrawn and explicit recolor requests](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/115)）はマージ済み。関連テスト・Classification Audit・各マージ後の自動スクリーニングはいずれも成功。PRE-00226・PRE-00367・PRE-00370を解決。本文内URL抽出が実データ上の新しい候補を生んだかは未確認。
 - Notion PRE Review Syncは、Secrets未設定時には処理がSkippedになる。外部同期を実際に確認するまでは未完了扱い。
 - PR #83は判定記録の承認待ち。差分にタイトル記載以外のPRE IDも含まれるため、別途差分全体を確認する必要がある。
 
