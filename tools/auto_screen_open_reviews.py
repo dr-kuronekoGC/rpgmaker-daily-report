@@ -48,6 +48,7 @@ REQUEST_RE = re.compile(
 )
 
 BODY_REQUEST_RE = re.compile(
+    r"\b(?:request\s+(?:withdrawn|cancelled|canceled)|i would (?:very much )?appreciate it if someone could\s+(?:make|share|provide|create|recolor|upload))\b|"
     r"\b(?:please|pls)\s+up\s+(?:the\s+)?(?:[\w-]+\s+){0,5}(?:sheets?|sprites?|tilesets?|graphics|animations?|assets?|resources?|plugins?)\b|"
     r"\b(?:looking for|searching for|request(?:ing)?\s+(?:a|an|some|for)|"
     r"need help finding|can anyone (?:make|share|provide|create)|"
