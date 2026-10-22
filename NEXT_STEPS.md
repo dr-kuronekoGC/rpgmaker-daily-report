@@ -2,7 +2,7 @@
 
 最終確認日：2026-10-23（JST）
 対象ブランチ：`main`
-直近の監査結果：2026-10-22 18:07 JSTに89件を走査し、PRE-00171を除外、PRE-00231を素材として確認。自動解決2件がmainへ反映され、現在523件中、未確認87件・解決済み436件。競合対策後の反映を確認済み。
+直近の監査結果：PR #113のマージ後、2026-10-23 00:26 JSTに未確認87件を走査。追加の自動解決は0件。PRE台帳は523件中、未確認87件・解決済み436件。Rpg2S ITの41件はすべて `body_unverified` となり、本文未取得を理由に誤解決されていない。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
@@ -17,28 +17,33 @@
 - 全PRE：523件
 - 未確認：87件
 - 解決済み：436件
-- data/review/auto_screen_audit.json の最終監査時刻：2026-10-22 18:07 JST
-- その監査は89件を調査し、PRE-00171を対象外として解決、PRE-00231を素材として確認。結果はコミット 10d4b6d26e87d192094c7d474ad33ee4576f6b98 でmainに反映済み。
-- push競合対策（共有concurrencyグループと最新main checkout）の有効化後、台帳更新が保存されたことを確認済み。
+- `data/review/auto_screen_audit.json` の最終監査時刻：2026-10-23 00:26 JST
+- 最新監査は87件を調査し、自動解決は0件。Rpg2S IT 41件が `body_unverified`、RMRK 28件とRPG Maker RU 18件は `body_found`。結果はmain上の `data/review/auto_screen_audit.json` に反映済み。
+- 以前の89件監査でPRE-00171・PRE-00231を解決した結果、およびpush競合対策後の保存もmain上に残っている。
 
-**今回の実装**
-PR #113: [Improve review body verification and plain-text URL detection](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/113)
-- RMRK等で投稿本文に直接書かれたHTTP(S) URLを、アンカーリンクと重複させず検出する。
-- Invisionの汎用レイアウト領域やメタ説明しか取れていない短い本文を body_unverified とし、自動解決の根拠に使わない。
-- 取得テキスト・リンクは監査用に残す。PRE台帳の判定自体はこのPRでは変更しない。
-- 回帰テストを追加。PRのActions結果を確認してから、マージや未確認87件への再適用を判断する。
+**実装・検証済み：PR #113**
+[Improve review body verification and plain-text URL detection](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/113) は2026-10-22にマージ済み（マージコミット `b79bae73b15a306ca743b818a0e98a9f2471cb4f`）。
+- 本文中に直接記載されたHTTP(S) URLを抽出し、アンカー／メディアリンクと重複させずに候補化する。
+- Invisionの汎用レイアウト領域やメタ説明だけの短い本文を `body_unverified` とし、自動解決に使わない。
+- 取得テキスト・リンクは監査用に保持。PR自体はPRE台帳の判定を直接変更しない。
+- `Auto-screen triage tests` と `Classification Audit` は成功。マージ後の `Auto-screen Open Review Items` も成功し、最新監査結果がmainに保存された。
 
 **根拠となった既存監査の所見**
 1. Rpg2S ITでは未確認41件の本文がすべて300文字未満で、配布リンク候補もゼロ。HTML自体は約14万文字ある例でも、取得本文はタイトル・作者・サイト案内の約170〜220文字だった。現状では素材がないとは判断できないため、本文取得を「成功」と扱わず、未確認のまま保護する。
 2. RMRKでは本文内にURLがテキストとして記載され、HTMLアンカーだけを調べると見逃す可能性がある。プレーンテキストURLを候補に加えたうえで、プレビュー画像・プロフィール画像・実素材を既存ルールで区別する。
 3. 本文が取得できた項目でも、質問・依頼・制作日記だけで自動除外せず、配布根拠を確認する。人手の再確認注記は常に優先する。PRE-00471・PRE-00507等の再確認指定は自動解決しない。
 
+**今回の再開時点で確認済みの結果**
+1. PR #113のテストとClassification Auditは成功し、マージ済み。
+2. マージ後の自動スクリーニングは87件を走査し、追加解決0件。台帳は523件中87件未確認／436件解決済みで変化なし。
+3. Rpg2S ITの41件はすべて `body_unverified` となり、メタデータしか取得できないページを本文取得成功と誤認する問題を抑制できた。
+4. 最新監査のリンク結果では `plain_text_url` として記録されたリンクは0件。PRE-00343の2つのImageshack URLは `anchor` として記録されているため、本文内URL抽出が実データで追加候補を生んだとはまだ確認できない。これはテスト成功とは分けて扱う。
+
 **次に行う具体的な手順**
-1. PR #113 の Auto-screen triage tests と Classification Audit の結論を確認する。失敗があればログ・差分を確認して修正する。
-2. PRの差分とテスト結果を確認し、問題がなければマージする。
-3. マージ後に自動スクリーニングを実行し、本文未確認扱いがRpg2S ITの誤解決を防ぐこと、RMRKの本文URLが候補に入ることを監査記録で確認する。
-4. その後に限り、未確認PREを再スキャンする。自動解決ID・理由・リンク状態・人手注記を確認し、処理前後の件数を比較する。
-5. 既存の人手判定・再確認注記を回帰テストに追加し、誤判定があれば自動解決ルールを狭める。
+1. PRE-00343を中心に、HTMLからのリンク抽出と配布リンク判定を確認する。Imageshackの表示用ページが実素材として扱えるかは未確定なので、自動解決しない。
+2. 生URL抽出の単体テストは成功しているため、まず実データで `plain_text_url` が0件だった理由を確認する。必要なら小さなテスト追加を行うが、候補が増えないことだけを理由にロジックを広げない。
+3. Rpg2S ITの本文取得は別問題として扱う。投稿本文を実際に取得できる経路が見つからない限り、41件は未確認のまま維持する。
+4. 次回の自動スクリーニング後も、自動解決ID・理由・リンク状態・人手注記を確認し、処理前後の件数を比較する。
 
 **完了条件**
 - 構文検証・関連テストが成功している。
@@ -88,9 +93,9 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 ## 2. 直近で確認できた作業結果
 
 - 現在のmain上のレビュー台帳は523件中、未確認87件・解決済み436件（2026-10-23にGitHubから直接確認）。
-- 直近の自動スクリーニング監査は [Run 39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482)。初回はPRE-00171・PRE-00231の解決後にpushが拒否されたが、concurrencyと最新main checkoutの修正後、結果はコミット 10d4b6d26e87d192094c7d474ad33ee4576f6b98 でmainに反映済み。
+- 以前の自動スクリーニング実行 [Run 39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は最初のpushが拒否されたが、競合対策後にPRE-00171・PRE-00231の結果がmainに反映された。PR #113のマージ後には [Auto-screen Open Review Items Run 39804761982](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39804761982) が成功し、最新監査は87件・追加解決0件。
 - PR #110（[Recognize named legacy RMRK attachment downloads](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/110)）はコミット 09d3e306c91762c126c7fe25594a0e7dce7d17c6 でマージ済み。
-- PR #113（[Improve review body verification and plain-text URL detection](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/113)）を作成。本文URL検出と本文取得品質判定の改善、および回帰テストを追加。PRのテスト結果は現在確認中で、未マージ・未適用。
+- PR #113（[Improve review body verification and plain-text URL detection](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/113)）はマージ済み。関連テスト・Classification Audit・マージ後の自動スクリーニングはいずれも成功。本文取得品質の改善は実データで確認できたが、生URL抽出が追加候補を生んだかは未確認。
 - Notion PRE Review Syncは、Secrets未設定時には処理がSkippedになる。外部同期を実際に確認するまでは未完了扱い。
 - PR #83は判定記録の承認待ち。差分にタイトル記載以外のPRE IDも含まれるため、別途差分全体を確認する必要がある。
 
@@ -99,7 +104,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 ### ユーザーから依頼済み
 - 自動分類の精度を高め、正確性を保ちながら未確認PREを減らす。
 - 改善ロジックを十分に検証できたら、既存の未確認リストにも適用する。
-- 今回はプロジェクト台帳を整備する。Bot本体のコード変更は行わない。
+- PR #113によるBot本体の変更は既にマージ済み。今後も今回の検証で必要性が確認できた範囲だけを小さく変更し、無関係なコード変更は避ける。
 - 秘密情報を記載しない。
 - 台帳のためだけに無関係なコードやワークフローを変更しない。
 
