@@ -755,7 +755,7 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
             for entry in evidence
             if isinstance(entry, dict)
         }
-        if intent == "not_resource" and not positive_release:
+        if intent == "not_resource" and not positive_release and not has_usable_delivery:
             if confidence == "high":
                 return ("not_applicable", "既存の素材意図分類器が高確度で素材・配布物ではないと判定")
             if confidence == "medium" and signals.intersection({
