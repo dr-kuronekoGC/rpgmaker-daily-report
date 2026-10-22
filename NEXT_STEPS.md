@@ -21,7 +21,7 @@
 
 直近の正常完了実行（Run `39749442398`）では93件を調査し、PRE-00340、PRE-00342、PRE-00351、PRE-00361の4件を自動解決、89件を保留した。PR #110「Recognize named legacy RMRK attachment downloads」は回帰テスト成功後にマージ済み。旧式RMRKの添付URLと表示ファイル名を組み合わせて素材リンクを判定する。
 
-その後のマージ後実行（Run `39750871482`）では、構文検証・安全性テスト・スクリーニング処理は成功し、ログ上はPRE-00171とPRE-00231の2件を自動解決した。しかし、コミット `6784258` のpushが `main` の先行更新によりnon-fast-forwardで拒否され、ワークフロー全体はfailure。`main` 上ではこの2件は未解決のまま。今回、通常収集・Review Link Audit・Notion同期などが使っている共有concurrencyグループ `rpg-maker-daily-report-main` を当ワークフローにも設定した（`6cf1393`）。さらに、待機中にmainが先行更新されても古いイベントSHAから処理しないよう、checkout時に最新の `main` ブランチを指定した（`4ca1c07`）。修正後の成功・台帳反映は実行ログを見てから確定する。現在のレビュー台帳は523件中、未確認89件・解決済み434件。
+その後のマージ後実行（Run `39750871482`）では、構文検証・安全性テスト・スクリーニング処理は成功し、ログ上はPRE-00171とPRE-00231の2件を自動解決した。しかし、コミット `6784258` のpushが `main` の先行更新によりnon-fast-forwardで拒否され、ワークフロー全体はfailure。`main` 上ではこの2件は未解決のまま。今回、通常収集・Review Link Audit・Notion同期などが使っている共有concurrencyグループ `rpg-maker-daily-report-main` を当ワークフローにも設定した（`6cf1393`）。さらに、待機中にmainが先行更新されても古いイベントSHAから処理しないよう、checkout時に最新の `main` ブランチを指定した（`4ca1c07`）。修正後の成功・台帳反映は実行ログを見てから確定する。現在のレビュー台帳は523件中、未確認87件・解決済み436件。
 
 監査データ（`auto_screen_audit.json`、2026-10-22 17:40 JSTの実行）の一次集計では、未確認89件の内訳は graphics 39、audio 13、plugin 35、種別不明6。配布リンク候補が見つからないものが87件で、配布リンクが1件以上到達可能なものは3件、明確な素材公開シグナルがあるものは10件だった。これらは自動除外の根拠ではなく、むしろ素材を誤除外しないため優先して精査すべき候補。現在の自動スクリーナーは高確度の「対象外」判定を主目的としているため、今後は既存の人手判定と照合し、素材候補を安全に確定できる別ルールを設計できるか検討する。
 
@@ -80,9 +80,9 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 
 ## 2. 直近で確認できた作業結果
 
-- `main` の直近確認コミット：`6cf13933a29c5b94aa653438d9867820b01fa7b9`（自動スクリーニングに共有concurrencyグループを追加）。PR #110はコミット `09d3e306c91762c126c7fe25594a0e7dce7d17c6` でマージ済み。
+- 自動スクリーニングの競合対策として共有concurrencyグループと最新main checkoutを追加。その後の監査結果はコミット `10d4b6d26e87d192094c7d474ad33ee4576f6b98` としてmainに反映済み。PR #110はコミット `09d3e306c91762c126c7fe25594a0e7dce7d17c6` でマージ済み。
 - `Auto-screen Open Review Items`：実行ID [39749442398](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39749442398)、結論success。
-- PR #110マージ後の実行ID [39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) はfailure。PRE-00171・PRE-00231を解決と判定したが、pushが `main -> main (fetch first)` で拒否された。これを受け、共有concurrencyグループを当ワークフローにも追加した（コミット `6cf1393`）。修正後の実行結果は未確認。最新main checkoutも明示した（コミット `4ca1c07`）。
+- 失敗した実行ID [39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) ではPRE-00171・PRE-00231の解決判定後にpushが拒否された。競合対策を追加した後、監査結果がmainへ反映され、PRE-00171とPRE-00231が台帳上で解決済みになったことを確認。現在の未確認数は87。
 - 同実行で構文検証、素材証拠・安全性テスト、自動スクリーニング、コミット工程が成功。
 - 同実行は93件を調査し、PRE-00340、PRE-00342、PRE-00351、PRE-00361を自動解決。残り89件は保留。
 - PR #110（[Recognize named legacy RMRK attachment downloads](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/110)）は回帰テスト成功後、コミット `09d3e306c91762c126c7fe25594a0e7dce7d17c6` としてマージ済み。マージ後の自動スクリーニング実行ID [39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は、この台帳更新時点で実行中。
