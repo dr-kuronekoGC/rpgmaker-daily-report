@@ -33,6 +33,31 @@ def clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", value or "").strip()
 
 
+def has_reliable_post_body(page: dict) -> bool:
+    """Return True only when text appears to come from a real post body.
+
+    Metadata descriptions and short text scraped from a generic Invision layout
+    container are not sufficient evidence that the post itself was retrieved.
+    This is diagnostic only: a missing body must leave an item open for review.
+    """
+    body = clean_text(str(page.get("body_text") or ""))
+    if not body:
+        return False
+
+    method = page.get("retrieval_method")
+    if method in {"reddit_json", "discourse_json"}:
+        return True
+
+    diagnostics = page.get("html_diagnostics") or {}
+    source = diagnostics.get("body_source")
+    if source in {None, "", "empty", "meta_description"}:
+        return False
+    if source in {"#ipsLayout_mainArea", ".ipsLayout_mainArea"}:
+        # This generic container may contain only title/author/category chrome.
+        return len(body) >= 300
+    return len(body) >= 80
+
+
 def is_public_http_url(url: str) -> bool:
     try:
         parsed = urlparse(url)
@@ -76,6 +101,24 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
             "text": clean_text(anchor.get_text(" ", strip=True))[:160],
             "url": href[:2000],
             "link_kind": "image_anchor" if anchor.select_one("img[src]") else "anchor",
+        })
+        if len(links) >= 100:
+            return links
+
+    # Some forums print a downloadable URL as ordinary post text rather than
+    # wrapping it in an <a href>. Capture explicit HTTP(S) URLs from the post
+    # body; anchors are processed first, so a URL present both ways is deduped.
+    raw_text = clean_text(node.get_text(" ", strip=True))
+    for match in re.finditer(r"https?://[^\\s<>\\\"']+", raw_text, re.I):
+        href = match.group(0).rstrip(".,;:!?)]}")
+        parsed = urlparse(href)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+            continue
+        seen.add(href)
+        links.append({
+            "text": "URL written in post text",
+            "url": href[:2000],
+            "link_kind": "text_url",
         })
         if len(links) >= 100:
             return links
@@ -721,7 +764,7 @@ def fetch_item(session: requests.Session, item: dict) -> dict:
                 page = try_invision_query_fallback(session, url, page)
                 page = try_wayback_fallback(session, url, page)
         result.update(page)
-        if result.get("body_text") or result.get("page_description"):
+        if has_reliable_post_body(result):
             result["retrieval_status"] = "body_found"
         elif result.get("http_status") == 200:
             result["retrieval_status"] = "page_loaded_no_body"
