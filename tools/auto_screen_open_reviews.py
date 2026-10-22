@@ -692,7 +692,18 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
         return ("not_applicable", "本文に素材配布ではない／ダウンロード不可／プレビューのみと明記されている")
 
     # A solved/filled thread may contain a useful answer or an attached asset.
+    # But when it began as a resource request, has no positive release evidence,
+    # and has no usable delivery link, it is safe to resolve as a non-resource.
+    # Non-request solved topics remain open because the solution may itself be useful.
     if resolved_marker and not has_usable_delivery:
+        resolved_request_signal = bool(
+            REQUEST_RE.search(title) or BODY_REQUEST_RE.search(body[:1800])
+        )
+        if resolved_request_signal and not positive_release:
+            return (
+                "not_applicable",
+                "解決済み・充足済みの素材依頼だが、配布根拠および利用可能な素材リンクを確認できない",
+            )
         return None
 
     # Requests for a resource are excluded only when the post itself contains
