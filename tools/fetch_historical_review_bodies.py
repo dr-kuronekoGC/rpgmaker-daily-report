@@ -115,7 +115,7 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
         if text_node.find_parent("a"):
             continue
         raw_text = str(text_node)
-        for match in re.finditer(r"https?://[^\\s<>\\\"'\\x60]+", raw_text, re.I):
+        for match in re.finditer(r"https?://\S+", raw_text, re.I):
             href = match.group(0).rstrip(".,;:!?)]}")
             parsed = urlparse(href)
             if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
