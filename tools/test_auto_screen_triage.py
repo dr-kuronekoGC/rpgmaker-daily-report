@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
 
-from fetch_historical_review_bodies import parse_html
+from fetch_historical_review_bodies import body_retrieval_status, parse_html
 
 from auto_screen_open_reviews import (
     all_delivery_links_dead,
@@ -25,6 +25,61 @@ def link(url, *, reachable=False, dead=False, error=None, text=""):
 
 
 class ForumBodyExtractionTests(unittest.TestCase):
+    def test_plain_text_urls_are_collected_and_deduplicated_with_anchors(self):
+        html = """
+        <html><head><title>Character resources</title></head>
+        <body><div class="postbody">
+          Download: https://example.com/assets/charset.png.
+          <a href="https://example.com/assets/plugin.js">https://example.com/assets/plugin.js</a>
+        </div></body></html>
+        """
+        response = Mock()
+        response.status_code = 200
+        response.url = "https://example.com/topic"
+        response.text = html
+        response.raise_for_status = Mock()
+        session = Mock()
+        session.get.return_value = response
+
+        page = parse_html(session, "https://example.com/topic")
+        urls = [item["url"] for item in page["outbound_links"]]
+        self.assertEqual(urls.count("https://example.com/assets/charset.png"), 1)
+        self.assertEqual(urls.count("https://example.com/assets/plugin.js"), 1)
+        charset = next(item for item in page["outbound_links"] if item["url"].endswith("charset.png"))
+        self.assertEqual(charset["link_kind"], "plain_text_url")
+        plugin = next(item for item in page["outbound_links"] if item["url"].endswith("plugin.js"))
+        self.assertEqual(plugin["link_kind"], "anchor")
+
+    def test_short_generic_layout_fallback_is_not_verified_post_body(self):
+        page = {
+            "http_status": 200,
+            "retrieval_method": "html",
+            "body_text": "Login notice Topic title author and forum navigation",
+            "page_description": "",
+            "html_diagnostics": {
+                "body_source": "#ipsLayout_mainArea",
+                "body_selector_used": "#ipsLayout_mainArea",
+                "body_text_chars": 52,
+            },
+        }
+        self.assertEqual(body_retrieval_status(page), "body_unverified")
+
+    def test_unverified_body_is_never_auto_resolved(self):
+        item = {
+            "pre_id": "PRE-TEST-BODY-UNVERIFIED",
+            "url": "https://example.com/topic",
+            "title": "Icone MZ - stile",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "Login notice Topic title author and forum navigation",
+            "http_status": 200,
+            "retrieval_status": "body_unverified",
+            "resource_link_check": {"candidate_count": 0, "results": []},
+        }
+        self.assertIsNone(classify_page(item, page))
+
     def test_first_post_sets_intent_but_all_thread_assets_are_checked(self):
         html = """
         <html><head><title>Post your Battlers here</title>

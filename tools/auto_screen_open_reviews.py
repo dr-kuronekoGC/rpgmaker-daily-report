@@ -825,10 +825,7 @@ def main() -> int:
             try:
                 html_page = fetcher.parse_html(session, clean(item.get("url")))
                 page.update(html_page)
-                if page.get("body_text") or page.get("page_description"):
-                    page["retrieval_status"] = "body_found"
-                elif page.get("http_status") == 200:
-                    page["retrieval_status"] = "page_loaded_no_body"
+                page["retrieval_status"] = fetcher.body_retrieval_status(page)
             except fetcher.requests.HTTPError as exc:
                 actual_status = exc.response.status_code if exc.response is not None else None
                 if actual_status not in {404, 410}:

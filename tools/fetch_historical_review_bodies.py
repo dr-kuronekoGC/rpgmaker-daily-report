@@ -120,6 +120,25 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
             "link_kind": "embedded_image",
         })
         if len(links) >= 100:
+            return links
+
+    # Some older forum posts print URLs as ordinary text instead of making them
+    # clickable anchors. Capture only explicit HTTP(S) URLs; downstream delivery
+    # checks still distinguish downloadable assets from previews and unrelated
+    # links. URLs already found in anchors or media elements are deduplicated.
+    visible_text = node.get_text(" ", strip=True)
+    for match in re.finditer(r"""https?://[^\s<>"']+""", visible_text, re.I):
+        href = match.group(0).rstrip(".,;:!?)]}»")
+        parsed = urlparse(href)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
+            continue
+        seen.add(href)
+        links.append({
+            "text": href[:160],
+            "url": href[:2000],
+            "link_kind": "plain_text_url",
+        })
+        if len(links) >= 100:
             break
     return links
 
@@ -687,6 +706,31 @@ def try_wayback_fallback(
     return archived
 
 
+def body_retrieval_status(page: dict) -> str:
+    """Avoid treating short layout/metadata fallbacks as verified post bodies."""
+    body = clean_text(page.get("body_text") or "")
+    description = clean_text(page.get("page_description") or "")
+    if not body and not description:
+        return "page_loaded_no_body" if page.get("http_status") == 200 else "unavailable"
+
+    if page.get("retrieval_method") == "html":
+        diagnostics = page.get("html_diagnostics") or {}
+        selector = diagnostics.get("body_selector_used")
+        source = diagnostics.get("body_source")
+        generic_fallbacks = {
+            "#ipsLayout_mainArea", ".ipsLayout_mainArea", "main",
+            "#content", "#main", "article",
+        }
+        body_chars = len(body or description)
+        if source == "meta_description" or (
+            selector in generic_fallbacks and body_chars < 300
+        ):
+            # Keep the text and links for audit/debugging, but do not allow
+            # classify_page to auto-resolve based on an unverified excerpt.
+            return "body_unverified"
+    return "body_found"
+
+
 def fetch_item(session: requests.Session, item: dict) -> dict:
     url = str(item.get("url") or "").strip()
     result = {
@@ -721,12 +765,7 @@ def fetch_item(session: requests.Session, item: dict) -> dict:
                 page = try_invision_query_fallback(session, url, page)
                 page = try_wayback_fallback(session, url, page)
         result.update(page)
-        if result.get("body_text") or result.get("page_description"):
-            result["retrieval_status"] = "body_found"
-        elif result.get("http_status") == 200:
-            result["retrieval_status"] = "page_loaded_no_body"
-        else:
-            result["retrieval_status"] = "unavailable"
+        result["retrieval_status"] = body_retrieval_status(result)
     except requests.HTTPError as exc:
         status = exc.response.status_code if exc.response is not None else None
         result["http_status"] = status
