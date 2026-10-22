@@ -33,6 +33,17 @@ def clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", value or "").strip()
 
 
+def has_usable_post_body(page: dict) -> bool:
+    """True only when actual post text, rather than metadata, was extracted."""
+    body = clean_text(page.get("body_text"))
+    if len(body) < 80:
+        return False
+    diagnostics = page.get("html_diagnostics")
+    if isinstance(diagnostics, dict):
+        return diagnostics.get("body_content_quality") is True
+    return True
+
+
 def is_public_http_url(url: str) -> bool:
     try:
         parsed = urlparse(url)
