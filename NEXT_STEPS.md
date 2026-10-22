@@ -1,8 +1,8 @@
 # NEXT_STEPS.md
 
-最終確認日：2026-10-21（JST）
+最終確認日：2026-10-22（JST）
 対象ブランチ：`main`
-台帳作成前に確認した先頭コミット：`a15c0ff03d6102086bff262b33daa12b21132d21`。本台帳2ファイルはその後にmainへ追加した。
+直近の確認済みコミット：`09d3e306c91762c126c7fe25594a0e7dce7d17c6`（PR #110 マージ後）。このコミットで起動した自動スクリーニングは確認時点で実行中。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
@@ -15,10 +15,11 @@
 
 確認時点の台帳：
 - 全PRE：523件
-- 未確認：94件
-- 解決済み：429件
+- 未確認：89件
+- 解決済み：434件
+- これは2026-10-22の直近完了実行後の数。PR #110 マージ後の再実行結果は未確定。
 
-直近の自動スクリーニングは成功。96件を調査し、PRE-00125とPRE-00128を自動解決、94件は保留を維持した。構文検証と `tools/test_auto_screen_triage.py`／`tools/test_fetch_historical_review_bodies.py` のテストは成功している。
+直近の完了済み自動スクリーニングは成功。93件を調査し、PRE-00340、PRE-00342、PRE-00351、PRE-00361の4件を自動解決、89件は保留を維持した。構文検証と安全性テストは成功している。PR #110「Recognize named legacy RMRK attachment downloads」は回帰テスト成功後にマージ済み。旧式RMRKの添付URLと表示ファイル名を組み合わせて素材リンクを判定する。マージ後の自動スクリーニングは現在の実行結果を確認中。
 
 **次に行う具体的な手順**
 1. 最新の `data/review/auto_screen_audit.json` を確認し、未確認94件を「本文・配布リンクが確認できた」「本文は取得できたが素材証拠がない」「リンク切れと到達不能が混在」「リクエスト・相談・紹介・制作日記の可能性」「分類根拠が矛盾」等に分ける。
@@ -64,10 +65,11 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 
 ## 2. 直近で確認できた作業結果
 
-- `main` の最新確認コミット：`a15c0ff03d6102086bff262b33daa12b21132d21`（2026-10-20 UTC）。
-- `Auto-screen Open Review Items`：実行ID [39482910528](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39482910528)、結論success。
+- `main` の直近確認コミット：`09d3e306c91762c126c7fe25594a0e7dce7d17c6`（PR #110 マージ）。
+- `Auto-screen Open Review Items`：実行ID [39749442398](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39749442398)、結論success。
 - 同実行で構文検証、素材証拠・安全性テスト、自動スクリーニング、コミット工程が成功。
-- 同実行は96件を調査し、PRE-00125とPRE-00128を自動解決。残り94件は保留。
+- 同実行は93件を調査し、PRE-00340、PRE-00342、PRE-00351、PRE-00361を自動解決。残り89件は保留。
+- PR #110（[Recognize named legacy RMRK attachment downloads](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/110)）は回帰テスト成功後、コミット `09d3e306c91762c126c7fe25594a0e7dce7d17c6` としてマージ済み。マージ後の自動スクリーニング実行ID [39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は、この台帳更新時点で実行中。
 - `Notion PRE Review Sync`：実行ID [39483266341](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39483266341)、Actionsの結論はsuccessだが、Secrets未設定により同期はSkipped。
 - `PROJECT_STATUS.md` と `NEXT_STEPS.md` はこのコミット時点では存在しなかったため、今回新規作成する。
 
