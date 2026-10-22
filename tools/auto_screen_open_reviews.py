@@ -713,8 +713,8 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     # posts (e.g. "if you need a piece, send me the sheet music"). Require
     # explicit seeking/request phrasing in body text to avoid false exclusions.
     request_signal = bool(REQUEST_RE.search(title) or BODY_REQUEST_RE.search(body[:1800]))
-    if request_signal and not positive_release:
-        return ("not_applicable", "素材・プラグイン等を求める依頼投稿で、取得可能な配布物の記載を確認できない")
+    if request_signal and not positive_release and not has_usable_delivery:
+        return ("not_applicable", "素材・プラグイン等を求める依頼投稿で、配布根拠および素材ファイル／配布先リンクを確認できない")
 
     # Generic discussion/question/showcase language alone is too weak.
     # Require explicit non-deliverable context and no release evidence.
