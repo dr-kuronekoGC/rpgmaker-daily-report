@@ -421,6 +421,29 @@ class ResourceEvidenceTests(unittest.TestCase):
         )
 
 
+    def test_named_legacy_rmrk_attachment_can_confirm_a_graphic_resource(self):
+        url = "https://rmrk.net/index.php?action=dlattach;topic=38714.0;attach=20424"
+        candidate = link(url, reachable=True, text="FlameDramon.png")
+        candidate["link_kind"] = "image_anchor"
+
+        self.assertTrue(is_delivery_link(candidate, "graphics"))
+        self.assertFalse(is_delivery_link(candidate, "audio"))
+
+        result = confirmed_resource_decision(
+            "[RMXP] FlameDramon charset",
+            "Reusable character charset image attached for use in RPG Maker.",
+            {"candidate_count": 1, "results": [candidate]},
+        )
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "confirmed")
+
+    def test_legacy_rmrk_preview_attachment_does_not_confirm_resource(self):
+        url = "https://rmrk.net/index.php?action=dlattach;topic=38714.0;attach=20424"
+        candidate = link(url, reachable=True, text="Screenshot_1-30.png")
+        candidate["link_kind"] = "image_anchor"
+
+        self.assertFalse(is_delivery_link(candidate, "graphics"))
+
     def test_italian_personal_art_topic_ignores_profile_avatar_links(self):
         item = {
             "pre_id": "PRE-00126",
