@@ -333,6 +333,48 @@ class ResourceEvidenceTests(unittest.TestCase):
         self.assertIsNotNone(result)
         self.assertEqual(result[0], "not_applicable")
 
+    def test_solved_rtp_upload_request_without_delivery_link_is_excluded(self):
+        item = {
+            "pre_id": "PRE-00226",
+            "url": "https://rmrk.net/index.php?topic=32111.0",
+            "title": "[Resolved] VX RTP Earth Animation Sheets",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": (
+                "Please up the RTP Earth Animation sheets for VX pls, thx. "
+                "I don't have access to a computer with VX on it atm."
+            ),
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link("https://rmrk.net/Smileys/default/sad.gif", dead=True, text=":(")
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_request_to_bump_thread_is_not_mistaken_for_upload_request(self):
+        item = {
+            "pre_id": "PRE-TEST-BUMP-REQUEST",
+            "url": "https://example.com/topic",
+            "title": "[Resolved] VX RTP Earth Animation Sheets",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "Please up the thread if anyone has more information.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"candidate_count": 0, "results": []},
+        }
+        self.assertIsNone(classify_page(item, page))
+
     def test_solved_resource_request_with_inconclusive_delivery_link_stays_open(self):
         item = {
             "pre_id": "PRE-TEST-SOLVED-REQUEST-LINK",
