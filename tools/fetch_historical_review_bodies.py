@@ -109,7 +109,7 @@ def extract_links(node, base_url: str) -> list[dict[str, str]]:
     # wrapping it in an <a href>. Capture explicit HTTP(S) URLs from the post
     # body; anchors are processed first, so a URL present both ways is deduped.
     raw_text = clean_text(node.get_text(" ", strip=True))
-    for match in re.finditer(r"https?://[^\\s<>\\\"']+", raw_text, re.I):
+    for match in re.finditer(r"""https?://[^\s<>"']+""", raw_text, re.I):
         href = match.group(0).rstrip(".,;:!?)]}")
         parsed = urlparse(href)
         if parsed.scheme not in {"http", "https"} or not parsed.hostname or href in seen:
