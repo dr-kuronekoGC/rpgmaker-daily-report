@@ -844,6 +844,10 @@ def main() -> int:
             "http_status": page.get("http_status"),
             "retrieval_status": page.get("retrieval_status"),
             "retrieval_method": page.get("retrieval_method"),
+            "retrieval_error": page.get("retrieval_error"),
+            # Parser diagnostics are essential when a page returns HTTP 200 but
+            # no post body: distinguish missing selectors from a challenge page.
+            "html_diagnostics": page.get("html_diagnostics"),
             "resource_link_check": page.get("resource_link_check"),
             "delivery_link_check": delivery_summary,
             "html_diagnostics": page.get("html_diagnostics"),
