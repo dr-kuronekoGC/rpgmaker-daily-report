@@ -132,7 +132,22 @@ def get_items(seen):
 
     while current_url and current_url not in visited and pages_fetched < MAX_PAGES:
         visited.add(current_url)
-        payload = get_html(current_url)
+        try:
+            payload = get_html(current_url)
+        except Exception as exc:
+            # The forum currently returns a 404 for its generated second-page
+            # URL in some runs. Keep usable results from earlier pages rather
+            # than discarding the entire scan; the shared request tracker still
+            # records the failed request, so Source Health can report PARTIAL.
+            response = getattr(exc, "response", None)
+            status_code = getattr(response, "status_code", None)
+            if pages_fetched > 0 and status_code == 404:
+                print(
+                    f"[{SOURCE_NAME}] Pagination stopped after "
+                    f"{pages_fetched} page(s): next page returned HTTP 404"
+                )
+                break
+            raise
         discussions, next_url = parse_discussions(payload)
         pages_fetched += 1
         total_discussions += len(discussions)
