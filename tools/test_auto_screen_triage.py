@@ -482,6 +482,23 @@ class ResourceEvidenceTests(unittest.TestCase):
         )
         self.assertIsNone(result)
 
+    def test_legacy_imageshack_image_urls_with_trailing_slash_are_graphics_links(self):
+        url = "http://img11.imageshack.us/i/kungfubattler.jpg/"
+        live = link(url, reachable=True, text=url)
+        live["link_kind"] = "anchor"
+        self.assertTrue(is_delivery_link(live, "graphics"))
+        self.assertFalse(is_delivery_link(live, "audio"))
+
+        dead = link(url, dead=True, text=url)
+        dead["link_kind"] = "anchor"
+        self.assertTrue(
+            all_delivery_links_dead(
+                "battlers i've drawn",
+                "I drew these battlers.",
+                {"results": [dead]},
+            )
+        )
+
     def test_legacy_photobucket_query_filename_is_a_graphics_delivery_link(self):
         url = (
             "http://s395.photobucket.com/albums/pp36/sell58/"
