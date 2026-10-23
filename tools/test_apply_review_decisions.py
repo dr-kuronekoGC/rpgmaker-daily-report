@@ -58,6 +58,21 @@ class ReviewDecisionImportTests(unittest.TestCase):
         self.assertEqual(summary["already_applied"], 1)
         self.assertEqual(updated, queue)
 
+    def test_same_decision_with_different_note_preserves_existing_note(self):
+        queue = make_queue()
+        payload = {"decisions": [{
+            "pre_id": "PRE-00002",
+            "decision": "confirmed",
+            "note": "Automatically organized: resource",
+        }]}
+
+        updated, summary = apply_decisions(queue, payload)
+
+        self.assertEqual(summary["applied"], 0)
+        self.assertEqual(summary["already_applied"], 1)
+        self.assertEqual(updated, queue)
+        self.assertEqual(updated["items"][1]["review_note"], "resource")
+
     def test_duplicate_decision_ids_are_rejected(self):
         payload = {"decisions": [
             {"pre_id": "PRE-00001", "decision": "plugin"},
