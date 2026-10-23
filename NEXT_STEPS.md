@@ -29,9 +29,11 @@ Source Checkは12件中8件を確認し、4件失敗（GameDevMarket 403、Maker
 - 全PRE：523件
 - 未確認：84件
 - 解決済み：439件
-- `data/review/auto_screen_audit.json` の最終監査時刻：2026-10-23 07:40 JST
-- 最新監査は86件を調査し、PRE-00367・PRE-00370を対象外として2件解決。結果はmain上の `data/review/auto_screen_audit.json` と `classification_review.json` に反映済み。
+- `data/review/auto_screen_audit.json` の直近確認対象は未確認84件。マージ後のAuto-screen Run 39900506829は成功したが、追加解決は0件。
 - その前の監査ではPRE-00226を解決済み。Rpg2S ITの41件はすべて `body_unverified` で保護されている。
+- Review Link Audit Run 39949380026（再実行attempt 2）は成功。未確認84件の元投稿URLはすべてHTTP到達可能で、投稿ページ自体のリンク切れは0件。ただし、配布先リンクの状態とは別。
+- 最新のopen-review監査は74件を `keep_manual_review`、10件を `needs_body_review` と提案。10件のうち7件はRpg2S ITで本文未取得、3件はRMRKで本文取得済みだがタイトル語だけでは配布物と断定できない。提案は監査用で、判定台帳を変更しない。
+- 自動スクリーニングで見つかったHTTP 404/410のURLにはプレビュー画像等も含まれる。素材の配布リンクと確認できたものは2項目だけで、どちらも人手の「未確認に戻す／再確認」注記があるため、除外しない判断が正しい。
 - 以前の89件監査でPRE-00171・PRE-00231を解決した結果、およびpush競合対策後の保存もmain上に残っている。
 
 **実装・検証済み：PR #113**
@@ -108,7 +110,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 3. マージ後に日次ワークフローまたは該当する判定取込処理を実行し、対象PREが正しく解決済みになることを確認する。
 4. 台帳・Notionを使う場合は、両者の状態を照合する。
 
-## 今回の独立評価：精度改善の有望点
+## 3. 今回の独立評価：精度改善の有望点
 
 1. **Rpg2S ITの本文取得に問題がある可能性が高い。** 未確認41件すべてで本文長が300文字未満、配布リンク候補ゼロ。代表例ではHTTP 200・HTML約14万文字なのに、抽出結果はタイトル・作者・カテゴリ等の約170〜220文字で、本文セレクタは `#ipsLayout_mainArea` にフォールバックしている。代替URL・Waybackも同様。投稿本文がないのに `body_found` と記録されているため、本文取得の成功判定を厳密にする必要がある。本文を取得できない間は、リンクがないことを理由に自動除外しない。
 
@@ -118,7 +120,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 
 次の実装順は、(a)本文取得の品質判定、(b)本文内URLの検出と境界テスト、(c)取得済み本文での非素材判定の改善。単なるタイトル語彙の追加を先行させない。
 
-## 2. 直近で確認できた作業結果
+## 4. 直近で確認できた作業結果
 
 - 現在のmain上のレビュー台帳は523件中、未確認84件・解決済み439件（2026-10-23にGitHubから直接確認）。
 - 以前の自動スクリーニング実行 [Run 39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は最初のpushが拒否されたが、競合対策後にPRE-00171・PRE-00231の結果がmainに反映された。PR #113後の [Run 39804761982](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39804761982)、PR #114後の [Run 39865772273](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39865772273)、PR #115後の [Run 39866632518](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39866632518) はすべて成功し、PRE-00226・PRE-00367・PRE-00370が解決済みとしてmainに反映された。
@@ -127,7 +129,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 - Notion PRE Review Syncは、Secrets未設定時には処理がSkippedになる。外部同期を実際に確認するまでは未完了扱い。
 - PR #83は判定記録の承認待ち。差分にタイトル記載以外のPRE IDも含まれるため、別途差分全体を確認する必要がある。
 
-## 3. 承認・制約の整理
+## 5. 承認・制約の整理
 
 ### ユーザーから依頼済み
 - 自動分類の精度を高め、正確性を保ちながら未確認PREを減らす。
@@ -145,14 +147,14 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 - Notion同期を有効化したい場合のGitHub Actions Secrets設定。
 - PR #83の内容確認・承認（判断内容が意図に合っている場合）。
 
-## 5. 修正済みの実行障害・確認待ち
+## 6. 修正済みの実行障害・確認待ち
 
 - PRE-00229による通常収集の停止はPR #117で修正済み。既存のレビュー注記は上書きしない。通常収集が再び成功するか、次回の定期実行で確認する。
-- Review Link Audit Run 39900506855は、監査処理自体は完了したが、別ワークフローによるmain更新とpushが競合して失敗。PR #117でpush前にorigin/mainへrebaseする処理を追加した。マージ後のReview Link Audit Run 39949380026の最終結果を確認する。
+- Review Link Audit Run 39900506855は、別のmain更新とのpush競合で失敗。PR #117でpush前のrebaseを追加し、Run 39949380026の再実行attempt 2は成功。84件の元投稿URLがすべて到達可能と確認した。
 - 本文内URL検出はテスト済みだが、実データ上の追加候補はまだ確認できていない。Rpg2S ITの41件は本文取得改善が必要で、本文未取得を理由に除外しない。
 - GameDev MarketとMaker DevsはSource Check監視のみで、定期収集レジストリには未登録。PR #117でsites.jsonのcollectionフラグをfalseに揃えた。両サイトの個別コレクタを有効化したわけではない。
 
-## 6. 次の作業後に必ず確認すること
+## 7. 次の作業後に必ず確認すること
 
 - 関連するテストと構文検証の結論。
 - GitHub Actionsの最終結論だけでなく、各ステップの実行結果。
@@ -162,7 +164,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 - 人手で戻された項目や明示的な例外が保持されているか。
 - Notion同期は、Secretsが有効で実処理が走ったことをログで確認するまで完了扱いにしない。
 
-## 7. 台帳更新のルール
+## 8. 台帳更新のルール
 
 - 作業を開始したときは、このファイルの状態・優先順位を更新する。
 - 完了はコードやファイルの存在ではなく、実行結果まで確認してから記載する。
