@@ -44,6 +44,11 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/review/classification_review.json data/review/review_decisions.json review_link_audit.json open_review_audit.json
           git diff --cached --quiet || git commit -m "Audit review links and resource intent"
+          # Other state-writing workflows may have pushed while this audit
+          # was running. Rebase this audit commit onto the latest main before
+          # pushing; conflicting ledger edits must fail rather than overwrite.
+          git fetch origin main
+          git rebase origin/main
           git push
       - name: Upload review audit reports
         uses: actions/upload-artifact@v4
