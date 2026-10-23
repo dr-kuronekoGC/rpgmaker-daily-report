@@ -201,7 +201,7 @@ RESOURCE_HOST_RE = re.compile(
 def is_resource_candidate_link(url: str, label: str) -> bool:
     """Recognize file links even when the anchor text is generic or untranslated."""
     parsed = urlparse(url)
-    suffix = Path(parsed.path).suffix.lower()
+    suffix = Path(parsed.path.rstrip("/")).suffix.lower()
     if suffix in RESOURCE_FILE_SUFFIXES or RESOURCE_HOST_RE.search(url):
         return True
     return bool(RESOURCE_LINK_RE.search(url) or RESOURCE_LINK_RE.search(label))
@@ -503,7 +503,7 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
             "postimg.org", "ibb.co", "imagebam.com", "imgbox.com",
         )
         if (
-            (result.get("link_kind") in {"image_anchor", "embedded_image"} or query_image_filename)
+            (result.get("link_kind") in {"image_anchor", "embedded_image", "anchor"} or query_image_filename)
             and any(host == domain or host.endswith("." + domain) for domain in image_hosts)
             and kind in {"graphics", "resource", "mixed"}
         ):
