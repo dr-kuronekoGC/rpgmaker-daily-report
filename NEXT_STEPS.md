@@ -137,7 +137,8 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 
 - [RPG Maker Daily Report Run 39875374286](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39875374286) は失敗。`main.py` の `apply_decisions()` → `validate_decisions()` で `ValueError: PRE-00229 is already resolved with a different decision; refusing to overwrite it.` が発生した。
 - これはPR #113の自動スクリーニング失敗ではない。PR #113マージ直後の [Auto-screen Open Review Items Run 39804761982](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39804761982) は成功している。
-- 次回は `data/review/review_decisions.json` と `data/review/classification_review.json` のPRE-00229の記録を照合し、どちらの判断が正しいか根拠を確認する。競合理由が判明するまで、既存判断を上書きしたり、日次ワークフローを再実行して押し通したりしない。
+- PRE-00229を照合したところ、`review_decisions.json` とレビュー台帳の `decision` はどちらも `not_applicable` で一致する。一方、判定メモは前者が「ゲームのマッピング紹介…」、後者が「自動整理：ゲームのマッピング紹介…」で完全一致しないため、`validate_decisions()` が異なる決定として停止した可能性が高い。判定自体の不一致ではなくメモ文の差異が原因とみられるが、修正方法は未確定。
+- 次回は、既存のテストと判定取込の意図を確認してから対処する。既存のレビュー注記を無条件に上書きしない。
 - 最新監査の台帳件数は523件中84件未確認／439件解決済み。PR #113の機能は実装済みだが、監査で `plain_text_url` の新規候補が0件だったため、実データでURL検出が改善したことまでは確認できていない。
 
 ## 4. 次の作業後に必ず確認すること
