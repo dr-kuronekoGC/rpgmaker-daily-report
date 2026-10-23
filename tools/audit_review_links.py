@@ -24,6 +24,8 @@ USER_AGENT = "RPGMakerDailyReport-LinkAudit/1.0 (manual review utility)"
 TIMEOUT = (5, 12)
 MAX_WORKERS = 4
 
+HUMAN_REOPEN_RE = re.compile(r"(?:自動判定を取り消し|自動除外を取り消し|除外判定を取り消し|未確認に戻す|再確認対象として残す)")
+
 NOT_FOUND_TEXT = (
     "page not found", "this page doesn't exist", "this page does not exist",
     "content not found", "topic not found", "thread not found",
@@ -163,35 +165,63 @@ def main() -> int:
             return 2
 
         by_id = {row.get("pre_id"): row for row in results}
-        known_decisions = {row.get("pre_id") for row in decisions if isinstance(row, dict)}
+        decisions_by_id = {
+            row.get("pre_id"): row
+            for row in decisions
+            if isinstance(row, dict) and row.get("pre_id")
+        }
         now = datetime.now(timezone.utc).isoformat()
         applied = 0
+        skipped_human_review = 0
+        skipped_decision_conflict = 0
         for item in items:
             if not isinstance(item, dict) or item.get("status") != "open":
                 continue
             audit = by_id.get(item.get("pre_id"))
             if not audit or audit.get("link_status") != "dead_link_candidate":
                 continue
+
+            # A human reopen/recheck note always wins over a fresh link audit.
+            review_note = str(item.get("review_note") or "").strip()
+            if HUMAN_REOPEN_RE.search(review_note) or (
+                review_note and not review_note.startswith("自動スクリーニング（高確度）:")
+            ):
+                skipped_human_review += 1
+                print(f"[Link audit] Preserved human review note for {item.get('pre_id')}")
+                continue
+
             note = (
                 f"自動リンク確認でHTTP {audit.get('status_code')}を確認。"
                 "404/410の明確なリンク切れのため、利用可能な配布元を確認できず対象外。"
             )
+            existing = decisions_by_id.get(item.get("pre_id"))
+            if existing and (
+                existing.get("decision") != "not_applicable"
+                or str(existing.get("note") or "").strip() != note
+            ):
+                skipped_decision_conflict += 1
+                print(f"[Link audit] Preserved conflicting existing decision for {item.get('pre_id')}")
+                continue
+
             item["status"] = "resolved"
             item["decision"] = "not_applicable"
             item["resolved_at"] = now
             item["review_note"] = note
-            if item.get("pre_id") not in known_decisions:
-                decisions.append({
+            if not existing:
+                decision_entry = {
                     "pre_id": item.get("pre_id"),
                     "decision": "not_applicable",
                     "note": note,
-                })
-                known_decisions.add(item.get("pre_id"))
+                }
+                decisions.append(decision_entry)
+                decisions_by_id[item.get("pre_id")] = decision_entry
             applied += 1
 
         LEDGER_PATH.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         DECISIONS_PATH.write_text(json.dumps(decisions_data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(f"[Link audit] Applied confirmed dead-link exclusions: {applied}")
+        print(f"[Link audit] Preserved human-review items: {skipped_human_review}")
+        print(f"[Link audit] Preserved decision conflicts: {skipped_decision_conflict}")
         print("[Link audit] 403/429, 5xx, timeouts and ambiguous not-found page text remain open.")
 
     print(f"[Link audit] Checked open review URLs: {len(results)}")
