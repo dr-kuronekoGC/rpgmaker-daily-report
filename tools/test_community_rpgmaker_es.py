@@ -90,6 +90,35 @@ class SpanishCommunityTests(unittest.TestCase):
         self.assertEqual(items[0]["language"], "es")
         self.assertEqual(len(seen), 2)
 
+    @patch("sources.community_rpgmaker_es.get_html")
+    def test_keeps_first_page_results_when_second_page_returns_404(self, mock_get_html):
+        import requests
+
+        first_page = json.dumps({
+            "data": [{
+                "type": "discussions",
+                "id": "44",
+                "attributes": {
+                    "title": "Nuevo plugin para MZ",
+                    "slug": "44-nuevo-plugin-para-mz",
+                },
+                "relationships": {"tags": {"data": []}},
+            }],
+            "included": [],
+            "links": {"next": "https://comunidad.rpgmaker.es/api/discussions?page%5Boffset%5D=50"},
+        })
+        response = requests.Response()
+        response.status_code = 404
+        second_page_error = requests.HTTPError("404 Client Error", response=response)
+        mock_get_html.side_effect = [first_page, second_page_error]
+
+        items, seen = get_items(["already-seen"])
+
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["title"], "Nuevo plugin para MZ")
+        self.assertIn("https://comunidad.rpgmaker.es/d/44-nuevo-plugin-para-mz", seen)
+        self.assertEqual(mock_get_html.call_count, 2)
+
     @patch("sources.community_rpgmaker_es.get_html", return_value='{"data":[],"links":{"next":null}}')
     def test_empty_api_response_raises_instead_of_being_treated_as_no_new_items(self, mock_get_html):
         with self.assertRaisesRegex(ValueError, "refusing an empty scan"):
