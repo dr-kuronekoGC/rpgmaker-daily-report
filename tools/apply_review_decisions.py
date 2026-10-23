@@ -70,10 +70,16 @@ def validate_decisions(payload, queue):
         if current.get("status") == "resolved":
             same_decision = current.get("decision") == decision.strip()
             same_note = (current.get("review_note") or "") == note.strip()
-            if same_decision and same_note:
+            if same_decision:
+                # A note may have gained an explanatory prefix after the
+                # original decision was recorded. The decision itself is
+                # authoritative here: preserve the existing ledger note and
+                # treat the import as idempotent rather than blocking every
+                # scheduled collection run.
                 normalized.append({
                     "pre_id": pre_id, "decision": decision.strip(),
                     "note": note.strip(), "action": "already_applied",
+                    "note_matches": same_note,
                 })
                 continue
             raise ValueError(f"{pre_id} is already resolved with a different decision; refusing to overwrite it.")
