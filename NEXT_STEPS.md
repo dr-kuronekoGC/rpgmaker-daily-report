@@ -2,11 +2,23 @@
 
 最終確認日：2026-10-23（JST）
 対象ブランチ：`main`
-直近の監査結果：PR #115のマージ後、2026-10-23 07:40 JSTに未確認86件を走査し、PRE-00367・PRE-00370を対象外として2件解決。PRE台帳は523件中、未確認84件・解決済み439件。Rpg2S ITの41件はすべて `body_unverified` となり、本文未取得を理由に誤解決されていない。
+PR #117をマージし、全 `tools/test_*.py` テストとClassification Auditの成功を確認。PRE台帳は523件中84件未確認／439件解決済み。マージ後の自動スクリーニングRun 39900506829は成功したが、追加解決はなし。通常収集の再実行結果は未確認。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
-## 1. 現在の優先課題
+## 1. 最優先：通常収集の復旧確認
+
+**修正済み・実行確認待ち。** [PR #117](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/117) は2026-10-23にマージ済み。
+
+- PRE-00229は判定値が既存記録と一致していれば、メモに接頭辞等の差があっても既存メモを保持して取込を継続する。異なる判定値は引き続き拒否する。
+- 最後に確認できた通常収集成功は [Run 39347372727](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39347372727)（2026-10-20 09:23 JST）。その後の定期実行はPRE-00229のエラーで収集前に停止していた。
+- 次回の定期実行で、通常収集が最後まで進むか、Slack送信・データ保存が成功するか、Source Healthがどう変化するかを確認する。
+
+最終成功時のサイト状況：35収集モジュール中31 OK／1 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404、RM PlanetとRPG Maker Networkは403。PR #117でスペイン語フォーラムは取得済みページの結果を保持するよう修正済み。403はアクセス制限を回避せず、取得失敗として扱う。
+
+Source Checkは12件中8件を確認し、4件失敗（GameDevMarket 403、Maker Devs TLSエラー、RPG Refugeのアクセスチャレンジ、New RPG Project 403）。これらは最後に成功した2026-10-20時点の記録であり、PR #117後の再確認が必要。
+
+## 2. 現在の優先課題
 
 ### P1 — 未確認PREの自動仕分け精度を改善する
 **状態：進行中。ユーザーの依頼あり。**
@@ -133,15 +145,14 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 - Notion同期を有効化したい場合のGitHub Actions Secrets設定。
 - PR #83の内容確認・承認（判断内容が意図に合っている場合）。
 
-## 4. 追加で確認が必要な実行失敗（2026-10-23）
+## 5. 修正済みの実行障害・確認待ち
 
-- [RPG Maker Daily Report Run 39875374286](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39875374286) は失敗。`main.py` の `apply_decisions()` → `validate_decisions()` で `ValueError: PRE-00229 is already resolved with a different decision; refusing to overwrite it.` が発生した。
-- これはPR #113の自動スクリーニング失敗ではない。PR #113マージ直後の [Auto-screen Open Review Items Run 39804761982](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39804761982) は成功している。
-- PRE-00229を照合したところ、`review_decisions.json` とレビュー台帳の `decision` はどちらも `not_applicable` で一致する。一方、判定メモは前者が「ゲームのマッピング紹介…」、後者が「自動整理：ゲームのマッピング紹介…」で完全一致しないため、`validate_decisions()` が異なる決定として停止した可能性が高い。判定自体の不一致ではなくメモ文の差異が原因とみられるが、修正方法は未確定。
-- 次回は、既存のテストと判定取込の意図を確認してから対処する。既存のレビュー注記を無条件に上書きしない。
-- 最新監査の台帳件数は523件中84件未確認／439件解決済み。PR #113の機能は実装済みだが、監査で `plain_text_url` の新規候補が0件だったため、実データでURL検出が改善したことまでは確認できていない。
+- PRE-00229による通常収集の停止はPR #117で修正済み。既存のレビュー注記は上書きしない。通常収集が再び成功するか、次回の定期実行で確認する。
+- Review Link Audit Run 39900506855は、監査処理自体は完了したが、別ワークフローによるmain更新とpushが競合して失敗。PR #117でpush前にorigin/mainへrebaseする処理を追加した。マージ後のReview Link Audit Run 39949380026の最終結果を確認する。
+- 本文内URL検出はテスト済みだが、実データ上の追加候補はまだ確認できていない。Rpg2S ITの41件は本文取得改善が必要で、本文未取得を理由に除外しない。
+- GameDev MarketとMaker DevsはSource Check監視のみで、定期収集レジストリには未登録。PR #117でsites.jsonのcollectionフラグをfalseに揃えた。両サイトの個別コレクタを有効化したわけではない。
 
-## 4. 次の作業後に必ず確認すること
+## 6. 次の作業後に必ず確認すること
 
 - 関連するテストと構文検証の結論。
 - GitHub Actionsの最終結論だけでなく、各ステップの実行結果。
@@ -151,7 +162,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 - 人手で戻された項目や明示的な例外が保持されているか。
 - Notion同期は、Secretsが有効で実処理が走ったことをログで確認するまで完了扱いにしない。
 
-## 5. 台帳更新のルール
+## 7. 台帳更新のルール
 
 - 作業を開始したときは、このファイルの状態・優先順位を更新する。
 - 完了はコードやファイルの存在ではなく、実行結果まで確認してから記載する。
