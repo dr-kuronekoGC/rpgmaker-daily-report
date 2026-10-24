@@ -342,6 +342,19 @@ def build_report(items, review_items=None, carryover_items=None, source_results=
                     f"・{link}"
                 )
 
+            # Official news pages expose a publication date but not a
+            # reliable publication time. Show the date when it is available.
+            published_dates = []
+            for item in entry["items"]:
+                if item.get("source") != "RPG Maker Official":
+                    continue
+                published_date = item.get("published_date")
+                if published_date and published_date not in published_dates:
+                    published_dates.append(published_date)
+
+            for published_date in published_dates:
+                report.append(f"  公開日：{published_date}")
+
             # ----------------------------------
             # DeviantArt詳細
             #

@@ -1,10 +1,11 @@
 # PROJECT_STATUS.md
 
 最終確認日：2026-10-24（JST）
-確認対象：GitHub mainブランチとOfficial Information追加用PRブランチ。PR #113〜#117をマージし、関連テスト・監査を確認。PR #117でPRE-00229の判定メモ差分による定期実行停止、スペイン語フォーラムの2ページ目404による全件破棄、サイト台帳と収集レジストリの不一致を修正した。PR #117の全 tools/test_*.py テストとClassification Auditは成功。
+確認対象：GitHub mainブランチとOfficial Information／公式ニュース日付追加用PRブランチ。PR #113〜#118をマージし、関連テスト・監査を確認。PR #117でPRE-00229の判定メモ差分による定期実行停止、スペイン語フォーラムの2ページ目404による全件破棄、サイト台帳と収集レジストリの不一致を修正した。PR #117の全 tools/test_*.py テストとClassification Auditは成功。
 PRE台帳は523件中84件未確認／439件解決済み。Rpg2S ITの本文取得品質は引き続き未解決で、本文未取得を理由に除外しない。
 PR #117マージ後の通常収集Run 40042036545（2026-10-24 08:52 JST）は成功。Slack HTTP 200、pending保存、データpushを確認。サイト状況は35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404（先行ページの結果は保持）、RPG Maker SU・RM Planet・RPG Maker Networkは403。Source Checkは12件中8件を確認、4件更新・4件失敗（GameDevMarket 403、Maker Devs TLSエラー、RPG Refugeアクセスチャレンジ、New RPG Project 403）。403/アクセスチャレンジを回避せず、公開RSS/API等の正規代替経路を調査する。
 PR #118（2026-10-24マージ）でOfficial Informationリンクを毎回のSlackレポートに表示するよう変更。公式ニュース、ツクール開発部X、新プロジェクトの日英X、公式フォーラム、YouTube、Discordを掲載する。次回の通常収集でSlack表示を実地確認する。Xの投稿日時の自動検知は未実装であり、リンク常設とは別課題として扱う。
+公式ニュースについては、個別記事URLとページに表示される公開日を取得し、Slack項目に記事リンクと「公開日：YYYY.MM.DD」を表示する改善を別ブランチで実装中。公式ページに正確な公開時刻が確認できないため、日付のみを表示する。
 この文書は長期的な目的・設計方針・実装状況を記録する。次の具体的な作業は NEXT_STEPS.md を参照する。
 
 ## 1. プロジェクトの目的
