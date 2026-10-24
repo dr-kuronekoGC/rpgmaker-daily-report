@@ -49,6 +49,19 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
             "https://newrpg.seesaa.net/index.rdf",
         )
 
+    def test_inaccessible_sites_are_explicitly_manual_only(self):
+        manual_only_names = {
+            "GameDevMarket",
+            "Maker Devs",
+            "RPG Refuge（2D素材フォーラム）",
+            "New RPG Project",
+        }
+        for site in SOURCE_CHECK_SITES:
+            if site.get("name") in manual_only_names:
+                with self.subTest(site=site["name"]):
+                    self.assertIs(site.get("monitoring_enabled"), False)
+                    self.assertTrue(site.get("monitoring_note"))
+
     def test_hendrix_metadata_includes_japanese_plugin_support(self):
         site = next(
             site for site in SOURCE_CHECK_SITES
@@ -69,6 +82,7 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
         self.assertIn("RPG Refuge", output)
         self.assertIn("New RPG Project", output)
         self.assertIn("ページ変化を検知できたサイト", output)
+        self.assertIn("自動監視：保留", output)
 
 
 if __name__ == "__main__":

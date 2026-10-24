@@ -223,6 +223,8 @@ SOURCE_CHECK_SITES = [
         "language": "英語（サイト表示は英語のみ）",
         "site_type": "マーケットプレイス",
         "reference_only": True,
+        "monitoring_enabled": False,
+        "monitoring_note": "GitHub Actionsからページ／公開フィードへアクセスできず、自動監視を保留中",
     },
     {
         "name": "Maker Devs",
@@ -231,6 +233,8 @@ SOURCE_CHECK_SITES = [
         "language": "英語中心（掲載プラグインにより異なる）",
         "site_type": "プラグイン一覧",
         "reference_only": True,
+        "monitoring_enabled": False,
+        "monitoring_note": "GitHub Actionsからページ／公開フィードへアクセスできず、自動監視を保留中",
     },
     {
         "name": "RPG Refuge（2D素材フォーラム）",
@@ -240,6 +244,8 @@ SOURCE_CHECK_SITES = [
         "language": "英語中心（投稿者により多言語）",
         "site_type": "掲示板・コミュニティ",
         "reference_only": True,
+        "monitoring_enabled": False,
+        "monitoring_note": "GitHub Actionsからページ／公開フィードへアクセスできず、自動監視を保留中",
     },
     {
         "name": "New RPG Project",
@@ -249,6 +255,8 @@ SOURCE_CHECK_SITES = [
         "language": "日本語",
         "site_type": "個人サイト・プラグイン配布",
         "reference_only": True,
+        "monitoring_enabled": False,
+        "monitoring_note": "GitHub Actionsからページ／公開フィードへアクセスできず、自動監視を保留中",
     },
 ]
 

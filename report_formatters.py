@@ -694,6 +694,10 @@ def format_reference_sites(sites=None):
         if metadata:
             lines.append(f"  {metadata}")
 
+        monitoring_note = site.get("monitoring_note")
+        if monitoring_note:
+            lines.append(f"  自動監視：保留（{monitoring_note}）")
+
     return lines
 
 

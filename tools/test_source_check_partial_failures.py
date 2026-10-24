@@ -93,6 +93,36 @@ class TestSourceCheckPartialFailures(unittest.TestCase):
             old_signature,
         )
 
+    def test_manual_only_sites_are_skipped_and_counted_separately(self):
+        sites = [
+            {
+                "name": "Manual Site",
+                "url": "https://example.test/manual",
+                "monitoring_enabled": False,
+                "monitoring_note": "access unavailable",
+            },
+            {
+                "name": "Working Site",
+                "url": "https://example.test/working",
+            },
+        ]
+
+        with patch.object(
+            official_source_check, "SOURCE_CHECK_SITES", sites
+        ), patch.object(
+            official_source_check,
+            "get_page",
+            return_value="<html><body><a href='/resource'>Resource</a></body></html>",
+        ) as get_page:
+            items, new_seen = official_source_check.get_items({})
+
+        get_page.assert_called_once_with("https://example.test/working")
+        self.assertEqual(official_source_check.LAST_RUN_SUMMARY["checked"], 1)
+        self.assertEqual(official_source_check.LAST_RUN_SUMMARY["manual_only"], 1)
+        self.assertEqual(official_source_check.LAST_RUN_SUMMARY["failed"], 0)
+        self.assertIn("Working Site", new_seen)
+        self.assertEqual(items, [])
+
     def test_all_successful_sites_are_reported_as_complete(self):
         with patch.object(official_source_check, "SOURCE_CHECK_SITES", self.sites[:1]), patch.object(
             official_source_check,
