@@ -38,7 +38,9 @@ def normalize_article_url(url):
 
 
 def _article_link_for_heading(tag):
-    """Find an individual news URL near a heading without assuming one DOM shape."""
+    """Find an individual news URL and the nearest container with its date."""
+    fallback = None
+
     for ancestor in [tag, *list(tag.parents)[:6]]:
         links = []
         if getattr(ancestor, "name", None) == "a":
@@ -47,10 +49,19 @@ def _article_link_for_heading(tag):
 
         for link in links:
             url = normalize_article_url(link.get("href"))
-            if url:
+            if not url:
+                continue
+
+            if fallback is None:
+                fallback = (url, ancestor)
+
+            # Publication dates are often siblings of the linked title, not
+            # children of the anchor. Prefer the nearest containing card with
+            # a visible date, rather than returning the anchor immediately.
+            if PUBLISHED_DATE_RE.search(ancestor.get_text(" ", strip=True)):
                 return url, ancestor
 
-    return None, None
+    return fallback if fallback is not None else (None, None)
 
 
 def _published_date(container):
