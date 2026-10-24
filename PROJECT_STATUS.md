@@ -4,7 +4,7 @@
 確認対象：GitHub mainブランチ。PR #113〜#119をマージし、関連テスト・監査を確認。PR #117でPRE-00229の判定メモ差分による定期実行停止、スペイン語フォーラムの2ページ目404による全件破棄、サイト台帳と収集レジストリの不一致を修正した。PR #117の全 tools/test_*.py テストとClassification Auditは成功。
 PRE台帳は523件中84件未確認／439件解決済み。Rpg2S ITの本文取得品質は引き続き未解決で、本文未取得を理由に除外しない。
 PR #117マージ後の通常収集Run 40042036545（2026-10-24 08:52 JST）は成功。Slack HTTP 200、pending保存、データpushを確認。サイト状況は35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404（先行ページの結果は保持）、RPG Maker SU・RM Planet・RPG Maker Networkは403。Source Checkは12件中8件を確認、4件更新・4件失敗（GameDevMarket 403、Maker Devs TLSエラー、RPG Refugeアクセスチャレンジ、New RPG Project 403）。403/アクセスチャレンジを回避せず、公開RSS/API等の正規代替経路を調査する。
-PR #118（2026-10-24マージ）でOfficial Informationリンクを毎回のSlackレポートに表示するよう変更。公式ニュース、ツクール開発部X、新プロジェクトの日英X、公式フォーラム、YouTube、Discordを掲載する。次回の通常収集でSlack表示を実地確認する。Xの投稿日時の自動検知は未実装であり、リンク常設とは別課題として扱う。
+PR #118（2026-10-24マージ）でOfficial Informationリンクを毎回のSlackレポートに表示するよう変更。公式ニュース、ツクール開発部X、U2U公式Xの日英アカウント、公式フォーラム、YouTube、Discordを掲載する。2026-10-24 22:04 JSTの手動Run 40096568691はリンク切替前のコードで成功。Official InformationのXリンクは、ユーザー提示のU2U公式日本語・英語アカウント（https://x.com/rpgmakeru2u_jp、https://x.com/rpgmakeru_en）に切り替えた。変更後の再実行は行わず、次回の通常収集で表示を確認する。Xの投稿日時の自動検知は未実装であり、リンク常設とは別課題として扱う。
 PR #119（2026-10-24マージ）で、公式ニュース一覧から個別記事URLと公開日を取得し、Slack項目に記事リンクと「公開日：YYYY.MM.DD」を表示するよう変更。テストは278件すべて成功（[Classification Audit](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40055876293)）。公式ページに正確な公開時刻が確認できないため、日付のみを表示する。次回の通常収集で実際の公式ニュースが検出された際にSlack表示を確認する。
 この文書は長期的な目的・設計方針・実装状況を記録する。次の具体的な作業は NEXT_STEPS.md を参照する。
 
