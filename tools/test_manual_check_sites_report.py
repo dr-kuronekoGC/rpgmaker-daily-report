@@ -29,6 +29,8 @@ class TestManualCheckSitesReport(unittest.TestCase):
         lines = format_reference_sites(sites)
         text = "\n".join(lines)
 
+        self.assertIn("【📢 Official Information】", text)
+        self.assertIn("https://x.com/tkool_dev", text)
         self.assertIn("【📚 素材・プラグイン関連サイト一覧】", text)
         self.assertIn("<https://example.test/forum|Example Forum>", text)
         self.assertIn("対象：グラフィック素材・サウンド素材", text)
@@ -91,8 +93,19 @@ class TestManualCheckSitesReport(unittest.TestCase):
             ],
         )
 
-    def test_no_reference_sites_produces_no_section(self):
-        self.assertEqual(format_reference_sites([]), [])
+    def test_official_information_is_shown_without_reference_sites(self):
+        lines = format_reference_sites([])
+        text = "\\n".join(lines)
+
+        self.assertIn("【📢 Official Information】", text)
+        self.assertIn("<https://rpgmakerofficial.com/news/|公式ニュース>", text)
+        self.assertIn("<https://x.com/tkool_dev|ツクール開発部 公式X（最新投稿）>", text)
+        self.assertNotIn("【📚 素材・プラグイン関連サイト一覧】", text)
+
+    def test_no_news_report_still_includes_official_information(self):
+        report = build_report([], review_items=[], carryover_items=[], source_results=[])
+        self.assertIn("【📢 Official Information】", report)
+        self.assertIn("https://x.com/tkool_dev", report)
 
 
 if __name__ == "__main__":
