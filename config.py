@@ -244,7 +244,7 @@ SOURCE_CHECK_SITES = [
     {
         "name": "New RPG Project",
         "url": "https://newrpg.seesaa.net/",
-        "alternate_feed_url": "https://newrpg.seesaa.net/index.rdf",
+        "alternate_feed_url": "https://newrpg.seesaa.net/index20.rdf",
         "resource_types": ["プラグイン", "開発ツール"],
         "language": "日本語",
         "site_type": "個人サイト・プラグイン配布",
