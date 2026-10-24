@@ -21,6 +21,7 @@ LAST_RUN_SUMMARY = {
     "baseline": 0,
     "failed": 0,
     "unchanged": 0,
+    "manual_only": 0,
 }
 
 # Standard HTTP metadata fallback for sites whose page body may be inaccessible.
@@ -281,11 +282,25 @@ def get_items(seen):
         "baseline": 0,
         "failed": 0,
         "unchanged": 0,
+        "manual_only": 0,
     }
+
+    monitored_sites = [
+        site for site in SOURCE_CHECK_SITES
+        if site.get("monitoring_enabled", True)
+    ]
 
     for site in SOURCE_CHECK_SITES:
         name = site["name"]
         url = site["url"]
+
+        if not site.get("monitoring_enabled", True):
+            summary["manual_only"] += 1
+            print(
+                f"[{SOURCE_NAME}] Manual-only: {name}: "
+                f"{site.get('monitoring_note', '自動監視は保留中')}"
+            )
+            continue
 
         try:
             method = "page"
@@ -412,7 +427,8 @@ def get_items(seen):
     LAST_RUN_SUMMARY = summary
     print(
         f"[{SOURCE_NAME}] Summary: "
-        f"checked={summary['checked']}/{len(SOURCE_CHECK_SITES)} / "
+        f"checked={summary['checked']}/{len(monitored_sites)} monitored / "
+        f"manual_only={summary['manual_only']} / "
         f"updated={summary['updated']} / "
         f"baseline={summary['baseline']} / "
         f"unchanged={summary['unchanged']} / "
