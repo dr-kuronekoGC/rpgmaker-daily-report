@@ -1,5 +1,6 @@
 import unittest
 
+from report import build_report
 from sources.official_site import (
     extract_official_news_items,
     normalize_article_url,
@@ -57,6 +58,28 @@ class OfficialNewsExtractionTests(unittest.TestCase):
     def test_does_not_invent_article_url_when_link_is_missing(self):
         html = "<div><span>2026.10.20</span><h3>Announcement without a link</h3></div>"
         self.assertEqual(extract_official_news_items(html), [])
+
+    def test_report_displays_official_article_link_and_publication_date(self):
+        report = build_report(
+            [
+                {
+                    "title": "Official announcement",
+                    "url": "https://www.rpgmakerofficial.com/news/5001/",
+                    "category": "本体ニュース",
+                    "source": "RPG Maker Official",
+                    "published_date": "2026.10.20",
+                }
+            ],
+            review_items=[],
+            carryover_items=[],
+            source_results=[],
+        )
+
+        self.assertIn(
+            "<https://www.rpgmakerofficial.com/news/5001/|Official announcement>",
+            report,
+        )
+        self.assertIn("公開日：2026.10.20", report)
 
 
 if __name__ == "__main__":
