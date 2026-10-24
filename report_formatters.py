@@ -11,6 +11,7 @@ from config import (
     REQUEST_TIMEOUT,
     SLACK_WEBHOOK_ENV,
     SOURCE_CHECK_SITES,
+    OFFICIAL_INFORMATION_LINKS,
 )
 
 from categories import DISPLAY_CATEGORY
@@ -652,7 +653,7 @@ def format_source_check_metadata(item):
 
 def format_reference_sites(sites=None):
     """
-    個別素材の新着取得を行わない参考サイトを、属性付きリンクとして表示する。
+    毎回表示する公式情報リンクと、手動確認用の参考サイト一覧を表示する。
     """
     if sites is None:
         sites = SOURCE_CHECK_SITES
@@ -661,15 +662,25 @@ def format_reference_sites(sites=None):
         site for site in sites
         if isinstance(site, dict) and site.get("reference_only")
     ]
-    if not manual_sites:
-        return []
 
     lines = [
+        "────────────────────",
+        "【📢 Official Information】",
+    ]
+
+    for name, url in OFFICIAL_INFORMATION_LINKS:
+        lines.append(f"・<{url}|{name}>")
+
+    if not manual_sites:
+        return lines
+
+    lines.extend([
+        "",
         "────────────────────",
         "【📚 素材・プラグイン関連サイト一覧】",
         "個別の素材・プラグインを自動抽出していないサイトの一覧です。対象分野・主な言語から、確認したいサイトを選べます。",
         "ページ変化を検知できたサイトは、上の「SOURCE CHECK：ページ変化」にも掲載します。",
-    ]
+    ])
 
     for site in manual_sites:
         name = site.get("name", "名称不明")
