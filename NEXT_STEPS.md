@@ -1,24 +1,31 @@
 # NEXT_STEPS.md
 
-最終確認日：2026-10-23（JST）
-対象ブランチ：`main`
-PR #117をマージし、全 `tools/test_*.py` テストとClassification Auditの成功を確認。PRE台帳は523件中84件未確認／439件解決済み。マージ後の自動スクリーニングRun 39900506829は成功したが、追加解決はなし。通常収集の再実行結果は未確認。
+最終確認日：2026-10-24（JST）
+対象ブランチ：`main` と `feature/official-information-slack-section`
+PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。現在、毎回のSlackレポートにOfficial Informationリンクを追加するPRを準備中。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
 ## 1. 最優先：通常収集の復旧確認
 
-**修正済み・実行確認待ち。** [PR #117](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/117) は2026-10-23にマージ済み。
+**通常収集の復旧を確認済み。** [PR #117](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/117) は2026-10-23にマージ済み。Run 40042036545（2026-10-24 08:52 JST）は成功し、Slack送信とデータ保存を確認。
 
 - PRE-00229は判定値が既存記録と一致していれば、メモに接頭辞等の差があっても既存メモを保持して取込を継続する。異なる判定値は引き続き拒否する。
-- 最後に確認できた通常収集成功は [Run 39347372727](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39347372727)（2026-10-20 09:23 JST）。その後の定期実行はPRE-00229のエラーで収集前に停止していた。
-- 次回の定期実行で、通常収集が最後まで進むか、Slack送信・データ保存が成功するか、Source Healthがどう変化するかを確認する。
+- 復旧確認：[Run 40042036545](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40042036545)（2026-10-24 08:52 JST）。Run script、Slack送信（HTTP 200）、pending保存、GitHubへのデータpushが成功。
+- 現在のサイト状況：35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404（1ページ目の結果は保持）、RPG Maker SUとRM PlanetとRPG Maker Networkは403。403はアクセス制限を回避せず、公式の公開RSS/API等の代替経路を探し、なければ取得失敗として監視する。
 
-最終成功時のサイト状況：35収集モジュール中31 OK／1 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404、RM PlanetとRPG Maker Networkは403。PR #117でスペイン語フォーラムは取得済みページの結果を保持するよう修正済み。403はアクセス制限を回避せず、取得失敗として扱う。
-
-Source Checkは12件中8件を確認し、4件失敗（GameDevMarket 403、Maker Devs TLSエラー、RPG Refugeのアクセスチャレンジ、New RPG Project 403）。これらは最後に成功した2026-10-20時点の記録であり、PR #117後の再確認が必要。
+Source Checkは12件中8件を確認、4件更新・4件失敗。失敗はGameDevMarket 403、Maker Devs TLSエラー（再試行後も失敗）、RPG Refugeのアクセスチャレンジ、New RPG Project 403。いずれも2026-10-24のログで再確認した。公式ページやSNSリンクはレポートに常設する方針。Xの投稿日時を安定して自動取得する仕組みは未実装で、今回のリンク追加だけでは「更新検知」にはならない。
 
 ## 2. 現在の優先課題
+
+### P0 — Official InformationリンクをSlackに常設する
+**状態：実装案をPRブランチに作成。テスト実行待ち。**
+
+- `Official Information` 欄に公式ニュース、ツクール開発部X、新プロジェクトの日英X、公式フォーラム、YouTube、Discordを毎回表示する。
+- 新着がない日でも、公式情報の入口から確認できる。
+- Xの投稿日時を自動で取得して「更新あり」と表示する機能はまだない。公式ニュースの新着検知とは分けて扱い、次段階では公式RSS/API等の安定した取得経路を調べる。未検証の非公式Xスクレイピングや、投稿があったと断定する表示は導入しない。
+
+## 3. 現在の優先課題
 
 ### P1 — 未確認PREの自動仕分け精度を改善する
 **状態：進行中。ユーザーの依頼あり。**
@@ -110,7 +117,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 3. マージ後に日次ワークフローまたは該当する判定取込処理を実行し、対象PREが正しく解決済みになることを確認する。
 4. 台帳・Notionを使う場合は、両者の状態を照合する。
 
-## 3. 今回の独立評価：精度改善の有望点
+## 4. 今回の独立評価：精度改善の有望点
 
 1. **Rpg2S ITの本文取得に問題がある可能性が高い。** 未確認41件すべてで本文長が300文字未満、配布リンク候補ゼロ。代表例ではHTTP 200・HTML約14万文字なのに、抽出結果はタイトル・作者・カテゴリ等の約170〜220文字で、本文セレクタは `#ipsLayout_mainArea` にフォールバックしている。代替URL・Waybackも同様。投稿本文がないのに `body_found` と記録されているため、本文取得の成功判定を厳密にする必要がある。本文を取得できない間は、リンクがないことを理由に自動除外しない。
 
@@ -120,7 +127,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 
 次の実装順は、(a)本文取得の品質判定、(b)本文内URLの検出と境界テスト、(c)取得済み本文での非素材判定の改善。単なるタイトル語彙の追加を先行させない。
 
-## 4. 直近で確認できた作業結果
+## 5. 直近で確認できた作業結果
 
 - 現在のmain上のレビュー台帳は523件中、未確認84件・解決済み439件（2026-10-23にGitHubから直接確認）。
 - 以前の自動スクリーニング実行 [Run 39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は最初のpushが拒否されたが、競合対策後にPRE-00171・PRE-00231の結果がmainに反映された。PR #113後の [Run 39804761982](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39804761982)、PR #114後の [Run 39865772273](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39865772273)、PR #115後の [Run 39866632518](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39866632518) はすべて成功し、PRE-00226・PRE-00367・PRE-00370が解決済みとしてmainに反映された。
@@ -129,7 +136,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 - Notion PRE Review Syncは、Secrets未設定時には処理がSkippedになる。外部同期を実際に確認するまでは未完了扱い。
 - PR #83は判定記録の承認待ち。差分にタイトル記載以外のPRE IDも含まれるため、別途差分全体を確認する必要がある。
 
-## 5. 承認・制約の整理
+## 6. 承認・制約の整理
 
 ### ユーザーから依頼済み
 - 自動分類の精度を高め、正確性を保ちながら未確認PREを減らす。
@@ -147,14 +154,14 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 - Notion同期を有効化したい場合のGitHub Actions Secrets設定。
 - PR #83の内容確認・承認（判断内容が意図に合っている場合）。
 
-## 6. 修正済みの実行障害・確認待ち
+## 7. 修正済みの実行障害・確認待ち
 
 - PRE-00229による通常収集の停止はPR #117で修正済み。既存のレビュー注記は上書きしない。通常収集が再び成功するか、次回の定期実行で確認する。
 - Review Link Audit Run 39900506855は、別のmain更新とのpush競合で失敗。PR #117でpush前のrebaseを追加し、Run 39949380026の再実行attempt 2は成功。84件の元投稿URLがすべて到達可能と確認した。
 - 本文内URL検出はテスト済みだが、実データ上の追加候補はまだ確認できていない。Rpg2S ITの41件は本文取得改善が必要で、本文未取得を理由に除外しない。
 - GameDev MarketとMaker DevsはSource Check監視のみで、定期収集レジストリには未登録。PR #117でsites.jsonのcollectionフラグをfalseに揃えた。両サイトの個別コレクタを有効化したわけではない。
 
-## 7. 次の作業後に必ず確認すること
+## 8. 次の作業後に必ず確認すること
 
 - 関連するテストと構文検証の結論。
 - GitHub Actionsの最終結論だけでなく、各ステップの実行結果。
@@ -164,7 +171,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 - 人手で戻された項目や明示的な例外が保持されているか。
 - Notion同期は、Secretsが有効で実処理が走ったことをログで確認するまで完了扱いにしない。
 
-## 8. 台帳更新のルール
+## 9. 台帳更新のルール
 
 - 作業を開始したときは、このファイルの状態・優先順位を更新する。
 - 完了はコードやファイルの存在ではなく、実行結果まで確認してから記載する。

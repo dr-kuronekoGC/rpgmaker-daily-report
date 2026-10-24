@@ -10,6 +10,18 @@ RSS_URL = "https://www.reddit.com/r/RPGMaker/.rss"
 
 OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 
+# Stable links to official RPG Maker announcements and social channels.
+# These are shown in every Slack report, even when no new items were found.
+OFFICIAL_INFORMATION_LINKS = (
+    ("公式ニュース", "https://rpgmakerofficial.com/news/"),
+    ("ツクール開発部 公式X（最新投稿）", "https://x.com/tkool_dev"),
+    ("新プロジェクト公式X（日本語・最新投稿）", "https://x.com/RPGNewProjectJP"),
+    ("新プロジェクト公式X（英語・最新投稿）", "https://x.com/RPGNewProjectEN"),
+    ("公式フォーラム", "https://forum.tkool.jp/"),
+    ("公式YouTube", "https://www.youtube.com/@GotchaGotchaGames"),
+    ("公式Discord", "https://discord.gg/8TZDDgPked"),
+)
+
 # ----------------------------
 # Steam Workshop resources (separate from Steam news)
 # ----------------------------
