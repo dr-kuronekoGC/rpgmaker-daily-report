@@ -1,24 +1,31 @@
 # NEXT_STEPS.md
 
-最終確認日：2026-10-23（JST）
-対象ブランチ：`main`
-PR #117をマージし、全 `tools/test_*.py` テストとClassification Auditの成功を確認。PRE台帳は523件中84件未確認／439件解決済み。マージ後の自動スクリーニングRun 39900506829は成功したが、追加解決はなし。通常収集の再実行結果は未確認。
+最終確認日：2026-10-24（JST）
+対象ブランチ：`main` と `feature/official-information-slack-section`
+PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。現在、毎回のSlackレポートにOfficial Informationリンクを追加するPRを準備中。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
 ## 1. 最優先：通常収集の復旧確認
 
-**修正済み・実行確認待ち。** [PR #117](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/117) は2026-10-23にマージ済み。
+**通常収集の復旧を確認済み。** [PR #117](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/117) は2026-10-23にマージ済み。Run 40042036545（2026-10-24 08:52 JST）は成功し、Slack送信とデータ保存を確認。
 
 - PRE-00229は判定値が既存記録と一致していれば、メモに接頭辞等の差があっても既存メモを保持して取込を継続する。異なる判定値は引き続き拒否する。
-- 最後に確認できた通常収集成功は [Run 39347372727](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39347372727)（2026-10-20 09:23 JST）。その後の定期実行はPRE-00229のエラーで収集前に停止していた。
-- 次回の定期実行で、通常収集が最後まで進むか、Slack送信・データ保存が成功するか、Source Healthがどう変化するかを確認する。
+- 復旧確認：[Run 40042036545](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40042036545)（2026-10-24 08:52 JST）。Run script、Slack送信（HTTP 200）、pending保存、GitHubへのデータpushが成功。
+- 現在のサイト状況：35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404（1ページ目の結果は保持）、RPG Maker SUとRM PlanetとRPG Maker Networkは403。403はアクセス制限を回避せず、公式の公開RSS/API等の代替経路を探し、なければ取得失敗として監視する。
 
-最終成功時のサイト状況：35収集モジュール中31 OK／1 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404、RM PlanetとRPG Maker Networkは403。PR #117でスペイン語フォーラムは取得済みページの結果を保持するよう修正済み。403はアクセス制限を回避せず、取得失敗として扱う。
-
-Source Checkは12件中8件を確認し、4件失敗（GameDevMarket 403、Maker Devs TLSエラー、RPG Refugeのアクセスチャレンジ、New RPG Project 403）。これらは最後に成功した2026-10-20時点の記録であり、PR #117後の再確認が必要。
+Source Checkは12件中8件を確認、4件更新・4件失敗。失敗はGameDevMarket 403、Maker Devs TLSエラー（再試行後も失敗）、RPG Refugeのアクセスチャレンジ、New RPG Project 403。いずれも2026-10-24のログで再確認した。公式ページやSNSリンクはレポートに常設する方針。Xの投稿日時を安定して自動取得する仕組みは未実装で、今回のリンク追加だけでは「更新検知」にはならない。
 
 ## 2. 現在の優先課題
+
+### P0 — Official InformationリンクをSlackに常設する
+**状態：実装案をPRブランチに作成。テスト実行待ち。**
+
+- `Official Information` 欄に公式ニュース、ツクール開発部X、新プロジェクトの日英X、公式フォーラム、YouTube、Discordを毎回表示する。
+- 新着がない日でも、公式情報の入口から確認できる。
+- Xの投稿日時を自動で取得して「更新あり」と表示する機能はまだない。公式ニュースの新着検知とは分けて扱い、次段階では公式RSS/API等の安定した取得経路を調べる。未検証の非公式Xスクレイピングや、投稿があったと断定する表示は導入しない。
+
+## 3. 現在の優先課題
 
 ### P1 — 未確認PREの自動仕分け精度を改善する
 **状態：進行中。ユーザーの依頼あり。**
