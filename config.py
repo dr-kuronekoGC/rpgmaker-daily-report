@@ -15,8 +15,8 @@ OFFICIAL_NEWS_URL = "https://rpgmakerofficial.com/news/"
 OFFICIAL_INFORMATION_LINKS = (
     ("公式ニュース", "https://rpgmakerofficial.com/news/"),
     ("ツクール開発部 公式X（最新投稿）", "https://x.com/tkool_dev"),
-    ("新プロジェクト公式X（日本語・最新投稿）", "https://x.com/RPGNewProjectJP"),
-    ("新プロジェクト公式X（英語・最新投稿）", "https://x.com/RPGNewProjectEN"),
+    ("U2U公式X（日本語・最新投稿）", "https://x.com/rpgmakeru2u_jp"),
+    ("U2U公式X（英語・最新投稿）", "https://x.com/rpgmakeru2u_en"),
     ("公式フォーラム", "https://forum.tkool.jp/"),
     ("公式YouTube", "https://www.youtube.com/@GotchaGotchaGames"),
     ("公式Discord", "https://discord.gg/8TZDDgPked"),
