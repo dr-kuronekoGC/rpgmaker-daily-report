@@ -46,7 +46,7 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
         )
         self.assertEqual(
             site.get("alternate_feed_url"),
-            "https://newrpg.seesaa.net/index20.rdf",
+            "https://newrpg.seesaa.net/index.rdf",
         )
 
     def test_hendrix_metadata_includes_japanese_plugin_support(self):
