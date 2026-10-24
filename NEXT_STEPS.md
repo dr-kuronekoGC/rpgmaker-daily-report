@@ -1,8 +1,8 @@
 # NEXT_STEPS.md
 
 最終確認日：2026-10-24（JST）
-対象ブランチ：`main` と `feature/official-information-slack-section`
-PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。現在、毎回のSlackレポートにOfficial Informationリンクを追加するPRを準備中。
+対象ブランチ：`main`
+PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。PR #118で毎回のSlackレポートにOfficial Informationリンクを追加し、2026-10-24にマージ済み。次回の定期実行でSlack表示を確認する。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
@@ -19,9 +19,9 @@ Source Checkは12件中8件を確認、4件更新・4件失敗。失敗はGameDe
 ## 2. 現在の優先課題
 
 ### P0 — Official InformationリンクをSlackに常設する
-**状態：実装案をPRブランチに作成。テスト実行待ち。**
+**状態：PR #118マージ済み。次回の通常収集でSlack表示を確認する。**
 
-- `Official Information` 欄に公式ニュース、ツクール開発部X、新プロジェクトの日英X、公式フォーラム、YouTube、Discordを毎回表示する。
+- [PR #118](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/118) をマージ。`Official Information` 欄に公式ニュース、ツクール開発部X、新プロジェクトの日英X、公式フォーラム、YouTube、Discordを毎回表示する。
 - 新着がない日でも、公式情報の入口から確認できる。
 - Xの投稿日時を自動で取得して「更新あり」と表示する機能はまだない。公式ニュースの新着検知とは分けて扱い、次段階では公式RSS/API等の安定した取得経路を調べる。未検証の非公式Xスクレイピングや、投稿があったと断定する表示は導入しない。
 
