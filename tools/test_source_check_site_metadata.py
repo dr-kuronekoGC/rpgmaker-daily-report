@@ -51,7 +51,6 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
 
     def test_inaccessible_sites_are_explicitly_manual_only(self):
         manual_only_names = {
-            "GameDevMarket",
             "Maker Devs",
             "RPG Refuge（2D素材フォーラム）",
             "New RPG Project",
@@ -61,6 +60,18 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
                 with self.subTest(site=site["name"]):
                     self.assertIs(site.get("monitoring_enabled"), False)
                     self.assertTrue(site.get("monitoring_note"))
+
+    def test_gamedevmarket_uses_public_alternate_host(self):
+        site = next(
+            site for site in SOURCE_CHECK_SITES
+            if site.get("name") == "GameDevMarket"
+        )
+        self.assertEqual(
+            site["url"],
+            "https://mail.gamedevmarket.net/category/2d",
+        )
+        self.assertTrue(site.get("reference_only"))
+        self.assertTrue(site.get("monitoring_enabled", True))
 
     def test_hendrix_metadata_includes_japanese_plugin_support(self):
         site = next(
