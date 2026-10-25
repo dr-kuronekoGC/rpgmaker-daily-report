@@ -17,12 +17,13 @@ PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が�
 PR #122マージ前のSource Checkは12件中8件を確認、4件更新・4件失敗。失敗はGameDevMarket 403、Maker Devs TLSエラー（再試行後も失敗）、RPG Refugeのアクセスチャレンジ、New RPG Project 403。いずれも2026-10-24のログで再確認した。PR #122で4サイトを手動確認のみへ移行したが、PR #124でGameDevMarketは `mail.gamedevmarket.net/category/2d` から取得可能と確認できたため監視を再有効化。Run #196ではBaseline保存まで成功し、変更検知はまだ未確認。現在はMaker Devs・RPG Refuge・New RPG Projectの3サイトを手動確認のみとし、参考リンク欄で「自動監視：保留」と表示する。公式ページやSNSリンクはレポートに常設する方針。Xの投稿日時を安定して自動取得する仕組みは未実装で、今回のリンク追加だけでは「更新検知」にはならない。
 
 ### P0 — Source Checkサイトの接続問題を1サイトずつ解決する
-**状態：進行中。GameDevMarketは代替ホストで接続できた。次はMaker Devs。**
+**状態：Maker Devsの原因調査は完了。クライアント側で安全に修正できる根拠は得られず、手動確認のみを維持。**
 
 - PR #122で4サイトを手動確認のみへ変更した後、PR #124でGameDevMarketを `https://mail.gamedevmarket.net/category/2d` に変更し、監視を再有効化。
-- [Run #196](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40157459003)：成功。Source Checkは `checked=9/9 monitored / manual_only=3 / updated=1 / baseline=1 / unchanged=7 / failed=0`。GameDevMarketはBaselineで、以後の変更検知が機能するかは未確認。
-- 次はMaker Devs（`https://makerdevs.com/mz/master-list`）だけを対象に、TLS `TLSV1_ALERT_INTERNAL_ERROR` の原因と正規の代替取得経路を調査する。TLS検証無効化やアクセス制限の回避はしない。修正後はテストとActionsログで確認し、その後にRPG Refuge、New RPG Projectへ進む。
-- 既読状態、pending、archive、収集履歴は変更しない。修正をサイトごとに小さく分け、調査・変更・テスト・Actions結果を別々に記録する。
+- [Run #196](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40157459003)：Source Checkは `checked=9/9 monitored / manual_only=3 / updated=1 / baseline=1 / unchanged=7 / failed=0`。GameDevMarketはBaseline保存まで確認済みで、変更検知は未確認。
+- Maker Devs専用の診断を [Run #3](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40159739308) で実施。DNSは3つのIPアドレスを返し、3つすべてでTCP接続後のTLSハンドシェイクが `TLSV1_ALERT_INTERNAL_ERROR` で失敗。通常のHTTPS GET/HEADも同じTLSエラー。DNS不調、TCP接続失敗、HTML解析の問題ではないことを確認したが、サーバー側設定とGitHub Actionsとの相性等のどれが根本原因かは確定できない。
+- TLS証明書検証を無効化する方法や未確認ホストへの切替は行わない。公式ブログではMaker Devsがプラグイン一覧として引き続き案内されているため、参照リンクを残し、自動監視は保留のままにする。正規の代替フィード・ホストは確認できていない。
+- 次に接続問題を調査する際はRPG Refugeを1サイト単位で扱う。既読状態、pending、archive、収集履歴は変更しない。テスト、実地取得、Baseline保存、変更検知を別々に記録する。
 
 ## 2. 現在の優先課題
 
