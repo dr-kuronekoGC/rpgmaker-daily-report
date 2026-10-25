@@ -1,8 +1,8 @@
 # NEXT_STEPS.md
 
 最終確認日：2026-10-25（JST）
-対象ブランチ：`main`
-PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。PR #118でOfficial Informationリンクを追加、PR #119で公式ニュースの個別記事URL・公開日表示を追加し、どちらもマージ済み。2026-10-24 22:04 JSTの手動Run 40096568691はリンク切替前のコードで成功。今回U2U公式X（日英）のURLに差し替え、再実行は不要と判断。PR #119のClassification Auditでは278件のテストが成功。PR #122を2026-10-25にマージし、Source Checkで失敗を繰り返していた4サイトの自動監視を保留、参考リンクとして維持した。PR #122のClassification Auditでは280件のテストが成功。次回の通常収集で8サイトの監視件数・4サイトの手動確認表示を確認する。
+対象ブランチ：`main`（確認SHA `76a3ffa0bfa682d1ee1bdd47bcdf86ef6392b560`）
+PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。PR #118でOfficial Informationリンクを追加、PR #119で公式ニュースの個別記事URL・公開日表示を追加し、どちらもマージ済み。2026-10-24 22:04 JSTの手動Run 40096568691はリンク切替前のコードで成功。今回U2U公式X（日英）のURLに差し替え、再実行は不要と判断。PR #119のClassification Auditでは278件のテストが成功。PR #122のClassification Auditでは280件のテストが成功。その後PR #124でGameDevMarketを公開代替ホストへ変更し監視を再有効化。Run #196（40157459003）はsuccess、Slack配信・pending保存成功。Source Checkは9/9監視対象、手動確認3件、failed=0。GameDevMarketはBaseline保存であり、ページ変更検知の確認はまだ。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
@@ -15,6 +15,14 @@ PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が�
 - 現在のサイト状況：35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404（1ページ目の結果は保持）、RPG Maker SUとRM PlanetとRPG Maker Networkは403。403はアクセス制限を回避せず、公式の公開RSS/API等の代替経路を探し、なければ取得失敗として監視する。
 
 PR #122マージ前のSource Checkは12件中8件を確認、4件更新・4件失敗。失敗はGameDevMarket 403、Maker Devs TLSエラー（再試行後も失敗）、RPG Refugeのアクセスチャレンジ、New RPG Project 403。いずれも2026-10-24のログで再確認した。PR #122以降、この4サイトは自動監視を保留し、参考リンク欄で「自動監視：保留」と表示する。公式ページやSNSリンクはレポートに常設する方針。Xの投稿日時を安定して自動取得する仕組みは未実装で、今回のリンク追加だけでは「更新検知」にはならない。
+
+### P0 — Source Checkサイトの接続問題を1サイトずつ解決する
+**状態：進行中。GameDevMarketは代替ホストで接続できた。次はMaker Devs。**
+
+- PR #122で4サイトを手動確認のみへ変更した後、PR #124でGameDevMarketを `https://mail.gamedevmarket.net/category/2d` に変更し、監視を再有効化。
+- [Run #196](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40157459003)：成功。Source Checkは `checked=9/9 monitored / manual_only=3 / updated=1 / baseline=1 / unchanged=7 / failed=0`。GameDevMarketはBaselineで、以後の変更検知が機能するかは未確認。
+- 次はMaker Devs（`https://makerdevs.com/mz/master-list`）だけを対象に、TLS `TLSV1_ALERT_INTERNAL_ERROR` の原因と正規の代替取得経路を調査する。TLS検証無効化やアクセス制限の回避はしない。修正後はテストとActionsログで確認し、その後にRPG Refuge、New RPG Projectへ進む。
+- 既読状態、pending、archive、収集履歴は変更しない。修正をサイトごとに小さく分け、調査・変更・テスト・Actions結果を別々に記録する。
 
 ## 2. 現在の優先課題
 
