@@ -3,8 +3,10 @@
 Uses ordinary DNS, TCP, certificate-verified TLS, GET, and HEAD requests.
 It does not bypass access controls or modify collection/state files.
 """
+import json
 import socket
 import ssl
+from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
@@ -15,6 +17,7 @@ TARGETS = {
     "RPG Refuge 2D Assets RSS": "https://rpg-refuge.com/forums/2d-assets.57/index.rss",
     "New RPG Project homepage": "https://newrpg.seesaa.net/",
     "New RPG Project RDF feed": "https://newrpg.seesaa.net/index.rdf",
+    "GameDevMarket page": "https://mail.gamedevmarket.net/category/2d",
 }
 TIMEOUT = (8, 12)
 HEADERS = {
@@ -104,6 +107,47 @@ def diagnose_url(label, url):
                 + (f" challenge_marker={challenge}" if method == "GET" else "")
                 + (f" preview={preview[:180]!r}" if method == "GET" else "")
             )
+            if label == "GameDevMarket page" and method == "GET":
+                if response.status_code != 200 or challenge:
+                    print("[SIGNATURE] skipped: response is not a verified page response")
+                else:
+                    try:
+                        from sources.official_source_check import build_signature
+
+                        state = json.loads(
+                            Path("seen_source_check.json").read_text(
+                                encoding="utf-8"
+                            )
+                        )
+                        baseline = state.get("GameDevMarket")
+                        if not baseline:
+                            print("[SIGNATURE] skipped: no saved GameDevMarket baseline")
+                        elif baseline.get("method", "page") != "page":
+                            print(
+                                "[SIGNATURE] skipped: baseline method is "
+                                f"{baseline.get('method')!r}, not 'page'"
+                            )
+                        else:
+                            current_signature = build_signature(
+                                response.text, url
+                            )
+                            matches = (
+                                current_signature == baseline.get("signature")
+                            )
+                            print(
+                                f"[SIGNATURE] baseline_match={matches} "
+                                f"baseline_method={baseline.get('method')!r} "
+                                f"current_signature={current_signature}"
+                            )
+                            print(
+                                "[SIGNATURE] read-only comparison; "
+                                "seen_source_check.json was not modified"
+                            )
+                    except Exception as exc:
+                        print(
+                            f"[SIGNATURE] comparison failed "
+                            f"{type(exc).__name__}: {exc}"
+                        )
             response.close()
         except Exception as exc:
             print(f"[HTTP {method}] FAILED {type(exc).__name__}: {exc}")
