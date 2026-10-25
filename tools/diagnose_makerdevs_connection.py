@@ -1,7 +1,7 @@
-"""One-off network diagnostics for Maker Devs from GitHub Actions.
+"""Diagnostic-only connectivity checks for sites paused in Source Check.
 
-This script is diagnostic only. It does not disable TLS certificate validation,
-change production monitoring, or modify any seen/state files.
+Uses ordinary DNS, TCP, certificate-verified TLS, GET, and HEAD requests.
+It does not bypass access controls or modify collection/state files.
 """
 import socket
 import ssl
@@ -9,7 +9,11 @@ from urllib.parse import urlparse
 
 import requests
 
-URL = "https://makerdevs.com/mz/master-list"
+TARGETS = {
+    "Maker Devs page": "https://makerdevs.com/mz/master-list",
+    "RPG Refuge 2D Assets page": "https://rpg-refuge.com/forums/2d-assets.57/",
+    "RPG Refuge 2D Assets RSS": "https://rpg-refuge.com/forums/2d-assets.57/index.rss",
+}
 TIMEOUT = (8, 12)
 HEADERS = {
     "User-Agent": (
@@ -20,12 +24,11 @@ HEADERS = {
 }
 
 
-def main():
-    parsed = urlparse(URL)
+def diagnose_host(url):
+    parsed = urlparse(url)
     hostname = parsed.hostname
     port = parsed.port or 443
-    print(f"[diagnostic] target={URL}")
-    print(f"[diagnostic] python_ssl={ssl.OPENSSL_VERSION}")
+    print(f"\n[host] {hostname}:{port}")
 
     try:
         records = socket.getaddrinfo(
@@ -33,7 +36,7 @@ def main():
         )
     except Exception as exc:
         print(f"[DNS] FAILED {type(exc).__name__}: {exc}")
-        records = []
+        return
 
     addresses = []
     for family, socktype, proto, _, sockaddr in records:
@@ -66,28 +69,55 @@ def main():
             print(f"[{stage}] FAILED ip={ip} "
                   f"{type(exc).__name__}: {exc}")
 
+
+def diagnose_url(label, url):
+    print(f"\n[target] {label}: {url}")
     for method in ("GET", "HEAD"):
         try:
             response = requests.request(
                 method,
-                URL,
+                url,
                 headers=HEADERS,
                 timeout=TIMEOUT,
                 allow_redirects=True,
             )
+            content_type = response.headers.get("Content-Type", "")
+            preview = response.text[:300].replace("\\n", " ") if method == "GET" else ""
+            challenge = any(
+                marker in preview.lower()
+                for marker in (
+                    "checking your browser",
+                    "/.stile/challenge",
+                    "cf-chl-",
+                    "verify you are human",
+                )
+            )
             print(
                 f"[HTTP {method}] status={response.status_code} "
                 f"final_url={response.url!r} "
+                f"content_type={content_type!r} "
                 f"server={response.headers.get('Server', '')!r} "
-                f"via={response.headers.get('Via', '')!r} "
                 f"etag={response.headers.get('ETag', '')!r} "
                 f"last_modified={response.headers.get('Last-Modified', '')!r}"
+                + (f" challenge_marker={challenge}" if method == "GET" else "")
+                + (f" preview={preview[:180]!r}" if method == "GET" else "")
             )
             response.close()
         except Exception as exc:
             print(f"[HTTP {method}] FAILED {type(exc).__name__}: {exc}")
 
-    print("[diagnostic] finished; no repository state was changed")
+
+def main():
+    print(f"[diagnostic] python_ssl={ssl.OPENSSL_VERSION}")
+    hosts = {}
+    for url in TARGETS.values():
+        parsed = urlparse(url)
+        hosts.setdefault(parsed.hostname, url)
+    for url in hosts.values():
+        diagnose_host(url)
+    for label, url in TARGETS.items():
+        diagnose_url(label, url)
+    print("\n[diagnostic] finished; no repository state was changed")
 
 
 if __name__ == "__main__":
