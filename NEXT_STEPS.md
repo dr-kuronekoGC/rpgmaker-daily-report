@@ -2,7 +2,7 @@
 
 最終確認日：2026-10-25（JST）
 対象ブランチ：`main`（Run #196の実行コードSHA `69089524645852cd2c9a3da58bb3471c000f1105`）
-PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。PR #118でOfficial Informationリンクを追加、PR #119で公式ニュースの個別記事URL・公開日表示を追加し、どちらもマージ済み。2026-10-24 22:04 JSTの手動Run 40096568691はリンク切替前のコードで成功。今回U2U公式X（日英）のURLに差し替え、再実行は不要と判断。PR #119のClassification Auditでは278件のテストが成功。PR #122のClassification Auditでは280件のテストが成功。その後PR #124でGameDevMarketを公開代替ホストへ変更し監視を再有効化。Run #196（40157459003）はsuccess、Slack配信・pending保存成功。Source Checkは9/9監視対象、手動確認3件、failed=0。GameDevMarketはBaseline保存であり、ページ変更検知の確認はまだ。
+PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。PR #118でOfficial Informationリンクを追加、PR #119で公式ニュースの個別記事URL・公開日表示を追加し、どちらもマージ済み。2026-10-24 22:04 JSTの手動Run 40096568691はリンク切替前のコードで成功。今回U2U公式X（日英）のURLに差し替え、再実行は不要と判断。PR #119のClassification Auditでは278件のテストが成功。PR #122のClassification Auditでは280件のテストが成功。その後PR #124でGameDevMarketを公開代替ホストへ変更し監視を再有効化。Run #196（40157459003）はsuccess、Slack配信・pending保存成功。Source Checkは9/9監視対象、手動確認3件、failed=0。GameDevMarketはBaseline保存であり、ページ変更検知の確認はまだ。 PR #127でRPG Refugeのページと公開RSSを診断し、Run [40162535349](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162535349) でDNS/TCP/TLSは成功、GETは両方とも `/.stile/challenge` に転送、HEADは両方HTTP 429を確認。RSSも通常ページと同様にアクセス保護を受けるため自動監視は保留のままとする。PR #127とClassification Auditは成功。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
@@ -17,13 +17,14 @@ PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が�
 PR #122マージ前のSource Checkは12件中8件を確認、4件更新・4件失敗。失敗はGameDevMarket 403、Maker Devs TLSエラー（再試行後も失敗）、RPG Refugeのアクセスチャレンジ、New RPG Project 403。いずれも2026-10-24のログで再確認した。PR #122で4サイトを手動確認のみへ移行したが、PR #124でGameDevMarketは `mail.gamedevmarket.net/category/2d` から取得可能と確認できたため監視を再有効化。Run #196ではBaseline保存まで成功し、変更検知はまだ未確認。現在はMaker Devs・RPG Refuge・New RPG Projectの3サイトを手動確認のみとし、参考リンク欄で「自動監視：保留」と表示する。公式ページやSNSリンクはレポートに常設する方針。Xの投稿日時を安定して自動取得する仕組みは未実装で、今回のリンク追加だけでは「更新検知」にはならない。
 
 ### P0 — Source Checkサイトの接続問題を1サイトずつ解決する
-**状態：Maker Devsの原因調査は完了。クライアント側で安全に修正できる根拠は得られず、手動確認のみを維持。**
+**状態：Maker DevsとRPG Refugeの接続調査は完了。どちらも安全な自動監視経路を確認できず、手動確認のみを維持。**
 
 - PR #122で4サイトを手動確認のみへ変更した後、PR #124でGameDevMarketを `https://mail.gamedevmarket.net/category/2d` に変更し、監視を再有効化。
 - [Run #196](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40157459003)：Source Checkは `checked=9/9 monitored / manual_only=3 / updated=1 / baseline=1 / unchanged=7 / failed=0`。GameDevMarketはBaseline保存まで確認済みで、変更検知は未確認。
 - Maker Devs専用の診断を [Run #3](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40159739308) で実施。DNSは3つのIPアドレスを返し、3つすべてでTCP接続後のTLSハンドシェイクが `TLSV1_ALERT_INTERNAL_ERROR` で失敗。通常のHTTPS GET/HEADも同じTLSエラー。DNS不調、TCP接続失敗、HTML解析の問題ではないことを確認したが、サーバー側設定とGitHub Actionsとの相性等のどれが根本原因かは確定できない。
-- TLS証明書検証を無効化する方法や未確認ホストへの切替は行わない。公式ブログではMaker Devsがプラグイン一覧として引き続き案内されているため、参照リンクを残し、自動監視は保留のままにする。正規の代替フィード・ホストは確認できていない。
-- 次に接続問題を調査する際はRPG Refugeを1サイト単位で扱う。既読状態、pending、archive、収集履歴は変更しない。テスト、実地取得、Baseline保存、変更検知を別々に記録する。
+- RPG RefugeはPR #127の [診断Run](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162535349) でDNS/TCP/TLSが成功した一方、通常ページと公式XenForo RSSのGETは両方とも `/.stile/challenge` に転送され、HTMLのアクセスチャレンジを返した。両URLのHEADはHTTP 429。RSSも代替経路にならず、HTTP 200のチャレンジページを有効な内容として扱わない現在の保護は妥当。
+- TLS検証の無効化、アクセスチャレンジの突破、未確認ホストへの切替は行わない。Maker Devs・RPG Refugeとも参照リンクを残し、自動監視は保留。正規の代替フィード・ホストは確認できていない。
+- 次の接続問題の調査対象はNew RPG Project。既読状態、pending、archive、収集履歴は変更しない。テスト、実地取得、Baseline保存、変更検知を別々に記録する。
 
 ## 2. 現在の優先課題
 
