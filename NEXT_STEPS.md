@@ -17,14 +17,14 @@ PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が�
 PR #122マージ前のSource Checkは12件中8件を確認、4件更新・4件失敗。失敗はGameDevMarket 403、Maker Devs TLSエラー（再試行後も失敗）、RPG Refugeのアクセスチャレンジ、New RPG Project 403。いずれも2026-10-24のログで再確認した。PR #122で4サイトを手動確認のみへ移行したが、PR #124でGameDevMarketは `mail.gamedevmarket.net/category/2d` から取得可能と確認できたため監視を再有効化。Run #196ではBaseline保存まで成功し、変更検知はまだ未確認。現在はMaker Devs・RPG Refuge・New RPG Projectの3サイトを手動確認のみとし、参考リンク欄で「自動監視：保留」と表示する。公式ページやSNSリンクはレポートに常設する方針。Xの投稿日時を安定して自動取得する仕組みは未実装で、今回のリンク追加だけでは「更新検知」にはならない。
 
 ### P0 — Source Checkサイトの接続問題を1サイトずつ解決する
-**状態：Maker DevsとRPG Refugeの接続調査は完了。どちらも安全な自動監視経路を確認できず、手動確認のみを維持。**
+**状態：Maker Devs・RPG Refuge・New RPG Projectの接続調査は完了。安全な自動監視経路を確認できず、3サイトとも手動確認のみを維持。次はGameDevMarketの変更検知を検証する。**
 
 - PR #122で4サイトを手動確認のみへ変更した後、PR #124でGameDevMarketを `https://mail.gamedevmarket.net/category/2d` に変更し、監視を再有効化。
 - [Run #196](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40157459003)：Source Checkは `checked=9/9 monitored / manual_only=3 / updated=1 / baseline=1 / unchanged=7 / failed=0`。GameDevMarketはBaseline保存まで確認済みで、変更検知は未確認。
 - Maker Devs専用の診断を [Run #3](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40159739308) で実施。DNSは3つのIPアドレスを返し、3つすべてでTCP接続後のTLSハンドシェイクが `TLSV1_ALERT_INTERNAL_ERROR` で失敗。通常のHTTPS GET/HEADも同じTLSエラー。DNS不調、TCP接続失敗、HTML解析の問題ではないことを確認したが、サーバー側設定とGitHub Actionsとの相性等のどれが根本原因かは確定できない。
 - RPG RefugeはPR #127の [診断Run](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162535349) でDNS/TCP/TLSが成功した一方、通常ページと公式XenForo RSSのGETは両方とも `/.stile/challenge` に転送され、HTMLのアクセスチャレンジを返した。両URLのHEADはHTTP 429。RSSも代替経路にならず、HTTP 200のチャレンジページを有効な内容として扱わない現在の保護は妥当。
 - TLS検証の無効化、アクセスチャレンジの突破、未確認ホストへの切替は行わない。Maker Devs・RPG Refugeとも参照リンクを残し、自動監視は保留。正規の代替フィード・ホストは確認できていない。
-- 次の接続問題の調査対象はNew RPG Project。既読状態、pending、archive、収集履歴は変更しない。テスト、実地取得、Baseline保存、変更検知を別々に記録する。
+- New RPG ProjectはPR #129の [診断Run](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162662728) でトップページと公開RDFフィードの両方を確認。DNS/TCP/TLSは成功したが、GET/HEADはすべてHTTP 403 Forbidden。Web上ではサイトとフィードへのリンクを確認できる一方、GitHub Actionsからは両URLとも拒否され、正規の代替ホストは未確認。アクセス制限は回避せず、New RPG Projectは手動確認のみを維持。Maker Devs・RPG Refuge・New RPG Projectの3サイトの接続調査が一巡したため、次はGameDevMarketの変更検知を検証する。既読状態、pending、archive、収集履歴は変更しない。テスト、実地取得、Baseline保存、変更検知を別々に記録する。
 
 ## 2. 現在の優先課題
 
