@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 最終確認日：2026-10-25（JST）
-最新main：`76a3ffa0bfa682d1ee1bdd47bcdf86ef6392b560`。PR #124でGameDevMarketの参照URLを `https://mail.gamedevmarket.net/category/2d` に変更し、自動監視を再有効化。Run #196（[40157459003](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40157459003)）で同サイトの取得成功・Baseline保存を確認（変更検知の実地確認はまだ）。Source Checkは9/9監視対象を確認、失敗0、手動確認のみ3件。次はMaker Devsを1サイト単位で原因調査する。
+Run #196の実行コードSHA：`69089524645852cd2c9a3da58bb3471c000f1105`。PR #124でGameDevMarketの参照URLを `https://mail.gamedevmarket.net/category/2d` に変更し、自動監視を再有効化。Run #196（[40157459003](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40157459003)）で同サイトの取得成功・Baseline保存を確認（変更検知の実地確認はまだ）。Source Checkは9/9監視対象を確認、失敗0、手動確認のみ3件。次はMaker Devsを1サイト単位で原因調査する。
 確認対象：GitHub mainブランチ。PR #113〜#119をマージし、関連テスト・監査を確認。PR #117でPRE-00229の判定メモ差分による定期実行停止、スペイン語フォーラムの2ページ目404による全件破棄、サイト台帳と収集レジストリの不一致を修正した。PR #117の全 tools/test_*.py テストとClassification Auditは成功。
 PRE台帳は523件中84件未確認／439件解決済み。Rpg2S ITの本文取得品質は引き続き未解決で、本文未取得を理由に除外しない。
 PR #117マージ後の通常収集Run 40042036545（2026-10-24 08:52 JST）は成功。Slack HTTP 200、pending保存、データpushを確認。サイト状況は35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404（先行ページの結果は保持）、RPG Maker SU・RM Planet・RPG Maker Networkは403。Source Checkは12件中8件を確認、4件更新・4件失敗（GameDevMarket 403、Maker Devs TLSエラー、RPG Refugeアクセスチャレンジ、New RPG Project 403）。403/アクセスチャレンジを回避せず、公開RSS/API等の正規代替経路を調査する。PR #122（2026-10-25マージ）で失敗を繰り返した4サイトを手動確認のみへ移行。PR #124（同日マージ）でGameDevMarketは公開代替ホスト `mail.gamedevmarket.net/category/2d` がGitHub Actionsから取得可能と確認できたため、自動監視を再有効化。Run #196ではBaseline保存まで成功したが、実際の変更検知は未確認。現在は9件を自動監視、Maker Devs・RPG Refuge・New RPG Projectの3件を手動確認のみとして表示する。既読・収集データは変更していない。
@@ -130,10 +130,10 @@ Run 39347372727では、35収集モジュールのうち31件がOK、1件がPART
 - **Comunidad RPG Maker ES**：APIの1ページ目は取得できたが、次ページURLがHTTP 404となり、従来コードでは収集全体が失敗扱いになっていた。PR #117で、取得済みページの結果を保持しつつ失敗リクエストをヘルス情報に残すよう修正。
 - **RM Planet**：RSSがHTTP 403。アクセス制限を回避せず、現状は取得失敗として扱う。
 - **RPG Maker Network**：リソースページがHTTP 403。アクセス制限を回避せず、現状は取得失敗として扱う。
-- **Source Check**：12件中8件確認、3件更新、5件変化なし、4件失敗。失敗はGameDevMarketの403、Maker DevsのTLS接続エラー、RPG Refugeのアクセスチャレンジ、New RPG Projectの403。アクセス制限の突破は行わず、通常ページ・公開RSS等の正規経路で確認できる範囲に限る。
+- **Source Check（2026-10-24時点）**：12件中8件確認、3件更新、5件変化なし、4件失敗。失敗はGameDevMarketの403、Maker DevsのTLS接続エラー、RPG Refugeのアクセスチャレンジ、New RPG Projectの403。その後PR #124でGameDevMarketは公開代替ホストから取得可能となり、Run #196でBaseline保存を確認。現在は9件監視・3件手動確認のみ、failed=0。アクセス制限の突破は行わず、正規の公開経路を利用する。
 - **サイト台帳**：GameDev MarketとMaker DevsはSource Checkで監視されているが、定期収集レジストリには登録されていない。data/sites/sites.json の collection を false に修正し、状態表示を実態に合わせた。RMRKも新規収集対象外のまま履歴を保持する。
 
-2026-10-25：PR #122でSource Checkの監視状態を修正。GameDevMarket、Maker Devs、RPG Refuge、New RPG Projectは手動確認用一覧に残し、自動監視は保留。既知の失敗経路への反復アクセスを止め、監視件数と手動確認件数を分けて表示する。GitHub ActionsのClassification Auditで280テスト成功。次回の通常収集で、監視対象8件と手動確認4件のログ・Slack表示を確認する。
+2026-10-25：PR #122で4サイトを手動確認のみへ移行し、Classification Auditで280テスト成功。その後PR #124でGameDevMarketを公開代替ホストへ変更して監視を再有効化。Run #196で取得・Baseline保存を確認したが、変更検知は未確認。現在は監視対象9件、手動確認3件。
 
 PR #117マージ後の通常収集で、各項目が改善・継続・解消のどれに当たるか再確認する。
 
