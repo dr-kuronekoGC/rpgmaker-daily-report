@@ -1,7 +1,7 @@
 # NEXT_STEPS.md
 
 最終確認日：2026-10-25（JST）
-対象ブランチ：`main`（確認SHA `76a3ffa0bfa682d1ee1bdd47bcdf86ef6392b560`）
+対象ブランチ：`main`（Run #196の実行コードSHA `69089524645852cd2c9a3da58bb3471c000f1105`）
 PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。PR #118でOfficial Informationリンクを追加、PR #119で公式ニュースの個別記事URL・公開日表示を追加し、どちらもマージ済み。2026-10-24 22:04 JSTの手動Run 40096568691はリンク切替前のコードで成功。今回U2U公式X（日英）のURLに差し替え、再実行は不要と判断。PR #119のClassification Auditでは278件のテストが成功。PR #122のClassification Auditでは280件のテストが成功。その後PR #124でGameDevMarketを公開代替ホストへ変更し監視を再有効化。Run #196（40157459003）はsuccess、Slack配信・pending保存成功。Source Checkは9/9監視対象、手動確認3件、failed=0。GameDevMarketはBaseline保存であり、ページ変更検知の確認はまだ。
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
@@ -14,7 +14,7 @@ PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が�
 - 復旧確認：[Run 40042036545](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40042036545)（2026-10-24 08:52 JST）。Run script、Slack送信（HTTP 200）、pending保存、GitHubへのデータpushが成功。
 - 現在のサイト状況：35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404（1ページ目の結果は保持）、RPG Maker SUとRM PlanetとRPG Maker Networkは403。403はアクセス制限を回避せず、公式の公開RSS/API等の代替経路を探し、なければ取得失敗として監視する。
 
-PR #122マージ前のSource Checkは12件中8件を確認、4件更新・4件失敗。失敗はGameDevMarket 403、Maker Devs TLSエラー（再試行後も失敗）、RPG Refugeのアクセスチャレンジ、New RPG Project 403。いずれも2026-10-24のログで再確認した。PR #122以降、この4サイトは自動監視を保留し、参考リンク欄で「自動監視：保留」と表示する。公式ページやSNSリンクはレポートに常設する方針。Xの投稿日時を安定して自動取得する仕組みは未実装で、今回のリンク追加だけでは「更新検知」にはならない。
+PR #122マージ前のSource Checkは12件中8件を確認、4件更新・4件失敗。失敗はGameDevMarket 403、Maker Devs TLSエラー（再試行後も失敗）、RPG Refugeのアクセスチャレンジ、New RPG Project 403。いずれも2026-10-24のログで再確認した。PR #122で4サイトを手動確認のみへ移行したが、PR #124でGameDevMarketは `mail.gamedevmarket.net/category/2d` から取得可能と確認できたため監視を再有効化。Run #196ではBaseline保存まで成功し、変更検知はまだ未確認。現在はMaker Devs・RPG Refuge・New RPG Projectの3サイトを手動確認のみとし、参考リンク欄で「自動監視：保留」と表示する。公式ページやSNSリンクはレポートに常設する方針。Xの投稿日時を安定して自動取得する仕組みは未実装で、今回のリンク追加だけでは「更新検知」にはならない。
 
 ### P0 — Source Checkサイトの接続問題を1サイトずつ解決する
 **状態：進行中。GameDevMarketは代替ホストで接続できた。次はMaker Devs。**
