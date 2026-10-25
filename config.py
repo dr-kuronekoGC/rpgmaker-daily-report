@@ -218,13 +218,11 @@ SOURCE_CHECK_SITES = [
     },
     {
         "name": "GameDevMarket",
-        "url": "https://www.gamedevmarket.net/category/2d",
+        "url": "https://mail.gamedevmarket.net/category/2d",
         "resource_types": ["グラフィック素材"],
         "language": "英語（サイト表示は英語のみ）",
         "site_type": "マーケットプレイス",
         "reference_only": True,
-        "monitoring_enabled": False,
-        "monitoring_note": "GitHub Actionsからページ／公開フィードへアクセスできず、自動監視を保留中",
     },
     {
         "name": "Maker Devs",
