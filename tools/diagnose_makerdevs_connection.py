@@ -13,6 +13,8 @@ TARGETS = {
     "Maker Devs page": "https://makerdevs.com/mz/master-list",
     "RPG Refuge 2D Assets page": "https://rpg-refuge.com/forums/2d-assets.57/",
     "RPG Refuge 2D Assets RSS": "https://rpg-refuge.com/forums/2d-assets.57/index.rss",
+    "New RPG Project homepage": "https://newrpg.seesaa.net/",
+    "New RPG Project RDF feed": "https://newrpg.seesaa.net/index.rdf",
 }
 TIMEOUT = (8, 12)
 HEADERS = {
