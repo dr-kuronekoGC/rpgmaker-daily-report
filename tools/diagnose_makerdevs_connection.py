@@ -6,10 +6,16 @@ It does not bypass access controls or modify collection/state files.
 import json
 import socket
 import ssl
+import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
+
+# Running a script under tools/ puts that directory, not the repo root,
+# at sys.path[0]. Add the repository root for importing the production
+# signature builder in this read-only diagnostic.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 TARGETS = {
     "Maker Devs page": "https://makerdevs.com/mz/master-list",
