@@ -429,7 +429,7 @@ def build_asset_metadata(
     )
     # Sound assets remain searchable regardless of engine. The UI should hide engine
     # information and bypass engine filtering whenever this flag is false.
-    item["engine_relevant"] = asset_type != ASSET_TYPE_SOUND
+    item["engine_relevant"] = asset_type in (ASSET_TYPE_GRAPHIC, ASSET_TYPE_PLUGIN, ASSET_TYPE_GAME)
 
     item["asset_tags"] = (
         asset_tags
