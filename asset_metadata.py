@@ -236,10 +236,10 @@ def detect_file_formats(item, asset_type):
 
     for extension in allowed:
         # A dot-extension in the title/description/body is strong evidence.
-        extension_pattern = r"(?<![a-z0-9])\\." + re.escape(extension) + r"(?![a-z0-9])"
+        extension_pattern = r"(?<![a-z0-9])\." + re.escape(extension) + r"(?![a-z0-9])"
         named_format_pattern = (
             r"(?<![a-z0-9])" + re.escape(extension)
-            + r"(?![a-z0-9])\\s+(?:format|file|files|audio|image|images|music|tracks?)\\b"
+            + r"(?![a-z0-9])\s+(?:format|file|files|audio|image|images|music|tracks?)\b"
         )
         if (
             re.search(extension_pattern, text, flags=re.IGNORECASE)
