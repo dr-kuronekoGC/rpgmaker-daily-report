@@ -10,7 +10,7 @@ CONFIDENCE_LOW = "low"
 CONFIDENCE_UNKNOWN = "unknown"
 
 
-SOUND_TYPES = ("BGM", "BGS", "ME", "SE")
+SOUND_TYPES = ("BGM", "BGS", "ME", "SE", "VOICE")
 
 
 # RPG Makerの短い略語は、多言語文章中の普通の単語と区別する。
@@ -60,6 +60,16 @@ SOUND_PATTERNS = {
         (r"ファンファーレ", 4, "ja:ファンファーレ"),
         (r"ME", 5, "ja:ME"),
     ),
+    "VOICE": (
+        (r"voice acting", 6, "voice acting"),
+        (r"voice pack", 6, "voice pack"),
+        (r"voice over", 5, "voice over"),
+        (r"voiceover", 5, "voiceover"),
+        (r"voice clips?", 5, "voice clips"),
+        (r"spoken dialogue", 5, "spoken dialogue"),
+        (r"ボイス", 6, "ja:ボイス"),
+        (r"音声素材", 6, "ja:音声素材"),
+    ),
     "SE": (
         # SEはRPG Makerの略語として大文字表記された場合だけ明示認識する。
         # フランス語の「se」と区別するため、ここだけ大文字小文字を区別する。
@@ -85,6 +95,7 @@ GRAPHIC_PATTERNS = {
     "parallax": (("parallax", 6), ("遠景", 6), ("パララックス", 6)),
     "animation": (("animation", 5), ("effekseer", 6), ("アニメーション", 6)),
     "icon": (("icon", 5), ("icons", 5), ("icon set", 6), ("icon pack", 6), ("アイコン", 5)),
+    "map_object": (("map object", 6), ("map props", 6), ("environment props", 6), ("furniture", 5), ("decorative objects", 5), ("小物", 5), ("家具", 5), ("マップオブジェクト", 6)),
     "ui_system": (("ui", 5), ("user interface", 6), ("window skin", 6), ("windowskin", 6), ("system graphic", 6), ("システム", 4), ("ui素材", 6)),
     "title": (("title screen", 6), ("title graphic", 6), ("title logo", 6), ("タイトル", 4)),
 }

@@ -111,6 +111,10 @@ def normalize_item(item, collector_name):
     item["tags"] = tags
     item["languages"] = languages
     item.setdefault("sound_type", None)
+    item.setdefault("file_formats", [])
+    item.setdefault("graphic_style", [])
+    item.setdefault("graphic_theme", [])
+    item.setdefault("engine_relevant", None)
     item["plugin_category"] = plugin_category
 
     item.setdefault("commercial_use", None)

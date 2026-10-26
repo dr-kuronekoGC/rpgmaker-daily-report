@@ -169,6 +169,109 @@ def detect_detailed_subcategory(
     return []
 
 # ==========================================
+# Search metadata for asset directories
+# ==========================================
+
+AUDIO_FILE_FORMATS = ("mid", "midi", "ogg", "m4a", "mp3", "wav", "wma", "flac", "aiff", "aif")
+GRAPHIC_FILE_FORMATS = ("png", "jpg", "jpeg", "gif", "webp", "bmp", "psd", "ase", "aseprite")
+
+GRAPHIC_STYLE_KEYWORDS = {
+    "pixel_art": ("pixel art", "pixel-art", "pixelart", "ドット絵", "ピクセルアート"),
+    "illustration": ("illustration", "illustrations", "hand-drawn", "hand drawn", "イラスト"),
+    "anime": ("anime style", "anime", "manga", "アニメ調", "漫画"),
+    "realistic": ("photorealistic", "realistic art", "realistic style", "写実的"),
+    "vector": ("vector art", "vector graphic", "ベクター"),
+    "flat": ("flat design", "flat style", "フラットデザイン"),
+}
+
+GRAPHIC_THEME_KEYWORDS = {
+    "fantasy": ("fantasy", "ファンタジー"),
+    "modern": ("modern", "contemporary", "現代風", "現代"),
+    "sci_fi": ("sci-fi", "sci fi", "science fiction", "サイエンスフィクション", "SF"),
+    "japanese": ("japanese", "japan", "和風", "日本風"),
+    "horror": ("horror", "怖い", "ホラー"),
+    "medieval": ("medieval", "middle ages", "中世"),
+    "cyberpunk": ("cyberpunk", "サイバーパンク"),
+    "nature": ("nature", "forest", "植物", "自然"),
+    "urban": ("urban", "cityscape", "city streets", "街並み", "都市"),
+}
+
+
+def _search_metadata_text(item):
+    parts = []
+    for field in ("title", "source_tags", "description", "body_text", "post_body", "body", "content_text", "content", "text"):
+        value = item.get(field)
+        if isinstance(value, str):
+            parts.append(value)
+        elif isinstance(value, (list, tuple, set)):
+            parts.extend(str(part) for part in value if part is not None)
+    return " ".join(parts).lower()
+
+
+def detect_file_formats(item, asset_type):
+    """Detect only formats explicitly named in item metadata, not from a page URL or discovery time."""
+    allowed = AUDIO_FILE_FORMATS if asset_type == ASSET_TYPE_SOUND else GRAPHIC_FILE_FORMATS if asset_type == ASSET_TYPE_GRAPHIC else ()
+    if not allowed:
+        return []
+
+    found = []
+    explicit = item.get("file_formats", [])
+    if isinstance(explicit, str):
+        explicit = [explicit]
+    if isinstance(explicit, (list, tuple, set)):
+        for value in explicit:
+            normalized = str(value or "").strip().lower().lstrip(".")
+            if normalized in allowed and normalized not in found:
+                found.append(normalized)
+
+    text = _search_metadata_text(item)
+    source_tags = item.get("source_tags", [])
+    if isinstance(source_tags, str):
+        source_tags = [source_tags]
+    exact_source_tags = {
+        str(tag).strip().lower().lstrip(".")
+        for tag in source_tags
+        if isinstance(tag, str)
+    }
+
+    for extension in allowed:
+        # A dot-extension in the title/description/body is strong evidence.
+        extension_pattern = r"(?<![a-z0-9])\." + re.escape(extension) + r"(?![a-z0-9])"
+        named_format_pattern = (
+            r"(?<![a-z0-9])" + re.escape(extension)
+            + r"(?![a-z0-9])\s+(?:format|file|files|audio|image|images|music|tracks?)\b"
+        )
+        if (
+            re.search(extension_pattern, text, flags=re.IGNORECASE)
+            or re.search(named_format_pattern, text, flags=re.IGNORECASE)
+            or extension in exact_source_tags
+        ):
+            if extension not in found:
+                found.append(extension)
+
+    return [extension for extension in allowed if extension in found]
+
+
+def _detect_graphic_keywords(item, keyword_map):
+    text = _search_metadata_text(item)
+    found = []
+    for tag, keywords in keyword_map.items():
+        for keyword in keywords:
+            normalized = keyword.lower()
+            if re.search(r"[^a-z0-9]", normalized):
+                matched = normalized in text
+            else:
+                matched = re.search(
+                    r"(?<![a-z0-9])" + re.escape(normalized) + r"(?![a-z0-9])",
+                    text,
+                ) is not None
+            if matched:
+                found.append(tag)
+                break
+    return found
+
+
+# ==========================================
 # Asset Metadata
 # ==========================================
 
@@ -313,6 +416,20 @@ def build_asset_metadata(
     item["asset_type"] = (
         asset_type
     )
+
+    # Public search metadata. Empty lists mean "not identified", not "does not have".
+    item["file_formats"] = detect_file_formats(item, asset_type)
+    item["graphic_style"] = (
+        _detect_graphic_keywords(item, GRAPHIC_STYLE_KEYWORDS)
+        if asset_type == ASSET_TYPE_GRAPHIC else []
+    )
+    item["graphic_theme"] = (
+        _detect_graphic_keywords(item, GRAPHIC_THEME_KEYWORDS)
+        if asset_type == ASSET_TYPE_GRAPHIC else []
+    )
+    # Sound assets remain searchable regardless of engine. The UI should hide engine
+    # information and bypass engine filtering whenever this flag is false.
+    item["engine_relevant"] = asset_type in (ASSET_TYPE_GRAPHIC, ASSET_TYPE_PLUGIN, ASSET_TYPE_GAME)
 
     item["asset_tags"] = (
         asset_tags
