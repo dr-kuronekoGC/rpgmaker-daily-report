@@ -1,8 +1,22 @@
 # NEXT_STEPS.md
 
-最終確認日：2026-10-25（JST）
+最終確認日：2026-10-26（JST）
 対象ブランチ：`main`（Run #196の実行コードSHA `69089524645852cd2c9a3da58bb3471c000f1105`）
 PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。PR #118でOfficial Informationリンクを追加、PR #119で公式ニュースの個別記事URL・公開日表示を追加し、どちらもマージ済み。2026-10-24 22:04 JSTの手動Run 40096568691はリンク切替前のコードで成功。今回U2U公式X（日英）のURLに差し替え、再実行は不要と判断。PR #119のClassification Auditでは278件のテストが成功。PR #122のClassification Auditでは280件のテストが成功。その後PR #124でGameDevMarketを公開代替ホストへ変更し監視を再有効化。Run #196（40157459003）はsuccess、Slack配信・pending保存成功。Source Checkは9/9監視対象、手動確認3件、failed=0。GameDevMarketはRun #196でBaseline保存済み。読み取り専用照合Run [40162817759](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162817759) で本番と同じ `build_signature` を使い、現在ページのsignatureがBaselineと一致することを確認。`seen_source_check.json` は変更していない。実際のページ更新を検知する動作は未確認。 PR #127でRPG Refugeのページと公開RSSを診断し、Run [40162535349](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162535349) でDNS/TCP/TLSは成功、GETは両方とも `/.stile/challenge` に転送、HEADは両方HTTP 429を確認。RSSも通常ページと同様にアクセス保護を受けるため自動監視は保留のままとする。PR #127とClassification Auditは成功。
+
+## 直近完了：WordPress検索向け素材メタデータ
+
+**状態：PR #135マージ済み（2026-10-26）。** [PR #135](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/135)
+
+- `file_formats`：音声形式（MID/MIDI、OGG、M4A、MP3、WAV、WMA、FLAC、AIFF/AIF）と画像形式を、タイトル・タグ・説明・本文に明示された場合だけ記録。素材ページURLの拡張子だけから配布形式を推測しない。
+- `engine_relevant`：サウンドはfalse。将来のWordPressではエンジン情報を表示せず、エンジン指定検索でもサウンド素材を除外しない。グラフィック・プラグイン・ゲームはtrue。エンジン情報が不明なグラフィックを検索から除外しない。
+- `graphic_style`：ドット絵、イラスト、アニメ調、写実、ベクター、フラット等を明示的な語句から抽出。
+- `graphic_theme`：ファンタジー、現代、SF、和風、ホラー、中世、サイバーパンク、自然、都市等を明示的な語句から抽出。
+- 用途分類に `map_object` を追加し、音素材はVOICEを独立分類。
+- 不明な特徴は空リストのまま保持し、「その特徴がない」とは解釈しない。
+- Classification Audit：286 tests passed。Engine Backfill Audit：success。
+- WordPressの検索画面自体は未実装。次の段階で、WP側のフィルターとこのメタデータの対応付けを設計する。
+
 
 このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
 
