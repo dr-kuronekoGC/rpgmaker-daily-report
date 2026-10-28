@@ -9,7 +9,7 @@ PR #135（2026-10-26マージ）でWordPress検索向けメタデータ（`file_
 ## 次のチャットで最初に確認すること（2026-10-28）
 1. `data/review/review_decisions.json` の9件と `data/review/classification_review.json` の状態は反映済み。まず二重更新せず、必要ならNotion側の9件の状態だけ確認する。
 2. Auto-screen Run [40609231407](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609231407) はcommit stepで失敗。Actionsの該当stepログを開き、認証・push権限・競合等の原因を特定する。スクリーニング判定自体とGitHubへの保存失敗を分けて扱う。
-3. main台帳は531件中8件未確認（PRE-00524〜PRE-00531）。Notionの一括再集計は上限で保留。Notion同期のsuccess表示を実同期完了とみなさず、Secretsとログを確認する。
+3. main台帳は531件中8件未確認（PRE-00524〜PRE-00531）。Notion同期Run [40658009044](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40658009044) は同期処理・同期台帳コミットとも成功。全件数の一括再集計は利用上限で保留のため、必要なら個別ページとNotion側の件数を後日確認する。
 4. 次に分類精度を改善するときは、今回9件の人手判定を参考に、(a)素材配布と依頼・雑談・紹介の区別、(b)リンク切れ／アクセス不能と素材種別の区別、(c)個別の除外判断を一般ルールへ拡張しすぎない、を回帰テストで守る。
 5. WordPress検索向けメタデータはPR #135済み。次段階は検索項目とUIの設計であり、現時点でWordPress実装はない。
 
