@@ -1,6 +1,11 @@
 # NEXT_STEPS.md
 
 
+最終確認日：2026-10-28（JST）
+対象ブランチ：`main`。PR #137（[Improve resource-intent classification from review feedback](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/137)）を2026-10-28にマージ。Classification Audit Run [40609149323](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609149323) は292テスト成功。英語・ロシア語・日本語の明示的な依頼表現を本文から検出し、素材カテゴリの掲示板でも依頼投稿を素材候補と誤認しにくくした。曖昧な「resource pack」「released」「free to use」等だけでは配布の確証にしない。具体的なダウンロード根拠は依頼語より優先する。
+今回のユーザー確認9件（PRE-00425、00430、00431、00433、00455、00471、00481、00491、00507）は `data/review/review_decisions.json` に記録済み。判定ファイルは299件。PR #134（2026-10-28マージ）で、過去にユーザー確認済みだった47件のPRE状態・分類メモをmainへ反映した。現在のmainレビュー台帳は531件中8件未確認／523件解決済み。NotionにもPRE-00524〜PRE-00531の8件を「未確認」として追加し、各ページの状態・URLを個別に確認した。NotionのQuery Data Source利用上限に達したため、一括件数の再集計は保留。GitHub ActionsのNotion同期Secretsが未設定の記録があるため、自動同期は未確認。通常収集の次回実行でSlack表示が8件に追随するか、Actionsログと出力を確認する。
+PR #135（2026-10-26マージ）でWordPress検索向けメタデータ（`file_formats`、`engine_relevant`、`graphic_style`、`graphic_theme`、音声VOICE分類、グラフィックmap_object分類）を追加済み。サウンドはエンジン検索の対象外。WordPress側の検索UIは未実装。
+
 ## 次のチャットで最初に確認すること（2026-10-28）
 1. `data/review/review_decisions.json` の9件と `data/review/classification_review.json` の状態は反映済み。まず二重更新せず、必要ならNotion側の9件の状態だけ確認する。
 2. Auto-screen Run [40609231407](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609231407) はcommit stepで失敗。Actionsの該当stepログを開き、認証・push権限・競合等の原因を特定する。スクリーニング判定自体とGitHubへの保存失敗を分けて扱う。
@@ -9,10 +14,6 @@
 5. WordPress検索向けメタデータはPR #135済み。次段階は検索項目とUIの設計であり、現時点でWordPress実装はない。
 
 
-最終確認日：2026-10-28（JST）
-対象ブランチ：`main`。PR #137（[Improve resource-intent classification from review feedback](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/137)）を2026-10-28にマージ。Classification Audit Run [40609149323](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609149323) は292テスト成功。英語・ロシア語・日本語の明示的な依頼表現を本文から検出し、素材カテゴリの掲示板でも依頼投稿を素材候補と誤認しにくくした。曖昧な「resource pack」「released」「free to use」等だけでは配布の確証にしない。具体的なダウンロード根拠は依頼語より優先する。
-今回のユーザー確認9件（PRE-00425、00430、00431、00433、00455、00471、00481、00491、00507）は `data/review/review_decisions.json` に記録済み。判定ファイルは299件。PR #134（2026-10-28マージ）で、過去にユーザー確認済みだった47件のPRE状態・分類メモをmainへ反映した。現在のmainレビュー台帳は531件中8件未確認／523件解決済み。NotionにもPRE-00524〜PRE-00531の8件を「未確認」として追加し、各ページの状態・URLを個別に確認した。NotionのQuery Data Source利用上限に達したため、一括件数の再集計は保留。GitHub ActionsのNotion同期Secretsが未設定の記録があるため、自動同期は未確認。通常収集の次回実行でSlack表示が8件に追随するか、Actionsログと出力を確認する。
-PR #135（2026-10-26マージ）でWordPress検索向けメタデータ（`file_formats`、`engine_relevant`、`graphic_style`、`graphic_theme`、音声VOICE分類、グラフィックmap_object分類）を追加済み。サウンドはエンジン検索の対象外。WordPress側の検索UIは未実装。
 
 ## 直近完了：WordPress検索向け素材メタデータ
 
