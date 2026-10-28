@@ -14,7 +14,7 @@
 検索メタデータ：PR #135（2026-10-26マージ）で、素材検索用の `file_formats`、グラフィックの `graphic_style` / `graphic_theme`、エンジン検索対象を示す `engine_relevant` を追加。サウンドは `engine_relevant=false` とし、将来のWordPressではエンジン表示・エンジン絞り込みの対象外にする。音声のVOICE分類とグラフィックのmap_object分類も追加。Classification Auditは286テスト成功、Engine Backfill Auditも成功。既存の収集履歴・既読状態・pendingデータは変更していない。WordPress側の検索UI実装は未着手。
 PR #125でMaker Devs専用の診断スクリプトと手動実行可能なGitHub Actions workflowを追加。診断Run [40159739308](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40159739308) でDNS解決成功、3つのIPすべてでTCP接続後にTLS `TLSV1_ALERT_INTERNAL_ERROR`、GET/HEADも同じTLSエラーを確認。TLS検証無効化や未確認ホストへの切替は行わず、Maker Devsは手動確認のみを維持。根本原因がサイト側か接続経路・環境との相性かは未確定。GameDevMarketはPR #124で公開代替ホストへ変更し、Run #196でBaseline保存済み。読み取り専用照合Run [40162817759](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162817759) で現在ページのsignatureがBaselineと一致することを確認したが、実際のページ更新を検知する動作は未確認。Source Checkは9/9監視対象を確認、失敗0、手動確認のみ3件。PR #127で診断を拡張し、RPG Refugeの通常ページと公式XenForo RSSをGitHub Actionsから確認。Run [40162535349](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162535349) ではDNS/TCP/TLSは成功したが、GETは両URLとも `/.stile/challenge` へ転送され、RSSではなくHTMLチャレンジを返した。HEADは両URLともHTTP 429。通常ページ・公開RSSとも同じアクセス保護に止められており、回避は行わずRPG Refugeは手動確認のみを維持。PR #127とClassification Auditは成功。PR #129でNew RPG Projectのトップページと公開RDFフィードを診断。Run [40162662728](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162662728) ではDNS/TCP/TLSは成功したが、トップページと `index.rdf` のGET/HEADがすべてHTTP 403 Forbidden。サイトのトップページとフィードはWeb上で閲覧可能だが、GitHub Actionsからは両方とも取得拒否された。正規の別ホストは確認できず、403を回避しないため手動確認のみを維持。PR #129とClassification Auditは成功。3つの手動確認サイトの調査が一巡したため、次はGameDevMarketの変更検知を検証する。
 確認対象：GitHub mainブランチ。PR #113〜#119をマージし、関連テスト・監査を確認。PR #117でPRE-00229の判定メモ差分による定期実行停止、スペイン語フォーラムの2ページ目404による全件破棄、サイト台帳と収集レジストリの不一致を修正した。PR #117の全 tools/test_*.py テストとClassification Auditは成功。
-PRE台帳は523件中84件未確認／439件解決済み。Rpg2S ITの本文取得品質は引き続き未解決で、本文未取得を理由に除外しない。
+2026-10-23時点ではPRE台帳523件中84件未確認／439件解決済みだった（履歴）。2026-10-28時点の最新値は冒頭の531件中8件未確認／523件解決済み。Rpg2S ITの本文取得品質に関する過去の監査記録は履歴として保持する。
 PR #117マージ後の通常収集Run 40042036545（2026-10-24 08:52 JST）は成功。Slack HTTP 200、pending保存、データpushを確認。サイト状況は35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Comunidad RPG Maker ESはページ2の404（先行ページの結果は保持）、RPG Maker SU・RM Planet・RPG Maker Networkは403。Source Checkは12件中8件を確認、4件更新・4件失敗（GameDevMarket 403、Maker Devs TLSエラー、RPG Refugeアクセスチャレンジ、New RPG Project 403）。403/アクセスチャレンジを回避せず、公開RSS/API等の正規代替経路を調査する。RPG RefugeはPR #127の診断で公式RSSも同じアクセスチャレンジに転送されることを確認したため、現時点で安全な自動監視経路は未確認。PR #122（2026-10-25マージ）で失敗を繰り返した4サイトを手動確認のみへ移行。PR #124（同日マージ）でGameDevMarketは公開代替ホスト `mail.gamedevmarket.net/category/2d` がGitHub Actionsから取得可能と確認できたため、自動監視を再有効化。Run #196ではBaseline保存に成功。読み取り専用照合Run [40162817759](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162817759) で保存済みsignatureと現在ページが一致し、状態ファイルを書き換えずに照合できることを確認した。実際のページ更新を検知する動作は未確認。現在は9件を自動監視、Maker Devs・RPG Refuge・New RPG Projectの3件を手動確認のみとして表示する。既読・収集データは変更していない。
 PR #118（2026-10-24マージ）でOfficial Informationリンクを毎回のSlackレポートに表示するよう変更。公式ニュース、ツクール開発部X、U2U公式Xの日英アカウント、公式フォーラム、YouTube、Discordを掲載する。2026-10-24 22:04 JSTの手動Run 40096568691はリンク切替前のコードで成功。Official InformationのXリンクは、ユーザー提示のU2U公式日本語・英語アカウント（https://x.com/rpgmakeru2u_jp、https://x.com/rpgmakeru2u_en）に切り替えた。変更後の再実行は行わず、次回の通常収集で表示を確認する。Xの投稿日時の自動検知は未実装であり、リンク常設とは別課題として扱う。
 PR #119（2026-10-24マージ）で、公式ニュース一覧から個別記事URLと公開日を取得し、Slack項目に記事リンクと「公開日：YYYY.MM.DD」を表示するよう変更。テストは278件すべて成功（[Classification Audit](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40055876293)）。公式ページに正確な公開時刻が確認できないため、日付のみを表示する。次回の通常収集で実際の公式ニュースが検出された際にSlack表示を確認する。
@@ -64,8 +64,8 @@ RPG Maker／RPGツクールに関連する素材、プラグイン、開発情�
 
 ### レビュー・監査
 - `review_queue.py`：PREレビューキューの生成、持ち越し、既存項目の監査。
-- `data/review/classification_review.json`：PRE項目の永続的なレビュー台帳。mainで確認した最新状態は523件（未確認84件、解決済み439件）。
-- `data/review/review_decisions.json`：明示的に記録された判定を日次処理に取り込むための入力。確認時点で290件の判定レコード。
+- `data/review/classification_review.json`：PRE項目の永続的なレビュー台帳。2026-10-28に確認した最新状態は531件（未確認8件、解決済み523件）。
+- `data/review/review_decisions.json`：明示的に記録された判定を日次処理に取り込むための入力。2026-10-28確認時点で299件の判定レコード。
 - `tools/apply_review_decisions.py`：判定記録の検証・取り込み。
 - `tools/auto_screen_open_reviews.py`：未確認PREの自動スクリーニング。本文・配布先・リンク状態等を使い、高確度の項目のみ自動処理する。
 - `tools/fetch_historical_review_bodies.py`：レビュー済み項目等の本文・リンクを取得する監査用処理。通常のレビュー台帳を直接変更する目的ではない。
@@ -98,8 +98,8 @@ RPG Maker／RPGツクールに関連する素材、プラグイン、開発情�
 | 掲載待ち・アーカイブ | 実装済み | JSON状態ファイルを利用。通常運用で手動削除・リセットしない |
 | Slackレポート | 実装済み | 成功前に掲載済みとして状態を進めない方針。各実行のHTTP結果・通知結果はログで確認する |
 | 言語・素材種別・エンジン分類 | 実装済み | 分類コードと回帰テストあり。個別項目の誤分類が完全になくなったことは未確認 |
-| PREレビュー台帳・判定取込 | 実装済み | 台帳523件、未確認84件／解決済み439件（2026-10-23 07:40 JSTの最新監査後） |
-| 未確認PREの自動スクリーニング | 実装済み | PR #113で本文品質判定・本文内HTTP(S) URL検出、PR #114で明示的な素材アップロード依頼、PR #115で明確な再着色依頼・取り下げ済み依頼の検出を改善し、すべてmainへマージ済み。テスト・Classification Auditは成功。最新監査は86件を走査しPRE-00367・PRE-00370を対象外として2件解決。現在84件が未確認。Rpg2S ITの41件はすべて `body_unverified`。本文内URL抽出はテスト済みだが、最新監査で `plain_text_url` の追加候補は0件のため、実データ上の効果は継続検証中 |
+| PREレビュー台帳・判定取込 | 実装済み | 2026-10-28確認時点で台帳531件、未確認8件／解決済み523件。Notion全件数の一括再集計は保留 |
+| 未確認PREの自動スクリーニング | 実装済み・継続改善中 | PR #113〜#115の本文品質・URL・依頼表現改善に加え、PR #137で英語・ロシア語・日本語の明示的な依頼表現と曖昧な配布語句の扱いを改善。Classification Auditは292テスト成功。Auto-screen Run [40609231407](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609231407) は判定ステップ成功、GitHubへのコミットステップ失敗。詳細はNEXT_STEPS.md参照 |
 | リンク監査 | 実装済み | 404/410等を検査する。403/429、タイムアウト、ネットワークエラーをリンク切れと同一視しない |
 | Notion同期 | 実装済み | ワークフローは存在するが、直近実行ログで `NOTION_API_KEY` と `NOTION_DATABASE_ID` が空で、同期はスキップされた |
 | WordPress公開・検索サイト | 構想段階 | 本リポジトリで完成済みとは確認できない |
@@ -150,12 +150,12 @@ PR #117マージ後の通常収集で、各項目が改善・継続・解消の�
 
 ## 7. 未解決課題
 
-- 未確認PRE84件を、誤って有用な素材を除外せずにさらに減らすこと。PR #113〜#115の改善後、PRE-00226・PRE-00367・PRE-00370を解決した。Rpg2S ITの本文取得改善と、RMRKの配布リンク候補の妥当性を継続調査する。本文内URL抽出は回帰テストで確認済みだが、最新監査では `plain_text_url` として記録された候補は0件。
+- PREの自動分類精度を継続改善すること。2026-10-28時点では531件中8件が未確認。PR #137の依頼表現改善を踏まえ、誤除外を防ぐ回帰テストとAuto-screenのコミット失敗原因の確認を優先する。古いRpg2S IT・RMRKの監査所見は当時の記録として参照する。
 - 自動仕分けの誤判定率を継続的に検証すること。人手で戻された項目や境界事例を回帰テストに含める。
 - Notion同期用のGitHub Actions Secretsを設定し、同期を実際に動作確認すること（必要な場合）。
 - PR #83（タイトル上はPRE-00163〜PRE-00174の判定記録）が未マージ。実際の差分にはPRE-00177、PRE-00179、PRE-00180、PRE-00186、PRE-00190も含まれるため、タイトルだけで対象範囲を判断せず、差分全体を確認する。
 - 各収集元の取得状態は変動するため、Source Healthとサイトごとのログを継続確認すること。
-- 将来のWordPress移行に備え、素材の公開日・更新日・登録日、言語、対応エンジン、利用条件、価格、サムネイル等のメタデータを整備すること。
+- WordPress移行向けの検索メタデータ（ファイル形式、グラフィック用途・スタイル・テーマ、価格・利用条件等）は整備を開始済み。残作業はWordPress側の検索UI・フィルター設計と、実データでのメタデータ品質確認。
 
 ## 8. 将来的な構想（未実装・進行中を含む）
 
