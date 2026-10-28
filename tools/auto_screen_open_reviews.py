@@ -690,6 +690,37 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
             "過去の確認方針に基づき、割引・期間限定セール・抽選告知が主目的で、直接取得できる素材ファイルへのリンクを確認できないため除外",
         )
 
+    # Commission advertisements are service offers, not reusable asset
+    # releases. Portfolio links alone do not make them resource downloads.
+    commission_ad = bool(re.search(
+        r"\b(?:artist for hire|for hire|commissions? open|accepting commissions|"
+        r"available for commissions|commission work)\b|"
+        r"(?:принимаю заказы|комиссии открыты|на заказ)",
+        promotion_context,
+        re.I,
+    ))
+    if commission_ad and not has_direct_download_link(link_check):
+        return (
+            "not_applicable",
+            "制作依頼・受注募集の告知で、再利用できる素材ファイルへの直接リンクを確認できない",
+        )
+
+    # A text-to-speech/voice-generation bot announcement is not itself an audio
+    # asset. Keep it out of the audio-resource queue unless a direct download is
+    # actually offered.
+    audio_service_intro = bool(re.search(
+        r"\b(?:text[- ]to[- ]speech|speech synthesis|voice generator|"
+        r"voice generation bot|voice creation bot|tts bot)\b|"
+        r"(?:озвучка текста|генератор голос|синтез речи|создани[ея] голоса)",
+        promotion_context,
+        re.I,
+    ))
+    if audio_service_intro and not has_direct_download_link(link_check):
+        return (
+            "not_applicable",
+            "音声素材そのものではなく、音声生成サービス／BOTの案内で、音声素材の直接配布を確認できない",
+        )
+
     # Explicitly ripped/pirated material remains excluded even when a live
     # download link exists. A working link proves availability, not permission
     # to redistribute. Do not use franchise names alone as a piracy signal.
