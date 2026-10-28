@@ -157,8 +157,8 @@ class ResourceIntentTests(unittest.TestCase):
             "body_text": "公開しました。",
             "url": "https://example.com/forum/chat",
         })
-        self.assertEqual(intent, "not_resource")
-        self.assertEqual(confidence, "medium")
+        self.assertEqual(intent, "uncertain")
+        self.assertEqual(confidence, "low")
         self.assertTrue(evidence)
 
     def test_concrete_download_signal_still_overrides_request(self):
