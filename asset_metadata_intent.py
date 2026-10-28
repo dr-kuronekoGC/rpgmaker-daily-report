@@ -254,10 +254,10 @@ def classify_resource_intent(item, detected_category=None):
     ).lower()
 
     # Only concrete distribution/release wording is a strong positive signal.
-    # Require concrete availability/download wording before treating a post as
-    # a confirmed release. Generic phrases such as "resource pack", "released",
-    # or "free to use" also occur in requests, discussion, and showcases.
-    distribution_signals = (
+    # Strong signals explicitly indicate a download or available distribution.
+    # Generic release wording is weaker because it also occurs in requests and
+    # discussion; keep it separate so explicit requests can take precedence.
+    strong_distribution_signals = (
         "download here",
         "download link",
         "available for download",
@@ -266,14 +266,21 @@ def classify_resource_intent(item, detected_category=None):
         "downloadable resource",
         "downloadable asset",
         "get it here",
-        "配布中",
         "ダウンロードはこちら",
         "ダウンロードリンク",
+        "配布中",
+    )
+    strong_distribution_hits = [
+        word for word in strong_distribution_signals if word in combined
+    ]
+    weak_distribution_signals = (
         "素材配布",
         "公開しました",
         "配布ページ",
     )
-    distribution_hits = [word for word in distribution_signals if word in combined]
+    weak_distribution_hits = [
+        word for word in weak_distribution_signals if word in combined
+    ]
 
     # Request phrases can occur in a post body even when the title and forum
     # category look like a resource. Use only explicit request wording here;
@@ -330,11 +337,11 @@ def classify_resource_intent(item, detected_category=None):
     category_guard = is_site_notice
     guarded_context = title_guard or url_guard or category_guard
 
-    if distribution_hits:
+    if strong_distribution_hits:
         return (
             "resource_candidate",
             "medium",
-            [{"field": "body_or_metadata", "signal": signal} for signal in distribution_hits[:5]],
+            [{"field": "body_or_metadata", "signal": signal} for signal in strong_distribution_hits[:5]],
         )
 
     if body_request_hits:
@@ -358,6 +365,14 @@ def classify_resource_intent(item, detected_category=None):
         else:
             field, signal = "category", "non_resource_category"
         return ("not_resource", "medium", [{"field": field, "signal": signal}])
+
+    if weak_distribution_hits:
+        return (
+            "uncertain",
+            "low",
+            [{"field": "body_or_metadata", "signal": signal}
+             for signal in weak_distribution_hits[:5]],
+        )
 
     if detected_category:
         return (
