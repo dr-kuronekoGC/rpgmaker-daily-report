@@ -276,16 +276,6 @@ def check_resource_links(session, page: dict, source_url: str) -> dict:
     }
 
 
-COPYRIGHT_WARNING_RE = re.compile(
-    # "pirate" by itself often describes a character/theme, not piracy.
-    # Require explicit infringement language or a clear [PIRATE] archive tag.
-    r"(?:\[\s*pirate\s*\]|\b(?:pirated|piracy|ripped from|ripped music|"
-    r"stolen from|unauthorized rip)\b|"
-    r"\b(?:dragon ball|pokemon|pokémon|naruto|star ocean)\b)",
-    re.I,
-)
-
-
 def clean(value: object) -> str:
     return re.sub(r"\s+", " ", str(value or "")).strip()
 
@@ -690,8 +680,6 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
             "not_applicable",
             "元投稿が移転・削除扱いで、素材として利用できる配布先リンクも確認できない",
         )
-    copyright_warning = bool(COPYRIGHT_WARNING_RE.search(combined))
-
     # Exclude only explicit promotion/discount/contest announcements when the
     # post has no direct downloadable destination. Ordinary paid assets and
     # external storefront links are not excluded by themselves.
@@ -702,16 +690,19 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
             "過去の確認方針に基づき、割引・期間限定セール・抽選告知が主目的で、直接取得できる素材ファイルへのリンクを確認できないため除外",
         )
 
-    if copyright_warning and not positive_release:
-        # Avoid generic franchise-word filtering; only clear piracy/ripped wording
-        # is an exclusion. Franchise names alone are insufficient.
-        explicit_piracy = bool(re.search(
-            r"(?:\[\s*pirate\s*\]|\b(?:pirated|piracy|ripped from|ripped music|stolen from|unauthorized rip)\b)",
-            combined,
-            re.I,
-        ))
-        if explicit_piracy:
-            return ("exclude", "海賊版・既存作品からのリッピングを明示する投稿で、公開対象の独自素材として扱えない")
+    # Explicitly ripped/pirated material remains excluded even when a live
+    # download link exists. A working link proves availability, not permission
+    # to redistribute. Do not use franchise names alone as a piracy signal.
+    piracy_evidence = f"{title}\n{body[:1200]}"
+    explicit_piracy = bool(re.search(
+        r"(?:\[\s*pirate\s*\]|\b(?:pirated|piracy|ripped from|ripped music|"
+        r"stolen from|unauthorized rip|(?:audio|music|soundtrack|sound effects?)\s+rip(?:ped)?)\b|"
+        r"\bripp(?:ata|ato|ati|ate)\b)",
+        piracy_evidence,
+        re.I,
+    ))
+    if explicit_piracy:
+        return ("exclude", "海賊版・既存作品からのリッピングを明示する投稿で、公開対象の独自素材として扱えない")
 
     if NO_DELIVERABLE_RE.search(combined) and not positive_release:
         return ("not_applicable", "本文に素材配布ではない／ダウンロード不可／プレビューのみと明記されている")
