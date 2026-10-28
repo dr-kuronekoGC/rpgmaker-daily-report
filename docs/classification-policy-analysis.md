@@ -75,6 +75,14 @@ Other cases that must remain exceptions rather than broad rules:
 - User-confirmed title/description mismatches: PRE-00068 and PRE-00070.
 - Duplicate merge: PRE-00087 should point to PRE-00093 rather than become a general plugin exclusion.
 
+## Additional human-review findings (2026-10-28)
+
+Nine additional RPG Maker RU cases were reviewed. They reinforce that the forum section alone is not proof of a distributable asset: a post may be a request, casual discussion, a service/bot announcement, a tool introduction, or a post whose external download is unavailable. Those cases were recorded as explicit human decisions in `data/review/review_decisions.json`.
+
+One generalizable implementation change is limited to explicit request phrasing in the body. The classifier now recognizes clear request wording (including common Russian request phrases) even when the forum category says graphics/music. This request guard is intentionally weaker than confirmed distribution evidence: an explicit download/release link can still establish that the post provides a resource.
+
+Generic phrases such as `resource pack`, `released`, and `free to use` are not, by themselves, treated as proof of a working download. The code no longer promotes those phrases alone to confirmed distribution evidence. Link reachability remains a separate availability check; the classifier must not infer that a link is broken from the title or category. Tool/service announcements and individual link failures remain case-specific unless more reviewed examples establish a safe general rule.
+
 ## Implementation plan
 
 1. Normalize the 106 cases into explicit purpose labels, inclusion decision, evidence availability, and rationale. Do not use the existing `decision` field as the sole target.
