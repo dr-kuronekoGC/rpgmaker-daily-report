@@ -482,6 +482,26 @@ class ResourceEvidenceTests(unittest.TestCase):
         )
         self.assertIsNone(result)
 
+    def test_plain_text_image_url_on_known_host_can_be_asset_but_preview_cannot(self):
+        asset = link(
+            "https://i.imgur.com/battler-sheet.png",
+            reachable=True,
+            text="https://i.imgur.com/battler-sheet.png",
+        )
+        asset["link_kind"] = "plain_text_url"
+        self.assertTrue(is_delivery_link(asset, "graphics"))
+
+        preview = link(
+            "https://i.imgur.com/preview-battler.png",
+            reachable=True,
+            text="https://i.imgur.com/preview-battler.png",
+        )
+        preview["link_kind"] = "plain_text_url"
+        self.assertFalse(is_delivery_link(preview, "graphics"))
+
+        # A direct image link is not evidence of an audio download.
+        self.assertFalse(is_delivery_link(asset, "audio"))
+
     def test_legacy_imageshack_image_urls_with_trailing_slash_are_graphics_links(self):
         url = "http://img11.imageshack.us/i/kungfubattler.jpg/"
         live = link(url, reachable=True, text=url)

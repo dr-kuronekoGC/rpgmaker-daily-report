@@ -503,7 +503,7 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
             "postimg.org", "ibb.co", "imagebam.com", "imgbox.com",
         )
         if (
-            (result.get("link_kind") in {"image_anchor", "embedded_image", "anchor"} or query_image_filename)
+            (result.get("link_kind") in {"image_anchor", "embedded_image", "anchor", "plain_text_url"} or query_image_filename)
             and any(host == domain or host.endswith("." + domain) for domain in image_hosts)
             and kind in {"graphics", "resource", "mixed"}
         ):
