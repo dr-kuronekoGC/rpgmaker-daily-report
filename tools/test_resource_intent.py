@@ -139,6 +139,28 @@ class ResourceIntentTests(unittest.TestCase):
         self.assertEqual(confidence, "medium")
         self.assertTrue(evidence)
 
+    def test_weak_japanese_distribution_wording_does_not_override_request(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "Future city tilesets",
+            "category": "グラフィック素材",
+            "body_text": "素材配布を探しています。誰か持っていますか？",
+            "url": "https://example.com/forum/grafika/tilesets",
+        })
+        self.assertEqual(intent, "not_resource")
+        self.assertEqual(confidence, "medium")
+        self.assertEqual(evidence[0]["signal"], "explicit_request")
+
+    def test_weak_release_wording_alone_stays_uncertain_without_asset_match(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "New things published",
+            "category": "雑談",
+            "body_text": "公開しました。",
+            "url": "https://example.com/forum/chat",
+        })
+        self.assertEqual(intent, "not_resource")
+        self.assertEqual(confidence, "medium")
+        self.assertTrue(evidence)
+
     def test_concrete_download_signal_still_overrides_request(self):
         intent, confidence, evidence = classify_resource_intent({
             "title": "Anyone have this pack?",
