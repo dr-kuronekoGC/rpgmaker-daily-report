@@ -233,6 +233,106 @@ class ResourceEvidenceTests(unittest.TestCase):
             resource_kind("Озвучка текста", "A forum discussion about a text-to-speech bot, with unrelated footer links."),
         )
 
+    def test_explicit_audio_rip_is_excluded_even_when_download_link_is_live(self):
+        item = {
+            "pre_id": "PRE-00146",
+            "url": "https://example.com/pokemon-audio-rip",
+            "title": "Pokemon Conquest - Audio RIP",
+        }
+        page = {
+            "page_title": "Pokemon Conquest - Audio RIP",
+            "body_text": "Ripped audio tracks from the game. Download the files here.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    {
+                        "url": "https://drive.google.com/open?id=audio-rip",
+                        "text": "Download audio",
+                        "reachable": True,
+                        "dead": False,
+                        "error": None,
+                        "http_status": 200,
+                    }
+                ],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "exclude")
+
+    def test_italian_ripped_music_is_explicit_piracy_evidence(self):
+        item = {
+            "pre_id": "PRE-00156",
+            "url": "https://example.com/musica-rippata",
+            "title": "Musica rippata da Stronghold Deluxe",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "Musica rippata da Stronghold Deluxe.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"candidate_count": 0, "results": []},
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "exclude")
+
+    def test_artist_for_hire_is_not_confirmed_from_live_portfolio_link(self):
+        item = {
+            "pre_id": "PRE-00523",
+            "url": "https://example.com/artist-for-hire",
+            "title": "[For hire] Artist",
+        }
+        page = {
+            "page_title": "[For hire] Artist",
+            "body_text": "Artist for hire; commissions open. Portfolio examples are linked below.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [{
+                    "url": "https://portfolio.example.org/gallery",
+                    "text": "Portfolio",
+                    "reachable": True,
+                    "dead": False,
+                    "error": None,
+                    "http_status": 200,
+                }],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_text_to_speech_bot_announcement_is_not_an_audio_asset(self):
+        item = {
+            "pre_id": "PRE-00455",
+            "url": "https://example.com/text-to-speech-bot",
+            "title": "Озвучка текста",
+        }
+        page = {
+            "page_title": "Озвучка текста",
+            "body_text": "A bot that creates voice from text. This is a service introduction, not downloadable audio.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [{
+                    "url": "https://t.me/voice_bot",
+                    "text": "Bot",
+                    "reachable": True,
+                    "dead": False,
+                    "error": None,
+                    "http_status": 200,
+                }],
+            },
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
     def test_pirate_theme_is_not_mistaken_for_piracy(self):
         item = {
             "pre_id": "PRE-00373",
