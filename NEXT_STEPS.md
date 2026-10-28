@@ -1,8 +1,9 @@
 # NEXT_STEPS.md
 
-最終確認日：2026-10-26（JST）
-対象ブランチ：`main`（Run #196の実行コードSHA `69089524645852cd2c9a3da58bb3471c000f1105`）
-PR #117マージ後、通常収集Run 40042036545（2026-10-24 08:52 JST）が成功し、Slack HTTP 200・データ保存を確認。35収集モジュール中30 OK／2 PARTIAL／3 ERROR。Source Checkは12件中8件を確認し、4件更新・4件失敗。PRE台帳は523件中84件未確認／439件解決済み。PR #118でOfficial Informationリンクを追加、PR #119で公式ニュースの個別記事URL・公開日表示を追加し、どちらもマージ済み。2026-10-24 22:04 JSTの手動Run 40096568691はリンク切替前のコードで成功。今回U2U公式X（日英）のURLに差し替え、再実行は不要と判断。PR #119のClassification Auditでは278件のテストが成功。PR #122のClassification Auditでは280件のテストが成功。その後PR #124でGameDevMarketを公開代替ホストへ変更し監視を再有効化。Run #196（40157459003）はsuccess、Slack配信・pending保存成功。Source Checkは9/9監視対象、手動確認3件、failed=0。GameDevMarketはRun #196でBaseline保存済み。読み取り専用照合Run [40162817759](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162817759) で本番と同じ `build_signature` を使い、現在ページのsignatureがBaselineと一致することを確認。`seen_source_check.json` は変更していない。実際のページ更新を検知する動作は未確認。 PR #127でRPG Refugeのページと公開RSSを診断し、Run [40162535349](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40162535349) でDNS/TCP/TLSは成功、GETは両方とも `/.stile/challenge` に転送、HEADは両方HTTP 429を確認。RSSも通常ページと同様にアクセス保護を受けるため自動監視は保留のままとする。PR #127とClassification Auditは成功。
+最終確認日：2026-10-28（JST）
+対象ブランチ：`main`。PR #137（[Improve resource-intent classification from review feedback](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/137)）を2026-10-28にマージ。Classification Audit Run [40609149323](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609149323) は292テスト成功。英語・ロシア語・日本語の明示的な依頼表現を本文から検出し、素材カテゴリの掲示板でも依頼投稿を素材候補と誤認しにくくした。曖昧な「resource pack」「released」「free to use」等だけでは配布の確証にしない。具体的なダウンロード根拠は依頼語より優先する。
+今回のユーザー確認9件（PRE-00425、00430、00431、00433、00455、00471、00481、00491、00507）を `data/review/review_decisions.json` に追加。判定ファイルは299件。main上のレビュー台帳は531件中64件未確認／467件解決済みで、今回の9件はまだopenのまま。通常収集ワークフローが次回実行された際に明示的な判定が取り込まれる見込みで、取り込み後は55件未確認／476件解決済みとなる（他の処理による変動がない場合）。実際に取り込まれたかは次回のActionsログと台帳で確認する。
+PR #135（2026-10-26マージ）でWordPress検索向けメタデータ（`file_formats`、`engine_relevant`、`graphic_style`、`graphic_theme`、音声VOICE分類、グラフィックmap_object分類）を追加済み。サウンドはエンジン検索の対象外。WordPress側の検索UIは未実装。
 
 ## 直近完了：WordPress検索向け素材メタデータ
 
