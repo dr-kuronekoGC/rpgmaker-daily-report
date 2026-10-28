@@ -28,7 +28,7 @@ PR #135（2026-10-26マージ）でWordPress検索向けメタデータ（`file_
 - WordPressの検索画面自体は未実装。次の段階で、WP側のフィルターとこのメタデータの対応付けを設計する。
 
 
-このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。
+このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。冒頭の最新確認ブロックを現在の作業状況の正とする。下記の過去記録にある件数や次の作業は当時のスナップショットを含むため、冒頭と食い違う場合は冒頭の情報を優先する。
 
 ## 1. 最優先：通常収集の復旧確認
 
@@ -123,7 +123,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 
 ## 5. 直近で確認できた作業結果
 
-- 現在のmain上のレビュー台帳は523件中、未確認84件・解決済み439件（2026-10-23にGitHubから直接確認）。
+- 2026-10-23時点ではレビュー台帳523件中、未確認84件・解決済み439件だった（履歴）。現在値は冒頭の最新確認ブロックを参照。
 - 以前の自動スクリーニング実行 [Run 39750871482](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39750871482) は最初のpushが拒否されたが、競合対策後にPRE-00171・PRE-00231の結果がmainに反映された。PR #113後の [Run 39804761982](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39804761982)、PR #114後の [Run 39865772273](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39865772273)、PR #115後の [Run 39866632518](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/39866632518) はすべて成功し、PRE-00226・PRE-00367・PRE-00370が解決済みとしてmainに反映された。
 - PR #110（[Recognize named legacy RMRK attachment downloads](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/110)）はコミット 09d3e306c91762c126c7fe25594a0e7dce7d17c6 でマージ済み。
 - PR #113（[Improve review body verification and plain-text URL detection](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/113)）、PR #114（[Recognize solved requests to upload resources](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/114)）、PR #115（[Recognize withdrawn and explicit recolor requests](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/115)）はマージ済み。関連テスト・Classification Audit・各マージ後の自動スクリーニングはいずれも成功。PRE-00226・PRE-00367・PRE-00370を解決。本文内URL抽出が実データ上の新しい候補を生んだかは未確認。
@@ -151,7 +151,7 @@ PR #83: [Record review decisions for PRE-00163 to PRE-00174](https://github.com/
 ## 7. 修正済みの実行障害・確認待ち
 
 - PRE-00229による通常収集の停止はPR #117で修正済み。既存のレビュー注記は上書きしない。通常収集が再び成功するか、次回の定期実行で確認する。
-- Review Link Audit Run 39900506855は、別のmain更新とのpush競合で失敗。PR #117でpush前のrebaseを追加し、Run 39949380026の再実行attempt 2は成功。84件の元投稿URLがすべて到達可能と確認した。
+- 2026-10-23時点の履歴：Review Link Audit Run 39900506855は別のmain更新とのpush競合で失敗。PR #117でpush前のrebaseを追加し、Run 39949380026の再実行attempt 2は成功。監査当時の84件の元投稿URLはすべて到達可能だった。
 - 本文内URL検出はテスト済みだが、実データ上の追加候補はまだ確認できていない。Rpg2S ITの41件は本文取得改善が必要で、本文未取得を理由に除外しない。
 - GameDev MarketとMaker DevsはSource Check監視のみで、定期収集レジストリには未登録。PR #117でsites.jsonのcollectionフラグをfalseに揃えた。両サイトの個別コレクタを有効化したわけではない。
 
