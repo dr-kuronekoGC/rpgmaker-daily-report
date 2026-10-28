@@ -254,7 +254,10 @@ def classify_resource_intent(item, detected_category=None):
     ).lower()
 
     # Only concrete distribution/release wording is a strong positive signal.
-    distribution_signals = (
+    # Strong signals explicitly indicate a download or available distribution.
+    # Generic release wording is weaker because it also occurs in requests and
+    # discussion; keep it separate so explicit requests can take precedence.
+    strong_distribution_signals = (
         "download here",
         "download link",
         "available for download",
@@ -262,21 +265,64 @@ def classify_resource_intent(item, detected_category=None):
         "download the resource",
         "downloadable resource",
         "downloadable asset",
-        "free to use",
-        "asset pack",
-        "resource pack",
-        "plugin release",
-        "released",
-        "release available",
         "get it here",
-        "配布中",
         "ダウンロードはこちら",
         "ダウンロードリンク",
+        "配布中",
+    )
+    strong_distribution_hits = [
+        word for word in strong_distribution_signals if word in combined
+    ]
+    weak_distribution_signals = (
         "素材配布",
         "公開しました",
         "配布ページ",
     )
-    distribution_hits = [word for word in distribution_signals if word in combined]
+    weak_distribution_hits = [
+        word for word in weak_distribution_signals if word in combined
+    ]
+
+    # Request phrases can occur in a post body even when the title and forum
+    # category look like a resource. Use only explicit request wording here;
+    # generic discussion words in a long body are too broad to exclude a release.
+    body_text = " ".join(body_parts).lower()
+    body_request_phrases = (
+        "does anyone have",
+        "anyone have",
+        "looking for",
+        "seeking ",
+        "can someone share",
+        "could someone share",
+        "please share",
+        "send me ",
+        "give me ",
+        "can you send",
+        "could you send",
+        "request:",
+        "request -",
+        "ищу",
+        "ищем",
+        "нужен",
+        "нужна",
+        "нужны",
+        "нужно",
+        "где найти",
+        "дайте",
+        "скиньте",
+        "пришлите",
+        "есть у кого",
+        "кто-нибудь может",
+        "くれくれ",
+        "素材ください",
+        "画像ください",
+        "探しています",
+        "探してます",
+        "求む",
+    )
+    body_request_hits = [
+        phrase for phrase in body_request_phrases
+        if phrase in body_text
+    ]
 
     # Explicitly identified games, official notices and source-update entries
     # are not resource records by themselves; a linked release can still qualify.
@@ -291,11 +337,19 @@ def classify_resource_intent(item, detected_category=None):
     category_guard = is_site_notice
     guarded_context = title_guard or url_guard or category_guard
 
-    if distribution_hits:
+    if strong_distribution_hits:
         return (
             "resource_candidate",
             "medium",
-            [{"field": "body_or_metadata", "signal": signal} for signal in distribution_hits[:5]],
+            [{"field": "body_or_metadata", "signal": signal} for signal in strong_distribution_hits[:5]],
+        )
+
+    if body_request_hits:
+        return (
+            "not_resource",
+            "medium",
+            [{"field": "body_text", "signal": "explicit_request", "phrase": phrase}
+             for phrase in body_request_hits[:5]],
         )
 
     if is_game:
@@ -311,6 +365,14 @@ def classify_resource_intent(item, detected_category=None):
         else:
             field, signal = "category", "non_resource_category"
         return ("not_resource", "medium", [{"field": field, "signal": signal}])
+
+    if weak_distribution_hits:
+        return (
+            "uncertain",
+            "low",
+            [{"field": "body_or_metadata", "signal": signal}
+             for signal in weak_distribution_hits[:5]],
+        )
 
     if detected_category:
         return (
