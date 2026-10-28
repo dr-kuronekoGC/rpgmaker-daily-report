@@ -105,6 +105,51 @@ class ResourceIntentTests(unittest.TestCase):
         self.assertEqual(confidence, "unknown")
         self.assertEqual(evidence, [])
 
+    def test_request_in_body_overrides_misleading_resource_section(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "Tilesets of the future city",
+            "category": "グラフィック素材",
+            "body_text": "Does anyone have these tilesets? Please share them.",
+            "url": "https://example.com/forum/grafika/tilesets",
+        })
+        self.assertEqual(intent, "not_resource")
+        self.assertEqual(confidence, "medium")
+        self.assertTrue(evidence)
+        self.assertEqual(evidence[0]["signal"], "explicit_request")
+
+    def test_russian_request_in_body_is_not_a_resource_release(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "Музыкальные ресурсы",
+            "category": "音楽素材",
+            "body_text": "Ищу музыку для игры, дайте ссылку, пожалуйста.",
+            "url": "https://example.com/forum/muzyka/post",
+        })
+        self.assertEqual(intent, "not_resource")
+        self.assertEqual(confidence, "medium")
+        self.assertTrue(evidence)
+
+    def test_generic_resource_pack_phrase_does_not_override_request(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "Resource pack request",
+            "category": "discussion",
+            "body_text": "Looking for a resource pack. Does anyone have it?",
+            "url": "https://example.com/forum/request",
+        })
+        self.assertEqual(intent, "not_resource")
+        self.assertEqual(confidence, "medium")
+        self.assertTrue(evidence)
+
+    def test_concrete_download_signal_still_overrides_request(self):
+        intent, confidence, evidence = classify_resource_intent({
+            "title": "Anyone have this pack?",
+            "category": "discussion",
+            "body_text": "The author released it; download here: https://example.com/pack.zip",
+            "url": "https://example.com/forum/reply",
+        })
+        self.assertEqual(intent, "resource_candidate")
+        self.assertEqual(confidence, "medium")
+        self.assertTrue(evidence)
+
     def test_clear_resource_candidate_does_not_enter_human_queue(self):
         queue = {"version": 1, "next_pre_number": 1, "items": []}
         item = {
