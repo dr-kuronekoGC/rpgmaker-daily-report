@@ -58,5 +58,10 @@ jobs:
             echo "No high-confidence review resolutions to commit."
           else
             git commit -m "Auto-screen clearly unavailable review items"
-            git push
           fi
+          # Another writer may update main while screening is running.
+          # Replay this commit on the latest main; conflicting ledger edits
+          # must fail rather than overwrite newer review data.
+          git fetch origin main
+          git rebase origin/main
+          git push
