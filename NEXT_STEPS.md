@@ -73,67 +73,16 @@ PR #122マージ前のSource Checkは12件中8件を確認、4件更新・4件�
 ## 3. 現在の優先課題
 
 ### P1 — 未確認PREの自動仕分け精度を改善する
-**状態：進行中。ユーザーの依頼あり。**
+**状態：PR #137の分類改善はmainへマージ済み。次はActions保存エラーの原因確認と、Notion／Slackへの反映確認。**
 
-目標は未確認件数を減らすことだが、有用な素材を誤って除外しないことを優先する。本文・配布先リンク・リンク状態・投稿目的の証拠を使い、判定不能な項目は未確認のまま残す。
-
-**現在のmain上の実データ（2026-10-23確認）**
-- 全PRE：523件
-- 未確認：84件
-- 解決済み：439件
-- `data/review/auto_screen_audit.json` の直近確認対象は未確認84件。マージ後のAuto-screen Run 39900506829は成功したが、追加解決は0件。
-- その前の監査ではPRE-00226を解決済み。Rpg2S ITの41件はすべて `body_unverified` で保護されている。
-- Review Link Audit Run 39949380026（再実行attempt 2）は成功。未確認84件の元投稿URLはすべてHTTP到達可能で、投稿ページ自体のリンク切れは0件。ただし、配布先リンクの状態とは別。
-- 最新のopen-review監査は74件を `keep_manual_review`、10件を `needs_body_review` と提案。10件のうち7件はRpg2S ITで本文未取得、3件はRMRKで本文取得済みだがタイトル語だけでは配布物と断定できない。提案は監査用で、判定台帳を変更しない。
-- 自動スクリーニングで見つかったHTTP 404/410のURLにはプレビュー画像等も含まれる。素材の配布リンクと確認できたものは2項目だけで、どちらも人手の「未確認に戻す／再確認」注記があるため、除外しない判断が正しい。
-- 以前の89件監査でPRE-00171・PRE-00231を解決した結果、およびpush競合対策後の保存もmain上に残っている。
-
-**実装・検証済み：PR #113**
-[Improve review body verification and plain-text URL detection](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/113) は2026-10-22にマージ済み（マージコミット `b79bae73b15a306ca743b818a0e98a9f2471cb4f`）。
-- 本文中に直接記載されたHTTP(S) URLを抽出し、アンカー／メディアリンクと重複させずに候補化する。
-- Invisionの汎用レイアウト領域やメタ説明だけの短い本文を `body_unverified` とし、自動解決に使わない。
-- 取得テキスト・リンクは監査用に保持。PR自体はPRE台帳の判定を直接変更しない。
-- `Auto-screen triage tests` と `Classification Audit` は成功。マージ後の `Auto-screen Open Review Items` も成功し、最新監査結果がmainに保存された。
-
-**実装・検証済み：PR #114**
-[Recognize solved requests to upload resources](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/114) はマージ済み（マージコミット `d5980fc9340ed300622e669ab241a7864b69d118`）。
-- 「Please up the RTP Earth Animation sheets」のように、素材をアップロードしてほしいと明示する依頼表現を検出する。
-- 「Please up the thread」のようなスレッドの再掲依頼を誤検出しない否定テストを追加。
-- PRのAuto-screen triage testsは39件すべて成功。Classification Auditも265件すべて成功。マージ後のAuto-screen Open Review Itemsも成功し、52件の関連安全テストが成功したログを確認。
-- 実データでPRE-00226を再確認し、配布可能な素材リンクがなく、本文が明確なアップロード依頼であることから `not_applicable` として解決。自動スクリーニング87件中1件解決、未確認86件・解決済み437件となった。
-
-**実装・検証済み：PR #115**
-[Recognize withdrawn and explicit recolor requests](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/115) はマージ済み（マージコミット `afe58fd4703f25e89d03d7e607d7dc65ef0253ae`）。
-- 「誰かにキャラクターの髪を茶色に塗り直してほしい」という明確な依頼文と、「Request withdrawn（依頼を取り下げ）」を検出する。
-- PRE-00367（バトラーの髪色変更依頼）とPRE-00370（VX用Charset依頼の取り下げ）を対象に回帰テストを追加。
-- Auto-screen triage testsは41件すべて成功し、Classification Auditも成功。マージ後の自動スクリーニングは86件を走査し、PRE-00367・PRE-00370を解決。関連安全テスト54件も成功したログを確認。
-- 人手の再確認注記、配布リンクのある項目を保護する既存ルールは維持。
-
-**根拠となった既存監査の所見**
-1. Rpg2S ITでは未確認41件の本文がすべて300文字未満で、配布リンク候補もゼロ。HTML自体は約14万文字ある例でも、取得本文はタイトル・作者・サイト案内の約170〜220文字だった。現状では素材がないとは判断できないため、本文取得を「成功」と扱わず、未確認のまま保護する。
-2. RMRKの本文内URL抽出は回帰テストで動作を確認済み。ただし最新監査では `plain_text_url` として記録された候補は0件。PRE-00343のImageshack URLは既に `anchor` として取得されており、同項目には人手の「未確認に戻す」注記があるため、自動解決しない。
-3. 本文が取得できた項目でも、質問・依頼・制作日記だけで自動除外せず、配布根拠を確認する。人手の再確認注記は常に優先する。PRE-00471・PRE-00507等の再確認指定は自動解決しない。
-
-**今回の再開時点で確認済みの結果**
-1. PR #113・#114・#115はマージ済み。関連テストとClassification Auditは成功。
-2. PR #114後にPRE-00226、PR #115後にPRE-00367・PRE-00370を解決。台帳は523件中84件未確認／439件解決済み。
-3. Rpg2S ITの41件はすべて `body_unverified` となり、メタデータしか取得できないページを本文取得成功と誤認する問題を抑制できた。
-4. 最新監査で `plain_text_url` として記録されたリンクは0件。PRE-00343のImageshack URLは `anchor` として取得され、人手の再確認注記もあるため未確認のまま保持されている。
-5. PRE-00226はアップロード依頼、PRE-00367は再着色依頼、PRE-00370は依頼取り下げで、いずれも配布可能な素材リンクがないことを監査で確認し、自動解決された。
-
-**次に行う具体的な手順**
-1. 未確認84件を対象に、明確な依頼・取り下げパターンが他にもあるか監査記録から候補を確認する。質問・制作依頼受付・制作日記をタイトルだけで一括除外しない。
-2. RMRKの本文内URL抽出はテスト済みだが、実データで新しい `plain_text_url` 候補が出たことは未確認。PRE-00343は人手注記を尊重して未確認のまま維持する。
-3. Rpg2S ITの本文取得は別問題として扱う。投稿本文を実際に取得できる経路が見つからない限り、該当項目は未確認のまま維持する。
-4. 次回の自動スクリーニング後も、自動解決ID・理由・リンク状態・人手注記を確認し、処理前後の件数を比較する。
-
-**完了条件**
-- 構文検証・関連テストが成功している。
-- 本文取得失敗や短いメタデータだけのページを、本文取得成功と誤認していない。
-- 本文内URLを検出しても、プレビュー画像等を自動的に素材確定しない。
-- 404/410以外のエラーをリンク切れと断定しない。
-- 人手の修正・例外が保持されている。
-- 自動解決IDと根拠、実行後の未確認件数をGitHub上で確認できている。
+- ユーザーが確認したPRE-00425、00430、00431、00433、00455、00471、00481、00491、00507の9件は、`data/review/review_decisions.json` に記録済みで、`data/review/classification_review.json` でも全件resolved。二重に台帳更新しない。
+- PR #137（[Improve resource-intent classification from review feedback](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/137)）で、本文中の明示的な依頼表現（英語・ロシア語・日本語）を検出し、素材カテゴリの投稿でも依頼を配布物と誤認しにくくした。曖昧な「resource pack」「released」「free to use」だけでは配布済みと断定しない。具体的なダウンロード根拠があればそれを優先する。
+- Classification Audit Run [40609149323](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609149323)：292テスト成功。
+- Auto-screen Run [40609231407](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609231407)：構文・分類安全テスト・監査は成功したが、「Commit high-confidence resolutions」stepで失敗。次はそのstepの詳細ログを確認し、原因を特定する。分類判定の失敗と、GitHubへの保存失敗を混同しない。
+- mainのレビュー台帳は531件中523件resolved／8件open（PRE-00524〜PRE-00531）。Notionに8件を個別追加した記録はあるが、一括件数再集計は上限で保留。Notion同期のsuccess表示だけで実同期済みと判断しない。
+- 次回の通常収集後にSlackの未確認PRE一覧が最新台帳に追随したか確認する。通常収集Run [40609352093](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609352093) はsuccessだが、変更後のSlack表示はまだ確認できていない。
+- 自動分類をさらに改善する場合は、人手判定を回帰テストに追加し、リンク切れ・アクセス不能（可用性）と素材種別（分類）を分離する。個別の「ツール紹介」等を根拠に広範な一律除外ルールを作らず、有用素材の誤除外防止を優先する。
+- PR #113〜#115で本文品質判定、本文URL検出、明示的なアップロード依頼、再着色依頼・取り下げ検出を追加済み。詳細な過去監査はGit履歴・過去記録を参照する。古い84件／439件の数字は2026-10-23時点の履歴であり、現在値ではない。
 
 ### P2 — Notion PRE確認台帳との実同期を有効化する
 **状態：コード実装済み、外部接続は未完了。ユーザー作業が必要。**
