@@ -35,7 +35,9 @@
 - PRE-00541〜00544はReddit HTTP 403で本文取得不能。いずれもkeep_open。
 - 自動解決は0件。`auto_screen_audit.json` と関連ログが更新され、commit `02a4921` のmain push成功。PRE台帳は544件（resolved 538／open 6）のまま。
 - Run #47のpush競合は後続Run #48〜#51で再発していない。現在の課題は、RPG Maker Unionの本文取得方式（HTML内に本文がなくSPAらしい構造）と、Reddit 403時の正規取得経路の検討。403回避や本文未確認の強制判定はしない。
-- workflowは手動実行と関連コードのmain pushで起動し、定期scheduleは未設定。次はまず取得方法を調査し、定期実行は安全な実行頻度・重複起動・データ保全を確認してから追加する。
+- 2026-11-07にworkflowへ毎日23:25 JST（14:25 UTC）のscheduleを追加。workflowファイル変更によるRun #52（42356724457）はsuccess、60テスト成功、6件すべてkeep_open、監査更新のpush成功。これはpush起動での検証であり、scheduleイベント自体の初回発火は未確認。初回予定は2026-11-07 23:25 JST。
+- 定期実行は既存の `rpg-maker-daily-report-main` concurrencyグループで他の台帳更新と直列化される。今後、初回schedule runの起動・完了・pushを確認する。
+- 次の改善対象はRPG Maker Unionの本文取得方式（HTTP 200でもmeta descriptionしか取得できない）とRedditのHTTP 403時の正規取得経路。403回避や本文未確認の強制判定はしない。
 - 台帳の手動上書き、PRE ID再採番、既読・pending・archiveの削除はしない。
 
 ### 3. 6件の未確認PREを確認する
