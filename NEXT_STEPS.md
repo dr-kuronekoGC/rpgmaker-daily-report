@@ -11,21 +11,18 @@
 確認済み：
 - ユーザーから `NOTION_DATABASE_ID` をGitHub Actions Secretsに登録したとの報告あり。
 - Notion接続経由でPRE確認台帳を検索・集計できた。
-- Notionは413件、確認状態は全件「済」。
-- GitHubの `data/review/classification_review.json` は544件（resolved 538／open 6）。
-- Notion側の最新PREは00538。GitHub側の00539〜00544はNotionに存在しない。
+- Notionは544件。PRE-00001〜PRE-00544が重複なく存在し、URL空欄なし。
+- Notionの状態は「済」538件（PRE-00001〜00538）、「未確認」6件（PRE-00539〜00544）。
+- GitHubの `data/review/classification_review.json` 544件（resolved 538／open 6）と件数・番号範囲・状態が一致。以前の413件という集計は古い結果であり、131件の同期漏れとは判断しない。
 
 未確認：
-- `NOTION_API_KEY` がActions Secretsに登録され、有効な値か。
-- ActionsからNotion APIへ接続し、実際に同期処理が完了するか。
-- 既存413件とGitHub側のPRE ID・URL・状態が全件一致するか。
+- GitHub ActionsのNotion同期Workflowの最新実行ログと実行履歴（どの実行で現在の一致状態になったか）は未確認。
+- ただしNotionとGitHubの現在データは、PRE番号・件数・状態・URL空欄の有無で一致しているため、現時点でユーザーによるSecret確認や手動同期は不要。
 
-手順：
-1. GitHubリポジトリの Settings → Secrets and variables → Actions で、`NOTION_API_KEY` と `NOTION_DATABASE_ID` のSecret名が存在することを確認する。値はチャットへ貼らない。
-2. Actions → Notion PRE Review Sync → Run workflow で手動実行する。
-3. workflow/jobのsuccess表示だけで判断せず、ログでSkippedではないこと、Notion API同期件数、Notionページ作成・更新件数、GitHub台帳のコミット結果を確認する。
-4. 同期後にNotionとGitHubの件数・PRE番号・確認状態を再集計する。GitHubの6件（PRE-00539〜00544）がNotionで「未確認」となり、過去の判定・URLが壊れていないことを確認する。
-5. 413件との差131件を機械的に作成する前に、同期スクリプトの動作（GitHub台帳を基準にNotion不足ページを作成する仕様）と既存IDの重複がないことを確認する。
+確認結果：
+- 2026-11-07にNotionデータソースを再集計し、544件／固有PRE番号544件／URL空欄0件を確認。
+- 状態別件数は「済」538件、「未確認」6件。PRE番号の範囲もGitHub台帳と一致。
+- したがって、現時点で追加の手動同期やSecret確認をユーザーに依頼しない。同期Workflowの最新実行ログ確認は、GitHub Actionsの履歴を取得できる場合に限り別途行う。
 
 注意：Notionの「済」は同期スクリプト上、GitHub台帳をresolvedにする意味を持つ。ユーザーが実際に内容を確認したかどうかと、単なる同期状態を混同しない。同期前にNotion全件を一括で「済」に変更しない。
 
@@ -63,6 +60,6 @@
 ## 直近の確認記録
 
 - 2026-11-07：mainのPRE台帳544件（538 resolved／6 open）、判定記録314件を確認。
-- 2026-11-07：Notion PRE確認台帳413件、すべて「済」を確認。GitHub台帳との差131件。Notion接続経由の参照は成功したが、GitHub Actionsからの実同期は未確認。
+- 2026-11-07：Notion PRE確認台帳を再集計し544件を確認。PRE番号・状態・URLの整合性はGitHub台帳と一致。Workflowの実行ログ確認は未実施。
 - 2026-11-07：ユーザーより `NOTION_DATABASE_ID` 登録済みとの報告。APIキーのSecret名・有効性とActionsでの同期実行は別途確認する。
 - 2026-11-07：mainの管理ファイル3点を更新。PRE台帳・判定記録・収集データは変更していない。
