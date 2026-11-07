@@ -37,7 +37,10 @@
 - Run #47のpush競合は後続Run #48〜#51で再発していない。現在の課題は、RPG Maker Unionの本文取得方式（HTML内に本文がなくSPAらしい構造）と、Reddit 403時の正規取得経路の検討。403回避や本文未確認の強制判定はしない。
 - 2026-11-07にworkflowへ毎日23:25 JST（14:25 UTC）のscheduleを追加。workflowファイル変更によるRun #52（42356724457）はsuccess、60テスト成功、6件すべてkeep_open、監査更新のpush成功。これはpush起動での検証であり、scheduleイベント自体の初回発火は未確認。初回予定は2026-11-07 23:25 JST。
 - 定期実行は既存の `rpg-maker-daily-report-main` concurrencyグループで他の台帳更新と直列化される。今後、初回schedule runの起動・完了・pushを確認する。
-- 次の改善対象はRPG Maker Unionの本文取得方式（HTTP 200でもmeta descriptionしか取得できない）とRedditのHTTP 403時の正規取得経路。403回避や本文未確認の強制判定はしない。
+- PRE-00539/00540のRPG Maker Unionページを調査。HTMLは約34KBで `div#app` があるだけ、投稿本文ノードはなく、`meta description` のみ。これはJavaScriptで後から本文を描画するSPA構造と判断。既存HTMLパーサーに公開script URLを監査診断として記録する機能と回帰テストを追加。
+- Auto-screen Run #53（42357110004、2026-11-07 17:49 JST、push起動）はsuccess。構文検証・60テスト成功、6件すべてkeep_open、自動解決0件。監査ログで次のbundle URLを確認：`https://rpgmakerunion.ru/dist/js/main.e2fa8446.js`、`https://rpgmakerunion.ru/dist/js/main-legacy.2a16b241.js`、`https://rpgmakerunion.ru/assets/prism.js`。
+- 次は公開JavaScript bundleの内容と、そこから参照される公開データ取得先（API等）を調査する。APIが公開されていれば、認証・アクセス制限を回避せず利用可能か確認してから、最小の読み取り専用取得処理を検討する。bundleを取得・解析できなければ未確認として残す。
+- Reddit HTTP 403は別課題として扱い、403回避や本文未確認の強制判定はしない。
 - 台帳の手動上書き、PRE ID再採番、既読・pending・archiveの削除はしない。
 
 ### 3. 6件の未確認PREを確認する
