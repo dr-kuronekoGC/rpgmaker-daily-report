@@ -1,5 +1,23 @@
 # PROJECT_STATUS.md
 
+最終確認日：2026-11-07（JST）
+
+## 最新確認（2026-11-07 JST・main）
+
+**この節を現在の状態の正とする。** 以下の既存記録には2026-10-28以前の履歴・当時の件数・当時のSecrets状態が含まれる。現在の状態と食い違う場合は、この節と最新のGitHub実データを優先する。
+
+- 対象リポジトリ：`dr-kuronekoGC/rpgmaker-daily-report`。Webサイト `kuroneko-tavern` は別プロジェクトであり、このBOTの作業対象に含めない。
+- 確認時のmain最新コミット：`4eb4ff68e8e1306691bee9f0aea417755925395f`（2026-11-06 16:45 UTC、`Update report data`）。直近のコミットは通常のレポートデータ更新。main上の管理ファイル3点を確認した。
+- PRE台帳 `data/review/classification_review.json`：544件、resolved 538件、open 6件。未確認はPRE-00539〜PRE-00544。
+- 判定入力 `data/review/review_decisions.json`：314件。末尾にはPRE-00527〜PRE-00538のユーザー判定が記録されている。既存判定を二重登録しない。
+- Notion PRE確認台帳：Notion接続経由でデータソースを参照できることを確認。413件すべての「確認状態」は「済」。GitHub台帳544件との差は131件。Notionの最新PREはPRE-00538で、GitHub側のPRE-00539〜00544はNotionに未反映とみられる。全件のID単位照合は未実施。
+- ユーザー確認：`NOTION_DATABASE_ID` はGitHub Actions Secretsに登録済みとのこと。Secretsの値は閲覧できないため、`NOTION_API_KEY` の登録・有効性と、ActionsからのNotion API実アクセスは未確認。過去の「両Secretsが空」という記録は2026-10-28当時の状態であり、現在の状態を示さない。
+- Notion同期workflow `.github/workflows/notion-pre-review-sync.yml` は2時間ごと、手動実行、および関連監査workflow完了後に起動する設定。同期スクリプトはGitHub台帳を基準にNotionの不足ページを作成し、Notionの「済」をGitHubのresolvedへ反映する。現在の413件／544件の差を解消するには、Actionsで実同期を行い、ログ・作成件数・コミットを確認する必要がある。今回、workflowの新規実行は行っていない。
+- open PR：#139（管理ファイル更新、head `docs/handoff-refresh-20261028`、base mainから29コミット遅れ）と #83（判定記録）。PR #139の内容は2026-10-28時点の古い状態で、Secrets未設定など現在と異なる記述がある。未マージPRの内容をmainへ反映済みと扱わない。どちらも今回マージしていない。
+- Actions：今回確認できた最新mainコミットのcombined statusはstatus項目なし。Actionsの最新workflow run一覧・ログはこの確認では取得できていないため、最新の自動スクリーニング／Notion同期の成功は未確認。過去のAuto-screen push失敗は履歴として残すが、現在も同じ障害が続いているとは断定しない。
+- 今回は状態確認と管理ファイルの更新のみ。PRE台帳、判定入力、収集履歴、既読状態、pending、アーカイブ、Slack通知、Notionレコードは変更していない。
+
+
 最終確認日：2026-10-28（JST）
 
 ## 最新確認（2026-10-28）
