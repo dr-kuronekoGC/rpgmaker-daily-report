@@ -361,5 +361,39 @@ class HistoricalBodyAuditTests(unittest.TestCase):
         self.assertEqual(links[0]["link_kind"], "embedded_image")
 
 
+    def test_javascript_application_shell_records_public_script_asset_urls(self):
+        html = """
+        <html><head>
+          <script src="/assets/app.abc123.js"></script>
+          <script src="https://cdn.example.test/vendor.js"></script>
+          <script>window.__APP__ = true;</script>
+        </head><body><div id="app"></div></body></html>
+        """
+
+        class FakeResponse:
+            text = html
+            status_code = 200
+            url = "https://rpgmakerunion.ru/thread/example.1"
+
+            def raise_for_status(self):
+                return None
+
+        class FakeSession:
+            def get(self, *args, **kwargs):
+                return FakeResponse()
+
+        result = MODULE.parse_html(
+            FakeSession(),
+            "https://rpgmakerunion.ru/thread/example.1",
+        )
+        self.assertEqual(
+            result["html_diagnostics"]["script_sources"],
+            [
+                "https://rpgmakerunion.ru/assets/app.abc123.js",
+                "https://cdn.example.test/vendor.js",
+            ],
+        )
+        self.assertEqual(result["html_diagnostics"]["body_source"], "empty")
+
 if __name__ == "__main__":
     unittest.main()
