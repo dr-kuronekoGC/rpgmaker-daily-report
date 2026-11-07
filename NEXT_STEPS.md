@@ -6,7 +6,7 @@
 
 ## 最初に行う作業
 
-### 1. Notion同期を実際に動かして差分を解消する（最優先）
+### 1. NotionとGitHubのPRE整合性確認（データ照合済み）
 
 確認済み：
 - ユーザーから `NOTION_DATABASE_ID` をGitHub Actions Secretsに登録したとの報告あり。
