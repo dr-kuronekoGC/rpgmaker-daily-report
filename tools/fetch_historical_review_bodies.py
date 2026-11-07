@@ -244,6 +244,17 @@ def parse_html(
     )
     keywords = meta_content('meta[name="keywords"]')
 
+    # A JavaScript-rendered forum may return only an application shell in its
+    # initial HTML. Record public script asset URLs so a later investigation can
+    # identify the client-side data source without executing page scripts.
+    script_sources = []
+    for script in soup.find_all("script", src=True):
+        source_url = urljoin(response.url, str(script.get("src") or "").strip())
+        if source_url.startswith(("http://", "https://")) and source_url not in script_sources:
+            script_sources.append(source_url)
+        if len(script_sources) >= 20:
+            break
+
     for node in soup.select(
         "script, style, noscript, nav, footer, header, aside, "
         "[role=navigation], .comments, #comments"
@@ -409,6 +420,7 @@ def parse_html(
         "div_classes_sample": div_classes,
         "div_ids_sample": div_ids,
         "raw_script_tag_count": lower_html.count("<script"),
+        "script_sources": script_sources,
         "raw_has_article_body_key": "articlebody" in lower_html,
         "raw_has_invision_post_classes": any(
             marker in lower_html
