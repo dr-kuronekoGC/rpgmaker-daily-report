@@ -12,7 +12,7 @@
 - 判定入力 `data/review/review_decisions.json`：314件。末尾にはPRE-00527〜PRE-00538のユーザー判定が記録されている。既存判定を二重登録しない。
 - Notion PRE確認台帳：2026-11-07の再集計で544件。PRE-00001〜PRE-00544が重複なく存在し、URL空欄なし。確認状態は「済」538件（PRE-00001〜PRE-00538）、「未確認」6件（PRE-00539〜PRE-00544）。GitHubのclassification_review.json（544件、resolved 538／open 6）と件数・番号範囲・状態が一致。以前の413件という集計は古い結果であり、131件の同期漏れとは判断しない。
 - ユーザー確認：`NOTION_DATABASE_ID` はGitHub Actions Secretsに登録済みとのこと。Secretsの値は閲覧できないため、`NOTION_API_KEY` の登録・有効性と、ActionsからのNotion API実アクセスは未確認。過去の「両Secretsが空」という記録は2026-10-28当時の状態であり、現在の状態を示さない。
-- Notion同期workflow `.github/workflows/notion-pre-review-sync.yml` は2時間ごと、手動実行、および関連監査workflow完了後に起動する設定。同期スクリプトはGitHub台帳を基準にNotionの不足ページを作成し、Notionの「済」をGitHubのresolvedへ反映する。現在の413件／544件の差を解消するには、Actionsで実同期を行い、ログ・作成件数・コミットを確認する必要がある。今回、workflowの新規実行は行っていない。
+- Notion同期workflow `.github/workflows/notion-pre-review-sync.yml` は2時間ごと、手動実行、および関連監査workflow完了後に起動する設定。同期スクリプトはGitHub台帳を基準にNotionの不足ページを作成し、Notionの「済」をGitHubのresolvedへ反映する。2026-11-07の再集計ではNotionとGitHubのPRE番号・件数・状態が一致しているため、追加同期は不要。どのActions実行で現在の一致状態になったかという実行ログの追跡のみ未確認。今回、workflowの新規実行は行っていない。
 - open PR：#139（管理ファイル更新、head `docs/handoff-refresh-20261028`、base mainから29コミット遅れ）と #83（判定記録）。PR #139の内容は2026-10-28時点の古い状態で、Secrets未設定など現在と異なる記述がある。未マージPRの内容をmainへ反映済みと扱わない。どちらも今回マージしていない。
 - Actions：今回確認できた最新mainコミットのcombined statusはstatus項目なし。Actionsの最新workflow run一覧・ログはこの確認では取得できていないため、最新の自動スクリーニング／Notion同期の成功は未確認。過去のAuto-screen push失敗は履歴として残すが、現在も同じ障害が続いているとは断定しない。
 - 今回は状態確認と管理ファイルの更新のみ。PRE台帳、判定入力、収集履歴、既読状態、pending、アーカイブ、Slack通知、Notionレコードは変更していない。
