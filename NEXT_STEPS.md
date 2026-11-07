@@ -2,34 +2,29 @@
 
 
 最終確認日：2026-10-28（JST）
-対象ブランチ：`main`。PR #137（[Improve resource-intent classification from review feedback](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/137)）を2026-10-28にマージ。Classification Audit Run [40609149323](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609149323) は292テスト成功。英語・ロシア語・日本語の明示的な依頼表現を本文から検出し、素材カテゴリの掲示板でも依頼投稿を素材候補と誤認しにくくした。曖昧な「resource pack」「released」「free to use」等だけでは配布の確証にしない。具体的なダウンロード根拠は依頼語より優先する。
-今回のユーザー確認9件（PRE-00425、00430、00431、00433、00455、00471、00481、00491、00507）は `data/review/review_decisions.json` に記録済み。判定ファイルは299件。PR #134（2026-10-28マージ）で、過去にユーザー確認済みだった47件のPRE状態・分類メモをmainへ反映した。現在のmainレビュー台帳は531件中8件未確認／523件解決済み。NotionにもPRE-00524〜PRE-00531の8件を「未確認」として追加し、各ページの状態・URLを個別に確認した。NotionのQuery Data Source利用上限に達したため、一括件数の再集計は保留。GitHub ActionsのNotion同期Secretsが未設定の記録があるため、自動同期は未確認。通常収集の次回実行でSlack表示が8件に追随するか、Actionsログと出力を確認する。
-PR #135（2026-10-26マージ）でWordPress検索向けメタデータ（`file_formats`、`engine_relevant`、`graphic_style`、`graphic_theme`、音声VOICE分類、グラフィックmap_object分類）を追加済み。サウンドはエンジン検索の対象外。WordPress側の検索UIは未実装。
+対象ブランチ：`main`（最新コミット `b1d45d05b3797ac3c2b5829df24d115b9511c7fe`）
 
-## 次のチャットで最初に確認すること（2026-10-28）
-1. `data/review/review_decisions.json` の9件と `data/review/classification_review.json` の状態は反映済み。まず二重更新せず、必要ならNotion側の9件の状態だけ確認する。
-2. Auto-screen Run [40609231407](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609231407) はcommit stepで失敗。Actionsの該当stepログを開き、認証・push権限・競合等の原因を特定する。スクリーニング判定自体とGitHubへの保存失敗を分けて扱う。
-3. main台帳は531件中8件未確認（PRE-00524〜PRE-00531）。Notion同期Run [40658009044](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40658009044) は同期処理・同期台帳コミットとも成功。全件数の一括再集計は利用上限で保留のため、必要なら個別ページとNotion側の件数を後日確認する。
-4. 次に分類精度を改善するときは、今回9件の人手判定を参考に、(a)素材配布と依頼・雑談・紹介の区別、(b)リンク切れ／アクセス不能と素材種別の区別、(c)個別の除外判断を一般ルールへ拡張しすぎない、を回帰テストで守る。
-5. WordPress検索向けメタデータはPR #135済み。次段階は検索項目とUIの設計であり、現時点でWordPress実装はない。
+## 次のチャットで最初に行うこと（2026-10-28）
 
+1. **自動スクリーニングの保存失敗を調査する。** [Run 40609231407](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40609231407) は分類判定・安全テスト成功後、`git push` が `fetch first` で拒否された。ログを確認済み。最新mainを取り込んで安全にコミットする方法を検討し、既存台帳の上書きやPRE再採番を避ける。
+2. **Notion接続状態を正しく扱う。** [Run 40658009044](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/actions/runs/40658009044) はworkflow successだが、ログで `NOTION_API_KEY` と `NOTION_DATABASE_ID` が空、同期ステップはSkippedと確認済み。GitHub Actions Secrets設定が必要。秘密値はチャットに貼らない。個別に追加したPRE-00524〜PRE-00531の存在記録はあるが、Notion全件数の照合は未完了。
+3. **open PRを確認する。** #111「Detect plain-text resource URLs and reject metadata-only post bodies」と #112「Improve historical review body detection and raw URL extraction」は目的が重なるため、差分とCIを比較して統合・重複を判断する。#83も未マージ。open PRの内容をmainに反映済みと扱わない。
+4. **今回のユーザー確認9件は二重更新しない。** PRE-00425、00430、00431、00433、00455、00471、00481、00491、00507は `review_decisions.json` と `classification_review.json` に反映済み。次にNotion／Slackを確認する場合は、GitHub側の記録を再追加せず、外部側の状態だけ確認する。
+5. **分類精度改善は既存判断を回帰テストにする。** 依頼・雑談・BOT案内・ツール紹介と、実際に利用できる素材配布を区別する。リンク切れ／ダウンロード不能は素材分類と別に扱い、アクセス不能だけでサイト閉鎖や素材種別を断定しない。個別判断を全件へ過剰一般化しない。
+6. **検索メタデータはPR #135で実装済み。** サウンドのエンジン検索対象外、サウンド種別とファイル形式の分離、グラフィックの用途・スタイル・テーマの分離はコード側にある。次段階はメタデータが検索用出力へ保持されることを確認し、WordPress側の検索UI・絞り込み仕様を設計する。WP UIは未実装。
 
+## このチャットで確認済みのユーザー判定
+- PRE-00507：音楽素材の可能性はあるがリンク先へアクセスできないため対象外。
+- PRE-00471：BGM素材と思われるがリンク切れのため対象外。
+- PRE-00430：キャラクター素材（サイバードア）。
+- PRE-00455：素材配布ではなく、ロシア語と思われる声作成BOTの案内。
+- PRE-00481：音楽素材だがダウンロードできる配布物を確認できないため対象外。
+- PRE-00433：素材を求める依頼（くれくれ）。
+- PRE-00425：アイコン素材と思われるがリンク切れのため対象外。
+- PRE-00431：自作便利ツール紹介。今回の収集対象外だが、全ツール紹介を一律除外する規則にはしない。
+- PRE-00491：雑談であり対象外。
 
-## 直近完了：WordPress検索向け素材メタデータ
-
-**状態：PR #135マージ済み（2026-10-26）。** [PR #135](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/135)
-
-- `file_formats`：音声形式（MID/MIDI、OGG、M4A、MP3、WAV、WMA、FLAC、AIFF/AIF）と画像形式を、タイトル・タグ・説明・本文に明示された場合だけ記録。素材ページURLの拡張子だけから配布形式を推測しない。
-- `engine_relevant`：サウンドはfalse。将来のWordPressではエンジン情報を表示せず、エンジン指定検索でもサウンド素材を除外しない。グラフィック・プラグイン・ゲームはtrue。エンジン情報が不明なグラフィックを検索から除外しない。
-- `graphic_style`：ドット絵、イラスト、アニメ調、写実、ベクター、フラット等を明示的な語句から抽出。
-- `graphic_theme`：ファンタジー、現代、SF、和風、ホラー、中世、サイバーパンク、自然、都市等を明示的な語句から抽出。
-- 用途分類に `map_object` を追加し、音素材はVOICEを独立分類。
-- 不明な特徴は空リストのまま保持し、「その特徴がない」とは解釈しない。
-- Classification Audit：286 tests passed。Engine Backfill Audit：success。
-- WordPressの検索画面自体は未実装。次の段階で、WP側のフィルターとこのメタデータの対応付けを設計する。
-
-
-このファイルは、次回のチャットや作業で再開するための短期台帳。完了と記載するのは、実行結果を確認できた作業だけとする。長期方針は `PROJECT_STATUS.md` を参照する。冒頭の最新確認ブロックを現在の作業状況の正とする。下記の過去記録にある件数や次の作業は当時のスナップショットを含むため、冒頭と食い違う場合は冒頭の情報を優先する。
+上記9件の判定記録はmainに存在し、レビュー台帳では全件resolved。Classification Audit Run 40609149323は292テスト成功。通常収集Run 40609352093はsuccess。ただし、Notion同期はRun 40658009044のログ上Skipped（Secrets空）で、Notion側への同期成功は未確認。
 
 ## 1. 最優先：通常収集の復旧確認
 
