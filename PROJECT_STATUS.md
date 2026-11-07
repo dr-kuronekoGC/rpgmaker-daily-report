@@ -14,7 +14,7 @@
 - ユーザー確認：`NOTION_DATABASE_ID` はGitHub Actions Secretsに登録済みとのこと。Secretsの値は閲覧できないため、`NOTION_API_KEY` の登録・有効性と、ActionsからのNotion API実アクセスは未確認。過去の「両Secretsが空」という記録は2026-10-28当時の状態であり、現在の状態を示さない。
 - Notion同期workflow `.github/workflows/notion-pre-review-sync.yml` は2時間ごと、手動実行、および関連監査workflow完了後に起動する設定。同期スクリプトはGitHub台帳を基準にNotionの不足ページを作成し、Notionの「済」をGitHubのresolvedへ反映する。2026-11-07の再集計ではNotionとGitHubのPRE番号・件数・状態が一致しているため、追加同期は不要。どのActions実行で現在の一致状態になったかという実行ログの追跡のみ未確認。今回、workflowの新規実行は行っていない。
 - open PR：#139（管理ファイル更新、head `docs/handoff-refresh-20261028`、base mainから29コミット遅れ）と #83（判定記録）。PR #139の内容は2026-10-28時点の古い状態で、Secrets未設定など現在と異なる記述がある。未マージPRの内容をmainへ反映済みと扱わない。どちらも今回マージしていない。
-- Auto-screen：Run #47（40609231407、2026-10-28）は分類処理・55テスト成功後、pushが `fetch first` で失敗。後続Run #48（40758466462）、#49（40760651094）、#50（40761611024）はすべて成功し、各回の `git push` も成功。最新は#50（2026-10-28 20:15 UTC）。ただし#48〜#50では9件を調べたものの、403または本文未確認のため全件keep_open。Auto-screen workflowは手動実行または関連コードのmain pushで起動し、定期scheduleはない。2026-11-07時点で10月28日以降のAuto-screen実行は確認できない。
+- Auto-screen：Run #51（42355888989、2026-11-07 17:32 JST、workflow_dispatch）はsuccess。構文検証と60テストが成功し、未確認6件（PRE-00539〜00544）をすべて検査。PRE-00539/00540はHTTP 200だが取得本文がmeta descriptionのみで `body_unverified`、PRE-00541〜00544はRedditのHTTP 403で取得不能。6件すべて `keep_open`、自動解決0件。403や本文未確認を誤って除外しない安全動作を確認。`data/review/auto_screen_audit.json` と関連ログが更新され、commit `02a4921` がmainへpush成功。PRE台帳は544件（resolved 538／open 6）のまま。過去Run #47のpush失敗は後続Run #48〜#51で再発していない。workflowは手動実行または関連コードのmain pushで起動し、定期scheduleは未設定。
 - 今回は状態確認と管理ファイルの更新のみ。PRE台帳、判定入力、収集履歴、既読状態、pending、アーカイブ、Slack通知、Notionレコードは変更していない。
 
 
