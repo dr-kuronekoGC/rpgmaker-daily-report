@@ -8,7 +8,8 @@
 - PRE-00542：1995年のRPG Makerホラーゲーム紹介・プレイ動画／ゲーム保存の話題と確認し、素材・プラグイン対象外にした。関連動画の説明を確認したが、元のReddit本文は403で未取得。
 - PRE-00544：Chronicles of Veldoriaのゲーム発売告知と確認。公式Steam Communityの告知と照合し、素材・プラグイン対象外にした。
 - PRE-00545：配布元GitHub [NLM_MetallicText](https://github.com/nolimits-tukool/NLM_MetallicText) でMZ用プラグイン本体v1.0.0とMIT Licenseを確認。MZ用プラグインとして `plugin`／resolved に記録。MVは文字幅調整時の制約あり。実機テストは未実施。
-- GitHub PRE台帳は546件、resolved 542／open 4。現在のopen対象はPRE-00539、PRE-00541、PRE-00543、PRE-00546。
+- GitHub PRE台帳は546件、resolved 542／open 4。現在のopen対象はPRE-00539、PRE-00541、PRE-00543、PRE-00546。判定記録は318件。
+- PRE-00541・00543・00546について、タイトル・スレッドID等で公開Web検索を試したが、本文や配布元を確認できる検索結果は得られなかった。いずれも元のRedditページはHTTP 403のため、対象外とはせずopenのまま維持。
 - Auto-screen Run #55（42512235881、schedule）はsuccess。61テスト成功。実行時の7件はすべてkeep_open（PRE-00539 body_unverified、PRE-00541〜00544と00546は403、PRE-00545はbody_found）。その後PRE-00545は配布元GitHubの確認により人手でresolved。
 - Auto-screenは毎日23:25 JST設定だが、schedule Run #54/#55の実際の開始時刻は03:52／03:53 JST。約4時間半のずれの原因は未確認。次回も観察する。
 - Notion同期Run #133（42528703770）は2026-11-09 07:08 JSTにsuccess。Notion API同期ステップも完了し、ログはGitHub台帳539 resolved／7 open、作成・更新0件。Notion直接集計も546件（済539／未確認7）、PRE-00540は「済」。これはPRE-00542・00544・00545の判定更新前。次回の定期同期で3件が「済」になり、Notionが542／4に揃うことを確認する。手動Workflow実行は不要。
@@ -16,7 +17,7 @@
 ### 次に行う作業
 
 1. PRE-00541から順に未確認項目を調べる。PRE-00541、00543、00546はReddit HTTP 403の記録があるため、403だけで除外しない。公開検索や投稿者の配布リンク等、正規に確認できる情報を探す。本文・配布物が確認できなければopenのまま維持する。
-2. PRE-00542・00544・00545のNotion反映を次回同期後に確認する。
+2. PRE-00542・00544・00545のNotion反映を次回同期後に確認する。直近のNotion直接照会では3件ともまだ「未確認」。
 3. Auto-screen scheduleの次回実行時刻を確認し、23:25 JST設定との差が続くか記録する。
 4. PRE未確認項目の確認が進んだ後、古い管理ファイル記述と未マージPR #139/#83を整理する。マージ・クローズはユーザー承認なしに行わない。
 
