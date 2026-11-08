@@ -21,7 +21,7 @@
 **この節を現在の状態の正とする。** 既存の下記記録には過去時点の件数・実行状況が含まれる。現在のPRE件数等は最新データを再集計するまで断定しない。
 
 - 対象は `dr-kuronekoGC/rpgmaker-daily-report` のBOTのみ。Webサイト `kuroneko-tavern` は別プロジェクト。
-- 2026-11-09のmain確認時点でPRE-00546まで反映。PRE台帳は546件、resolved 539件／open 7件（PRE-00539、PRE-00541〜PRE-00546）。
+- 2026-11-08のmain確認時点でPRE-00546まで反映。PRE台帳は546件、resolved 538件／open 8件（PRE-00539〜PRE-00546）。この後、2026-11-09にPRE-00540等のユーザー確認・追加調査結果を反映した。
 - Auto-screenの2026-11-08実行では、PRE-00539・PRE-00540のRPG Maker Unionページ取得が `SSLError` で失敗し、両方とも `keep_open`。本文がないと判断したわけではなく、未解決のまま維持。
 - PRE-00539（RPG Maker Union、スレッドID 2625）をユーザーのブラウザで追加調査。通常HTMLには本文がなく、ページのXHR JSONを取得する方法を確認。`fetch(location.href, {headers: {'X-Requested-With': 'XMLHttpRequest'}})` で `data.messages` と `data.uploadedFiles` を取得できた。
 - PRE-00539のメッセージ4件を確認。最初の投稿は `Villa_MapLightAndShadow.js` の添付のみ。後続投稿では、変数を使って影を生成し、角度・透明度・色調などを制御できるとの説明がある。ただし説明者自身が詳細未確認と述べており、仕様確定ではない。
