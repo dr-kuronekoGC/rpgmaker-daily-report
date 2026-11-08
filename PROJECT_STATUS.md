@@ -4,14 +4,14 @@
 
 **この節を現在の状態の正とする。** 以下の過去節にある件数・未確認状態・Actions実行状況は、記載日当時の履歴。
 
-- PRE台帳 `data/review/classification_review.json`：546件、resolved 542件／open 4件。openはPRE-00539、PRE-00541、PRE-00543、PRE-00546。
+- PRE台帳 `data/review/classification_review.json`：546件、resolved 542件／open 4件。openはPRE-00539、PRE-00541、PRE-00543、PRE-00546。判定記録 `data/review/review_decisions.json` は318件。
 - PRE-00540（RPG Maker Union、スレッドID 2624）はユーザー確認により素材・プラグインではなくプロジェクト一式の配布。素材・プラグイン対象外（`not_applicable`）としてresolved。Notion PRE確認台帳でもPRE-00540の状態「済」を確認。
 - PRE-00542は1995年のRPG Makerホラーゲーム「放課後の幽霊達（After School Ghosts）」の紹介・プレイ動画およびゲーム保存の話題と確認。素材・プラグイン配布ではないためnot_applicable／resolved。元のReddit本文は403で未取得だが、投稿タイトルと関連動画の説明を照合した。
 - PRE-00544はRPG Maker製ゲーム「Chronicles of Veldoria」のVersion 1.0告知と確認。公式Steam Communityの告知も一致し、個別素材・プラグイン配布ではないためnot_applicable／resolved。
 - PRE-00545「メタリックテキスト・プラグイン」は配布元GitHub [NLM_MetallicText](https://github.com/nolimits-tukool/NLM_MetallicText) で本体 `NLM_MetallicText.js` v1.0.0とMIT Licenseを確認。RPG Maker MZ用、テキストに金属調グラデーションを付けるプラグイン。プラグインコマンドなし、縞模様の間隔・暗部アルファを設定可能。MVでは文字幅調整時にグラデーションが外れる制約が記載されているためMZ用として扱い、decision=plugin／resolvedに更新。実機テストは未実施。
 - Auto-screen Run #55（42512235881、schedule）は2026-11-09 03:53 JSTにsuccess。構文検証・61テスト成功。実行時の7件を確認し、PRE-00539はbody_unverified、PRE-00541〜00544とPRE-00546はHTTP 403、PRE-00545はbody_found。自動解決は0件。PRE-00545はその後、配布元GitHubの確認に基づき人手でresolvedにした。
 - Auto-screenのschedule設定は毎日23:25 JST（14:25 UTC）。scheduleイベント自体は確認できたが、Run #54/#55の実際の開始時刻はそれぞれ03:52／03:53 JSTで、設定時刻より約4時間半遅い。GitHub側の遅延か別要因かは未確認。次回も実際の開始時刻を観察する。
-- Notion同期Run #133（42528703770、schedule）は2026-11-09 07:08 JSTにsuccess。同期ステップもsuccessし、ログに `[Notion sync] Complete`、ledger_resolved=539／ledger_open=7、作成・更新0件を確認。Notionデータソースを直接集計した結果も546件、状態「済」539／「未確認」7で、PRE-00540は「済」。この同期はPRE-00542・00544・00545をresolvedにする前の状態。3件のNotion反映は次回同期で確認する。
+- Notion同期Run #133（42528703770、schedule）は2026-11-09 07:08 JSTにsuccess。同期ステップもsuccessし、ログに `[Notion sync] Complete`、ledger_resolved=539／ledger_open=7、作成・更新0件を確認。Notionデータソースを直接集計した結果も546件、状態「済」539／「未確認」7で、PRE-00540は「済」。この同期はPRE-00542・00544・00545をresolvedにする前の状態。Notionを直接再照会した結果も、PRE-00540は「済」、PRE-00542・00544・00545は「未確認」。3件のNotion反映は次回同期で確認する。
 - 今回はPRE-00542・00544・00545の判定を追加し、PRE台帳・判定記録・管理ファイルを更新した。コード変更、手動Workflow実行、Slack通知、既読状態・pending・archiveのリセットは行っていない。
 
 最終確認日：2026-11-09（JST）
