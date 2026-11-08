@@ -7,7 +7,7 @@
 **この節を現在の状態の正とする。** 既存の下記記録には過去時点の件数・実行状況が含まれる。現在のPRE件数等は最新データを再集計するまで断定しない。
 
 - 対象は `dr-kuronekoGC/rpgmaker-daily-report` のBOTのみ。Webサイト `kuroneko-tavern` は別プロジェクト。
-- 2026-11-08のmainにはPRE-00545の追加が反映されている。最新のPRE総数・resolved/open件数は、この更新では再集計していないため未確認。
+- 2026-11-09のmain確認時点でPRE-00546まで反映。PRE台帳は546件、resolved 539件／open 7件（PRE-00539、PRE-00541〜PRE-00546）。
 - Auto-screenの2026-11-08実行では、PRE-00539・PRE-00540のRPG Maker Unionページ取得が `SSLError` で失敗し、両方とも `keep_open`。本文がないと判断したわけではなく、未解決のまま維持。
 - PRE-00539（RPG Maker Union、スレッドID 2625）をユーザーのブラウザで追加調査。通常HTMLには本文がなく、ページのXHR JSONを取得する方法を確認。`fetch(location.href, {headers: {'X-Requested-With': 'XMLHttpRequest'}})` で `data.messages` と `data.uploadedFiles` を取得できた。
 - PRE-00539のメッセージ4件を確認。最初の投稿は `Villa_MapLightAndShadow.js` の添付のみ。後続投稿では、変数を使って影を生成し、角度・透明度・色調などを制御できるとの説明がある。ただし説明者自身が詳細未確認と述べており、仕様確定ではない。
@@ -27,7 +27,7 @@
 
 - 対象リポジトリ：`dr-kuronekoGC/rpgmaker-daily-report`。Webサイト `kuroneko-tavern` は別プロジェクトであり、このBOTの作業対象に含めない。
 - 確認時のmain最新コミット：`4eb4ff68e8e1306691bee9f0aea417755925395f`（2026-11-06 16:45 UTC、`Update report data`）。直近のコミットは通常のレポートデータ更新。main上の管理ファイル3点を確認した。
-- PRE台帳 `data/review/classification_review.json`：544件、resolved 538件、open 6件。未確認はPRE-00539〜PRE-00544。
+- PRE台帳 `data/review/classification_review.json`：546件、resolved 539件、open 7件。未確認はPRE-00539、PRE-00541〜PRE-00546。PRE-00540はプロジェクト配布として確認済み・対象外。
 - 判定入力 `data/review/review_decisions.json`：314件。末尾にはPRE-00527〜PRE-00538のユーザー判定が記録されている。既存判定を二重登録しない。
 - Notion PRE確認台帳：2026-11-07の再集計で544件。PRE-00001〜PRE-00544が重複なく存在し、URL空欄なし。確認状態は「済」538件（PRE-00001〜PRE-00538）、「未確認」6件（PRE-00539〜PRE-00544）。GitHubのclassification_review.json（544件、resolved 538／open 6）と件数・番号範囲・状態が一致。以前の413件という集計は古い結果であり、131件の同期漏れとは判断しない。
 - ユーザー確認：`NOTION_DATABASE_ID` はGitHub Actions Secretsに登録済みとのこと。Secretsの値は閲覧できないため、`NOTION_API_KEY` の登録・有効性と、ActionsからのNotion API実アクセスは未確認。過去の「両Secretsが空」という記録は2026-10-28当時の状態であり、現在の状態を示さない。
