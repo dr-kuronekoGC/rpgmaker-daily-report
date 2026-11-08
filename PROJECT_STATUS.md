@@ -1,6 +1,18 @@
 # PROJECT_STATUS.md
 
-最終確認日：2026-11-08（JST）
+## 最新確認（2026-11-09 JST・main）
+
+**この節を現在の状態の正とする。** 以下の過去節にある件数・未確認状態・Actions実行状況は、記載日当時の履歴。
+
+- PRE台帳 `data/review/classification_review.json`：546件、resolved 540件／open 6件。openはPRE-00539、PRE-00541〜PRE-00544、PRE-00546。
+- PRE-00540（RPG Maker Union、スレッドID 2624）はユーザー確認により素材・プラグインではなくプロジェクト一式の配布。素材・プラグイン対象外（`not_applicable`）としてresolved。Notion PRE確認台帳でもPRE-00540の状態「済」を確認。
+- PRE-00545「メタリックテキスト・プラグイン」は配布元GitHub [NLM_MetallicText](https://github.com/nolimits-tukool/NLM_MetallicText) で本体 `NLM_MetallicText.js` v1.0.0とMIT Licenseを確認。RPG Maker MZ用、テキストに金属調グラデーションを付けるプラグイン。プラグインコマンドなし、縞模様の間隔・暗部アルファを設定可能。MVでは文字幅調整時にグラデーションが外れる制約が記載されているためMZ用として扱い、decision=plugin／resolvedに更新。実機テストは未実施。
+- Auto-screen Run #55（42512235881、schedule）は2026-11-09 03:53 JSTにsuccess。構文検証・61テスト成功。実行時の7件を確認し、PRE-00539はbody_unverified、PRE-00541〜00544とPRE-00546はHTTP 403、PRE-00545はbody_found。自動解決は0件。PRE-00545はその後、配布元GitHubの確認に基づき人手でresolvedにした。
+- Auto-screenのschedule設定は毎日23:25 JST（14:25 UTC）。scheduleイベント自体は確認できたが、Run #54/#55の実際の開始時刻はそれぞれ03:52／03:53 JSTで、設定時刻より約4時間半遅い。GitHub側の遅延か別要因かは未確認。次回も実際の開始時刻を観察する。
+- Notion同期Run #133（42528703770、schedule）は2026-11-09 07:08 JSTにsuccess。同期ステップもsuccessし、ログに `[Notion sync] Complete`、ledger_resolved=539／ledger_open=7、作成・更新0件を確認。Notionデータソースを直接集計した結果も546件、状態「済」539／「未確認」7で、PRE-00540は「済」。この同期はPRE-00545をresolvedにする前の状態。PRE-00545のNotion反映は次回同期で確認する。
+- 今回はPRE台帳・判定記録・管理ファイルを更新した。コード変更、手動Workflow実行、Slack通知、既読状態・pending・archiveのリセットは行っていない。
+
+最終確認日：2026-11-09（JST）
 
 ## 最新確認（2026-11-08 JST・main）
 
@@ -27,7 +39,7 @@
 
 - 対象リポジトリ：`dr-kuronekoGC/rpgmaker-daily-report`。Webサイト `kuroneko-tavern` は別プロジェクトであり、このBOTの作業対象に含めない。
 - 確認時のmain最新コミット：`4eb4ff68e8e1306691bee9f0aea417755925395f`（2026-11-06 16:45 UTC、`Update report data`）。直近のコミットは通常のレポートデータ更新。main上の管理ファイル3点を確認した。
-- PRE台帳 `data/review/classification_review.json`：546件、resolved 539件、open 7件。未確認はPRE-00539、PRE-00541〜PRE-00546。PRE-00540はプロジェクト配布として確認済み・対象外。
+- PRE台帳 `data/review/classification_review.json`：544件、resolved 538件、open 6件。未確認はPRE-00539〜PRE-00544（2026-11-07時点）。
 - 判定入力 `data/review/review_decisions.json`：314件。末尾にはPRE-00527〜PRE-00538のユーザー判定が記録されている。既存判定を二重登録しない。
 - Notion PRE確認台帳：2026-11-07の再集計で544件。PRE-00001〜PRE-00544が重複なく存在し、URL空欄なし。確認状態は「済」538件（PRE-00001〜PRE-00538）、「未確認」6件（PRE-00539〜PRE-00544）。GitHubのclassification_review.json（544件、resolved 538／open 6）と件数・番号範囲・状態が一致。以前の413件という集計は古い結果であり、131件の同期漏れとは判断しない。
 - ユーザー確認：`NOTION_DATABASE_ID` はGitHub Actions Secretsに登録済みとのこと。Secretsの値は閲覧できないため、`NOTION_API_KEY` の登録・有効性と、ActionsからのNotion API実アクセスは未確認。過去の「両Secretsが空」という記録は2026-10-28当時の状態であり、現在の状態を示さない。
