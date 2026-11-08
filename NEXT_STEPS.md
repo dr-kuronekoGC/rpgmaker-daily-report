@@ -1,6 +1,24 @@
 # NEXT_STEPS.md
 
-最終確認日：2026-11-08（JST）
+## 最新更新（2026-11-09 JST）
+
+**この節を次の作業の正とする。** 下記の旧「最初に行う作業」には更新前の記録が残る。
+
+- PRE-00540：プロジェクト一式の配布として `not_applicable`／resolved。Notion PRE確認台帳でも「済」を確認済み。
+- PRE-00545：配布元GitHub [NLM_MetallicText](https://github.com/nolimits-tukool/NLM_MetallicText) でMZ用プラグイン本体v1.0.0とMIT Licenseを確認。MZ用プラグインとして `plugin`／resolved に記録。MVは文字幅調整時の制約あり。実機テストは未実施。
+- GitHub PRE台帳は546件、resolved 540／open 6。現在のopen対象はPRE-00539、PRE-00541〜PRE-00544、PRE-00546。
+- Auto-screen Run #55（42512235881、schedule）はsuccess。61テスト成功。実行時の7件はすべてkeep_open（PRE-00539 body_unverified、PRE-00541〜00544と00546は403、PRE-00545はbody_found）。その後PRE-00545は配布元GitHubの確認により人手でresolved。
+- Auto-screenは毎日23:25 JST設定だが、schedule Run #54/#55の実際の開始時刻は03:52／03:53 JST。約4時間半のずれの原因は未確認。次回も観察する。
+- Notion同期Run #133（42528703770）は2026-11-09 07:08 JSTにsuccess。Notion API同期ステップも完了し、ログはGitHub台帳539 resolved／7 open、作成・更新0件。Notion直接集計も546件（済539／未確認7）、PRE-00540は「済」。これはPRE-00545の判定更新前。次回の定期同期でPRE-00545が「済」になり、Notionが540／6に揃うことを確認する。手動Workflow実行は不要。
+
+### 次に行う作業
+
+1. PRE-00541から順に未確認項目を調べる。PRE-00541〜00544、00546はReddit HTTP 403の記録があるため、403だけで除外しない。公開検索や投稿者の配布リンク等、正規に確認できる情報を探す。本文・配布物が確認できなければopenのまま維持する。
+2. PRE-00545のNotion反映を次回同期後に確認する。
+3. Auto-screen scheduleの次回実行時刻を確認し、23:25 JST設定との差が続くか記録する。
+4. PRE未確認項目の確認が進んだ後、古い管理ファイル記述と未マージPR #139/#83を整理する。マージ・クローズはユーザー承認なしに行わない。
+
+最終確認日：2026-11-09（JST）
 対象：`dr-kuronekoGC/rpgmaker-daily-report` の `main` のみ。
 現在の全体状況は `PROJECT_STATUS.md`、長期的な設計判断は `DECISIONS.md` を参照する。
 
@@ -67,7 +85,7 @@
 
 ### 3. 6件の未確認PREを確認する
 
-対象：PRE-00539、PRE-00541〜PRE-00546。PRE-00540は確認済みのため対象外。
+対象：PRE-00539、PRE-00541〜PRE-00544、PRE-00546。PRE-00540とPRE-00545は確認済みのため対象外。
 - まず本文取得・配布先・リンク状態を確認する。
 - 本文未取得、403/429、タイムアウトだけで素材なしと断定しない。
 - 高確度の除外だけを自動処理し、根拠が弱いものは未確認のまま残す。
@@ -105,4 +123,12 @@
 
 - ユーザー確認：RPG Maker UnionのスレッドID 2624「2D Animator Editor」は、素材・プラグイン単体ではなくRPG Makerのプロジェクト一式の配布。
 - 素材・プラグインの登録対象外として `not_applicable`／resolved にし、GitHub PRE台帳の分類を「プロジェクト配布」として記録。判定記録にも追加。
-- Notionへの状態反映は次回の定期同期に委ねる。手動Workflow実行は行っていない。
+- Notion同期Run #133（2026-11-09 07:08 JST）でPRE-00540の状態「済」を確認。NotionとGitHubは同期時点で546件（resolved/済539、open/未確認7）で一致。
+
+## PRE-00545：MZプラグインとして確認（2026-11-09）
+
+- ツクマテ投稿本文でGitHubリポジトリ `nolimits-tukool/NLM_MetallicText` を案内。配布元READMEとJavaScript本体、LICENSEを確認。
+- RPG Maker MZ用プラグインv1.0.0。文字に金属調グラデーションを付ける。プラグインコマンドなし。パラメータは縞模様の間隔（stripeInc）と暗部アルファ（stripeAlpha）。
+- MIT License。MVでも一応動作するとの記載はあるが、文字幅調整時にグラデーションが外れる制約があるため、MZ用として扱う。
+- GitHub PRE台帳をdecision=plugin／resolvedに更新し、判定記録にも追加。実機テストは未実施。
+- Notion同期Run #133はこの判定更新前のため、次回定期同期でNotionの状態が「済」に変わることを確認する。
