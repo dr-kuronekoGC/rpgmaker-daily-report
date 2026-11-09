@@ -43,12 +43,13 @@
 ## 運用上の引き継ぎ確認（2026-11-07）
 
 - BOTとWebサイトは別リポジトリ・別作業として扱う。このリポジトリではRPG Maker Daily Report BOTだけを対象とし、`kuroneko-tavern` の開発・変更を行わない。
-- GitHubのPRE台帳を正本として扱う。2026-11-07確認時点で544件（resolved 538／open 6）。Notionは413件で、全件「済」。件数だけでなくPRE番号・URL・状態を照合してから同期完了と判断する。
-- ユーザーから `NOTION_DATABASE_ID` はActions Secretsに登録済みとの報告あり。Secretの値は取得・表示・記録しない。`NOTION_API_KEY` の登録・有効性、およびActionsからの実同期成功はログで別途確認する。
+- GitHubのPRE台帳を正本として扱う。2026-11-07当時は544件（resolved 538／open 6）だった。Notionの413件という過去集計は古い値であり、現況として使用しない。
+- 当時は `NOTION_DATABASE_ID` のみ登録報告があったが、その後ユーザーが `NOTION_API_KEY` と `NOTION_DATABASE_ID` の両方をActions Secretsへ登録した。Secretの値は取得・表示・記録しない。最新PRE判定のNotion反映は定期同期後に別途確認する。
 - Notion同期workflowがsuccessでも、同期ステップがSkipped、Notion APIへのアクセス件数が0、または同期後のGitHubコミットがない場合は、実同期成功と扱わない。
 - Notionの「済」は同期スクリプト上、GitHub台帳のopen項目をresolvedにする意味を持つ。ユーザーによる内容確認の有無と単なる状態同期を混同しない。根拠のない一括「済」設定をしない。
 - 管理ファイルの更新はmainに直接反映した場合、同じ目的の未マージPRとの差分・競合を再確認する。古い申し送りPRをそのままマージしない。
 - Actionsの最新実行を確認できていない場合、過去の失敗を現在も継続中と断定しない。過去の実行結果と最新状態を分けて記録する。
+- 現在の作業順は `NEXT_STEPS.md` 冒頭の最新更新を正とし、日付付きの過去記録は履歴として扱う。
 - 現在の作業順は `NEXT_STEPS.md` 冒頭の最新更新を正とし、日付付きの過去記録は履歴として扱う。
 
 
