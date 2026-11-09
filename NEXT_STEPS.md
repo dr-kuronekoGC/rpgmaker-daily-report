@@ -32,20 +32,7 @@
 
 ## 完了・過去の記録
 
-## 2026-11-10：開発情報カテゴリーの既存構造調査（読み取りのみ）
-
-- Slackには既存の「開発情報・Tips」グループがあるが、内部カテゴリは主に `Tips`。独立した `開発情報` の表示マッピング・詳細表示順は未整備。
-- PRE-00543のレビュー台帳には `category=開発情報`／`asset_type=development_tool`／`content_type=other` とユーザー判断が記録されている。
-- 同じPREの月別Archive Itemは旧分類（`Redditグラフィック素材`／`asset`／`other`）のまま。レビュー決定の取り込みはPRE台帳だけを更新し、Archive Itemは更新しないことをコードで確認。
-- 自動分類のasset_typeはgraphic／sound／plugin／game／other。development_toolの自動判定は未実装。詳細分類エンジンはsound／graphic／plugin向けで、pluginの `development_debug` は一般的な開発情報分類ではない。
-- `content_type` に development_info はなく、検索メタデータも開発情報向けの項目が未定義。engine_relevantはgraphic／plugin／gameのみtrue。
-- 今回はコード、Archive、PRE台帳、判定記録を変更していない。テスト・Actions実行も行っていない。読み取り調査と管理MD更新のみ。
-
 以下は経緯を保持するための履歴。現在の作業順・状態の判断には冒頭の「最新更新」を使う。
-
-## PRE-00539：今回は情報収集方法の確認までで終了
-
-- ユーザー判断により、今回は添付ファイル `Villa_MapLightA
 
 ## 2026-11-10：Notion同期・Auto-screen定期実行の確認
 
@@ -55,13 +42,22 @@
 - Auto-screen Run #56（2026-11-10 08:28 JST）はschedule起動・success。監査ファイルは `scanned_item_count: 0`／`auto_resolved_count: 0`。open項目がなかったため検査対象なし。cronは変更せず、schedule実行時刻の遅延・ばらつきは継続観察。
 - コード・PRE台帳・判定記録・収集状態は変更していない。管理MDのみ更新。
 
-ndShadow.js`（attachment ID 63505）のダウンロード・コード解析には進まない。
-- 理由：スレッドにグリッドずれ、画面スクロール時の光の座標ずれという実用上の不具合報告があり、投稿者自身も解決できていないため。現時点では素材としての採用を見送る。
-- ただし、環境固有の問題や設定で解消できる可能性は残るため、プラグイン自体が恒久的に使用不能とは断定しない。作者による修正報告や動作確認情報が見つかった場合は再評価する。
-- PRE-00539は情報収集方法の確認まで完了。素材の仕様・実用性は未確定のため、open/未解決のまま維持する。PRE台帳や判定記録は変更しない。
-- 今回の調査で確認できたXHRによる本文・添付メタデータ取得方法は、RPG Maker Unionの他の調査対象にも応用できる可能性がある。必要になった際に、正規のアクセス範囲内で利用する。
-- RPG Maker Unionの添付ファイル取得を再度試す場合も、認証・アクセス制限を迂回せず、サイトの利用条件と配布条件を確認する。
+## 2026-11-10：開発情報カテゴリーの既存構造調査（読み取りのみ）
 
+- Slackには既存の「開発情報・Tips」グループがあるが、内部カテゴリは主に `Tips`。独立した `開発情報` の表示マッピング・詳細表示順は未整備。
+- PRE-00543のレビュー台帳には `category=開発情報`／`asset_type=development_tool`／`content_type=other` とユーザー判断が記録されている。
+- 同じPREの月別Archive Itemは旧分類（`Redditグラフィック素材`／`asset`／`other`）のまま。レビュー決定の取り込みはPRE台帳だけを更新し、Archive Itemは更新しないことをコードで確認。
+- 自動分類のasset_typeはgraphic／sound／plugin／game／other。development_toolの自動判定は未実装。詳細分類エンジンはsound／graphic／plugin向けで、pluginの `development_debug` は一般的な開発情報分類ではない。
+- `content_type` に development_info はなく、検索メタデータも開発情報向けの項目が未定義。engine_relevantはgraphic／plugin／gameのみtrue。
+- 今回はコード、Archive、PRE台帳、判定記録を変更していない。テスト・Actions実行も行っていない。読み取り調査と管理MD更新のみ。
+
+## PRE-00539：今回は情報収集方法の確認までで終了（2026-11-08時点の記録）
+
+- 当時は添付ファイル `Villa_MapLightAndShadow.js`（attachment ID 63505）のダウンロード・コード解析には進まない方針とした。
+- 理由：スレッドにグリッドずれ、画面スクロール時の光の座標ずれという実用上の不具合報告があり、投稿者自身も解決できていないため。素材としての採用を見送る判断材料とした。
+- ただし、環境固有の問題や設定で解消できる可能性は残るため、プラグイン自体が恒久的に使用不能とは断定しない。作者による修正報告や動作確認情報が見つかった場合は再評価可能。
+- その後、2026-11-09にユーザー判断で今回は収集対象から除外し、PRE-00539はresolvedに更新済み。現在の状態は本ファイル冒頭と `PROJECT_STATUS.md` を参照する。
+- RPG Maker Unionの添付ファイル取得を再度試す場合も、認証・アクセス制限を迂回せず、サイトの利用条件と配布条件を確認する。
 
 ## これまでのPRE-00539調査結果（2026-11-08）
 
