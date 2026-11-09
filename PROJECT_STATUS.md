@@ -11,7 +11,7 @@
 - Auto-screen Run #56（2026-11-10 08:28 JST、schedule）はsuccess。監査結果は `scanned_item_count: 0`／`auto_resolved_count: 0`。開始時点でopen項目がなかったため、検査対象なし。cronは `25 14 * * *`（UTC、23:25 JST）を維持。Run #54/#55は翌03:52／03:53 JST、#56は翌08:28 JST開始で、schedule実行時刻の遅延・ばらつきは続いている。原因未確認のため変更せず観察継続。
 - PRE-00539・00541・00543・00546の判断は既存記録のまま。判定の追加・変更はしていない。
 - PR #139/#83は2026-11-09に差分確認後クローズ済み（未マージ、ブランチ削除なし）。現在open PRなし。
-- 次の作業は「開発情報」カテゴリーの既存分類コード・自動判定・検索メタデータ・検索対象の調査。まず現状把握し、コード変更はしない。
+- 「開発情報」カテゴリーの既存構造調査は完了。次は正規データモデル、PRE判断をArchiveへ反映する方法、Slack表示・検索メタデータとの整合を検討する。コード・Archiveの変更はまだ行わない。
 
 - 「開発情報」既存構造の読み取り調査（2026-11-10）：Slack表示には既存の「開発情報・Tips」グループがあるが、内部カテゴリとして登録されているのは主に `Tips`。独立した `開発情報` の表示マッピング・詳細表示順は未整備。
 - PRE-00543の `classification_review.json` にはユーザー判断として category=`開発情報`、asset_type=`development_tool`、content_type=`other`、タグ「開発情報」「iPhone」「ゲームプレイヤー」が記録されている。一方、`data/archive/2026-11.json` の同一PRE Itemは旧値（category=`Redditグラフィック素材`、content_type=`asset`、asset_type=`other`、engine_relevant=false）のまま。レビュー台帳とArchiveの分類は同期していない。
