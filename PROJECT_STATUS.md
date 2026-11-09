@@ -12,6 +12,15 @@
 - PRE-00539・00541・00543・00546の判断は既存記録のまま。判定の追加・変更はしていない。
 - PR #139/#83は2026-11-09に差分確認後クローズ済み（未マージ、ブランチ削除なし）。現在open PRなし。
 - 次の作業は「開発情報」カテゴリーの既存分類コード・自動判定・検索メタデータ・検索対象の調査。まず現状把握し、コード変更はしない。
+
+- 「開発情報」既存構造の読み取り調査（2026-11-10）：Slack表示には既存の「開発情報・Tips」グループがあるが、内部カテゴリとして登録されているのは主に `Tips`。独立した `開発情報` の表示マッピング・詳細表示順は未整備。
+- PRE-00543の `classification_review.json` にはユーザー判断として category=`開発情報`、asset_type=`development_tool`、content_type=`other`、タグ「開発情報」「iPhone」「ゲームプレイヤー」が記録されている。一方、`data/archive/2026-11.json` の同一PRE Itemは旧値（category=`Redditグラフィック素材`、content_type=`asset`、asset_type=`other`、engine_relevant=false）のまま。レビュー台帳とArchiveの分類は同期していない。
+- `tools/apply_review_decisions.py` はPREレビュー台帳の status／decision／review_note を更新するだけで、Archive Itemのメタデータは更新しない。Archiveは通常収集または明示的な `_update_existing` による更新経路を持つ。ユーザー判断がArchiveに反映済みとは扱わない。
+- 自動メタデータ処理のasset_typeは graphic／sound／plugin／game／other。コードに `development_tool` 定数・自動判定はない。`item_model.py` の content_type判定にも development_info はなく、通常は other になる。共通Item schemaの content_type enumにも development_info はない。
+- 詳細分類エンジンはsound／graphic／plugin向け。plugin内の `development_debug` はプラグインの詳細サブカテゴリであり、一般的な開発情報・開発支援ツールの分類ではない。
+- `engine_relevant` はgraphic／plugin／gameのみtrue。開発ツールや互換性情報をエンジン検索にどう含めるかは未設計。検索メタデータ文書も現状sound／graphic中心で、開発情報の検索項目は未定義。
+- Slackでは `開発情報・Tips` のサマリー枠はあるが、`開発情報` を独立カテゴリとして表示するマッピング・詳細表示順はない。現状のままcategoryだけを変更しても、通常レポートに正しく表示されない可能性がある。
+- 今回はコード・Archive・PRE台帳・判定記録を変更していない。調査と管理MDの更新のみ。
 - 公開検索サイトは別プロジェクト・別チャットで構築中。このBOTリポジトリではサイト側の技術をWordPressと決めつけず、連携に必要なデータ構造・メタデータの互換性を検討する。サイト実装そのものは扱わない。
 
 最終確認日：2026-11-10（JST）
