@@ -9,7 +9,7 @@
 - Notion PRE確認台帳：546件すべて存在し、「済」546件／「未確認」0件。PRE-00539・00541・00543・00546も反映済み。
 - Notion同期Run #135で4ページ更新（`page_updates: 4`）。Run #136/#137はsuccess・追加更新なし。Notionの実データを直接照合済み。
 - Auto-screen Run #56：2026-11-10 08:28 JSTにschedule起動、success。open項目がないため `scanned_item_count: 0`／`auto_resolved_count: 0`。cron `25 14 * * *`（23:25 JST）は変更せず、実行遅延・ばらつきを観察する。
-- main：作業開始時 `5d909fe61ee9f4b05cdfa62fa7e7e763fd71c81d`。管理MD更新後のmainは `96f37917ff8257ecd026f12f35f0d55f3340da37`。未マージPRなし。
+- 2026-11-10の作業開始時main：`5d909fe61ee9f4b05cdfa62fa7e7e763fd71c81d`。管理MD更新後も未マージPRなし。
 - 公開検索サイトは別プロジェクト・別チャットで構築中。WordPressを前提にせず、サイト側の構成を確認するまではBOT側の連携設計をデータ互換性の検討に留める。
 - 「開発情報」カテゴリーの既存構造調査は完了。PREレビュー台帳とArchiveの分類が一致していない点を確認。コード変更・Archive修正は未実施。
 
@@ -23,7 +23,14 @@
 ### 作業ルール
 - 原因調査 → 最小修正 → テスト → GitHub Actions確認を分ける。
 - 「workflow success」と外部サービスへの実同期・保存成功を区別する。
-- コード変更、PR作成・更新・マー
+- コード変更、PR作成・更新・マージ、workflow手動実行、デプロイ、データ削除・リセットは、明示的な許可なしに行わない。管理MDの更新は作業節目で行う。
+- `seen_*.json`、`seen_global.json`、`pending_items.json`、`data/archive/` を削除・リセットしない。
+- 節目ごとに本ファイルと必要な管理MDを更新する。完了・未解決・未確認を明示する。
+
+最終確認日：2026-11-10（JST）
+対象：`dr-kuronekoGC/rpgmaker-daily-report` の `main` のみ。
+
+## 完了・過去の記録
 
 ## 2026-11-10：開発情報カテゴリーの既存構造調査（読み取りのみ）
 
@@ -33,15 +40,6 @@
 - 自動分類のasset_typeはgraphic／sound／plugin／game／other。development_toolの自動判定は未実装。詳細分類エンジンはsound／graphic／plugin向けで、pluginの `development_debug` は一般的な開発情報分類ではない。
 - `content_type` に development_info はなく、検索メタデータも開発情報向けの項目が未定義。engine_relevantはgraphic／plugin／gameのみtrue。
 - 今回はコード、Archive、PRE台帳、判定記録を変更していない。テスト・Actions実行も行っていない。読み取り調査と管理MD更新のみ。
-
-ジ、workflow手動実行、デプロイ、データ削除・リセットは、明示的な許可なしに行わない。管理MDの更新は作業節目で行う。
-- `seen_*.json`、`seen_global.json`、`pending_items.json`、`data/archive/` を削除・リセットしない。
-- 節目ごとに本ファイルと必要な管理MDを更新する。完了・未解決・未確認を明示する。
-
-最終確認日：2026-11-10（JST）
-対象：`dr-kuronekoGC/rpgmaker-daily-report` の `main` のみ。
-
-## 完了・過去の記録
 
 以下は経緯を保持するための履歴。現在の作業順・状態の判断には冒頭の「最新更新」を使う。
 
