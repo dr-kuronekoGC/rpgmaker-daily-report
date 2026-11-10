@@ -12,6 +12,7 @@
 - 収集元ヘルスは#228のOK 28/35・PARTIAL 3・ERROR 4から、#229ではOK 30/35・PARTIAL 1・ERROR 4へ改善。#229時点のERRORはcommunity_rpgmaker_su、community_rpgmaker_cn（403）、community_rmplanet（RSS解析エラー）、community_rpgmaker_net（403）。community_rpgmaker_esはページネーション404を含むPARTIAL。HTTP 403や取得失敗をコンテンツ消失とは判断しない。
 - pending_items.jsonの残り951件は全件RMRK由来。内訳はRMRK素材情報708、グラフィック235、サウンド7、プラグイン・スクリプト1。resource_intentはnot_resource 724、resource_candidate 177、uncertain 50。951件すべてが `data/archive/2026-10.json`（2,255件）にも存在し、Archive未保存のデータではない。
 - ただしRMRKの4カテゴリーは現行 `categories/display.py` の表示マッピングに存在しない。#229ではRMRK由来10件と新着ゲーム1件が選択されたが、Slack本文に表示されたのはゲーム1件。Slack HTTP 200後に選択分がpendingから外れるため、RMRKの過去データはArchiveに残る一方、Slack通知されずにpendingを離れる挙動がある。データ消失ではないが、意図した運用か未確認。pendingの一括削除・リセットは行わず、扱いを別途検討する。
+- 2026-11-10のユーザー意見：RMRKは閉鎖予定で今後参照できなくなるため、関連データの削除も選択肢。現時点の推奨は、pending内のRMRK951件だけを整理対象とし、Archiveは履歴・照合用に保持すること。951件はすべて10月Archiveにも存在するが、これはpending件数であり、Archive全体のRMRK件数ではない。Archive全体を削除する影響は未調査。ユーザーから削除実行の明示許可はまだなく、データ変更はしていない。実行前にRMRKが新規収集対象から外れていること、対象件数・識別条件・バックアップ／復元方法を確認する。
 - PRE-00539・00541・00543・00546のユーザー判断は既存記録のまま。追加判定なし。
 - PR #139/#83は2026-11-09に差分確認後クローズ済み（未マージ、ブランチ削除なし）。現在open PRなし。
 - 「開発情報」カテゴリーの既存構造調査は完了。正規データモデル、PRE判断をArchiveへ反映する方法、Slack表示・検索メタデータとの整合は未決定。コード変更・Archive修正はまだ行わない。
