@@ -4,24 +4,19 @@
 
 **この節を現在の状態の正とする。** 以下の過去節は当時の履歴。
 
-- 2026-11-10の作業開始時点のmain：`5d909fe61ee9f4b05cdfa62fa7e7e763fd71c81d`（Auto-screenの監査ログ更新）。未マージPR：0件。
-- PRE台帳 `data/review/classification_review.json`：546件、resolved 546件／open 0件。判定記録 `data/review/review_decisions.json`：322件。
-- Notion PRE確認台帳：直接照合で546件。確認状態は「済」546件／「未確認」0件。PRE-00539・00541・00543・00546もすべて「済」。
-- Notion同期Run #135（2026-11-09 18:50 JST）は成功し、`marked_done_in_notion` に上記4件、`page_updates: 4`、`pages_to_create: 0` を記録。Run #136（11/10 05:46 JST）と#137（11/10 08:28 JST）は成功したが追加更新なし。Notionの実データ546件／全件「済」と一致することを別途照合済み。手動Workflow実行はしていない。
-- Auto-screen Run #56（2026-11-10 08:28 JST、schedule）はsuccess。監査結果は `scanned_item_count: 0`／`auto_resolved_count: 0`。開始時点でopen項目がなかったため、検査対象なし。cronは `25 14 * * *`（UTC、23:25 JST）を維持。Run #54/#55は翌03:52／03:53 JST、#56は翌08:28 JST開始で、schedule実行時刻の遅延・ばらつきは続いている。原因未確認のため変更せず観察継続。
-- PRE-00539・00541・00543・00546の判断は既存記録のまま。判定の追加・変更はしていない。
+- 2026-11-10の作業開始時main：`5d909fe61ee9f4b05cdfa62fa7e7e763fd71c81d`。今回の確認時点の最新main：`81b6529f569fd5695d3edbd5d1656a0d087c2d96`（11/10 12:38 JST、定期レポートのデータ更新）。未マージPR：0件。
+- PRE台帳 `data/review/classification_review.json`：546件、resolved 546件／open 0件。判定記録 `data/review/review_decisions.json`：322件。今回、PRE判断・台帳は変更なし。
+- Notion PRE確認台帳：546件、確認状態「済」546件／「未確認」0件。PRE-00539・00541・00543・00546もすべて「済」。Notion同期Run #138（11/10 13:08 JST、schedule）はsuccess、ページ更新・新規作成とも0件。Notion実データを直接照合済み。Run #137（08:28 JST、workflow_run）もsuccess。手動Workflow実行はしていない。
+- Auto-screen Run #56（11/10 08:28 JST、schedule）はsuccess。構文検証・安全性／リンク判定テスト61件すべて成功。open項目0件のため `scanned_item_count: 0`／`auto_resolved_count: 0`。予定cron `25 14 * * *`（23:25 JST）に対して約9時間遅れて起動。次回cron（11/10 23:25 JST）は今回確認時点（13:41 JST）では未到来。設定は変更せず観察継続。
+- RPG Maker Daily Report Run #228（11/10 04:44 JST）と#229（11/10 12:36 JST）はどちらもschedule／success、Slack HTTP 200。#228はArchive +4（合計77）、Global seen +4（4472）、pending 975→961（14件選択）。#229はArchive +1（合計78）、Global seen 4472→4473、pending 962→951（11件選択）。#229の新着はRedditのゲーム紹介1件で、Slackにも掲載された。
+- 収集元ヘルスは#228のOK 28/35・PARTIAL 3・ERROR 4から、#229ではOK 30/35・PARTIAL 1・ERROR 4へ改善。#229時点のERRORはcommunity_rpgmaker_su、community_rpgmaker_cn（403）、community_rmplanet（RSS解析エラー）、community_rpgmaker_net（403）。community_rpgmaker_esはページネーション404を含むPARTIAL。HTTP 403や取得失敗をコンテンツ消失とは判断しない。
+- pending_items.jsonの残り951件は全件RMRK由来。内訳はRMRK素材情報708、グラフィック235、サウンド7、プラグイン・スクリプト1。resource_intentはnot_resource 724、resource_candidate 177、uncertain 50。951件すべてが `data/archive/2026-10.json`（2,255件）にも存在し、Archive未保存のデータではない。
+- ただしRMRKの4カテゴリーは現行 `categories/display.py` の表示マッピングに存在しない。#229ではRMRK由来10件と新着ゲーム1件が選択されたが、Slack本文に表示されたのはゲーム1件。Slack HTTP 200後に選択分がpendingから外れるため、RMRKの過去データはArchiveに残る一方、Slack通知されずにpendingを離れる挙動がある。データ消失ではないが、意図した運用か未確認。pendingの一括削除・リセットは行わず、扱いを別途検討する。
+- PRE-00539・00541・00543・00546のユーザー判断は既存記録のまま。追加判定なし。
 - PR #139/#83は2026-11-09に差分確認後クローズ済み（未マージ、ブランチ削除なし）。現在open PRなし。
-- 「開発情報」カテゴリーの既存構造調査は完了。次は正規データモデル、PRE判断をArchiveへ反映する方法、Slack表示・検索メタデータとの整合を検討する。コード・Archiveの変更はまだ行わない。
-
-- 「開発情報」既存構造の読み取り調査（2026-11-10）：Slack表示には既存の「開発情報・Tips」グループがあるが、内部カテゴリとして登録されているのは主に `Tips`。独立した `開発情報` の表示マッピング・詳細表示順は未整備。
-- PRE-00543の `classification_review.json` にはユーザー判断として category=`開発情報`、asset_type=`development_tool`、content_type=`other`、タグ「開発情報」「iPhone」「ゲームプレイヤー」が記録されている。一方、`data/archive/2026-11.json` の同一PRE Itemは旧値（category=`Redditグラフィック素材`、content_type=`asset`、asset_type=`other`、engine_relevant=false）のまま。レビュー台帳とArchiveの分類は同期していない。
-- `tools/apply_review_decisions.py` はPREレビュー台帳の status／decision／review_note を更新するだけで、Archive Itemのメタデータは更新しない。Archiveは通常収集または明示的な `_update_existing` による更新経路を持つ。ユーザー判断がArchiveに反映済みとは扱わない。
-- 自動メタデータ処理のasset_typeは graphic／sound／plugin／game／other。コードに `development_tool` 定数・自動判定はない。`item_model.py` の content_type判定にも development_info はなく、通常は other になる。共通Item schemaの content_type enumにも development_info はない。
-- 詳細分類エンジンはsound／graphic／plugin向け。plugin内の `development_debug` はプラグインの詳細サブカテゴリであり、一般的な開発情報・開発支援ツールの分類ではない。
-- `engine_relevant` はgraphic／plugin／gameのみtrue。開発ツールや互換性情報をエンジン検索にどう含めるかは未設計。検索メタデータ文書も現状sound／graphic中心で、開発情報の検索項目は未定義。
-- Slackでは `開発情報・Tips` のサマリー枠はあるが、`開発情報` を独立カテゴリとして表示するマッピング・詳細表示順はない。現状のままcategoryだけを変更しても、通常レポートに正しく表示されない可能性がある。
-- 今回はコード・Archive・PRE台帳・判定記録を変更していない。調査と管理MDの更新のみ。
-- 公開検索サイトは別プロジェクト・別チャットで構築中。このBOTリポジトリではサイト側の技術をWordPressと決めつけず、連携に必要なデータ構造・メタデータの互換性を検討する。サイト実装そのものは扱わない。
+- 「開発情報」カテゴリーの既存構造調査は完了。正規データモデル、PRE判断をArchiveへ反映する方法、Slack表示・検索メタデータとの整合は未決定。コード変更・Archive修正はまだ行わない。
+- 公開検索サイトは別プロジェクト・別チャットで構築中。サイト側の技術をWordPressと決めつけず、BOT側では既存データの互換性を確認する。サイト実装そのものは扱わない。
+- 今回は読み取り確認と管理MD更新のみ。コード、PRE台帳、判定記録、Archive、pending、seenを変更していない。
 
 最終確認日：2026-11-10（JST）
 
