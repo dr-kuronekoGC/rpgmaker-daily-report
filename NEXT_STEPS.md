@@ -6,22 +6,35 @@
 
 ### 現在の状態
 - PRE台帳：546件、resolved 546／open 0。判定記録322件。
-- Notion PRE確認台帳：546件すべて存在し、「済」546件／「未確認」0件。PRE-00539・00541・00543・00546も反映済み。
-- Notion同期Run #135で4ページ更新（`page_updates: 4`）。Run #136/#137はsuccess・追加更新なし。Notionの実データを直接照合済み。
-- Auto-screen Run #56：2026-11-10 08:28 JSTにschedule起動、success。open項目がないため `scanned_item_count: 0`／`auto_resolved_count: 0`。cron `25 14 * * *`（23:25 JST）は変更せず、実行遅延・ばらつきを観察する。
-- 2026-11-10の作業開始時main：`5d909fe61ee9f4b05cdfa62fa7e7e763fd71c81d`。管理MD更新後も未マージPRなし。
-- 公開検索サイトは別プロジェクト・別チャットで構築中。WordPressを前提にせず、サイト側の構成を確認するまではBOT側の連携設計をデータ互換性の検討に留める。
-- 「開発情報」カテゴリーの既存構造調査は完了。PREレビュー台帳とArchiveの分類が一致していない点を確認。コード変更・Archive修正は未実施。
+- Notion：546件すべて「済」、未確認0件。Run #138（11/10 13:08 JST、schedule）はsuccess・更新0件。実データを直接照合済み。
+- Auto-screen Run #56（11/10 08:28 JST、schedule）：success、61テスト成功、open 0のため検査対象0。cronは23:25 JST設定のまま。約9時間の実行遅延があり、次回予定（11/10 23:25 JST）は今回確認時点では未到来。
+- RPG Maker Daily Report Run #228/#229：11/10 04:44／12:36 JSTにschedule起動・success、いずれもSlack HTTP 200。#229は新着ゲーム1件を通知、Archive合計78件、Global seen 4473件。
+- 収集元ヘルスは#229で30/35 OK、1 PARTIAL、4 ERROR。403・RSS解析エラー等の収集元問題は継続。取得失敗をコンテンツ消失とは扱わない。
+- pending_items.jsonは951件。全件RMRK由来で、全951件が10月Archiveにも保存済み。RMRKカテゴリーはSlack表示マッピングに存在せず、#229では選択されたRMRK10件が通知本文に表示されないまま、Slack送信成功後にpendingから外れた。Archive上のデータは保持されている。意図した挙動か未確認であり、一括削除・リセットはしない。
+- 最新main：`81b6529f569fd5695d3edbd5d1656a0d087c2d96`（定期レポートのデータ更新）。未マージPRなし。
+- 公開検索サイトは別プロジェクト・別チャットで構築中。WordPressを前提にせず、BOT側はデータ互換性の検討に留める。
 
 ### 次に行う作業（順番に一つずつ）
-1. **開発情報の正規データモデルを検討する。** 「ゲームプレイヤー・実行環境」「開発支援ツール」「変換・移植ツール」「互換性・技術情報」と既存のTipsを区別し、content_type／asset_type／新しい詳細分類のどこで表現するのが自然か比較する。まだ実装しない。
-2. **PRE判断をArchiveへ反映する方法を検討する。** 現状の `review_decisions.json` はPREレビュー台帳だけを更新し、Archiveは更新しない。PRE-00543のような既存データをどのタイミングで・どの範囲まで直すか、重複・上書きリスクを含めて設計する。データ変更は別途許可を得る。
-3. **Slack表示と検索メタデータの整合を検討する。** 現在の「開発情報・Tips」グループにどう接続するか、engine_relevantや検索用詳細項目をどう扱うかを整理する。
-4. **自動分類への反映案を作る。** 既存の `development_debug` はプラグイン詳細分類なので流用しない。誤分類リスク・人手レビュー優先・回帰テスト対象を整理し、実装は別途許可を得る。
-5. 公開検索サイトとの連携は、別プロジェクト側の実際の技術構成・データ受け渡し方法を確認してから検討する。WordPress前提の設計はしない。
+1. **RMRKのpending backlogの扱いを読み取りで整理する。** 951件は全件Archiveにあるが、Slack表示対象外のカテゴリーがpendingに残り、選択後に通知されず外れる。どのカテゴリーが表示対象外か、pendingから外す設計が妥当か、Archiveの保持を前提に確認する。データ変更・一括削除はしない。
+2. **開発情報の正規データモデルを検討する。** 「ゲームプレイヤー・実行環境」「開発支援ツール」「変換・移植ツール」「互換性・技術情報」と既存のTipsを区別し、content_type／asset_type／新しい詳細分類のどこで表現するのが自然か比較する。まだ実装しない。
+3. **PRE判断をArchiveへ反映する方法を検討する。** 現状の `review_decisions.json` はPREレビュー台帳だけを更新し、Archiveは更新しない。PRE-00543のような既存データをどのタイミングで・どの範囲まで直すか、重複・上書きリスクを含めて設計する。データ変更は別途許可を得る。
+4. **Slack表示と検索メタデータの整合を検討する。** 開発情報の表示マッピング、engine_relevantや検索用詳細項目を整理する。
+5. **自動分類への反映案を作る。** 既存の `development_debug` はプラグイン詳細分類なので流用しない。誤分類リスク・人手レビュー優先・回帰テスト対象を整理し、実装は別途許可を得る。
+6. 公開検索サイトとの連携は、別プロジェクト側の実際の技術構成・データ受け渡し方法を確認してから検討する。WordPress前提の設計はしない。
 
 ### 作業ルール
-- 原因調査 → 最小修正 → テスト → GitHub Actions確認を分ける。
+- 原因調査 → 最小修正 → テス
+## 2026-11-10：定期実行確認（Notion・Auto-screen・Daily Report）
+
+- Notion同期Run #138（11/10 13:08 JST、schedule）はsuccess、page_updates 0／pages_to_create 0。Notion実データ546件すべて「済」、未確認0件を直接照合。
+- Auto-screen Run #56（11/10 08:28 JST、schedule）はsuccess。構文検証・安全性／リンク判定テスト61件成功。open 0のためscanned 0／auto_resolved 0。cron 23:25 JSTに対し約9時間遅延。次回cronは今回確認時点では未到来。
+- Daily Report Run #228（11/10 04:44 JST）・#229（12:36 JST）はschedule／success、Slack HTTP 200。#228 Archive +4・Global seen +4・pending 975→961。#229 Archive +1（合計78）・Global seen 4472→4473・pending 962→951。#229の新着ゲーム1件はSlackに表示された。
+- Source Healthは#228のOK 28/35・PARTIAL 3・ERROR 4から、#229ではOK 30/35・PARTIAL 1・ERROR 4に改善。SU、Project1中文、RM Planet、RPG Maker Networkのエラーと、Comunidad ESの一部失敗は継続。
+- pending 951件は全件RMRK由来で、10月Archiveにも全件存在。内訳：RMRK素材情報708／グラフィック235／サウンド7／プラグイン1。resource_intentはnot_resource 724／resource_candidate 177／uncertain 50。
+- RMRKカテゴリーは `categories/display.py` に表示マッピングがなく、#229では選択されたRMRK10件がSlack本文に表示されず、Slack送信成功後にpendingから外れた。Archiveは保持されておりデータ消失ではないが、意図した通知仕様か未確認。pendingの一括削除・リセットは行わず、次の調査課題にした。
+- PRE台帳・判定記録・Archive・pending・seen・コードは変更していない。管理MDのみ更新。
+
+ト → GitHub Actions確認を分ける。
 - 「workflow success」と外部サービスへの実同期・保存成功を区別する。
 - コード変更、PR作成・更新・マージ、workflow手動実行、デプロイ、データ削除・リセットは、明示的な許可なしに行わない。管理MDの更新は作業節目で行う。
 - `seen_*.json`、`seen_global.json`、`pending_items.json`、`data/archive/` を削除・リセットしない。
