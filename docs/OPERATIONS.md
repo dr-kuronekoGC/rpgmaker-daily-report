@@ -48,7 +48,7 @@ Workflow: `.github/workflows/classification-audit.yml`
 
 ## Retired collectors
 
-- **RMRK** is no longer in the scheduled collector registry. Its existing seen_rmrk.json, archive entries, and classification-review records are intentionally retained. The site may still be useful as a historical reference, but it is not scanned for new items.
+- **RMRK** is no longer in the scheduled collector registry. Its existing `seen_rmrk.json` and classification-review records are retained. Its 1,571 October 2026 archive records are preserved; their closure status is recorded in `data/archive/source_status_overrides.json` by `internal_id`, and the SITE master is marked `source_site_status: "closed"`. This describes the source site only, not whether each linked material remains available. RMRK is not scanned for new items.
 - **Save-Point** remains an active collector and is the preferred ongoing forum source for resource-related posts. Its coverage is not a complete replacement for RMRK's historical database.
 
 
