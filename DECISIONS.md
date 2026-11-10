@@ -1,12 +1,17 @@
 # DECISIONS.md
 
-最終確認日：2026-11-09（JST）
+最終確認日：2026-11-10（JST）
 
 このファイルには、複数の作業で繰り返し守るべき設計判断のみを記録する。直近の作業順・実行結果は `NEXT_STEPS.md`、プロジェクト全体像は `PROJECT_STATUS.md` を参照する。
 
 ## データ保全
 - `seen_*.json`、`seen_global.json`、`pending_items.json`、`data/archive/`、`data/review/` を障害対応のために削除・リセットしない。リセットはユーザーの明示的な指示が必要。
 - サイトの監視を停止しても、参照リンクや蓄積済みデータは理由なく削除しない。
+
+## 情報源の閉鎖ステータス
+- `source_site_status` は情報源サイト自体の状態を示し、リンク先の素材・プラグインが利用可能かどうかを示すものではない。値は `active`／`transition`／`closed` を用いる。
+- 情報源が閉鎖した場合、原則として過去Archiveは保持し、SITEマスターの `source_site_status` を `closed` にする。既存Archive Itemに状態がない／古い場合は `data/archive/source_status_overrides.json` を `internal_id` で適用する。
+- `source_status_overrides.json` は旧データの状態を補う対応表であり、素材分類用の `tags` とは混ぜない。閉鎖を理由に個々の素材のライセンス・利用可否を推測しない。
 
 ## 取得失敗の扱い
 - HTTP 403、429、TLS・タイムアウト・ネットワーク障害、アクセスチャレンジは、それだけでサイト閉鎖や素材削除の証拠とはみなさない。
