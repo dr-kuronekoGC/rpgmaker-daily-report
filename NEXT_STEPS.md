@@ -11,7 +11,7 @@
 - RPG Maker Daily Report Run #228/#229：11/10 04:44／12:36 JSTにschedule起動・success、いずれもSlack HTTP 200。#229は新着ゲーム1件を通知、Archive合計78件、Global seen 4473件。
 - 収集元ヘルスは#229で30/35 OK、1 PARTIAL、4 ERROR。403・RSS解析エラー等の収集元問題は継続。取得失敗をコンテンツ消失とは扱わない。
 - pending_items.jsonは951件。全件RMRK由来で、全951件が10月Archiveにも保存済み。RMRKカテゴリーはSlack表示マッピングに存在せず、#229では選択されたRMRK10件が通知本文に表示されないまま、Slack送信成功後にpendingから外れた。Archive上のデータは保持されている。意図した挙動か未確認であり、一括削除・リセットはしない。
-- 最新main：`81b6529f569fd5695d3edbd5d1656a0d087c2d96`（定期レポートのデータ更新）。未マージPRなし。
+- 今回のデータ確認時点のmain：`81b6529f569fd5695d3edbd5d1656a0d087c2d96`。管理MD更新後のmainは最新コミットを参照。未マージPRなし。
 - 公開検索サイトは別プロジェクト・別チャットで構築中。WordPressを前提にせず、BOT側はデータ互換性の検討に留める。
 
 ### 次に行う作業（順番に一つずつ）
@@ -23,18 +23,7 @@
 6. 公開検索サイトとの連携は、別プロジェクト側の実際の技術構成・データ受け渡し方法を確認してから検討する。WordPress前提の設計はしない。
 
 ### 作業ルール
-- 原因調査 → 最小修正 → テス
-## 2026-11-10：定期実行確認（Notion・Auto-screen・Daily Report）
-
-- Notion同期Run #138（11/10 13:08 JST、schedule）はsuccess、page_updates 0／pages_to_create 0。Notion実データ546件すべて「済」、未確認0件を直接照合。
-- Auto-screen Run #56（11/10 08:28 JST、schedule）はsuccess。構文検証・安全性／リンク判定テスト61件成功。open 0のためscanned 0／auto_resolved 0。cron 23:25 JSTに対し約9時間遅延。次回cronは今回確認時点では未到来。
-- Daily Report Run #228（11/10 04:44 JST）・#229（12:36 JST）はschedule／success、Slack HTTP 200。#228 Archive +4・Global seen +4・pending 975→961。#229 Archive +1（合計78）・Global seen 4472→4473・pending 962→951。#229の新着ゲーム1件はSlackに表示された。
-- Source Healthは#228のOK 28/35・PARTIAL 3・ERROR 4から、#229ではOK 30/35・PARTIAL 1・ERROR 4に改善。SU、Project1中文、RM Planet、RPG Maker Networkのエラーと、Comunidad ESの一部失敗は継続。
-- pending 951件は全件RMRK由来で、10月Archiveにも全件存在。内訳：RMRK素材情報708／グラフィック235／サウンド7／プラグイン1。resource_intentはnot_resource 724／resource_candidate 177／uncertain 50。
-- RMRKカテゴリーは `categories/display.py` に表示マッピングがなく、#229では選択されたRMRK10件がSlack本文に表示されず、Slack送信成功後にpendingから外れた。Archiveは保持されておりデータ消失ではないが、意図した通知仕様か未確認。pendingの一括削除・リセットは行わず、次の調査課題にした。
-- PRE台帳・判定記録・Archive・pending・seen・コードは変更していない。管理MDのみ更新。
-
-ト → GitHub Actions確認を分ける。
+- 原因調査 → 最小修正 → テスト → GitHub Actions確認を分ける。
 - 「workflow success」と外部サービスへの実同期・保存成功を区別する。
 - コード変更、PR作成・更新・マージ、workflow手動実行、デプロイ、データ削除・リセットは、明示的な許可なしに行わない。管理MDの更新は作業節目で行う。
 - `seen_*.json`、`seen_global.json`、`pending_items.json`、`data/archive/` を削除・リセットしない。
@@ -46,6 +35,16 @@
 ## 完了・過去の記録
 
 以下は経緯を保持するための履歴。現在の作業順・状態の判断には冒頭の「最新更新」を使う。
+
+## 2026-11-10：定期実行確認（Notion・Auto-screen・Daily Report）
+
+- Notion同期Run #138（11/10 13:08 JST、schedule）はsuccess、page_updates 0／pages_to_create 0。Notion実データ546件すべて「済」、未確認0件を直接照合。
+- Auto-screen Run #56（11/10 08:28 JST、schedule）はsuccess。構文検証・安全性／リンク判定テスト61件成功。open 0のためscanned 0／auto_resolved 0。cron 23:25 JSTに対し約9時間遅延。次回cronは今回確認時点では未到来。
+- Daily Report Run #228（11/10 04:44 JST）・#229（12:36 JST）はschedule／success、Slack HTTP 200。#228 Archive +4・Global seen +4・pending 975→961。#229 Archive +1（合計78）・Global seen 4472→4473・pending 962→951。#229の新着ゲーム1件はSlackに表示された。
+- Source Healthは#228のOK 28/35・PARTIAL 3・ERROR 4から、#229ではOK 30/35・PARTIAL 1・ERROR 4に改善。SU、Project1中文、RM Planet、RPG Maker Networkのエラーと、Comunidad ESの一部失敗は継続。
+- pending 951件は全件RMRK由来で、10月Archiveにも全件存在。内訳：RMRK素材情報708／グラフィック235／サウンド7／プラグイン1。resource_intentはnot_resource 724／resource_candidate 177／uncertain 50。
+- RMRKカテゴリーは `categories/display.py` に表示マッピングがなく、#229では選択されたRMRK10件がSlack本文に表示されず、Slack送信成功後にpendingから外れた。Archiveは保持されておりデータ消失ではないが、意図した通知仕様か未確認。pendingの一括削除・リセットは行わず、次の調査課題にした。
+- PRE台帳・判定記録・Archive・pending・seen・コードは変更していない。管理MDのみ更新。
 
 ## 2026-11-10：Notion同期・Auto-screen定期実行の確認
 
