@@ -4,20 +4,20 @@
 
 **この節を現在の状態の正とする。** 以下の過去節は当時の履歴。
 
-- 2026-11-10の作業開始時main：`5d909fe61ee9f4b05cdfa62fa7e7e763fd71c81d`。今回の定期実行確認対象となった最新データ更新コミット：`81b6529f569fd5695d3edbd5d1656a0d087c2d96`（11/10 12:38 JST）。その後の管理MD更新もmainへ反映済み。未マージPR：0件。
+- 今回のRMRK整理データコミット：`3609fd5042a1f76eb727684c0734e468dfb176bf`（2026-11-10）。Pendingと情報源マスター、Archive閉鎖ステータスの対応表、Item schema、運用説明を更新。未マージPR：0件。管理MD更新後のmainは最新コミットを参照。
 - PRE台帳 `data/review/classification_review.json`：546件、resolved 546件／open 0件。判定記録 `data/review/review_decisions.json`：322件。今回、PRE判断・台帳は変更なし。
 - Notion PRE確認台帳：546件、確認状態「済」546件／「未確認」0件。PRE-00539・00541・00543・00546もすべて「済」。Notion同期Run #138（11/10 13:08 JST、schedule）はsuccess、ページ更新・新規作成とも0件。Notion実データを直接照合済み。Run #137（08:28 JST、workflow_run）もsuccess。手動Workflow実行はしていない。
 - Auto-screen Run #56（11/10 08:28 JST、schedule）はsuccess。構文検証・安全性／リンク判定テスト61件すべて成功。open項目0件のため `scanned_item_count: 0`／`auto_resolved_count: 0`。予定cron `25 14 * * *`（23:25 JST）に対して約9時間遅れて起動。次回cron（11/10 23:25 JST）は今回確認時点（13:41 JST）では未到来。設定は変更せず観察継続。
 - RPG Maker Daily Report Run #228（11/10 04:44 JST）と#229（11/10 12:36 JST）はどちらもschedule／success、Slack HTTP 200。#228はArchive +4（合計77）、Global seen +4（4472）、pending 975→961（14件選択）。#229はArchive +1（合計78）、Global seen 4472→4473、pending 962→951（11件選択）。#229の新着はRedditのゲーム紹介1件で、Slackにも掲載された。
 - 収集元ヘルスは#228のOK 28/35・PARTIAL 3・ERROR 4から、#229ではOK 30/35・PARTIAL 1・ERROR 4へ改善。#229時点のERRORはcommunity_rpgmaker_su、community_rpgmaker_cn（403）、community_rmplanet（RSS解析エラー）、community_rpgmaker_net（403）。community_rpgmaker_esはページネーション404を含むPARTIAL。HTTP 403や取得失敗をコンテンツ消失とは判断しない。
-- pending_items.jsonの残り951件は全件RMRK由来。内訳はRMRK素材情報708、グラフィック235、サウンド7、プラグイン・スクリプト1。resource_intentはnot_resource 724、resource_candidate 177、uncertain 50。951件すべてが `data/archive/2026-10.json`（2,255件）にも存在し、Archive未保存のデータではない。
-- ただしRMRKの4カテゴリーは現行 `categories/display.py` の表示マッピングに存在しない。#229ではRMRK由来10件と新着ゲーム1件が選択されたが、Slack本文に表示されたのはゲーム1件。Slack HTTP 200後に選択分がpendingから外れるため、RMRKの過去データはArchiveに残る一方、Slack通知されずにpendingを離れる挙動がある。データ消失ではないが、意図した運用か未確認。pendingの一括削除・リセットは行わず、扱いを別途検討する。
-- 2026-11-10のユーザー意見：RMRKは閉鎖予定で今後参照できなくなるため、関連データの削除も選択肢。現時点の推奨は、pending内のRMRK951件だけを整理対象とし、Archiveは履歴・照合用に保持すること。951件はすべて10月Archiveにも存在するが、これはpending件数であり、Archive全体のRMRK件数ではない。Archive全体を削除する影響は未調査。ユーザーから削除実行の明示許可はまだなく、データ変更はしていない。実行前にRMRKが新規収集対象から外れていること、対象件数・識別条件・バックアップ／復元方法を確認する。
+- RMRK整理完了：`pending_items.json` は951件すべてRMRK由来だったため、RMRK951件を除外し現在0件。ほかの収集元のPending項目はなかった。`seen_rmrk.json` は削除・リセットしていない。RMRKは既に定期収集対象外（SITEマスター `collection:false`）で、新規収集は行われない。
+- Archiveは削除せず保持。`data/archive/2026-10.json` は2,255件で、そのうちRMRK由来1,571件。月別Archive本体はそのままにし、`data/archive/source_status_overrides.json` に1,571件すべての `internal_id` と `source_site_status:"closed"` を記録した。1,571 IDは重複なし。古い671件は `SITE-UNREGISTERED` のため、ID単位の対応表で閉鎖タグを適用できるようにした。RMRKのSITEマスターも `source_site_status:"closed"` に変更。これは情報源サイトの状態であり、各素材の利用可能性・ライセンスを示すものではない。
+- `data/schema/item_schema.json` に任意の `source_site_status`（active／transition／closed）を追加し、`docs/OPERATIONS.md` に対応表の適用方法を記録。Archive内の素材分類・タイトル・URL・PRE判定、Archive index、seenファイルは変更していない。コード変更・Workflow実行・Slack投稿なし。
 - PRE-00539・00541・00543・00546のユーザー判断は既存記録のまま。追加判定なし。
 - PR #139/#83は2026-11-09に差分確認後クローズ済み（未マージ、ブランチ削除なし）。現在open PRなし。
 - 「開発情報」カテゴリーの既存構造調査は完了。正規データモデル、PRE判断をArchiveへ反映する方法、Slack表示・検索メタデータとの整合は未決定。コード変更・Archive修正はまだ行わない。
 - 公開検索サイトは別プロジェクト・別チャットで構築中。サイト側の技術をWordPressと決めつけず、BOT側では既存データの互換性を確認する。サイト実装そのものは扱わない。
-- 今回は読み取り確認と管理MD更新のみ。コード、PRE台帳、判定記録、Archive、pending、seenを変更していない。
+- 今回はユーザーの明示指示に基づき、PendingのRMRK951件を除外し、Archive用の閉鎖ステータス対応表を追加。PRE台帳・判定記録・月別Archive本体・archive_index・seenを変更していない。コード変更・Workflow実行はなし。
 
 最終確認日：2026-11-10（JST）
 
