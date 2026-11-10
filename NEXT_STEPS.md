@@ -10,17 +10,17 @@
 - Auto-screen Run #56（11/10 08:28 JST、schedule）：success、61テスト成功、open 0のため検査対象0。cronは23:25 JST設定のまま。約9時間の実行遅延があり、次回予定（11/10 23:25 JST）は今回確認時点では未到来。
 - RPG Maker Daily Report Run #228/#229：11/10 04:44／12:36 JSTにschedule起動・success、いずれもSlack HTTP 200。#229は新着ゲーム1件を通知、Archive合計78件、Global seen 4473件。
 - 収集元ヘルスは#229で30/35 OK、1 PARTIAL、4 ERROR。403・RSS解析エラー等の収集元問題は継続。取得失敗をコンテンツ消失とは扱わない。
-- pending_items.jsonは951件。全件RMRK由来で、全951件が10月Archiveにも保存済み。RMRKカテゴリーはSlack表示マッピングに存在せず、#229では選択されたRMRK10件が通知本文に表示されないまま、Slack送信成功後にpendingから外れた。Archive上のデータは保持されている。意図した挙動か未確認であり、一括削除・リセットはしない。
-- 今回のデータ確認時点のmain：`81b6529f569fd5695d3edbd5d1656a0d087c2d96`。管理MD更新後のmainは最新コミットを参照。未マージPRなし。
+- Pending：`pending_items.json` は0件。RMRK由来951件を除外済み。`seen_rmrk.json` は保持し、RMRKは定期収集対象外のまま。
+- Archive：2026-10の2,255件中、RMRK1,571件を `data/archive/source_status_overrides.json` で `source_site_status:"closed"` としてタグ付け。月別Archive本体は保持。RMRK SITEマスターもclosed。対応表は `internal_id` で照合し、素材自体の利用可能性とは区別する。
+- RMRK整理データコミット：`3609fd5042a1f76eb727684c0734e468dfb176bf`。管理MD更新後のmainは最新コミットを参照。未マージPRなし。
 - 公開検索サイトは別プロジェクト・別チャットで構築中。WordPressを前提にせず、BOT側はデータ互換性の検討に留める。
 
 ### 次に行う作業（順番に一つずつ）
-1. **RMRK backlogの整理判断（実行許可待ち）。** ユーザーはRMRK閉鎖予定・参照不能を理由に関連データ削除を提案。推奨はpending内のRMRK951件のみ整理し、Archiveは履歴として保持すること。951件はすべて10月Archiveに存在するが、Archive全体のRMRK件数ではない。実行前にRMRKが新規収集対象から外れているか、対象の識別条件、バックアップ／復元方法を読み取り確認し、ユーザーの明示許可を得る。許可前にpending・Archiveを変更しない。
-2. **開発情報の正規データモデルを検討する。** 「ゲームプレイヤー・実行環境」「開発支援ツール」「変換・移植ツール」「互換性・技術情報」と既存のTipsを区別し、content_type／asset_type／新しい詳細分類のどこで表現するのが自然か比較する。まだ実装しない。
-3. **PRE判断をArchiveへ反映する方法を検討する。** 現状の `review_decisions.json` はPREレビュー台帳だけを更新し、Archiveは更新しない。PRE-00543のような既存データをどのタイミングで・どの範囲まで直すか、重複・上書きリスクを含めて設計する。データ変更は別途許可を得る。
-4. **Slack表示と検索メタデータの整合を検討する。** 開発情報の表示マッピング、engine_relevantや検索用詳細項目を整理する。
-5. **自動分類への反映案を作る。** 既存の `development_debug` はプラグイン詳細分類なので流用しない。誤分類リスク・人手レビュー優先・回帰テスト対象を整理し、実装は別途許可を得る。
-6. 公開検索サイトとの連携は、別プロジェクト側の実際の技術構成・データ受け渡し方法を確認してから検討する。WordPress前提の設計はしない。
+1. **開発情報の正規データモデルを検討する。** 「ゲームプレイヤー・実行環境」「開発支援ツール」「変換・移植ツール」「互換性・技術情報」と既存のTipsを区別し、content_type／asset_type／新しい詳細分類のどこで表現するのが自然か比較する。まだ実装しない。
+2. **PRE判断をArchiveへ反映する方法を検討する。** 現状の `review_decisions.json` はPREレビュー台帳だけを更新し、Archiveは更新しない。PRE-00543のような既存データをどのタイミングで・どの範囲まで直すか、重複・上書きリスクを含めて設計する。データ変更は別途許可を得る。
+3. **Slack表示と検索メタデータの整合を検討する。** 開発情報の表示マッピング、engine_relevantや検索用詳細項目を整理する。
+4. **自動分類への反映案を作る。** 既存の `development_debug` はプラグイン詳細分類なので流用しない。誤分類リスク・人手レビュー優先・回帰テスト対象を整理し、実装は別途許可を得る。
+5. 公開検索サイトとの連携は、別プロジェクト側の実際の技術構成・データ受け渡し方法を確認してから検討する。WordPress前提の設計はしない。
 
 ### 作業ルール
 - 原因調査 → 最小修正 → テスト → GitHub Actions確認を分ける。
@@ -36,11 +36,12 @@
 
 以下は経緯を保持するための履歴。現在の作業順・状態の判断には冒頭の「最新更新」を使う。
 
-## 2026-11-10：RMRK backlog整理方針の検討（未実行）
+## 2026-11-10：RMRK backlog整理（完了）
 
-- ユーザーより、RMRKは閉鎖予定で今後参照できなくなるため、関連データ削除もよいのではないかとの意見。アシスタントの推奨はpending内のRMRK951件のみ整理し、Archiveは履歴として保持すること。
-- pendingの951件はすべて10月Archiveにも存在する。ただしArchive全体のRMRK件数は未調査で、951件と同数ではない。
-- 削除許可はまだなく、pending・Archiveとも変更していない。実行前に新規収集停止、対象条件、バックアップ／復元方法を確認し、明示許可を得る。
+- ユーザーの明示指示に基づき、RMRK由来のPending951件を除外。Pendingは0件。ほかの情報源のPending項目はなかった。
+- 2026-10 Archiveは2,255件中RMRK1,571件。Archive本体を変更・削除せず、`data/archive/source_status_overrides.json` に全1,571件の `internal_id` と `source_site_status:"closed"` を記録。ID重複なし。SITEマスターもRMRKをclosedへ更新。
+- `source_site_status` をItem schemaに追加。閉鎖は情報源サイトの状態であり、個々の素材が利用不能という意味ではない。
+- `seen_rmrk.json`、Archive本体、archive_index、PRE台帳・判定記録は保持。コード変更・Workflow実行なし。データコミット `3609fd5042a1f76eb727684c0734e468dfb176bf`。
 
 ## 2026-11-10：定期実行確認（Notion・Auto-screen・Daily Report）
 
