@@ -4,7 +4,7 @@
 
 **この節を現在の状態の正とする。** 以下の過去節は当時の履歴。
 
-- 2026-11-10の作業開始時main：`5d909fe61ee9f4b05cdfa62fa7e7e763fd71c81d`。今回の確認時点の最新main：`81b6529f569fd5695d3edbd5d1656a0d087c2d96`（11/10 12:38 JST、定期レポートのデータ更新）。未マージPR：0件。
+- 2026-11-10の作業開始時main：`5d909fe61ee9f4b05cdfa62fa7e7e763fd71c81d`。今回の定期実行確認対象となった最新データ更新コミット：`81b6529f569fd5695d3edbd5d1656a0d087c2d96`（11/10 12:38 JST）。その後の管理MD更新もmainへ反映済み。未マージPR：0件。
 - PRE台帳 `data/review/classification_review.json`：546件、resolved 546件／open 0件。判定記録 `data/review/review_decisions.json`：322件。今回、PRE判断・台帳は変更なし。
 - Notion PRE確認台帳：546件、確認状態「済」546件／「未確認」0件。PRE-00539・00541・00543・00546もすべて「済」。Notion同期Run #138（11/10 13:08 JST、schedule）はsuccess、ページ更新・新規作成とも0件。Notion実データを直接照合済み。Run #137（08:28 JST、workflow_run）もsuccess。手動Workflow実行はしていない。
 - Auto-screen Run #56（11/10 08:28 JST、schedule）はsuccess。構文検証・安全性／リンク判定テスト61件すべて成功。open項目0件のため `scanned_item_count: 0`／`auto_resolved_count: 0`。予定cron `25 14 * * *`（23:25 JST）に対して約9時間遅れて起動。次回cron（11/10 23:25 JST）は今回確認時点（13:41 JST）では未到来。設定は変更せず観察継続。
