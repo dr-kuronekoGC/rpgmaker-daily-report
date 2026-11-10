@@ -42,8 +42,6 @@
 - pendingの951件はすべて10月Archiveにも存在する。ただしArchive全体のRMRK件数は未調査で、951件と同数ではない。
 - 削除許可はまだなく、pending・Archiveとも変更していない。実行前に新規収集停止、対象条件、バックアップ／復元方法を確認し、明示許可を得る。
 
-以下は経緯を保持するための履歴。現在の作業順・状態の判断には冒頭の「最新更新」を使う。
-
 ## 2026-11-10：定期実行確認（Notion・Auto-screen・Daily Report）
 
 - Notion同期Run #138（11/10 13:08 JST、schedule）はsuccess、page_updates 0／pages_to_create 0。Notion実データ546件すべて「済」、未確認0件を直接照合。
