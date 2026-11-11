@@ -4,7 +4,7 @@
 
 **この節を現在の状態の正とする。** 以下の過去節は当時の履歴。
 
-- main最新：`f9504d8004fa6a0e4badad4e30dc32df91128b98`（11/11 10:17 JST、`Update report data`）。未マージPR：0件。
+- 最新データ更新コミット：`f9504d8004fa6a0e4badad4e30dc32df91128b98`（11/11 10:17 JST、`Update report data`）。この後の管理MD更新もmainへ反映済み。未マージPR：0件。
 - PRE台帳：548件（resolved 546／open 2、PRE-00547・00548がopen）。判定記録322件。今回、PRE判断は変更していない。
 - Notion：最後に実データを直接確認した11/10時点では546件すべて「済」。その後追加されたPRE-00547・00548の同期状態は未確認。Notionが548件に同期済みとは扱わない。
 - 最新データ：`pending_items.json` 0件、`seen_global.json` 4,480件、11月Archive 85件。RMRKの既読ファイル `seen_rmrk.json` は1,575件を保持。
