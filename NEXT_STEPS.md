@@ -1,26 +1,24 @@
 # NEXT_STEPS.md
 
-## 最新更新（2026-11-10 JST）
+## 最新更新（2026-11-11 JST）
 
 **この節を現在の作業指示の正とする。** 過去の調査記録は末尾の「完了・過去の記録」に残す。
 
 ### 現在の状態
-- PRE台帳：546件、resolved 546／open 0。判定記録322件。
-- Notion：546件すべて「済」、未確認0件。Run #138（11/10 13:08 JST、schedule）はsuccess・更新0件。実データを直接照合済み。
-- Auto-screen Run #56（11/10 08:28 JST、schedule）：success、61テスト成功、open 0のため検査対象0。cronは23:25 JST設定のまま。約9時間の実行遅延があり、次回予定（11/10 23:25 JST）は今回確認時点では未到来。
-- RPG Maker Daily Report Run #228/#229：11/10 04:44／12:36 JSTにschedule起動・success、いずれもSlack HTTP 200。#229は新着ゲーム1件を通知、Archive合計78件、Global seen 4473件。
-- 収集元ヘルスは#229で30/35 OK、1 PARTIAL、4 ERROR。403・RSS解析エラー等の収集元問題は継続。取得失敗をコンテンツ消失とは扱わない。
-- Pending：`pending_items.json` は0件。RMRK由来951件を除外済み。`seen_rmrk.json` は保持し、RMRKは定期収集対象外のまま。
-- Archive：2026-10の2,255件中、RMRK1,571件を `data/archive/source_status_overrides.json` で `source_site_status:"closed"` としてタグ付け。月別Archive本体は保持。RMRK SITEマスターもclosed。対応表は `internal_id` で照合し、素材自体の利用可能性とは区別する。
-- RMRK整理データコミット：`3609fd5042a1f76eb727684c0734e468dfb176bf`。管理MD更新後のmainは最新コミットを参照。未マージPRなし。
-- 公開検索サイトは別プロジェクト・別チャットで構築中。WordPressを前提にせず、BOT側はデータ互換性の検討に留める。
+- mainのデータ最新：`f9504d8004fa6a0e4badad4e30dc32df91128b98`（11/11 10:17 JST）。管理MD更新後のmainは最新コミットを参照。未マージPRなし。
+- PRE台帳：548件（resolved 546／open 2、PRE-00547・00548）。判定記録322件。
+- Notion：11/10に546件すべて「済」を直接確認済み。追加されたPRE-00547・00548の同期状態は未確認。
+- 最新データ：Pending 0件、Global seen 4,480件、11月Archive 85件。
+- **RMRK整理は完了。** Pendingの旧RMRK951件を除外済み。RMRK SITE-00034は `closed`／`collection:false`、collector registryにも登録なし。seen_rmrk.json（1,575件）は保持。
+- Archive：2026-10の2,255件中RMRK1,571件。月別Archive本体は保持し、`data/archive/source_status_overrides.json` に全1,571件の `internal_id` と `source_site_status:"closed"` を登録。ID重複なし、Archive内RMRK全件と一致。素材そのものの利用可能性・ライセンスとは区別する。サイト側でArchiveを取り込む場合はこの対応表も適用する。
+- 閉鎖ステータスは素材用 `tags` ではなく、独立した `source_site_status` で表現。Item schemaと `docs/OPERATIONS.md` に記録済み。
 
 ### 次に行う作業（順番に一つずつ）
-1. **開発情報の正規データモデルを検討する。** 「ゲームプレイヤー・実行環境」「開発支援ツール」「変換・移植ツール」「互換性・技術情報」と既存のTipsを区別し、content_type／asset_type／新しい詳細分類のどこで表現するのが自然か比較する。まだ実装しない。
-2. **PRE判断をArchiveへ反映する方法を検討する。** 現状の `review_decisions.json` はPREレビュー台帳だけを更新し、Archiveは更新しない。PRE-00543のような既存データをどのタイミングで・どの範囲まで直すか、重複・上書きリスクを含めて設計する。データ変更は別途許可を得る。
+1. **開発情報の正規データモデルを検討する。** PRE-00543のゲームプレイヤー等を例に、「ゲームプレイヤー・実行環境」「開発支援ツール」「変換・移植ツール」「互換性・技術情報」と既存Tipsを区別し、content_type／asset_type／詳細分類のどこで表現するのが自然か比較する。まだ実装しない。
+2. **PRE判断をArchiveへ反映する方法を検討する。** 現状の `review_decisions.json` はレビュー台帳を更新するが、Archive Itemは更新しない。PRE-00543等の既存データについて、対象・上書き条件・重複リスクを整理する。実装は別途許可を得る。
 3. **Slack表示と検索メタデータの整合を検討する。** 開発情報の表示マッピング、engine_relevantや検索用詳細項目を整理する。
-4. **自動分類への反映案を作る。** 既存の `development_debug` はプラグイン詳細分類なので流用しない。誤分類リスク・人手レビュー優先・回帰テスト対象を整理し、実装は別途許可を得る。
-5. 公開検索サイトとの連携は、別プロジェクト側の実際の技術構成・データ受け渡し方法を確認してから検討する。WordPress前提の設計はしない。Archiveを取り込む際は `data/archive/source_status_overrides.json` を `internal_id` で適用し、RMRKの情報源状態を「closed」として表示できるようにする。
+4. **自動分類への反映案を作る。** 既存の `development_debug` はプラグイン詳細分類なので流用しない。誤分類リスク・人手レビュー優先・回帰テスト対象を整理する。
+5. 公開検索サイトとの連携は別プロジェクト・別チャットで扱う。BOT側では実際のサイト技術・データ受け渡し方法を確認してから互換性を検討し、WordPress等を前提にしない。
 
 ### 作業ルール
 - 原因調査 → 最小修正 → テスト → GitHub Actions確認を分ける。
@@ -29,7 +27,7 @@
 - `seen_*.json`、`seen_global.json`、`pending_items.json`、`data/archive/` を削除・リセットしない。
 - 節目ごとに本ファイルと必要な管理MDを更新する。完了・未解決・未確認を明示する。
 
-最終確認日：2026-11-10（JST）
+最終確認日：2026-11-11（JST）
 対象：`dr-kuronekoGC/rpgmaker-daily-report` の `main` のみ。
 
 ## 完了・過去の記録
