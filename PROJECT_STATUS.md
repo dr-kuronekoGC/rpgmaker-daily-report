@@ -1,8 +1,23 @@
 # PROJECT_STATUS.md
 
-## 最新確認（2026-11-10 JST・main）
+## 最新確認（2026-11-11 JST・main）
 
 **この節を現在の状態の正とする。** 以下の過去節は当時の履歴。
+
+- main最新：`f9504d8004fa6a0e4badad4e30dc32df91128b98`（11/11 10:17 JST、`Update report data`）。未マージPR：0件。
+- PRE台帳：548件（resolved 546／open 2、PRE-00547・00548がopen）。判定記録322件。今回、PRE判断は変更していない。
+- Notion：最後に実データを直接確認した11/10時点では546件すべて「済」。その後追加されたPRE-00547・00548の同期状態は未確認。Notionが548件に同期済みとは扱わない。
+- 最新データ：`pending_items.json` 0件、`seen_global.json` 4,480件、11月Archive 85件。RMRKの既読ファイル `seen_rmrk.json` は1,575件を保持。
+- RMRK整理はcommit `3609fd5042a1f76eb727684c0734e468dfb176bf` で完了済み。Pendingの旧RMRK951件を除外し、ほかのPending項目もなかった。SITE-00034は `source_site_status: closed`／`collection: false`。collector registryにもRMRKは登録されていない。
+- 2026-10 Archiveは2,255件、そのうちRMRKは1,571件。月別Archive本体は保持し、`data/archive/source_status_overrides.json` に1,571件の `internal_id` と `source_site_status: closed` を登録。ID重複なし、10月ArchiveのRMRK全件と一致（漏れ・余分なし）。うち671件は旧 `SITE-UNREGISTERED` だがID対応表で識別できる。
+- 閉鎖状態は素材分類用 `tags` ではなく、独立した `source_site_status` として管理する。これは情報源サイトの状態であり、各素材のリンク先が利用可能か、ライセンスが有効かを意味しない。Item schemaと `docs/OPERATIONS.md` に定義済み。
+- 今回の確認ではデータ・コード・PRE台帳・Archive・seen・Notionを変更していない。Workflowの手動実行もしていない。RMRK整理後のmainを読み取り照合した。
+
+最終確認日：2026-11-11（JST）
+
+## 過去の確認記録（2026-11-10 JST・main）
+
+以下は2026-11-10時点の確認結果。現在の状態は冒頭の2026-11-11節を参照。
 
 - 今回のRMRK整理データコミット：`3609fd5042a1f76eb727684c0734e468dfb176bf`（2026-11-10）。Pendingと情報源マスター、Archive閉鎖ステータスの対応表、Item schema、運用説明を更新。未マージPR：0件。管理MD更新後のmainは最新コミットを参照。
 - PRE台帳 `data/review/classification_review.json`：546件、resolved 546件／open 0件。判定記録 `data/review/review_decisions.json`：322件。今回、PRE判断・台帳は変更なし。
