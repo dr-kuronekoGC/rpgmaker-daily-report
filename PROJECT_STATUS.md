@@ -1,3 +1,16 @@
+## 最新確認（2026-11-11 午後 JST・main）
+
+- PRE-00547：ユーザー判断で `not_applicable`。自作作品・企画の案内で、Coming Soonのため現時点では配布素材なし。将来実際の配布が始まれば再評価可能。
+- PRE-00548：ユーザー判断で `plugin`。プラグイン素材として登録。
+- 上記2件を `data/review/classification_review.json` と `data/review/review_decisions.json` に記録。PRE台帳548件すべてresolved、open 0件。判定記録324件。コミット：台帳 `cab81358`、判定記録 `3b024043`。
+- Notionは11/10時点で546件すべて「済」を直接確認済み。今回のPRE-00547・00548のNotion同期は未確認。同期Workflowの手動実行はしていない。
+- Auto-screen監査（11/11 05:54 JST）は2件を検査し、自動解決0件。PRE-00547はReddit HTTP 403で本文取得不可、PRE-00548はRPG Maker UnionのSPAでHTTP 200ながら本文ノードがなくmeta descriptionのみ（body_unverified）。いずれも安全側にkeep_openとしていた。今回の解決はユーザーによる内容確認に基づく。
+- 情報源の読み取り再点検：RPG Maker SUは現在ページを閲覧可能。プラグイン板は143スレッド・8ページで2026年9月の投稿を確認、素材板は37スレッドで新しい投稿は2025年11月。RM Planetは運営者の2026年10月報告で活動継続・プラグイン投稿を確認したが、登録RSS URLの取得は未確認。RPG Maker Networkは現在のWeb確認でトップが520、/resources/が403となり、稼働状況は未確定。Comunidad RPG Maker ESは現在も投稿があり、Flarum API方式は妥当だが2ページ目404によるPARTIALが残る。Project1（rpg.blue）のMZ板は現在も投稿があり、プラグイン等を確認。Steam Workshopは現在閲覧可能で377件、Resources 77件を表示。既存collectorはPlugins／Tilesets／Music／Sound Effects／Packの5種を検索し、Animation・Character Sets・Icons等は検索対象外。
+- 上記の外部確認はWeb閲覧による現状確認であり、GitHub Actions実行環境からの到達性や最新のSource Health結果を直接証明するものではない。サイトコード・collector・Source Check設定・収集状態は変更していない。
+- 今回はPRE台帳・判定記録の更新と読み取り調査のみ。workflow手動実行、情報源の停止・再開、コード変更なし。
+
+最終確認日：2026-11-11（JST）
+
 # PROJECT_STATUS.md
 
 ## 最新確認（2026-11-11 JST・main）
