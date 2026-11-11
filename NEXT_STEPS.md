@@ -1,3 +1,34 @@
+## 最新更新（2026-11-11 午後 JST）
+
+### 完了
+- PRE-00547を `not_applicable`（Coming Soonで現時点の配布素材なし）、PRE-00548を `plugin` としてユーザー判断を記録。台帳548件すべてresolved／open 0、判定記録324件。
+- PRE-00547・00548のNotion同期状態は未確認。次回の定期同期後に件数と状態を照合する。手動Workflow実行はしない。
+
+### 情報源再点検（読み取りのみ）
+- RPG Maker SU：サイトと対象カテゴリは閲覧可能。プラグイン板は2026年9月の投稿あり。素材板は更新が古く、継続価値を観察。
+- RM Planet：運営者の2026年10月報告で活動継続を確認。GitHub側で失敗しているRSS URLの形式・到達性を次に確認する。
+- RPG Maker Network：Web確認では520／403。閉鎖とは断定せず、Actions側の最新結果と照合してから継続／停止を判断する。
+- Comunidad RPG Maker ES：フォーラムは活動中。API方式は妥当。2ページ目404によるPARTIALを必要に応じて調査。
+- Project1（rpg.blue）：MZ板で最近の投稿を確認。継続対象。
+- Steam Workshop：現行ページは閲覧可能。既存collectorはPlugins／Tilesets／Music／Sound Effects／Packのみ。Animation・Character Sets・Faces・Icons・Battlers等の追加価値を検討する。
+- 外部Web閲覧はActions実行環境からの取得成功を保証しない。情報源・コード・設定は変更していない。
+
+### 次の作業（小さく順番に）
+1. **PRE自動判定の精度改善案を作る。** 直近Auto-screenはReddit 403とRPG Maker Union SPAの本文未取得で2件ともkeep_open。誤判定を避ける保守的方針は維持しつつ、RPG Maker Unionの公開データ取得経路を調査。Coming Soon／未配布の明示表現は、文脈と配布リンクの有無を条件に追加できるか検討し、回帰テスト案を作る。Redditの403回避はしない。
+2. **情報源の実行環境での状態を確認する。** RM Planet RSSとRPG Maker Networkの最新Actions結果を照合。ESのページネーションPARTIALも必要なら追跡。確認だけで停止・再開はしない。
+3. **Steam Workshopのカテゴリ網羅性を検討する。** 追加カテゴリの件数・ノイズ・重複を調べ、必要な範囲だけ提案する。
+4. **Notion同期を確認する。** 定期Run後にPRE-00547・00548がNotionへ反映されたか直接照合する。手動実行はしない。
+5. 開発情報の正規データモデル検討は、黒ネコの酒場サイト開発で表示・検索を確認しながら進めるため、いったん優先度を下げる。
+
+### 作業ルール
+- 原因調査 → 最小修正 → テスト → GitHub Actions確認を分ける。
+- 自動判定は本文未取得・403・曖昧なリンクを根拠に解決しない。
+- コード変更、PR作成・更新・マージ、workflow手動実行、データ削除・リセットは明示的な許可なしに行わない。情報源のcollection停止も判断根拠を示してから確認する。
+- 管理MDは作業節目で更新。mainと未マージPRの差分を混同しない。
+
+最終確認日：2026-11-11（JST）
+対象：`dr-kuronekoGC/rpgmaker-daily-report` の `main` のみ。
+
 # NEXT_STEPS.md
 
 ## 最新更新（2026-11-11 JST）
