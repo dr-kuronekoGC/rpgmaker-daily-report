@@ -1,3 +1,20 @@
+## 最新更新（2026-11-12 JST・PR #146マージ後）
+
+### 完了
+- PR [#146](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/146) はmainへマージ済み。merge commit：`c22580f05a17caa5aa9e2a33c2f42021d36858be`。
+- `tools/preview_archive_patches.py` と `data/review/archive_patch_proposals.json` により、PREからArchiveへの明示patchを読み取り専用でプレビューできる。PRE-00543の実データを使ったテストを含む回帰テストは成功済み。
+- プレビュー機能は読み取り専用。Archiveへの書き込み・適用機能はなく、PRE-00543のArchive実データも未変更。PRE台帳・判定履歴・seen／pending・Notionも変更していない。
+- PR #145の監査・設計文書とPR #146の実装は整合している。PR #145の以下の古い「dry-run仕様をこれから用意する」という記述は履歴として残し、現在の作業順はこの節を正とする。
+
+### 次の作業
+1. PR #145の文書差分をmain最新状態と照合し、管理MDの古い状態記述を整理する。PR #145は更新後も未マージ。マージは別途確認する。
+2. PRE-00543のプレビュー結果を確認し、値・根拠・差分に問題がないか判断する。Archiveへの実反映は別工程で、ユーザーの明示許可があるまで行わない。
+3. PRE-00540のproject配布の表現はschema v8に未定義のため保留。projectをplugin/gameへ無理に変換しない。
+4. PRE-00526の重複は保持し、自動削除・統合しない。
+5. Classification Auditの既存形式不整合は別課題として扱う。
+
+---
+
 ## 最新更新（2026-11-12 JST・Archive反映設計）
 
 ### 完了：読み取り監査・設計案
