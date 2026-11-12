@@ -1,3 +1,19 @@
+## 最新確認（2026-11-12 JST・PR #146マージ後）
+
+**この節を現在の状態の正とする。**
+
+- main HEAD：`c22580f05a17caa5aa9e2a33c2f42021d36858be`（PR #146のmerge commit）。PR [#146](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/146) はマージ済み。
+- mainには読み取り専用のPRE-to-Archive patch previewが反映済み。manifestの明示patch候補をPRE ID／internal_id／URL／expected before values等で照合し、条件不一致・重複・競合時は停止する。既に指定値と一致する場合は `already_matches` として冪等に扱う。
+- PRE-00543を使った実データ検証テストを含むテスト工程は成功。PR #146のworkflow全体では、既存のClassification Auditが `source_status_overrides.json` の形式不整合で失敗しており、テスト工程成功とは区別する。
+- この機能はread-only previewのみ。Archiveへの書き込み・applyは実装していない。PRE-00543のArchive実データ、Archive全体、PRE台帳、判定履歴、seen／pending、Notionは未変更。
+- Archive監査：2026-09〜11で4,211件、PRE ID付き550レコード／549種類。PRE-00526の同一internal_id重複1組。分類フィールド差は32 PRE ID。一括コピー・自動統合はしない。
+- 個別保留：PRE-00540はproject表現がschema v8未定義。PRE-00460はaudio→sound正規化候補。PRE-00546はgraphic・tags候補。PRE-00543は開発情報／runtime_player候補で、read-only preview manifestに明示patch案を登録済み。
+- PR #145（監査・設計文書）は別ブランチでopen・未マージ。PR #143もopen・未マージ。PR #145の最新差分確認後、マージ可否を判断する。
+
+最終確認日：2026-11-12（JST）
+
+---
+
 ## 最新確認（2026-11-12 JST・PR #144マージ後／Archive監査）
 
 - main HEAD：`f9b7e9f082b80afbb0424819112d645e00fe4e27`。PR [#144](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/144) は2026-11-12 13:20 JSTにmerged。schema v8がmainへ反映済み。
