@@ -91,6 +91,8 @@ def preview_patches(
     """Validate every proposal and return a diff; never mutate input objects."""
     if not isinstance(manifest, dict) or manifest.get("schema_version") != 1:
         raise ValueError("Manifest schema_version must be 1.")
+    if manifest.get("target_schema_version") != 8:
+        raise ValueError("target_schema_version must be 8.")
     patches = manifest.get("patches")
     if not isinstance(patches, list):
         raise ValueError('Manifest must contain a "patches" list.')
@@ -132,14 +134,14 @@ def preview_patches(
             raise ValueError(f"{pre_id}: source_url does not match the Archive record.")
 
         current = {field: archive_by_pre.get(field) for field in patch["expected"]}
-        if current != patch["expected"]:
+        already_matches = all(
+            archive_by_pre.get(field) == value for field, value in patch["set"].items()
+        )
+        if not already_matches and current != patch["expected"]:
             raise ValueError(
                 f"{pre_id}: expected-value conflict; expected={patch['expected']!r}, "
                 f"current={current!r}."
             )
-        already_matches = all(
-            archive_by_pre.get(field) == value for field, value in patch["set"].items()
-        )
         results.append({
             "pre_id": pre_id,
             "internal_id": patch["internal_id"],
