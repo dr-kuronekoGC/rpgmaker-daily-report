@@ -1,3 +1,22 @@
+## 最新更新（2026-11-12 JST・Archive反映設計）
+
+### 完了：読み取り監査・設計案
+- PR #144はGitHub上で2026-11-12 13:20 JSTにmerged。merge commit／main HEAD：`f9b7e9f082b80afbb0424819112d645e00fe4e27`。再マージ操作は不要。
+- 2026-09〜11 Archive 4,211件をPRE台帳549件・判定記録324件と読み取り照合。
+- PRE ID付きArchiveは550レコード／549種類。PRE-00526が同じinternal_idで2件重複。台帳にないPRE IDは0、resolved台帳でArchiveに対応しないinternal_idも0。
+- 分類フィールド差は32 PRE ID（category 31、asset_type 6、content_type 2、tags 2）。大半は情報源固有categoryと一般化categoryの差。機械的な全項目コピーはしない。
+- PRE-00543をschema v8に沿った最初の反映候補として設計。PRE-00540はprojectがschema v8に未定義のため保留。PRE-00460とPRE-00546も個別確認候補。
+- 詳細は `docs/pre-archive-reconciliation-audit.md`。今回は読み取り監査・文書化のみ。Archive等のデータ本体は未変更。
+
+### 次の作業
+1. この反映設計（照合キー、明示patch、競合停止、冪等性）を確認する。
+2. 合意後、PRE-00543だけを対象にdry-run仕様／テストを用意する。Archive本体の変更は差分を提示してから実施する。
+3. PRE-00540のproject配布の表現（schema追加かother＋明示メタデータか）を別途決める。
+4. PRE-00526重複は自動削除せず、必要なら別作業で統合方針を検討する。
+5. Classification Auditの既存不整合は別PRで扱うか判断する。
+
+---
+
 ## 最新更新（2026-11-12 JST）
 
 ### 正規Itemモデル v8：実装PR作成済み
