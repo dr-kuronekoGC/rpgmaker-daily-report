@@ -1,7 +1,10 @@
 import copy
 import unittest
+from pathlib import Path
 
-from tools.preview_archive_patches import preview_patches
+from tools.preview_archive_patches import load_archive_records, load_json, preview_patches
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 PRE_ID = "PRE-00543"
@@ -59,6 +62,27 @@ def make_inputs():
 
 
 class ArchivePatchPreviewTests(unittest.TestCase):
+    def test_repository_pre_00543_proposal_previews_against_real_data(self):
+        manifest = load_json(ROOT / "data/review/archive_patch_proposals.json")
+        archives = load_archive_records(ROOT / "data/archive")
+        ledger = load_json(ROOT / "data/review/classification_review.json")
+        decisions = load_json(ROOT / "data/review/review_decisions.json")
+
+        result = preview_patches(manifest, archives, ledger, decisions)
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["pre_id"], PRE_ID)
+        self.assertEqual(result[0]["status"], "ready_for_review")
+        self.assertEqual(
+            {change["field"]: change["after"] for change in result[0]["changes"]},
+            {
+                "content_type": "development_info",
+                "asset_type": None,
+                "development_info_type": "runtime_player",
+                "tags": ["iPhone", "ゲームプレイヤー"],
+            },
+        )
+
     def test_pre_00543_produces_explicit_diff_without_mutating_inputs(self):
         inputs = make_inputs()
         original = copy.deepcopy(inputs)
