@@ -1,3 +1,12 @@
+## PRE-to-Archive patch preview（2026-11-12）
+
+- PREからArchiveへの反映候補は、明示patch manifestに対象PRE ID・internal_id・URL・変更前期待値・変更後値・根拠を記録する。判定がconfirmedであることだけを根拠にArchive値を推測しない。
+- プレビューはPRE IDとinternal_idの一意一致、URL一致、ledger／review decisionのconfirmed状態、expected before values等を検証する。不一致・重複・競合時は停止し、既に指定値と一致する場合は冪等な `already_matches` とする。
+- 許可フィールド以外の変更、根拠のない価格・ライセンス・エンジン等の補完、重複レコードの自動統合・削除は禁止。
+- PR #146でread-only previewをmainへ実装済み。Archiveへの書き込み・applyは未実装であり、PRE-00543を含め実データは未変更。実反映は別途、差分確認とユーザーの明示許可を必要とする。
+
+---
+
 # DECISIONS.md
 
 最終確認日：2026-11-10（JST）
