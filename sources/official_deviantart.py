@@ -709,7 +709,9 @@ def get_items(seen):
                 "url": href,
                 "category": category,
                 "source": "DeviantArt",
+                "source_item_id": deviation_id,
             }
+            deviantart_metadata = {}
 
             if tags:
                 item["tags"] = tags
@@ -748,10 +750,7 @@ def get_items(seen):
             # Deviation ID
             # ----------------------------------
 
-            if deviation_id:
-                item["deviationid"] = (
-                    deviation_id
-                )
+            # The provider-native ID is the common source_item_id.
 
             # ----------------------------------
             # Published time
@@ -761,10 +760,9 @@ def get_items(seen):
                 "published_time"
             )
 
-            if published_time:
-                item["published_time"] = (
-                    published_time
-                )
+            if published_time is not None:
+                # item_model normalizes Unix timestamps to ISO 8601.
+                item["source_published_at"] = published_time
 
             # ----------------------------------
             # Download information
@@ -778,7 +776,7 @@ def get_items(seen):
                 is_downloadable,
                 bool,
             ):
-                item[
+                deviantart_metadata[
                     "is_downloadable"
                 ] = is_downloadable
 
@@ -787,7 +785,7 @@ def get_items(seen):
             )
 
             if download_filesize is not None:
-                item[
+                deviantart_metadata[
                     "download_filesize"
                 ] = download_filesize
 
@@ -816,7 +814,7 @@ def get_items(seen):
                     )
 
                     if value is not None:
-                        item[
+                        deviantart_metadata[
                             f"content_{key}"
                         ] = value
 
@@ -832,13 +830,18 @@ def get_items(seen):
                 is_mature,
                 bool,
             ):
-                item[
+                deviantart_metadata[
                     "is_mature"
                 ] = is_mature
 
             # ----------------------------------
             # DeviantArt metadata
             # ----------------------------------
+
+            if deviantart_metadata:
+                item["collector_metadata"] = {
+                    "deviantart": deviantart_metadata
+                }
 
             if source_tags:
                 item[

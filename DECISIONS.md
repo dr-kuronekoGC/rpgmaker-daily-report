@@ -93,5 +93,19 @@
 - `development_debug` はプラグインの詳細サブカテゴリであり、一般的な開発情報・開発支援ツールのトップレベル分類として流用しない。
 - PREの人手判断が `classification_review.json` に記録されても、現行の `apply_review_decisions.py` はレビュー台帳の状態・判定メモを更新するだけで、月別ArchiveのItemメタデータは変更しない。レビュー解決とArchiveへの分類反映を同一視しない。
 - Archiveへの人手判断の反映方法は未決定。対象PRE、既存Itemの上書き条件、重複・履歴保全を確認し、別途設計してから実装する。
-- 「開発情報」の正規データモデル、Slack表示、検索メタデータ、自動分類ルールは未決定。現行のTips分類やplugin詳細分類と混同せず、候補を比較してから決める。
+- （2026-11-10時点）「開発情報」の正規データモデル、Slack表示、検索メタデータ、自動分類ルールは未決定だった。2026-11-12に方針を決定し、後段の「正規Itemモデル v8」に記録。
+
+## 正規Itemモデル v8（2026-11-12）
+
+- 開発情報は `content_type=development_info` として、素材・プラグイン・ゲームから分離する。`development_info_type` は `runtime_player`／`development_tool`／`conversion_tool`／`technical_reference`／`tutorial`／`tip` を使い、プラグイン詳細分類の `development_debug` は流用しない。
+- `asset_type` は既存の graphic／sound／plugin／game／other を維持し、development_info では null とする。過去Archiveの other は一括変換しない。
+- 既存Tipsカテゴリーは新規正規化時に development_info／tip として扱う。元の `category` はSlack互換性のため保持し、既存Archiveを遡及変更しない。
+- `engine` は対象RPG Makerの種類・バージョン、`supported_platforms` はOS・端末・実行環境を示す。両者を混同しない。
+- `url` は元投稿・掲載ページを保持し、配布先・商品ページ・公式ページ・説明書・リポジトリは種別付きの `links` に保存する。
+- `author` は作者・制作者、`publisher` は販売元・配布元。価格額・通貨は確認できた場合のみ保存し、`source_published_at` と `release_date` を分ける。
+- SITEマスターの名称・種別・言語はItem側にスナップショットを保持する。情報源サイトの状態と個別リンクの利用可能性は別管理。
+- 共通検索項目 `engine_relevant`／`file_formats`／`graphic_style`／`graphic_theme` をschema v8に正式登録する。
+- Collector固有情報は `collector_metadata` の下にCollector名で名前空間化する。DeviantArtの固有IDは `source_item_id`、投稿日時は `source_published_at` に正規化する。
+- 今回の実装ではschema・正規化・Slack表示互換性・DeviantArt metadata構造・回帰テストを更新する。Archive／PRE台帳／判定履歴／seen／Notionの遡及変更は行わない。
+- 実装は `feature/canonical-item-model-v8` で行い、PRは未マージのままレビューする。PR #143とは独立させる。
 

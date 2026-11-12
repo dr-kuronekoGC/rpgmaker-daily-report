@@ -1,3 +1,26 @@
+## 最新更新（2026-11-12 JST）
+
+### 正規Itemモデル v8：実装PR作成済み
+- ユーザー合意に基づき、開発情報を `content_type=development_info` として独立。詳細分類は `development_info_type`（runtime_player／development_tool／conversion_tool／technical_reference／tutorial／tip）。
+- ブランチ `feature/canonical-item-model-v8`、PR [#144](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/144)。mainの `9fc1c967` から分岐。1コミット、12ファイル変更。未マージ。
+- schema v8、正規化処理、Tips／開発情報のSlack表示互換性、DeviantArt固有情報の名前空間化、回帰テストとPR用CIを追加。
+- PR #144のCanonical Item model tests：構文検証＋41テスト成功。Engine Backfill Auditも成功（監査・プレビューのみ、適用なし）。
+- Classification Auditは最後の既存 `tools/audit_classification.py` で失敗。`data/archive/source_status_overrides.json` をリストと仮定する既存不整合であり、今回の変更とは無関係。監査用の前段テスト・成果物作成は成功。
+- PR #143（Auto-screen）は別PRとしてopenのまま。両PRともマージしていない。手動Workflow実行なし。
+- Archive／PRE台帳／判定履歴／seen／pending／Notionは変更していない。PRE-00543のArchive反映は別課題。
+
+### mainの最新データ確認（読み取りのみ）
+- main HEAD：`9fc1c9671d16228ed44bc42f692acf97d8c28772`（2026-11-12 11:19 JST、Update report data）。
+- PRE台帳：549件（resolved 548／open 1）。判定記録324件。11月Archive：94件。
+- Notionは11/10に546件を直接確認したのが最後。PRE-00547～00549の同期状態は未確認。最新同期済みとは扱わない。
+
+### 次の作業
+1. PR #144の差分・CIをレビューし、必要な修正だけ行う。マージはユーザーの明示許可待ち。
+2. schema v8に沿った既存Archive／PREの移行方法を別途設計する。現時点で一括変換しない。
+3. Classification Auditの既存不整合は、正規データモデルPRとは分けて修正要否を判断する。
+
+---
+
 ## 最新更新（2026-11-11 午後 JST）
 
 ### 完了

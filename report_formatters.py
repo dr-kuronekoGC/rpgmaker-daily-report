@@ -39,6 +39,7 @@ CATEGORY_GROUPS = {
     ],
 
     "★★☆☆☆ 開発情報・Tips": [
+        "開発情報",
         "Tips",
     ],
 
@@ -55,6 +56,7 @@ DISPLAY_ORDER = [
     "プラグイン",
     "素材",
     "ゲーム",
+    "開発情報",
     "Tips",
     "質問",
 ]
@@ -92,6 +94,9 @@ def get_display_category(category):
         if group == "ゲーム":
             return "ゲーム"
 
+        if group == "開発情報":
+            return "開発情報"
+
         if group == "Tips":
             return "Tips"
 
@@ -124,7 +129,7 @@ def get_report_group(category):
     if display_category == "ゲーム":
         return "新作ゲーム"
 
-    if display_category == "Tips":
+    if display_category in ("開発情報", "Tips"):
         return "開発情報・Tips"
 
     if display_category == "質問":
@@ -147,6 +152,14 @@ def get_report_group(category):
 # DeviantArt Detail
 # ==========================================
 
+def _deviantart_metadata(item):
+    collector_metadata = item.get("collector_metadata")
+    if not isinstance(collector_metadata, dict):
+        return {}
+    metadata = collector_metadata.get("deviantart")
+    return metadata if isinstance(metadata, dict) else {}
+
+
 def format_deviantart_detail(
     item,
 ):
@@ -161,6 +174,7 @@ def format_deviantart_detail(
     """
 
     lines = []
+    deviantart_metadata = _deviantart_metadata(item)
 
     # --------------------------------------
     # Author
@@ -251,8 +265,9 @@ def format_deviantart_detail(
     # Download
     # --------------------------------------
 
-    is_downloadable = item.get(
-        "is_downloadable"
+    is_downloadable = deviantart_metadata.get(
+        "is_downloadable",
+        item.get("is_downloadable"),
     )
 
     if isinstance(
@@ -276,8 +291,9 @@ def format_deviantart_detail(
     # Mature
     # --------------------------------------
 
-    is_mature = item.get(
-        "is_mature"
+    is_mature = deviantart_metadata.get(
+        "is_mature",
+        item.get("is_mature"),
     )
 
     if is_mature is True:
@@ -340,12 +356,14 @@ def format_deviantart_detail(
     # Content size
     # --------------------------------------
 
-    width = item.get(
-        "content_width"
+    width = deviantart_metadata.get(
+        "content_width",
+        item.get("content_width"),
     )
 
-    height = item.get(
-        "content_height"
+    height = deviantart_metadata.get(
+        "content_height",
+        item.get("content_height"),
     )
 
     if (
