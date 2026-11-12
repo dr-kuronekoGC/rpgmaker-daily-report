@@ -1,3 +1,17 @@
+## 最新確認（2026-11-12 JST・PR #144マージ後／Archive監査）
+
+- main HEAD：`f9b7e9f082b80afbb0424819112d645e00fe4e27`。PR [#144](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/144) は2026-11-12 13:20 JSTにmerged。schema v8がmainへ反映済み。
+- PR #144のCanonical Item model testsは41件成功、Engine Backfill Audit成功（previewのみ）。Classification Auditは既存の `source_status_overrides.json` 形式不整合で失敗。PR #143は別件で未変更。
+- PRE台帳549件（resolved 548／open 1）、判定記録324件。
+- 2026-09〜11 Archiveは計4,211件。PRE ID付き550レコード／549種類。PRE-00526の同一internal_id重複が1組。PRE IDの台帳不一致0、resolved台帳項目のArchive未対応0。
+- 台帳側に該当フィールドがある場合のArchiveとの差は32 PRE ID（category 31、asset_type 6、content_type 2、tags 2）。Rpg2S ITの28件は情報源固有categoryと一般化categoryの違いが中心で、一括コピーは不適切。
+- 個別注意：PRE-00460（audio→sound正規化候補）、PRE-00540（project表現がschema v8未定義）、PRE-00543（開発情報／runtime_player候補）、PRE-00546（graphic・tags候補）。PRE-00526は重複を保持し、自動削除しない。
+- 詳細監査と反映設計は `docs/pre-archive-reconciliation-audit.md`。読み取りのみで、Archive／PRE台帳／判定履歴／seen／pending／Notionは未変更。実反映は未実施。
+
+最終確認日：2026-11-12（JST）
+
+---
+
 ## 最新確認（2026-11-12 JST・作業ブランチ）
 
 - main HEAD：`9fc1c9671d16228ed44bc42f692acf97d8c28772`。PRE台帳549件（resolved 548／open 1）、判定記録324件、11月Archive94件。
