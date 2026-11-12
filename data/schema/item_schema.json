@@ -1,6 +1,6 @@
 {
-  "version": 7,
-  "description": "RPG Maker information database common Item schema. Stable contract between collectors, archive, review, Slack and future WordPress.",
+  "version": 8,
+  "description": "RPG Maker information database common Item schema. Stable contract between collectors, archive, review, Slack and future public catalog integrations.",
   "fields": {
     "internal_id": {
       "type": "string",
@@ -22,10 +22,12 @@
         "asset",
         "plugin",
         "game",
+        "development_info",
         "official",
         "site_update",
         "other"
-      ]
+      ],
+      "description": "Top-level content kind. development_info is separate from downloadable assets, plugins and games."
     },
     "resource_intent": {
       "type": "string",
@@ -111,7 +113,16 @@
     },
     "asset_type": {
       "type": "string|null",
-      "required": false
+      "required": false,
+      "description": "Asset-specific subtype (graphic, sound, plugin, game, other). Use null for development_info; do not add development-tool subtypes here.",
+      "enum": [
+        "graphic",
+        "sound",
+        "plugin",
+        "game",
+        "other",
+        null
+      ]
     },
     "asset_tags": {
       "type": "array",
@@ -121,7 +132,8 @@
     "engine": {
       "type": "array",
       "required": true,
-      "items": "string"
+      "items": "string",
+      "description": "RPG Maker engine/version that the item targets or supports. Do not use this for operating systems or runtime platforms."
     },
     "language": {
       "type": "string|null",
@@ -238,7 +250,8 @@
     },
     "source_published_at": {
       "type": "string|null",
-      "required": false
+      "required": false,
+      "description": "Publication timestamp of the source post/page, normalized to ISO 8601 when possible."
     },
     "source_updated_at": {
       "type": "string|null",
@@ -311,6 +324,126 @@
         "closed"
       ],
       "description": "Lifecycle status of the information source; this does not indicate whether an individual linked material is still available."
+    },
+    "source_site_name": {
+      "type": "string|null",
+      "required": false,
+      "description": "Snapshot of the source name from the SITE master."
+    },
+    "source_site_type": {
+      "type": "string|null",
+      "required": false,
+      "description": "Snapshot of the source kind from the SITE master; distinct from content_type."
+    },
+    "source_site_language": {
+      "type": "array",
+      "required": false,
+      "items": "string",
+      "description": "Languages used by the source site; distinct from languages supported by the item."
+    },
+    "development_info_type": {
+      "type": "string|null",
+      "required": false,
+      "enum": [
+        "runtime_player",
+        "development_tool",
+        "conversion_tool",
+        "technical_reference",
+        "tutorial",
+        "tip",
+        null
+      ],
+      "description": "Subtype used only when content_type=development_info. Do not reuse plugin subcategory development_debug."
+    },
+    "supported_platforms": {
+      "type": "array",
+      "required": false,
+      "items": "string",
+      "description": "Operating systems, devices or runtime platforms supported by the item; separate from RPG Maker engine."
+    },
+    "links": {
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "url"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "download",
+              "product",
+              "official",
+              "documentation",
+              "repository",
+              "other"
+            ]
+          },
+          "url": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "unavailable",
+              "unknown"
+            ]
+          }
+        }
+      },
+      "description": "Related URLs such as download, product, official, documentation or repository links. url remains the original source post/page. Each link may contain type, url and status."
+    },
+    "publisher": {
+      "type": "string|null",
+      "required": false,
+      "description": "Publisher, seller or distributor; distinct from author/creator."
+    },
+    "price_amount": {
+      "type": "number|null",
+      "required": false,
+      "description": "Numeric price amount only when explicitly confirmed; do not infer."
+    },
+    "price_currency": {
+      "type": "string|null",
+      "required": false,
+      "description": "Currency code for price_amount only when explicitly confirmed."
+    },
+    "release_date": {
+      "type": "string|null",
+      "required": false,
+      "description": "Product/tool release date; distinct from source_published_at."
+    },
+    "collector_metadata": {
+      "type": "object|null",
+      "required": false,
+      "description": "Namespaced source-specific metadata keyed by collector/provider. Keep broadly useful searchable fields in the common schema."
+    },
+    "engine_relevant": {
+      "type": "boolean|null",
+      "required": false,
+      "description": "Whether RPG Maker engine relevance applies to filtering/display; null means not yet determined."
+    },
+    "file_formats": {
+      "type": "array",
+      "required": false,
+      "items": "string",
+      "description": "Explicitly identified file formats; do not infer from the page URL extension."
+    },
+    "graphic_style": {
+      "type": "array",
+      "required": false,
+      "items": "string",
+      "description": "Explicitly identified graphic style facets."
+    },
+    "graphic_theme": {
+      "type": "array",
+      "required": false,
+      "items": "string",
+      "description": "Explicitly identified graphic theme facets."
     }
   },
   "design_rules": [
@@ -330,6 +463,11 @@
     "Detailed graphic and plugin categories use evidence scoring across source-native tags, title, category, description, URL, and asset tags. Multiple categories are retained only when they are strong and close to the leading evidence.",
     "The classification pipeline is hierarchical: content/asset type first, detailed taxonomy second, confidence/review status third. A weak detailed classification remains needs_review rather than being forced.",
     "Broad resource intent is recorded separately as resource_candidate, not_resource, or uncertain. Question/showcase context is a negative signal only when no concrete release/distribution evidence is present; paid price and external storefronts are not exclusion signals.",
-    "The resource-intent evidence is advisory and does not rewrite historical human review decisions."
+    "The resource-intent evidence is advisory and does not rewrite historical human review decisions.",
+    "Use content_type=development_info for RPG Maker development/runtime tools and technical information; keep development_info_type separate from asset_type and plugin subcategories.",
+    "Use engine for RPG Maker engine/version and supported_platforms for operating systems, devices or runtime platforms.",
+    "Keep url as the original source post/page; store additional download, product, official, documentation and repository URLs in links.",
+    "Keep source_published_at separate from release_date; keep author/creator separate from publisher/seller/distributor.",
+    "Keep collector-specific fields in collector_metadata under a collector/provider namespace; promote fields to the common schema only when broadly reusable."
   ]
 }

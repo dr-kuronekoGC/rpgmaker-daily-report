@@ -162,6 +162,9 @@ _add(
         "ツクールフォーラムTips",
         "Save-PointTips",
         "RPG Maker Forum DETips",
+        "Comunidad RPG Maker ESTips",
+        "Project1中文Tips",
+        "RPG Maker RU Tips",
     ),
     "Tips",
     1,
@@ -171,6 +174,15 @@ _add(
 # ==========================================
 # 質問
 # ==========================================
+
+_add(
+    (
+        "開発情報",
+    ),
+    "開発情報",
+    2,
+)
+
 
 _add(
     (
@@ -217,7 +229,6 @@ _add(
         "Comunidad RPG Maker ESプラグイン",
         "Comunidad RPG Maker ESグラフィック素材",
         "Comunidad RPG Maker ESサウンド素材",
-        "Comunidad RPG Maker ESTips",
     ),
     "海外コミュニティ",
     4,
@@ -238,7 +249,6 @@ _add(
         "Project1中文プラグイン",
         "Project1中文グラフィック素材",
         "Project1中文サウンド素材",
-        "Project1中文Tips",
     ),
     "海外コミュニティ",
     4,
@@ -250,7 +260,6 @@ _add(
         "RPG Maker RUプラグイン",
         "RPG Maker RUグラフィック素材",
         "RPG Maker RUサウンド素材",
-        "RPG Maker RU Tips",
         "Condado PT-BRツール",
         "Condado PT-BRプラグイン",
         "Rpg2S ITプラグイン",

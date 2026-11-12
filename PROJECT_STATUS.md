@@ -1,3 +1,15 @@
+## 最新確認（2026-11-12 JST・作業ブランチ）
+
+- main HEAD：`9fc1c9671d16228ed44bc42f692acf97d8c28772`。PRE台帳549件（resolved 548／open 1）、判定記録324件、11月Archive94件。
+- 正規Itemモデルv8の実装ブランチ：`feature/canonical-item-model-v8`。PR [#144](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/144)、1コミット・12ファイル変更、open・未マージ。
+- schema v8で `development_info` と `development_info_type` を導入。Tipsの既存category文字列を保持しつつ、新規正規化時は開発情報として分類する。開発情報の `asset_type` はnull。
+- 対応コード：Item正規化、開発情報のasset分類除外、Slack表示グループ、DeviantArt固有metadataの `collector_metadata.deviantart` 化。旧ArchiveのDeviantArtフラット項目はSlack表示側で後方互換を維持。
+- CI：Canonical Item model testsは構文検証＋41テスト成功。Engine Backfill Audit成功（プレビューのみ）。Classification Auditは既存の `source_status_overrides.json` 形式不整合で最終監査失敗。今回のPR変更による失敗ではない。
+- PR #143は独立してopen。PR #144も未マージ。どちらもマージ許可なし。
+- Archive／PRE台帳／判定履歴／seen／pending／Notionのデータ変更なし。Workflow手動実行なし。Notionの最新同期は未確認。
+
+最終確認日：2026-11-12（JST）
+
 ## 最新確認（2026-11-11 午後 JST・main）
 
 - PRE-00547：ユーザー判断で `not_applicable`。自作作品・企画の案内で、Coming Soonのため現時点では配布素材なし。将来実際の配布が始まれば再評価可能。

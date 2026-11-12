@@ -307,6 +307,10 @@ def build_asset_metadata(
 
     detected_category = None
     asset_tags = []
+    is_development_info = (
+        item.get("content_type") == "development_info"
+        or bool(item.get("development_info_type"))
+    )
 
     # 質問・相談・ニュース等は、タイトル中の
     # "music" や "sound" だけで素材化しない。
@@ -322,7 +326,7 @@ def build_asset_metadata(
     # A clear question/showcase is not promoted by generic asset keywords.
     # If the body explicitly contains distribution/release evidence, however,
     # let the asset classifier inspect it before making the final intent decision.
-    if (
+    if not is_development_info and (
         (
             not _is_non_asset_category(category)
             and not _is_non_asset_title(title)
@@ -347,7 +351,9 @@ def build_asset_metadata(
     # Explicit game records remain games. Clear questions/showcases are not
     # promoted to asset/plugin records merely because the forum section says
     # "plugin" or "graphics"; the original category is preserved separately.
-    if _is_explicit_game_category(category):
+    if is_development_info:
+        category_for_type = "その他"
+    elif _is_explicit_game_category(category):
         category_for_type = "ゲーム"
     elif resource_intent == "not_resource":
         category_for_type = "その他"
@@ -358,9 +364,13 @@ def build_asset_metadata(
     else:
         category_for_type = category
 
-    asset_type = detect_asset_type(
-        category_for_type,
-        title,
+    asset_type = (
+        None
+        if is_development_info
+        else detect_asset_type(
+            category_for_type,
+            title,
+        )
     )
 
     # --------------------------------------
@@ -429,7 +439,23 @@ def build_asset_metadata(
     )
     # Sound assets remain searchable regardless of engine. The UI should hide engine
     # information and bypass engine filtering whenever this flag is false.
-    item["engine_relevant"] = asset_type in (ASSET_TYPE_GRAPHIC, ASSET_TYPE_PLUGIN, ASSET_TYPE_GAME)
+    if is_development_info:
+        if item.get("engine_relevant") is None:
+            item["engine_relevant"] = (
+                item.get("development_info_type") in {
+                    "runtime_player",
+                    "development_tool",
+                    "conversion_tool",
+                    "technical_reference",
+                }
+                or any(engine != "不明" for engine in item.get("engine", []))
+            )
+    else:
+        item["engine_relevant"] = asset_type in (
+            ASSET_TYPE_GRAPHIC,
+            ASSET_TYPE_PLUGIN,
+            ASSET_TYPE_GAME,
+        )
 
     item["asset_tags"] = (
         asset_tags
@@ -499,7 +525,7 @@ def build_asset_metadata(
         classification_confidence,
     )
 
-    if asset_type in (
+    if is_development_info or asset_type in (
         ASSET_TYPE_GAME,
         ASSET_TYPE_OTHER,
     ):

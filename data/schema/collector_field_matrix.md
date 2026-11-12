@@ -28,6 +28,25 @@
 | official_triacontane | plugin | ○ | — | — | — | ○ (change detection) | — | ○ (repo context) | plugin | — |
 | official_source_check | site_update | ○ | — | — | — | ○ (change detection) | — | — | SourceCheck | — |
 
+## 正規データモデル v8
+
+- `content_type=development_info` を追加。開発情報は素材・プラグイン・ゲームとは別のトップレベル種別として扱う。
+- `development_info_type` は `runtime_player`／`development_tool`／`conversion_tool`／`technical_reference`／`tutorial`／`tip`。プラグイン詳細分類の `development_debug` は流用しない。
+- `asset_type` は素材・プラグイン・ゲームの既存分類に限定し、開発情報では `null` とする。既存の `other` は過去データとの互換性のため維持する。
+- `engine` は対象RPG Makerの種類・バージョン。OS・端末・実行環境は `supported_platforms` に分ける。
+- `url` は元投稿・掲載ページ。配布先・商品ページ・公式ページ・説明書・リポジトリ等は `links` に種別付きで保存する。
+- `author` は作者・制作者、`publisher` は販売元・配布元。価格額・通貨は確認できた場合だけ `price_amount`／`price_currency` に保存する。
+- `source_published_at` は元投稿の日時、`release_date` は製品・ツールの公開日時。別の概念として保持する。
+- `source_site_name`／`source_site_type`／`source_site_language` はSITEマスターのスナップショット。サイト自体の状態 `source_site_status` と個別リンクの利用可能性も混同しない。
+- 共通検索項目 `engine_relevant`／`file_formats`／`graphic_style`／`graphic_theme` を正式フィールドとして定義する。
+- Collector固有情報は `collector_metadata` の下にCollector名で名前空間化する。広く再利用できる項目だけを共通フィールドへ昇格する。
+
+### 開発情報と既存Tipsの移行
+
+- 既存のTipsカテゴリーは新規収集時に `content_type=development_info`／`development_info_type=tip` として扱う。
+- 元の `category` はSlack表示との互換性のため保持し、既存Archiveの一括書き換えは行わない。
+- 「開発情報」カテゴリーは、詳細用途が確認できない場合に `development_info_type` を推測で埋めない。
+
 ## 共通Itemの方針
 
 ### 必須の識別情報
