@@ -1,10 +1,11 @@
-## 最新確認（2026-11-13 JST・PR #143更新作業）
+## 最新確認（2026-11-13 JST・PR #143更新・CI確認済み）
 
-- main HEAD：c2d30d110291d9ab24bf7e77f07784ac47ce5b4d。PR #143の旧headは9c3a7621f7b9eb67bf6f549ac4097d449752e149、旧基準mainから36コミット遅れていた。
-- PR #143のpending-release判定を見直し中。一般的な「currently in development」「under development」「開発中」「制作中」だけでは自動除外しない。近日公開・配布予定等の明示的な将来配布表現と、素材種別・現行配布状況・リンク状態を組み合わせて判定する。
-- 現行版・到達可能な個別商品ページ・確認不能リンクは除外を防ぐ。本文未取得・403も除外根拠にしない。
-- 追加回帰テストと設計文書を更新。PRブランチの更新後CIは未確認。
-- PR #143はopen・未マージ。Archive／PRE台帳／判定履歴／seen／pending／Notionは変更しない。
+- main HEAD：c2d30d110291d9ab24bf7e77f07784ac47ce5b4d。
+- PR #143：feature/pre-coming-soon-screen、head aafdb39f1d03ddda2047457add2cdaf2661c3287。mainから1コミット先行・遅れ0、Open・未マージ。
+- pending-release判定は明示的な将来配布表現に限定。一般的な制作進捗表現だけでは除外しない。現行配布物・到達可能な個別商品ページ・確認不能リンクは保護する。
+- 回帰テスト8件追加。Auto-screen triage Run #43401436999 success（構文検証＋55テスト）。Classification Audit Run #43401436863 success（全工程）。
+- これはPRブランチのCI結果。mainの手動Workflow実行や本番Auto-screen実行はしていない。
+- PRE台帳／判定履歴／Archive／seen／pending／Notion／mainは変更なし。PR #143はマージしていない。
 
 最終確認日：2026-11-13（JST）
 

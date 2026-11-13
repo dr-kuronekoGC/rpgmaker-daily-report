@@ -1,15 +1,19 @@
-## 最新更新（2026-11-13 JST・PR #143を最新mainへ追随）
+## 最新更新（2026-11-13 JST・PR #143追随・CI確認済み）
 
-- PR #143「Add conservative pending-release screening」は feature/pre-coming-soon-screen 上で更新作業中。基準mainは c2d30d110291d9ab24bf7e77f07784ac47ce5b4d。
-- 旧実装に含まれていた「currently in development」「under development」「開発中」「制作中」等をpending-release条件から除外し、明示的な近日公開・配布予定表現だけを対象にする。
-- 既存配布物・到達可能な個別商品ページ・確認不能な配布リンクは自動除外を防ぐ。ストアトップページだけでは商品掲載ありと判定しない。
-- 回帰テストを追加し、英語・日本語・他言語の一般的な制作進捗表現、明示的な将来配布、既存有料商品、確認不能リンク、本文未取得を確認する。
-- PR #143は未マージ。今回の作業はPRブランチ内のみ。PRE台帳・判定履歴・Archive・seen／pending・Notionは変更しない。Actions結果は更新後のPR実行を待って記録する。
+- 基準main：c2d30d110291d9ab24bf7e77f07784ac47ce5b4d。PR #143のhead：aafdb39f1d03ddda2047457add2cdaf2661c3287。
+- PR #143は最新mainから1コミット先行・遅れ0。旧ブランチの36コミット遅れを解消し、最新mainを親とする単一コミットに再構成した。
+- 判定条件を修正。明示的な近日公開・配布予定表現のみをpending-releaseとして扱い、「currently in development」「under development」「開発中」「制作中」等だけでは自動除外しない。
+- 現行版・到達可能な個別商品ページ・確認不能な配布リンクは自動除外を防ぐ。既知ストアの個別ページを監査対象に追加し、ストアトップページだけは商品ページとみなさない。
+- 回帰テスト8件を追加。一般的な進捗表現、英語・日本語の将来配布、既存有料商品ページ、ストアトップ、確認不能リンク、本文未取得を対象とする。
+- Auto-screen triage Run #43401436999：success。構文検証と55テストすべて成功。
+- Classification Audit Run #43401436863：success。レビューコーパス監査、open queue監査、成果物生成、Classification Auditまで全工程成功。
+- PR #143はOpen・未マージ。PR CIの成功であり、main上の手動実行・本番Auto-screen実行ではない。手動dispatchなし。
+- PRE台帳・判定履歴・Archive・seen／pending・Notion・mainは変更していない。
 
 ### 次の作業
-1. PR #143更新後のActionsを確認し、失敗があれば原因を限定して修正する。
-2. CI成功後、PR差分と最新mainとの整合を再確認する。
-3. PR #143のマージは別途ユーザーの明示許可を得る。手動dispatch・本番データ変更は行わない。
+1. PR差分とレビュー内容を最終確認する。
+2. マージは別途ユーザーの明示許可を得てから行う。
+3. main上のClassification Audit再実行が必要な場合は、手動dispatch前に許可を確認する。
 
 最終確認日：2026-11-13（JST）
 対象：dr-kuronekoGC/rpgmaker-daily-report。mainとPRブランチを分けて記録。
