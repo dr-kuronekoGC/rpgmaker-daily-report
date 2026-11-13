@@ -1,3 +1,14 @@
+## 最新確認（2026-11-13 JST・Classification Audit起動条件確認）
+
+- PR #147のClassification Audit Run #43353057499（PR head `a84f384`）はsuccess。auditジョブの全ステップが成功。
+- mainの `.github/workflows/classification-audit.yml` は `workflow_dispatch` と `pull_request`（main向けPR）のみ。schedule／pushトリガーはない。
+- PR #147マージ後のmainで自動再実行されないのは現行workflow設定どおり。mainでの手動実行は未実施。
+- 最新管理MD commit：`a74a5cc`。open PR：0件。
+- 今回はworkflow、コード、PRE台帳、Archive、判定履歴、seen／pending、Notionの実データ変更なし。
+
+最終確認日：2026-11-13（JST）
+---
+
 ## 最新確認（2026-11-13 JST・PREレビュー／Archive preview確認）
 
 - PRE台帳：550件（resolved 548／open 2：PRE-00549、PRE-00550）。PRE-00549・00550ともReddit HTTP 403で本文未取得のためkeep_open。Notionでは該当2ページの存在、URL一致、確認状態「未確認」を直接確認。Notion全550件の同期は未確認。
