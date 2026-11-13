@@ -1,7 +1,7 @@
 ## 最新確認（2026-11-13 JST・PR #143マージ後）
 
 - PR [#143](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/143) は2026-11-13 18:50 JSTにmerged。merge commit：`b578d3aaa2c0bbe7096dca18339d6adccc08100d`。
-- main最新確認commit：`c7b50e515b07598286160807d07f63b38926f7b6`。PR merge commitから後続の監査記録更新が1件入り、base `c2d30d1` から4コミット先行。
+- PR #143後のコード／監査データ確認点：`c7b50e515b07598286160807d07f63b38926f7b6`。PR merge commitから後続の監査記録更新が1件入り、base `c2d30d1` から4コミット先行。その後、管理MD更新commit `5ba238c`、`dda7e18`、`d7ad2db` がmainに追加。
 - 追加されたpending-release判定は、明示的な将来配布表現＋識別可能な素材種別＋現行成果物／利用可能な商品ページ／配布先候補なし、の条件を満たす場合だけ除外する。一般的な制作進捗表現だけでは除外しない。
 - 現行版、到達可能な個別ストア商品ページ、確認不能・不確実な配布リンクは保護。ストアトップページのみでは商品ページ扱いしない。
 - PR CI：Auto-screen triage Run #43401436999 success（構文検証＋55テスト）、Classification Audit Run #43401436863 success（全工程）。
