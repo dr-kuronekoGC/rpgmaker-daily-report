@@ -1,21 +1,19 @@
-## 最新確認（2026-11-13 JST・PR #145マージ後）
+## 最新確認（2026-11-13 JST・PR #147作成後）
 
 **この節を現在の状態の正とする。**
 
-- PR #145 merge commit：`e2f3638c60b72ba3299986a62156e8587199cd78`。この後のmain更新は管理MDのみ。
-- PR #144（Canonical Item Model v8）、PR #146（PRE-to-Archive read-only patch preview）、PR #145（監査・設計文書）はすべてマージ済み。
-- PR #145は文書4ファイルのみ（203 additions／1 deletion）。Archive、PRE台帳、判定履歴、seen、pending、Notionの実データ変更なし。
-- PRE台帳550件（resolved 548／open 2：PRE-00549、PRE-00550）、判定記録324件。
-- Archiveは4,216件（9月1,862／10月2,255／11月99）。Pending 0件、Global seen 4,494件。
-- `data/review/archive_patch_proposals.json` にPRE-00543の明示patch案がある。previewは読み取り専用で、Archive実データへのapply機能はない。PRE-00543のArchive実データ、PRE台帳、判定履歴、seen／pending、Notionは未変更。
+- PR #145（PRE-to-Archive監査・設計文書）はmainへマージ済み。merge commit：`e2f3638c60b72ba3299986a62156e8587199cd78`。文書4ファイルのみで、データ本体は未変更。
+- PRE-00543の明示patch案は `data/review/archive_patch_proposals.json` に登録済み。現行のPRE台帳・判定記録・ArchiveのID／URL／expected valuesを読み取り照合し、4項目の提案差分が `ready_for_review` 相当であることを確認。実際のPython CLIは未実行で、Archiveへの書き込みもしていない。
+- Classification Auditの原因は `tools/audit_classification.py` が `ARCHIVE_DIR.glob("*.json")` で月別Archive以外のmetadata JSONも拾っていたこと。RMRK対応表自体の破損ではない。
+- PR #147は修正（`20??-??.json` のみを対象）と回帰テストを追加し、open・未マージ。Actions Run #43353057499はunit testsを含め全工程success。2ファイル変更のみで、Archive／PRE台帳／判定履歴／seen／pending／Notionの変更なし。マージはユーザー確認待ち。
+- PRE台帳550件（resolved 548／open 2：PRE-00549、PRE-00550）、判定記録324件。Archive 4,216件（9月1,862／10月2,255／11月99）。Pending 0件、Global seen 4,494件。
 - Notionは2026-11-10に546件を直接確認したのが最後。550件への最新同期は未確認。
-- PR #145のActions Run #43352038677は前段の監査・正規化工程成功、既存Classification Auditのみ失敗。既知の `source_status_overrides.json` 形式不整合であり、文書変更による失敗とは確認されていない。別課題として残す。
-- `docs/pre-archive-reconciliation-audit.md` の4,211件／549 PRE ID等は2026-11-12時点の監査スナップショットであり、後続データ更新で書き換えない。
 - PR #143は別件で未マージ。最新mainとの差分確認が必要。
 
 最終確認日：2026-11-13（JST）
 
 ---
+
 
 
 ## 最新確認（2026-11-12 JST・PR #146マージ後）
