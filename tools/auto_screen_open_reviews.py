@@ -107,6 +107,22 @@ NO_DELIVERABLE_RE = re.compile(
     r"スクリーンショットのみ|自分のゲーム専用)",
     re.I,
 )
+# Only explicit future availability/release wording can support pending-release
+# exclusion. Generic progress statements (e.g. "under development" or 開発中)
+# are not evidence that no usable version or product listing exists.
+PENDING_RELEASE_RE = re.compile(
+    r"\b(?:coming\s+soon|coming\s+shortly|available\s+soon|"
+    r"will\s+be\s+(?:released|available|published)\s+soon|"
+    r"not\s+yet\s+(?:released|available|published)|"
+    r"not\s+(?:released|available|published)\s+yet|"
+    r"upcoming\s+release|release\s+(?:is\s+)?planned)\b"
+    r"|(?:近日公開|近日配布|近日発売|近日中(?:に)?(?:公開|配布|発売)|"
+    r"配布予定|公開予定|発売予定|リリース予定|配布準備中|公開準備中|"
+    r"未配布|未公開|未リリース|まだ(?:公開|配布|発売)されていない)"
+    r"|(?:próximamente|pronto disponible|aún no está disponible|"
+    r"bientôt disponible|bald verfügbar|скоро выйдет|скоро будет доступен|пока не выпущен)",
+    re.I,
+)
 POSITIVE_RELEASE_RE = re.compile(
     r"\b(?:downloadable|download link|download here|release page|"
     r"release available|resource pack|asset pack|sound pack|audio pack|"
@@ -193,6 +209,8 @@ RESOURCE_FILE_SUFFIXES = {
 RESOURCE_HOST_RE = re.compile(
     r"(?:mediafire\.com|mega\.nz|dropbox\.com|drive\.google\.com|"
     r"yadi\.sk|disk\.yandex|yandex\.(?:ru|com)|itch\.io|"
+    r"gumroad\.com|ko-fi\.com|booth\.pm|gamedevmarket\.net|"
+    r"craftpix\.net|dlsite\.com|assetstore\.unity\.com|"
     r"raw\.githubusercontent\.com|github\.com/.*/(?:releases|archive))",
     re.I,
 )
@@ -521,6 +539,25 @@ def is_delivery_link(result: dict, kind: str | None) -> bool:
     return False
 
 
+PRODUCT_LISTING_HOST_RE = re.compile(
+    r"(?:^|\.)(?:itch\.io|gumroad\.com|ko-fi\.com|booth\.pm|"
+    r"gamedevmarket\.net|craftpix\.net|dlsite\.com|assetstore\.unity\.com)$",
+    re.I,
+)
+
+
+def has_live_product_listing_link(link_check: dict) -> bool:
+    """Keep a reachable, item-specific storefront page eligible for review."""
+    for result in link_check.get("results") or []:
+        if not isinstance(result, dict) or not result.get("reachable"):
+            continue
+        parsed = urlparse(clean(result.get("url")))
+        host = (parsed.hostname or "").lower()
+        if parsed.path.rstrip("/") and PRODUCT_LISTING_HOST_RE.search(host):
+            return True
+    return False
+
+
 def delivery_link_summary(title: str, body: str, link_check: dict) -> dict:
     kind = resource_kind(title, body)
     results = [
@@ -645,10 +682,14 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
     # Distinguish usable resource links from profile photos, preview images,
     # and generic forum chrome before using link status as classification evidence.
     delivery_summary = delivery_link_summary(title, body, link_check)
-    has_usable_delivery = delivery_summary["candidate_count"] > 0
+    live_product_listing = has_live_product_listing_link(link_check)
+    has_usable_delivery = (
+        delivery_summary["candidate_count"] > 0 or live_product_listing
+    )
     positive_release = bool(
         POSITIVE_RELEASE_RE.search(combined)
         or delivery_summary["reachable_count"] > 0
+        or live_product_listing
     )
     resolved_marker = bool(RESOLVED_MARKER_RE.search(title))
 
@@ -737,6 +778,21 @@ def classify_page(item: dict, page: dict) -> tuple[str, str] | None:
 
     if NO_DELIVERABLE_RE.search(combined) and not positive_release:
         return ("not_applicable", "本文に素材配布ではない／ダウンロード不可／プレビューのみと明記されている")
+
+    # A future-only notice is exclusion evidence only for a recognized resource
+    # type, with no current release/product evidence and no usable or uncertain
+    # delivery destination. Generic development progress alone never qualifies.
+    pending_release = bool(PENDING_RELEASE_RE.search(combined))
+    if (
+        pending_release
+        and resource_kind(title, body)
+        and not positive_release
+        and not has_usable_delivery
+    ):
+        return (
+            "not_applicable",
+            "素材・プラグイン等の公開・配布が将来予定と明記されており、現在利用できる成果物・配布先を確認できない",
+        )
 
     # A solved/filled thread may contain a useful answer or an attached asset.
     # But when it began as a resource request, has no positive release evidence,
@@ -872,7 +928,14 @@ def main() -> int:
             "request_signal": bool(REQUEST_RE.search(current_title) or BODY_REQUEST_RE.search(current_body[:1800])),
             "discussion_or_showcase_signal": bool(DISCUSSION_RE.search(current_title) or SHOWCASE_RE.search(current_title)),
             "explicit_no_deliverable": bool(NO_DELIVERABLE_RE.search(combined_text)),
-            "positive_release_signal": bool(POSITIVE_RELEASE_RE.search(combined_text)),
+            "pending_release_signal": bool(PENDING_RELEASE_RE.search(combined_text)),
+            "positive_release_signal": bool(
+                POSITIVE_RELEASE_RE.search(combined_text)
+                or has_live_product_listing_link(page.get("resource_link_check") or {})
+            ),
+            "live_product_listing_link": has_live_product_listing_link(
+                page.get("resource_link_check") or {}
+            ),
             "resource_kind": resource_kind(current_title, current_body),
             "delivery_links_live": delivery_summary["reachable_count"],
             "delivery_links_dead": delivery_summary["dead_count"],

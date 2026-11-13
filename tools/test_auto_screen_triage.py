@@ -10,6 +10,8 @@ from auto_screen_open_reviews import (
     check_resource_links,
     is_delivery_link,
     resource_kind,
+    PENDING_RELEASE_RE,
+    has_live_product_listing_link,
 )
 
 
@@ -992,6 +994,151 @@ class ResourceEvidenceTests(unittest.TestCase):
                 result = classify_page(item, page)
                 self.assertIsNotNone(result)
                 self.assertEqual(result[0], "not_applicable")
+
+
+    def test_generic_development_progress_is_not_a_pending_release_signal(self):
+        phrases = (
+            "This plugin is currently in development.",
+            "This plugin is still in development.",
+            "This plugin is under development.",
+            "This plugin is in development.",
+            "現在開発中のプラグインです。",
+            "このプラグインを制作中です。",
+            "Plugin en desarrollo.",
+            "Plugin in Entwicklung.",
+            "Плагин в разработке.",
+        )
+        for phrase in phrases:
+            with self.subTest(phrase=phrase):
+                self.assertIsNone(PENDING_RELEASE_RE.search(phrase))
+
+    def test_generic_development_progress_alone_does_not_auto_exclude_plugin(self):
+        item = {
+            "pre_id": "PRE-TEST-101",
+            "url": "https://example.com/plugin-topic",
+            "title": "MZ Battle HUD Customizer Plugin",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "This plugin is currently in development.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"candidate_count": 0, "results": []},
+        }
+        result = classify_page(item, page)
+        self.assertFalse(result and result[0] == "not_applicable")
+
+    def test_explicit_coming_soon_plugin_without_deliverable_is_excluded(self):
+        item = {
+            "pre_id": "PRE-TEST-102",
+            "url": "https://example.com/plugin-topic",
+            "title": "MZ Battle HUD Customizer Plugin",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "The plugin is coming soon and is not available yet.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"candidate_count": 0, "results": []},
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+        self.assertIn("将来予定", result[1])
+
+    def test_japanese_future_distribution_notice_without_deliverable_is_excluded(self):
+        item = {
+            "pre_id": "PRE-TEST-103",
+            "url": "https://example.com/plugin-topic",
+            "title": "MZ Plugin - New Battle System",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "このプラグインは近日公開予定です。現在は未配布です。",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {"candidate_count": 0, "results": []},
+        }
+        result = classify_page(item, page)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0], "not_applicable")
+
+    def test_reachable_paid_store_product_page_prevents_pending_release_exclusion(self):
+        item = {
+            "pre_id": "PRE-TEST-104",
+            "url": "https://example.com/plugin-topic",
+            "title": "MZ Battle HUD Customizer Plugin",
+            "review_note": "",
+        }
+        store_link = link(
+            "https://creator.gumroad.com/l/battle-hud",
+            reachable=True,
+            text="Current paid product page",
+        )
+        page = {
+            "page_title": item["title"],
+            "body_text": "A new Pro version is coming soon; the current plugin is sold here.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [store_link],
+            },
+        }
+        self.assertTrue(has_live_product_listing_link(page["resource_link_check"]))
+        self.assertIsNone(classify_page(item, page))
+
+    def test_storefront_homepage_is_not_treated_as_a_product_listing(self):
+        self.assertFalse(
+            has_live_product_listing_link(
+                {"results": [link("https://gumroad.com", reachable=True)]}
+            )
+        )
+
+    def test_inconclusive_delivery_link_prevents_pending_release_exclusion(self):
+        item = {
+            "pre_id": "PRE-TEST-105",
+            "url": "https://example.com/plugin-topic",
+            "title": "MZ Battle HUD Customizer Plugin",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "The plugin is coming soon.",
+            "http_status": 200,
+            "retrieval_status": "body_found",
+            "resource_link_check": {
+                "candidate_count": 1,
+                "results": [
+                    link(
+                        "https://example.com/battle-hud-plugin.zip",
+                        reachable=False,
+                        error="HTTPError",
+                        text="Download plugin",
+                    )
+                ],
+            },
+        }
+        self.assertIsNone(classify_page(item, page))
+
+    def test_unavailable_body_is_not_excluded_by_pending_release_wording(self):
+        item = {
+            "pre_id": "PRE-TEST-106",
+            "url": "https://example.com/plugin-topic",
+            "title": "MZ Battle HUD Customizer Plugin",
+            "review_note": "",
+        }
+        page = {
+            "page_title": item["title"],
+            "body_text": "",
+            "http_status": 403,
+            "retrieval_status": "unavailable",
+            "resource_link_check": {"candidate_count": 0, "results": []},
+        }
+        self.assertIsNone(classify_page(item, page))
 
 
 if __name__ == "__main__":

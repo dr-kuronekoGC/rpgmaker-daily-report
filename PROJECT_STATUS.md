@@ -1,3 +1,16 @@
+## 最新確認（2026-11-13 JST・PR #143更新・CI確認済み）
+
+- main HEAD：c2d30d110291d9ab24bf7e77f07784ac47ce5b4d。
+- PR #143：feature/pre-coming-soon-screen、head aafdb39f1d03ddda2047457add2cdaf2661c3287。mainから1コミット先行・遅れ0、Open・未マージ。
+- pending-release判定は明示的な将来配布表現に限定。一般的な制作進捗表現だけでは除外しない。現行配布物・到達可能な個別商品ページ・確認不能リンクは保護する。
+- 回帰テスト8件追加。Auto-screen triage Run #43401436999 success（構文検証＋55テスト）。Classification Audit Run #43401436863 success（全工程）。
+- これはPRブランチのCI結果。mainの手動Workflow実行や本番Auto-screen実行はしていない。
+- PRE台帳／判定履歴／Archive／seen／pending／Notion／mainは変更なし。PR #143はマージしていない。
+
+最終確認日：2026-11-13（JST）
+
+---
+
 ## 最新確認（2026-11-13 JST・PR #147マージ後）
 
 - main HEAD：`607495f331023b3084838c0ec90e9ba293407a96`。
