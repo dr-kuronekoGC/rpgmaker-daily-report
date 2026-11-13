@@ -12,8 +12,10 @@ from asset_metadata import build_asset_metadata
 ARCHIVE_DIR = Path("data/archive")
 
 
-def load_latest_archive():
-    files = sorted(ARCHIVE_DIR.glob("*.json"))
+def load_latest_archive(archive_dir: Path = ARCHIVE_DIR):
+    # Only monthly archive files belong here. Other JSON files such as
+    # archive_index.json and source_status_overrides.json are metadata.
+    files = sorted(archive_dir.glob("20??-??.json"))
     if not files:
         return None, []
 
