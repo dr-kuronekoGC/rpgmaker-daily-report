@@ -1,3 +1,19 @@
+## 最新更新（2026-11-13 JST・Classification Audit起動条件確認）
+
+- PR #147のClassification Audit Run #43353057499（PR head `a84f384`）は `success`。auditジョブの全ステップ成功（レビューコーパスのテスト、open queue監査、成果物作成、既存classification audit）。
+- mainの `.github/workflows/classification-audit.yml` を直接確認。起動条件は `workflow_dispatch` と `pull_request`（base: main）のみ。schedule／pushトリガーは設定されていない。
+- よってPR #147マージ後にmain上で自動再実行されないのは現行設定どおり。マージ後のmain runがないことを不具合とは扱わない。
+- 最新mainの管理MD更新commitは `a74a5cc`。open PRは0件。手動dispatchは未実施。
+- 今回はworkflow設定・コード・PRE台帳・Archive・判定履歴・seen／pending・Notionを変更していない。
+
+### 次の作業
+1. Classification Auditをmain上で単発確認したい場合は、ユーザーの明示許可を得てworkflow_dispatchする。現状の設定変更・schedule追加は行わない。
+2. PRE-00543のread-only preview結果を提示済み。Archive実反映は明示許可待ち。
+3. PRE-00549・00550は本文未取得のためopen／未確認を維持する。
+
+最終確認日：2026-11-13（JST）
+---
+
 ## 最新更新（2026-11-13 JST・PRE-00549/00550確認／PRE-00543 preview）
 
 ### 完了
