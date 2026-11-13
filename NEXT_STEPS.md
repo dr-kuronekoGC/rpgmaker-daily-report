@@ -1,3 +1,60 @@
+## 最新更新（2026-11-13 11:20 JST・main確認）
+
+### 現在の状態（main）
+- main HEAD：`811f6c439289cc9a26da5fd6fc9f3e798c455f04`（2026-11-13 10:53 JST、Update report data）。
+- PR #144（Canonical Item Model v8）とPR #146（read-only PRE-to-Archive patch preview）はマージ済み。
+- PRE台帳：550件（resolved 548／open 2、PRE-00549・PRE-00550）。判定記録324件。
+- Archive：4,216件（2026-09：1,862／2026-10：2,255／2026-11：99）。Pending 0件、Global seen 4,494件。
+- PRE-00543の明示patch案は `data/review/archive_patch_proposals.json` に登録済み。プレビュー機能は読み取り専用で、Archiveへのapply／書き込みは未実装。PR #146のテスト工程では実データfixtureを使った検証を含め成功したが、独立した手動プレビュー実行結果は未確認。
+- Notionは2026-11-10に546件を直接確認したのが最後。現在の550件への同期状態は未確認。
+- PR #145は文書のみ4ファイル（+163行）。監査文書の4,211件等の数値は2026-11-12時点のhistorical snapshotとして維持する。mainが進んだことを理由に過去の監査値を書き換えない。
+- PR #145のActionsは前段の監査・正規化工程が成功し、最後の `Run existing classification audit` のみ失敗。既知の `source_status_overrides.json` の形式不整合によるもので、文書差分が原因とは確認されていない。PRのGitHub mergeabilityはtrue、mergeable_stateはunstable。
+
+### 次の作業（順番に）
+1. PR #145の文書差分を最新mainと照合したうえでマージする。Archive／PRE台帳等の実データは変更しない。
+2. PRE-00543のread-only previewを実行し、結果と差分を確認する。Archiveへの実反映は別途内容を提示し、ユーザーの明示許可を得るまで行わない。
+3. Classification Auditの形式不整合は独立課題として原因・正規データ形式を確認してから修正する。監査を通すためだけに対応表を変えない。
+4. PRE-00549・00550のopen状態とNotion同期状態は別々に確認する。未確認のNotion同期を成功扱いしない。
+5. PR #143は最新mainとの差分を別途確認する。今回のPR #145とは混ぜない。
+
+---
+
+## 最新更新（2026-11-12 JST・PR #146マージ後）
+
+### 完了
+- PR [#146](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/146) はmainへマージ済み。merge commit：`c22580f05a17caa5aa9e2a33c2f42021d36858be`。
+- `tools/preview_archive_patches.py` と `data/review/archive_patch_proposals.json` により、PREからArchiveへの明示patchを読み取り専用でプレビューできる。PRE-00543の実データを使ったテストを含む回帰テストは成功済み。
+- プレビュー機能は読み取り専用。Archiveへの書き込み・適用機能はなく、PRE-00543のArchive実データも未変更。PRE台帳・判定履歴・seen／pending・Notionも変更していない。
+- PR #145の監査・設計文書とPR #146の実装は整合している。PR #145の以下の古い「dry-run仕様をこれから用意する」という記述は履歴として残し、現在の作業順はこの節を正とする。
+
+### 次の作業
+1. PR #145の文書差分をmain最新状態と照合し、管理MDの古い状態記述を整理する。PR #145は更新後も未マージ。マージは別途確認する。
+2. PRE-00543のプレビュー結果を確認し、値・根拠・差分に問題がないか判断する。Archiveへの実反映は別工程で、ユーザーの明示許可があるまで行わない。
+3. PRE-00540のproject配布の表現はschema v8に未定義のため保留。projectをplugin/gameへ無理に変換しない。
+4. PRE-00526の重複は保持し、自動削除・統合しない。
+5. Classification Auditの既存形式不整合は別課題として扱う。
+
+---
+
+## 最新更新（2026-11-12 JST・Archive反映設計）
+
+### 完了：読み取り監査・設計案
+- PR #144はGitHub上で2026-11-12 13:20 JSTにmerged。merge commit／main HEAD：`f9b7e9f082b80afbb0424819112d645e00fe4e27`。再マージ操作は不要。
+- 2026-09〜11 Archive 4,211件をPRE台帳549件・判定記録324件と読み取り照合。
+- PRE ID付きArchiveは550レコード／549種類。PRE-00526が同じinternal_idで2件重複。台帳にないPRE IDは0、resolved台帳でArchiveに対応しないinternal_idも0。
+- 分類フィールド差は32 PRE ID（category 31、asset_type 6、content_type 2、tags 2）。大半は情報源固有categoryと一般化categoryの差。機械的な全項目コピーはしない。
+- PRE-00543をschema v8に沿った最初の反映候補として設計。PRE-00540はprojectがschema v8に未定義のため保留。PRE-00460とPRE-00546も個別確認候補。
+- 詳細は `docs/pre-archive-reconciliation-audit.md`。今回は読み取り監査・文書化のみ。Archive等のデータ本体は未変更。
+
+### 次の作業
+1. この反映設計（照合キー、明示patch、競合停止、冪等性）を確認する。
+2. 合意後、PRE-00543だけを対象にdry-run仕様／テストを用意する。Archive本体の変更は差分を提示してから実施する。
+3. PRE-00540のproject配布の表現（schema追加かother＋明示メタデータか）を別途決める。
+4. PRE-00526重複は自動削除せず、必要なら別作業で統合方針を検討する。
+5. Classification Auditの既存不整合は別PRで扱うか判断する。
+
+---
+
 ## 最新更新（2026-11-12 JST）
 
 ### 正規Itemモデル v8：実装PR作成済み

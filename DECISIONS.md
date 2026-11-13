@@ -1,6 +1,15 @@
+## PRE-to-Archive patch preview（2026-11-12）
+
+- PREからArchiveへの反映候補は、明示patch manifestに対象PRE ID・internal_id・URL・変更前期待値・変更後値・根拠を記録する。判定がconfirmedであることだけを根拠にArchive値を推測しない。
+- プレビューはPRE IDとinternal_idの一意一致、URL一致、ledger／review decisionのconfirmed状態、expected before values等を検証する。不一致・重複・競合時は停止し、既に指定値と一致する場合は冪等な `already_matches` とする。
+- 許可フィールド以外の変更、根拠のない価格・ライセンス・エンジン等の補完、重複レコードの自動統合・削除は禁止。
+- PR #146でread-only previewをmainへ実装済み。Archiveへの書き込み・applyは未実装であり、PRE-00543を含め実データは未変更。実反映は別途、差分確認とユーザーの明示許可を必要とする。
+
+---
+
 # DECISIONS.md
 
-最終確認日：2026-11-10（JST）
+最終確認日：2026-11-13（JST）
 
 このファイルには、複数の作業で繰り返し守るべき設計判断のみを記録する。直近の作業順・実行結果は `NEXT_STEPS.md`、プロジェクト全体像は `PROJECT_STATUS.md` を参照する。
 
@@ -109,3 +118,15 @@
 - 今回の実装ではschema・正規化・Slack表示互換性・DeviantArt metadata構造・回帰テストを更新する。Archive／PRE台帳／判定履歴／seen／Notionの遡及変更は行わない。
 - 実装は `feature/canonical-item-model-v8` で行い、PRは未マージのままレビューする。PR #143とは独立させる。
 
+
+
+## PRE判断からArchiveへの反映（設計案・2026-11-12、未実装）
+
+- PREの判定解決とArchiveの更新は別の処理・状態として扱う。review_decisionsの `confirmed` だけからArchiveの値を推測しない。
+- PRE IDとinternal_idの両方で照合し、URLも補助確認する。不一致・複数Archive候補は自動反映しない。
+- Archiveへの更新は、根拠付きで明示されたフィールドpatchに限定する。source-specific categoryや既存の収集情報を単純上書きしない。
+- schema v8のenumに正規化してから反映する。例：audio→sound。開発情報は `content_type=development_info`、`development_info_type` を用い、`asset_type=null`。
+- 競合時は停止して差分を提示する。dry-runを既定とし、反映履歴・変更前後・反映元を保存して冪等性を確保する。
+- 同じPRE IDに複数Archiveレコードがある場合、自動統合・削除しない。
+- 2026-11-12の読み取り監査では、PRE ID付きArchive 550レコード／549種類、PRE-00526の重複1組、分類差32 PRE IDを確認。詳細は `docs/pre-archive-reconciliation-audit.md`。
+- これは設計提案であり、Archive／PRE台帳／判定履歴の実データ変更は未実施。最初の試験候補はPRE-00543。PRE-00540のproject表現はschema未定義のため保留。
