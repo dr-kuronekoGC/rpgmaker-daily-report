@@ -1,23 +1,21 @@
-## 最新更新（2026-11-13 JST・PR #143追随・CI確認済み）
+## 最新更新（2026-11-13 JST・PR #143マージ後）
 
-- 基準main：c2d30d110291d9ab24bf7e77f07784ac47ce5b4d。PR #143のhead：aafdb39f1d03ddda2047457add2cdaf2661c3287。
-- PR #143は最新mainから1コミット先行・遅れ0。旧ブランチの36コミット遅れを解消し、最新mainを親とする単一コミットに再構成した。
-- 判定条件を修正。明示的な近日公開・配布予定表現のみをpending-releaseとして扱い、「currently in development」「under development」「開発中」「制作中」等だけでは自動除外しない。
-- 現行版・到達可能な個別商品ページ・確認不能な配布リンクは自動除外を防ぐ。既知ストアの個別ページを監査対象に追加し、ストアトップページだけは商品ページとみなさない。
-- 回帰テスト8件を追加。一般的な進捗表現、英語・日本語の将来配布、既存有料商品ページ、ストアトップ、確認不能リンク、本文未取得を対象とする。
-- Auto-screen triage Run #43401436999：success。構文検証と55テストすべて成功。
-- Classification Audit Run #43401436863：success。レビューコーパス監査、open queue監査、成果物生成、Classification Auditまで全工程成功。
-- PR #143はOpen・未マージ。PR CIの成功であり、main上の手動実行・本番Auto-screen実行ではない。手動dispatchなし。
-- PRE台帳・判定履歴・Archive・seen／pending・Notion・mainは変更していない。
+- PR [#143](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/143) は2026-11-13 18:50 JSTにmainへマージ。merge commit：`b578d3aaa2c0bbe7096dca18339d6adccc08100d`。
+- pending-release判定は「近日公開」「配布予定」「not yet released」等の明示的な将来配布表現に限定。一般的な「開発中」「制作中」だけでは自動除外しない。
+- 現行配布物、到達可能な個別商品ページ、確認不能・不確実な配布リンクは自動除外から保護。既知ストアの個別商品ページを認識し、ストアトップだけでは商品ページとみなさない。
+- 回帰テスト8件追加。PR CI：Auto-screen triage 55テスト成功、Classification Audit全工程成功。
+- マージ直後のmain側Auto-screen監査記録更新（commit `c7b50e5`）では2件を確認、auto-resolved 0件。Reddit HTTP 403等は未確認として保持。これは監査記録の更新で、PRE判断の自動変更ではない。
+- PR #143はマージ済み。mainの最新確認commit：`c7b50e515b07598286160807d07f63b38926f7b6`（PR #143 merge後4コミット先行）。
+- 今回、PRE台帳・review_decisions・Archive・seen/pending・Notionの実データ変更は確認していない。main上の手動dispatchも実施していない。
 
 ### 次の作業
-1. PR差分とレビュー内容を最終確認する。
-2. マージは別途ユーザーの明示許可を得てから行う。
-3. main上のClassification Audit再実行が必要な場合は、手動dispatch前に許可を確認する。
+1. PRE-00543のread-only Archive patch previewを実行可能な環境で確認。Archive実反映は差分提示と明示許可後のみ。
+2. PRE-00549・00550のopen理由とNotion同期状態を確認。403や本文未取得を理由に自動解決しない。
+3. main上のClassification Auditを再実行する必要があれば、手動dispatch前に許可を確認する。
+4. 自動判定の境界ケース（NO_DELIVERABLE_REとの優先順、プラットフォーム限定の「not available」表現、ストアリンク検出の統合テスト）を次のコードレビュー候補として確認する。
 
 最終確認日：2026-11-13（JST）
-対象：dr-kuronekoGC/rpgmaker-daily-report。mainとPRブランチを分けて記録。
-
+対象：dr-kuronekoGC/rpgmaker-daily-report。PR #143はmainへマージ済み。
 ---
 
 ## 最新更新（2026-11-13 JST・PR #147マージ後）
