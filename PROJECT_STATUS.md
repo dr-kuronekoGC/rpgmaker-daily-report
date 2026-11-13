@@ -1,14 +1,19 @@
-## 最新確認（2026-11-13 JST・PR #143更新・CI確認済み）
+## 最新確認（2026-11-13 JST・PR #143マージ後）
 
-- main HEAD：c2d30d110291d9ab24bf7e77f07784ac47ce5b4d。
-- PR #143：feature/pre-coming-soon-screen、head aafdb39f1d03ddda2047457add2cdaf2661c3287。mainから1コミット先行・遅れ0、Open・未マージ。
-- pending-release判定は明示的な将来配布表現に限定。一般的な制作進捗表現だけでは除外しない。現行配布物・到達可能な個別商品ページ・確認不能リンクは保護する。
-- 回帰テスト8件追加。Auto-screen triage Run #43401436999 success（構文検証＋55テスト）。Classification Audit Run #43401436863 success（全工程）。
-- これはPRブランチのCI結果。mainの手動Workflow実行や本番Auto-screen実行はしていない。
-- PRE台帳／判定履歴／Archive／seen／pending／Notion／mainは変更なし。PR #143はマージしていない。
+- PR [#143](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/143) は2026-11-13 18:50 JSTにmerged。merge commit：`b578d3aaa2c0bbe7096dca18339d6adccc08100d`。
+- main最新確認commit：`c7b50e515b07598286160807d07f63b38926f7b6`。PR merge commitから後続の監査記録更新が1件入り、base `c2d30d1` から4コミット先行。
+- 追加されたpending-release判定は、明示的な将来配布表現＋識別可能な素材種別＋現行成果物／利用可能な商品ページ／配布先候補なし、の条件を満たす場合だけ除外する。一般的な制作進捗表現だけでは除外しない。
+- 現行版、到達可能な個別ストア商品ページ、確認不能・不確実な配布リンクは保護。ストアトップページのみでは商品ページ扱いしない。
+- PR CI：Auto-screen triage Run #43401436999 success（構文検証＋55テスト）、Classification Audit Run #43401436863 success（全工程）。
+- merge後のmain監査記録（commit `c7b50e5`）：2件確認、auto-resolved 0件。Reddit HTTP 403等の取得不能項目は未確認として保持。監査JSONの更新のみで、PRE判定の自動解決はなし。
+- 今回の確認範囲ではPRE台帳／review_decisions／Archive／seen／pending／Notionの変更なし。mainでの手動workflow dispatchなし。
+
+### 次の作業
+- PRE-00543のread-only previewを確認。Archive実反映は明示許可待ち。
+- PRE-00549・00550のopen理由とNotion同期を確認。
+- main上のClassification Audit再実行は必要性を判断し、dispatch前に許可を確認。
 
 最終確認日：2026-11-13（JST）
-
 ---
 
 ## 最新確認（2026-11-13 JST・PR #147マージ後）
