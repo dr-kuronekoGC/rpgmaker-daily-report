@@ -1,3 +1,14 @@
+## 最新確認（2026-11-13 JST・PREレビュー／Archive preview確認）
+
+- PRE台帳：550件（resolved 548／open 2：PRE-00549、PRE-00550）。PRE-00549・00550ともReddit HTTP 403で本文未取得のためkeep_open。Notionでは該当2ページの存在、URL一致、確認状態「未確認」を直接確認。Notion全550件の同期は未確認。
+- PRE-00543：read-only previewの検証条件を、2026-09〜11 Archive全4,216件、PRE台帳、review_decisions、manifestに対して照合。PRE ID／internal_id各1件、URL一致、ledger resolved/confirmed、decision confirmed、expected値一致。結果相当は `ready_for_review`、変更候補4項目。重複・競合なし。
+- PRE-00543の検証は読み取りのみ。Archive実データ、PRE台帳、判定履歴、seen／pending、Notionは変更していない。GitHub上の `tools/preview_archive_patches.py` を実行したものではなく、同ツールの照合ロジックに沿ったデータ検証。CLI実行成功とは区別する。
+- PRE-00549／00550は本文・配布先の確認ができていないためopenを維持。タイトルだけでnot_applicableにしない。
+- PR #147はmainへマージ済み。Classification Auditのmain上最新runは別途読み取り確認が必要。手動dispatchなし。
+
+最終確認日：2026-11-13（JST）
+---
+
 ## 最新確認（2026-11-13 JST・PR #143マージ後）
 
 - PR [#143](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/143) は2026-11-13 18:50 JSTにmerged。merge commit：`b578d3aaa2c0bbe7096dca18339d6adccc08100d`。
