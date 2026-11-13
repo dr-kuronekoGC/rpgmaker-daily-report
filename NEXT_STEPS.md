@@ -1,7 +1,7 @@
 ## 最新更新（2026-11-13 JST・PR #145マージ後）
 
 ### 現在の状態（main）
-- main HEAD：`e2f3638c60b72ba3299986a62156e8587199cd78`（PR #145 merge commit）。
+- PR #145 merge commit：`e2f3638c60b72ba3299986a62156e8587199cd78`。この後のmain更新は管理MDのみ。
 - PR #144（Canonical Item Model v8）、PR #146（read-only PRE-to-Archive patch preview）、PR #145（PRE-to-Archive監査・設計文書）はすべてマージ済み。
 - PR #145は文書4ファイルのみ（203 additions／1 deletion）。Archive、PRE台帳、判定履歴、seen、pending、Notionの実データ変更なし。
 - PRE台帳：550件（resolved 548／open 2、PRE-00549・PRE-00550）。判定記録324件。
