@@ -5,7 +5,7 @@
 - 現行配布物、到達可能な個別商品ページ、確認不能・不確実な配布リンクは自動除外から保護。既知ストアの個別商品ページを認識し、ストアトップだけでは商品ページとみなさない。
 - 回帰テスト8件追加。PR CI：Auto-screen triage 55テスト成功、Classification Audit全工程成功。
 - マージ直後のmain側Auto-screen監査記録更新（commit `c7b50e5`）では2件を確認、auto-resolved 0件。Reddit HTTP 403等は未確認として保持。これは監査記録の更新で、PRE判断の自動変更ではない。
-- PR #143はマージ済み。mainの最新確認commit：`c7b50e515b07598286160807d07f63b38926f7b6`（PR #143 merge後4コミット先行）。
+- PR #143後のコード／監査データ確認点：`c7b50e515b07598286160807d07f63b38926f7b6`（PR #143 merge後4コミット先行）。その後、管理MDを更新（`5ba238c`、`dda7e18`）。
 - 今回、PRE台帳・review_decisions・Archive・seen/pending・Notionの実データ変更は確認していない。main上の手動dispatchも実施していない。
 
 ### 次の作業
