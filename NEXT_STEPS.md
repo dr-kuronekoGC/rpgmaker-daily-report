@@ -1,3 +1,24 @@
+## 最新更新（2026-11-13 11:20 JST・main確認）
+
+### 現在の状態（main）
+- main HEAD：`811f6c439289cc9a26da5fd6fc9f3e798c455f04`（2026-11-13 10:53 JST、Update report data）。
+- PR #144（Canonical Item Model v8）とPR #146（read-only PRE-to-Archive patch preview）はマージ済み。
+- PRE台帳：550件（resolved 548／open 2、PRE-00549・PRE-00550）。判定記録324件。
+- Archive：4,216件（2026-09：1,862／2026-10：2,255／2026-11：99）。Pending 0件、Global seen 4,494件。
+- PRE-00543の明示patch案は `data/review/archive_patch_proposals.json` に登録済み。プレビュー機能は読み取り専用で、Archiveへのapply／書き込みは未実装。PR #146のテスト工程では実データfixtureを使った検証を含め成功したが、独立した手動プレビュー実行結果は未確認。
+- Notionは2026-11-10に546件を直接確認したのが最後。現在の550件への同期状態は未確認。
+- PR #145は文書のみ4ファイル（+163行）。監査文書の4,211件等の数値は2026-11-12時点のhistorical snapshotとして維持する。mainが進んだことを理由に過去の監査値を書き換えない。
+- PR #145のActionsは前段の監査・正規化工程が成功し、最後の `Run existing classification audit` のみ失敗。既知の `source_status_overrides.json` の形式不整合によるもので、文書差分が原因とは確認されていない。PRのGitHub mergeabilityはtrue、mergeable_stateはunstable。
+
+### 次の作業（順番に）
+1. PR #145の文書差分を最新mainと照合したうえでマージする。Archive／PRE台帳等の実データは変更しない。
+2. PRE-00543のread-only previewを実行し、結果と差分を確認する。Archiveへの実反映は別途内容を提示し、ユーザーの明示許可を得るまで行わない。
+3. Classification Auditの形式不整合は独立課題として原因・正規データ形式を確認してから修正する。監査を通すためだけに対応表を変えない。
+4. PRE-00549・00550のopen状態とNotion同期状態は別々に確認する。未確認のNotion同期を成功扱いしない。
+5. PR #143は最新mainとの差分を別途確認する。今回のPR #145とは混ぜない。
+
+---
+
 ## 最新更新（2026-11-12 JST・PR #146マージ後）
 
 ### 完了
