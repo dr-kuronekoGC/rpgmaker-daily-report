@@ -118,3 +118,12 @@ Two English-language sources are being added on a separate branch:
 - **Raizen's Plugins** (https://raizen884.itch.io/): creator's itch.io catalogue for RPG Maker plugins.
 
 Both collectors establish a baseline on their first successful run, preventing the existing catalogue from flooding Slack as if it were new. Subsequent runs only emit newly discovered URLs. The sources are being tested in a pull request before merging into the daily workflow.
+
+
+## Pending-release screening boundary (2026-11-13)
+
+A post may be excluded as a future-only release notice only when the text explicitly indicates future availability (for example, "Coming Soon", "available soon", "近日公開", or "配布予定"), a recognized resource type is identifiable, and no current deliverable, reachable product listing, or usable/inconclusive delivery destination is present.
+
+Generic development-progress wording is not equivalent to a release announcement. Phrases such as "currently in development", "still in development", "under development", "in development", "開発中", "制作中", "en desarrollo", and "в разработке" do not trigger pending-release exclusion on their own. A current Lite/free version, a reachable paid product listing, or a candidate delivery link that cannot be conclusively checked protects the item from automatic exclusion. An unavailable source body is never evidence that no deliverable exists.
+
+The runtime audit records the pending-release signal and live product-listing signal separately. Storefront recognition is limited to reachable, item-specific paths on known product hosts; a generic storefront homepage is not sufficient. These rules affect only future auto-screen suggestions and do not retroactively change resolved PRE decisions.

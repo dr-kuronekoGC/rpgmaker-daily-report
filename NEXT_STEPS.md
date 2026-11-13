@@ -1,3 +1,21 @@
+## 最新更新（2026-11-13 JST・PR #143を最新mainへ追随）
+
+- PR #143「Add conservative pending-release screening」は feature/pre-coming-soon-screen 上で更新作業中。基準mainは c2d30d110291d9ab24bf7e77f07784ac47ce5b4d。
+- 旧実装に含まれていた「currently in development」「under development」「開発中」「制作中」等をpending-release条件から除外し、明示的な近日公開・配布予定表現だけを対象にする。
+- 既存配布物・到達可能な個別商品ページ・確認不能な配布リンクは自動除外を防ぐ。ストアトップページだけでは商品掲載ありと判定しない。
+- 回帰テストを追加し、英語・日本語・他言語の一般的な制作進捗表現、明示的な将来配布、既存有料商品、確認不能リンク、本文未取得を確認する。
+- PR #143は未マージ。今回の作業はPRブランチ内のみ。PRE台帳・判定履歴・Archive・seen／pending・Notionは変更しない。Actions結果は更新後のPR実行を待って記録する。
+
+### 次の作業
+1. PR #143更新後のActionsを確認し、失敗があれば原因を限定して修正する。
+2. CI成功後、PR差分と最新mainとの整合を再確認する。
+3. PR #143のマージは別途ユーザーの明示許可を得る。手動dispatch・本番データ変更は行わない。
+
+最終確認日：2026-11-13（JST）
+対象：dr-kuronekoGC/rpgmaker-daily-report。mainとPRブランチを分けて記録。
+
+---
+
 ## 最新更新（2026-11-13 JST・PR #147マージ後）
 
 - PR #147 `Fix classification audit archive file selection` はマージ済み。merge commit / main HEAD：`607495f331023b3084838c0ec90e9ba293407a96`。
