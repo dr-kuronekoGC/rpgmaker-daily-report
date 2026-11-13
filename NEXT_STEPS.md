@@ -1,26 +1,22 @@
-## 最新更新（2026-11-13 JST・PR #147作成後）
+## 最新更新（2026-11-13 JST・PR #147マージ後）
 
-### 完了
-- PR #145（PRE-to-Archive監査・設計文書）はmainへマージ済み。merge commit：`e2f3638c60b72ba3299986a62156e8587199cd78`。文書4ファイルのみで、Archive／PRE台帳／判定履歴／seen／pending／Notionの実データ変更なし。
-- PRE-00543はmainの現行データで、PRE台帳・判定記録・ArchiveのPRE ID／internal_id／URLとexpected valuesが一致することを読み取り確認。提案差分は `content_type: asset→development_info`、`asset_type: other→null`、`development_info_type: null→runtime_player`、`tags: []→[iPhone, ゲームプレイヤー]`。previewロジック相当の検証結果は `ready_for_review`。実際のPython CLIを実行したものではなく、Archiveへの書き込みもしていない。
-- Classification Auditの失敗原因を特定。旧 `load_latest_archive()` が `*.json` 全体を対象にし、月別Archive以外の `archive_index.json`／`source_status_overrides.json` も読み込んでいた。
-
-### 現在の状態
-- PR [#147](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/147) `Fix classification audit archive file selection` はopen・未マージ。月別ファイル `20??-??.json` のみを対象にする修正と回帰テストを追加。
-- PR #147のClassification Audit Run #43353057499はsuccess。unit tests、open-review audit、corpus normalization、既存Classification Auditの全工程が成功。
-- PR #147は2ファイルのみ（`tools/audit_classification.py`、`tools/test_audit_classification_archive_selection.py`）。Archive／PRE台帳等のデータ変更なし。マージはユーザー確認待ち。
-- PRE台帳550件（resolved 548／open 2：PRE-00549、PRE-00550）、判定記録324件。Archive 4,216件（9月1,862／10月2,255／11月99）。Pending 0件、Global seen 4,494件。
+- PR #147 `Fix classification audit archive file selection` はマージ済み。merge commit / main HEAD：`607495f331023b3084838c0ec90e9ba293407a96`。
+- 修正：`tools/audit_classification.py` は月別Archiveの `20??-??.json` のみ読み込む。metadata JSONを除外。回帰テスト `tools/test_audit_classification_archive_selection.py` 追加。
+- PR #147のClassification Audit Run #43353057499は全工程success。マージ後のmainでコードとテストファイルの存在を確認済み。ただしmain上でのworkflow再実行は未確認（手動dispatchしていない）。
+- PR #145もマージ済み。PR #144、#146、#145、#147がmain反映済み。
+- PRE-00543は読み取り照合で提案4項目がready相当。実際のpreview CLI実行・Archive実反映は未実施。書き込みなし。
+- PRE台帳550件（resolved 548／open 2：PRE-00549、PRE-00550）、判定記録324件。Archive 4,216件（9月1,862／10月2,255／11月99）。Pending 0件、Global seen 4,494件（前回確認値）。
 - Notionは2026-11-10に546件を直接確認したのが最後。550件への最新同期は未確認。
-- PRE-00543のArchive実反映は未実施。read-only previewツールにapply機能はない。実反映は別途設計・差分提示・明示許可が必要。
 
 ### 次の作業
-1. PR #147の差分と成功CIを確認し、マージするかユーザー判断を得る。許可なしにマージしない。
-2. PR #147がmainへ入った後、Classification Auditがmainでも成功することを確認する。
-3. PRE-00543の提案差分をユーザーが確認する。Archive実反映は明示許可が出るまで行わない。
-4. PRE-00549・00550のopen状態とNotion同期状態を別々に確認する。
-5. PR #143は最新mainとの差分を別途確認する。PR #147とは混ぜない。
+1. PR #147マージ後のmainでClassification Auditを再確認する。必要ならユーザーにActionsの手動実行許可を求める（勝手にdispatchしない）。
+2. PRE-00543のread-only previewを実行可能な環境で確認し、出力を提示。Archive実反映は差分提示と明示許可後のみ。
+3. PRE-00549・00550のopen理由とNotion同期状態を確認。
+4. PR #143を最新mainと照合する。別PRとして扱い、merge/rebase/pushは確認を取る。
+5. PRE-00540 project分類はschema v8未定義のため保留。PRE-00526重複は自動統合・削除しない。
 
 ---
+
 
 
 
