@@ -1,24 +1,27 @@
-## 最新更新（2026-11-13 JST・PR #145マージ後）
+## 最新更新（2026-11-13 JST・PR #147作成後）
 
-### 現在の状態（main）
-- PR #145 merge commit：`e2f3638c60b72ba3299986a62156e8587199cd78`。この後のmain更新は管理MDのみ。
-- PR #144（Canonical Item Model v8）、PR #146（read-only PRE-to-Archive patch preview）、PR #145（PRE-to-Archive監査・設計文書）はすべてマージ済み。
-- PR #145は文書4ファイルのみ（203 additions／1 deletion）。Archive、PRE台帳、判定履歴、seen、pending、Notionの実データ変更なし。
-- PRE台帳：550件（resolved 548／open 2、PRE-00549・PRE-00550）。判定記録324件。
-- Archive：4,216件（2026-09：1,862／2026-10：2,255／2026-11：99）。Pending 0件、Global seen 4,494件。
-- PRE-00543の明示patch案は `data/review/archive_patch_proposals.json` に登録済み。previewはread-onlyで、Archiveへのapply／書き込み機能は未実装。PR #146のテスト工程では実データfixtureを使った検証を含め成功したが、独立したpreviewコマンドの実行結果は未確認。
-- Notionは2026-11-10に546件を直接確認したのが最後。現在の550件への同期状態は未確認。
-- PR #145のActions Run #43352038677は、前段の監査・正規化工程が成功し、最後の `Run existing classification audit` のみ失敗。既知の `source_status_overrides.json` 形式不整合による。文書差分による失敗とは確認されていない。これは未解決の独立課題として扱う。
-- 監査文書の4,211件／549 PRE ID等は2026-11-12時点のhistorical snapshotとして維持する。
+### 完了
+- PR #145（PRE-to-Archive監査・設計文書）はmainへマージ済み。merge commit：`e2f3638c60b72ba3299986a62156e8587199cd78`。文書4ファイルのみで、Archive／PRE台帳／判定履歴／seen／pending／Notionの実データ変更なし。
+- PRE-00543はmainの現行データで、PRE台帳・判定記録・ArchiveのPRE ID／internal_id／URLとexpected valuesが一致することを読み取り確認。提案差分は `content_type: asset→development_info`、`asset_type: other→null`、`development_info_type: null→runtime_player`、`tags: []→[iPhone, ゲームプレイヤー]`。previewロジック相当の検証結果は `ready_for_review`。実際のPython CLIを実行したものではなく、Archiveへの書き込みもしていない。
+- Classification Auditの失敗原因を特定。旧 `load_latest_archive()` が `*.json` 全体を対象にし、月別Archive以外の `archive_index.json`／`source_status_overrides.json` も読み込んでいた。
 
-### 次の作業（順番に）
-1. PRE-00543のread-only previewを実行し、実際の出力・before/after・根拠を確認する。Archiveへの実反映は別工程で、差分を提示しユーザーの明示許可を得るまで行わない。
-2. Classification Auditの形式不整合を独立調査する。期待するJSON形式と実ファイルを確認し、監査を通すためだけのデータ変更はしない。
-3. PRE-00549・00550のopen状態とNotion同期状態を別々に確認する。未確認の同期を成功扱いしない。
-4. PR #143は最新mainとの差分を別途確認する。PR #145とは混ぜない。
-5. PRE-00540のproject表現はschema v8に未定義のため保留。PRE-00526の重複も自動統合・削除しない。
+### 現在の状態
+- PR [#147](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/147) `Fix classification audit archive file selection` はopen・未マージ。月別ファイル `20??-??.json` のみを対象にする修正と回帰テストを追加。
+- PR #147のClassification Audit Run #43353057499はsuccess。unit tests、open-review audit、corpus normalization、既存Classification Auditの全工程が成功。
+- PR #147は2ファイルのみ（`tools/audit_classification.py`、`tools/test_audit_classification_archive_selection.py`）。Archive／PRE台帳等のデータ変更なし。マージはユーザー確認待ち。
+- PRE台帳550件（resolved 548／open 2：PRE-00549、PRE-00550）、判定記録324件。Archive 4,216件（9月1,862／10月2,255／11月99）。Pending 0件、Global seen 4,494件。
+- Notionは2026-11-10に546件を直接確認したのが最後。550件への最新同期は未確認。
+- PRE-00543のArchive実反映は未実施。read-only previewツールにapply機能はない。実反映は別途設計・差分提示・明示許可が必要。
+
+### 次の作業
+1. PR #147の差分と成功CIを確認し、マージするかユーザー判断を得る。許可なしにマージしない。
+2. PR #147がmainへ入った後、Classification Auditがmainでも成功することを確認する。
+3. PRE-00543の提案差分をユーザーが確認する。Archive実反映は明示許可が出るまで行わない。
+4. PRE-00549・00550のopen状態とNotion同期状態を別々に確認する。
+5. PR #143は最新mainとの差分を別途確認する。PR #147とは混ぜない。
 
 ---
+
 
 
 ## 最新更新（2026-11-12 JST・PR #146マージ後）
