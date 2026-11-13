@@ -1,3 +1,20 @@
+## 最新更新（2026-11-13 JST・PRE-00549/00550確認／PRE-00543 preview）
+
+### 完了
+- PRE-00549：Reddit HTTP 403で本文未取得。検索で類似する募集投稿を確認したが、元投稿との同一性は未確定。募集・協業依頼の可能性が高いものの、確定除外せずGitHubはopenのまま。Notionページは存在し、URL一致・確認状態「未確認」を確認。
+- PRE-00550：Reddit HTTP 403で本文未取得。タイトルから自作ゲーム紹介の可能性が高いが、本文・配布先を確認できず確定除外は保留。GitHubはopenのまま。Notionページは存在し、URL一致・確認状態「未確認」を確認。
+- PRE-00543：read-only preview相当の検証を実行。Archive月別JSON（2026-09〜11）全4,216件、PRE台帳、review_decisions、patch manifestを照合。PRE ID／internal_idの一意一致、URL一致、resolved／confirmed、expected値一致を確認。結果は `ready_for_review`。差分はcontent_type: asset→development_info、asset_type: other→null、development_info_type: null→runtime_player、tags: []→[iPhone, ゲームプレイヤー]。
+- PRE-00543の検証は読み取りのみ。Archive、PRE台帳、判定記録、seen／pending、Notionは変更していない。公式CLIを実行したのではなく、同CLIの検証条件を取得済み全データに対して同等に照合した結果。CLI実行成功とは表現しない。
+
+### 次の作業
+1. PR #147マージ後のmainでClassification Auditの最新run／workflow結果を読み取り確認。必要なら手動dispatch前に許可を求める。
+2. PRE-00543の差分をユーザーに提示し、Archive実反映の明示許可を待つ。許可前にArchiveを書き換えない。
+3. PRE-00549・00550は本文取得可能な正規情報が見つかるまでopen／未確認を維持。Notion全550件の同期完了とは扱わない（今回直接確認したのは該当2ページ）。
+4. PR #143の境界ケース（NO_DELIVERABLE_RE優先順、プラットフォーム限定not available、ストアリンク統合テスト）をコードレビュー候補として扱う。
+
+最終確認日：2026-11-13（JST）
+---
+
 ## 最新更新（2026-11-13 JST・PR #143マージ後）
 
 - PR [#143](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/143) は2026-11-13 18:50 JSTにmainへマージ。merge commit：`b578d3aaa2c0bbe7096dca18339d6adccc08100d`。
