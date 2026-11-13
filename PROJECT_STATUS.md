@@ -1,20 +1,22 @@
-## 最新確認（2026-11-13 JST・main HEAD）
+## 最新確認（2026-11-13 JST・PR #145マージ後）
 
 **この節を現在の状態の正とする。**
 
-- main HEAD：`811f6c439289cc9a26da5fd6fc9f3e798c455f04`（2026-11-13 10:53 JST）。
-- PR #144（Canonical Item Model v8）とPR #146（PRE-to-Archive read-only patch preview）はマージ済み。
+- main HEAD：`e2f3638c60b72ba3299986a62156e8587199cd78`（PR #145 merge commit）。
+- PR #144（Canonical Item Model v8）、PR #146（PRE-to-Archive read-only patch preview）、PR #145（監査・設計文書）はすべてマージ済み。
+- PR #145は文書4ファイルのみ（203 additions／1 deletion）。Archive、PRE台帳、判定履歴、seen、pending、Notionの実データ変更なし。
 - PRE台帳550件（resolved 548／open 2：PRE-00549、PRE-00550）、判定記録324件。
 - Archiveは4,216件（9月1,862／10月2,255／11月99）。Pending 0件、Global seen 4,494件。
-- `data/review/archive_patch_proposals.json` にPRE-00543の明示patch案がある。プレビューは読み取り専用で、Archive実データへのapply機能はない。PRE-00543のArchive実データ、PRE台帳、判定履歴、seen／pending、Notionをこの作業で変更していない。
+- `data/review/archive_patch_proposals.json` にPRE-00543の明示patch案がある。previewは読み取り専用で、Archive実データへのapply機能はない。PRE-00543のArchive実データ、PRE台帳、判定履歴、seen／pending、Notionは未変更。
 - Notionは2026-11-10に546件を直接確認したのが最後。550件への最新同期は未確認。
-- PR #145は監査・設計文書4ファイル（+163行）のみ。監査ファイルの4,211件／549 PRE ID等は2026-11-12時点の読み取り監査結果であり、当時のhistorical snapshotとして正しい。後続のmainデータ更新と混同しない。
-- PR #145のActionsは前段の監査・正規化工程成功、既存Classification Auditのみ失敗。既知の `source_status_overrides.json` 形式不整合であり、PR文書変更による失敗とは確認されていない。GitHub API上のmergeableはtrue、mergeable_stateはunstable。
-- PR #143は別件で未マージ。PR #145と同時に扱わない。
+- PR #145のActions Run #43352038677は前段の監査・正規化工程成功、既存Classification Auditのみ失敗。既知の `source_status_overrides.json` 形式不整合であり、文書変更による失敗とは確認されていない。別課題として残す。
+- `docs/pre-archive-reconciliation-audit.md` の4,211件／549 PRE ID等は2026-11-12時点の監査スナップショットであり、後続データ更新で書き換えない。
+- PR #143は別件で未マージ。最新mainとの差分確認が必要。
 
 最終確認日：2026-11-13（JST）
 
 ---
+
 
 ## 最新確認（2026-11-12 JST・PR #146マージ後）
 
