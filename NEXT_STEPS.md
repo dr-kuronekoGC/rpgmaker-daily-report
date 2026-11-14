@@ -1,3 +1,24 @@
+## 最新更新（2026-11-14 JST・PRE-00504再確認）
+
+### 確認済み
+- main HEAD：`f9718650074ec9b93831a009cf15f796cff378bb`。未マージPR 0件。
+- PRE台帳552件、review_decisions 328件。Auto-screen監査は2026-11-14 05:55 JSTに4件を確認し、自動解決0件。
+- PRE-00504の元投稿は現在閲覧可能。タイトル・本文は「音響技術、編曲、音楽理論、楽器演奏レッスンに関する書籍／記事の大規模パック」。素材ファイル配布ではなく、学習・技術参考資料の紹介に見える。
+- 配布リンクはYandex Diskへ転送されるが、今回の閲覧環境ではリンク先の内容・現行の配布可否を確認できなかった。
+- 現在のPRE台帳は自動判定 `not_applicable`。過去のauto_screen_logには、最初の自動除外を「開発資料の可能性があり根拠不足」として取り消し、再確認へ戻した記録もある。今回の確認では台帳・判定履歴を変更していない。
+
+### 次に行う作業（ひとつずつ）
+1. **PRE-00504の人手判定を決める。** 候補は「開発情報（technical_reference／tutorial）」または「RPG Makerとの関連性が確認できず対象外」。音楽素材として扱う根拠は現時点でない。判断が決まるまで、自動判定 `not_applicable` を正解ラベルとして精度評価に使わない。
+2. 次に、PRE台帳の `status=resolved` と `classification_status=needs_review` が併存する項目を整理する。今回見たPRE-00504にもこの状態があるため、状態の意味・既存処理を確認してから提案する。
+3. PRE-00552のRpg2S本文取得方式の調査は継続課題。HTML全体は取得できるが投稿本文は抽出できず、現状は `body_unverified`。プラグインの人手判定は維持する。
+
+### 制約
+- PRE-00504の判定変更、Archive反映、コード修正、PR、merge、Actions手動実行、Slack通知は未実施。実施前にユーザー確認を得る。
+- GitHub Actionsの最新実行一覧・ジョブログは今回取得できていない。監査JSONだけを根拠にworkflow成功と記載しない。
+
+最終確認日：2026-11-14（JST）
+---
+
 ## 最新更新（2026-11-13 JST・Classification Audit起動条件確認）
 
 - PR #147のClassification Audit Run #43353057499（PR head `a84f384`）は `success`。auditジョブの全ステップ成功（レビューコーパスのテスト、open queue監査、成果物作成、既存classification audit）。
