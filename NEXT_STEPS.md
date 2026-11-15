@@ -1,3 +1,23 @@
+## 最新更新（2026-11-15 JST・PR #148マージ／状態併存調査）
+
+### 完了
+- PR [#148](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/148) をmainへマージ。PRE-00504に「参考資料」タグとユーザー判断の注記を追加し、元の自動判定根拠は保持。
+- PRE台帳552件、判定履歴328件。台帳の `status=resolved` は552件、`classification_status=needs_review` は548件、`reviewed` は4件。
+- `status` と `classification_status` の併存をコード調査。前者はPRE確認キューの解決状態、後者は自動詳細分類の確信度・人手確認要否。自動事前確認、人手判定取込、Notion同期はいずれも `status` 等を更新するが、`classification_status` は原則そのまま残す実装。
+- したがって `resolved`＋`needs_review` は現在の実装に沿った状態であり、未解決PREが548件残っているという意味ではない。PRE台帳全552件はキュー上resolved。
+
+### 次に行う作業（ひとつずつ）
+1. **PRE-00552の本文取得方式を調査する。** Rpg2SページはHTTP 200でも投稿本文を抽出できず `body_unverified`。人手判定 `plugin` は維持し、取得HTMLと既存抽出セレクタを比較して最小修正案を検討する。コード変更前に原因と影響範囲を提示する。
+2. 必要なら、`classification_status` の意味と人手確認後の値（現行の `reviewed` を含む）を整理する設計案を作る。今回の調査だけを理由に548件を一括更新しない。
+3. PRE-00504のNotion状態は未確認。同期が必要と判断した場合は、実行前に対象範囲と影響を確認する。全件同期済みとは扱わない。
+
+### 制約
+- 今回、コード・PRE台帳・Archive・判定履歴・Notion・Slackは変更していない。Actionsの手動実行もなし。
+- merge／デプロイ／削除／リセット／Notion同期／通知は、別途明示許可を得てから行う。
+
+最終確認日：2026-11-15（JST）
+---
+
 ## 最新更新（2026-11-14 JST・PRE-00504再確認）
 
 ### 確認済み
