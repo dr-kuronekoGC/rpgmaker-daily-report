@@ -1,3 +1,17 @@
+## 最新確認（2026-11-15 JST・PR #148マージ／PRE状態の併存調査）
+
+- PR [#148](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/148)「Record PRE-00504 as reference material」をmainへマージ。merge commit：`93c1b92a6e9ff925bbbc9aac33fe6557a4a07dbb`。
+- `data/review/classification_review.json` のPRE台帳は552件、`review_decisions.json` は328件。台帳上の `status=resolved` は552件すべて。`classification_status=needs_review` は548件、`reviewed` は4件。
+- PRE-00504は `tags` に「参考資料」を追加し、音響技術・編曲・音楽理論等の学習資料として保持するユーザー判断を `review_note` に記録。`decision=not_applicable`、`status=resolved`、`classification_status=needs_review`、自動判定の `resolution_method`／`resolution_evidence` は維持。PR #148はこの1ファイルのみ変更。
+- 状態併存の原因をmainのコードで確認。`status` はPRE確認キュー上の解決状態、`classification_status` はItemの自動詳細分類の確信度／人手確認要否を表す別フィールド。
+- `review_queue.py` の自動事前確認は、ページ404/410・明示的削除表示・配布物のない明確な素材募集等を確定した場合、`status`／`decision`／`resolved_at`／`review_note` を更新するが、`classification_status` は変更しない。
+- `tools/apply_review_decisions.py` の人手判定取込も、`status`／`decision`／`resolved_at`／`review_note` の更新に限定し、`classification_status` は変更しない。`tools/sync_notion_review.py` もNotion「済」をGitHubの `status=resolved` に反映するが、`classification_status` は変更しない。
+- よって `resolved` と `needs_review` の併存は、現行実装上は別の意味を持つフィールドが独立して更新されるために発生する。PRE確認キューからは解決済みでも、自動分類確信度の履歴値は `needs_review` のまま残る。現時点でデータ破損とは断定しない。
+- 今回は読み取り調査と管理MD更新のみ。コード、PRE台帳、判定履歴、Archive、Notion、Slack、Actions実行状態は変更していない。全552件のNotion同期状態も再確認していない。
+
+最終確認日：2026-11-15（JST）
+---
+
 ## 最新確認（2026-11-14 JST・PRE-00504再確認／分類点検）
 
 - データ確認時のmain基準コミット：`f9718650074ec9b93831a009cf15f796cff378bb`（この後、管理MD3点の更新コミットを追加）。PRE台帳552件、判定履歴328件。未マージPR 0件。
