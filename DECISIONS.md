@@ -1,3 +1,13 @@
+## PRE台帳の状態フィールドの意味（2026-11-15）
+
+- `status` はPRE確認キュー上の状態（`open`／`resolved`）を表す。人手判定の取込、自動事前確認、Notionの「済」同期によって更新される。
+- `classification_status` はItemの自動詳細分類の確信度・人手確認要否を表す（例：`auto`／`needs_review`）。PREキューの解決状態とは別の軸である。
+- 現行コードでは、`review_queue.py` の自動事前確認、`tools/apply_review_decisions.py` の人手判定取込、`tools/sync_notion_review.py` のNotion同期は、PREの `status` 等を更新しても `classification_status` を原則更新しない。そのため `status=resolved` と `classification_status=needs_review` は併存し得る。
+- 2026-11-15時点の552件では、`status=resolved` 552件、`classification_status=needs_review` 548件、`reviewed` 4件。これは548件がPREキューで未解決という意味ではない。
+- この状態だけを根拠に既存レコードを一括書き換えない。将来変更する場合は、自動分類の結果履歴を残すのか、人手レビュー完了状態を別フィールドにするのかを先に決め、既存データ・Archive・Notion・Slack表示への影響を確認する。
+
+---
+
 ## 開発情報・学習資料の扱い（2026-11-14）
 
 - 書籍・記事・チュートリアル・技術資料のパックは、グラフィック／サウンド素材やプラグインの配布物とは別に評価する。素材ファイルの配布リンクが切れていることだけで、資料自体の情報価値まで否定しない。
