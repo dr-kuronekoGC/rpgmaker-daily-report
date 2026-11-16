@@ -1,21 +1,27 @@
-## 最新更新（2026-11-15 JST・PR #148マージ／状態併存調査）
+## 最新更新（2026-11-16 JST・PRE-00552本文取得調査）
 
-### 完了
-- PR [#148](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/148) をmainへマージ。PRE-00504に「参考資料」タグとユーザー判断の注記を追加し、元の自動判定根拠は保持。
-- PRE台帳552件、判定履歴328件。台帳の `status=resolved` は552件、`classification_status=needs_review` は548件、`reviewed` は4件。
-- `status` と `classification_status` の併存をコード調査。前者はPRE確認キューの解決状態、後者は自動詳細分類の確信度・人手確認要否。自動事前確認、人手判定取込、Notion同期はいずれも `status` 等を更新するが、`classification_status` は原則そのまま残す実装。
-- したがって `resolved`＋`needs_review` は現在の実装に沿った状態であり、未解決PREが548件残っているという意味ではない。PRE台帳全552件はキュー上resolved。
+### 確認済み
+- main確認コミット：`63df019`（PR #149マージ後）。PR #148・#149はマージ済み。未マージPRは今回の検索で0件。
+- PRE台帳552件、review_decisions 328件。全552件が `status=resolved`。`classification_status=needs_review` は548件、`reviewed` は4件。
+- PRE-00552はRpg2S IT「Cambia il centro dello schermo」。ユーザー判定 `plugin` と注記は台帳・判定履歴に記録済み。本文取得不十分を理由に判定を変更しない。
+- Auto-screen監査JSONは2026-11-16 04:50:44 JST、検査0件／自動解決0件。Actions runの成功確認とは区別する。最新run一覧・ジョブログは未確認。
+- 本文取得コードにはInvision専用controller routeとWayback fallbackが既にある。短いメタデータ／汎用レイアウト本文を `body_unverified` にする安全策と関連テストも存在する。
+- PRE-00552個別の取得診断・保存済み本文は今回のmain上で確認できず、失敗したfallbackや実DOMは特定できていない。既存のreview_link_auditにも該当URLの記録なし。
 
 ### 次に行う作業（ひとつずつ）
-1. **PRE-00552の本文取得方式を調査する。** Rpg2SページはHTTP 200でも投稿本文を抽出できず `body_unverified`。人手判定 `plugin` は維持し、取得HTMLと既存抽出セレクタを比較して最小修正案を検討する。コード変更前に原因と影響範囲を提示する。
-2. 必要なら、`classification_status` の意味と人手確認後の値（現行の `reviewed` を含む）を整理する設計案を作る。今回の調査だけを理由に548件を一括更新しない。
-3. PRE-00504のNotion状態は未確認。同期が必要と判断した場合は、実行前に対象範囲と影響を確認する。全件同期済みとは扱わない。
+1. **PRE-00552の実取得診断を特定する。** Actionsの該当runログ、監査artifact、保存済みbody auditの実際の出力先を調べる。ログが残っていなければ、実行前にユーザーへ確認し、対象PREだけの読み取り取得・診断を行う方法を提案する。ログイン・WAF等の迂回はしない。
+2. 実HTML／診断が得られた場合に限り、通常HTML・Invision controller・Waybackのどこで本文抽出できなかったかを比較し、最小修正と回帰テストを提案する。原因が分からない段階でセレクタや取得方式を追加しない。
+3. `classification_status` の意味と人手確認後の状態は別途設計検討。今回の548件を一括更新しない。
+4. PRE-00504のNotion状態は未確認。必要性と対象範囲を整理してから同期を検討し、全件同期済みとは扱わない。
 
 ### 制約
-- 今回、コード・PRE台帳・Archive・判定履歴・Notion・Slackは変更していない。Actionsの手動実行もなし。
-- merge／デプロイ／削除／リセット／Notion同期／通知は、別途明示許可を得てから行う。
+- PRE-00552の `plugin` 判定を保持する。本文取得失敗だけで対象外にしない。
+- 今回は管理MD更新のみ。コード・PRE台帳・判定履歴・Archive・Notion・Slack・Actions実行状態は変更していない。
+- Actions手動実行、Notion同期、PRマージ等は、必要性を説明して明示許可を得てから行う。
 
-最終確認日：2026-11-15（JST）
+最終確認日：2026-11-16（JST）
+---
+
 ---
 
 ## 最新更新（2026-11-14 JST・PRE-00504再確認）
