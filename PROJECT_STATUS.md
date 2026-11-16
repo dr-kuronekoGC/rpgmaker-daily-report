@@ -1,7 +1,7 @@
 ## 最新確認（2026-11-16 JST・PRE-00552本文取得調査）
 
 - mainの最新確認コミット：`63df019`（PR #149のマージ後）。PR #148・#149はいずれもマージ済み。未マージPRは今回の検索で0件。
-- PRE台帳：552件、判定履歴：328件。台帳の `status=resolved` は552件、`classification_status=needs_review` は548件、`reviewed` は4件。PRE-00552は `decision=plugin`／`classification_status=reviewed) で、ユーザー判断「本文取得が不十分でも対象外にしない」を保持。
+- PRE台帳：552件、判定履歴：328件。台帳の `status=resolved` は552件、`classification_status=needs_review` は548件、`reviewed` は4件。PRE-00552は `decision=plugin`／`classification_status=reviewed` で、ユーザー判断「本文取得が不十分でも対象外にしない」を保持。
 - Auto-screen監査JSONの最新記録は2026-11-16 04:50:44 JST、検査0件・自動解決0件。これはその回の対象が0件だった記録であり、Actions run全体の成功を証明するものではない。最新Actions run一覧・ジョブログは今回取得できていない。
 - PRE-00552のURLはRpg2S ITのInvision topic。既存 `tools/fetch_historical_review_bodies.py` に通常HTML抽出、Invision controller URLへの再試行、Internet Archive fallback、短い汎用本文を `body_unverified` とする保護処理がある。関連回帰テストも存在する。
 - 実際のPRE-00552について、取得時のHTML・診断レコードを今回確認できていない。現行 `review_link_audit.json` に同URLの該当記録は見つからず、historical body auditの出力ファイルも想定パスには存在しなかった。したがって、どのfallbackが失敗したか、実ページのDOMがどうなっているかは未確定。新しいセレクタ追加等のコード変更はまだ行わない。
