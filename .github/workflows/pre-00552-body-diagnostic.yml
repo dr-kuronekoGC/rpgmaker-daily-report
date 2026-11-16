@@ -1,0 +1,40 @@
+name: PRE-00552 Read-only Body Diagnostic
+
+on:
+  push:
+    branches:
+      - "diagnostics/pre-00552-body"
+    paths:
+      - "tools/diagnose_pre_00552.py"
+      - ".github/workflows/pre-00552-body-diagnostic.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install project dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Diagnose PRE-00552 only
+        run: python tools/diagnose_pre_00552.py
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pre-00552-body-diagnostic
+          path: pre-00552-body-diagnostic.json
+          if-no-files-found: warn
+          retention-days: 14
