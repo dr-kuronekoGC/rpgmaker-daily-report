@@ -62,11 +62,11 @@ def inspect_public_topic_js(session, script_sources: list[str]) -> dict:
     result["sha256"] = hashlib.sha256(response.content).hexdigest()
 
     patterns = {
-        "fetch": r"\\bfetch\\s*\\(",
-        "jquery_ajax": r"(?:\\$|jQuery)\\.ajax\\s*\\(",
-        "ips_request": r"\\bips\\.(?:get|post|ajax)\\s*\\(",
-        "xml_http_request": r"\\bXMLHttpRequest\\b",
-        "axios": r"\\baxios\\.",
+        "fetch": r"\bfetch\s*\(",
+        "jquery_ajax": r"(?:\$|jQuery)\.ajax\s*\(",
+        "ips_request": r"\bips\.(?:get|post|ajax)\s*\(",
+        "xml_http_request": r"\bXMLHttpRequest\b",
+        "axios": r"\baxios\.",
     }
     contexts = []
     for label, pattern in patterns.items():
@@ -77,10 +77,10 @@ def inspect_public_topic_js(session, script_sources: list[str]) -> dict:
             end = min(len(source), match.end() + 240)
             contexts.append({
                 "signal": label,
-                "context": re.sub(r"\\s+", " ", source[start:end])[:420],
+                "context": re.sub(r"\s+", " ", source[start:end])[:420],
             })
 
-    literals = re.findall(r"""["']([^"'\\r\\n]{1,240})["']""", source)
+    literals = re.findall(r"""["']([^"'\r\n]{1,240})["']""", source)
     needles = ("index.php", "controller=", "/api/", "ajax", "topic", "post", "content", "load", "comment")
     seen = set()
     for literal in literals:
