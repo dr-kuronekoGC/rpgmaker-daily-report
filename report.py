@@ -106,6 +106,18 @@ def build_report(items, review_items=None, carryover_items=None, source_results=
         if item.get("classification_status") != "needs_review"
     ]
 
+    # Resource candidates are intentionally collected for human curation.
+    # Even when their detailed taxonomy needs review, keep them visible in
+    # Slack instead of silently dropping them after a successful webhook call.
+    resource_candidate_items = [
+        item
+        for item in items
+        if (
+            item.get("classification_status") == "needs_review"
+            and item.get("resource_intent") == "resource_candidate"
+        )
+    ]
+
     for item in normal_items:
 
         item = item.copy()
@@ -382,6 +394,28 @@ def build_report(items, review_items=None, carryover_items=None, source_results=
                     report.append(
                         detail_line
                     )
+
+        report.append("")
+
+    # --------------------------------------
+    # Resource candidates awaiting taxonomy review
+    # --------------------------------------
+
+    if resource_candidate_items:
+        report.append(
+            "【📥 素材候補（分類確認中）】"
+        )
+        report.append(
+            "素材候補として収集しました。詳細分類は未確定のため、公開・採用の判断は保留です。"
+        )
+
+        for item in resource_candidate_items:
+            title = item.get("title", "タイトルなし")
+            url = item.get("url", "")
+            source = item.get("source", "")
+            link = f"<{url}|{title}>" if url else title
+            source_label = f"[{source}] " if source else ""
+            report.append(f"・{source_label}{link}")
 
         report.append("")
 
