@@ -10,7 +10,7 @@
 ### 次に行う作業（ひとつずつ）
 1. 次回Daily Reportで、素材候補専用欄への表示と `seen.json` のcommitを確認する。PR CI successだけで実運用成功とは扱わない。
 2. 収集元の失敗を個別に調査する。Reddit RSSは2026-11-13終了告知があり、単なる一時障害として扱わない。RPG Maker SU／Project1／RM Planet／RPG Maker Networkの403はアクセス制限の迂回をせず、正規の公開RSS/API等を確認する。Comunidad ESは1ページ成功・2ページ目404のPARTIALとして扱い、全面停止としない。
-4. PR #151のPRE-00552診断workflowのrun／artifactを特定して結果を確認する。Run #44087672710はClassification Auditでsuccessだが、診断本体の実行結果ではない。PR #150・#151は引き続き別PRとして扱う。
+3. PR #151のPRE-00552診断workflowのrun／artifactを特定して結果を確認する。Run #44087672710はClassification Auditでsuccessだが、診断本体の実行結果ではない。PR #150・#151は引き続き別PRとして扱う。
 
 ### 制約
 - PRE台帳・判定履歴・Archive・seen／pending実データ・Notion・Slackは変更していない。
