@@ -1,3 +1,15 @@
+## 最新確認（2026-11-19 JST・Slack通知漏れ／seen保存漏れの修正PR）
+
+- 定期実行Run #245（2026-11-18 11:55 JST）はworkflow success／Slack webhook HTTP 200。ただしSource Healthは29 OK／1 PARTIAL／5 ERROR。Slack送信成功は全情報源の取得成功を意味しない。
+- Archiveに保存された `resource_intent=resource_candidate` かつ `classification_status=needs_review` の38件（Reddit 20、RPG Maker Guild 18）が、PRE分類確認キューにもSlack通常レポートにも表示されず、Webhook成功後にpendingから消える経路を確認。Run #245のGuild新着MZero3DもArchiveには存在するがSlack本文に出ていなかった。
+- 最小表示修正をPR [#152](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/152) として作成。素材候補（分類確認中）の専用欄を追加し、他のneeds_review項目の従来動作は維持。回帰テスト2件を追加。Classification Audit Run #289は全工程success。**PRはopen・未マージ。**
+- Reddit collectorの既読ファイル `seen.json` がworkflowの `git add 'seen_*.json'` に一致せず、commitされていないことを確認。PR [#153](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/153) で `git add seen.json` を追加。Classification Audit Run #290は全工程success。**PRはopen・未マージ。**
+- PR #150（管理MD更新）・#151（PRE-00552 read-only診断）もopen・未マージ。これらと#152/#153は別ブランチ・別目的。mainにはまだ今回の2修正は反映されていない。
+- 今回、PRE台帳・判定履歴・Archive・seen／pending実データ・Notion・Slackは変更していない。Daily Reportの手動／定期workflowも起動していない。PR CIのClassification Auditは実行済み。
+
+最終確認日：2026-11-19（JST）
+---
+
 ## 最新確認（2026-11-15 JST・PR #148マージ／PRE状態の併存調査）
 
 - PR [#148](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/148)「Record PRE-00504 as reference material」をmainへマージ。merge commit：`93c1b92a6e9ff925bbbc9aac33fe6557a4a07dbb`。
