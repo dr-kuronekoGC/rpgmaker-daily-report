@@ -416,3 +416,9 @@ PR #139/#83は2026-11-09に差分確認後クローズ済み。未マージで�
 - `classification_review.json` は category=`開発情報`、asset_type=`development_tool`、content_type=`other` として記録し、decision=`confirmed`／resolvedに更新。`review_decisions.json` にも同じ判断を追加。
 - 元のRedditページはHTTP 403で本文未取得。分類根拠はユーザーによる内容確認であり、本文を直接取得できたわけではない。
 - Notionは次回の定期同期でPRE-00543が「済」になることを確認する。手動Workflow実行は不要。
+
+
+## 次の確認（2026-11-20）
+1. PR `fix/rpgmaker-su-manual-only-20261120` のClassification Audit等のCI結果と差分を確認し、問題なければユーザー判断でマージする（自動マージしない）。
+2. RPG Maker SUは手動確認のみ。運営側が許可する公開RSS/API等が確認できた場合に限り、自動収集の再開を検討する。
+3. 次の取得失敗元を一件だけ選び、直近Actionsログ・現行コード・サイト運営者の案内・正規フィード/APIの有無を確認する。
