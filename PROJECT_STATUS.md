@@ -2,12 +2,14 @@
 
 - 定期実行Run #245（2026-11-18 11:55 JST）はworkflow success／Slack webhook HTTP 200。ただしSource Healthは29 OK／1 PARTIAL／5 ERROR。Slack送信成功は全情報源の取得成功を意味しない。
 - Archiveに保存された `resource_intent=resource_candidate` かつ `classification_status=needs_review` の38件（Reddit 20、RPG Maker Guild 18）が、PRE分類確認キューにもSlack通常レポートにも表示されず、Webhook成功後にpendingから消える経路を確認。Run #245のGuild新着MZero3DもArchiveには存在するがSlack本文に出ていなかった。
-- 最小表示修正をPR [#152](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/152) として作成。素材候補（分類確認中）の専用欄を追加し、他のneeds_review項目の従来動作は維持。回帰テスト2件を追加。Classification Audit Run #289は全工程success。**PRはopen・未マージ。**
-- Reddit collectorの既読ファイル `seen.json` がworkflowの `git add 'seen_*.json'` に一致せず、commitされていないことを確認。PR [#153](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/153) で `git add seen.json` を追加。Classification Audit Run #290は全工程success。**PRはopen・未マージ。**
-- PR #150（管理MD更新）・#151（PRE-00552 read-only診断）もopen・未マージ。PR #151のRun #44087672710はClassification Auditでsuccessだが、診断本体の実行結果ではない。診断workflowのrun／artifactは別途特定が必要。これらと#152/#153は別ブランチ・別目的。mainにはまだ今回の2修正は反映されていない。
+- PR [#152](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/152) を2026-11-19 12:40 JSTにmainへsquash merge。merge commit：`1d918b6c90de7be8a8b3c97b7e91dbf8f25076eb`。素材候補（分類確認中）の専用欄を追加し、他のneeds_review項目の従来動作は維持。回帰テスト2件を追加。Classification Audit Run #289 success。次回定期実行での実地表示は未確認。
+- Reddit collectorの既読ファイル `seen.json` がworkflowの `git add 'seen_*.json'` に一致せず、commitされていないことを確認。PR [#153](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/153) を2026-11-19 12:40 JSTにmainへsquash merge。merge commit：`4281860a6fe529f6033142813edbfa80f598a90f`。workflowに `git add seen.json` を追加。Classification Audit Run #290 success。次回定期実行での実際のcommitは未確認。
+- PR [#154](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/154) の申し送りMD更新も2026-11-19 12:41 JSTにsquash merge。merge commit：`fe52ce664b87e84106d38296dc607e435a012959`。PR #150（管理MD更新）・#151（PRE-00552 read-only診断）は別PRとしてopen・未マージ。PR #151のRun #44087672710はClassification Auditでsuccessだが、診断本体の実行結果ではない。診断workflowのrun／artifactは別途特定が必要。
 - 今回、PRE台帳・判定履歴・Archive・seen／pending実データ・Notion・Slackは変更していない。Daily Reportの手動／定期workflowも起動していない。PR CIのClassification Auditは実行済み。
 
 最終確認日：2026-11-19（JST）
+
+今回のmain反映：PR #152／#153／#154をマージ済み。merge commitは上記参照。Daily Reportの次回実行・Slack表示・seen.json commitによる実運用確認は未完了。
 ---
 
 ## 最新確認（2026-11-15 JST・PR #148マージ／PRE状態の併存調査）
