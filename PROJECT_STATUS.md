@@ -399,3 +399,10 @@ PR #117マージ後の通常収集で、各項目が改善・継続・解消の�
 - 秘密情報を記載しない。
 
 - 2026-11-09：PRE-00540（RPG Maker Union、スレッドID 2624）は、ユーザー確認により素材・プラグインではなくRPG Makerプロジェクト一式の配布と判明。`classification_review.json` を「プロジェクト配布」として記録し、素材・プラグインの登録対象外（`not_applicable`／resolved）に更新。判定記録にも追加。Notionへの反映は次回の同期実行待ち。
+
+
+## 2026-11-20：RPG Maker SUの自動取得を一時停止（PR確認待ち）
+- RPG Maker SU（Нейтральная полоса）はサイト自体と投稿が存続している一方、GitHub Actionsから素材板・プラグイン板の両方がHTTP 403。運営者も2026-10-20に「ボットをブロックする新しい層を追加」と公表している。
+- 公開RSSの利用可否は確認できず、Web取得でもRSSエンドポイントは検証不能。アクセス制限を回避する手段は採用しない。
+- PR `fix/rpgmaker-su-manual-only-20261120` でcollector registryから除外し、`data/sites/sites.json` の `collection/source_check/discovery` をfalseに変更。サイトの状態は `active` のまま（閉鎖扱いではない）。
+- PRのテスト・レビュー・マージは未完了。既読データ、Archive、PRE、Slack、Notionは変更していない。
