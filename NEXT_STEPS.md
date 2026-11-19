@@ -1,3 +1,25 @@
+## 最新更新（2026-11-19 JST・収集候補のSlack表示／Reddit既読保存）
+
+### 完了（PR作成・未マージ）
+- Run #245の調査で、`resource_candidate` かつ `classification_status=needs_review` の38件がArchiveにはあるのにSlackにもPRE分類確認欄にも出ず、送信成功後にpendingから消える表示ロジック上の漏れを確認。
+- PR [#152](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/152)：Slackに「素材候補（分類確認中）」欄を追加。収集元・元リンクを表示し、詳細分類未確定であることを明記。非candidateのneeds_reviewは従来どおり通常欄から除外。回帰テストを追加。Classification Audit Run #289 success。
+- PR [#153](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/153)：workflowのcommit対象に `seen.json` を追加。既存 `seen_*.json` は維持。Classification Audit Run #290 success。
+- どちらもopen・未マージ。mainでは未修正のため、次回の定期実行での改善はまだ確認していない。
+
+### 次に行う作業（ひとつずつ）
+1. PR #152・#153の差分とCI結果を確認し、マージするか判断する。マージはユーザーの明示許可後のみ。
+2. マージ後の次回Daily Reportで、素材候補専用欄への表示と `seen.json` のcommitを確認する。PR CI successだけで実運用成功とは扱わない。
+3. 収集元の失敗を個別に調査する。Reddit RSSは2026-11-13終了告知があり、単なる一時障害として扱わない。RPG Maker SU／Project1／RM Planet／RPG Maker Networkの403はアクセス制限の迂回をせず、正規の公開RSS/API等を確認する。Comunidad ESは1ページ成功・2ページ目404のPARTIALとして扱い、全面停止としない。
+4. PR #151のPRE-00552診断Run #44087672710の結果を確認し、本文取得方法の調査を続ける。PR #150〜#153はそれぞれ別目的として扱う。
+
+### 制約
+- PRE台帳・判定履歴・Archive・seen／pending実データ・Notion・Slackは変更していない。
+- 収集workflowの手動実行、PRのmerge、情報源の停止・削除、seenリセットは行わない。
+- 403等を回避せず、本文未取得を理由にPREを自動除外しない。
+
+最終確認日：2026-11-19（JST）
+---
+
 ## 最新更新（2026-11-15 JST・PR #148マージ／状態併存調査）
 
 ### 完了
