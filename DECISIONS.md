@@ -165,3 +165,9 @@
 - HTTP 403を閉鎖・コンテンツ消失とは扱わない。サイトは `active` のまま維持し、`collection=false`、`source_check=false`、`discovery=false` として手動確認対象にする。
 - RSS/APIは正規の公開経路とActions環境での取得成功が確認できるまで導入しない。アクセス制限の回避、User-Agent偽装の強化、プロキシ等は行わない。
 - 再開には公開経路の確認とGitHub Actionsでの読み取り専用検証を必要とする。
+
+
+## 2026-11-21：RM Planetの自動取得停止
+- RM Planetはサイト自体の活動が確認できる一方、GitHub ActionsからのRSS取得がHTTP 403で継続している。サイト閉鎖とは扱わない。
+- 正規の公開RSS/APIまたはActionsから許可された取得経路が確認できるまで、自動収集・Source Check・Discoveryを停止し、手動確認対象として残す。SITE-00032のsource_site_statusはactiveを維持し、collection/source_check/discoveryをfalseにする。
+- HTTP 403のアクセス制限をUser-Agent偽装、Cookie取得、プロキシ等で回避しない。再開には正規経路とGitHub Actionsからの読み取り専用検証の両方を必要とする。
