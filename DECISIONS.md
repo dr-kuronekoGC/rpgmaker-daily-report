@@ -158,3 +158,10 @@
 - 同じPRE IDに複数Archiveレコードがある場合、自動統合・削除しない。
 - 2026-11-12の読み取り監査では、PRE ID付きArchive 550レコード／549種類、PRE-00526の重複1組、分類差32 PRE IDを確認。詳細は `docs/pre-archive-reconciliation-audit.md`。
 - これは設計提案であり、Archive／PRE台帳／判定履歴の実データ変更は未実施。最初の試験候補はPRE-00543。PRE-00540のproject表現はschema未定義のため保留。
+
+
+## 2026-11-20：RPG Maker SUの自動取得停止
+- RPG Maker SUはHTTP 403が素材板・プラグイン板の両方で継続し、サイト運営者がボット対策の追加を公表しているため、自動取得を続けない。
+- HTTP 403を閉鎖・コンテンツ消失とは扱わない。サイトは `active` のまま維持し、`collection=false`、`source_check=false`、`discovery=false` として手動確認対象にする。
+- RSS/APIは正規の公開経路とActions環境での取得成功が確認できるまで導入しない。アクセス制限の回避、User-Agent偽装の強化、プロキシ等は行わない。
+- 再開には公開経路の確認とGitHub Actionsでの読み取り専用検証を必要とする。
