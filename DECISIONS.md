@@ -171,3 +171,10 @@
 - RM Planetはサイト自体の活動が確認できる一方、GitHub ActionsからのRSS取得がHTTP 403で継続している。サイト閉鎖とは扱わない。
 - 正規の公開RSS/APIまたはActionsから許可された取得経路が確認できるまで、自動収集・Source Check・Discoveryを停止し、手動確認対象として残す。SITE-00032のsource_site_statusはactiveを維持し、collection/source_check/discoveryをfalseにする。
 - HTTP 403のアクセス制限をUser-Agent偽装、Cookie取得、プロキシ等で回避しない。再開には正規経路とGitHub Actionsからの読み取り専用検証の両方を必要とする。
+
+
+## 2026-11-21：RPG Maker Networkの自動取得停止
+- RPG Maker Network（SITE-00035）のGitHub Actions収集は、通常Run #250・#251の2回で /resources/ がHTTP 403となった。失敗はHTML取得段階で発生。
+- サイト自体の状態は未確定。2026年6月の復旧報告、11月の第三者オフライン判定、Cloudflare Radarの有効証明書記録があり、証拠は一貫しない。HTTP 403だけで閉鎖とは判定しない。
+- 正規の公開RSS/APIまたはActionsから許可された取得経路が確認できるまで、自動収集・Source Check・Discoveryを停止し、手動確認対象として残す。source_site_statusはactiveを維持し、collection/source_check/discoveryをfalseにする。
+- HTTP 403のアクセス制限をUser-Agent偽装、Cookie取得、プロキシ等で回避しない。再開には正規経路とGitHub Actionsからの読み取り専用検証の両方を必要とする。
