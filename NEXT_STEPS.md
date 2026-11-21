@@ -4,9 +4,9 @@
 - 対象：収集元ごとの取得失敗を一件ずつ原因調査し、必要な場合だけ最小修正する。
 - RPG Maker SU（Нейтральная полоса）は、素材板・プラグイン板のHTTP 403が複数回継続。サイト運営者がボット対策の追加を公表しており、サイト自体は稼働中。
 - 公開RSS/APIは利用可能な正規経路として確認できていない。アクセス制限の回避は行わない。
-- PR [#156](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/156) で自動収集を停止する変更を提案中。ブランチ：`fix/rpgmaker-su-manual-only-20261120`、HEAD：`69343038c04a3347b8bba79ce9ad01a85fe1366d`。
+- PR [#156](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/156) で自動収集を停止する変更を提案中。ブランチ：`fix/rpgmaker-su-manual-only-20261120`、ブランチの最新コミットはPR #156のCommits欄を参照。
 - 変更内容：collector registryからRPG Maker SUを除外し、SITE-00022の `collection/source_check/discovery` をfalseに変更。サイト状態は `active` のまま。
-- PR #156はOpen・未マージ。Audit workflow run #44570389526 は2026-11-21確認時点で全ステップsuccess。GitHub APIの `mergeable` はnullで、マージ可能性は未確定。ユーザーの明示許可なしにマージしない。
+- PR #156はOpen・未マージ。Audit workflow run #44570389526 は2026-11-21確認時点で全ステップsuccess。当時のGitHub APIでは `mergeable` がnullだったため、mainとの再整合後に再確認する。ユーザーの明示許可なしにマージしない。
 - PR差分は5ファイル。コード・サイト台帳・管理MDのみ。seen／pending、Archive、PRE台帳・判定履歴、Slack、Notionは変更していない。
 
 ### 次に行うこと（順番を守る）
