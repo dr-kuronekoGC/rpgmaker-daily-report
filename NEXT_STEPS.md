@@ -6,14 +6,15 @@
 - 公開RSS/APIは利用可能な正規経路として確認できていない。アクセス制限の回避は行わない。
 - PR [#156](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/156) で自動収集を停止する変更を提案中。ブランチ：`fix/rpgmaker-su-manual-only-20261120`、ブランチの最新コミットはPR #156のCommits欄を参照。
 - 変更内容：collector registryからRPG Maker SUを除外し、SITE-00022の `collection/source_check/discovery` をfalseに変更。サイト状態は `active` のまま。
-- PR #156はOpen・未マージ。Audit workflow run #44570389526 は2026-11-21確認時点で全ステップsuccess。当時のGitHub APIでは `mergeable` がnullだったため、mainとの再整合後に再確認する。ユーザーの明示許可なしにマージしない。
+- PR #156はOpen・未マージ。mainとの再整合後の最新HEADは `d653fcfc1a38ed40f27db4eda18b6c180716418d`。Classification Audit Run #299（44845585811）は332テストを含め全ステップsuccess、GitHub APIの `mergeable=true`。マージはユーザー判断待ち。
 - PR差分は5ファイル。コード・サイト台帳・管理MDのみ。seen／pending、Archive、PRE台帳・判定履歴、Slack、Notionは変更していない。
 
 ### 次に行うこと（順番を守る）
-1. PR #156の最新状態・チェック結果・mergeableを再確認する。CI successと実運用での取得停止確認は区別する。マージはユーザー判断待ち。
-2. 次の対象は **RM Planet**。最新Daily ReportのSource Health／ジョブログ、現行collector、サイトの稼働状況、正規RSS/APIの有無を確認する。
-3. 原因を確定してから、必要な場合のみ一件に絞った修正案を提示・実施する。タイムアウト等の一時障害なら停止ではなく、限定的な再試行が妥当かを検討する。
-4. その後、RPG Maker Network等を同じ手順で一件ずつ調べる。複数ソースをまとめて変更しない。
+1. PR #156はmain再整合・Audit Run #299成功まで確認済み。Open・未マージ・mergeable=true。マージするかユーザー判断を得る。
+2. RM PlanetはRun #250・#251の両方でRSS URLがHTTP 403。サイト運営者の2026年10月更新でも活動継続が確認できるため、閉鎖ではなくアクセス拒否と判断。
+3. RSS URL `/forums/-/index.rss` はXenForoの標準フィード形式。別の正規公開RSS/APIやActionsから許可された取得経路は確認できていない。403回避は行わない。
+4. RM Planetの自動収集を手動確認のみへ変更する最小修正は、PR #156の扱いが確定してから別PRで行う。現時点でコード・サイト台帳は未変更。
+5. その後、RPG Maker Network等を同じ手順で一件ずつ調べる。複数ソースをまとめて変更しない。
 
 ### 作業上の制約
 - Daily Reportの手動実行・Slack通知を行わない。次回の定期実行ログで確認する。
@@ -449,3 +450,12 @@ PR #139/#83は2026-11-09に差分確認後クローズ済み。未マージで�
 1. PR `fix/rpgmaker-su-manual-only-20261120` のClassification Audit等のCI結果と差分を確認し、問題なければユーザー判断でマージする（自動マージしない）。
 2. RPG Maker SUは手動確認のみ。運営側が許可する公開RSS/API等が確認できた場合に限り、自動収集の再開を検討する。
 3. 次の取得失敗元を一件だけ選び、直近Actionsログ・現行コード・サイト運営者の案内・正規フィード/APIの有無を確認する。
+
+
+## RM Planet調査結果（2026-11-21）
+- 通常収集 Run #250（44660171510）とRun #251（44786186758）の両方で `https://forum.rmplanet.com/forums/-/index.rss` がHTTP 403。Source Healthは `community_rmplanet: ERROR / requests=0 succeeded, 1 failed / seen_before=0`。
+- collector `sources/community_rmplanet.py` は共通 `get_feed()` を使用。RSS取得前に失敗しているため、現状はフィード解析や分類処理の問題ではない。
+- 運営者Casper Gamingの2026年10月Recapは、RM Planetが活動中で新規利用者が増えており、フォーラムに新しい投稿があると案内。サイト閉鎖ではない。
+- `/forums/-/index.rss` はXenForoの標準的な全体フィード形式。HTTP 403はサイト側のアクセス拒否と整合する。正規の別RSS/APIや許可された代替取得経路は未確認。
+- User-Agent偽装、プロキシ、Cookie取得等による制限回避は行わない。自動収集の一時停止（サイト状態activeのまま、collection/source_check/discovery=false）を最小修正案とするが、コード変更は未実施。
+- seen／Archive／PRE台帳・判定履歴／pending／Slack／Notionは今回の調査で変更していない。
