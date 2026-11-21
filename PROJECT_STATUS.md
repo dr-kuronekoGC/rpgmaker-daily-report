@@ -1,3 +1,14 @@
+## 最新申し送り（2026-11-21 JST・RPG Maker Networkの自動取得停止）
+
+- PR [#156](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/156)（RPG Maker SU）とPR [#157](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/157)（RM Planet）はマージ済み。
+- RPG Maker Network（SITE-00035）は通常収集Run #250（2026-11-20 02:21 UTC）とRun #251（2026-11-20 17:44 UTC）の両方で、`https://rpgmaker.net/resources/` がHTTP 403。collectorはHTML取得段階で失敗し、ページ解析には到達していない。
+- サイトの状態は断定しない。2026-06-02に復旧したというコミュニティ投稿がある一方、2026-11月の第三者稼働確認はオフラインとするものがあり、Cloudflare Radarには2026-09-30発行の有効期間中証明書が記録されている。いずれもGitHub Actionsからの取得可否を説明する決定的証拠ではない。
+- 正規の代替RSS/APIおよびActionsから許可された取得経路は未確認。HTTP 403の回避は行わず、SITE-00035は`active`のままcollector registryから除外し、collection/source_check/discoveryをfalseにする。手動確認対象として保持。
+- 変更PR `fix/rpgmaker-network-manual-only-20261121` は独立PRとしてレビューする。Classification Audit等のCI成功を確認してから、マージはユーザーの明示許可を得る。
+- seen／pending／Archive／PRE台帳・判定履歴／Slack／Notionは変更しない。Daily Reportの手動実行・Slack通知も行わない。
+
+---
+
 ## 最新申し送り（2026-11-21 JST・RM Planetの自動取得停止）
 
 - PR [#156](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/156) を2026-11-21にマージ。mainのmerge commit：`6821a58751bcf72e58116d35343096e0a2f929cc`。RPG Maker SUはサイト状態activeのまま、collection/source_check/discovery=falseとして手動確認対象。
