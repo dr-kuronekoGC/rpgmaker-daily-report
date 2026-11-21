@@ -1,3 +1,13 @@
+## 最新申し送り（2026-11-21 JST・RM Planetの自動取得停止）
+
+- PR [#156](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/156) を2026-11-21にマージ。mainのmerge commit：`6821a58751bcf72e58116d35343096e0a2f929cc`。RPG Maker SUはサイト状態activeのまま、collection/source_check/discovery=falseとして手動確認対象。
+- RM Planetは通常収集Run #250・#251でRSS取得がHTTP 403。サイトは活動中であり閉鎖ではない。正規の代替RSS/API・Actionsから許可された取得経路は未確認。アクセス制限の回避は行わない。
+- 今回の変更PR `fix/rmplanet-manual-only-20261121` はRM Planet（SITE-00032）の自動収集を停止する独立PR。collector registryから除外し、サイト状態activeを維持したままcollection/source_check/discovery=falseにする。
+- コード・設定変更後にClassification Audit等のCIを確認する。PRは未マージのままレビューし、マージはユーザーの明示許可を得る。
+- seen／pending／Archive／PRE台帳・判定履歴／Slack／Notionは変更しない。Daily Reportの手動実行・Slack通知も行わない。
+
+---
+
 ## 最新申し送り（2026-11-21 JST・収集元エラーの個別精査）
 
 ### 現在の作業
