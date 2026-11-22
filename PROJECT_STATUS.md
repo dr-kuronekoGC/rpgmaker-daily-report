@@ -1,3 +1,14 @@
+## 最新確認（2026-11-22 JST・Reddit RSS提供終了への対応PR）
+
+- Run #252で `https://www.reddit.com/r/RPGMaker/.rss` がHTTP 404。Reddit公式は2026-11-13からRSS提供を終了し、管理していないコミュニティ向けの代替手段はないと告知している。
+- 失敗段階は共通RSS取得。分類・解析処理には到達していない。サイト閉鎖ではなく、RSS提供終了による取得経路の消失と判断。
+- PR準備ブランチ `fix/reddit-rss-retired-20261122` で、`sources/registry.py` から `community_reddit` を除外し、SITE-00008を `active` のまま `collection=false`／`source_check=false`／`discovery=false` に変更。DECISIONS.mdにも再開条件と禁止事項を記録。
+- 既存Archive、seen／seen_global、PRE台帳、判定履歴は変更していない。Redditの非公式中継・未承認API・アクセス制限回避は採用しない。
+- 既存の `test_disabled_collection_sites_are_not_active_collectors` が、collection=falseのcollectorをregistryに残さないことを検証する。PR CIで実行結果を確認する。
+- PRは未マージ。Daily Reportの手動実行・Slack通知なし。マージはユーザーの明示許可待ち。
+
+---
+
 ## 最新申し送り（2026-11-21 JST・RPG Maker Networkの自動取得停止）
 
 - PR [#156](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/156)（RPG Maker SU）とPR [#157](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/157)（RM Planet）はマージ済み。
