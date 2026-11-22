@@ -178,3 +178,11 @@
 - サイト自体の状態は未確定。2026年6月の復旧報告、11月の第三者オフライン判定、Cloudflare Radarの有効証明書記録があり、証拠は一貫しない。HTTP 403だけで閉鎖とは判定しない。
 - 正規の公開RSS/APIまたはActionsから許可された取得経路が確認できるまで、自動収集・Source Check・Discoveryを停止し、手動確認対象として残す。source_site_statusはactiveを維持し、collection/source_check/discoveryをfalseにする。
 - HTTP 403のアクセス制限をUser-Agent偽装、Cookie取得、プロキシ等で回避しない。再開には正規経路とGitHub Actionsからの読み取り専用検証の両方を必要とする。
+
+## 2026-11-22：Reddit RSS提供終了に伴う自動収集停止
+
+- Redditは公式に2026-11-13からRSSフィード提供を終了すると告知し、管理していないコミュニティのRSS利用には代替手段がないと明記した。Run #252で `https://www.reddit.com/r/RPGMaker/.rss` がHTTP 404となったのは、この提供終了と整合する。
+- Reddit r/RPGMaker（SITE-00008）はサイト自体の状態を `active` のまま保持し、定期収集registryからcollectorを除外する。サイト台帳は `collection=false`、`source_check=false`、`discovery=false` とする。
+- 公式の代替RSS/APIや許可された取得経路がないため、非公式RSS中継、未承認API、ログインCookie・プロキシ等による代替・回避は行わない。
+- 過去のArchive、seen／seen_global、PRE台帳、判定履歴は変更・削除・リセットしない。Reddit上の既存情報は履歴として保持する。
+- 再開を検討する場合は、Redditが公式に許可するアクセス経路・利用条件を確認し、別途読み取り専用検証を行う。
