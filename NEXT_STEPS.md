@@ -1,3 +1,14 @@
+## 次の作業（2026-11-25 JST・Comunidad ES APIページ送り補正）
+
+1. PR `fix/comunidad-es-next-api-url-20261125` の差分を確認し、PRを作成する。
+2. PRのClassification Audit／unittest CI結果を確認する。失敗時はComunidad ES関連の差分だけを修正する。
+3. PRは未マージでレビュー結果を報告し、マージはユーザーの明示許可を待つ。
+4. マージ許可後、次回の通常scheduled runでComunidad ESの2ページ目URL・HTTP結果・取得ページ数を確認する。手動workflowは起動しない。
+5. `/api/discussions?...page[offset]=50` が実際に成功するまでは、修正の実地成功を確定扱いしない。失敗時も1ページ目の結果保持とPARTIAL報告を維持する。
+
+今回の修正では、同一originかつpathが正確に `/discussions` のときだけ `/api/discussions` に補正する。クエリ文字列は維持し、別ホスト・別scheme・別port・想定外パスは補正しない。
+
+---
 ## 次の作業（2026-11-25 JST・Comunidad ES APIページ送り）
 
 1. 診断PRのCIを確認し、未マージのまま保持。
