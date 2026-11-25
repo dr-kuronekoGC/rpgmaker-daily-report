@@ -1,3 +1,13 @@
+## 最新確認（2026-11-25 JST・Reddit RSS提供終了対応）
+
+- Run #263（45580543789）で `https://www.reddit.com/r/RPGMaker/.rss` がHTTP 404。Reddit公式ヘルプはRSSサポートを2026-11-13に終了し、モデレーターを務めていないコミュニティのRSS利用には代替手段がないと明記している。
+- Reddit r/RPGMaker（SITE-00008）はサイト自体を `active` のまま保持し、定期収集registryから `community_reddit` を除外。サイト台帳は `collection=false`／`source_check=false`／`discovery=false` とする。
+- 既存PR #159は古いmainをbaseとしておりmergeable=falseだったため、最新main `51528f08917e9e22065cada4df9b92ec937329f2` から専用ブランチ `fix/reddit-rss-retired-20261125` を作り直した。registry／SITE台帳／回帰テスト／管理MD3点を対象とする。
+- Reddit collectorの実装ファイル、既存Archive、seen／seen_global、pending、PRE台帳、判定履歴は削除・変更しない。Slack／Notionも変更しない。非公式RSS中継、未承認API、Cookie・proxy等による回避は採用しない。
+- PRはCI確認後にレビューする。Daily Reportの手動実行・Slack通知なし。マージはユーザーの明示許可待ち。
+
+---
+
 ## 最新確認（2026-11-25 JST・Comunidad ES next URL補正PR）
 
 - 実際の作業開始時mainは `de8e99704664e48379aa940fc87763a67da3ae56`。申し送り記載の `6ca9bad...` の後、2026-11-25 04:16 UTCに定期実行由来の `Update report data` コミットが入っていた。
