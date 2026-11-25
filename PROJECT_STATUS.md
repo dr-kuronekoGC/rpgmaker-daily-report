@@ -1,3 +1,12 @@
+## 最新確認（2026-11-25 JST・Comunidad RPG Maker ESのページ送り診断）
+
+- main確認時点：`431f9f02e1a141699992939cb056c895fb6480cf`。Run #259（45477270019）のログで、APIの1ページ目取得後に `links.next` の2ページ目がHTTP 404。コード／テスト上、Flarumの標準形式 `page[offset]=50` が返るケースを確認。
+- 原因の確定に必要な実URLは、既存ログでは出力されていない。次回の通常実行で失敗したページURLを記録する診断PRを作成。応答本文はログに出さない。
+- PRは未マージ。次回定期実行で診断ログが得られるまで、ページサイズ変更や収集停止などの修正は行わない。
+- Daily Reportの手動実行、Slack通知、seen／pending／Archive／PRE／Notionの変更なし。既存PR #159はOpen・未マージで、現在のmainより古いbaseから作成されているため、別途最新mainとの整合が必要。
+
+---
+
 ## 最新申し送り（2026-11-21 JST・RPG Maker Networkの自動取得停止）
 
 - PR [#156](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/156)（RPG Maker SU）とPR [#157](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/157)（RM Planet）はマージ済み。
