@@ -202,3 +202,12 @@
 - 404、403、429、タイムアウト、接続例外などは今回の再試行対象にしない。アクセス制限の回避や共通HTTP層の既定挙動変更は行わない。
 - 再試行中の一時エラーはsource healthの失敗数に重複計上せず、最終結果のみ1件として記録する。最終的に成功した場合は成功1件・失敗0件。
 - この方針はPRで検証中。実際のActions環境での効果はマージ後の通常Runで確認する。
+
+
+## 2026-11-25：Reddit RSS提供終了に伴う自動収集停止（確定）
+
+- Reddit公式ヘルプはRSSフィードのサポートを2026-11-13に終了し、モデレーターを務めていないコミュニティのRSS利用には代替手段がないと案内している。Run #263でも `https://www.reddit.com/r/RPGMaker/.rss` がHTTP 404。
+- Reddit r/RPGMaker（SITE-00008）はサイト自体を `active` のまま保持し、定期収集registryから `community_reddit` を除外する。サイト台帳は `collection=false`、`source_check=false`、`discovery=false` とする。
+- 公式に許可されたアクセス経路が確認されない限り、非公式RSS中継、未承認API、ログインCookie、proxy等を使った代替・アクセス制限回避は行わない。
+- 既存Archive、seen／seen_global、PRE台帳、判定履歴は変更・削除・リセットしない。過去のReddit情報は履歴として保持する。
+- 再開にはReddit公式の許可条件・利用経路の確認と、GitHub Actionsからの読み取り専用検証を必要とする。
