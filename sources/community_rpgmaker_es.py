@@ -1,6 +1,7 @@
 """Collect resource-related discussions from the Spanish RPG Maker Flarum forum."""
 
 import json
+from urllib.parse import urlsplit, urlunsplit
 
 from config import RPGMAKER_ES_API_URL, RPGMAKER_ES_SEEN_FILE
 from sources.base import get_html
@@ -118,6 +119,34 @@ def parse_discussions(payload):
     return discussions, next_url if isinstance(next_url, str) and next_url else None
 
 
+
+def normalize_next_url(next_url):
+    """Correct Flarum next links that omit /api on this forum only."""
+    if not isinstance(next_url, str) or not next_url:
+        return next_url
+
+    try:
+        parsed = urlsplit(next_url)
+        base = urlsplit(BASE_URL)
+        parsed_port = parsed.port
+        base_port = base.port
+    except ValueError:
+        return next_url
+
+    # Only rewrite an absolute URL on the same origin. Leave unexpected
+    # hosts, schemes, ports, and paths untouched.
+    if (
+        parsed.scheme.lower() != base.scheme.lower()
+        or parsed.hostname != base.hostname
+        or parsed_port != base_port
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.path != "/discussions"
+    ):
+        return next_url
+
+    return urlunsplit(parsed._replace(path="/api/discussions"))
+
 def get_items(seen):
     if not isinstance(seen, list):
         seen = []
@@ -178,7 +207,7 @@ def get_items(seen):
                 "language": "es",
             })
 
-        current_url = next_url
+        current_url = normalize_next_url(next_url)
 
     if pages_fetched == 0:
         raise ValueError("Flarum API returned no pages")
