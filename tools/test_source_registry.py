@@ -26,6 +26,16 @@ class SourceRegistryConsistencyTests(unittest.TestCase):
         self.assertFalse(rmrk["collection"])
         self.assertNotIn(rmrk["collector"], registered)
 
+    def test_reddit_rss_retirement_disables_automated_collection(self):
+        sites = json.loads((ROOT / "data" / "sites" / "sites.json").read_text(encoding="utf-8"))
+        reddit = next(site for site in sites if site.get("source_site_id") == "SITE-00008")
+        registered = {source.__name__.split(".")[-1] for source in SOURCES}
+        self.assertEqual(reddit["source_site_status"], "active")
+        self.assertFalse(reddit["collection"])
+        self.assertFalse(reddit["source_check"])
+        self.assertFalse(reddit["discovery"])
+        self.assertNotIn(reddit["collector"], registered)
+
 
 if __name__ == "__main__":
     unittest.main()

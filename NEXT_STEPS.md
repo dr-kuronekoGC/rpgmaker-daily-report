@@ -1,3 +1,13 @@
+## 次の作業（2026-11-25 JST・Reddit RSS終了対応）
+
+1. PR #159の古いbaseとの差分を避けるため、最新main `51528f0` から作成した `fix/reddit-rss-retired-20261125` のPRとCIを確認する。
+2. SITE-00008が `active` のまま `collection=false`／`source_check=false`／`discovery=false` であり、collector registryから除外されたことをテストで確認する。
+3. CI成功後、PRは未マージのまま結果を報告する。マージはユーザーの明示許可を待つ。
+4. マージ後は次回通常実行でRedditが収集対象・Source Health集計から除外されることを確認する。Daily Reportの手動実行は行わない。
+5. 既存のArchive、seen、PRE履歴は保持する。公式に許可された新しいアクセス手段が確認されない限り再開しない。
+
+---
+
 ## 次の作業（2026-11-25 JST・Comunidad ES APIページ送り補正）
 
 1. Run #261（45545419969）で失敗URLが `/discussions?...offset=50` と確認できた。PR [#161](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/161) の差分・最新CI結果を確認する。
