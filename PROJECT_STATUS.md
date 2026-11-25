@@ -1,7 +1,7 @@
 ## 最新確認（2026-11-25 JST・Comunidad ES next URL補正PR）
 
 - 実際の作業開始時mainは `de8e99704664e48379aa940fc87763a67da3ae56`。申し送り記載の `6ca9bad...` の後、2026-11-25 04:16 UTCに定期実行由来の `Update report data` コミットが入っていた。
-- `sources/community_rpgmaker_es.py` は診断ログ追加済みで、`links.next` をそのまま次ページURLに設定していた。`tools/test_community_rpgmaker_es.py` が既存テストの配置先。
+- Run #261（45545419969、2026-11-25 13:14 JST）のscheduled実行でも、診断ログにより失敗URLが `https://comunidad.rpgmaker.es/discussions?include=tags&page%5Blimit%5D=50&page%5Boffset%5D=50&sort=-lastPostedAt` と確認できた。2ページ目はHTTP 404、1ページ取得のPARTIAL、seenは57→57。`sources/community_rpgmaker_es.py` は診断ログ追加済みで、`links.next` をそのまま次ページURLに設定していた。`tools/test_community_rpgmaker_es.py` が既存テストの配置先。
 - 専用ブランチ `fix/comunidad-es-next-api-url-20261125` で、同一origin・パス完全一致 `/discussions` の場合だけ `/api/discussions` に補正する関数を追加。クエリは保持し、別ホスト／別scheme／別port／想定外パス／既にAPIパスのURLは変更しない。
 - 同じファイルのテストに、クエリ保持、異常URLを変更しないこと、補正後URLで2ページ目を取得することを追加。既存の404時部分取得テストは維持。
 - 変更対象はcollector、専用テスト、管理MD3点のみ。seen／pending／Archive／PRE台帳・判定履歴／Notion／Slackデータは変更しない。Daily Reportの手動実行・Slack通知も行わない。
