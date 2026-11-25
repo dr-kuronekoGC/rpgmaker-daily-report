@@ -109,10 +109,16 @@ class SpanishCommunityTests(unittest.TestCase):
         })
         response = requests.Response()
         response.status_code = 404
+        response.url = "https://comunidad.rpgmaker.es/api/discussions?page%5Boffset%5D=50"
         second_page_error = requests.HTTPError("404 Client Error", response=response)
         mock_get_html.side_effect = [first_page, second_page_error]
 
-        items, seen = get_items(["already-seen"])
+        from contextlib import redirect_stdout
+        from io import StringIO
+        output = StringIO()
+        with redirect_stdout(output):
+            items, seen = get_items(["already-seen"])
+        self.assertIn("Failed page URL: https://comunidad.rpgmaker.es/api/discussions?page%5Boffset%5D=50", output.getvalue())
 
         self.assertEqual(len(items), 1)
         self.assertEqual(items[0]["title"], "Nuevo plugin para MZ")
