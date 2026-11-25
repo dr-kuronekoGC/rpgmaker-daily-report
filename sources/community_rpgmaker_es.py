@@ -119,7 +119,6 @@ def parse_discussions(payload):
     return discussions, next_url if isinstance(next_url, str) and next_url else None
 
 
-
 def normalize_next_url(next_url):
     """Correct Flarum next links that omit /api on this forum only."""
     if not isinstance(next_url, str) or not next_url:
@@ -146,6 +145,7 @@ def normalize_next_url(next_url):
         return next_url
 
     return urlunsplit(parsed._replace(path="/api/discussions"))
+
 
 def get_items(seen):
     if not isinstance(seen, list):
