@@ -1,3 +1,13 @@
+## 次の作業（2026-11-25 JST・Comunidad ES APIページ送り）
+
+1. 診断PRのCIを確認し、未マージのまま保持。
+2. 次の通常scheduled runで `[Comunidad RPG Maker ES] Failed page URL:` をログ検索。手動workflowは起動しない。
+3. URLが `page[offset]=50` で404なら、同URLの応答状況を調査してからlimit変更等を検討。別URL／redirectならその差を確認。
+4. 正常なページ取得を確認するまでは、既存の「1ページ目の結果を保持し、Source HealthをPARTIALにする」挙動を維持。
+5. PR #159はmainの現在HEADと差分を再確認し、マージはユーザーの明示許可待ち。
+
+---
+
 ## 最新申し送り（2026-11-21 JST・RPG Maker Networkの自動取得停止）
 
 - PR [#156](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/156)（RPG Maker SU）とPR [#157](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/157)（RM Planet）はマージ済み。
