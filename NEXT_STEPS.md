@@ -1,3 +1,13 @@
+## 次の作業（2026-11-25 JST・Redditマージ後）
+
+1. 次回の通常scheduled Daily Reportで、Redditが収集対象・Source Health集計から除外されたことを確認する。手動実行は行わない。
+2. Source CheckのKageDesu Workshop／DK Pluginsは、公開サイトの活動情報が確認できる一方、GitHub Actionsではconnect timeout。現時点で停止・URL変更・timeout延長を行わず、次回通常runでも再発するか確認する。
+3. 再発時はDNS／TCP接続段階の切り分けと、公式に公開されたRSS/APIの有無を調べる。Cookie、proxy、偽装User-Agent等による制限回避はしない。
+4. PR #151のPRE-00552専用診断はActions上で実行された証拠がない。対象PREはmainでpluginとしてresolved済みのため、緊急対応は不要。必要性を再評価し、古いPRをそのままマージしない。
+5. PR #150/#151は古いbase。再利用が必要な変更だけを最新mainから作り直す。PRのクローズは別途判断する。
+
+---
+
 ## 次の作業（2026-11-25 JST・Reddit RSS終了対応）
 
 1. PR #159の古いbaseとの差分を避けるため、最新main `51528f0` から作成した `fix/reddit-rss-retired-20261125` のPRとCIを確認する。
