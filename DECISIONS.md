@@ -1,3 +1,12 @@
+## Comunidad RPG Maker ES：next URLの限定補正（2026-11-25）
+
+- Flarum応答の `links.next` が同一サイトの `/discussions?...` を指す場合に限り、API用の `/api/discussions?...` へパスを補正する。
+- 補正条件は同一origin（scheme／host／port一致）かつpath完全一致 `/discussions`。クエリ・fragmentは保持する。別ホスト、別scheme、別port、資格情報付きURL、想定外パス、既に `/api/discussions` のURLは変更しない。
+- URL補正はページ送りURLだけに適用し、初回API URL、既読データ、取得件数上限、分類処理、部分取得時のエラー処理は変更しない。
+- テスト成功と実地取得成功を区別する。GitHub ActionsのCI成功後も、通常scheduled runで2ページ目のHTTP成功を確認するまでは修正完了としない。
+- Daily Reportの手動実行・Slack通知、seen／pending／Archive／PRE／Notionの変更は行わない。マージはユーザーの明示許可を必要とする。
+
+---
 ## Comunidad RPG Maker ES：ページ送りの原因を推測で修正しない（2026-11-25）
 
 - Run #259では1ページ目の取得・解析後、API応答の次ページを取得した際にHTTP 404。Flarum REST APIの一般的なnext link例は `page[offset]` を用いるが、それだけで当該フォーラムの404原因を特定したことにはならない。
