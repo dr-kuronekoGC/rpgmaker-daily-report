@@ -501,3 +501,8 @@ PR #139/#83は2026-11-09に差分確認後クローズ済み。未マージで�
 - `/forums/-/index.rss` はXenForoの標準的な全体フィード形式。HTTP 403はサイト側のアクセス拒否と整合する。正規の別RSS/APIや許可された代替取得経路は未確認。
 - User-Agent偽装、プロキシ、Cookie取得等による制限回避は行わない。自動収集の一時停止（サイト状態activeのまま、collection/source_check/discovery=false）を最小修正案とするが、コード変更は未実施。
 - seen／Archive／PRE台帳・判定履歴／pending／Slack／Notionは今回の調査で変更していない。
+
+## 2026-11-25：Oniromancie一時的HTTPエラー対策
+- PR `fix/oniromancie-category-retry` をレビューし、Classification Audit／関連CIと新規テスト `tools/test_oniromancie_retry.py` の結果を確認する。
+- CI成功後、ユーザーに差分と結果を報告。マージは明示許可があるまで行わない。
+- マージ後の通常Runで、OniromancieのCatalog pages／requests／Source Healthを確認する。Actionsの手動実行はユーザーの許可が必要。
