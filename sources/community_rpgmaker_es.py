@@ -142,6 +142,13 @@ def get_items(seen):
             response = getattr(exc, "response", None)
             status_code = getattr(response, "status_code", None)
             if pages_fetched > 0 and status_code == 404:
+                # Log the exact public pagination URL so the next scheduled
+                # run can distinguish a malformed next link from a server-side
+                # route/configuration issue. Do not log response bodies.
+                print(f"[{SOURCE_NAME}] Failed page URL: {current_url}")
+                response_url = getattr(response, "url", None)
+                if response_url and response_url != current_url:
+                    print(f"[{SOURCE_NAME}] Final response URL: {response_url}")
                 print(
                     f"[{SOURCE_NAME}] Pagination stopped after "
                     f"{pages_fetched} page(s): next page returned HTTP 404"
