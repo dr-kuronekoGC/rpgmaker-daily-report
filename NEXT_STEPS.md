@@ -1,6 +1,6 @@
 ## 次の作業（2026-11-25 JST・Comunidad ES APIページ送り補正）
 
-1. PR `fix/comunidad-es-next-api-url-20261125` の差分を確認し、PRを作成する。
+1. PR [#161](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/161) の差分・CI結果を確認する。
 2. PRのClassification Audit／unittest CI結果を確認する。失敗時はComunidad ES関連の差分だけを修正する。
 3. PRは未マージでレビュー結果を報告し、マージはユーザーの明示許可を待つ。
 4. マージ許可後、次回の通常scheduled runでComunidad ESの2ページ目URL・HTTP結果・取得ページ数を確認する。手動workflowは起動しない。
