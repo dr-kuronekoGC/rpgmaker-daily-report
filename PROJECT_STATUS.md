@@ -456,3 +456,9 @@ PR #117マージ後の通常収集で、各項目が改善・継続・解消の�
 - XenForo標準のRSS URL形式と一致するが、Actionsから利用可能な公開RSS/APIや別の正規取得経路は確認できていない。アクセス制限の回避は行わない。
 - 自動収集を一時停止し、サイト状態はactiveのまま手動確認対象にする案が妥当。ただし、コード・サイト台帳は未変更。PR #156の扱いが確定してから別PRで行う。
 - 調査のみ。seen／Archive／PRE台帳・判定履歴／pending／Slack／Notionに変更なし。
+
+## 2026-11-25：Oniromancieカテゴリ取得の一時的HTTPエラー対策（PR作成）
+- Oniromancieのカテゴリ探索リクエストに限り、HTTP 500／502／503／504を最大2回再試行する変更を `fix/oniromancie-category-retry` に実装。
+- 待機は1秒、2秒。最終的に失敗した場合のみsource healthのfailedを1件計上し、成功時はfailedを残さない。
+- 共通HTTP層はデフォルト動作を維持し、再試行は呼び出し側が明示指定した場合のみ有効。
+- テストを追加。GitHub Actionsでの実行結果はPR CI確認後に追記する。main未反映。

@@ -1,3 +1,5 @@
+import time
+
 import requests
 
 from config import REQUEST_TIMEOUT
@@ -29,26 +31,42 @@ HEADERS = {
 
 
 def tracked_get(url, **kwargs):
-    """Perform a GET request and record success/failure for the current collector."""
+    """Perform a GET request and record the final result for the current collector."""
     allow_status_codes = set(kwargs.pop("allow_status_codes", ()))
+    retry_status_codes = set(kwargs.pop("retry_status_codes", ()))
+    max_retries = max(0, int(kwargs.pop("max_retries", 0)))
+    retry_delay = max(0.0, float(kwargs.pop("retry_delay", 1.0)))
     kwargs.setdefault("headers", HEADERS)
     kwargs.setdefault("timeout", REQUEST_TIMEOUT)
-    try:
-        response = requests.get(url, **kwargs)
+
+    for attempt in range(max_retries + 1):
+        try:
+            response = requests.get(url, **kwargs)
+        except Exception:
+            _REQUEST_STATS["failed"] += 1
+            raise
+
         if response.status_code in allow_status_codes:
             _REQUEST_STATS["failed"] += 1
             return response
-        response.raise_for_status()
-    except Exception:
-        _REQUEST_STATS["failed"] += 1
-        raise
-    _REQUEST_STATS["succeeded"] += 1
-    return response
+
+        if response.status_code in retry_status_codes and attempt < max_retries:
+            time.sleep(retry_delay * (2 ** attempt))
+            continue
+
+        try:
+            response.raise_for_status()
+        except Exception:
+            _REQUEST_STATS["failed"] += 1
+            raise
+
+        _REQUEST_STATS["succeeded"] += 1
+        return response
 
 
-def get_html(url):
+def get_html(url, **kwargs):
     """Fetch a page and record transport/HTTP failures for source health."""
-    return tracked_get(url).text
+    return tracked_get(url, **kwargs).text
 
 
 def get_feed(url):

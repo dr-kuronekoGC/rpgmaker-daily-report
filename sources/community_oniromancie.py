@@ -17,6 +17,8 @@ BASE_URL = "https://www.rpg-maker.fr"
 
 MAX_DISCOVERY_PAGES = 50
 MAX_DETAIL_FETCHES = 20
+DISCOVERY_RETRY_STATUS_CODES = (500, 502, 503, 504)
+DISCOVERY_MAX_RETRIES = 2
 DETAIL_PARSER_VERSION = 5
 
 ENGINE_PATTERNS = (
@@ -646,7 +648,12 @@ def discover_catalog():
         visited.add(url)
 
         try:
-            html = get_html(url)
+            html = get_html(
+                url,
+                retry_status_codes=DISCOVERY_RETRY_STATUS_CODES,
+                max_retries=DISCOVERY_MAX_RETRIES,
+                retry_delay=1,
+            )
         except Exception as e:
             print(
                 f"[{SOURCE_NAME}] "
