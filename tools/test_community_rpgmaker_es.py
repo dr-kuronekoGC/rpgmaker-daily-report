@@ -2,7 +2,12 @@ import json
 import unittest
 from unittest.mock import patch
 
-from sources.community_rpgmaker_es import classify, parse_discussions, get_items
+from sources.community_rpgmaker_es import (
+    classify,
+    get_items,
+    normalize_next_url,
+    parse_discussions,
+)
 
 
 class SpanishCommunityTests(unittest.TestCase):
@@ -22,6 +27,53 @@ class SpanishCommunityTests(unittest.TestCase):
 
     def test_skips_help_requests(self):
         self.assertIsNone(classify("Ayuda: necesito un plugin"))
+
+    def test_normalizes_same_origin_discussions_next_link_and_preserves_query(self):
+        next_url = (
+            "https://comunidad.rpgmaker.es/discussions"
+            "?include=tags&page%5Blimit%5D=50&page%5Boffset%5D=50"
+            "&sort=-lastPostedAt"
+        )
+        self.assertEqual(
+            normalize_next_url(next_url),
+            "https://comunidad.rpgmaker.es/api/discussions"
+            "?include=tags&page%5Blimit%5D=50&page%5Boffset%5D=50"
+            "&sort=-lastPostedAt",
+        )
+
+    def test_leaves_unexpected_next_links_unchanged(self):
+        urls = (
+            "https://example.com/discussions?page%5Boffset%5D=50",
+            "https://comunidad.rpgmaker.es/unexpected?page=2",
+            "https://comunidad.rpgmaker.es/api/discussions?page=2",
+            "http://comunidad.rpgmaker.es/discussions?page=2",
+        )
+        for url in urls:
+            with self.subTest(url=url):
+                self.assertEqual(normalize_next_url(url), url)
+
+    @patch("sources.community_rpgmaker_es.get_html")
+    def test_follows_normalized_next_api_url(self, mock_get_html):
+        first_page = json.dumps({
+            "data": [{"type": "discussions", "id": "45", "attributes": {
+                "title": "Nuevo plugin para MZ", "slug": "45-plugin"
+            }, "relationships": {"tags": {"data": []}}}],
+            "included": [],
+            "links": {"next": "https://comunidad.rpgmaker.es/discussions?page%5Boffset%5D=50"},
+        })
+        second_page = json.dumps({
+            "data": [{"type": "discussions", "id": "46", "attributes": {
+                "title": "Nuevo plugin para MV", "slug": "46-plugin"
+            }, "relationships": {"tags": {"data": []}}}],
+            "included": [], "links": {"next": None},
+        })
+        mock_get_html.side_effect = [first_page, second_page]
+        items, _ = get_items(["already-seen"])
+        self.assertEqual(len(items), 2)
+        self.assertEqual(
+            mock_get_html.call_args_list[1].args[0],
+            "https://comunidad.rpgmaker.es/api/discussions?page%5Boffset%5D=50",
+        )
 
     def test_parses_flarum_discussion_and_resource_tag(self):
         payload = {
