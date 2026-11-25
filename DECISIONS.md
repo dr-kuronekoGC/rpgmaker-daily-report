@@ -1,3 +1,14 @@
+## 2026-11-25：Reddit RSS停止PRマージ後の確認方針
+
+- PR #163をSquash merge（commit `970f2b07dddd25242feaffd428bb5e448c1f9ac0`）。SITE-00008はactiveを維持しつつ、collection/source_check/discoveryをfalse、定期収集registryからcollectorを除外する。
+- Run #263はマージ前の実行であり、Reddit除外後の実地確認とはみなさない。次回通常scheduled runで検証し、手動Daily Reportは起動しない。
+- Source CheckのKageDesu WorkshopとDK PluginsはRun #263でconnect timeout=10秒、1回再試行後も失敗。公開情報は検索で確認できるためサイト閉鎖とは判定しない。
+- 接続タイムアウトを理由にtimeout延長・再試行増加・collector停止を即決しない。通常runで再発を確認し、必要ならDNS/TCP段階と公式公開feed/APIを調査する。アクセス制限回避は行わない。
+- PR #151のActions成功runは通常Classification Auditであり、専用PRE-00552診断artifactは生成されていない。PRE-00552はmain上でpluginとしてresolved済みのため、専用診断は優先度を下げる。
+- PR #150/#151は古いbaseを持つ。最新mainにそのままマージせず、必要な変更のみ再構成する。
+
+---
+
 ## Comunidad RPG Maker ES：next URLの限定補正（2026-11-25）
 
 - Flarum応答の `links.next` が同一サイトの `/discussions?...` を指す場合に限り、API用の `/api/discussions?...` へパスを補正する。
