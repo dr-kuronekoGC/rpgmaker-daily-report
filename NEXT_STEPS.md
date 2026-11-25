@@ -1,6 +1,6 @@
 ## 次の作業（2026-11-25 JST・Comunidad ES APIページ送り補正）
 
-1. PR [#161](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/161) の差分・CI結果を確認する。
+1. Run #261（45545419969）で失敗URLが `/discussions?...offset=50` と確認できた。PR [#161](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/161) の差分・最新CI結果を確認する。
 2. PR #161のClassification Audit／unittest CIはRun #45550830855でsuccess。現時点で追加修正は不要。
 3. PRは未マージでレビュー結果を報告し、マージはユーザーの明示許可を待つ。
 4. マージ許可後、次回の通常scheduled runでComunidad ESの2ページ目URL・HTTP結果・取得ページ数を確認する。手動workflowは起動しない。
