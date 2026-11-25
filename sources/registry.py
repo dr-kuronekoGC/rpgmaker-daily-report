@@ -5,7 +5,6 @@ The individual source modules keep their site-specific parsing rules.
 """
 
 from . import (
-    community_reddit,
     community_forum,
     community_tsukumate,
     community_tkool_forum,
@@ -41,7 +40,6 @@ from . import (
 
 
 SOURCES = [
-    community_reddit,
     community_forum,
     community_tsukumate,
     community_tkool_forum,
