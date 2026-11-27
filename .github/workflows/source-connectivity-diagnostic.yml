@@ -1,0 +1,95 @@
+name: Source Connectivity Diagnostic
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/source-connectivity-diagnostic.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    name: Diagnose KageDesu and DK Plugins connectivity
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: DNS, TCP, TLS, and HTTP checks (read-only)
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import socket
+          import ssl
+          import time
+
+          TARGETS = [
+              ("KageDesu Workshop", "kdworkshop.net", "/"),
+              ("DK Plugins", "dk-plugins.ru", "/mz/dktools/"),
+          ]
+          TIMEOUT = 8
+          context = ssl.create_default_context()
+
+          for label, host, path in TARGETS:
+              print(f"\\n=== {label}: {host} ===")
+              try:
+                  started = time.monotonic()
+                  records = socket.getaddrinfo(
+                      host, 443, type=socket.SOCK_STREAM
+                  )
+                  elapsed = time.monotonic() - started
+                  addresses = []
+                  seen = set()
+                  for family, socktype, proto, _, sockaddr in records:
+                      key = (family, sockaddr)
+                      if key not in seen:
+                          seen.add(key)
+                          addresses.append((family, socktype, proto, sockaddr))
+                  print(f"DNS: OK ({elapsed:.3f}s), {len(addresses)} unique address(es)")
+                  for family, socktype, proto, sockaddr in addresses:
+                      ip = sockaddr[0]
+                      family_name = "IPv6" if family == socket.AF_INET6 else "IPv4"
+                      print(f"-- {family_name} {ip} --")
+                      raw = socket.socket(family, socktype, proto)
+                      raw.settimeout(TIMEOUT)
+                      try:
+                          started = time.monotonic()
+                          raw.connect(sockaddr)
+                          print(f"TCP: OK ({time.monotonic() - started:.3f}s)")
+                          try:
+                              started = time.monotonic()
+                              tls = context.wrap_socket(raw, server_hostname=host)
+                              raw = None
+                              print(
+                                  f"TLS: OK ({time.monotonic() - started:.3f}s), "
+                                  f"version={tls.version()}, "
+                                  f"cipher={tls.cipher()[0]}"
+                              )
+                              try:
+                                  request = (
+                                      f"GET {path} HTTP/1.1\\r\\n"
+                                      f"Host: {host}\\r\\n"
+                                      "User-Agent: RPGMaker-Connectivity-Diagnostic/1.0\\r\\n"
+                                      "Connection: close\\r\\n\\r\\n"
+                                  )
+                                  tls.sendall(request.encode("ascii"))
+                                  response = tls.recv(4096)
+                                  status = response.split(b"\\r\\n", 1)[0]
+                                  print(f"HTTP: {status.decode('latin-1', 'replace')}")
+                              except Exception as exc:
+                                  print(f"HTTP: FAILED ({type(exc).__name__}: {exc})")
+                              finally:
+                                  tls.close()
+                          except Exception as exc:
+                              print(f"TLS: FAILED ({type(exc).__name__}: {exc})")
+                      except Exception as exc:
+                          print(f"TCP: FAILED ({type(exc).__name__}: {exc})")
+                      finally:
+                          if raw is not None:
+                              raw.close()
+              except Exception as exc:
+                  print(f"DNS: FAILED ({type(exc).__name__}: {exc})")
+
+          print("\\nDiagnostic complete. No application data or repository state was changed.")
+          PY
