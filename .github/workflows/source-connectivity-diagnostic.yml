@@ -32,7 +32,7 @@ jobs:
           context = ssl.create_default_context()
 
           for label, host, path in TARGETS:
-              print(f"\\n=== {label}: {host} ===")
+              print(f"\n=== {label}: {host} ===")
               try:
                   started = time.monotonic()
                   records = socket.getaddrinfo(
@@ -68,14 +68,14 @@ jobs:
                               )
                               try:
                                   request = (
-                                      f"GET {path} HTTP/1.1\\r\\n"
-                                      f"Host: {host}\\r\\n"
-                                      "User-Agent: RPGMaker-Connectivity-Diagnostic/1.0\\r\\n"
-                                      "Connection: close\\r\\n\\r\\n"
+                                      f"GET {path} HTTP/1.1\r\n"
+                                      f"Host: {host}\r\n"
+                                      "User-Agent: RPGMaker-Connectivity-Diagnostic/1.0\r\n"
+                                      "Connection: close\r\n\r\n"
                                   )
                                   tls.sendall(request.encode("ascii"))
                                   response = tls.recv(4096)
-                                  status = response.split(b"\\r\\n", 1)[0]
+                                  status = response.split(b"\r\n", 1)[0]
                                   print(f"HTTP: {status.decode('latin-1', 'replace')}")
                               except Exception as exc:
                                   print(f"HTTP: FAILED ({type(exc).__name__}: {exc})")
@@ -91,5 +91,5 @@ jobs:
               except Exception as exc:
                   print(f"DNS: FAILED ({type(exc).__name__}: {exc})")
 
-          print("\\nDiagnostic complete. No application data or repository state was changed.")
+          print("\nDiagnostic complete. No application data or repository state was changed.")
           PY
