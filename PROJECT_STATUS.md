@@ -1,3 +1,17 @@
+## 最新確認（2026-11-25 JST・Reddit RSS停止PRマージ後）
+
+- PR [#163](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/163) をSquash merge。merge commit: `970f2b07dddd25242feaffd428bb5e448c1f9ac0`。
+- `sources/registry.py` から `community_reddit` を除外。SITE-00008 Reddit r/RPGMakerは `source_site_status=active` を維持し、`collection=false`／`source_check=false`／`discovery=false`。
+- 回帰テスト `test_reddit_rss_retirement_disables_automated_collection` を追加。PR CIは339 tests passed。
+- Run #263（45580543789）はPRマージ前の実行であり、Reddit除外後の実地確認には使えない。マージ後の通常Daily Report実行はまだ確認できていない。手動Daily Reportは起動しない。
+- Run #263のSource Checkは7/9 monitored、failed=2。KageDesu Workshop（`kdworkshop.net`）とDK Plugins（`dk-plugins.ru`）はどちらもconnect timeout=10秒、1回再試行後も失敗。HTTP 403等の拒否ではない。
+- 2026-11-25の外部検索では両サイトの公開情報・プラグイン掲載が確認できた。KageDesuは11/20付近の投稿情報、DK Pluginsは2026-06-30のニュース等が検索インデックスに存在する。ただしGitHub Actionsからの到達性は別問題で、ブラウザ直接取得もタイムアウトした。サイト閉鎖とは判断しない。
+- Source Checkの接続タイムアウトは現行コードで1回再試行済み。単純なtimeout延長や再試行増加は未実施。ネットワーク制約回避やアクセス制限回避はしない。
+- PR #151のClassification Audit Run #44087672710はsuccessだが、PRE-00552専用診断step/artifactは存在しない（artifactはopen-review-queue-auditとnormalized-review-corpusのみ）。専用診断が実行された証拠はない。PRE-00552自体はmain上でユーザー判断によりpluginとしてresolved済みのため、専用診断の優先度を下げる。
+- PR #150/#151はいずれも古いbase SHA `63df019c681f898db071b444fb8e608fa3f3e6de`。現mainへそのままマージしない。既存の判定・Archive・seen・pending・Notion・Slackデータは変更していない。
+
+---
+
 ## 最新確認（2026-11-25 JST・Reddit RSS提供終了対応）
 
 - Run #263（45580543789）で `https://www.reddit.com/r/RPGMaker/.rss` がHTTP 404。Reddit公式ヘルプはRSSサポートを2026-11-13に終了し、モデレーターを務めていないコミュニティのRSS利用には代替手段がないと明記している。
