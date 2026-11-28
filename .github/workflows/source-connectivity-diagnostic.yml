@@ -116,7 +116,7 @@ jobs:
                                               print(f"REST JSON structure: valid JSON {type(data).__name__}")
                                       except (json.JSONDecodeError, UnicodeDecodeError) as exc:
                                           print(f"REST JSON structure: INVALID ({type(exc).__name__})")
-                                  elif path == "/mz/dktools/" and status == 200:
+                                  elif path in ("/", "/mz/dktools/") and status == 200:
                                       try:
                                           page = body.decode("utf-8", "replace")
                                           title_match = re.search(r"<title[^>]*>(.*?)</title>", page, re.IGNORECASE | re.DOTALL)
@@ -145,6 +145,30 @@ jobs:
           # Compare with the production collector's requests-based HTTP stack.
           # Do not log response bodies or cookies; expose only safe metadata.
           print("\n=== DK Plugins production requests comparison ===")
+          # Check the homepage with the same requests stack as the collector.
+          homepage_url = "https://dk-plugins.ru/"
+          try:
+              homepage_response = requests.get(
+                  homepage_url,
+                  headers=production_headers,
+                  timeout=(10, 20),
+                  allow_redirects=True,
+              )
+              homepage_body = homepage_response.content
+              print(f"Homepage requests HTTP: {homepage_response.status_code} {homepage_response.reason}")
+              print(f"Homepage final URL: {homepage_response.url}")
+              print(f"Homepage Content-Type: {homepage_response.headers.get('Content-Type', 'not provided')}")
+              print(f"Homepage decoded body bytes: {len(homepage_body)} (body not logged)")
+              homepage_page = homepage_response.text[:262144]
+              homepage_title_match = re.search(r"<title[^>]*>(.*?)</title>", homepage_page, re.IGNORECASE | re.DOTALL)
+              homepage_title = re.sub(r"\s+", " ", homepage_title_match.group(1)).strip() if homepage_title_match else ""
+              homepage_anchors = len(re.findall(r"<a\b", homepage_page, re.IGNORECASE))
+              homepage_visible = re.sub(r"<(script|style|noscript)\b[^>]*>.*?</\1>", " ", homepage_page, flags=re.IGNORECASE | re.DOTALL)
+              homepage_visible = re.sub(r"<[^>]+>", " ", homepage_visible)
+              homepage_visible = re.sub(r"\s+", " ", html.unescape(homepage_visible)).strip()
+              print(f"Homepage HTML structure: title_chars={len(homepage_title)}, anchor_count={homepage_anchors}, visible_text_chars={len(homepage_visible)} (text not logged)")
+          except requests.RequestException as exc:
+              print(f"Homepage requests comparison: FAILED ({type(exc).__name__}: {exc})")
           dk_url = "https://dk-plugins.ru/mz/dktools/"
           production_headers = {
               "User-Agent": (
