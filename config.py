@@ -177,6 +177,7 @@ SOURCE_CHECK_SITES = [
     {
         "name": "KageDesu Workshop",
         "url": "https://kdworkshop.net/",
+        "alternate_feed_url": "https://kdworkshop.net/feed/",
         "resource_types": ["プラグイン"],
         "language": "英語・ロシア語",
         "site_type": "プラグイン配布サイト",

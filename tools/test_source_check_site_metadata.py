@@ -39,6 +39,16 @@ class TestSourceCheckSiteMetadata(unittest.TestCase):
                 self.assertTrue(site.get("language"))
                 self.assertTrue(site.get("site_type"))
 
+    def test_kagedesu_workshop_has_public_feed_fallback(self):
+        site = next(
+            site for site in SOURCE_CHECK_SITES
+            if site.get("name") == "KageDesu Workshop"
+        )
+        self.assertEqual(
+            site.get("alternate_feed_url"),
+            "https://kdworkshop.net/feed/",
+        )
+
     def test_new_rpg_project_has_public_feed_fallback(self):
         site = next(
             site for site in SOURCE_CHECK_SITES

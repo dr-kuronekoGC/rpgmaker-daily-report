@@ -486,3 +486,17 @@ PR #117マージ後の通常収集で、各項目が改善・継続・解消の�
 - 待機は1秒、2秒。最終的に失敗した場合のみsource healthのfailedを1件計上し、成功時はfailedを残さない。
 - 共通HTTP層はデフォルト動作を維持し、再試行は呼び出し側が明示指定した場合のみ有効。
 - テストを追加。GitHub Actionsでの実行結果はPR CI確認後に追記する。main未反映。
+
+
+## 最新確認（2026-11-28 JST・KageDesu RSS fallback準備）
+
+- KageDesu Workshopの公開RSS `https://kdworkshop.net/feed/` は、PR #165の診断Run #7でHTTP 200・RSS/XML正常・item 10を確認済み。
+- `sources/official_source_check.py` には既存の公開RSS fallback機構（`alternate_feed_url`）があり、ページ取得失敗時にRSSを検証して署名化する。challenge応答をRSSで代用する設計ではなく、challenge応答の場合はheader fallbackにも進まない。
+- 専用ブランチ `fix/kagedesu-rss-source-check-fallback-20261128` でKageDesuの `alternate_feed_url` を追加し、設定テストを追加。変更対象は `config.py` と `tools/test_source_check_site_metadata.py`。
+- この変更はSource Checkの監視方法のみ。通常の情報収集collector、Slack通知、Notion、PRE、Archive、seen/pendingデータは変更しない。PR [#166](https://github.com/dr-kuronekoGC/rpgmaker-daily-report/pull/166) を作成済み・Open・未マージ。Classification Audit Run #46102168865 success。全340 tests passed。PRは未マージ。
+- PR #165は診断ワークフロー専用。mainは `74aac923`、PR headは診断コード更新中。mainより4 commits behindだが、GitHub PR APIはmergeable=trueを返しており、コンフリクトは報告されていない。マージは未実施。
+
+
+- 追加診断：PR #165 Run #9は診断コード内の変数定義順ミスで失敗したため修正。Run #10は正常終了し、Run #11では2つのLinux runnerを並列実行。いずれもDNS成功・TCP timeout。Run #9/#10/#11はAzure（eastusまたはcentralus）で、DK Pluginsトップページ・DKToolsページともにHTTP応答を得られなかった。Run #11の2 runnerもAzure eastus/centralusで、AWS側の検証は未実施。
+- PR #165は最新head `738d234b`、mainより4 commits behind／PR側12 commits ahead。GitHub PR APIは `mergeable=true`／`mergeable_state=clean`。変更ファイルは診断workflowのみ。未マージ。
+- PR #166の最新head `210a612e` はClassification Audit Run #46102290328 success、全340 tests passed。PRはOpen・未マージ。
