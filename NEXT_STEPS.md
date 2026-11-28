@@ -526,3 +526,11 @@ PR #139/#83は2026-11-09に差分確認後クローズ済み。未マージで�
 - PR `fix/oniromancie-category-retry` をレビューし、Classification Audit／関連CIと新規テスト `tools/test_oniromancie_retry.py` の結果を確認する。
 - CI成功後、ユーザーに差分と結果を報告。マージは明示許可があるまで行わない。
 - マージ後の通常Runで、OniromancieのCatalog pages／requests／Source Healthを確認する。Actionsの手動実行はユーザーの許可が必要。
+
+
+## 次の作業（2026-11-28 JST・KageDesu RSS fallback）
+
+1. PR #165のRun #9で、DK PluginsトップページとDKToolsページのHTTP応答・HTML構造を比較する。Runのクラウド／リージョンも記録し、前回centralus/Azureとの差を確認する。
+2. KageDesu RSS fallback専用ブランチの差分を確認し、既存のRSS fallbackテストと設定テストを実行するCIを確認する。PR作成後も未マージで保持する。
+3. DK Pluginsはトップページと個別ページの実応答が比較できるまで監視URLを変更しない。
+4. 通常Daily Reportの手動実行が必要になった場合は、実行前にユーザーへ依頼する。ユーザーが実行した後に結果を確認する。
