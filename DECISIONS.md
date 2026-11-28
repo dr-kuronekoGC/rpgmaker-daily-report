@@ -222,3 +222,11 @@
 - 公式に許可されたアクセス経路が確認されない限り、非公式RSS中継、未承認API、ログインCookie、proxy等を使った代替・アクセス制限回避は行わない。
 - 既存Archive、seen／seen_global、PRE台帳、判定履歴は変更・削除・リセットしない。過去のReddit情報は履歴として保持する。
 - 再開にはReddit公式の許可条件・利用経路の確認と、GitHub Actionsからの読み取り専用検証を必要とする。
+
+
+## 2026-11-28 JST — KageDesu公開RSSをSource Check fallbackに利用
+
+- KageDesu Workshopの公開RSS `https://kdworkshop.net/feed/` は、診断でHTTP 200・妥当なRSS/XML・10件のitemを確認済み。
+- 既存の `alternate_feed_url` fallback機構を再利用し、ページ取得に失敗した場合のSource Check署名取得先として設定する。
+- RSSは公開された通常のfeed URLのみを使用する。challenge/access-control回避、cookie、proxy、認証情報は使わない。
+- これはSource Checkの監視方式変更であり、通常collectorや公開判断は変更しない。PRレビュー・CI確認後もマージはユーザーの明示許可待ち。
