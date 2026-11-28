@@ -17555,5 +17555,151 @@
     "large_pack": true,
     "copyright_confidence": "unknown",
     "metadata_confidence": "unknown"
+  },
+  {
+    "title": "Ritournelle & Sottine ―Procedural MiniMap",
+    "url": "https://guild.rpgmakerofficial.com/t/topic/3799",
+    "category": "プラグイン",
+    "source": "RPG Maker Guild",
+    "description": "公式プラグイン動画 公式プラグイン ライセンス エンジン： RPG Maker MV。 商用利用： 商用、非商用ゲームともに許可されています。 クレジット表記： ゲームのクレジットに原作者 Erophenice へのクレジット表記が必須です。 転売： プラグイン自体（ .js ファイルを単独の製品として）の転売は厳禁です。 再配布： プラグインのコードを改変して、自身の作品として再配布すること（リブランド、クレジットの削除）は厳禁です。 Ritournelle & Sottine ―手続的ミニマップ RPG Maker MV 向けの自己完結型、100%手続的（プロシージャル）ミニマップおよびフルスクリーンマップエンジン。 プリレンダリングされたマップ画像、外部依存関係、マップごとやイベントごとの手動設定は不要です。単一の .js ファイルを js/plugins にドロップし、プラグインマネージャーで設定を行うだけで、プロジェクト内のすべてのマップがランタイム時に自動的に解析・レンダリングされます。 実際のユースケース 大きな町、森林、ダンジョン： 密度が高く広大なマップでプレイヤーが方向感覚を失うのを防ぎ、静的なマップ画像を手描き・更新することなく対応できます。 クエスト依頼人や移動するNPC： 生きているNPCやクリーチャーを自動検出してミニマップ上にリアルタイムで表示するため、イベントを手動でタグ付けせずに広大なエリア内のキャラクターをプレイヤーが探せるようになります。 雰囲気重視のプロジェクト： HUDのミニマップとフルスクリーンマップの両方で、夜、夕日、ホラー、カスタムシェーダーのカラーグレーディングを直接保持し、フラットで無加工の色合いではなく、視覚的な雰囲気を一貫して維持できます。 プロジェクトまたはゾーンごとのビジュアルスタイル： プラグインマネージャーから直接 2D 、 2.5D 、 3D レンダリングを選択可能。特定のマップで上書きしたり、プレイヤーがフルスクリーン表示中にライブでビューを切り替えたりすることもできます。 柔軟なHUD統合： 9つの画面アンカー（またはカスタムX/Y座標）のいずれにもミニマップを配置可能。ピクセル単位で正確なオフセット、カスタマイズ可能なフレーム寸法、形状、不透明度に対応します。 技術的アーキテクチャ（内部構造） 3つの真正面から見た手続的レンダラー（ 2D / 2.5D / 3D ） 2D： ズーム時のシャープ化とソフトバイリニアマップシャドウを備えたクランプバイキュービック補間を用いた高解像度俯瞰地図。 2.5D： 手続的なファサード押し出し（コーニス、軒下オークルージョン、隅のピラスター、石造りの基礎プランシント）、シェーディング付き幹を持つ丸みを帯びたオーガニックな樹冠、2倍スーパーサンプリングによるソフトな地面シャドウを備えた、正面から見た建築的レリーフ。 3D： 押し出された建物ボリューム、遠近感のある側面壁、レイプレーンによる遠近法補正された屋根、彫刻されたプランシントシャドウ、連続的なエッジツーエッジカメラズームを備えた、正面からの体積パースペクティブ投影（斜め傾きなし）。 プラグインマネージャーで複数のレンダリングトグルが有効になっている場合の優先順位： 3D > 2.5D > 2D 。 ユニバーサルなタイルセットおよびマッピング互換性 標準的なRPG Maker MVタイルセットに加え、カスタムの高解像度アップスケールシート（ 3072×3072 や 3072×2880 などの4× HDシートを含む）も自動的に正規化。 非標準のタイルセットスロット割り当てに対応し、パララックス/オーバーレイマップシーンも初期設定でサポート。 自動NPCスプライト検出とライブレンダリング（ Auto NPC sprites ON/OFF） ファイル名やフォルダに依存せず：実際の 3×4 スプライトシートピクセルジオメトリとイベントの挙動を調査し、生きているNPCやクリーチャー（立ち止まり、歩行、巡回、休憩）を環境オブジェクト（ドア、宝箱、松明、キャンプファイヤー、煙）から区別します。 検出されたキャラクターをミニマップ上に手続的に再描画し、2D、2.5D、3Dビュー（HUDおよびフルスクリーン）において位置、向き、歩行アニメーションをリアルタイムで追跡します。 ライブスクリーントーンおよびシェーダー同期 $gameScreen.tone() とアクティブな Spriteset_Map シェーダーカラーグレーディングをリアルタイムで読み取り、マップキャンバスに適用します。マーカー、カーソル、UIボタンは鮮明で読みやすい状態を維持します。 パフォーマンスとレスポンス 事前ベイク済み点灯サブグリッド（ litRgb ）、事前計算された2倍ブラーシャドウバッファ、フレーム予算付きビルドスケジューラ（ 7 ms/frame ）により、読み込みフリーズを防ぎ、スムーズな60 FPSのパンおよびズームを維持します。 操作とオプションのイベント上書き すべては プラグインマネージャー で設定され、自動的に動作します。通常の操作においてプラグインコマンドは不要です。 デフォルトのプレイヤー操作： M / L3 / HUDボタン（フルスクリーンの開閉） · マウスホイール / + − / PgUp PgDn （ズーム） · クリックドラッグ / 矢印キー（パン） · フルスクリーンヘッダーボタン（ライブ 2D / 2.5D / 3D 切り替え） · 右クリック / Esc （閉じる）。 オプションのカットシーン/スクリプト化された可視性コマンド （イベント中にミニマップを一時的に隠したり復元したりする必要がある場合）： Ritournelle & Sottine ―Procedural MiniMap hide — ミニマップを一時的に隠します Ritournelle & Sottine ―Procedural MiniMap show — ミニマップを復元します Ritournelle & Sottine ―Procedural MiniMap toggle — 可視性を切り替えます オプションのノートタグ （デフォルトを上書きする場合のみ）： マップノート： <MiniMapMode: 2d|2.5d|3d> （そのマップで特定のレンダリングモードを強制します） イベントノート： <MiniMapNoNpc> （特定のイベントを自動NPCレンダリングから除外します） · <MiniMap: #ffaa00> （カスタムカラーのマーカーを追加します） サポートとアップデート 技術的な問題、プラグイン競合、バグが発生した場合は、ストアページのメッセージ機能から直接ご連絡ください。サポートは対応しており、確認された問題は調査・パッチ適用されます。 改善案や将来の機能に関する提案もストアページ経由で歓迎しており、今後のアップデートで追跡されます。",
+    "source_tags": [
+      "{'id': 4, 'name': '英語', 'slug': 'english'}",
+      "{'id': 14, 'name': 'mv', 'slug': '14-tag'}",
+      "{'id': 8, 'name': 'プラグイン', 'slug': 'plugin'}"
+    ],
+    "tags": [
+      "{'id': 4, 'name': '英語', 'slug': 'english'}",
+      "{'id': 14, 'name': 'mv', 'slug': '14-tag'}",
+      "{'id': 8, 'name': 'プラグイン', 'slug': 'plugin'}"
+    ],
+    "internal_id": "ITEM-b770058429d309dd",
+    "pre_id": null,
+    "public_id": null,
+    "content_type": "plugin",
+    "development_info_type": null,
+    "source_site_id": "SITE-00009",
+    "source_site_name": "RPG Maker Guild",
+    "source_site_type": "community",
+    "source_site_language": [
+      "英語",
+      "日本語"
+    ],
+    "source_site_status": "active",
+    "collector": "community_guild",
+    "source_item_id": "https://guild.rpgmakerofficial.com/t/topic/3799",
+    "subcategory": [
+      "graphics",
+      "map_events"
+    ],
+    "languages": [
+      "日本語"
+    ],
+    "sound_type": null,
+    "file_formats": [],
+    "graphic_style": [],
+    "graphic_theme": [],
+    "engine_relevant": true,
+    "plugin_category": [
+      "graphics",
+      "map_events"
+    ],
+    "supported_platforms": [],
+    "links": [],
+    "commercial_use": null,
+    "credit_required": null,
+    "redistribution_allowed": null,
+    "source_updated_at": null,
+    "first_seen_at": "2026-11-28T12:21:31.613592+00:00",
+    "collected_at": "2026-11-28T12:21:31.613592+00:00",
+    "registered_at": null,
+    "thumbnail_url": null,
+    "editorial_status": "new",
+    "excluded_reason": null,
+    "review_note": null,
+    "reviewed_at": null,
+    "featured": false,
+    "language": "日本語",
+    "resource_intent": "resource_candidate",
+    "resource_intent_confidence": "medium",
+    "resource_intent_evidence": [
+      {
+        "field": "title_url_or_tags",
+        "signal": "asset_classifier_match",
+        "category": "プラグイン"
+      }
+    ],
+    "engine": [
+      "MV"
+    ],
+    "asset_type": "plugin",
+    "asset_tags": [
+      "rpgmaker"
+    ],
+    "classification_confidence": "medium",
+    "classification_status": "needs_review",
+    "classification_margin": 2,
+    "classification_scores": {
+      "system_core": 0,
+      "battle": 0,
+      "skills_states": 0,
+      "menu_ui": 10,
+      "items_equipment": 0,
+      "shop": 0,
+      "character_party": 0,
+      "quest": 6,
+      "map_events": 13,
+      "save_load": 0,
+      "messages_dialogue": 5,
+      "audio": 0,
+      "graphics": 15,
+      "database": 0,
+      "development_debug": 0,
+      "network_external": 0
+    },
+    "classification_evidence": [
+      {
+        "field": "description",
+        "keyword": "アニメーション",
+        "points": 5
+      },
+      {
+        "field": "description",
+        "keyword": "画像",
+        "points": 5
+      },
+      {
+        "field": "description",
+        "keyword": "スプライト",
+        "points": 5
+      },
+      {
+        "field": "description",
+        "keyword": "map",
+        "points": 4
+      },
+      {
+        "field": "description",
+        "keyword": "マップ",
+        "points": 4
+      },
+      {
+        "field": "description",
+        "keyword": "イベント",
+        "points": 5
+      }
+    ],
+    "classification_note": null,
+    "classification_reviewed_at": null,
+    "price_status": "unknown",
+    "is_free": null,
+    "is_paid": null,
+    "license_status": "unknown",
+    "copyright_status": "unknown",
+    "is_fanwork": false,
+    "is_official_edit": false,
+    "is_official": null,
+    "large_pack": false,
+    "copyright_confidence": "unknown",
+    "metadata_confidence": "unknown"
   }
 ]
