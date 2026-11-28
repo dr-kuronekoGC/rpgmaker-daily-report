@@ -12,8 +12,12 @@ permissions:
 
 jobs:
   diagnose:
-    name: Diagnose KageDesu and DK Plugins connectivity
+    name: Diagnose KageDesu and DK Plugins connectivity (probe ${{ matrix.probe }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        probe: [1, 2]
     timeout-minutes: 3
     steps:
       - name: DNS, TCP, TLS, and HTTP checks (read-only)
