@@ -237,3 +237,13 @@
 - Run #10は診断コード修正後にsuccess。Run #11では同じread-only診断を2つのLinux runnerで並列実行。DNS解決は成功したが、KageDesu／DK PluginsともTCP接続timeout。実行リージョンはAzure centralus/eastusで、AWS runnerからの到達性は未確認。
 - GitHub-hosted Linux runnerのAWS/Azure配置は自動スケジュールであり、通常の `runs-on` でクラウド／リージョンを直接固定しない。複数runnerでの検証もAzureに割り当てられたため、今回の調査はここで打ち切り、同じ条件での無制限な再試行はしない。
 - DK PluginsはトップページとDKToolsページのどちらも今回HTTP応答に到達せず、監視URLの変更根拠は得られていない。現行URLを維持し、次回通常Source Checkまたは新しい確実な外部証拠を待つ。
+
+
+
+## 2026-11-28 JST — PR #165/#166のマージと定期Run確認
+
+- PR #165はread-only接続診断workflowのみを追加。squash merge済み。
+- PR #166はKageDesu Workshopの `alternate_feed_url=https://kdworkshop.net/feed/` と設定回帰テストを追加。既存RSS fallbackを再利用し、challenge回避や通常collector変更は行わない。340 tests passedを確認してsquash merge済み。
+- 定期Daily Report Run #46102340862はsuccess。Source Health 31/31 OK、Source Check failed=0、Slack HTTP 200、PRE-00553〜00562を生成。今回のRunはPR #166マージ前のため、RSS fallbackの実地検証は次回の定期Runで行う。
+- Notion同期は別workflow（2時間ごと、cron minute 17）。Daily Report後の同期は未確認のため、次回runでPREの同期状態を確認する。
+- DK PluginsはGitHub-hosted Azure runnersでDNS成功後TCP timeout。トップページ／DKToolsページの優劣は確認できず、URL変更は行わない。
