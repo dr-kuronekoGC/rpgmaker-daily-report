@@ -21,7 +21,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import http.client
+          import html
           import json
+          import re
           import socket
           import ssl
           import time
@@ -76,7 +78,7 @@ jobs:
                                   request = (
                                       f"GET {path} HTTP/1.1\r\n"
                                       f"Host: {host}\r\n"
-                                      "User-Agent: RPGMaker-Connectivity-Diagnostic/1.0\r\n"
+                                      "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0 Safari/537.36\r\n"
                                       "Connection: close\r\n\r\n"
                                   )
                                   tls.sendall(request.encode("ascii"))
@@ -112,6 +114,18 @@ jobs:
                                               print(f"REST JSON structure: valid JSON {type(data).__name__}")
                                       except (json.JSONDecodeError, UnicodeDecodeError) as exc:
                                           print(f"REST JSON structure: INVALID ({type(exc).__name__})")
+                                  elif path == "/mz/dktools/" and status == 200:
+                                      try:
+                                          page = body.decode("utf-8", "replace")
+                                          title_match = re.search(r"<title[^>]*>(.*?)</title>", page, re.IGNORECASE | re.DOTALL)
+                                          title = html.unescape(re.sub(r"\\s+", " ", title_match.group(1))).strip() if title_match else ""
+                                          without_hidden = re.sub(r"<(script|style|noscript)\\b[^>]*>.*?</\\1>", " ", page, flags=re.IGNORECASE | re.DOTALL)
+                                          visible = re.sub(r"<[^>]+>", " ", without_hidden)
+                                          visible = re.sub(r"\\s+", " ", html.unescape(visible)).strip()
+                                          anchors = len(re.findall(r"<a\\b", page, re.IGNORECASE))
+                                          print(f"HTML structure: title_chars={len(title)}, anchor_count={anchors}, visible_text_chars={len(visible)} (text not logged)")
+                                      except Exception as exc:
+                                          print(f"HTML structure: inspection failed ({type(exc).__name__})")
                               except Exception as exc:
                                   print(f"HTTP: FAILED ({type(exc).__name__}: {exc})")
                               finally:
