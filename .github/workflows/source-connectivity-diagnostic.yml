@@ -119,10 +119,10 @@ jobs:
                                           page = body.decode("utf-8", "replace")
                                           title_match = re.search(r"<title[^>]*>(.*?)</title>", page, re.IGNORECASE | re.DOTALL)
                                           title = html.unescape(re.sub(r"\s+", " ", title_match.group(1))).strip() if title_match else ""
-                                          without_hidden = re.sub(r"<(script|style|noscript)\\b[^>]*>.*?</\\1>", " ", page, flags=re.IGNORECASE | re.DOTALL)
+                                          without_hidden = re.sub(r"<(script|style|noscript)\b[^>]*>.*?</\1>", " ", page, flags=re.IGNORECASE | re.DOTALL)
                                           visible = re.sub(r"<[^>]+>", " ", without_hidden)
                                           visible = re.sub(r"\s+", " ", html.unescape(visible)).strip()
-                                          anchors = len(re.findall(r"<a\\b", page, re.IGNORECASE))
+                                          anchors = len(re.findall(r"<a\b", page, re.IGNORECASE))
                                           print(f"HTML structure: title_chars={len(title)}, anchor_count={anchors}, visible_text_chars={len(visible)} (text not logged)")
                                       except Exception as exc:
                                           print(f"HTML structure: inspection failed ({type(exc).__name__})")
