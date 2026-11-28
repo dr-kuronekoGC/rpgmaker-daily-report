@@ -230,3 +230,10 @@
 - 既存の `alternate_feed_url` fallback機構を再利用し、ページ取得に失敗した場合のSource Check署名取得先として設定する。
 - RSSは公開された通常のfeed URLのみを使用する。challenge/access-control回避、cookie、proxy、認証情報は使わない。
 - これはSource Checkの監視方式変更であり、通常collectorや公開判断は変更しない。PRレビュー・CI確認後もマージはユーザーの明示許可待ち。
+
+
+## 2026-11-28 — GitHub ActionsからのKageDesu／DK Plugins接続診断
+
+- Run #10は診断コード修正後にsuccess。Run #11では同じread-only診断を2つのLinux runnerで並列実行。DNS解決は成功したが、KageDesu／DK PluginsともTCP接続timeout。実行リージョンはAzure centralus/eastusで、AWS runnerからの到達性は未確認。
+- GitHub-hosted Linux runnerのAWS/Azure配置は自動スケジュールであり、通常の `runs-on` でクラウド／リージョンを直接固定しない。複数runnerでの検証もAzureに割り当てられたため、今回の調査はここで打ち切り、同じ条件での無制限な再試行はしない。
+- DK PluginsはトップページとDKToolsページのどちらも今回HTTP応答に到達せず、監視URLの変更根拠は得られていない。現行URLを維持し、次回通常Source Checkまたは新しい確実な外部証拠を待つ。
