@@ -20,9 +20,12 @@ jobs:
         shell: bash
         run: |
           python3 - <<'PY'
+          import http.client
+          import json
           import socket
           import ssl
           import time
+          import xml.etree.ElementTree as ET
 
           TARGETS = [
               ("KageDesu Workshop homepage", "kdworkshop.net", "/"),
@@ -77,17 +80,38 @@ jobs:
                                       "Connection: close\r\n\r\n"
                                   )
                                   tls.sendall(request.encode("ascii"))
-                                  response = tls.recv(4096)
-                                  headers = response.split(b"\r\n\r\n", 1)[0].split(b"\r\n")
-                                  status = headers[0]
-                                  content_type = next(
-                                      (line.split(b":", 1)[1].strip().decode("latin-1", "replace")
-                                       for line in headers[1:] if line.lower().startswith(b"content-type:")),
-                                      "not provided",
-                                  )
-                                  print(f"HTTP: {status.decode('latin-1', 'replace')}")
+                                  response = http.client.HTTPResponse(tls)
+                                  response.begin()
+                                  status = response.status
+                                  content_type = response.getheader("Content-Type", "not provided")
+                                  location = response.getheader("Location")
+                                  body = response.read(256 * 1024)
+                                  print(f"HTTP: {status} {response.reason}")
                                   print(f"Content-Type: {content_type}")
-                                  print("Response body: not logged")
+                                  print(f"Body bytes inspected: {len(body)} (maximum 262144; body not logged)")
+                                  if location:
+                                      print(f"Redirect Location: {location}")
+                                  if path == "/feed/" and status == 200:
+                                      try:
+                                          root = ET.fromstring(body)
+                                          root_name = root.tag.rsplit('}', 1)[-1]
+                                          items = root.findall(".//item")
+                                          atom_entries = root.findall(".//{http://www.w3.org/2005/Atom}entry")
+                                          print(f"RSS/XML structure: valid XML, root={root_name}, items={len(items)}, atom_entries={len(atom_entries)}")
+                                      except ET.ParseError as exc:
+                                          print(f"RSS/XML structure: INVALID ({type(exc).__name__})")
+                                  elif path.startswith("/wp-json/") and status == 200:
+                                      try:
+                                          data = json.loads(body)
+                                          if isinstance(data, list):
+                                              keys = sorted(data[0].keys()) if data and isinstance(data[0], dict) else []
+                                              print(f"REST JSON structure: valid JSON array, records={len(data)}, first_record_keys={','.join(keys[:20])}")
+                                          elif isinstance(data, dict):
+                                              print(f"REST JSON structure: valid JSON object, keys={','.join(sorted(data.keys())[:20])}")
+                                          else:
+                                              print(f"REST JSON structure: valid JSON {type(data).__name__}")
+                                      except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+                                          print(f"REST JSON structure: INVALID ({type(exc).__name__})")
                               except Exception as exc:
                                   print(f"HTTP: FAILED ({type(exc).__name__}: {exc})")
                               finally:
