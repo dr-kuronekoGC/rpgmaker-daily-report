@@ -500,3 +500,15 @@ PR #117マージ後の通常収集で、各項目が改善・継続・解消の�
 - 追加診断：PR #165 Run #9は診断コード内の変数定義順ミスで失敗したため修正。Run #10は正常終了し、Run #11では2つのLinux runnerを並列実行。いずれもDNS成功・TCP timeout。Run #9/#10/#11はAzure（eastusまたはcentralus）で、DK Pluginsトップページ・DKToolsページともにHTTP応答を得られなかった。Run #11の2 runnerもAzure eastus/centralusで、AWS側の検証は未実施。
 - PR #165は最新head `738d234b`、mainより4 commits behind／PR側12 commits ahead。GitHub PR APIは `mergeable=true`／`mergeable_state=clean`。変更ファイルは診断workflowのみ。未マージ。
 - PR #166の最新head `210a612e` はClassification Audit Run #46102290328 success、全340 tests passed。PRはOpen・未マージ。
+
+
+
+## 最新状態（2026-11-28 JST・PR #165/#166マージ後）
+
+- main: `b305a6a81eee54576466260188bfd9b2f68f1f6f`
+- PR #165（read-only Source Connectivity Diagnostic）はsquash merge済み。merge commit `d07c6f78f9de44fcb4457e1f37beb2b9a4c86156`。
+- PR #166（KageDesu公開RSSをSource Check fallbackに設定）はsquash merge済み。merge commit `b305a6a81eee54576466260188bfd9b2f68f1f6f`。マージ前のClassification Auditは340 tests passed。
+- 2026-11-28の定期Daily Report Run #46102340862はsuccess。Source Health 31/31 OK、Source Check 9/9・failed=0・updated=2（Sang Hendrix、Raizen Plugins）・manual_only=3、Global seen 4566→4567、Archive 173、PRE-00553〜00562、Slack HTTP 200、pending保存、seen等のコミット成功。
+- このDaily ReportはPR #166のマージ前に実行されたため、KageDesu RSS fallbackの実地検証はまだ。次回の通常scheduled Daily Report／Source Checkで確認する。
+- Notion PRE Review Syncは2時間ごとのschedule（cron 17 */2 * * *）で別workflow。Daily Report完了後の同期runは現時点で未確認。次の同期runでPRE-00553〜00562の反映を確認する。
+- DK Pluginsはトップページ／DKToolsページともGitHub ActionsのAzure runnerからTCP timeout。監視URLは変更しない。
