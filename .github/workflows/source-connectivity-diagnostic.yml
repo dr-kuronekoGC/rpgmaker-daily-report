@@ -1,0 +1,214 @@
+name: Source Connectivity Diagnostic
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/source-connectivity-diagnostic.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    name: Diagnose KageDesu and DK Plugins connectivity (probe ${{ matrix.probe }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        probe: [1, 2]
+    timeout-minutes: 3
+    steps:
+      - name: DNS, TCP, TLS, and HTTP checks (read-only)
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import http.client
+          import html
+          import json
+          import re
+          import requests
+          import socket
+          import ssl
+          import time
+          import xml.etree.ElementTree as ET
+
+          TARGETS = [
+              ("KageDesu Workshop homepage", "kdworkshop.net", "/"),
+              ("KageDesu RSS pretty URL", "kdworkshop.net", "/feed/"),
+              ("KageDesu RSS query URL", "kdworkshop.net", "/?feed=rss2"),
+              ("KageDesu WordPress REST posts", "kdworkshop.net", "/wp-json/wp/v2/posts?per_page=1"),
+              ("DK Plugins homepage", "dk-plugins.ru", "/"),
+              ("DK Plugins", "dk-plugins.ru", "/mz/dktools/"),
+          ]
+          TIMEOUT = 8
+          context = ssl.create_default_context()
+
+          for label, host, path in TARGETS:
+              print(f"\n=== {label}: {host} ===")
+              try:
+                  started = time.monotonic()
+                  records = socket.getaddrinfo(
+                      host, 443, type=socket.SOCK_STREAM
+                  )
+                  elapsed = time.monotonic() - started
+                  addresses = []
+                  seen = set()
+                  for family, socktype, proto, _, sockaddr in records:
+                      key = (family, sockaddr)
+                      if key not in seen:
+                          seen.add(key)
+                          addresses.append((family, socktype, proto, sockaddr))
+                  print(f"DNS: OK ({elapsed:.3f}s), {len(addresses)} unique address(es)")
+                  for family, socktype, proto, sockaddr in addresses:
+                      ip = sockaddr[0]
+                      family_name = "IPv6" if family == socket.AF_INET6 else "IPv4"
+                      print(f"-- {family_name} {ip} --")
+                      raw = socket.socket(family, socktype, proto)
+                      raw.settimeout(TIMEOUT)
+                      try:
+                          started = time.monotonic()
+                          raw.connect(sockaddr)
+                          print(f"TCP: OK ({time.monotonic() - started:.3f}s)")
+                          try:
+                              started = time.monotonic()
+                              tls = context.wrap_socket(raw, server_hostname=host)
+                              raw = None
+                              print(
+                                  f"TLS: OK ({time.monotonic() - started:.3f}s), "
+                                  f"version={tls.version()}, "
+                                  f"cipher={tls.cipher()[0]}"
+                              )
+                              try:
+                                  request = (
+                                      f"GET {path} HTTP/1.1\r\n"
+                                      f"Host: {host}\r\n"
+                                      "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0 Safari/537.36\r\n"
+                                      "Connection: close\r\n\r\n"
+                                  )
+                                  tls.sendall(request.encode("ascii"))
+                                  response = http.client.HTTPResponse(tls)
+                                  response.begin()
+                                  status = response.status
+                                  content_type = response.getheader("Content-Type", "not provided")
+                                  location = response.getheader("Location")
+                                  body = response.read(256 * 1024)
+                                  print(f"HTTP: {status} {response.reason}")
+                                  print(f"Content-Type: {content_type}")
+                                  print(f"Body bytes inspected: {len(body)} (maximum 262144; body not logged)")
+                                  if location:
+                                      print(f"Redirect Location: {location}")
+                                  if path == "/feed/" and status == 200:
+                                      try:
+                                          root = ET.fromstring(body)
+                                          root_name = root.tag.rsplit('}', 1)[-1]
+                                          items = root.findall(".//item")
+                                          atom_entries = root.findall(".//{http://www.w3.org/2005/Atom}entry")
+                                          print(f"RSS/XML structure: valid XML, root={root_name}, items={len(items)}, atom_entries={len(atom_entries)}")
+                                      except ET.ParseError as exc:
+                                          print(f"RSS/XML structure: INVALID ({type(exc).__name__})")
+                                  elif path.startswith("/wp-json/") and status == 200:
+                                      try:
+                                          data = json.loads(body)
+                                          if isinstance(data, list):
+                                              keys = sorted(data[0].keys()) if data and isinstance(data[0], dict) else []
+                                              print(f"REST JSON structure: valid JSON array, records={len(data)}, first_record_keys={','.join(keys[:20])}")
+                                          elif isinstance(data, dict):
+                                              print(f"REST JSON structure: valid JSON object, keys={','.join(sorted(data.keys())[:20])}")
+                                          else:
+                                              print(f"REST JSON structure: valid JSON {type(data).__name__}")
+                                      except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+                                          print(f"REST JSON structure: INVALID ({type(exc).__name__})")
+                                  elif path in ("/", "/mz/dktools/") and status == 200:
+                                      try:
+                                          page = body.decode("utf-8", "replace")
+                                          title_match = re.search(r"<title[^>]*>(.*?)</title>", page, re.IGNORECASE | re.DOTALL)
+                                          title = html.unescape(re.sub(r"\s+", " ", title_match.group(1))).strip() if title_match else ""
+                                          without_hidden = re.sub(r"<(script|style|noscript)\b[^>]*>.*?</\1>", " ", page, flags=re.IGNORECASE | re.DOTALL)
+                                          visible = re.sub(r"<[^>]+>", " ", without_hidden)
+                                          visible = re.sub(r"\s+", " ", html.unescape(visible)).strip()
+                                          anchors = len(re.findall(r"<a\b", page, re.IGNORECASE))
+                                          print(f"HTML structure: title_chars={len(title)}, anchor_count={anchors}, visible_text_chars={len(visible)} (text not logged)")
+                                      except Exception as exc:
+                                          print(f"HTML structure: inspection failed ({type(exc).__name__})")
+                              except Exception as exc:
+                                  print(f"HTTP: FAILED ({type(exc).__name__}: {exc})")
+                              finally:
+                                  tls.close()
+                          except Exception as exc:
+                              print(f"TLS: FAILED ({type(exc).__name__}: {exc})")
+                      except Exception as exc:
+                          print(f"TCP: FAILED ({type(exc).__name__}: {exc})")
+                      finally:
+                          if raw is not None:
+                              raw.close()
+              except Exception as exc:
+                  print(f"DNS: FAILED ({type(exc).__name__}: {exc})")
+
+          # Compare with the production collector's requests-based HTTP stack.
+          # Do not log response bodies or cookies; expose only safe metadata.
+          print("\n=== DK Plugins production requests comparison ===")
+          dk_url = "https://dk-plugins.ru/mz/dktools/"
+          production_headers = {
+              "User-Agent": (
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/138.0 Safari/537.36"
+              )
+          }
+          # Check the homepage with the same requests stack as the collector.
+          homepage_url = "https://dk-plugins.ru/"
+          try:
+              homepage_response = requests.get(
+                  homepage_url,
+                  headers=production_headers,
+                  timeout=(10, 20),
+                  allow_redirects=True,
+              )
+              homepage_body = homepage_response.content
+              print(f"Homepage requests HTTP: {homepage_response.status_code} {homepage_response.reason}")
+              print(f"Homepage final URL: {homepage_response.url}")
+              print(f"Homepage Content-Type: {homepage_response.headers.get('Content-Type', 'not provided')}")
+              print(f"Homepage decoded body bytes: {len(homepage_body)} (body not logged)")
+              homepage_page = homepage_response.text[:262144]
+              homepage_title_match = re.search(r"<title[^>]*>(.*?)</title>", homepage_page, re.IGNORECASE | re.DOTALL)
+              homepage_title = re.sub(r"\s+", " ", homepage_title_match.group(1)).strip() if homepage_title_match else ""
+              homepage_anchors = len(re.findall(r"<a\b", homepage_page, re.IGNORECASE))
+              homepage_visible = re.sub(r"<(script|style|noscript)\b[^>]*>.*?</\1>", " ", homepage_page, flags=re.IGNORECASE | re.DOTALL)
+              homepage_visible = re.sub(r"<[^>]+>", " ", homepage_visible)
+              homepage_visible = re.sub(r"\s+", " ", html.unescape(homepage_visible)).strip()
+              print(f"Homepage HTML structure: title_chars={len(homepage_title)}, anchor_count={homepage_anchors}, visible_text_chars={len(homepage_visible)} (text not logged)")
+          except requests.RequestException as exc:
+              print(f"Homepage requests comparison: FAILED ({type(exc).__name__}: {exc})")
+          try:
+              response = requests.get(
+                  dk_url,
+                  headers=production_headers,
+                  timeout=(10, 20),
+                  allow_redirects=True,
+              )
+              body = response.content
+              print(f"requests HTTP: {response.status_code} {response.reason}")
+              print(f"Final URL: {response.url}")
+              for header in ("Content-Type", "Content-Length", "Content-Encoding", "Server", "Location", "ETag", "Last-Modified"):
+                  value = response.headers.get(header)
+                  if value:
+                      print(f"{header}: {value[:200]}")
+              print(f"requests decoded body bytes: {len(body)} (body not logged)")
+              page = response.text[:262144]
+              title_match = re.search(r"<title[^>]*>(.*?)</title>", page, re.IGNORECASE | re.DOTALL)
+              title = re.sub(r"\s+", " ", title_match.group(1)).strip() if title_match else ""
+              anchors = len(re.findall(r"<a\b", page, re.IGNORECASE))
+              visible = re.sub(r"<(script|style|noscript)\b[^>]*>.*?</\1>", " ", page, flags=re.IGNORECASE | re.DOTALL)
+              visible = re.sub(r"<[^>]+>", " ", visible)
+              visible = re.sub(r"\s+", " ", html.unescape(visible)).strip()
+              print(f"requests HTML structure: title_chars={len(title)}, anchor_count={anchors}, visible_text_chars={len(visible)} (text not logged)")
+              lowered = page.lower()
+              for term in ("dk plugins", "rpg maker", "plugin", "download", "cloudflare", "access denied", "forbidden"):
+                  print(f"contains[{term!r}]={term in lowered}")
+          except requests.RequestException as exc:
+              print(f"requests comparison: FAILED ({type(exc).__name__}: {exc})")
+
+          print("\nDiagnostic complete. No application data or repository state was changed.")
+          PY
