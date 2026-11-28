@@ -118,10 +118,10 @@ jobs:
                                       try:
                                           page = body.decode("utf-8", "replace")
                                           title_match = re.search(r"<title[^>]*>(.*?)</title>", page, re.IGNORECASE | re.DOTALL)
-                                          title = html.unescape(re.sub(r"\\s+", " ", title_match.group(1))).strip() if title_match else ""
+                                          title = html.unescape(re.sub(r"\s+", " ", title_match.group(1))).strip() if title_match else ""
                                           without_hidden = re.sub(r"<(script|style|noscript)\\b[^>]*>.*?</\\1>", " ", page, flags=re.IGNORECASE | re.DOTALL)
                                           visible = re.sub(r"<[^>]+>", " ", without_hidden)
-                                          visible = re.sub(r"\\s+", " ", html.unescape(visible)).strip()
+                                          visible = re.sub(r"\s+", " ", html.unescape(visible)).strip()
                                           anchors = len(re.findall(r"<a\\b", page, re.IGNORECASE))
                                           print(f"HTML structure: title_chars={len(title)}, anchor_count={anchors}, visible_text_chars={len(visible)} (text not logged)")
                                       except Exception as exc:
@@ -139,6 +139,46 @@ jobs:
                               raw.close()
               except Exception as exc:
                   print(f"DNS: FAILED ({type(exc).__name__}: {exc})")
+
+          # Compare with the production collector's requests-based HTTP stack.
+          # Do not log response bodies or cookies; expose only safe metadata.
+          print("\n=== DK Plugins production requests comparison ===")
+          dk_url = "https://dk-plugins.ru/mz/dktools/"
+          production_headers = {
+              "User-Agent": (
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/138.0 Safari/537.36"
+              )
+          }
+          try:
+              response = requests.get(
+                  dk_url,
+                  headers=production_headers,
+                  timeout=(10, 20),
+                  allow_redirects=True,
+              )
+              body = response.content
+              print(f"requests HTTP: {response.status_code} {response.reason}")
+              print(f"Final URL: {response.url}")
+              for header in ("Content-Type", "Content-Length", "Content-Encoding", "Server", "Location", "ETag", "Last-Modified"):
+                  value = response.headers.get(header)
+                  if value:
+                      print(f"{header}: {value[:200]}")
+              print(f"requests decoded body bytes: {len(body)} (body not logged)")
+              page = response.text[:262144]
+              title_match = re.search(r"<title[^>]*>(.*?)</title>", page, re.IGNORECASE | re.DOTALL)
+              title = re.sub(r"\s+", " ", title_match.group(1)).strip() if title_match else ""
+              anchors = len(re.findall(r"<a\b", page, re.IGNORECASE))
+              visible = re.sub(r"<(script|style|noscript)\b[^>]*>.*?</\1>", " ", page, flags=re.IGNORECASE | re.DOTALL)
+              visible = re.sub(r"<[^>]+>", " ", visible)
+              visible = re.sub(r"\s+", " ", html.unescape(visible)).strip()
+              print(f"requests HTML structure: title_chars={len(title)}, anchor_count={anchors}, visible_text_chars={len(visible)} (text not logged)")
+              lowered = page.lower()
+              for term in ("dk plugins", "rpg maker", "plugin", "download", "cloudflare", "access denied", "forbidden"):
+                  print(f"contains[{term!r}]={term in lowered}")
+          except requests.RequestException as exc:
+              print(f"requests comparison: FAILED ({type(exc).__name__}: {exc})")
 
           print("\nDiagnostic complete. No application data or repository state was changed.")
           PY
