@@ -534,3 +534,7 @@ PR #139/#83は2026-11-09に差分確認後クローズ済み。未マージで�
 2. PR #166はRun #46102168865で340 tests passed。レビュー後、マージはユーザーの明示許可を待つ。マージ後のRSS fallback実地確認は次回の通常scheduled Source Checkで行い、手動Daily Reportは必要になる場合に事前依頼する。
 3. DK Pluginsはトップページと個別ページの実応答が比較できるまで監視URLを変更しない。
 4. 通常Daily Reportの手動実行が必要になった場合は、実行前にユーザーへ依頼する。ユーザーが実行した後に結果を確認する。
+
+
+- PR #165はmergeable/cleanだが未マージ。診断PRのマージはユーザーの明示許可待ち。DK Pluginsのトップページ／DKToolsページとも接続できず、監視URLの変更判断は保留。GitHub-hosted Linux runnerはAWS/Azureへ自動配置され、今回の並列診断は両方Azureだった。AWSを明示指定する標準runs-on設定はないため、同じ診断の無制限な再試行は行わない。
+- PR #166は340 tests passed。マージはユーザーの明示許可待ち。マージ後のKageDesu RSS fallback実地確認は次回の通常scheduled Source Checkで行う。手動Daily Reportが必要な場合は、実行前にユーザーへ依頼する。
