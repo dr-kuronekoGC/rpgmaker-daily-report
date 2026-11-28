@@ -25,7 +25,10 @@ jobs:
           import time
 
           TARGETS = [
-              ("KageDesu Workshop", "kdworkshop.net", "/"),
+              ("KageDesu Workshop homepage", "kdworkshop.net", "/"),
+              ("KageDesu RSS pretty URL", "kdworkshop.net", "/feed/"),
+              ("KageDesu RSS query URL", "kdworkshop.net", "/?feed=rss2"),
+              ("KageDesu WordPress REST posts", "kdworkshop.net", "/wp-json/wp/v2/posts?per_page=1"),
               ("DK Plugins", "dk-plugins.ru", "/mz/dktools/"),
           ]
           TIMEOUT = 8
@@ -75,8 +78,16 @@ jobs:
                                   )
                                   tls.sendall(request.encode("ascii"))
                                   response = tls.recv(4096)
-                                  status = response.split(b"\r\n", 1)[0]
+                                  headers = response.split(b"\r\n\r\n", 1)[0].split(b"\r\n")
+                                  status = headers[0]
+                                  content_type = next(
+                                      (line.split(b":", 1)[1].strip().decode("latin-1", "replace")
+                                       for line in headers[1:] if line.lower().startswith(b"content-type:")),
+                                      "not provided",
+                                  )
                                   print(f"HTTP: {status.decode('latin-1', 'replace')}")
+                                  print(f"Content-Type: {content_type}")
+                                  print("Response body: not logged")
                               except Exception as exc:
                                   print(f"HTTP: FAILED ({type(exc).__name__}: {exc})")
                               finally:
